@@ -193,38 +193,6 @@ public class ClosedIssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             final Markwon markwon = Markwon.builder(Objects.requireNonNull(context))
                     .usePlugin(CorePlugin.create())
-                    .usePlugin(ImagesPlugin.create(new ImagesPlugin.ImagesConfigure() {
-                        @Override
-                        public void configureImages(@NonNull ImagesPlugin plugin) {
-                            plugin.addSchemeHandler(new SchemeHandler() {
-                                @NonNull
-                                @Override
-                                public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
-
-                                    final int resourceId = context.getResources().getIdentifier(
-                                            raw.substring("drawable://".length()),
-                                            "drawable",
-                                            context.getPackageName());
-
-                                    final Drawable drawable = context.getDrawable(resourceId);
-
-                                    assert drawable != null;
-                                    return ImageItem.withResult(drawable);
-                                }
-
-                                @NonNull
-                                @Override
-                                public Collection<String> supportedSchemes() {
-                                    return Collections.singleton("drawable");
-                                }
-                            });
-                            plugin.addMediaDecoder(GifMediaDecoder.create(false));
-                            plugin.addMediaDecoder(SvgMediaDecoder.create(context.getResources()));
-                            plugin.addMediaDecoder(SvgMediaDecoder.create());
-                            plugin.defaultMediaDecoder(DefaultMediaDecoder.create(context.getResources()));
-                            plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
-                        }
-                    }))
                     .usePlugin(new AbstractMarkwonPlugin() {
                         @Override
                         public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
@@ -234,18 +202,6 @@ public class ClosedIssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                     .linkColor(context.getResources().getColor(R.color.lightBlue));
                         }
                     })
-                    .usePlugin(ImagesPlugin.create(new ImagesPlugin.ImagesConfigure() {
-                        @Override
-                        public void configureImages(@NonNull ImagesPlugin plugin) {
-                            plugin.placeholderProvider(new ImagesPlugin.PlaceholderProvider() {
-                                @Nullable
-                                @Override
-                                public Drawable providePlaceholder(@NonNull AsyncDrawable drawable) {
-                                    return null;
-                                }
-                            });
-                        }
-                    }))
                     .usePlugin(TablePlugin.create(context))
                     .usePlugin(TaskListPlugin.create(context))
                     .usePlugin(HtmlPlugin.create())
