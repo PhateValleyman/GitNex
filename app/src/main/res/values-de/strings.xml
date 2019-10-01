@@ -430,7 +430,7 @@
     <string name="copyIssueUrl">Issue URL kopieren</string>
     <string name="copyIssueUrlToastMsg">Issue URL copied to clipboard</string>
 
-    <string name="milestoneCompletion">%1$d\uFF05 completed</string>
+    <string name="milestoneCompletion">%1$d\uFF05 abgeschlossen</string>
 
     <!-- generic copy -->
     <string name="okButton">OK</string>
