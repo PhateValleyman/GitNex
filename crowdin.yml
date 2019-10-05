@@ -1,7 +1,7 @@
 "project_identifier" : "gitnex"
 "api_key" : "-- PASTE HERE --"
 "base_path" : ""
-"preserve_hierarchy": true
+"preserve_hierarchy": false
 files: [
  {
   "source" : "app/src/main/res/values/strings.xml",
