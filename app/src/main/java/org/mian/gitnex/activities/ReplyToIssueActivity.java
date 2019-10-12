@@ -20,6 +20,7 @@ import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.database.repository.CommentsDraftRepository;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
@@ -187,6 +188,11 @@ public class ReplyToIssueActivity extends AppCompatActivity {
 
         }
         else {
+
+            CommentsDraftRepository commentsRepository = new CommentsDraftRepository(getApplicationContext());
+            String userId = "mmarif";
+            String description = "This is the description of the third task";
+            commentsRepository.insertComment(userId, newReplyDT, description);
 
             disableProcessButton();
             replyComment(newReplyDT);
