@@ -159,7 +159,7 @@ public class AboutFragment extends Fragment {
         Call<GiteaVersion> call = RetrofitClient
                 .getInstance(instanceUrl)
                 .getApiInterface()
-                .getGiteaVersion(Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
+                .getGiteaVersion();
 
         call.enqueue(new Callback<GiteaVersion>() {
 
