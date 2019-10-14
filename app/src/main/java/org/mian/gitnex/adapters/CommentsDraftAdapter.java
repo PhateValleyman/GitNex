@@ -62,7 +62,7 @@ public class CommentsDraftAdapter extends RecyclerView.Adapter<CommentsDraftAdap
 
         CommentsDraft currentItem = draftsList.get(position);
 
-        holder.draftText.setText(currentItem.getTitle());
+        holder.draftText.setText(currentItem.getDraftText());
 
     }
 

@@ -172,6 +172,8 @@ public class ReplyToIssueActivity extends AppCompatActivity {
 
     private void processNewCommentReply() {
 
+        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+
         String newReplyDT = addComment.getText().toString();
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
 
@@ -190,9 +192,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
         else {
 
             CommentsDraftRepository commentsRepository = new CommentsDraftRepository(getApplicationContext());
-            String userId = "mmarif";
-            String description = "This is the description of the third task";
-            commentsRepository.insertComment(userId, newReplyDT, description);
+            commentsRepository.insertComment(1, Integer.parseInt(tinyDb.getString("issueNumber")), newReplyDT);
 
             disableProcessButton();
             replyComment(newReplyDT);

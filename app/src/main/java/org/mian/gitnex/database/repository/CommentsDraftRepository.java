@@ -3,7 +3,7 @@ package org.mian.gitnex.database.repository;
 import android.content.Context;
 import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
-import androidx.room.Room;
+import org.mian.gitnex.database.dao.CommentsDraftDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
 import org.mian.gitnex.database.models.CommentsDraft;
 import java.util.List;
@@ -14,12 +14,13 @@ import java.util.List;
 
 public class CommentsDraftRepository {
 
-    private static GitnexDatabase gitnexDatabase;
+    private static CommentsDraftDao commentsDraftDao;
 
     public CommentsDraftRepository(Context context) {
 
-        String DB_NAME = "gitnex";
-        gitnexDatabase = Room.databaseBuilder(context, GitnexDatabase.class, DB_NAME).build();
+        GitnexDatabase db;
+        db = GitnexDatabase.getDatabaseInstance(context);
+        commentsDraftDao = db.commentsDraftDao();
 
     }
 
@@ -29,13 +30,12 @@ public class CommentsDraftRepository {
         insertTask(title, description, userId);
     }*/
 
-    public void insertComment(String userId, String title, String description) {
+    public void insertComment(int repositoryId, int issueId, String draftText) {
 
         CommentsDraft commentsDraft = new CommentsDraft();
-        commentsDraft.setUserId(userId);
-        commentsDraft.setTitle(title);
-        commentsDraft.setDescription(description);
-        //commentsDraft.setCreatedAt(AppUtils.getCurrentDateTime());
+        commentsDraft.setDraftRepositoryId(repositoryId);
+        commentsDraft.setIssueId(issueId);
+        commentsDraft.setDraftText(draftText);
 
         insertCommentAsync(commentsDraft);
     }
@@ -44,14 +44,14 @@ public class CommentsDraftRepository {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                gitnexDatabase.commentsDraftDaoAccess().insertComment(commentsDraft);
+                commentsDraftDao.insertComment(commentsDraft);
                 return null;
             }
         }.execute();
     }
 
     public LiveData<List<CommentsDraft>> getComments() {
-        return gitnexDatabase.commentsDraftDaoAccess().fetchAllTasks();
+        return commentsDraftDao.fetchAllTasks();
     }
 
 }

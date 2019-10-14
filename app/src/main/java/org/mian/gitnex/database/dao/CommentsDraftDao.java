@@ -12,12 +12,12 @@ import java.util.List;
  */
 
 @Dao
-public interface CommentsDraftDaoAccess {
+public interface CommentsDraftDao {
 
     @Insert
     void insertComment(CommentsDraft commentsDraft);
 
-    @Query("SELECT * FROM CommentsDraft ORDER BY id desc")
+    @Query("SELECT * FROM CommentsDraft ORDER BY draftId desc")
     LiveData<List<CommentsDraft>> fetchAllTasks();
 
 }
