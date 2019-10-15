@@ -20,8 +20,10 @@ import android.widget.TextView;
 import com.tooltip.Tooltip;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.models.GiteaVersion;
 import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.util.AppUtil;
+import org.mian.gitnex.helpers.VersionTest;
 import org.mian.gitnex.R;
 import org.mian.gitnex.util.TinyDB;
 import java.net.URI;
@@ -32,6 +34,7 @@ import okhttp3.Credentials;
 import okhttp3.Headers;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -253,6 +256,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
 
             }
+
+
+            Call<GiteaVersion> call = RetrofitClient
+                    .getInstance(instanceUrl)
+                    .getApiInterface()
+                    .getGiteaVersion();
+
+            call.enqueue(new Callback<GiteaVersion>() {
+
+                @Override
+                public void onResponse(@NonNull Call<GiteaVersion> call, @NonNull Response<GiteaVersion> response) {
+
+                    if (response.isSuccessful()) {
+                        if (response.code() == 200) {
+
+                            GiteaVersion version = response.body();
+                            assert version != null;
+                            //Toasty.info(getApplicationContext(), version.getVersion());
+
+                            VersionTest vt = VersionTest.check("1.9.0", "1.10.0", version.getVersion());
+
+                            Toasty.info(getApplicationContext(),vt.name());
+
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<GiteaVersion> call, @NonNull Throwable t) {
+                    Log.e("onFailure", t.toString());
+                }
+            });
 
             letTheUserIn(instanceUrl, loginUid, loginPass, loginOTP);
 
