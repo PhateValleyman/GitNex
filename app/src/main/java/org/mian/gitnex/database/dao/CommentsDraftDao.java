@@ -17,7 +17,19 @@ public interface CommentsDraftDao {
     @Insert
     void insertComment(CommentsDraft commentsDraft);
 
-    @Query("SELECT * FROM CommentsDraft ORDER BY draftId desc")
-    LiveData<List<CommentsDraft>> fetchAllTasks();
+    @Query("SELECT * FROM commentsDraft WHERE draftAccountId = :accountId ORDER BY draftId DESC")
+    LiveData<List<CommentsDraft>> fetchAllDrafts(int accountId);
+
+    @Query("SELECT * FROM commentsDraft WHERE draftAccountId = :accountId and draftRepositoryId = :repositoryId")
+    LiveData<CommentsDraft> fetchSingleDraft(int accountId, int repositoryId);
+
+    @Query("UPDATE commentsDraft SET draftText= :draftText WHERE draftId = :draftId")
+    void updateDraft(String draftText, int draftId);
+
+    @Query("DELETE FROM commentsDraft WHERE draftId = :draftId")
+    void deleteByDraftId(int draftId);
+
+    @Query("DELETE FROM commentsDraft WHERE draftAccountId = :accountId")
+    void deleteAllDrafts(int accountId);
 
 }

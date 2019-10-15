@@ -59,21 +59,21 @@ public class CommentsDraftFragment extends Fragment {
                     @Override
                     public void run() {
                         swipeRefresh.setRefreshing(false);
-                        fetchDataAsync();
+                        fetchDataAsync(1);
                     }
                 }, 250);
             }
         });
 
-        fetchDataAsync();
+        fetchDataAsync(1);
 
         return v;
 
     }
 
-    private void fetchDataAsync() {
+    private void fetchDataAsync(int accountId) {
 
-        draftsRepository.getComments().observe(this, new Observer<List<CommentsDraft>>() {
+        draftsRepository.getComments(accountId).observe(this, new Observer<List<CommentsDraft>>() {
             @Override
             public void onChanged(@Nullable List<CommentsDraft> comments) {
 

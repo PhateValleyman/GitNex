@@ -50,8 +50,8 @@ public class CommentsDraftRepository {
         }.execute();
     }
 
-    public LiveData<List<CommentsDraft>> getComments() {
-        return commentsDraftDao.fetchAllTasks();
+    public LiveData<List<CommentsDraft>> getComments(int accountId) {
+        return commentsDraftDao.fetchAllDrafts(accountId);
     }
 
 }
