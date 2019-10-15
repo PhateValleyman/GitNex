@@ -192,7 +192,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
         else {
 
             CommentsDraftRepository commentsRepository = new CommentsDraftRepository(getApplicationContext());
-            commentsRepository.insertComment(1, Integer.parseInt(tinyDb.getString("issueNumber")), newReplyDT);
+            commentsRepository.insertComment(1, 1, Integer.parseInt(tinyDb.getString("issueNumber")), newReplyDT);
 
             disableProcessButton();
             replyComment(newReplyDT);

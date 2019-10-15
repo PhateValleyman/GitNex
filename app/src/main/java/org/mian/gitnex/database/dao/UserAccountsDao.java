@@ -18,16 +18,22 @@ public interface UserAccountsDao {
     void newAccount(UserAccounts userAccounts);
 
     @Query("SELECT * FROM userAccounts ORDER BY accountId ASC")
-    LiveData<List<UserAccounts>> fetchAllRows();
+    LiveData<List<UserAccounts>> fetchAllAccounts();
 
     @Query("SELECT * FROM userAccounts WHERE accountId = :accountId")
     LiveData<UserAccounts> fetchSingleRow(int accountId);
+
+    @Query("SELECT * FROM userAccounts WHERE userName = :userName AND instanceUrl = :instanceUrl ")
+    LiveData<UserAccounts> checkAccount(String userName, String instanceUrl);
 
     @Query("UPDATE userAccounts SET serverVersion = :serverVersion WHERE accountId = :accountId")
     void updateServerVersion(String serverVersion, int accountId);
 
     @Query("UPDATE userAccounts SET accountName = :accountName WHERE accountId = :accountId")
     void updateAccountName(String accountName, int accountId);
+
+    @Query("UPDATE userAccounts SET token = :token WHERE accountId = :accountId")
+    void updateAccountToken(int accountId, String token);
 
     @Query("UPDATE userAccounts SET instanceUrl = :instanceUrl, token = :token WHERE accountId = :accountId")
     void updateHostInfo(String instanceUrl, String token, int accountId);

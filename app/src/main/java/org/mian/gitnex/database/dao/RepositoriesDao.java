@@ -18,7 +18,7 @@ public interface RepositoriesDao {
     void newRepository(Repositories repositories);
 
     @Query("SELECT * FROM repositories ORDER BY repositoryId ASC")
-    LiveData<List<Repositories>> fetchAllRows();
+    LiveData<List<Repositories>> fetchAllRepositories();
 
     @Query("SELECT * FROM repositories WHERE repoAccountId = :repoAccountId")
     LiveData<List<Repositories>> fetchAllRowsByAccount(int repoAccountId);
@@ -30,7 +30,7 @@ public interface RepositoriesDao {
     LiveData<Repositories> fetchSingleRowByAccount(int repositoryId, int repoAccountId);
 
     @Query("UPDATE repositories SET repositoryOwner = :repositoryOwner, repositoryName = :repositoryName  WHERE repositoryId = :repositoryId")
-    void updateServerVersion(String repositoryOwner, String repositoryName, int repositoryId);
+    void updateRepositoryOwnerAndName(String repositoryOwner, String repositoryName, int repositoryId);
 
     @Query("DELETE FROM repositories WHERE repositoryId = :repositoryId")
     void deleteRepository(int repositoryId);

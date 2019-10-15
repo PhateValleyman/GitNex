@@ -73,7 +73,7 @@ public class CommentsDraftFragment extends Fragment {
 
     private void fetchDataAsync(int accountId) {
 
-        draftsRepository.getComments(accountId).observe(this, new Observer<List<CommentsDraft>>() {
+        draftsRepository.getDrafts(accountId).observe(this, new Observer<List<CommentsDraft>>() {
             @Override
             public void onChanged(@Nullable List<CommentsDraft> comments) {
 

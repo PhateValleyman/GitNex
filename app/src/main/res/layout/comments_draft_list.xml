@@ -7,31 +7,48 @@
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
     android:fitsSystemWindows="true"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_margin="10dp"
     android:theme="@style/AppTheme"
     android:background="@color/backgroundColor"
     tools:context=".activities.MainActivity" >
 
+    <LinearLayout
+        android:id="@+id/frameDraftInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:id="@+id/repoInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".95"
+            android:layout_gravity="start"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:text="@string/pageTitleNewFile"/>
+
+        <ImageView
+            android:id="@+id/deleteDraft"
+            android:layout_weight=".05"
+            android:layout_width="10dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="@string/labelDeleteText"/>
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/draftText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".80"
         android:layout_marginBottom="0dp"
         android:textColor="@color/white"
-        android:textSize="14sp" />
-
-    <ImageView
-        android:id="@+id/draftsDropdownMenu"
-        android:layout_width="0dp"
-        android:layout_weight=".10"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:scaleType="fitEnd"
-        android:visibility="gone"
-        android:src="@drawable/ic_dotted_menu_horizontal"
-        android:contentDescription="@string/menuContentDesc" />
+        android:textSize="12sp"
+        android:text="@string/noData"/>
 
 </LinearLayout>
 
