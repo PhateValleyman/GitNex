@@ -273,9 +273,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                             GiteaVersion version = response.body();
                             assert version != null;
-                            //Toasty.info(getApplicationContext(), version.getVersion());
 
-                            VersionTest vt = VersionTest.check("1.9.0", "1.10.0", version.getVersion());
+                            VersionTest vt = VersionTest.check(getString(R.string.versionLow),getString(R.string.versionHigh), version.getVersion());
 
                             Toasty.info(getApplicationContext(),vt.name());
 
