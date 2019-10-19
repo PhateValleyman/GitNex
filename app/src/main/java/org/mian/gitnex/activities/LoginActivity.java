@@ -264,39 +264,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             }
 
-
-            Call<GiteaVersion> call = RetrofitClient
-                    .getInstance(instanceUrl)
-                    .getApiInterface()
-                    .getGiteaVersion();
-
-            call.enqueue(new Callback<GiteaVersion>() {
-
-                @Override
-                public void onResponse(@NonNull Call<GiteaVersion> call, @NonNull Response<GiteaVersion> response) {
-
-                    if (response.isSuccessful()) {
-                        if (response.code() == 200) {
-
-                            GiteaVersion version = response.body();
-                            assert version != null;
-
-                            VersionTest vt = VersionTest.check(getString(R.string.versionLow),getString(R.string.versionHigh), version.getVersion());
-
-                            Toasty.info(getApplicationContext(),vt.name());
-
-                        }
-
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<GiteaVersion> call, @NonNull Throwable t) {
-                    Log.e("onFailure", t.toString());
-                }
-            });
-
-            letTheUserIn(instanceUrl, loginUid, loginPass, loginOTP);
+            if (versionCheck(instanceUrlWithProtocol)) letTheUserIn(instanceUrl, loginUid, loginPass, loginOTP);
 
         }
         else {
@@ -305,6 +273,66 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         }
 
+    }
+
+    private boolean versionCheck(String instanceUrl) {
+        Call<GiteaVersion> call = RetrofitClient
+                .getInstance(instanceUrl)
+                .getApiInterface()
+                .getGiteaVersion();
+
+        try {
+            Response<GiteaVersion> response = call.execute();
+
+            if (response.isSuccessful()) {
+                if (response.code() == 200) {
+
+                    GiteaVersion version = response.body();
+                    assert version != null;
+
+                    //VersionTest vt = VersionTest.check(getString(R.string.versionLow),getString(R.string.versionHigh), version.getVersion());
+                    VersionTest vt = VersionTest.check(getString(R.string.versionLow),getString(R.string.versionHigh), "1.9.4");
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+
+                    switch (vt) {
+                        case SUPPORTED_LATEST:
+                            return true;
+                        case SUPPORTED_OLD:
+                            Toasty.info(getApplicationContext(),getString(R.string.versionSupportedOld));
+                            return true;
+                        case DEVELOPMENT:
+                            Toasty.info(getApplicationContext(),getString(R.string.versionDevelopment));
+                            return true;
+                        case UNSUPPORTED_NEW:
+                            builder.setMessage(getString(R.string.versionUnsupportedNew))
+                                    .setTitle(getString(R.string.versionAlertTitle))
+                                    .setPositiveButton("OK",null);
+                            builder.create().show();
+                            return false;
+                        case UNSUPPORTED_OLD:
+                            builder.setMessage(getString(R.string.versionUnsupportedOld))
+                                    .setTitle(getString(R.string.versionAlertTitle))
+                                    .setPositiveButton("OK",null);
+                            builder.create().show();
+                            return false;
+                        default: //UNKNOWN
+                            builder.setMessage(getString(R.string.versionUnknow))
+                                    .setTitle(getString(R.string.versionAlertTitle))
+                                    .setPositiveButton("OK",null);
+                            builder.create().show();
+                            return false;
+                    }
+
+                }
+            }
+
+        } catch (IOException e){
+            //Handle Exception witch should never happen
+            Toasty.info(getApplicationContext(), "LoginActivity: versionCheck: responseException: " + e.toString());
+        }
+        //default
+        return false;
     }
 
     private void letTheUserIn(final String instanceUrl, final String loginUid, final String loginPass, final int loginOTP) {
