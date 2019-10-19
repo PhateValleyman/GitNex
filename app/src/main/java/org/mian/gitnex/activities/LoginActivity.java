@@ -2,8 +2,6 @@ package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.res.Resources;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -17,19 +15,28 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.tooltip.Tooltip;
+
+import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.VersionTest;
 import org.mian.gitnex.models.GiteaVersion;
 import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.helpers.VersionTest;
-import org.mian.gitnex.R;
 import org.mian.gitnex.util.TinyDB;
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+
 import okhttp3.Credentials;
 import okhttp3.Headers;
 import retrofit2.Call;
