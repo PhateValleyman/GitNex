@@ -68,10 +68,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         login_passwd = findViewById(R.id.login_passwd);
         otpCode = findViewById(R.id.otpCode);
         ImageView info_button = findViewById(R.id.info);
-        final TextView viewTextGiteaVersion = findViewById(R.id.appVersion);
+        final TextView viewTextAppVersion = findViewById(R.id.appVersion);
         protocolSpinner = findViewById(R.id.httpsSpinner);
 
-        viewTextGiteaVersion.setText(AppUtil.getAppVersion(getApplicationContext()));
+        viewTextAppVersion.setText(AppUtil.getAppVersion(getApplicationContext()));
 
         Resources res = getResources();
         String[] allProtocols = res.getStringArray(R.array.protocolValues);
