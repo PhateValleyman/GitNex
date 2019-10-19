@@ -100,6 +100,13 @@
     <string name="emptyFieldURL">Instance URL is required</string>
     <string name="emptyFieldUsername">Username is required</string>
     <string name="emptyFieldPassword">Password is required</string>
+    <string name="versionUnsupportedOld">Old unsupported Gitea version detected!</string>
+    <string name="versionSupportedOld">Old Gitea version detected!\n\nPlease update!</string>
+    <string name="versionUnsupportedNew">New unsupported Gitea version detected!</string>
+    <string name="versionSupportedNew">Gitea version is up to date</string>
+    <string name="versionDevelopment">Gitea development version</string>
+    <string name="versionUnknow">No Gitea detected!</string>
+    <string name="versionAlertTitle">Version Alert</string>
 
     <string name="checkNetConnection">Cannot access network, please check your Internet connection</string>
 
