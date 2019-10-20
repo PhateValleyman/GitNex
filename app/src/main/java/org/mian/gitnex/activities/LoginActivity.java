@@ -227,6 +227,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 return;
 
             }
+            if(loginUid.contains("@")) {
+                Toasty.info(getApplicationContext(), "Don't Use Email as Username!");
+                enableProcessButton();
+                login_button.setText(R.string.btnLogin);
+                return;
+            }
             if(login_passwd.getText().toString().equals("")) {
 
                 Toasty.info(getApplicationContext(), getString(R.string.emptyFieldPassword));
