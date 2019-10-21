@@ -20,6 +20,9 @@
     <string name="supportText" translatable="false">Support the App on Liberapay</string>
     <string name="supportTextPatreon" translatable="false">Become a Patreon</string>
 
+    <string name="versionLow" translatable="false">1.9.0</string>
+    <string name="versionHigh" translatable="false">1.11.0</string>
+
     <!-- menu items -->
     <string name="navMyRepos">My Repositories</string>
     <string name="navStarredRepos">Starred Repositories</string>
@@ -513,4 +516,14 @@
     <string name="watchRepositorySuccess">Repository added to watch list</string>
     <string name="unWatchRepositorySuccess">Repository removed from watch list</string>
 
+    <string name="versionUnsupportedOld">Unsupported old version(%1$s) of Gitea detected. Please update to latest stable version. If you continue, the app may not function properly.</string>
+    <string name="versionSupportedOld">Old Gitea version detected, please update to latest stable version</string>
+    <string name="versionUnsupportedNew">New unsupported Gitea version detected!</string>
+    <string name="versionSupportedNew">Gitea version is up to date</string>
+    <string name="versionDevelopment">Gitea development version</string>
+    <string name="versionUnknow">No Gitea detected!</string>
+    <string name="versionAlertTitle">Version Alert</string>
+    <string name="versionAlertDialogHeader">Unsupported Version of Gitea</string>
+    <string name="versionAlertDialogCopyNegative">Cancel</string>
+    <string name="versionAlertDialogCopyPositive">Continue</string>
 </resources>
