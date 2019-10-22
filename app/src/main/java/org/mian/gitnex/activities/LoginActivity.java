@@ -293,10 +293,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     tinyDb.putString("giteaVersion", version.getVersion());
 
                     switch (vt) {
+                        case UNSUPPORTED_NEW:
+                            Toasty.info(getApplicationContext(), getString(R.string.versionUnsupportedNew));
                         case SUPPORTED_LATEST:
                         case SUPPORTED_OLD:
                         case DEVELOPMENT:
-                        case UNSUPPORTED_NEW:
                             letTheUserIn(instanceUrl, loginUid, loginPass, loginOTP);
                             return;
                         case UNSUPPORTED_OLD:

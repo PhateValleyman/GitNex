@@ -519,8 +519,8 @@
 
     <string name="versionUnsupportedOld">Unsupported old version(%1$s) of Gitea detected. Please update to latest stable version. If you continue, the app may not function properly.</string>
     <string name="versionSupportedOld">Old Gitea version detected, please update to latest stable version</string>
-    <string name="versionUnsupportedNew">New unsupported Gitea version detected!</string>
-    <string name="versionSupportedNew">Gitea version is up to date</string>
+    <string name="versionUnsupportedNew">New Gitea version detected! Please UPDATE GitNex!</string>
+    <string name="versionSupportedLatest">Gitea version is up to date</string>
     <string name="versionDevelopment">Gitea development version</string>
     <string name="versionUnknow">No Gitea detected!</string>
     <string name="versionAlertTitle">Version Alert</string>
