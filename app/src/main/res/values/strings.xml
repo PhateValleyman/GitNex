@@ -21,7 +21,7 @@
     <string name="supportTextPatreon" translatable="false">Become a Patreon</string>
 
     <string name="versionLow" translatable="false">1.9.0</string>
-    <string name="versionHigh" translatable="false">1.11.0</string>
+    <string name="versionHigh" translatable="false">1.10.0</string>
 
     <!-- menu items -->
     <string name="navMyRepos">My Repositories</string>
