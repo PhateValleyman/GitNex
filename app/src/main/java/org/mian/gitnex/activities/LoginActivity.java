@@ -294,7 +294,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     switch (vt) {
                         case UNSUPPORTED_NEW:
-                            Toasty.info(getApplicationContext(), getString(R.string.versionUnsupportedNew));
+                            //Toasty.info(getApplicationContext(), getString(R.string.versionUnsupportedNew));
                         case SUPPORTED_LATEST:
                         case SUPPORTED_OLD:
                         case DEVELOPMENT:
