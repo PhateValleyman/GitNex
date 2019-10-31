@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView otpInfo;
     private RadioGroup loginMethod;
     final Context ctx = this;
-    private int device_id = 0;
+    private String device_id = "token";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         loginButton.setOnClickListener(loginListener);
 
-        device_id = Secure.getString(ctx.getContentResolver(), Secure.ANDROID_ID).hashCode();
+        device_id = Integer.toHexString(Secure.getString(ctx.getContentResolver(), Secure.ANDROID_ID).hashCode());
 
     }
 
