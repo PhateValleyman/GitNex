@@ -70,6 +70,16 @@
 
     </LinearLayout>
 
+    <io.github.kbiakov.codeview.CodeView
+        android:id="@+id/singleCodeContents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
+        android:textSize="14sp"
+        android:padding="15dp"
+        android:visibility="gone"
+        />
+
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/imageView"
         android:layout_centerInParent="true"
