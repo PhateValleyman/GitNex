@@ -21,10 +21,7 @@ android {
         abortOnError false
     }
 }
-configurations {
-    cleanedAnnotations
-    compile.exclude group: 'org.jetbrains' , module:'annotations'
-}
+
 dependencies {
     def lifecycle_version = "2.2.0-rc01"
     final def markwon_version = "4.1.1"
