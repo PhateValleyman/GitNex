@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
         Call<UserInfo> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getUserInfo(Authorization.returnAuthentication(getApplicationContext(), loginUid, token));
 
