@@ -6,6 +6,10 @@ buildscript {
         google()
         jcenter()
     }
+    configurations {
+        cleanedAnnotations
+        compile.exclude group: 'org.jetbrains' , module:'annotations'
+    }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.1'
 

@@ -21,7 +21,10 @@ android {
         abortOnError false
     }
 }
-
+configurations {
+    cleanedAnnotations
+    compile.exclude group: 'org.jetbrains' , module:'annotations'
+}
 dependencies {
     def lifecycle_version = "2.2.0-rc01"
     final def markwon_version = "4.1.1"
@@ -68,4 +71,5 @@ dependencies {
     implementation "com.github.HamidrezaAmz:BreadcrumbsView:0.2.9"
     implementation "commons-io:commons-io:2.6"
     implementation "com.github.chrisbanes:PhotoView:2.3.0"
+    implementation  "com.github.kbiakov:CodeView-Android:1.3.2"
 }
