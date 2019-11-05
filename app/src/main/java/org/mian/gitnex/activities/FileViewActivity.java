@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.pddstudio.highlightjs.HighlightJsView;
+import com.pddstudio.highlightjs.models.Theme;
 import org.apache.commons.io.FilenameUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -24,8 +26,6 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Files;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
-
-import io.github.kbiakov.codeview.CodeView;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -37,7 +37,7 @@ public class FileViewActivity extends AppCompatActivity {
 
     private View.OnClickListener onClickListener;
     private TextView singleFileContents;
-    private CodeView singleCodeContents;
+    private HighlightJsView singleCodeContents;
     private PhotoView imageView;
     final Context ctx = this;
     private ProgressBar mProgressBar;
@@ -109,8 +109,8 @@ public class FileViewActivity extends AppCompatActivity {
                         String fileExtension = FilenameUtils.getExtension(filename);
                         mProgressBar.setVisibility(View.GONE);
 
-                        if(fileExtension.equals("png") || fileExtension.equals("jpg") || fileExtension.equals("jpeg") || fileExtension.equals("gif") || fileExtension.equals("ico")) {
-                            //File is image
+                        if(appUtil.imageExtension(fileExtension)) { // file is image
+
                             singleFileContents.setVisibility(View.GONE);
                             singleCodeContents.setVisibility(View.GONE);
                             imageView.setVisibility(View.VISIBLE);
@@ -119,16 +119,20 @@ public class FileViewActivity extends AppCompatActivity {
                             Drawable imageDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(imageData, 0, imageData.length));
                             imageView.setImageDrawable(imageDrawable);
 
-                        } else if (fileExtension.equals("go") || fileExtension.equals("py") || fileExtension.equals("js") || fileExtension.equals("md")) {
-                            //File is sourcecode
+                        }
+                        else if (appUtil.sourceCodeExtension(fileExtension)) { // file is sourcecode
+
                             imageView.setVisibility(View.GONE);
                             singleFileContents.setVisibility(View.GONE);
                             singleCodeContents.setVisibility(View.VISIBLE);
 
-                            singleCodeContents.setCode(appUtil.decodeBase64(response.body().getContent()),"listing" + fileExtension);
+                            singleCodeContents.setTheme(Theme.GRUVBOX_DARK);
+                            singleCodeContents.setShowLineNumbers(true);
+                            singleCodeContents.setSource(appUtil.decodeBase64(response.body().getContent()));
 
-                        } else {
-                            //File type not knowen - plain text view
+                        }
+                        else { // file type not known - plain text view
+
                             imageView.setVisibility(View.GONE);
                             singleCodeContents.setVisibility(View.GONE);
                             singleFileContents.setVisibility(View.VISIBLE);

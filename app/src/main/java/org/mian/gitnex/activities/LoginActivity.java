@@ -39,7 +39,6 @@ import okhttp3.Credentials;
 import retrofit2.Call;
 import retrofit2.Callback;
 import android.provider.Settings.Secure;
-import io.github.kbiakov.codeview.classifier.CodeProcessor;
 
 /**
  * Author M M Arif
@@ -63,8 +62,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         TinyDB tinyDb = new TinyDB(getApplicationContext());
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
-
-        CodeProcessor.init(this);
 
         loginButton = findViewById(R.id.login_button);
         instanceUrlET = findViewById(R.id.instance_url);
