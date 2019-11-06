@@ -124,11 +124,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
 
-                if(!tinyDb.getBoolean("noConnection")) {
+                if(tinyDb.getBoolean("noConnection")) {
                     Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+                    tinyDb.putBoolean("noConnection", false);
                 }
 
-                tinyDb.putBoolean("noConnection", true);
+                //tinyDb.putBoolean("noConnection", true);
 
                 String userEmailNav = tinyDb.getString("userEmail");
                 String userFullNameNav = tinyDb.getString("userFullname");
