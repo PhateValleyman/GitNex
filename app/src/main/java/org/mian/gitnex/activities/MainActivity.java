@@ -344,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             tinyDb.putString("userFullname", userDetails.getFullname());
                         }
                         else {
-                            tinyDb.putString("userFullname", "...");
+                            tinyDb.putString("userFullname", userDetails.getLogin());
                         }
 
                         tinyDb.putString("userEmail", userDetails.getEmail());
