@@ -156,7 +156,7 @@ URL è richiesto</string>
     <string name="newMilestoneDescription">Descrizione</string>
     <string name="newMilestoneDueDate">Data Scadenza</string>
     <string name="milestoneNameErrorEmpty">Il titolo del milestone è vuoto</string>
-    <string name="milestoneNameErrorInvalid">Il titolo del milestone non è valido. [a&#8211;z A&#8211;Z 0&#8211;char@@9 &#8211; _]</string>
+    <string name="milestoneNameErrorInvalid">Il titolo del milestone non è valido. [a&#8211;z A&#8211;Z 0&#8211;9 &#8211; _]</string>
     <string name="milestoneDescError">La descrizione del milestone supera il limite massimo di 255 caratteri</string>
     <string name="milestoneCreated">Milestone creato con successo</string>
     <string name="milestoneCreatedError">Qualcosa è andato storto, riprova</string>
