@@ -753,4 +753,111 @@ public class PullRequests {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public int getComments() {
+        return comments;
+    }
+
+    public String getDiff_url() {
+        return diff_url;
+    }
+
+    public String getHtml_url() {
+        return html_url;
+    }
+
+    public String getMerge_base() {
+        return merge_base;
+    }
+
+    public String getMerge_commit_sha() {
+        return merge_commit_sha;
+    }
+
+    public boolean isMergeable() {
+        return mergeable;
+    }
+
+    public boolean isMerged() {
+        return merged;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public String getPatch_url() {
+        return patch_url;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Date getClosed_at() {
+        return closed_at;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public Date getDue_date() {
+        return due_date;
+    }
+
+    public Date getMerged_at() {
+        return merged_at;
+    }
+
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
+    public userObject getUser() {
+        return user;
+    }
+
+    public List<labelsObject> getLabels() {
+        return labels;
+    }
+
+    public assigneeObject getAssignee() {
+        return assignee;
+    }
+
+    public List<assigneesObject> getAssignees() {
+        return assignees;
+    }
+
+    public mergedByObject getMerged_by() {
+        return merged_by;
+    }
+
+    public milestoneObject getMilestone() {
+        return milestone;
+    }
+
+    public baseObject getBase() {
+        return base;
+    }
+
+    public headObject getHead() {
+        return head;
+    }
 }
