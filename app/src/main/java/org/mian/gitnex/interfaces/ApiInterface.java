@@ -6,6 +6,7 @@ import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.ExploreRepositories;
 import org.mian.gitnex.models.Files;
 import org.mian.gitnex.models.NewFile;
+import org.mian.gitnex.models.PullRequests;
 import org.mian.gitnex.models.UpdateIssueAssignee;
 import org.mian.gitnex.models.UpdateIssueState;
 import org.mian.gitnex.models.Collaborators;
@@ -247,4 +248,7 @@ public interface ApiInterface {
 
     @DELETE("repos/{owner}/{repo}/subscription") // un watch a repository
     Call<JsonElement> unWatchRepository(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
+
+    @GET("repos/{owner}/{repo}/pulls") // get repository pull requests
+    Call<List<PullRequests>> getPullRequests(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("state") String state);
 }

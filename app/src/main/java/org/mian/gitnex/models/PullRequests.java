@@ -32,12 +32,15 @@ public class PullRequests {
 
     private userObject user;
     private List<labelsObject> labels;
-    private assigneeObject assignee;
     private List<assigneesObject> assignees;
     private mergedByObject merged_by;
     private milestoneObject milestone;
     private baseObject base;
     private headObject head;
+
+    public PullRequests(String body) {
+        this.body = body;
+    }
 
     public class headObject {
 
@@ -592,45 +595,6 @@ public class PullRequests {
         }
     }
 
-    public class assigneeObject {
-
-        private int id;
-        private String login;
-        private String full_name;
-        private String email;
-        private String avatar_url;
-        private String language;
-        private boolean is_admin;
-
-        public int getId() {
-            return id;
-        }
-
-        public String getLogin() {
-            return login;
-        }
-
-        public String getFull_name() {
-            return full_name;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public String getAvatar_url() {
-            return avatar_url;
-        }
-
-        public String getLanguage() {
-            return language;
-        }
-
-        public boolean isIs_admin() {
-            return is_admin;
-        }
-    }
-
     public class assigneesObject {
 
         private int id;
@@ -835,10 +799,6 @@ public class PullRequests {
 
     public List<labelsObject> getLabels() {
         return labels;
-    }
-
-    public assigneeObject getAssignee() {
-        return assignee;
     }
 
     public List<assigneesObject> getAssignees() {

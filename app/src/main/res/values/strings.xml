@@ -13,7 +13,7 @@
     <string name="supportLink" translatable="false">https://liberapay.com/mmarif/donate</string>
     <string name="supportLinkPatreon" translatable="false">https://www.patreon.com/mmarif</string>
     <string name="appVerBuild" translatable="false">%1$s / build %2$d</string>
-    <string name="appDesc" translatable="false">GitNex is a free, open-source Android client for Git repository management tool Gitea. GitNex is Licensed under GPLv3.\n\nThanks to all the contributors and sponsors for your generous work and donations.</string>
+    <string name="appDesc" translatable="false">GitNex is a free, open-source Android client for Git repository management tool Gitea. GitNex is Licensed under GPLv3.\n\nThanks to all the contributors and donators for your generous work and donations.</string>
     <string name="crowdInLink" translatable="false">https://crowdin.com/project/gitnex</string>
 
     <string name="appRepoIssuesText" translatable="false">Report issues at Gitea</string>
@@ -52,7 +52,7 @@
     <string name="pageTitleCreateLabel">New Label</string>
     <string name="pageTitleCredits">Credits</string>
     <string name="pageTitleLabelUpdate">Update Label</string>
-    <string name="pageTitleSponsors">Sponsors</string>
+    <string name="pageTitleSponsors">Donators</string>
     <string name="pageTitleStarredRepos">Starred Repositories</string>
     <string name="pageTitleCreateTeam">New Team</string>
     <string name="pageTitleAddEmail">Add Email Address</string>
@@ -143,6 +143,7 @@
     <string name="tab_text_labels">Labels</string>
     <string name="action_settings">Settings</string>
     <string name="tab_text_collaborators">Collaborators</string>
+    <string name="tabPullRequests">Pull Requests</string>
 
     <string name="noDataIssueTab">No issues found</string>
 
@@ -522,5 +523,8 @@
     <string name="loginMethodText">Choose your preferred login method to access your account. Token is more secure!</string>
     <string name="unauthorizedApiError">Instance has returned an error - Unauthorized. Check your credentials and try again</string>
     <string name="loginTokenError">Please enter the correct token</string>
+
+    <string name="noDataPullRequests">No pull requests found</string>
+    <string name="prCreator">Creator :\u0020</string>
 
 </resources>
