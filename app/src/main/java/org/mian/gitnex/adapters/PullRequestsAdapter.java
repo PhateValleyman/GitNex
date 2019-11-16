@@ -2,6 +2,7 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -119,18 +121,19 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             LinearLayout frameCommentsCount = itemView.findViewById(R.id.frameCommentsCount);
             prCreatedTime = itemView.findViewById(R.id.prCreatedTime);
 
-            /*prTitle.setOnClickListener(new View.OnClickListener() {
+            prTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     Context context = v.getContext();
                     //Log.i("prNumber", prNumber.getText().toString());
 
-                    Intent intent = new Intent(context, PullRequestsDetailActivity.class);
-                    intent.putExtra("prNumber", prNumber.getText());
+                    Intent intent = new Intent(context, IssueDetailActivity.class);
+                    intent.putExtra("issueNumber", prNumber.getText());
 
                     TinyDB tinyDb = new TinyDB(context);
-                    tinyDb.putString("prNumber", prNumber.getText().toString());
+                    tinyDb.putString("issueNumber", prNumber.getText().toString());
+                    tinyDb.putString("issueType", "pr");
                     context.startActivity(intent);
 
                 }
@@ -142,15 +145,16 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     Context context = v.getContext();
                     //Log.i("prNumber", prNumber.getText().toString());
 
-                    Intent intent = new Intent(context, PullRequestsDetailActivity.class);
-                    intent.putExtra("prNumber", prNumber.getText());
+                    Intent intent = new Intent(context, IssueDetailActivity.class);
+                    intent.putExtra("issueNumber", prNumber.getText());
 
                     TinyDB tinyDb = new TinyDB(context);
-                    tinyDb.putString("prNumber", prNumber.getText().toString());
+                    tinyDb.putString("issueNumber", prNumber.getText().toString());
+                    tinyDb.putString("issueType", "pr");
                     context.startActivity(intent);
 
                 }
-            });*/
+            });
 
         }
 

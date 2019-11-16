@@ -136,6 +136,7 @@ public class ClosedIssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     TinyDB tinyDb = new TinyDB(context);
                     tinyDb.putString("issueNumber", issueNumber.getText().toString());
+                    tinyDb.putString("issueType", "issue");
                     context.startActivity(intent);
 
                 }
@@ -152,6 +153,7 @@ public class ClosedIssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     TinyDB tinyDb = new TinyDB(context);
                     tinyDb.putString("issueNumber", issueNumber.getText().toString());
+                    tinyDb.putString("issueType", "issue");
                     context.startActivity(intent);
 
                 }

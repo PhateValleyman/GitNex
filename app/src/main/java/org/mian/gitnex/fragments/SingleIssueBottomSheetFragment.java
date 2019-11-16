@@ -53,6 +53,14 @@ public class SingleIssueBottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
 
+        if(tinyDB.getString("issueType").equals("pr")) {
+            editIssue.setText(R.string.editPrText);
+        }
+
+        if(tinyDB.getString("issueType").equals("pr")) {
+            copyIssueUrl.setText(R.string.copyPrUrlText);
+        }
+
         editIssue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +98,7 @@ public class SingleIssueBottomSheetFragment extends BottomSheetDialogFragment {
                 // get url of repo
                 String repoFullName = tinyDB.getString("repoFullName");
                 String instanceUrlWithProtocol = "https://" + tinyDB.getString("instanceUrlRaw");
-                if(!tinyDB.getString("instanceUrlWithProtocol").isEmpty()) {
+                if (!tinyDB.getString("instanceUrlWithProtocol").isEmpty()) {
                     instanceUrlWithProtocol = tinyDB.getString("instanceUrlWithProtocol");
                 }
 
@@ -100,6 +108,7 @@ public class SingleIssueBottomSheetFragment extends BottomSheetDialogFragment {
                 // copy to clipboard
                 ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getContext()).getSystemService(android.content.Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("issueUrl", issueUrl);
+                assert clipboard != null;
                 clipboard.setPrimaryClip(clip);
 
                 dismiss();
@@ -109,34 +118,43 @@ public class SingleIssueBottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
 
-        if(tinyDB.getString("issueState").equals("open")) { // close issue
+        if(tinyDB.getString("issueType").equals("issue")) {
 
-            reOpenIssue.setVisibility(View.GONE);
+            if (tinyDB.getString("issueState").equals("open")) { // close issue
 
-            closeIssue.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                reOpenIssue.setVisibility(View.GONE);
 
-                    IssueActions.closeReopenIssue(getContext(), Integer.valueOf(tinyDB.getString("issueNumber")), "closed");
-                    dismiss();
+                closeIssue.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                }
-            });
+                        IssueActions.closeReopenIssue(getContext(), Integer.valueOf(tinyDB.getString("issueNumber")), "closed");
+                        dismiss();
+
+                    }
+                });
+
+            } else if (tinyDB.getString("issueState").equals("closed")) {
+
+                closeIssue.setVisibility(View.GONE);
+
+                reOpenIssue.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        IssueActions.closeReopenIssue(getContext(), Integer.valueOf(tinyDB.getString("issueNumber")), "open");
+                        dismiss();
+
+                    }
+                });
+
+            }
 
         }
-        else if(tinyDB.getString("issueState").equals("closed")) {
+        else {
 
+            reOpenIssue.setVisibility(View.GONE);
             closeIssue.setVisibility(View.GONE);
-
-            reOpenIssue.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    IssueActions.closeReopenIssue(getContext(), Integer.valueOf(tinyDB.getString("issueNumber")), "open");
-                    dismiss();
-
-                }
-            });
 
         }
 

@@ -407,7 +407,7 @@
 
     <!-- edit issue -->
     <string name="editIssueNavHeader">Edit Issue #%1$s</string>
-    <string name="editIssueSuccessMessage">Issue updated.</string>
+    <string name="editIssueSuccessMessage">Issue updated</string>
     <!-- edit issue -->
 
     <!-- release -->
@@ -460,7 +460,7 @@
     <string name="strFilter">Filter</string>
 
     <string name="copyIssueUrl">Copy Issue URL</string>
-    <string name="copyIssueUrlToastMsg">Issue URL copied to clipboard</string>
+    <string name="copyIssueUrlToastMsg">URL copied to clipboard</string>
 
     <string name="milestoneCompletion">%1$d\uFF05 completed</string>
 
@@ -526,5 +526,9 @@
 
     <string name="noDataPullRequests">No pull requests found</string>
     <string name="prCreator">Creator :\u0020</string>
+    <string name="editPrText">Edit Pull Request</string>
+    <string name="copyPrUrlText">Copy Pull Request URL</string>
+    <string name="editPrNavHeader">Edit Pull Request #%1$s</string>
+    <string name="editPrSuccessMessage">Pull Request updated</string>
 
 </resources>
