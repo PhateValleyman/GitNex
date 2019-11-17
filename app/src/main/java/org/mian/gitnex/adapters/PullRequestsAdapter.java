@@ -126,7 +126,6 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 public void onClick(View v) {
 
                     Context context = v.getContext();
-                    //Log.i("prNumber", prNumber.getText().toString());
 
                     Intent intent = new Intent(context, IssueDetailActivity.class);
                     intent.putExtra("issueNumber", prNumber.getText());
@@ -143,7 +142,6 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 public void onClick(View v) {
 
                     Context context = v.getContext();
-                    //Log.i("prNumber", prNumber.getText().toString());
 
                     Intent intent = new Intent(context, IssueDetailActivity.class);
                     intent.putExtra("issueNumber", prNumber.getText());

@@ -31,6 +31,8 @@ import org.mian.gitnex.models.UserSearch;
 import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.models.WatchRepository;
 import java.util.List;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -251,4 +253,8 @@ public interface ApiInterface {
 
     @GET("repos/{owner}/{repo}/pulls") // get repository pull requests
     Call<List<PullRequests>> getPullRequests(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("state") String state);
+
+    @GET("{owner}/{repo}/pulls/{filename}") // get pull diff file contents
+    Call<ResponseBody> getFileDiffContents(@Path("owner") String owner, @Path("repo") String repo, @Path("filename") String fileName);
+
 }

@@ -12,6 +12,7 @@ import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.activities.AddRemoveAssigneesActivity;
 import org.mian.gitnex.activities.AddRemoveLabelsActivity;
 import org.mian.gitnex.activities.EditIssueActivity;
+import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.util.TinyDB;
@@ -42,6 +43,7 @@ public class SingleIssueBottomSheetFragment extends BottomSheetDialogFragment {
         TextView reOpenIssue = v.findViewById(R.id.reOpenIssue);
         TextView addRemoveAssignees = v.findViewById(R.id.addRemoveAssignees);
         TextView copyIssueUrl = v.findViewById(R.id.copyIssueUrl);
+        TextView openFilesDiff = v.findViewById(R.id.openFilesDiff);
 
         replyToIssue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,11 +57,23 @@ public class SingleIssueBottomSheetFragment extends BottomSheetDialogFragment {
 
         if(tinyDB.getString("issueType").equals("pr")) {
             editIssue.setText(R.string.editPrText);
+            copyIssueUrl.setText(R.string.copyPrUrlText);
+
+            if(tinyDB.getString("repoType").equals("public")) {
+                openFilesDiff.setVisibility(View.VISIBLE);
+            }
+
         }
 
-        if(tinyDB.getString("issueType").equals("pr")) {
-            copyIssueUrl.setText(R.string.copyPrUrlText);
-        }
+        openFilesDiff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(getContext(), FileDiffActivity.class));
+                dismiss();
+
+            }
+        });
 
         editIssue.setOnClickListener(new View.OnClickListener() {
             @Override
