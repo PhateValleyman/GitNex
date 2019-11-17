@@ -387,6 +387,8 @@
     <string name="addRemoveAssignees2">Add Assignees</string>
     <string name="addRemoveAssignees">Add / Remove Assignees</string>
     <string name="assigneesUpdated">Assignees updated</string>
+    <string name="singleIssueSubscribe">Subscribe</string>
+    <string name="singleIssueUnSubscribe">Unsubscribe</string>
     <!-- single issue section -->
 
     <!-- multi select dialog -->

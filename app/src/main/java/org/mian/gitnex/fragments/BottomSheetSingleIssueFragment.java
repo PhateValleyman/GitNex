@@ -47,6 +47,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
         TextView openFilesDiff = v.findViewById(R.id.openFilesDiff);
         TextView mergePullRequest = v.findViewById(R.id.mergePullRequest);
         TextView shareIssue = v.findViewById(R.id.shareIssue);
+        TextView subscribeIssue = v.findViewById(R.id.subscribeIssue);
+        TextView unsubscribeIssue = v.findViewById(R.id.unsubscribeIssue);
 
         replyToIssue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,6 +227,10 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             closeIssue.setVisibility(View.GONE);
 
         }
+
+        //test if issue is subscribed
+        //...
+
 
         return v;
     }
