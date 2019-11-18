@@ -67,6 +67,8 @@ public class FileDiffActivity extends AppCompatActivity {
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
 
+        mProgressBar.setVisibility(View.VISIBLE);
+
         String fileDiffName = tinyDb.getString("issueNumber")+".diff";
 
         getFileContents(tinyDb.getString("instanceUrlWithProtocol"), repoOwner, repoName, fileDiffName);
@@ -149,6 +151,7 @@ public class FileDiffActivity extends AppCompatActivity {
                         FilesDiffAdapter adapter = new FilesDiffAdapter(fileContentsArray, getApplicationContext());
                         mRecyclerView.setAdapter(adapter);
 
+                        mProgressBar.setVisibility(View.GONE);
 
                     } catch (IOException e) {
                         e.printStackTrace();
