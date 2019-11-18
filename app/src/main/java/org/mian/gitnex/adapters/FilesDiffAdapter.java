@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +30,7 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
         private TextView fileInfo;
         private ImageView fileImage;
         private HorizontalScrollView fileContentsView;
+        private LinearLayout allLines;
 
         private FilesDiffViewHolder(View itemView) {
             super(itemView);
@@ -38,6 +40,7 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
             fileInfo = itemView.findViewById(R.id.fileInfo);
             fileImage = itemView.findViewById(R.id.fileImage);
             fileContentsView = itemView.findViewById(R.id.fileContentsView);
+            allLines = itemView.findViewById(R.id.allLinesLayout);
 
         }
     }
@@ -55,7 +58,7 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FilesDiffAdapter.FilesDiffViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FilesDiffViewHolder holder, int position) {
 
         FileDiffView data = dataList.get(position);
 
@@ -73,6 +76,48 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
         }
         else {
 
+            String[] splitData = data.getFileContents().split("\\R");
+
+            for (String eachSplit : splitData) {
+
+                TextView textLine = new TextView(ctx);
+                textLine.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+                if (eachSplit.startsWith("+")) {
+
+                    textLine.setText(eachSplit);
+                    holder.allLines.addView(textLine);
+
+                    textLine.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                    textLine.setPadding(5, 5, 5, 5);
+                    textLine.setBackgroundColor(ctx.getResources().getColor(R.color.diffAddedColor));
+
+                }
+                else if (eachSplit.startsWith("-")) {
+
+                    textLine.setText(eachSplit);
+                    holder.allLines.addView(textLine);
+
+                    textLine.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                    textLine.setPadding(5, 5, 5, 5);
+                    textLine.setBackgroundColor(ctx.getResources().getColor(R.color.diffRemovedColor));
+
+                }
+                else {
+
+                    if(eachSplit.length() > 0) {
+                        textLine.setText(eachSplit);
+                        holder.allLines.addView(textLine);
+
+                        textLine.setTextColor(ctx.getResources().getColor(R.color.colorPrimary));
+                        textLine.setPadding(5, 5, 5, 5);
+                        textLine.setBackgroundColor(ctx.getResources().getColor(R.color.white));
+                    }
+
+                }
+
+            }
+
             holder.fileName.setText(data.getFileName());
             if(!data.getFileInfo().equals("")) {
                 holder.fileInfo.setText(ctx.getResources().getString(R.string.fileDiffInfoChanges, data.getFileInfo()));
@@ -80,7 +125,6 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
             else {
                 holder.fileInfo.setVisibility(View.GONE);
             }
-            holder.fileContents.setText(data.getFileContents());
 
         }
 

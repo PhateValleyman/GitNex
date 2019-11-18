@@ -4,7 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/singleDiffView"
-    android:padding="5dp"
+    android:paddingStart="2dp"
+    android:paddingEnd="2dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
@@ -31,22 +34,31 @@
     <HorizontalScrollView
         android:id="@+id/fileContentsView"
         android:layout_width="match_parent"
-        android:background="@color/white"
+        android:fillViewport="true"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/fileContents"
+        <LinearLayout
+            android:id="@+id/allLinesLayout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:paddingTop="5dp"
-            android:paddingBottom="15dp"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:background="@color/white" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+        </LinearLayout>
 
     </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/fileContents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="15dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:visibility="gone"
+        android:background="@color/white" />
 
     <ImageView
         android:id="@+id/fileImage"

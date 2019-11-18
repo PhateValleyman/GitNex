@@ -534,6 +534,7 @@
     <string name="editPrNavHeader">Edit Pull Request #%1$s</string>
     <string name="editPrSuccessMessage">Pull Request updated</string>
     <string name="fileDiffViewHeader">%1$s Files Changed</string>
+    <string name="fileDiffViewHeaderSingle">%1$s File Changed</string>
     <string name="fileDiffInfoChanges" translatable="false">-%1$s</string>
     <string name="openFileDiffText">Files Changed</string>
 

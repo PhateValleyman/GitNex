@@ -122,6 +122,7 @@ public class FileDiffActivity extends AppCompatActivity {
 
                                     String fileContentsFinalWithBlankLines = fileContentsFinal.replaceAll( ".*@@.*", "" );
                                     String fileContentsFinalWithoutBlankLines = fileContentsFinal.replaceAll( ".*@@.*(\r?\n|\r)?", "" );
+                                    fileContentsFinalWithoutBlankLines = fileContentsFinalWithoutBlankLines.replaceAll( ".*\\ No newline at end of file.*(\r?\n|\r)?", "" );
 
                                     fileContentsArray.add(new FileDiffView(fileNameFinal, appUtil.imageExtension(fileExtension), fileInfoFinal, fileContentsFinalWithoutBlankLines));
                                 }
@@ -146,7 +147,12 @@ public class FileDiffActivity extends AppCompatActivity {
                         }
 
                         int filesCount = fileContentsArray.size();
-                        toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)));
+                        if(filesCount > 1) {
+                            toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)));
+                        }
+                        else {
+                            toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
+                        }
 
                         FilesDiffAdapter adapter = new FilesDiffAdapter(fileContentsArray, getApplicationContext());
                         mRecyclerView.setAdapter(adapter);
