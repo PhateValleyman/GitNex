@@ -173,12 +173,11 @@ public class MergePullRequestActivity extends BaseActivity {
         }
 
         disableProcessButton();
-        String doWhat = "merge";
-        mergeFunction(doWhat, mergePRDT);
+        mergeFunction(MergePullRequest.Mode.Merge, mergePRDT);
 
     }
 
-    private void mergeFunction(String doWhat, String mergePRDT) {
+    private void mergeFunction(MergePullRequest.Mode mode, String mergePRDT) {
 
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
@@ -191,7 +190,7 @@ public class MergePullRequestActivity extends BaseActivity {
         final String repoName = parts[1];
         final int prIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-        MergePullRequest mergePR = new MergePullRequest(doWhat, mergePRDT, null);
+        MergePullRequest mergePR = new MergePullRequest(mode, mergePRDT, null);
 
         Call<ResponseBody> call = RetrofitClient
                 .getInstance(instanceUrl, getApplicationContext())
