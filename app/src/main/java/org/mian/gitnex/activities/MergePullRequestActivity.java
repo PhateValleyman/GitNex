@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
@@ -24,6 +25,8 @@ import org.mian.gitnex.models.MergePullRequest;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.List;
+import java.util.Objects;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +44,7 @@ public class MergePullRequestActivity extends BaseActivity {
     final Context ctx = this;
 
     private SocialAutoCompleteTextView mergePR;
+    private Spinner mergeModeSpinner;
     private ArrayAdapter<Mention> defaultMentionAdapter;
     private Button mergeButton;
 
@@ -57,6 +61,10 @@ public class MergePullRequestActivity extends BaseActivity {
         TinyDB tinyDb = new TinyDB(getApplicationContext());
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        mergeModeSpinner = findViewById(R.id.mergeSpinner);
+        final ArrayAdapter<MergePullRequest.Mode> adapterModes = new ArrayAdapter<>(Objects.requireNonNull(getApplicationContext()), R.layout.spinner_item, MergePullRequest.Mode.values());
+        mergeModeSpinner.setAdapter(adapterModes);
 
         mergePR = findViewById(R.id.mergePR);
         mergePR.setShowSoftInputOnFocus(true);
@@ -173,7 +181,8 @@ public class MergePullRequestActivity extends BaseActivity {
         }
 
         disableProcessButton();
-        mergeFunction(MergePullRequest.Mode.Merge, mergePRDT);
+        MergePullRequest.Mode mode = (MergePullRequest.Mode) mergeModeSpinner.getSelectedItem();
+        mergeFunction(mode, mergePRDT);
 
     }
 
