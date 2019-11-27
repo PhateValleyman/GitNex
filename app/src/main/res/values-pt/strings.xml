@@ -71,13 +71,13 @@
     <string name="emptyFieldPassword">A senha é necessária</string>
     <string name="checkNetConnection">Não é possível acessar a rede, por favor, verifique sua conexão com a Internet</string>
     <string name="repoNameErrorEmpty">Nome do repositório está vazio</string>
-    <string name="repoNameErrorInvalid">O nome do repositório não é válido. [um&#8211;z A&#8211;Z 0&#8211;char@@9 &#8211; _]</string>
+    <string name="repoNameErrorInvalid">O nome do repositório não é válido. [um&#8211;z A&#8211;Z 0&#8211;9 &#8211; _]</string>
     <string name="repoDescError">Descrição do repositório excede o limite máximo de 255 caracteres</string>
     <string name="repoCreated">Repositório criado com êxito</string>
     <string name="repoCreatedError">Algo deu errado, por favor, tente de novo</string>
     <string name="repoExistsError">Um repositório com este nome já existe sob o proprietário selecionado</string>
     <string name="orgNameErrorEmpty">O nome da organização está vazio</string>
-    <string name="orgNameErrorInvalid">O nome da organização não é válido, [&#8211;z A&#8211;Z 0&#8211;char@@9 &#8211; _]</string>
+    <string name="orgNameErrorInvalid">O nome da organização não é válido, [&#8211;z A&#8211;Z 0&#8211;9 &#8211; _]</string>
     <string name="orgDescError">Descrição da organização excede o limite máximo de 255 caracteres</string>
     <string name="orgCreated">Organização criada com sucesso</string>
     <string name="orgCreatedError">Algo deu errado, por favor, tente de novo</string>
@@ -156,7 +156,7 @@
     <string name="newMilestoneDescription">Descrição</string>
     <string name="newMilestoneDueDate">Data Limite</string>
     <string name="milestoneNameErrorEmpty">Título da meta está vazio</string>
-    <string name="milestoneNameErrorInvalid">Título da meta não é válido. [um&#8211;z A&#8211;Z 0&#8211;char@@9 &#8211; _]</string>
+    <string name="milestoneNameErrorInvalid">Título da meta não é válido. [um&#8211;z A&#8211;Z 0&#8211;9 &#8211; _]</string>
     <string name="milestoneDescError">Descrição da meta excede o limite máximo de 255 caracteres</string>
     <string name="milestoneCreated">Meta criada com sucesso</string>
     <string name="milestoneCreatedError">Algo deu errado, por favor, tente de novo</string>
