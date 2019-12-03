@@ -17,7 +17,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * Author M M Arif ?
+ * Template Author com.github.kcochibili
+ * Author M M Arif
  */
 
 public class TinyDB {
