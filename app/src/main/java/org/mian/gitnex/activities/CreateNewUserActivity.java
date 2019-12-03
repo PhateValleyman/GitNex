@@ -1,9 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -13,6 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -22,19 +22,27 @@ import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+
 /**
  * Author M M Arif
  */
 
 public class CreateNewUserActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     private View.OnClickListener onClickListener;
     private EditText fullName;
     private EditText userUserName;
     private EditText userEmail;
     private EditText userPassword;
     private Button createUserButton;
-    final Context ctx = this;
+    private View.OnClickListener createNewUserListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            processCreateNewUser();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +62,7 @@ public class CreateNewUserActivity extends AppCompatActivity {
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             disableProcessButton();
 
@@ -80,35 +88,35 @@ public class CreateNewUserActivity extends AppCompatActivity {
         String newUserEmail = userEmail.getText().toString().trim();
         String newUserPassword = userPassword.getText().toString();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(newFullName.equals("") || newUserName.equals("") | newUserEmail.equals("") || newUserPassword.equals("")) {
+        if (newFullName.equals("") || newUserName.equals("") | newUserEmail.equals("") || newUserPassword.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.emptyFields));
             return;
 
         }
 
-        if(!appUtil.checkStrings(newFullName)) {
+        if (!appUtil.checkStrings(newFullName)) {
 
             Toasty.info(getApplicationContext(), getString(R.string.userInvalidFullName));
             return;
 
         }
 
-        if(!appUtil.checkStringsWithAlphaNumeric(newUserName)) {
+        if (!appUtil.checkStringsWithAlphaNumeric(newUserName)) {
 
             Toasty.info(getApplicationContext(), getString(R.string.userInvalidUserName));
             return;
 
         }
 
-        if(!Patterns.EMAIL_ADDRESS.matcher(newUserEmail).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(newUserEmail).matches()) {
 
             Toasty.info(getApplicationContext(), getString(R.string.userInvalidEmail));
             return;
@@ -136,14 +144,13 @@ public class CreateNewUserActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     Toasty.info(getApplicationContext(), getString(R.string.userCreatedText));
                     enableProcessButton();
                     finish();
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -151,26 +158,22 @@ public class CreateNewUserActivity extends AppCompatActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 403) {
+                } else if (response.code() == 403) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                }
-                else if(response.code() == 404) {
+                } else if (response.code() == 404) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                }
-                else if(response.code() == 422) {
+                } else if (response.code() == 422) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.userExistsError));
 
-                }
-                else {
+                } else {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.genericError));
@@ -188,12 +191,6 @@ public class CreateNewUserActivity extends AppCompatActivity {
 
     }
 
-    private View.OnClickListener createNewUserListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processCreateNewUser();
-        }
-    };
-
     private void initCloseListener() {
         onClickListener = new View.OnClickListener() {
             @Override
@@ -206,8 +203,8 @@ public class CreateNewUserActivity extends AppCompatActivity {
     private void disableProcessButton() {
 
         createUserButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         createUserButton.setBackground(shape);
 
@@ -216,8 +213,8 @@ public class CreateNewUserActivity extends AppCompatActivity {
     private void enableProcessButton() {
 
         createUserButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         createUserButton.setBackground(shape);
 

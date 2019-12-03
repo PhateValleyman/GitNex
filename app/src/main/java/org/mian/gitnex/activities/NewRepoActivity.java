@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +13,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -24,8 +26,10 @@ import org.mian.gitnex.models.OrgOwner;
 import org.mian.gitnex.models.OrganizationRepository;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -35,16 +39,20 @@ import retrofit2.Callback;
 
 public class NewRepoActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     public ImageView closeActivity;
+    List<OrgOwner> orgsList = new ArrayList<>();
     private View.OnClickListener onClickListener;
     private Spinner spinner;
     private Button createRepo;
     private EditText repoName;
     private EditText repoDesc;
     private CheckBox repoAccess;
-    final Context ctx = this;
-
-    List<OrgOwner> orgsList = new ArrayList<>();
+    private View.OnClickListener createRepoListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            processNewRepo();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,24 +93,17 @@ public class NewRepoActivity extends AppCompatActivity {
         createRepo = findViewById(R.id.createNewRepoButton);
         disableProcessButton();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             disableProcessButton();
 
-        }
-        else {
+        } else {
 
             createRepo.setOnClickListener(createRepoListener);
 
         }
 
     }
-
-    private View.OnClickListener createRepoListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewRepo();
-        }
-    };
 
     private void processNewRepo() {
 
@@ -118,14 +119,14 @@ public class NewRepoActivity extends AppCompatActivity {
         String repoOwner = spinner.getSelectedItem().toString();
         boolean newRepoAccess = repoAccess.isChecked();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(!newRepoDesc.equals("")) {
+        if (!newRepoDesc.equals("")) {
             if (appUtil.charactersLength(newRepoDesc) > 255) {
 
                 Toasty.info(getApplicationContext(), getString(R.string.repoDescError));
@@ -134,17 +135,15 @@ public class NewRepoActivity extends AppCompatActivity {
             }
         }
 
-        if(newRepoName.equals("")) {
+        if (newRepoName.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.repoNameErrorEmpty));
 
-        }
-        else if(!appUtil.checkStrings(newRepoName)) {
+        } else if (!appUtil.checkStrings(newRepoName)) {
 
             Toasty.info(getApplicationContext(), getString(R.string.repoNameErrorInvalid));
 
-        }
-        else {
+        } else {
 
             //Log.i("repoOwner", String.valueOf(repoOwner));
             disableProcessButton();
@@ -159,15 +158,14 @@ public class NewRepoActivity extends AppCompatActivity {
         OrganizationRepository createRepository = new OrganizationRepository(true, repoDesc, null, null, repoName, isPrivate, "Default");
 
         Call<OrganizationRepository> call;
-        if(repoOwner.equals(loginUid)) {
+        if (repoOwner.equals(loginUid)) {
 
             call = RetrofitClient
                     .getInstance(instanceUrl, getApplicationContext())
                     .getApiInterface()
                     .createNewUserRepository(token, createRepository);
 
-        }
-        else {
+        } else {
 
             call = RetrofitClient
                     .getInstance(instanceUrl, getApplicationContext())
@@ -181,15 +179,14 @@ public class NewRepoActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<OrganizationRepository> call, @NonNull retrofit2.Response<OrganizationRepository> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     TinyDB tinyDb = new TinyDB(getApplicationContext());
                     tinyDb.putBoolean("repoCreated", true);
                     Toasty.info(getApplicationContext(), getString(R.string.repoCreated));
                     enableProcessButton();
                     finish();
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -197,14 +194,12 @@ public class NewRepoActivity extends AppCompatActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 409) {
+                } else if (response.code() == 409) {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.repoExistsError));
 
-                }
-                else {
+                } else {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.repoCreatedError));
@@ -234,14 +229,14 @@ public class NewRepoActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<List<OrgOwner>> call, @NonNull retrofit2.Response<List<OrgOwner>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         List<OrgOwner> orgsList_ = response.body();
 
                         orgsList.add(new OrgOwner(userLogin));
                         assert orgsList_ != null;
-                        if(orgsList_.size() > 0) {
+                        if (orgsList_.size() > 0) {
                             for (int i = 0; i < orgsList_.size(); i++) {
 
                                 OrgOwner data = new OrgOwner(
@@ -260,8 +255,7 @@ public class NewRepoActivity extends AppCompatActivity {
                         enableProcessButton();
 
                     }
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -294,8 +288,8 @@ public class NewRepoActivity extends AppCompatActivity {
     private void disableProcessButton() {
 
         createRepo.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         createRepo.setBackground(shape);
 
@@ -304,8 +298,8 @@ public class NewRepoActivity extends AppCompatActivity {
     private void enableProcessButton() {
 
         createRepo.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         createRepo.setBackground(shape);
 

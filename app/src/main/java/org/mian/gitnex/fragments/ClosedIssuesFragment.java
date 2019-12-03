@@ -13,6 +13,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.ClosedIssuesAdapter;
 import org.mian.gitnex.clients.IssuesService;
@@ -22,15 +30,11 @@ import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -102,7 +106,7 @@ public class ClosedIssuesFragment extends Fragment {
                 recyclerViewClosed.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(issuesListClosed.size() == 10 || pageSize == 10) {
+                        if (issuesListClosed.size() == 10 || pageSize == 10) {
 
                             int page = (issuesListClosed.size() + 10) / 10;
                             loadMore(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, page, issueState);
@@ -142,7 +146,7 @@ public class ClosedIssuesFragment extends Fragment {
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("resumeClosedIssues")) {
+        if (tinyDb.getBoolean("resumeClosedIssues")) {
 
             loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, issueState);
             tinyDb.putBoolean("resumeClosedIssues", false);
@@ -153,32 +157,30 @@ public class ClosedIssuesFragment extends Fragment {
 
     private void loadInitial(String token, String repoOwner, String repoName, String issueState) {
 
-        Call<List<Issues>> call = apiClosed.getClosedIssues(token, repoOwner, repoName,  1, issueState);
+        Call<List<Issues>> call = apiClosed.getClosedIssues(token, repoOwner, repoName, 1, issueState);
 
         call.enqueue(new Callback<List<Issues>>() {
 
             @Override
             public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
 
                     assert response.body() != null;
-                    if(response.body().size() > 0) {
+                    if (response.body().size() > 0) {
 
                         issuesListClosed.clear();
                         issuesListClosed.addAll(response.body());
                         adapterClosed.notifyDataChanged();
                         noDataIssuesClosed.setVisibility(View.GONE);
 
-                    }
-                    else {
+                    } else {
                         issuesListClosed.clear();
                         adapterClosed.notifyDataChanged();
                         noDataIssuesClosed.setVisibility(View.VISIBLE);
                     }
                     mProgressBarClosed.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     Log.e(TAG, String.valueOf(response.code()));
                 }
 
@@ -193,7 +195,7 @@ public class ClosedIssuesFragment extends Fragment {
 
     }
 
-    private void loadMore(String token, String repoOwner, String repoName, int page, String issueState){
+    private void loadMore(String token, String repoOwner, String repoName, int page, String issueState) {
 
         //add loading progress view
         issuesListClosed.add(new Issues("load"));
@@ -206,21 +208,20 @@ public class ClosedIssuesFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
                     //remove loading view
-                    issuesListClosed.remove(issuesListClosed.size()-1);
+                    issuesListClosed.remove(issuesListClosed.size() - 1);
 
                     List<Issues> result = response.body();
 
                     assert result != null;
-                    if(result.size() > 0) {
+                    if (result.size() > 0) {
 
                         pageSize = result.size();
                         issuesListClosed.addAll(result);
 
-                    }
-                    else {
+                    } else {
 
                         Toasty.info(context, getString(R.string.noMoreData));
                         adapterClosed.setMoreDataAvailable(false);
@@ -229,8 +230,7 @@ public class ClosedIssuesFragment extends Fragment {
 
                     adapterClosed.notifyDataChanged();
 
-                }
-                else {
+                } else {
 
                     Log.e(TAG, String.valueOf(response.code()));
 

@@ -11,8 +11,7 @@ public class FileDiffView {
     private String fileInfo;
     private String fileContents;
 
-    public FileDiffView(String fileName, boolean fileType, String fileInfo, String fileContents)
-    {
+    public FileDiffView(String fileName, boolean fileType, String fileInfo, String fileContents) {
 
         this.fileName = fileName;
         this.fileType = fileType;

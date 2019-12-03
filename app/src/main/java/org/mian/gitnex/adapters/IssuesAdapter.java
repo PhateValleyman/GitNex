@@ -13,7 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.helpers.ClickListener;
@@ -22,13 +27,12 @@ import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.TinyDB;
 import org.ocpsoft.prettytime.PrettyTime;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Author M M Arif
@@ -36,12 +40,42 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
-    private Context context;
     private final int TYPE_LOAD = 0;
+    private Context context;
     private List<Issues> issuesList;
     private List<Issues> issuesListFull;
     private OnLoadMoreListener loadMoreListener;
     private boolean isLoading = false, isMoreDataAvailable = true;
+    private Filter issuesFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Issues> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(issuesList);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (Issues item : issuesList) {
+                    if (item.getTitle().toLowerCase().contains(filterPattern) || item.getBody().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            issuesList.clear();
+            issuesList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public IssuesAdapter(Context context, List<Issues> issuesListMain) {
 
@@ -57,11 +91,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        if(viewType == TYPE_LOAD){
-            return new IssuesHolder(inflater.inflate(R.layout.repo_detail_issues_list, parent,false));
-        }
-        else {
-            return new LoadHolder(inflater.inflate(R.layout.row_load,parent,false));
+        if (viewType == TYPE_LOAD) {
+            return new IssuesHolder(inflater.inflate(R.layout.repo_detail_issues_list, parent, false));
+        } else {
+            return new LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
         }
 
     }
@@ -69,16 +102,16 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        if(position >= getItemCount()-1 && isMoreDataAvailable && !isLoading && loadMoreListener!=null) {
+        if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
 
             isLoading = true;
             loadMoreListener.onLoadMore();
 
         }
 
-        if(getItemViewType(position) == TYPE_LOAD) {
+        if (getItemViewType(position) == TYPE_LOAD) {
 
-            ((IssuesHolder)holder).bindData(issuesList.get(position));
+            ((IssuesHolder) holder).bindData(issuesList.get(position));
 
         }
 
@@ -87,10 +120,9 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemViewType(int position) {
 
-        if(issuesList.get(position).getTitle() != null) {
+        if (issuesList.get(position).getTitle() != null) {
             return TYPE_LOAD;
-        }
-        else {
+        } else {
             return 1;
         }
 
@@ -100,6 +132,44 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public int getItemCount() {
 
         return issuesList.size();
+
+    }
+
+    public void setMoreDataAvailable(boolean moreDataAvailable) {
+
+        isMoreDataAvailable = moreDataAvailable;
+
+    }
+
+    public void notifyDataChanged() {
+
+        notifyDataSetChanged();
+        isLoading = false;
+
+    }
+
+    public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+
+        this.loadMoreListener = loadMoreListener;
+
+    }
+
+    @Override
+    public Filter getFilter() {
+        return issuesFilter;
+    }
+
+    public interface OnLoadMoreListener {
+
+        void onLoadMore();
+
+    }
+
+    static class LoadHolder extends RecyclerView.ViewHolder {
+
+        LoadHolder(View itemView) {
+            super(itemView);
+        }
 
     }
 
@@ -162,13 +232,13 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
         @SuppressLint("SetTextI18n")
-        void bindData(Issues issuesModel){
+        void bindData(Issues issuesModel) {
 
             final TinyDB tinyDb = new TinyDB(context);
             final String locale = tinyDb.getString("locale");
             final String timeFormat = tinyDb.getString("dateFormat");
 
-            if(issuesModel.getPull_request() != null) {
+            if (issuesModel.getPull_request() != null) {
                 if (!issuesModel.getPull_request().isMerged()) {
                     relativeLayoutFrame.setVisibility(View.GONE);
                     relativeLayoutFrame.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
@@ -218,74 +288,5 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
     }
-
-    static class LoadHolder extends RecyclerView.ViewHolder {
-
-        LoadHolder(View itemView) {
-            super(itemView);
-        }
-
-    }
-
-    public void setMoreDataAvailable(boolean moreDataAvailable) {
-
-        isMoreDataAvailable = moreDataAvailable;
-
-    }
-
-    public void notifyDataChanged() {
-
-        notifyDataSetChanged();
-        isLoading = false;
-
-    }
-
-    public interface OnLoadMoreListener {
-
-        void onLoadMore();
-
-    }
-
-    public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
-
-        this.loadMoreListener = loadMoreListener;
-
-    }
-
-    @Override
-    public Filter getFilter() {
-        return issuesFilter;
-    }
-
-    private Filter issuesFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<Issues> filteredList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(issuesList);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (Issues item : issuesList) {
-                    if (item.getTitle().toLowerCase().contains(filterPattern) || item.getBody().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            issuesList.clear();
-            issuesList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
 
 }

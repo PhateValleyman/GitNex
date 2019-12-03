@@ -23,6 +23,42 @@ public class IssueComments {
         this.body = body;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getHtml_url() {
+        return html_url;
+    }
+
+    public String getPull_request_url() {
+        return pull_request_url;
+    }
+
+    public String getIssue_url() {
+        return issue_url;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public Date getCreated_date() {
+        return created_date;
+    }
+
+    public userObject getUser() {
+        return user;
+    }
+
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
     public class userObject {
 
         private int id;
@@ -61,41 +97,5 @@ public class IssueComments {
             return username;
         }
 
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getHtml_url() {
-        return html_url;
-    }
-
-    public String getPull_request_url() {
-        return pull_request_url;
-    }
-
-    public String getIssue_url() {
-        return issue_url;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public Date getCreated_date() {
-        return created_date;
-    }
-
-    public userObject getUser() {
-        return user;
-    }
-
-    public Date getUpdated_at() {
-        return updated_at;
     }
 }

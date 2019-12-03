@@ -4,7 +4,9 @@ import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+
 import org.mian.gitnex.R;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,8 +22,7 @@ public class UserMentions {
         Pattern pattern = Pattern.compile("@\\w+");
         Matcher matcher = pattern.matcher(bodyWithMD);
 
-        while (matcher.find())
-        {
+        while (matcher.find()) {
 
             int indexStart = String.valueOf(bodyWithMD).indexOf(matcher.group());
             int indexEnd = indexStart + matcher.group().length();

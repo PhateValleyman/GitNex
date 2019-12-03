@@ -14,6 +14,13 @@ public class NewFile {
     private authorObject author;
     private committerObject committer;
 
+    public NewFile(String branch, String content, String message, String new_branch) {
+        this.branch = branch;
+        this.content = content;
+        this.message = message;
+        this.new_branch = new_branch;
+    }
+
     public String getBranch() {
         return branch;
     }
@@ -88,12 +95,5 @@ public class NewFile {
         public void setName(String name) {
             this.name = name;
         }
-    }
-
-    public NewFile(String branch, String content, String message, String new_branch) {
-        this.branch = branch;
-        this.content = content;
-        this.message = message;
-        this.new_branch = new_branch;
     }
 }

@@ -6,12 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.RepositoryActions;
 import org.mian.gitnex.util.TinyDB;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Author M M Arif
@@ -48,7 +51,7 @@ public class RepoBottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
 
-        if(tinyDb.getBoolean("hasIssues")) {
+        if (tinyDb.getBoolean("hasIssues")) {
             createIssue.setVisibility(View.VISIBLE);
             createIssue.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -57,8 +60,7 @@ public class RepoBottomSheetFragment extends BottomSheetDialogFragment {
                     dismiss();
                 }
             });
-        }
-        else {
+        } else {
             createIssue.setVisibility(View.GONE);
         }
 
@@ -102,7 +104,7 @@ public class RepoBottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
 
-        if(tinyDb.getInt("repositoryStarStatus") == 204) { // star a repo
+        if (tinyDb.getInt("repositoryStarStatus") == 204) { // star a repo
 
             starRepository.setVisibility(View.GONE);
 
@@ -117,8 +119,7 @@ public class RepoBottomSheetFragment extends BottomSheetDialogFragment {
                 }
             });
 
-        }
-        else if(tinyDb.getInt("repositoryStarStatus") == 404) {
+        } else if (tinyDb.getInt("repositoryStarStatus") == 404) {
 
             unStarRepository.setVisibility(View.GONE);
 
@@ -135,7 +136,7 @@ public class RepoBottomSheetFragment extends BottomSheetDialogFragment {
 
         }
 
-        if(tinyDb.getBoolean("repositoryWatchStatus")) { // watch a repo
+        if (tinyDb.getBoolean("repositoryWatchStatus")) { // watch a repo
 
             watchRepository.setVisibility(View.GONE);
 
@@ -150,8 +151,7 @@ public class RepoBottomSheetFragment extends BottomSheetDialogFragment {
                 }
             });
 
-        }
-        else {
+        } else {
 
             unWatchRepository.setVisibility(View.GONE);
 
@@ -171,10 +171,6 @@ public class RepoBottomSheetFragment extends BottomSheetDialogFragment {
         return v;
     }
 
-    public interface BottomSheetListener {
-        void onButtonClicked(String text);
-    }
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -185,6 +181,10 @@ public class RepoBottomSheetFragment extends BottomSheetDialogFragment {
             throw new ClassCastException(context.toString()
                     + " must implement BottomSheetListener");
         }
+    }
+
+    public interface BottomSheetListener {
+        void onButtonClicked(String text);
     }
 
 }

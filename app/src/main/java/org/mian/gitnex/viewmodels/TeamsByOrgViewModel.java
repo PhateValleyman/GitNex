@@ -2,13 +2,17 @@ package org.mian.gitnex.viewmodels;
 
 import android.content.Context;
 import android.util.Log;
-import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.models.Teams;
-import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.models.Teams;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,14 +24,6 @@ import retrofit2.Response;
 public class TeamsByOrgViewModel extends ViewModel {
 
     private static MutableLiveData<List<Teams>> teamsList;
-
-    public LiveData<List<Teams>> getTeamsByOrg(String instanceUrl, String token, String orgName, Context ctx) {
-
-        teamsList = new MutableLiveData<>();
-        loadTeamsByOrgList(instanceUrl, token, orgName, ctx);
-
-        return teamsList;
-    }
 
     public static void loadTeamsByOrgList(String instanceUrl, String token, String orgName, Context ctx) {
 
@@ -41,8 +37,8 @@ public class TeamsByOrgViewModel extends ViewModel {
             @Override
             public void onResponse(@NonNull Call<List<Teams>> call, @NonNull Response<List<Teams>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
                         teamsList.postValue(response.body());
 
                     }
@@ -57,6 +53,14 @@ public class TeamsByOrgViewModel extends ViewModel {
 
         });
 
+    }
+
+    public LiveData<List<Teams>> getTeamsByOrg(String instanceUrl, String token, String orgName, Context ctx) {
+
+        teamsList = new MutableLiveData<>();
+        loadTeamsByOrgList(instanceUrl, token, orgName, ctx);
+
+        return teamsList;
     }
 
 }

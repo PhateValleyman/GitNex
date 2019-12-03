@@ -6,13 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.UserInfo;
+
 import java.util.List;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Author M M Arif
@@ -22,22 +26,6 @@ public class ProfileFollowersAdapter extends RecyclerView.Adapter<ProfileFollowe
 
     private List<UserInfo> followersList;
     private Context mCtx;
-
-    static class FollowersViewHolder extends RecyclerView.ViewHolder {
-
-        private ImageView userAvatar;
-        private TextView userFullName;
-        private TextView userName;
-
-        private FollowersViewHolder(View itemView) {
-            super(itemView);
-
-            userAvatar = itemView.findViewById(R.id.userAvatar);
-            userFullName = itemView.findViewById(R.id.userFullName);
-            userName = itemView.findViewById(R.id.userName);
-
-        }
-    }
 
     public ProfileFollowersAdapter(Context mCtx, List<UserInfo> followersListMain) {
         this.mCtx = mCtx;
@@ -56,11 +44,10 @@ public class ProfileFollowersAdapter extends RecyclerView.Adapter<ProfileFollowe
 
         UserInfo currentItem = followersList.get(position);
 
-        if(!currentItem.getFullname().equals("")) {
+        if (!currentItem.getFullname().equals("")) {
             holder.userFullName.setText(currentItem.getFullname());
             holder.userName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getUsername()));
-        }
-        else {
+        } else {
             holder.userFullName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getUsername()));
             holder.userName.setVisibility(View.GONE);
         }
@@ -71,6 +58,22 @@ public class ProfileFollowersAdapter extends RecyclerView.Adapter<ProfileFollowe
     @Override
     public int getItemCount() {
         return followersList.size();
+    }
+
+    static class FollowersViewHolder extends RecyclerView.ViewHolder {
+
+        private ImageView userAvatar;
+        private TextView userFullName;
+        private TextView userName;
+
+        private FollowersViewHolder(View itemView) {
+            super(itemView);
+
+            userAvatar = itemView.findViewById(R.id.userAvatar);
+            userFullName = itemView.findViewById(R.id.userFullName);
+            userName = itemView.findViewById(R.id.userName);
+
+        }
     }
 
 }

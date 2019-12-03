@@ -1,14 +1,17 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.JsonElement;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -20,8 +23,10 @@ import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.models.UpdateIssueAssignee;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -31,11 +36,11 @@ import retrofit2.Callback;
 
 public class AddRemoveAssigneesActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     private ArrayList<MultiSelectModel> listOfCollaborators = new ArrayList<>();
     private ArrayList<Integer> issueAssigneesIds = new ArrayList<>();
     private Boolean assigneesFlag = false;
     private MultiSelectDialog multiSelectDialogAssignees;
-    final Context ctx = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,13 +79,13 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull final Call<List<Collaborators>> call, @NonNull final retrofit2.Response<List<Collaborators>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         final List<Collaborators> collaboratorsList_ = response.body();
 
                         assert collaboratorsList_ != null;
-                        if(collaboratorsList_.size() > 0) {
+                        if (collaboratorsList_.size() > 0) {
                             for (int i = 0; i < collaboratorsList_.size(); i++) {
 
                                 listOfCollaborators.add(new MultiSelectModel(collaboratorsList_.get(i).getId(), collaboratorsList_.get(i).getUsername().trim()));
@@ -99,7 +104,7 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
 
-                                if(response.code() == 200) {
+                                if (response.code() == 200) {
 
                                     Issues issueAssigneesList = response.body();
 
@@ -110,19 +115,18 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
 
                                                 issueAssigneesIds.add(issueAssigneesList.getAssignees().get(i).getId());
 
-                                                if(issueAssigneesList.getAssignees().get(i).getUsername().equals(loginUid)) {
+                                                if (issueAssigneesList.getAssignees().get(i).getUsername().equals(loginUid)) {
                                                     listOfCollaborators.add(new MultiSelectModel(issueAssigneesList.getAssignees().get(i).getId(), issueAssigneesList.getAssignees().get(i).getUsername().trim()));
                                                 }
 
                                             }
                                             assigneesFlag = true;
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         listOfCollaborators.add(new MultiSelectModel(tinyDb.getInt("userId"), loginUid));
                                     }
 
-                                    if(assigneesFlag) {
+                                    if (assigneesFlag) {
 
                                         multiSelectDialogAssignees = new MultiSelectDialog()
                                                 .title(getResources().getString(R.string.newIssueSelectAssigneesListTitle))
@@ -150,8 +154,7 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
                                                     }
                                                 });
 
-                                    }
-                                    else {
+                                    } else {
 
                                         multiSelectDialogAssignees = new MultiSelectDialog()
                                                 .title(getResources().getString(R.string.newIssueSelectAssigneesListTitle))
@@ -192,26 +195,22 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
                         });
                         // get current issue assignees
 
-                    }
-                    else if(response.code() == 401) {
+                    } else if (response.code() == 401) {
 
                         AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                                 getResources().getString(R.string.alertDialogTokenRevokedMessage),
                                 getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                                 getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                    }
-                    else if(response.code() == 403) {
+                    } else if (response.code() == 403) {
 
                         Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                    }
-                    else if(response.code() == 404) {
+                    } else if (response.code() == 404) {
 
                         Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                    }
-                    else {
+                    } else {
 
                         Toasty.info(getApplicationContext(), getString(R.string.genericError));
 
@@ -248,30 +247,26 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response2) {
 
-                if(response2.code() == 201) {
+                if (response2.code() == 201) {
 
                     Toasty.info(ctx, ctx.getString(R.string.assigneesUpdated));
 
-                }
-                else if(response2.code() == 401) {
+                } else if (response2.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response2.code() == 403) {
+                } else if (response2.code() == 403) {
 
                     Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                }
-                else if(response2.code() == 404) {
+                } else if (response2.code() == 404) {
 
                     Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                }
-                else {
+                } else {
 
                     Toasty.info(getApplicationContext(), getString(R.string.genericError));
 

@@ -8,10 +8,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.UserInfo;
+
 import java.util.List;
 
 /**
@@ -22,17 +25,6 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
 
     private List<UserInfo> teamMembersList;
     private Context mCtx;
-
-    private class ViewHolder {
-
-        private ImageView memberAvatar;
-        private TextView memberName;
-
-        ViewHolder(View v) {
-            memberAvatar  = v.findViewById(R.id.memberAvatar);
-            memberName  = v.findViewById(R.id.memberName);
-        }
-    }
 
     public TeamMembersByOrgAdapter(Context mCtx, List<UserInfo> membersListMain) {
         this.mCtx = mCtx;
@@ -65,8 +57,7 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
             finalView = LayoutInflater.from(mCtx).inflate(R.layout.members_by_team_by_org_list, null);
             viewHolder = new TeamMembersByOrgAdapter.ViewHolder(finalView);
             finalView.setTag(viewHolder);
-        }
-        else {
+        } else {
             viewHolder = (TeamMembersByOrgAdapter.ViewHolder) finalView.getTag();
         }
 
@@ -80,12 +71,22 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
         UserInfo currentItem = teamMembersList.get(position);
         Picasso.get().load(currentItem.getAvatar()).transform(new RoundedTransformation(8, 0)).resize(180, 180).centerCrop().into(viewHolder.memberAvatar);
 
-        if(!currentItem.getFullname().equals("")) {
+        if (!currentItem.getFullname().equals("")) {
             viewHolder.memberName.setText(currentItem.getFullname());
-        }
-        else {
+        } else {
             viewHolder.memberName.setText(currentItem.getLogin());
         }
 
+    }
+
+    private class ViewHolder {
+
+        private ImageView memberAvatar;
+        private TextView memberName;
+
+        ViewHolder(View v) {
+            memberAvatar = v.findViewById(R.id.memberAvatar);
+            memberName = v.findViewById(R.id.memberName);
+        }
     }
 }

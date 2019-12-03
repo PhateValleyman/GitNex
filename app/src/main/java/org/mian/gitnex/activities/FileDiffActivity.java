@@ -6,11 +6,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.apache.commons.io.FilenameUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.FilesDiffAdapter;
@@ -20,9 +22,11 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.FileDiffView;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,7 +73,7 @@ public class FileDiffActivity extends AppCompatActivity {
 
         mProgressBar.setVisibility(View.VISIBLE);
 
-        String fileDiffName = tinyDb.getString("issueNumber")+".diff";
+        String fileDiffName = tinyDb.getString("issueNumber") + ".diff";
 
         getFileContents(tinyDb.getString("instanceUrlWithProtocol"), repoOwner, repoName, fileDiffName);
 
@@ -97,11 +101,11 @@ public class FileDiffActivity extends AppCompatActivity {
 
                         String[] lines = response.body().string().split("diff");
 
-                        if(lines.length > 0) {
+                        if (lines.length > 0) {
 
                             for (int i = 1; i < lines.length; i++) {
 
-                                if(lines[i].contains("@@ -")) {
+                                if (lines[i].contains("@@ -")) {
 
                                     String[] level2nd = lines[i].split("@@ -"); // main content part of single diff view
 
@@ -112,7 +116,7 @@ public class FileDiffActivity extends AppCompatActivity {
                                     String fileInfoFinal = fileContents_[0];
                                     String fileContentsFinal = (fileContents_[1]);
 
-                                    if(level2nd.length > 2) {
+                                    if (level2nd.length > 2) {
                                         for (int j = 2; j < level2nd.length; j++) {
                                             fileContentsFinal += (level2nd[j]);
                                         }
@@ -120,13 +124,12 @@ public class FileDiffActivity extends AppCompatActivity {
 
                                     String fileExtension = FilenameUtils.getExtension(fileNameFinal);
 
-                                    String fileContentsFinalWithBlankLines = fileContentsFinal.replaceAll( ".*@@.*", "" );
-                                    String fileContentsFinalWithoutBlankLines = fileContentsFinal.replaceAll( ".*@@.*(\r?\n|\r)?", "" );
-                                    fileContentsFinalWithoutBlankLines = fileContentsFinalWithoutBlankLines.replaceAll( ".*\\ No newline at end of file.*(\r?\n|\r)?", "" );
+                                    String fileContentsFinalWithBlankLines = fileContentsFinal.replaceAll(".*@@.*", "");
+                                    String fileContentsFinalWithoutBlankLines = fileContentsFinal.replaceAll(".*@@.*(\r?\n|\r)?", "");
+                                    fileContentsFinalWithoutBlankLines = fileContentsFinalWithoutBlankLines.replaceAll(".*\\ No newline at end of file.*(\r?\n|\r)?", "");
 
                                     fileContentsArray.add(new FileDiffView(fileNameFinal, appUtil.imageExtension(fileExtension), fileInfoFinal, fileContentsFinalWithoutBlankLines));
-                                }
-                                else {
+                                } else {
 
                                     String[] getFileName = lines[i].split("--git a/");
 
@@ -134,12 +137,12 @@ public class FileDiffActivity extends AppCompatActivity {
                                     String getFileNameFinal = getFileName_[0].trim();
 
                                     String[] binaryFile = getFileName_[1].split("GIT binary patch");
-                                    String binaryFileRaw = binaryFile[1].substring(binaryFile[1].indexOf('\n')+1);
-                                    String binaryFileFinal = binaryFile[1].substring(binaryFileRaw.indexOf('\n')+1);
+                                    String binaryFileRaw = binaryFile[1].substring(binaryFile[1].indexOf('\n') + 1);
+                                    String binaryFileFinal = binaryFile[1].substring(binaryFileRaw.indexOf('\n') + 1);
 
                                     String fileExtension = FilenameUtils.getExtension(getFileNameFinal);
 
-                                    fileContentsArray.add(new FileDiffView(getFileNameFinal, appUtil.imageExtension(fileExtension),"", binaryFileFinal));
+                                    fileContentsArray.add(new FileDiffView(getFileNameFinal, appUtil.imageExtension(fileExtension), "", binaryFileFinal));
                                 }
 
                             }
@@ -147,10 +150,9 @@ public class FileDiffActivity extends AppCompatActivity {
                         }
 
                         int filesCount = fileContentsArray.size();
-                        if(filesCount > 1) {
+                        if (filesCount > 1) {
                             toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)));
-                        }
-                        else {
+                        } else {
                             toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
                         }
 
@@ -163,26 +165,22 @@ public class FileDiffActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(getApplicationContext(), getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 403) {
+                } else if (response.code() == 403) {
 
                     Toasty.info(getApplicationContext(), getApplicationContext().getString(R.string.authorizeError));
 
-                }
-                else if(response.code() == 404) {
+                } else if (response.code() == 404) {
 
                     Toasty.info(getApplicationContext(), getApplicationContext().getString(R.string.apiNotFound));
 
-                }
-                else {
+                } else {
 
                     Toasty.info(getApplicationContext(), getString(R.string.labelGeneralError));
 

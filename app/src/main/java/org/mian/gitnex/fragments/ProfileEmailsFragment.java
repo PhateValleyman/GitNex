@@ -2,6 +2,13 @@ package org.mian.gitnex.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -10,18 +17,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.ProfileEmailsAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.Emails;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.ProfileEmailsViewModel;
+
 import java.util.List;
 
 /**
@@ -30,13 +33,12 @@ import java.util.List;
 
 public class ProfileEmailsFragment extends Fragment {
 
+    private static String repoNameF = "param2";
+    private static String repoOwnerF = "param1";
     private ProgressBar mProgressBar;
     private ProfileEmailsAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataEmails;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
-
     private String repoName;
     private String repoOwner;
 
@@ -115,11 +117,10 @@ public class ProfileEmailsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Emails> emailsListMain) {
                 adapter = new ProfileEmailsAdapter(getContext(), emailsListMain);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataEmails.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mRecyclerView.setAdapter(adapter);
                     noDataEmails.setVisibility(View.VISIBLE);

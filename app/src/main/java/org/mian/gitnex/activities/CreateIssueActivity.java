@@ -1,10 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -19,15 +14,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.JsonElement;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.MultiSelectDialog;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.CreateIssue;
 import org.mian.gitnex.models.Labels;
@@ -35,12 +36,15 @@ import org.mian.gitnex.models.Milestones;
 import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.helpers.Toasty;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -48,9 +52,13 @@ import java.util.Objects;
 
 public class CreateIssueActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private View.OnClickListener onClickListener;
+    final Context ctx = this;
     MultiSelectDialog multiSelectDialog;
     MultiSelectDialog multiSelectDialogLabels;
+    List<Milestones> milestonesList = new ArrayList<>();
+    ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
+    ArrayList<MultiSelectModel> listOfLabels = new ArrayList<>();
+    private View.OnClickListener onClickListener;
     private TextView assigneesList;
     private TextView newIssueLabels;
     private TextView newIssueDueDate;
@@ -61,11 +69,6 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private TextView labelsIdHolder;
     private boolean assigneesFlag;
     private boolean labelsFlag;
-    final Context ctx = this;
-
-    List<Milestones> milestonesList = new ArrayList<>();
-    ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
-    ArrayList<MultiSelectModel> listOfLabels= new ArrayList<>();
     private ArrayAdapter<Mention> defaultMentionAdapter;
 
     @Override
@@ -114,11 +117,11 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
 
         disableProcessButton();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             createNewIssueButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(8);
             shape.setColor(getResources().getColor(R.color.hintColor));
             createNewIssueButton.setBackground(shape);
 
@@ -152,7 +155,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         String newIssueDueDateForm = newIssueDueDate.getText().toString();
         String newIssueLabelsIdHolderForm = labelsIdHolder.getText().toString();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
@@ -194,8 +197,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
                 integers[i] = Integer.parseInt(items[i]);
             }
 
-        }
-        else {
+        } else {
             integers = new int[0];
         }
 
@@ -232,7 +234,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
                     assert response.body() != null;
                     String fullName = "";
                     for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
+                        if (!response.body().get(i).getFull_name().equals("")) {
                             fullName = response.body().get(i).getFull_name();
                         }
                         defaultMentionAdapter.add(
@@ -271,8 +273,8 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response2) {
 
-                if(response2.isSuccessful()) {
-                    if(response2.code() == 201) {
+                if (response2.isSuccessful()) {
+                    if (response2.code() == 201) {
 
                         //Log.i("isSuccessful1", String.valueOf(response2.body()));
                         TinyDB tinyDb = new TinyDB(getApplicationContext());
@@ -284,8 +286,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
 
                     }
 
-                }
-                else if(response2.code() == 401) {
+                } else if (response2.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -293,8 +294,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+                } else {
 
                     Toasty.info(getApplicationContext(), getString(R.string.issueCreatedError));
                     enableProcessButton();
@@ -335,18 +335,18 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull retrofit2.Response<List<Milestones>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         List<Milestones> milestonesList_ = response.body();
 
-                        milestonesList.add(new Milestones(0,"No milestone"));
+                        milestonesList.add(new Milestones(0, "No milestone"));
                         assert milestonesList_ != null;
-                        if(milestonesList_.size() > 0) {
+                        if (milestonesList_.size() > 0) {
                             for (int i = 0; i < milestonesList_.size(); i++) {
 
                                 //String mStone = getString(R.string.spinnerMilestoneText, milestonesList_.get(i).getTitle(), milestonesList_.get(i).getState());
-                                if(milestonesList_.get(i).getState().equals(getString(R.string.issueStatusOpen))) {
+                                if (milestonesList_.get(i).getState().equals(getString(R.string.issueStatusOpen))) {
                                     Milestones data = new Milestones(
                                             milestonesList_.get(i).getId(),
                                             milestonesList_.get(i).getTitle()
@@ -389,13 +389,13 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull retrofit2.Response<List<Collaborators>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         List<Collaborators> assigneesList_ = response.body();
 
                         assert assigneesList_ != null;
-                        if(assigneesList_.size() > 0) {
+                        if (assigneesList_.size() > 0) {
                             for (int i = 0; i < assigneesList_.size(); i++) {
 
                                 /*String assigneesCopy;
@@ -459,13 +459,13 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         List<Labels> labelsList_ = response.body();
 
                         assert labelsList_ != null;
-                        if(labelsList_.size() > 0) {
+                        if (labelsList_.size() > 0) {
                             for (int i = 0; i < labelsList_.size(); i++) {
 
                                 listOfLabels.add(new MultiSelectModel(labelsList_.get(i).getId(), labelsList_.get(i).getName().trim()));
@@ -514,22 +514,18 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         if (v == assigneesList) {
-            if(assigneesFlag) {
+            if (assigneesFlag) {
                 multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
-            }
-            else {
+            } else {
                 Toasty.info(getApplicationContext(), getResources().getString(R.string.noAssigneesFound));
             }
-        }
-        else if (v == newIssueLabels) {
-            if(labelsFlag) {
+        } else if (v == newIssueLabels) {
+            if (labelsFlag) {
                 multiSelectDialogLabels.show(getSupportFragmentManager(), "multiSelectDialogLabels");
-            }
-            else {
+            } else {
                 Toasty.info(getApplicationContext(), getResources().getString(R.string.noLabelsFound));
             }
-        }
-        else if (v == newIssueDueDate) {
+        } else if (v == newIssueDueDate) {
 
             final Calendar c = Calendar.getInstance();
             int mYear = c.get(Calendar.YEAR);
@@ -548,8 +544,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
-        }
-        else if(v == createNewIssueButton) {
+        } else if (v == createNewIssueButton) {
             processNewIssue();
         }
 
@@ -558,8 +553,8 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private void disableProcessButton() {
 
         createNewIssueButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         createNewIssueButton.setBackground(shape);
 
@@ -568,8 +563,8 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private void enableProcessButton() {
 
         createNewIssueButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         createNewIssueButton.setBackground(shape);
 

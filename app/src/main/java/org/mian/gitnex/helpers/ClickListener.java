@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.mian.gitnex.R;
 
 /**
@@ -23,8 +24,7 @@ public class ClickListener implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
 
         LayoutInflater inflater1 = LayoutInflater.from(mCtx);
         View layout = inflater1.inflate(R.layout.custom_toast,

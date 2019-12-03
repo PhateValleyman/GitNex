@@ -1,13 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,15 +9,26 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserSearchAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.models.UserSearch;
 import org.mian.gitnex.models.UserInfo;
+import org.mian.gitnex.models.UserSearch;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.List;
-import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -33,8 +36,8 @@ import java.util.Objects;
 
 public class AddCollaboratorToRepositoryActivity extends AppCompatActivity {
 
-    private View.OnClickListener onClickListener;
     final Context ctx = this;
+    private View.OnClickListener onClickListener;
     private TextView addCollaboratorSearch;
     private TextView noData;
     private ProgressBar mProgressBar;
@@ -66,7 +69,7 @@ public class AddCollaboratorToRepositoryActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    if(!addCollaboratorSearch.getText().toString().equals("")) {
+                    if (!addCollaboratorSearch.getText().toString().equals("")) {
                         loadUserSearchList(instanceUrl, instanceToken, addCollaboratorSearch.getText().toString(), getApplicationContext(), loginUid);
                     }
                 }
@@ -117,12 +120,11 @@ public class AddCollaboratorToRepositoryActivity extends AppCompatActivity {
 
         mProgressBar.setVisibility(View.VISIBLE);
 
-        if(adapter.getItemCount() > 0) {
+        if (adapter.getItemCount() > 0) {
             mRecyclerView.setAdapter(adapter);
             noData.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             noData.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
         }

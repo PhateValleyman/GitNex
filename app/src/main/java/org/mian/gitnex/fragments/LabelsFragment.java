@@ -2,6 +2,13 @@ package org.mian.gitnex.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -11,18 +18,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.LabelsAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.LabelsViewModel;
+
 import java.util.List;
 
 /**
@@ -31,13 +34,12 @@ import java.util.List;
 
 public class LabelsFragment extends Fragment {
 
+    private static String repoNameF = "param2";
+    private static String repoOwnerF = "param1";
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
     private LabelsAdapter adapter;
     private TextView noData;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
-
     private String repoName;
     private String repoOwner;
 
@@ -118,7 +120,7 @@ public class LabelsFragment extends Fragment {
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("labelsRefresh")) {
+        if (tinyDb.getBoolean("labelsRefresh")) {
             LabelsViewModel.loadLabelsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, getContext());
             tinyDb.putBoolean("labelsRefresh", false);
         }
@@ -136,10 +138,6 @@ public class LabelsFragment extends Fragment {
         mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
     private void fetchDataAsync(String instanceUrl, String instanceToken, String owner, String repo) {
 
         LabelsViewModel labelsModel = new ViewModelProvider(this).get(LabelsViewModel.class);
@@ -148,11 +146,10 @@ public class LabelsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Labels> labelsListMain) {
                 adapter = new LabelsAdapter(getContext(), labelsListMain);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noData.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mRecyclerView.setAdapter(adapter);
                     noData.setVisibility(View.VISIBLE);
@@ -161,6 +158,10 @@ public class LabelsFragment extends Fragment {
             }
         });
 
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 
 }

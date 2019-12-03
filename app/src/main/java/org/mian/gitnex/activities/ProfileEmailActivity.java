@@ -1,9 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -13,7 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.JsonElement;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -22,9 +23,13 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.AddEmail;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -32,10 +37,15 @@ import java.util.List;
 
 public class ProfileEmailActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     private View.OnClickListener onClickListener;
     private EditText userEmail;
-    final Context ctx = this;
     private Button addEmailButton;
+    private View.OnClickListener addEmailListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            processAddNewEmail();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +61,7 @@ public class ProfileEmailActivity extends AppCompatActivity {
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             disableProcessButton();
 
@@ -63,12 +73,6 @@ public class ProfileEmailActivity extends AppCompatActivity {
 
     }
 
-    private View.OnClickListener addEmailListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processAddNewEmail();
-        }
-    };
-
     private void processAddNewEmail() {
 
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
@@ -79,20 +83,19 @@ public class ProfileEmailActivity extends AppCompatActivity {
 
         String newUserEmail = userEmail.getText().toString().trim();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(newUserEmail.equals("")) {
+        if (newUserEmail.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.emailErrorEmpty));
             return;
 
-        }
-        else if(!Patterns.EMAIL_ADDRESS.matcher(newUserEmail).matches()) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(newUserEmail).matches()) {
 
             Toasty.info(getApplicationContext(), getString(R.string.emailErrorInvalid));
             return;
@@ -123,15 +126,14 @@ public class ProfileEmailActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     Toasty.info(getApplicationContext(), getString(R.string.emailAddedText));
                     tinyDb.putBoolean("emailsRefresh", true);
                     enableProcessButton();
                     finish();
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -139,26 +141,22 @@ public class ProfileEmailActivity extends AppCompatActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 403) {
+                } else if (response.code() == 403) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                }
-                else if(response.code() == 404) {
+                } else if (response.code() == 404) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                }
-                else if(response.code() == 422) {
+                } else if (response.code() == 422) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.emailErrorInUse));
 
-                }
-                else {
+                } else {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.labelGeneralError));
@@ -188,8 +186,8 @@ public class ProfileEmailActivity extends AppCompatActivity {
     private void disableProcessButton() {
 
         addEmailButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         addEmailButton.setBackground(shape);
 
@@ -198,8 +196,8 @@ public class ProfileEmailActivity extends AppCompatActivity {
     private void enableProcessButton() {
 
         addEmailButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         addEmailButton.setBackground(shape);
 

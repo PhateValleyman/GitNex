@@ -14,13 +14,20 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.vdurmont.emoji.EmojiParser;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.models.Milestones;
 import org.mian.gitnex.util.TinyDB;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,9 +38,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
+
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.core.CorePlugin;
@@ -60,46 +65,36 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
     private List<Milestones> milestonesList;
     private Context mCtx;
     private List<Milestones> milestonesListFull;
+    private Filter milestoneFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Milestones> filteredList = new ArrayList<>();
 
-    static class MilestonesViewHolder extends RecyclerView.ViewHolder {
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(milestonesListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
-        private TextView msTitle;
-        private TextView msDescription;
-        private TextView msOpenIssues;
-        private TextView msClosedIssues;
-        private TextView msDueDate;
-        private ImageView msStatus;
-        private ProgressBar msProgress;
-
-        private MilestonesViewHolder(View itemView) {
-            super(itemView);
-
-            msTitle = itemView.findViewById(R.id.milestoneTitle);
-            msStatus = itemView.findViewById(R.id.milestoneState);
-            msDescription = itemView.findViewById(R.id.milestoneDescription);
-            msOpenIssues = itemView.findViewById(R.id.milestoneIssuesOpen);
-            msClosedIssues = itemView.findViewById(R.id.milestoneIssuesClosed);
-            msDueDate = itemView.findViewById(R.id.milestoneDueDate);
-            msProgress = itemView.findViewById(R.id.milestoneProgress);
-
-            /*msTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Context context = v.getContext();
-                    Log.i("issueNumber", issueNumber.getText().toString());
-
-                    Intent intent = new Intent(context, IssueDetailActivity.class);
-                    intent.putExtra("issueNumber", issueNumber.getText());
-
-                    TinyDB tinyDb = new TinyDB(context);
-                    tinyDb.putString("issueNumber", issueNumber.getText().toString());
-                    context.startActivity(intent);
-
+                for (Milestones item : milestonesListFull) {
+                    if (item.getTitle().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
                 }
-            });*/
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
         }
-    }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            milestonesList.clear();
+            milestonesList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public MilestonesAdapter(Context mCtx, List<Milestones> milestonesMain) {
         this.mCtx = mCtx;
@@ -184,7 +179,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
         markwon.setParsedMarkdown(holder.msTitle, msTitle);
         //holder.msStatus.setText(currentItem.getState());
 
-        if(currentItem.getState().equals("open")) {
+        if (currentItem.getState().equals("open")) {
 
             @SuppressLint("ResourceType") int color = Color.parseColor(mCtx.getResources().getString(R.color.releaseStable));
             TextDrawable drawable = TextDrawable.builder()
@@ -200,8 +195,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
 
             holder.msStatus.setImageDrawable(drawable);
 
-        }
-        else if(currentItem.getState().equals("closed")) {
+        } else if (currentItem.getState().equals("closed")) {
 
             @SuppressLint("ResourceType") int color = Color.parseColor(mCtx.getResources().getString(R.color.colorRed));
             TextDrawable drawable = TextDrawable.builder()
@@ -222,8 +216,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
         if (!currentItem.getDescription().equals("")) {
             final CharSequence bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(currentItem.getDescription()));
             holder.msDescription.setText(bodyWithMD);
-        }
-        else {
+        } else {
             holder.msDescription.setVisibility(View.GONE);
         }
 
@@ -238,20 +231,18 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
             if (currentItem.getOpen_issues() == 0) {
                 holder.msProgress.setProgress(100);
                 holder.msProgress.setOnClickListener(new ClickListener(mCtx.getResources().getString(R.string.milestoneCompletion, 100), mCtx));
-            }
-            else {
+            } else {
                 int msCompletion = 100 * currentItem.getClosed_issues() / (currentItem.getOpen_issues() + currentItem.getClosed_issues());
                 holder.msProgress.setOnClickListener(new ClickListener(mCtx.getResources().getString(R.string.milestoneCompletion, msCompletion), mCtx));
                 holder.msProgress.setProgress(msCompletion);
             }
 
-        }
-        else {
+        } else {
             holder.msProgress.setProgress(0);
             holder.msProgress.setOnClickListener(new ClickListener(mCtx.getResources().getString(R.string.milestoneCompletion, 0), mCtx));
         }
 
-        if(currentItem.getDue_on() != null) {
+        if (currentItem.getDue_on() != null) {
 
             if (timeFormat.equals("normal") || timeFormat.equals("pretty")) {
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", new Locale(locale));
@@ -263,7 +254,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
                 }
                 String dueDate = formatter.format(date);
                 assert date != null;
-                if(date.before(new Date())) {
+                if (date.before(new Date())) {
                     holder.msDueDate.setTextColor(mCtx.getResources().getColor(R.color.darkRed));
                 }
 
@@ -282,8 +273,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
                 holder.msDueDate.setText(dueDate);
             }
 
-        }
-        else {
+        } else {
             holder.msDueDate.setVisibility(View.GONE);
         }
 
@@ -299,35 +289,44 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
         return milestoneFilter;
     }
 
-    private Filter milestoneFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<Milestones> filteredList = new ArrayList<>();
+    static class MilestonesViewHolder extends RecyclerView.ViewHolder {
 
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(milestonesListFull);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+        private TextView msTitle;
+        private TextView msDescription;
+        private TextView msOpenIssues;
+        private TextView msClosedIssues;
+        private TextView msDueDate;
+        private ImageView msStatus;
+        private ProgressBar msProgress;
 
-                for (Milestones item : milestonesListFull) {
-                    if (item.getTitle().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
+        private MilestonesViewHolder(View itemView) {
+            super(itemView);
+
+            msTitle = itemView.findViewById(R.id.milestoneTitle);
+            msStatus = itemView.findViewById(R.id.milestoneState);
+            msDescription = itemView.findViewById(R.id.milestoneDescription);
+            msOpenIssues = itemView.findViewById(R.id.milestoneIssuesOpen);
+            msClosedIssues = itemView.findViewById(R.id.milestoneIssuesClosed);
+            msDueDate = itemView.findViewById(R.id.milestoneDueDate);
+            msProgress = itemView.findViewById(R.id.milestoneProgress);
+
+            /*msTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Context context = v.getContext();
+                    Log.i("issueNumber", issueNumber.getText().toString());
+
+                    Intent intent = new Intent(context, IssueDetailActivity.class);
+                    intent.putExtra("issueNumber", issueNumber.getText());
+
+                    TinyDB tinyDb = new TinyDB(context);
+                    tinyDb.putString("issueNumber", issueNumber.getText().toString());
+                    context.startActivity(intent);
+
                 }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
+            });*/
         }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            milestonesList.clear();
-            milestonesList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
+    }
 
 }

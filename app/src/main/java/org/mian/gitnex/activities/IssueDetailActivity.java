@@ -1,34 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import io.noties.markwon.AbstractMarkwonPlugin;
-import io.noties.markwon.Markwon;
-import io.noties.markwon.core.CorePlugin;
-import io.noties.markwon.core.MarkwonTheme;
-import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
-import io.noties.markwon.ext.tables.TablePlugin;
-import io.noties.markwon.ext.tasklist.TaskListPlugin;
-import io.noties.markwon.html.HtmlPlugin;
-import io.noties.markwon.image.AsyncDrawable;
-import io.noties.markwon.image.DefaultMediaDecoder;
-import io.noties.markwon.image.ImageItem;
-import io.noties.markwon.image.ImagesPlugin;
-import io.noties.markwon.image.SchemeHandler;
-import io.noties.markwon.image.gif.GifMediaDecoder;
-import io.noties.markwon.image.svg.SvgMediaDecoder;
-import io.noties.markwon.linkify.LinkifyPlugin;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -49,25 +20,39 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
 import com.vdurmont.emoji.EmojiParser;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.IssueCommentsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.SingleIssueBottomSheetFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.ClickListener;
+import org.mian.gitnex.helpers.ColorInverter;
+import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.models.IssueComments;
 import org.mian.gitnex.models.Issues;
-import org.mian.gitnex.helpers.ColorInverter;
-import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.viewmodels.IssueCommentsViewModel;
 import org.ocpsoft.prettytime.PrettyTime;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -76,12 +61,33 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import io.noties.markwon.AbstractMarkwonPlugin;
+import io.noties.markwon.Markwon;
+import io.noties.markwon.core.CorePlugin;
+import io.noties.markwon.core.MarkwonTheme;
+import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
+import io.noties.markwon.ext.tables.TablePlugin;
+import io.noties.markwon.ext.tasklist.TaskListPlugin;
+import io.noties.markwon.html.HtmlPlugin;
+import io.noties.markwon.image.AsyncDrawable;
+import io.noties.markwon.image.DefaultMediaDecoder;
+import io.noties.markwon.image.ImageItem;
+import io.noties.markwon.image.ImagesPlugin;
+import io.noties.markwon.image.SchemeHandler;
+import io.noties.markwon.image.gif.GifMediaDecoder;
+import io.noties.markwon.image.svg.SvgMediaDecoder;
+import io.noties.markwon.linkify.LinkifyPlugin;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Author M M Arif
  */
 
 public class IssueDetailActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     public ImageView closeActivity;
     private IssueCommentsAdapter adapter;
     private RecyclerView mRecyclerView;
@@ -95,7 +101,6 @@ public class IssueDetailActivity extends AppCompatActivity {
     private HorizontalScrollView assigneesScrollView;
     private ScrollView scrollViewComments;
     private TextView issueModified;
-    final Context ctx = this;
     private LinearLayout labelsLayout;
     private LinearLayout assigneesLayout;
 
@@ -202,7 +207,7 @@ public class IssueDetailActivity extends AppCompatActivity {
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-        if(tinyDb.getBoolean("commentPosted")) {
+        if (tinyDb.getBoolean("commentPosted")) {
             scrollViewComments.post(new Runnable() {
                 @Override
                 public void run() {
@@ -220,7 +225,7 @@ public class IssueDetailActivity extends AppCompatActivity {
             });
         }
 
-        if(tinyDb.getBoolean("commentEdited")) {
+        if (tinyDb.getBoolean("commentEdited")) {
             scrollViewComments.post(new Runnable() {
                 @Override
                 public void run() {
@@ -230,7 +235,7 @@ public class IssueDetailActivity extends AppCompatActivity {
             });
         }
 
-        if(tinyDb.getBoolean("singleIssueUpdate")) {
+        if (tinyDb.getBoolean("singleIssueUpdate")) {
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -244,7 +249,7 @@ public class IssueDetailActivity extends AppCompatActivity {
 
         }
 
-        if(tinyDb.getBoolean("issueEdited")) {
+        if (tinyDb.getBoolean("issueEdited")) {
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -363,12 +368,12 @@ public class IssueDetailActivity extends AppCompatActivity {
                         Spanned bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(cleanIssueDescription));
                         markwon.setParsedMarkdown(issueDescription, UserMentions.UserMentionsFunc(getApplicationContext(), bodyWithMD, cleanIssueDescription));
 
-                        RelativeLayout.LayoutParams paramsDesc = (RelativeLayout.LayoutParams)issueDescription.getLayoutParams();
+                        RelativeLayout.LayoutParams paramsDesc = (RelativeLayout.LayoutParams) issueDescription.getLayoutParams();
 
                         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(80, 80);
                         params1.setMargins(15, 0, 0, 0);
 
-                        if(singleIssue.getAssignees() != null) {
+                        if (singleIssue.getAssignees() != null) {
                             assigneesScrollView.setVisibility(View.VISIBLE);
                             for (int i = 0; i < singleIssue.getAssignees().size(); i++) {
 
@@ -385,15 +390,14 @@ public class IssueDetailActivity extends AppCompatActivity {
                                 }
 
                             }
-                        }
-                        else {
+                        } else {
                             assigneesScrollView.setVisibility(View.GONE);
                         }
 
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         params.setMargins(0, 0, 15, 0);
 
-                        if(singleIssue.getLabels() != null) {
+                        if (singleIssue.getLabels() != null) {
                             labelsScrollView.setVisibility(View.VISIBLE);
                             int width = 33;
                             for (int i = 0; i < singleIssue.getLabels().size(); i++) {
@@ -421,12 +425,11 @@ public class IssueDetailActivity extends AppCompatActivity {
                                 labelsLayout.addView(labelsView);
 
                             }
-                        }
-                        else {
+                        } else {
                             labelsScrollView.setVisibility(View.GONE);
                         }
 
-                        if(singleIssue.getDue_date() != null) {
+                        if (singleIssue.getDue_date() != null) {
 
                             if (timeFormat.equals("normal") || timeFormat.equals("pretty")) {
                                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", new Locale(locale));
@@ -439,37 +442,32 @@ public class IssueDetailActivity extends AppCompatActivity {
                                 issueDueDate.setText(getString(R.string.dueDate, dueDate));
                             }
 
-                        }
-                        else {
+                        } else {
 
                             issueDueDate.setVisibility(View.GONE);
                         }
 
                         String edited;
 
-                        if(!singleIssue.getUpdated_at().equals(singleIssue.getCreated_at())) {
+                        if (!singleIssue.getUpdated_at().equals(singleIssue.getCreated_at())) {
                             edited = getString(R.string.colorfulBulletSpan) + getString(R.string.modifiedText);
                             issueModified.setVisibility(View.VISIBLE);
                             issueModified.setText(edited);
                             issueModified.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(singleIssue.getUpdated_at()), ctx));
-                        }
-                        else {
+                        } else {
                             issueModified.setVisibility(View.INVISIBLE);
                         }
 
-                        if((singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) && singleIssue.getAssignees() != null) {
+                        if ((singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) && singleIssue.getAssignees() != null) {
                             paramsDesc.setMargins(0, 35, 0, 0);
                             issueDescription.setLayoutParams(paramsDesc);
-                        }
-                        else if(singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) {
+                        } else if (singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) {
                             paramsDesc.setMargins(0, 55, 0, 0);
                             issueDescription.setLayoutParams(paramsDesc);
-                        }
-                        else if(singleIssue.getAssignees() == null) {
+                        } else if (singleIssue.getAssignees() == null) {
                             paramsDesc.setMargins(0, 35, 0, 0);
                             issueDescription.setLayoutParams(paramsDesc);
-                        }
-                        else {
+                        } else {
                             paramsDesc.setMargins(0, 15, 0, 0);
                             issueDescription.setLayoutParams(paramsDesc);
                         }
@@ -499,10 +497,9 @@ public class IssueDetailActivity extends AppCompatActivity {
                             }
                         }
 
-                        if(singleIssue.getMilestone() != null) {
+                        if (singleIssue.getMilestone() != null) {
                             issueMilestone.setText(getString(R.string.issueMilestone, singleIssue.getMilestone().getTitle()));
-                        }
-                        else {
+                        } else {
                             issueMilestone.setVisibility(View.GONE);
                         }
 
@@ -514,8 +511,7 @@ public class IssueDetailActivity extends AppCompatActivity {
 
                     }
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),

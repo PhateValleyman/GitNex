@@ -2,13 +2,17 @@ package org.mian.gitnex.viewmodels;
 
 import android.content.Context;
 import android.util.Log;
-import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.models.IssueComments;
-import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.models.IssueComments;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,14 +24,6 @@ import retrofit2.Response;
 public class IssueCommentsViewModel extends ViewModel {
 
     private static MutableLiveData<List<IssueComments>> issueComments;
-
-    public LiveData<List<IssueComments>> getIssueCommentList(String instanceUrl, String token, String owner, String repo, int index, Context ctx) {
-
-        issueComments = new MutableLiveData<>();
-        loadIssueComments(instanceUrl, token, owner, repo, index, ctx);
-
-        return issueComments;
-    }
 
     public static void loadIssueComments(String instanceUrl, String token, String owner, String repo, int index, Context ctx) {
 
@@ -41,12 +37,11 @@ public class IssueCommentsViewModel extends ViewModel {
             @Override
             public void onResponse(@NonNull Call<List<IssueComments>> call, @NonNull Response<List<IssueComments>> response) {
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
 
                     issueComments.postValue(response.body());
 
-                }
-                else {
+                } else {
                     Log.i("onResponse", String.valueOf(response.code()));
                 }
 
@@ -59,6 +54,14 @@ public class IssueCommentsViewModel extends ViewModel {
 
         });
 
+    }
+
+    public LiveData<List<IssueComments>> getIssueCommentList(String instanceUrl, String token, String owner, String repo, int index, Context ctx) {
+
+        issueComments = new MutableLiveData<>();
+        loadIssueComments(instanceUrl, token, owner, repo, index, ctx);
+
+        return issueComments;
     }
 
 }

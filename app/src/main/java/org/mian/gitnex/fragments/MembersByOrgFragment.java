@@ -2,11 +2,6 @@ package org.mian.gitnex.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +11,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.GridView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.MembersByOrgAdapter;
 import org.mian.gitnex.helpers.Authorization;
@@ -23,6 +25,7 @@ import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.MembersByOrgViewModel;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -32,10 +35,9 @@ import java.util.Objects;
 
 public class MembersByOrgFragment extends Fragment {
 
-    private RepositoriesByOrgFragment.OnFragmentInteractionListener mListener;
-
-    private TextView noDataMembers;
     private static String orgNameF = "param2";
+    private RepositoriesByOrgFragment.OnFragmentInteractionListener mListener;
+    private TextView noDataMembers;
     private String orgName;
     private MembersByOrgAdapter adapter;
     private GridView mGridView;
@@ -81,17 +83,16 @@ public class MembersByOrgFragment extends Fragment {
 
     private void fetchDataAsync(String instanceUrl, String instanceToken, String owner) {
 
-        MembersByOrgViewModel membersModel= new ViewModelProvider(this).get(MembersByOrgViewModel.class);
+        MembersByOrgViewModel membersModel = new ViewModelProvider(this).get(MembersByOrgViewModel.class);
 
         membersModel.getMembersList(instanceUrl, instanceToken, owner, getContext()).observe(getViewLifecycleOwner(), new Observer<List<UserInfo>>() {
             @Override
             public void onChanged(@Nullable List<UserInfo> membersListMain) {
                 adapter = new MembersByOrgAdapter(getContext(), membersListMain);
-                if(adapter.getCount() > 0) {
+                if (adapter.getCount() > 0) {
                     mGridView.setAdapter(adapter);
                     noDataMembers.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mGridView.setAdapter(adapter);
                     noDataMembers.setVisibility(View.VISIBLE);
@@ -114,7 +115,7 @@ public class MembersByOrgFragment extends Fragment {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        if(!connToInternet) {
+        if (!connToInternet) {
             return;
         }
 
@@ -126,7 +127,7 @@ public class MembersByOrgFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mGridView.getAdapter() != null) {
+                if (mGridView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
                 return false;

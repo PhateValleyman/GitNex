@@ -6,11 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import org.mian.gitnex.R;
-import org.mian.gitnex.activities.ProfileEmailActivity;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import org.mian.gitnex.R;
+import org.mian.gitnex.activities.ProfileEmailActivity;
 
 /**
  * Author M M Arif

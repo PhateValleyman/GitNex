@@ -11,18 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.vdurmont.emoji.EmojiParser;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.models.Releases;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
+
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.core.CorePlugin;
@@ -49,29 +54,6 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
     private List<Releases> releasesList;
     private Context mCtx;
 
-    static class ReleasesViewHolder extends RecyclerView.ViewHolder {
-
-        private ImageView releaseType;
-        private TextView releaseTitle;
-        private TextView releaseDescription;
-        private TextView releaseDownload;
-        private TextView releaseZipDownload;
-        private TextView releaseTarDownload;
-        private TextView releaseTag;
-
-        private ReleasesViewHolder(View itemView) {
-            super(itemView);
-
-            releaseType = itemView.findViewById(R.id.releaseType);
-            releaseTitle = itemView.findViewById(R.id.releaseTitle);
-            releaseDescription = itemView.findViewById(R.id.releaseDescription);
-            releaseZipDownload = itemView.findViewById(R.id.releaseZipDownload);
-            releaseTarDownload = itemView.findViewById(R.id.releaseTarDownload);
-            releaseTag = itemView.findViewById(R.id.releaseTag);
-
-        }
-    }
-
     public ReleasesAdapter(Context mCtx, List<Releases> releasesMain) {
         this.mCtx = mCtx;
         this.releasesList = releasesMain;
@@ -93,14 +75,13 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
         holder.releaseTitle.setText(currentItem.getName());
 
-        if(!currentItem.getTag_name().equals("")) {
+        if (!currentItem.getTag_name().equals("")) {
             holder.releaseTag.setText(mCtx.getResources().getString(R.string.releaseTag, currentItem.getTag_name()));
-        }
-        else {
+        } else {
             holder.releaseTag.setVisibility(View.GONE);
         }
 
-        if(currentItem.isPrerelease()) {
+        if (currentItem.isPrerelease()) {
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
                     //.useFont(Typeface.DEFAULT)
@@ -111,8 +92,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
                     .endConfig()
                     .buildRoundRect(mCtx.getResources().getString(R.string.releaseTypePre), mCtx.getResources().getColor(R.color.releasePre), 8);
             holder.releaseType.setImageDrawable(drawable);
-        }
-        else {
+        } else {
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
                     //.useFont(Typeface.DEFAULT)
@@ -184,10 +164,9 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
         Spanned bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(currentItem.getBody()));
 
-        if(!currentItem.getBody().equals("")) {
+        if (!currentItem.getBody().equals("")) {
             markwon.setParsedMarkdown(holder.releaseDescription, bodyWithMD);
-        }
-        else {
+        } else {
             holder.releaseDescription.setVisibility(View.GONE);
         }
 
@@ -204,6 +183,29 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
     @Override
     public int getItemCount() {
         return releasesList.size();
+    }
+
+    static class ReleasesViewHolder extends RecyclerView.ViewHolder {
+
+        private ImageView releaseType;
+        private TextView releaseTitle;
+        private TextView releaseDescription;
+        private TextView releaseDownload;
+        private TextView releaseZipDownload;
+        private TextView releaseTarDownload;
+        private TextView releaseTag;
+
+        private ReleasesViewHolder(View itemView) {
+            super(itemView);
+
+            releaseType = itemView.findViewById(R.id.releaseType);
+            releaseTitle = itemView.findViewById(R.id.releaseTitle);
+            releaseDescription = itemView.findViewById(R.id.releaseDescription);
+            releaseZipDownload = itemView.findViewById(R.id.releaseZipDownload);
+            releaseTarDownload = itemView.findViewById(R.id.releaseTarDownload);
+            releaseTag = itemView.findViewById(R.id.releaseTag);
+
+        }
     }
 
 }

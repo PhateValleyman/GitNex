@@ -1,14 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +11,17 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.AdminGetUsersAdapter;
 import org.mian.gitnex.fragments.AdminUsersBottomSheetFragment;
@@ -28,6 +30,7 @@ import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.AdminGetUsersViewModel;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -37,8 +40,8 @@ import java.util.Objects;
 
 public class AdminGetUsersActivity extends AppCompatActivity implements AdminUsersBottomSheetFragment.BottomSheetListener {
 
-    private View.OnClickListener onClickListener;
     final Context ctx = this;
+    private View.OnClickListener onClickListener;
     private AdminGetUsersAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataUsers;
@@ -99,13 +102,12 @@ public class AdminGetUsersActivity extends AppCompatActivity implements AdminUse
             @Override
             public void onChanged(@Nullable List<UserInfo> usersListMain) {
                 adapter = new AdminGetUsersAdapter(getApplicationContext(), usersListMain);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mRecyclerView.setAdapter(adapter);
                     noDataUsers.setVisibility(View.GONE);
                     searchFilter = true;
-                }
-                else {
+                } else {
                     //adapter.notifyDataSetChanged();
                     //mRecyclerView.setAdapter(adapter);
                     mRecyclerView.setVisibility(View.GONE);
@@ -125,7 +127,7 @@ public class AdminGetUsersActivity extends AppCompatActivity implements AdminUse
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(searchFilter) {
+                if (searchFilter) {
 
                     boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getApplicationContext()));
 
@@ -135,7 +137,7 @@ public class AdminGetUsersActivity extends AppCompatActivity implements AdminUse
                     androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
                     searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
-                    if(!connToInternet) {
+                    if (!connToInternet) {
                         return;
                     }
 

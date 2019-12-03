@@ -2,15 +2,6 @@ package org.mian.gitnex.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,15 +13,27 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.activities.NewOrganizationActivity;
 import org.mian.gitnex.adapters.OrganizationsListAdapter;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.viewmodels.OrganizationListViewModel;
 import org.mian.gitnex.models.UserOrganizations;
+import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+import org.mian.gitnex.viewmodels.OrganizationListViewModel;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -90,7 +93,7 @@ public class OrganizationsFragment extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0 && createNewOrganization.isShown()) {
                     createNewOrganization.setVisibility(View.GONE);
-                } else if (dy < 0 ) {
+                } else if (dy < 0) {
                     createNewOrganization.setVisibility(View.VISIBLE);
                 }
             }
@@ -121,14 +124,14 @@ public class OrganizationsFragment extends Fragment {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         TinyDB tinyDb = new TinyDB(getContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("orgCreated")) {
+        if (tinyDb.getBoolean("orgCreated")) {
             OrganizationListViewModel.loadOrgsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext());
             tinyDb.putBoolean("orgCreated", false);
         }
@@ -142,11 +145,10 @@ public class OrganizationsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<UserOrganizations> orgsListMain) {
                 adapter = new OrganizationsListAdapter(getContext(), orgsListMain);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataOrg.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mRecyclerView.setAdapter(adapter);
                     noDataOrg.setVisibility(View.VISIBLE);
@@ -182,7 +184,7 @@ public class OrganizationsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
                 return false;

@@ -3,13 +3,15 @@ package org.mian.gitnex.activities;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -18,6 +20,7 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserOrganizations;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -27,13 +30,17 @@ import retrofit2.Callback;
 
 public class NewOrganizationActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     public ImageView closeActivity;
     private View.OnClickListener onClickListener;
     private Button createOrganizationButton;
-
     private EditText orgName;
     private EditText orgDesc;
-    final Context ctx = this;
+    private View.OnClickListener createOrgListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            processNewOrganization();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +58,11 @@ public class NewOrganizationActivity extends AppCompatActivity {
 
         createOrganizationButton = findViewById(R.id.createNewOrganizationButton);
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             createOrganizationButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(8);
             shape.setColor(getResources().getColor(R.color.hintColor));
             createOrganizationButton.setBackground(shape);
 
@@ -76,12 +83,6 @@ public class NewOrganizationActivity extends AppCompatActivity {
         };
     }
 
-    private View.OnClickListener createOrgListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewOrganization();
-        }
-    };
-
     private void processNewOrganization() {
 
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
@@ -94,14 +95,14 @@ public class NewOrganizationActivity extends AppCompatActivity {
         String newOrgName = orgName.getText().toString();
         String newOrgDesc = orgDesc.getText().toString();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(!newOrgDesc.equals("")) {
+        if (!newOrgDesc.equals("")) {
             if (appUtil.charactersLength(newOrgDesc) > 255) {
 
                 Toasty.info(getApplicationContext(), getString(R.string.orgDescError));
@@ -110,17 +111,15 @@ public class NewOrganizationActivity extends AppCompatActivity {
             }
         }
 
-        if(newOrgName.equals("")) {
+        if (newOrgName.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.orgNameErrorEmpty));
 
-        }
-        else if(!appUtil.checkStrings(newOrgName)) {
+        } else if (!appUtil.checkStrings(newOrgName)) {
 
             Toasty.info(getApplicationContext(), getString(R.string.orgNameErrorInvalid));
 
-        }
-        else {
+        } else {
 
             disableProcessButton();
             createNewOrganization(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), newOrgName, newOrgDesc);
@@ -134,16 +133,16 @@ public class NewOrganizationActivity extends AppCompatActivity {
         UserOrganizations createOrganization = new UserOrganizations(orgName, null, orgDesc, null, null);
 
         Call<UserOrganizations> call = RetrofitClient
-            .getInstance(instanceUrl, getApplicationContext())
-            .getApiInterface()
-            .createNewOrganization(token, createOrganization);
+                .getInstance(instanceUrl, getApplicationContext())
+                .getApiInterface()
+                .createNewOrganization(token, createOrganization);
 
         call.enqueue(new Callback<UserOrganizations>() {
 
             @Override
             public void onResponse(@NonNull Call<UserOrganizations> call, @NonNull retrofit2.Response<UserOrganizations> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     TinyDB tinyDb = new TinyDB(getApplicationContext());
                     tinyDb.putBoolean("orgCreated", true);
@@ -151,8 +150,7 @@ public class NewOrganizationActivity extends AppCompatActivity {
                     Toasty.info(getApplicationContext(), getString(R.string.orgCreated));
                     finish();
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -160,26 +158,22 @@ public class NewOrganizationActivity extends AppCompatActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 409) {
+                } else if (response.code() == 409) {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.orgExistsError));
 
-                }
-                else if(response.code() == 422) {
+                } else if (response.code() == 422) {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.orgExistsError));
 
-                }
-                else {
+                } else {
 
-                    if(response.code() == 404) {
+                    if (response.code() == 404) {
                         enableProcessButton();
                         Toasty.info(getApplicationContext(), getString(R.string.apiNotFound));
-                    }
-                    else {
+                    } else {
                         enableProcessButton();
                         Toasty.info(getApplicationContext(), getString(R.string.orgCreatedError));
                     }
@@ -200,8 +194,8 @@ public class NewOrganizationActivity extends AppCompatActivity {
     private void disableProcessButton() {
 
         createOrganizationButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         createOrganizationButton.setBackground(shape);
 
@@ -210,8 +204,8 @@ public class NewOrganizationActivity extends AppCompatActivity {
     private void enableProcessButton() {
 
         createOrganizationButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         createOrganizationButton.setBackground(shape);
 

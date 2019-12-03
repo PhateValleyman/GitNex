@@ -9,13 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.OpenRepoInBrowserActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
@@ -24,6 +27,7 @@ import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.util.TinyDB;
+
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -40,6 +44,67 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<ExploreRepo
     public ExploreRepositoriesAdapter(List<UserRepositories> dataList, Context mCtx) {
         this.mCtx = mCtx;
         this.searchedReposList = dataList;
+    }
+
+    @NonNull
+    @Override
+    public ExploreRepositoriesAdapter.ReposSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.repos_list, parent, false);
+        return new ExploreRepositoriesAdapter.ReposSearchViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final ExploreRepositoriesAdapter.ReposSearchViewHolder holder, int position) {
+
+        final UserRepositories currentItem = searchedReposList.get(position);
+
+
+        holder.mTextView2.setVisibility(View.GONE);
+
+        ColorGenerator generator = ColorGenerator.MATERIAL;
+        int color = generator.getColor(currentItem.getName());
+        String firstCharacter = String.valueOf(currentItem.getName().charAt(0));
+
+        TextDrawable drawable = TextDrawable.builder()
+                .beginConfig()
+                .useFont(Typeface.DEFAULT)
+                .fontSize(18)
+                .toUpperCase()
+                .width(28)
+                .height(28)
+                .endConfig()
+                .buildRoundRect(firstCharacter, color, 3);
+
+        if (currentItem.getAvatar_url() != null) {
+            if (!currentItem.getAvatar_url().equals("")) {
+                Picasso.get().load(currentItem.getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.image);
+            } else {
+                holder.image.setImageDrawable(drawable);
+            }
+        } else {
+            holder.image.setImageDrawable(drawable);
+        }
+
+        holder.mTextView1.setText(currentItem.getName());
+        if (!currentItem.getDescription().equals("")) {
+            holder.mTextView2.setVisibility(View.VISIBLE);
+            holder.mTextView2.setText(currentItem.getDescription());
+        }
+        holder.fullName.setText(currentItem.getFullname());
+        if (currentItem.getPrivateFlag()) {
+            holder.repoPrivatePublic.setImageResource(R.drawable.ic_lock_bold);
+        } else {
+            holder.repoPrivatePublic.setImageResource(R.drawable.ic_public);
+        }
+        holder.repoStars.setText(currentItem.getStars_count());
+        holder.repoForks.setText(currentItem.getForks_count());
+        holder.repoOpenIssuesCount.setText(currentItem.getOpen_issues_count());
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return searchedReposList.size();
     }
 
     static class ReposSearchViewHolder extends RecyclerView.ViewHolder {
@@ -101,7 +166,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<ExploreRepo
                         Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
                         fMenuHelper.setAccessible(true);
                         menuHelper = fMenuHelper.get(popupMenu);
-                        argTypes = new Class[] { boolean.class };
+                        argTypes = new Class[]{boolean.class};
                         menuHelper.getClass().getDeclaredMethod("setForceShowIcon",
                                 argTypes).invoke(menuHelper, true);
 
@@ -149,68 +214,5 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<ExploreRepo
 
         }
 
-    }
-
-    @NonNull
-    @Override
-    public ExploreRepositoriesAdapter.ReposSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.repos_list, parent, false);
-        return new ExploreRepositoriesAdapter.ReposSearchViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull final ExploreRepositoriesAdapter.ReposSearchViewHolder holder, int position) {
-
-        final UserRepositories currentItem = searchedReposList.get(position);
-
-
-        holder.mTextView2.setVisibility(View.GONE);
-
-        ColorGenerator generator = ColorGenerator.MATERIAL;
-        int color = generator.getColor(currentItem.getName());
-        String firstCharacter = String.valueOf(currentItem.getName().charAt(0));
-
-        TextDrawable drawable = TextDrawable.builder()
-                .beginConfig()
-                .useFont(Typeface.DEFAULT)
-                .fontSize(18)
-                .toUpperCase()
-                .width(28)
-                .height(28)
-                .endConfig()
-                .buildRoundRect(firstCharacter, color, 3);
-
-        if (currentItem.getAvatar_url() != null) {
-            if (!currentItem.getAvatar_url().equals("")) {
-                Picasso.get().load(currentItem.getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.image);
-            } else {
-                holder.image.setImageDrawable(drawable);
-            }
-        }
-        else {
-            holder.image.setImageDrawable(drawable);
-        }
-
-        holder.mTextView1.setText(currentItem.getName());
-        if (!currentItem.getDescription().equals("")) {
-            holder.mTextView2.setVisibility(View.VISIBLE);
-            holder.mTextView2.setText(currentItem.getDescription());
-        }
-        holder.fullName.setText(currentItem.getFullname());
-        if(currentItem.getPrivateFlag()) {
-            holder.repoPrivatePublic.setImageResource(R.drawable.ic_lock_bold);
-        }
-        else {
-            holder.repoPrivatePublic.setImageResource(R.drawable.ic_public);
-        }
-        holder.repoStars.setText(currentItem.getStars_count());
-        holder.repoForks.setText(currentItem.getForks_count());
-        holder.repoOpenIssuesCount.setText(currentItem.getOpen_issues_count());
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return searchedReposList.size();
     }
 }

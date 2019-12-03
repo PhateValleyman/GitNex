@@ -2,13 +2,17 @@ package org.mian.gitnex.viewmodels;
 
 import android.content.Context;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.models.UserInfo;
+
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,14 +24,6 @@ import retrofit2.Response;
 public class RepoWatchersViewModel extends ViewModel {
 
     private static MutableLiveData<List<UserInfo>> watchersList;
-
-    public LiveData<List<UserInfo>> getRepoWatchers(String instanceUrl, String token, String repoOwner, String repoName, Context ctx) {
-
-        watchersList = new MutableLiveData<>();
-        loadRepoWatchers(instanceUrl, token, repoOwner, repoName, ctx);
-
-        return watchersList;
-    }
 
     private static void loadRepoWatchers(String instanceUrl, String token, String repoOwner, String repoName, Context ctx) {
 
@@ -41,8 +37,8 @@ public class RepoWatchersViewModel extends ViewModel {
             @Override
             public void onResponse(@NonNull Call<List<UserInfo>> call, @NonNull Response<List<UserInfo>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
                         watchersList.postValue(response.body());
 
                     }
@@ -57,5 +53,13 @@ public class RepoWatchersViewModel extends ViewModel {
 
         });
 
+    }
+
+    public LiveData<List<UserInfo>> getRepoWatchers(String instanceUrl, String token, String repoOwner, String repoName, Context ctx) {
+
+        watchersList = new MutableLiveData<>();
+        loadRepoWatchers(instanceUrl, token, repoOwner, repoName, ctx);
+
+        return watchersList;
     }
 }

@@ -24,13 +24,11 @@ public class UrlHelper {
         int urlPort = uri.getPort();
 
         String urlFinal = null;
-        if(urlPort > 0) {
+        if (urlPort > 0) {
             urlFinal = urlProtocol + "://" + urlHost + ":" + urlPort;
-        }
-        else if(urlProtocol != null) {
+        } else if (urlProtocol != null) {
             urlFinal = urlProtocol + "://" + urlHost;
-        }
-        else {
+        } else {
             urlFinal = urlHost;
         }
 

@@ -1,6 +1,7 @@
 package org.mian.gitnex.models;
 
 import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +41,110 @@ public class PullRequests {
 
     public PullRequests(String body) {
         this.body = body;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public int getComments() {
+        return comments;
+    }
+
+    public String getDiff_url() {
+        return diff_url;
+    }
+
+    public String getHtml_url() {
+        return html_url;
+    }
+
+    public String getMerge_base() {
+        return merge_base;
+    }
+
+    public String getMerge_commit_sha() {
+        return merge_commit_sha;
+    }
+
+    public boolean isMergeable() {
+        return mergeable;
+    }
+
+    public boolean isMerged() {
+        return merged;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public String getPatch_url() {
+        return patch_url;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Date getClosed_at() {
+        return closed_at;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public Date getDue_date() {
+        return due_date;
+    }
+
+    public Date getMerged_at() {
+        return merged_at;
+    }
+
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
+    public userObject getUser() {
+        return user;
+    }
+
+    public List<labelsObject> getLabels() {
+        return labels;
+    }
+
+    public List<assigneesObject> getAssignees() {
+        return assignees;
+    }
+
+    public mergedByObject getMerged_by() {
+        return merged_by;
+    }
+
+    public milestoneObject getMilestone() {
+        return milestone;
+    }
+
+    public baseObject getBase() {
+        return base;
+    }
+
+    public headObject getHead() {
+        return head;
     }
 
     public class headObject {
@@ -88,69 +193,6 @@ public class PullRequests {
 
             private ownerObject owner;
             private permissionsObject permissions;
-
-            public class ownerObject {
-
-                private int repo_id;
-                private boolean is_admin;
-                private String avatar_url;
-                private String email;
-                private String full_name;
-                private String language;
-                private String login;
-                private Date created;
-
-                public int getRepo_id() {
-                    return repo_id;
-                }
-
-                public boolean isIs_admin() {
-                    return is_admin;
-                }
-
-                public String getAvatar_url() {
-                    return avatar_url;
-                }
-
-                public String getEmail() {
-                    return email;
-                }
-
-                public String getFull_name() {
-                    return full_name;
-                }
-
-                public String getLanguage() {
-                    return language;
-                }
-
-                public String getLogin() {
-                    return login;
-                }
-
-                public Date getCreated() {
-                    return created;
-                }
-            }
-
-            public class permissionsObject {
-
-                private boolean admin;
-                private boolean pull;
-                private boolean push;
-
-                public boolean isAdmin() {
-                    return admin;
-                }
-
-                public boolean isPull() {
-                    return pull;
-                }
-
-                public boolean isPush() {
-                    return push;
-                }
-            }
 
             public int getRepo_id() {
                 return repo_id;
@@ -282,6 +324,69 @@ public class PullRequests {
 
             public permissionsObject getPermissions() {
                 return permissions;
+            }
+
+            public class ownerObject {
+
+                private int repo_id;
+                private boolean is_admin;
+                private String avatar_url;
+                private String email;
+                private String full_name;
+                private String language;
+                private String login;
+                private Date created;
+
+                public int getRepo_id() {
+                    return repo_id;
+                }
+
+                public boolean isIs_admin() {
+                    return is_admin;
+                }
+
+                public String getAvatar_url() {
+                    return avatar_url;
+                }
+
+                public String getEmail() {
+                    return email;
+                }
+
+                public String getFull_name() {
+                    return full_name;
+                }
+
+                public String getLanguage() {
+                    return language;
+                }
+
+                public String getLogin() {
+                    return login;
+                }
+
+                public Date getCreated() {
+                    return created;
+                }
+            }
+
+            public class permissionsObject {
+
+                private boolean admin;
+                private boolean pull;
+                private boolean push;
+
+                public boolean isAdmin() {
+                    return admin;
+                }
+
+                public boolean isPull() {
+                    return pull;
+                }
+
+                public boolean isPush() {
+                    return push;
+                }
             }
         }
 
@@ -334,69 +439,6 @@ public class PullRequests {
             private ownerObject owner;
             private permissionsObject permissions;
 
-            public class ownerObject {
-
-                private int repo_id;
-                private boolean is_admin;
-                private String avatar_url;
-                private String email;
-                private String full_name;
-                private String language;
-                private String login;
-                private Date created;
-
-                public int getRepo_id() {
-                    return repo_id;
-                }
-
-                public boolean isIs_admin() {
-                    return is_admin;
-                }
-
-                public String getAvatar_url() {
-                    return avatar_url;
-                }
-
-                public String getEmail() {
-                    return email;
-                }
-
-                public String getFull_name() {
-                    return full_name;
-                }
-
-                public String getLanguage() {
-                    return language;
-                }
-
-                public String getLogin() {
-                    return login;
-                }
-
-                public Date getCreated() {
-                    return created;
-                }
-            }
-
-            public class permissionsObject {
-
-                private boolean admin;
-                private boolean pull;
-                private boolean push;
-
-                public boolean isAdmin() {
-                    return admin;
-                }
-
-                public boolean isPull() {
-                    return pull;
-                }
-
-                public boolean isPush() {
-                    return push;
-                }
-            }
-
             public int getRepo_id() {
                 return repo_id;
             }
@@ -527,6 +569,69 @@ public class PullRequests {
 
             public permissionsObject getPermissions() {
                 return permissions;
+            }
+
+            public class ownerObject {
+
+                private int repo_id;
+                private boolean is_admin;
+                private String avatar_url;
+                private String email;
+                private String full_name;
+                private String language;
+                private String login;
+                private Date created;
+
+                public int getRepo_id() {
+                    return repo_id;
+                }
+
+                public boolean isIs_admin() {
+                    return is_admin;
+                }
+
+                public String getAvatar_url() {
+                    return avatar_url;
+                }
+
+                public String getEmail() {
+                    return email;
+                }
+
+                public String getFull_name() {
+                    return full_name;
+                }
+
+                public String getLanguage() {
+                    return language;
+                }
+
+                public String getLogin() {
+                    return login;
+                }
+
+                public Date getCreated() {
+                    return created;
+                }
+            }
+
+            public class permissionsObject {
+
+                private boolean admin;
+                private boolean pull;
+                private boolean push;
+
+                public boolean isAdmin() {
+                    return admin;
+                }
+
+                public boolean isPull() {
+                    return pull;
+                }
+
+                public boolean isPush() {
+                    return push;
+                }
             }
         }
 
@@ -715,109 +820,5 @@ public class PullRequests {
         public String getDue_on() {
             return due_on;
         }
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public int getComments() {
-        return comments;
-    }
-
-    public String getDiff_url() {
-        return diff_url;
-    }
-
-    public String getHtml_url() {
-        return html_url;
-    }
-
-    public String getMerge_base() {
-        return merge_base;
-    }
-
-    public String getMerge_commit_sha() {
-        return merge_commit_sha;
-    }
-
-    public boolean isMergeable() {
-        return mergeable;
-    }
-
-    public boolean isMerged() {
-        return merged;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public String getPatch_url() {
-        return patch_url;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Date getClosed_at() {
-        return closed_at;
-    }
-
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public Date getDue_date() {
-        return due_date;
-    }
-
-    public Date getMerged_at() {
-        return merged_at;
-    }
-
-    public Date getUpdated_at() {
-        return updated_at;
-    }
-
-    public userObject getUser() {
-        return user;
-    }
-
-    public List<labelsObject> getLabels() {
-        return labels;
-    }
-
-    public List<assigneesObject> getAssignees() {
-        return assignees;
-    }
-
-    public mergedByObject getMerged_by() {
-        return merged_by;
-    }
-
-    public milestoneObject getMilestone() {
-        return milestone;
-    }
-
-    public baseObject getBase() {
-        return base;
-    }
-
-    public headObject getHead() {
-        return head;
     }
 }

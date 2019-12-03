@@ -4,9 +4,39 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Spanned;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import org.mian.gitnex.R;
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.ClickListener;
+import org.mian.gitnex.helpers.TimeHelper;
+import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.models.UserRepositories;
+import org.mian.gitnex.util.AppUtil;
+import org.mian.gitnex.util.TinyDB;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Objects;
+
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.core.CorePlugin;
@@ -25,32 +55,6 @@ import io.noties.markwon.image.svg.SvgMediaDecoder;
 import io.noties.markwon.linkify.LinkifyPlugin;
 import retrofit2.Call;
 import retrofit2.Callback;
-import android.text.Spanned;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import org.mian.gitnex.R;
-import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.models.UserRepositories;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
-import org.ocpsoft.prettytime.PrettyTime;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Objects;
 
 /**
  * Author M M Arif
@@ -58,12 +62,11 @@ import java.util.Objects;
 
 public class RepoInfoFragment extends Fragment {
 
+    private static String repoNameF = "param2";
+    private static String repoOwnerF = "param1";
     private Context ctx = getContext();
     private ProgressBar mProgressBar;
     private LinearLayout pageContent;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
-
     private String repoName;
     private String repoOwner;
     private TextView repoNameInfo;
@@ -176,10 +179,6 @@ public class RepoInfoFragment extends Fragment {
         mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
     private void collapseExpandView() {
 
         if (repoFileContents.getVisibility() == View.GONE) {
@@ -187,8 +186,7 @@ public class RepoInfoFragment extends Fragment {
             repoFileContents.setVisibility(View.VISIBLE);
             //Animation slide_down = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down);
             //fileContentsFrame.startAnimation(slide_down);
-        }
-        else {
+        } else {
             repoFilenameExpandCollapse.setImageResource(R.drawable.ic_arrow_down);
             repoFileContents.setVisibility(View.GONE);
             //Animation slide_up = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
@@ -203,8 +201,7 @@ public class RepoInfoFragment extends Fragment {
             repoMetaFrame.setVisibility(View.VISIBLE);
             //Animation slide_down = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down);
             //repoMetaFrame.startAnimation(slide_down);
-        }
-        else {
+        } else {
             repoMetaDataExpandCollapse.setImageResource(R.drawable.ic_arrow_down);
             repoMetaFrame.setVisibility(View.GONE);
             //Animation slide_up = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
@@ -247,10 +244,9 @@ public class RepoInfoFragment extends Fragment {
                             repoRepoUrlInfo.setText(repoInfo.getHtml_url());
                             repoForksCountInfo.setText(repoInfo.getForks_count());
 
-                            if(repoInfo.getHas_issues() != null) {
+                            if (repoInfo.getHas_issues() != null) {
                                 tinyDb.putBoolean("hasIssues", repoInfo.getHas_issues());
-                            }
-                            else {
+                            } else {
                                 tinyDb.putBoolean("hasIssues", true);
                             }
 
@@ -281,8 +277,7 @@ public class RepoInfoFragment extends Fragment {
 
                         }
 
-                    }
-                    else {
+                    } else {
                         Log.e("onFailure", String.valueOf(response.code()));
                     }
 
@@ -317,61 +312,61 @@ public class RepoInfoFragment extends Fragment {
                     if (response.code() == 200) {
 
                         final Markwon markwon = Markwon.builder(Objects.requireNonNull(getContext()))
-                            .usePlugin(CorePlugin.create())
-                            .usePlugin(ImagesPlugin.create(new ImagesPlugin.ImagesConfigure() {
-                                @Override
-                                public void configureImages(@NonNull ImagesPlugin plugin) {
-                                    plugin.addSchemeHandler(new SchemeHandler() {
-                                        @NonNull
-                                        @Override
-                                        public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
+                                .usePlugin(CorePlugin.create())
+                                .usePlugin(ImagesPlugin.create(new ImagesPlugin.ImagesConfigure() {
+                                    @Override
+                                    public void configureImages(@NonNull ImagesPlugin plugin) {
+                                        plugin.addSchemeHandler(new SchemeHandler() {
+                                            @NonNull
+                                            @Override
+                                            public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
 
-                                            final int resourceId = getContext().getResources().getIdentifier(
-                                                    raw.substring("drawable://".length()),
-                                                    "drawable",
-                                                    getContext().getPackageName());
+                                                final int resourceId = getContext().getResources().getIdentifier(
+                                                        raw.substring("drawable://".length()),
+                                                        "drawable",
+                                                        getContext().getPackageName());
 
-                                            final Drawable drawable = getContext().getDrawable(resourceId);
+                                                final Drawable drawable = getContext().getDrawable(resourceId);
 
-                                            assert drawable != null;
-                                            return ImageItem.withResult(drawable);
-                                        }
+                                                assert drawable != null;
+                                                return ImageItem.withResult(drawable);
+                                            }
 
-                                        @NonNull
-                                        @Override
-                                        public Collection<String> supportedSchemes() {
-                                            return Collections.singleton("drawable");
-                                        }
-                                    });
-                                    plugin.placeholderProvider(new ImagesPlugin.PlaceholderProvider() {
-                                        @Nullable
-                                        @Override
-                                        public Drawable providePlaceholder(@NonNull AsyncDrawable drawable) {
-                                            return null;
-                                        }
-                                    });
-                                    plugin.addMediaDecoder(GifMediaDecoder.create(false));
-                                    plugin.addMediaDecoder(SvgMediaDecoder.create(getContext().getResources()));
-                                    plugin.addMediaDecoder(SvgMediaDecoder.create());
-                                    plugin.defaultMediaDecoder(DefaultMediaDecoder.create(getContext().getResources()));
-                                    plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
-                                }
-                            }))
-                            .usePlugin(new AbstractMarkwonPlugin() {
-                                @Override
-                                public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
-                                    builder
-                                            .codeTextColor(tinyDb.getInt("codeBlockColor"))
-                                            .codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
-                                            .linkColor(getResources().getColor(R.color.lightBlue));
-                                }
-                            })
-                            .usePlugin(TablePlugin.create(getContext()))
-                            .usePlugin(TaskListPlugin.create(getContext()))
-                            .usePlugin(HtmlPlugin.create())
-                            .usePlugin(StrikethroughPlugin.create())
-                            .usePlugin(LinkifyPlugin.create())
-                            .build();
+                                            @NonNull
+                                            @Override
+                                            public Collection<String> supportedSchemes() {
+                                                return Collections.singleton("drawable");
+                                            }
+                                        });
+                                        plugin.placeholderProvider(new ImagesPlugin.PlaceholderProvider() {
+                                            @Nullable
+                                            @Override
+                                            public Drawable providePlaceholder(@NonNull AsyncDrawable drawable) {
+                                                return null;
+                                            }
+                                        });
+                                        plugin.addMediaDecoder(GifMediaDecoder.create(false));
+                                        plugin.addMediaDecoder(SvgMediaDecoder.create(getContext().getResources()));
+                                        plugin.addMediaDecoder(SvgMediaDecoder.create());
+                                        plugin.defaultMediaDecoder(DefaultMediaDecoder.create(getContext().getResources()));
+                                        plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
+                                    }
+                                }))
+                                .usePlugin(new AbstractMarkwonPlugin() {
+                                    @Override
+                                    public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
+                                        builder
+                                                .codeTextColor(tinyDb.getInt("codeBlockColor"))
+                                                .codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
+                                                .linkColor(getResources().getColor(R.color.lightBlue));
+                                    }
+                                })
+                                .usePlugin(TablePlugin.create(getContext()))
+                                .usePlugin(TaskListPlugin.create(getContext()))
+                                .usePlugin(HtmlPlugin.create())
+                                .usePlugin(StrikethroughPlugin.create())
+                                .usePlugin(LinkifyPlugin.create())
+                                .build();
 
                         Spanned bodyWithMD = null;
                         if (response.body() != null) {
@@ -412,6 +407,10 @@ public class RepoInfoFragment extends Fragment {
             }
         });
 
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 
 }

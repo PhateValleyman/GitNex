@@ -12,15 +12,18 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import org.mian.gitnex.R;
-import org.mian.gitnex.activities.MainActivity;
-import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.util.TinyDB;
-import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
+import org.mian.gitnex.R;
+import org.mian.gitnex.activities.MainActivity;
+import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.util.TinyDB;
+
+import java.util.Objects;
 
 /**
  * Author M M Arif
@@ -28,19 +31,15 @@ import androidx.fragment.app.Fragment;
 
 public class SettingsFragment extends Fragment {
 
-    private Context ctx = null;
-
     private static String[] langList = {"Arabic", "Chinese", "English", "Finnish", "French", "German", "Italian", "Persian", "Portuguese/Brazilian", "Russian", "Serbian", "Turkish", "Ukrainian"};
     private static int langSelectedChoice = 0;
-
     private static String[] timeList = {"Pretty", "Normal"};
     private static int timeSelectedChoice = 0;
-
     private static String[] codeBlockList = {"Green - Black", "White - Black", "Grey - Black", "White - Grey", "Dark - White"};
     private static int codeBlockSelectedChoice = 0;
-
     private static String[] homeScreenList = {"My Repositories", "Starred Repositories", "Organizations", "Repositories", "Profile"};
     private static int homeScreenSelectedChoice = 0;
+    private Context ctx = null;
 
     @Nullable
     @Override
@@ -60,7 +59,7 @@ public class SettingsFragment extends Fragment {
         LinearLayout codeBlockFrame = v.findViewById(R.id.codeBlockFrame);
         LinearLayout homeScreenFrame = v.findViewById(R.id.homeScreenFrame);
 
-        Switch issuesSwitch =  v.findViewById(R.id.switchIssuesBadge);
+        Switch issuesSwitch = v.findViewById(R.id.switchIssuesBadge);
         TextView helpTranslate = v.findViewById(R.id.helpTranslate);
 
         helpTranslate.setOnClickListener(new View.OnClickListener() {
@@ -73,39 +72,39 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        if(!tinyDb.getString("localeStr").isEmpty()) {
+        if (!tinyDb.getString("localeStr").isEmpty()) {
             tvLanguageSelected.setText(tinyDb.getString("localeStr"));
         }
 
-        if(!tinyDb.getString("timeStr").isEmpty()) {
+        if (!tinyDb.getString("timeStr").isEmpty()) {
             tvDateTimeSelected.setText(tinyDb.getString("timeStr"));
         }
 
-        if(!tinyDb.getString("codeBlockStr").isEmpty()) {
+        if (!tinyDb.getString("codeBlockStr").isEmpty()) {
             codeBlockSelected.setText(tinyDb.getString("codeBlockStr"));
         }
 
-        if(!tinyDb.getString("homeScreenStr").isEmpty()) {
+        if (!tinyDb.getString("homeScreenStr").isEmpty()) {
             homeScreenSelected.setText(tinyDb.getString("homeScreenStr"));
         }
 
-        if(langSelectedChoice == 0) {
+        if (langSelectedChoice == 0) {
             langSelectedChoice = tinyDb.getInt("langId");
         }
 
-        if(timeSelectedChoice == 0) {
+        if (timeSelectedChoice == 0) {
             timeSelectedChoice = tinyDb.getInt("timeId");
         }
 
-        if(codeBlockSelectedChoice == 0) {
+        if (codeBlockSelectedChoice == 0) {
             codeBlockSelectedChoice = tinyDb.getInt("codeBlockId");
         }
 
-        if(homeScreenSelectedChoice == 0) {
+        if (homeScreenSelectedChoice == 0) {
             homeScreenSelectedChoice = tinyDb.getInt("homeScreenId");
         }
 
-        if(tinyDb.getBoolean("enableCounterIssueBadge")) {
+        if (tinyDb.getBoolean("enableCounterIssueBadge")) {
             issuesSwitch.setChecked(true);
         }
 
@@ -132,10 +131,9 @@ public class SettingsFragment extends Fragment {
                 AlertDialog.Builder hsBuilder = new AlertDialog.Builder(ctx, R.style.confirmDialog);
 
                 hsBuilder.setTitle(R.string.settingshomeScreenSelectorDialogTitle);
-                if(homeScreenSelectedChoice != -1) {
+                if (homeScreenSelectedChoice != -1) {
                     hsBuilder.setCancelable(true);
-                }
-                else {
+                } else {
                     hsBuilder.setCancelable(false);
                 }
 
@@ -168,10 +166,9 @@ public class SettingsFragment extends Fragment {
                 AlertDialog.Builder cBuilder = new AlertDialog.Builder(ctx, R.style.confirmDialog);
 
                 cBuilder.setTitle(R.string.settingsCodeBlockSelectorDialogTitle);
-                if(codeBlockSelectedChoice != -1) {
+                if (codeBlockSelectedChoice != -1) {
                     cBuilder.setCancelable(true);
-                }
-                else {
+                } else {
                     cBuilder.setCancelable(false);
                 }
 
@@ -227,10 +224,9 @@ public class SettingsFragment extends Fragment {
                 AlertDialog.Builder lBuilder = new AlertDialog.Builder(ctx, R.style.confirmDialog);
 
                 lBuilder.setTitle(R.string.settingsLanguageSelectorDialogTitle);
-                if(langSelectedChoice != -1) {
+                if (langSelectedChoice != -1) {
                     lBuilder.setCancelable(true);
-                }
-                else {
+                } else {
                     lBuilder.setCancelable(false);
                 }
 
@@ -313,10 +309,9 @@ public class SettingsFragment extends Fragment {
                 AlertDialog.Builder tBuilder = new AlertDialog.Builder(ctx, R.style.confirmDialog);
 
                 tBuilder.setTitle(R.string.settingsTimeSelectorDialogTitle);
-                if(timeSelectedChoice != -1) {
+                if (timeSelectedChoice != -1) {
                     tBuilder.setCancelable(true);
-                }
-                else {
+                } else {
                     tBuilder.setCancelable(false);
                 }
 

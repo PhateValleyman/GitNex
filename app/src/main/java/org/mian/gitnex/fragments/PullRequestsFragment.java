@@ -2,13 +2,6 @@ package org.mian.gitnex.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +13,15 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.PullRequestsAdapter;
 import org.mian.gitnex.clients.PullRequestsService;
@@ -29,9 +31,11 @@ import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.PullRequests;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -103,7 +107,7 @@ public class PullRequestsFragment extends Fragment {
                 recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(prList.size() == 10 || pageSize == 10) {
+                        if (prList.size() == 10 || pageSize == 10) {
 
                             int page = (prList.size() + 10) / 10;
                             loadMore(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, page, prState);
@@ -146,7 +150,7 @@ public class PullRequestsFragment extends Fragment {
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("resumePullRequests")) {
+        if (tinyDb.getBoolean("resumePullRequests")) {
 
             loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, pageSize, prState);
             tinyDb.putBoolean("resumePullRequests", false);
@@ -164,25 +168,23 @@ public class PullRequestsFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<List<PullRequests>> call, @NonNull Response<List<PullRequests>> response) {
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
 
                     assert response.body() != null;
-                    if(response.body().size() > 0) {
+                    if (response.body().size() > 0) {
 
                         prList.clear();
                         prList.addAll(response.body());
                         adapter.notifyDataChanged();
                         noData.setVisibility(View.GONE);
 
-                    }
-                    else {
+                    } else {
                         prList.clear();
                         adapter.notifyDataChanged();
                         noData.setVisibility(View.VISIBLE);
                     }
                     mProgressBar.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     Log.i(TAG, String.valueOf(response.code()));
                 }
 
@@ -199,7 +201,7 @@ public class PullRequestsFragment extends Fragment {
 
     }
 
-    private void loadMore(String token, String repoOwner, String repoName, int page, String prState){
+    private void loadMore(String token, String repoOwner, String repoName, int page, String prState) {
 
         //add loading progress view
         prList.add(new PullRequests("load"));
@@ -212,21 +214,20 @@ public class PullRequestsFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<List<PullRequests>> call, @NonNull Response<List<PullRequests>> response) {
 
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
                     //remove loading view
-                    prList.remove(prList.size()-1);
+                    prList.remove(prList.size() - 1);
 
                     List<PullRequests> result = response.body();
 
                     assert result != null;
-                    if(result.size() > 0) {
+                    if (result.size() > 0) {
 
                         pageSize = result.size();
                         prList.addAll(result);
 
-                    }
-                    else {
+                    } else {
 
                         Toasty.info(context, getString(R.string.noMoreData));
                         adapter.setMoreDataAvailable(false);
@@ -235,8 +236,7 @@ public class PullRequestsFragment extends Fragment {
 
                     adapter.notifyDataChanged();
 
-                }
-                else {
+                } else {
 
                     Log.e(TAG, String.valueOf(response.code()));
 

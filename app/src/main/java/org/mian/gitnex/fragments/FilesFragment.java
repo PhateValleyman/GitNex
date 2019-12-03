@@ -3,14 +3,6 @@ package org.mian.gitnex.fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +13,16 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.FileViewActivity;
 import org.mian.gitnex.adapters.FilesAdapter;
@@ -29,10 +31,12 @@ import org.mian.gitnex.models.Files;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.FilesViewModel;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
 import moe.feng.common.view.breadcrumbs.BreadcrumbsView;
 import moe.feng.common.view.breadcrumbs.DefaultBreadcrumbsCallback;
 import moe.feng.common.view.breadcrumbs.model.BreadcrumbItem;
@@ -43,14 +47,14 @@ import moe.feng.common.view.breadcrumbs.model.BreadcrumbItem;
 
 public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapterListener {
 
+    private static String repoNameF = "param2";
+    private static String repoOwnerF = "param1";
     private ProgressBar mProgressBar;
     private FilesAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataFiles;
     private LinearLayout filesFrame;
     private TextView fileStructure;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
     private BreadcrumbsView mBreadcrumbsView;
 
     private String repoName;
@@ -68,6 +72,12 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
         args.putString(repoNameF, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private static BreadcrumbItem createItem(String title) {
+        List<String> list = new ArrayList<>();
+        list.add(title);
+        return new BreadcrumbItem(list);
     }
 
     @Override
@@ -112,18 +122,12 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
         fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName);
 
-        return  v;
+        return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    private static BreadcrumbItem createItem(String title) {
-        List<String> list = new ArrayList<>();
-        list.add(title);
-        return new BreadcrumbItem(list);
     }
 
     @Override
@@ -145,7 +149,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
             @Override
             public void onNavigateBack(BreadcrumbItem item, int position) {
 
-                if(position == 0) {
+                if (position == 0) {
                     fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName);
                     fileStructure.setText("");
                     return;
@@ -173,11 +177,10 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
         Intent intent = new Intent(getContext(), FileViewActivity.class);
 
-        if(!fileStructure.getText().toString().equals("Root")) {
+        if (!fileStructure.getText().toString().equals("Root")) {
 
-            intent.putExtra("singleFileName", fileStructure.getText().toString()+"/"+fileName);
-        }
-        else {
+            intent.putExtra("singleFileName", fileStructure.getText().toString() + "/" + fileName);
+        } else {
 
             intent.putExtra("singleFileName", fileName);
         }
@@ -198,13 +201,12 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
                 adapter = new FilesAdapter(getContext(), filesListMain, FilesFragment.this);
 
                 mBreadcrumbsView.removeItemAfter(1);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mRecyclerView.setAdapter(adapter);
                     filesFrame.setVisibility(View.VISIBLE);
                     noDataFiles.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     mRecyclerView.setVisibility(View.VISIBLE);
                     adapter.notifyDataSetChanged();
                     mRecyclerView.setAdapter(adapter);
@@ -229,13 +231,12 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
             @Override
             public void onChanged(@Nullable List<Files> filesListMain2) {
                 adapter = new FilesAdapter(getContext(), filesListMain2, FilesFragment.this);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mRecyclerView.setAdapter(adapter);
                     filesFrame.setVisibility(View.VISIBLE);
                     noDataFiles.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     mRecyclerView.setVisibility(View.VISIBLE);
                     adapter.notifyDataSetChanged();
                     mRecyclerView.setAdapter(adapter);
@@ -274,7 +275,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
                 return false;

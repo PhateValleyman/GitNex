@@ -20,6 +20,15 @@ public class Branches {
         return name;
     }
 
+    public commitObject getCommit() {
+        return commit;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public class commitObject {
 
         private String id;
@@ -28,25 +37,6 @@ public class Branches {
         private Date timestamp;
 
         private authorObject author;
-
-        public class authorObject {
-
-            private String name;
-            private String email;
-            private String username;
-
-            public String getName() {
-                return name;
-            }
-
-            public String getEmail() {
-                return email;
-            }
-
-            public String getUsername() {
-                return username;
-            }
-        }
 
         public String getId() {
             return id;
@@ -67,14 +57,24 @@ public class Branches {
         public Date getTimestamp() {
             return timestamp;
         }
-    }
 
-    public commitObject getCommit() {
-        return commit;
-    }
+        public class authorObject {
 
-    @Override
-    public String toString() {
-        return name;
+            private String name;
+            private String email;
+            private String username;
+
+            public String getName() {
+                return name;
+            }
+
+            public String getEmail() {
+                return email;
+            }
+
+            public String getUsername() {
+                return username;
+            }
+        }
     }
 }

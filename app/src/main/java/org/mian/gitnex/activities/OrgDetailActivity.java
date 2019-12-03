@@ -1,6 +1,11 @@
 package org.mian.gitnex.activities;
 
-import com.google.android.material.tabs.TabLayout;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -8,11 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+
+import com.google.android.material.tabs.TabLayout;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.fragments.MembersByOrgFragment;
 import org.mian.gitnex.fragments.OrgBottomSheetFragment;
@@ -20,6 +23,7 @@ import org.mian.gitnex.fragments.OrganizationInfoFragment;
 import org.mian.gitnex.fragments.RepositoriesByOrgFragment;
 import org.mian.gitnex.fragments.TeamsByOrgFragment;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.Objects;
 
 /**
@@ -104,10 +108,9 @@ public class OrgDetailActivity extends AppCompatActivity implements OrgBottomShe
 
             TinyDB tinyDb = new TinyDB(getApplicationContext());
             String orgName;
-            if(getIntent().getStringExtra("orgName") != null || !getIntent().getStringExtra("orgName").equals("")) {
+            if (getIntent().getStringExtra("orgName") != null || !getIntent().getStringExtra("orgName").equals("")) {
                 orgName = getIntent().getStringExtra("orgName");
-            }
-            else {
+            } else {
                 orgName = tinyDb.getString("orgName");
             }
 

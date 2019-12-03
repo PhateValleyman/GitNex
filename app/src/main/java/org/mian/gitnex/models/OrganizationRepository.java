@@ -28,60 +28,60 @@ public class OrganizationRepository {
         this.readme = readme;
     }
 
-    public void setAuto_init(boolean auto_init) {
-        this.auto_init = auto_init;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setGitignores(String gitignores) {
-        this.gitignores = gitignores;
-    }
-
-    public void setLicense(String license) {
-        this.license = license;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setIs_private(boolean is_private) {
-        this.is_private = is_private;
-    }
-
-    public void setReadme(String readme) {
-        this.readme = readme;
-    }
-
     public boolean isAuto_init() {
         return auto_init;
+    }
+
+    public void setAuto_init(boolean auto_init) {
+        this.auto_init = auto_init;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getGitignores() {
         return gitignores;
+    }
+
+    public void setGitignores(String gitignores) {
+        this.gitignores = gitignores;
     }
 
     public String getLicense() {
         return license;
     }
 
+    public void setLicense(String license) {
+        this.license = license;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isIs_private() {
         return is_private;
     }
 
+    public void setIs_private(boolean is_private) {
+        this.is_private = is_private;
+    }
+
     public String getReadme() {
         return readme;
+    }
+
+    public void setReadme(String readme) {
+        this.readme = readme;
     }
 
 }

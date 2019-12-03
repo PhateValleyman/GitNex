@@ -1,10 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -20,10 +15,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.JsonElement;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -35,11 +35,16 @@ import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.Milestones;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -48,17 +53,14 @@ import java.util.List;
 public class EditIssueActivity extends AppCompatActivity implements View.OnClickListener {
 
     final Context ctx = this;
+    List<Milestones> milestonesList = new ArrayList<>();
     private View.OnClickListener onClickListener;
-
     private EditText editIssueTitle;
     private SocialAutoCompleteTextView editIssueDescription;
     private TextView editIssueDueDate;
     private Button editIssueButton;
     private Spinner editIssueMilestoneSpinner;
-
     private String msState = "open";
-
-    List<Milestones> milestonesList = new ArrayList<>();
     private ArrayAdapter<Mention> defaultMentionAdapter;
 
     @Override
@@ -99,12 +101,11 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
         editIssueDueDate.setOnClickListener(this);
         editIssueButton.setOnClickListener(this);
 
-        if(!tinyDb.getString("issueNumber").isEmpty()) {
+        if (!tinyDb.getString("issueNumber").isEmpty()) {
 
-            if(tinyDb.getString("issueType").equals("pr")) {
+            if (tinyDb.getString("issueType").equals("pr")) {
                 toolbar_title.setText(getString(R.string.editPrNavHeader, String.valueOf(issueIndex)));
-            }
-            else {
+            } else {
                 toolbar_title.setText(getString(R.string.editIssueNavHeader, String.valueOf(issueIndex)));
             }
         }
@@ -142,7 +143,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
                     assert response.body() != null;
                     String fullName = "";
                     for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
+                        if (!response.body().get(i).getFull_name().equals("")) {
                             fullName = response.body().get(i).getFull_name();
                         }
                         defaultMentionAdapter.add(
@@ -195,7 +196,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
         String editIssueDescriptionForm = editIssueDescription.getText().toString();
         String editIssueDueDateForm = editIssueDueDate.getText().toString();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
@@ -244,12 +245,11 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
-                    if(tinyDb.getString("issueType").equals("pr")) {
+                    if (tinyDb.getString("issueType").equals("pr")) {
                         Toasty.info(getApplicationContext(), getString(R.string.editPrSuccessMessage));
-                    }
-                    else {
+                    } else {
                         Toasty.info(getApplicationContext(), getString(R.string.editIssueSuccessMessage));
                     }
 
@@ -257,8 +257,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
                     tinyDb.putBoolean("resumeIssues", true);
                     finish();
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -266,8 +265,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+                } else {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.genericError));
@@ -309,8 +307,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
 
-        }
-        else if(v == editIssueButton) {
+        } else if (v == editIssueButton) {
             processEditIssue();
         }
 
@@ -328,19 +325,19 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
 
-                if(response.code() == 200) {
+                if (response.code() == 200) {
 
                     assert response.body() != null;
                     editIssueTitle.setText(response.body().getTitle());
                     editIssueDescription.setText(response.body().getBody());
 
                     int msId = 0;
-                    if(response.body().getMilestone() != null) {
+                    if (response.body().getMilestone() != null) {
                         msId = response.body().getMilestone().getId();
                     }
 
                     // get milestones list
-                    if(response.body().getId() > 0) {
+                    if (response.body().getId() > 0) {
 
                         Call<List<Milestones>> call_ = RetrofitClient
                                 .getInstance(instanceUrl, getApplicationContext())
@@ -371,7 +368,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
                                             );
                                             milestonesList.add(data);
 
-                                            if(finalMsId == milestonesList_.get(i).getId()) {
+                                            if (finalMsId == milestonesList_.get(i).getId()) {
                                                 finalMsId1 = i + 1;
                                             }
 
@@ -384,7 +381,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
                                     adapter_.setDropDownViewResource(R.layout.spinner_dropdown_item);
                                     editIssueMilestoneSpinner.setAdapter(adapter_);
 
-                                    if(milestonesList_.size() > 0) {
+                                    if (milestonesList_.size() > 0) {
                                         editIssueMilestoneSpinner.setSelection(finalMsId1);
                                     }
                                     enableProcessButton();
@@ -402,7 +399,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
                     }
                     // get milestones list
 
-                    if(response.body().getDue_date() != null) {
+                    if (response.body().getDue_date() != null) {
 
                         @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("yyyy-M-dd");
                         String dueDate = formatter.format(response.body().getDue_date());
@@ -411,16 +408,14 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
                     }
                     //enableProcessButton();
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+                } else {
 
                     Toasty.info(getApplicationContext(), getString(R.string.genericError));
 
@@ -439,8 +434,8 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
     private void disableProcessButton() {
 
         editIssueButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         editIssueButton.setBackground(shape);
 
@@ -449,8 +444,8 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
     private void enableProcessButton() {
 
         editIssueButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         editIssueButton.setBackground(shape);
 

@@ -2,6 +2,13 @@ package org.mian.gitnex.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -11,18 +18,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.ProfileFollowersAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.ProfileFollowersViewModel;
+
 import java.util.List;
 
 /**
@@ -31,13 +34,12 @@ import java.util.List;
 
 public class ProfileFollowersFragment extends Fragment {
 
+    private static String repoNameF = "param2";
+    private static String repoOwnerF = "param1";
     private ProgressBar mProgressBar;
     private ProfileFollowersAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataFollowers;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
-
     private String repoName;
     private String repoOwner;
 
@@ -114,11 +116,10 @@ public class ProfileFollowersFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<UserInfo> pfListMain) {
                 adapter = new ProfileFollowersAdapter(getContext(), pfListMain);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataFollowers.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mRecyclerView.setAdapter(adapter);
                     noDataFollowers.setVisibility(View.VISIBLE);

@@ -2,6 +2,13 @@ package org.mian.gitnex.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -11,18 +18,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.ReleasesAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.Releases;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.ReleasesViewModel;
+
 import java.util.List;
 
 /**
@@ -31,13 +34,12 @@ import java.util.List;
 
 public class ReleasesFragment extends Fragment {
 
+    private static String repoNameF = "param2";
+    private static String repoOwnerF = "param1";
     private ProgressBar mProgressBar;
     private ReleasesAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataReleases;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
-
     private String repoName;
     private String repoOwner;
 
@@ -116,7 +118,7 @@ public class ReleasesFragment extends Fragment {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("updateReleases")) {
+        if (tinyDb.getBoolean("updateReleases")) {
             ReleasesViewModel.loadReleasesList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, getContext());
             tinyDb.putBoolean("updateReleases", false);
         }
@@ -135,10 +137,6 @@ public class ReleasesFragment extends Fragment {
         mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
     private void fetchDataAsync(String instanceUrl, String instanceToken, String owner, String repo) {
 
         ReleasesViewModel releasesModel = new ViewModelProvider(this).get(ReleasesViewModel.class);
@@ -147,11 +145,10 @@ public class ReleasesFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Releases> releasesListMain) {
                 adapter = new ReleasesAdapter(getContext(), releasesListMain);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataReleases.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mRecyclerView.setAdapter(adapter);
                     noDataReleases.setVisibility(View.VISIBLE);
@@ -160,6 +157,10 @@ public class ReleasesFragment extends Fragment {
             }
         });
 
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 
 }

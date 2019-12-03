@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.mian.gitnex.R;
+
 import java.util.List;
 
 /**
@@ -18,18 +21,6 @@ import java.util.List;
 public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.SponsorsViewHolder> {
 
     private List<CharSequence> sponsorsList;
-
-    static class SponsorsViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView sponsorText;
-
-        private SponsorsViewHolder(View itemView) {
-            super(itemView);
-
-            sponsorText = itemView.findViewById(R.id.sponsorText);
-
-        }
-    }
 
     public SponsorsAdapter(List<CharSequence> sponsorsListMain) {
         this.sponsorsList = sponsorsListMain;
@@ -54,6 +45,18 @@ public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.Sponso
     @Override
     public int getItemCount() {
         return sponsorsList.size();
+    }
+
+    static class SponsorsViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView sponsorText;
+
+        private SponsorsViewHolder(View itemView) {
+            super(itemView);
+
+            sponsorText = itemView.findViewById(R.id.sponsorText);
+
+        }
     }
 
 }

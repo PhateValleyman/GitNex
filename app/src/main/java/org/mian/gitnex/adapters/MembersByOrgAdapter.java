@@ -10,10 +10,13 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.UserInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,17 +29,36 @@ public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
     private List<UserInfo> membersList;
     private Context mCtx;
     private List<UserInfo> membersListFull;
+    private Filter membersFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<UserInfo> filteredList = new ArrayList<>();
 
-    private class ViewHolder {
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(membersListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
-        private ImageView memberAvatar;
-        private TextView memberName;
+                for (UserInfo item : membersListFull) {
+                    if (item.getFullname().toLowerCase().contains(filterPattern) || item.getLogin().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
 
-        ViewHolder(View v) {
-            memberAvatar  = v.findViewById(R.id.memberAvatar);
-            memberName  = v.findViewById(R.id.memberName);
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
         }
-    }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            membersList.clear();
+            membersList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public MembersByOrgAdapter(Context mCtx, List<UserInfo> membersListMain) {
         this.mCtx = mCtx;
@@ -70,8 +92,7 @@ public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
             finalView = LayoutInflater.from(mCtx).inflate(R.layout.members_by_org_list, null);
             viewHolder = new MembersByOrgAdapter.ViewHolder(finalView);
             finalView.setTag(viewHolder);
-        }
-        else {
+        } else {
             viewHolder = (MembersByOrgAdapter.ViewHolder) finalView.getTag();
         }
 
@@ -85,10 +106,9 @@ public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
         UserInfo currentItem = membersList.get(position);
         Picasso.get().load(currentItem.getAvatar()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewHolder.memberAvatar);
 
-        if(!currentItem.getFullname().equals("")) {
+        if (!currentItem.getFullname().equals("")) {
             viewHolder.memberName.setText(currentItem.getFullname());
-        }
-        else {
+        } else {
             viewHolder.memberName.setText(currentItem.getLogin());
         }
 
@@ -99,35 +119,15 @@ public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
         return membersFilter;
     }
 
-    private Filter membersFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<UserInfo> filteredList = new ArrayList<>();
+    private class ViewHolder {
 
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(membersListFull);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+        private ImageView memberAvatar;
+        private TextView memberName;
 
-                for (UserInfo item : membersListFull) {
-                    if (item.getFullname().toLowerCase().contains(filterPattern) || item.getLogin().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
+        ViewHolder(View v) {
+            memberAvatar = v.findViewById(R.id.memberAvatar);
+            memberName = v.findViewById(R.id.memberName);
         }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            membersList.clear();
-            membersList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
+    }
 
 }

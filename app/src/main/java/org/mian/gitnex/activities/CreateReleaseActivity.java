@@ -1,9 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
@@ -17,6 +13,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -26,8 +26,12 @@ import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.Releases;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -35,8 +39,10 @@ import java.util.List;
 
 public class CreateReleaseActivity extends AppCompatActivity {
 
-    private View.OnClickListener onClickListener;
+    final Context ctx = this;
     public ImageView closeActivity;
+    List<Branches> branchesList = new ArrayList<>();
+    private View.OnClickListener onClickListener;
     private EditText releaseTagName;
     private Spinner releaseBranch;
     private EditText releaseTitle;
@@ -44,9 +50,11 @@ public class CreateReleaseActivity extends AppCompatActivity {
     private CheckBox releaseType;
     private CheckBox releaseDraft;
     private Button createNewRelease;
-    final Context ctx = this;
-
-    List<Branches> branchesList = new ArrayList<>();
+    private View.OnClickListener createReleaseListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            processNewRelease();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +101,7 @@ public class CreateReleaseActivity extends AppCompatActivity {
         createNewRelease = findViewById(R.id.createNewRelease);
         disableProcessButton();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             disableProcessButton();
 
@@ -104,12 +112,6 @@ public class CreateReleaseActivity extends AppCompatActivity {
         }
 
     }
-
-    private View.OnClickListener createReleaseListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewRelease();
-        }
-    };
 
     private void processNewRelease() {
 
@@ -131,21 +133,21 @@ public class CreateReleaseActivity extends AppCompatActivity {
         boolean newReleaseType = releaseType.isChecked();
         boolean newReleaseDraft = releaseDraft.isChecked();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(newReleaseTagName.equals("")) {
+        if (newReleaseTagName.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.tagNameErrorEmpty));
             return;
 
         }
 
-        if(newReleaseTitle.equals("")) {
+        if (newReleaseTitle.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.titleErrorEmpty));
             return;
@@ -181,29 +183,25 @@ public class CreateReleaseActivity extends AppCompatActivity {
                     enableProcessButton();
                     finish();
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
-                     AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                             ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                             ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                             ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+                    AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 403) {
+                } else if (response.code() == 403) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                }
-                else if(response.code() == 404) {
+                } else if (response.code() == 404) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                }
-                else {
+                } else {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.genericError));
@@ -233,13 +231,13 @@ public class CreateReleaseActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<List<Branches>> call, @NonNull retrofit2.Response<List<Branches>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         List<Branches> branchesList_ = response.body();
 
                         assert branchesList_ != null;
-                        if(branchesList_.size() > 0) {
+                        if (branchesList_.size() > 0) {
                             for (int i = 0; i < branchesList_.size(); i++) {
 
                                 Branches data = new Branches(
@@ -258,8 +256,7 @@ public class CreateReleaseActivity extends AppCompatActivity {
                         enableProcessButton();
 
                     }
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -290,8 +287,8 @@ public class CreateReleaseActivity extends AppCompatActivity {
     private void disableProcessButton() {
 
         createNewRelease.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         createNewRelease.setBackground(shape);
 
@@ -300,8 +297,8 @@ public class CreateReleaseActivity extends AppCompatActivity {
     private void enableProcessButton() {
 
         createNewRelease.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         createNewRelease.setBackground(shape);
 

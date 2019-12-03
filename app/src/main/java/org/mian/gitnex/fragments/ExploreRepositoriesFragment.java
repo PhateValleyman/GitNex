@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.ExploreRepositoriesAdapter;
@@ -25,16 +27,19 @@ import org.mian.gitnex.models.ExploreRepositories;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.List;
 import java.util.Objects;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
-+ * Template Author M M Arif
-+ * Author 6543
-+ */
+ * + * Template Author M M Arif
+ * + * Author 6543
+ * +
+ */
 
 public class ExploreRepositoriesFragment extends Fragment {
 
@@ -96,7 +101,7 @@ public class ExploreRepositoriesFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    if(!searchKeyword.getText().toString().equals("")) {
+                    if (!searchKeyword.getText().toString().equals("")) {
                         mProgressBar.setVisibility(View.VISIBLE);
                         mRecyclerView.setVisibility(View.GONE);
                         loadSearchReposList(instanceUrl, instanceToken, loginUid, searchKeyword.getText().toString(), repoTypeInclude, sort, order, getContext(), limit);
@@ -152,14 +157,13 @@ public class ExploreRepositoriesFragment extends Fragment {
                 DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        if(adapter.getItemCount() > 0) {
+        if (adapter.getItemCount() > 0) {
 
             mRecyclerView.setAdapter(adapter);
             noData.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
 
-        }
-        else {
+        } else {
 
             noData.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);

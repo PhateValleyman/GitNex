@@ -34,84 +34,6 @@ public class Releases {
         this.tag_commitish = tag_commitish;
     }
 
-    public class authorObject {
-
-        private int id;
-        private String login;
-        private String full_name;
-        private String email;
-        private String avatar_url;
-        private String language;
-        private String username;
-
-        public int getId() {
-            return id;
-        }
-
-        public String getLogin() {
-            return login;
-        }
-
-        public String getFull_name() {
-            return full_name;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public String getAvatar_url() {
-            return avatar_url;
-        }
-
-        public String getLanguage() {
-            return language;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-    }
-
-   public class assetsObject {
-
-        private int id;
-        private String name;
-        private int size;
-        private int download_count;
-        private Date created_at;
-        private String uuid;
-        private String browser_download_url;
-
-        public int getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getSize() {
-            return size;
-        }
-
-        public int getDownload_count() {
-            return download_count;
-        }
-
-        public Date getCreated_at() {
-            return created_at;
-        }
-
-        public String getUuid() {
-            return uuid;
-        }
-
-        public String getBrowser_download_url() {
-            return browser_download_url;
-        }
-    }
-
     public int getId() {
         return id;
     }
@@ -166,5 +88,83 @@ public class Releases {
 
     public List<assetsObject> getAssets() {
         return assets;
+    }
+
+    public class authorObject {
+
+        private int id;
+        private String login;
+        private String full_name;
+        private String email;
+        private String avatar_url;
+        private String language;
+        private String username;
+
+        public int getId() {
+            return id;
+        }
+
+        public String getLogin() {
+            return login;
+        }
+
+        public String getFull_name() {
+            return full_name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getAvatar_url() {
+            return avatar_url;
+        }
+
+        public String getLanguage() {
+            return language;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+    }
+
+    public class assetsObject {
+
+        private int id;
+        private String name;
+        private int size;
+        private int download_count;
+        private Date created_at;
+        private String uuid;
+        private String browser_download_url;
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public int getDownload_count() {
+            return download_count;
+        }
+
+        public Date getCreated_at() {
+            return created_at;
+        }
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public String getBrowser_download_url() {
+            return browser_download_url;
+        }
     }
 }

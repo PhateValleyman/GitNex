@@ -12,17 +12,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
 import com.vdurmont.emoji.EmojiParser;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
+import org.mian.gitnex.helpers.ClickListener;
+import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.models.IssueComments;
-import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.helpers.ClickListener;
 import org.ocpsoft.prettytime.PrettyTime;
+
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,11 +40,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.RecyclerView;
+
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.core.CorePlugin;
@@ -62,87 +67,6 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
     private List<IssueComments> issuesComments;
     private Context mCtx;
 
-    static class IssueCommentViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView issueNumber;
-        private TextView commendId;
-        private ImageView issueCommenterAvatar;
-        private TextView issueComment;
-        private TextView issueCommentDate;
-        private ImageView commentsOptionsMenu;
-        private TextView commendBodyRaw;
-        private TextView commentModified;
-
-        private IssueCommentViewHolder(View itemView) {
-            super(itemView);
-
-            issueNumber = itemView.findViewById(R.id.issueNumber);
-            commendId = itemView.findViewById(R.id.commendId);
-            issueCommenterAvatar = itemView.findViewById(R.id.issueCommenterAvatar);
-            issueComment = itemView.findViewById(R.id.issueComment);
-            issueCommentDate = itemView.findViewById(R.id.issueCommentDate);
-            commentsOptionsMenu = itemView.findViewById(R.id.commentsOptionsMenu);
-            commendBodyRaw = itemView.findViewById(R.id.commendBodyRaw);
-            commentModified = itemView.findViewById(R.id.commentModified);
-
-            commentsOptionsMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    final Context context = v.getContext();
-                    Context context_ = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-
-                    PopupMenu popupMenu = new PopupMenu(context_, v);
-                    popupMenu.inflate(R.menu.issue_comment_menu);
-
-                    Object menuHelper;
-                    Class[] argTypes;
-                    try {
-
-                        Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
-                        fMenuHelper.setAccessible(true);
-                        menuHelper = fMenuHelper.get(popupMenu);
-                        argTypes = new Class[] { boolean.class };
-                        menuHelper.getClass().getDeclaredMethod("setForceShowIcon",
-                                argTypes).invoke(menuHelper, true);
-
-                    } catch (Exception e) {
-
-                        popupMenu.show();
-                        return;
-
-                    }
-
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.commentMenuEdit:
-
-                                    Intent intent = new Intent(context, ReplyToIssueActivity.class);
-                                    intent.putExtra("commentId", commendId.getText());
-                                    intent.putExtra("commentAction", "edit");
-                                    intent.putExtra("commentBody", commendBodyRaw.getText());
-                                    context.startActivity(intent);
-                                    break;
-
-                                case R.id.commentMenuDelete:
-
-                                    break;
-
-                            }
-                            return false;
-                        }
-                    });
-
-                    popupMenu.show();
-
-                }
-            });
-
-        }
-    }
-
     public IssueCommentsAdapter(Context mCtx, List<IssueComments> issuesCommentsMain) {
         this.mCtx = mCtx;
         this.issuesComments = issuesCommentsMain;
@@ -166,7 +90,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
         IssueComments currentItem = issuesComments.get(position);
 
-        if(!loginUid.equals(currentItem.getUser().getUsername())) {
+        if (!loginUid.equals(currentItem.getUser().getUsername())) {
             holder.commentsOptionsMenu.setVisibility(View.INVISIBLE);
         }
         holder.commendId.setText(String.valueOf(currentItem.getId()));
@@ -248,13 +172,12 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
         String edited;
 
-        if(!currentItem.getUpdated_at().equals(currentItem.getCreated_at())) {
+        if (!currentItem.getUpdated_at().equals(currentItem.getCreated_at())) {
             edited = mCtx.getResources().getString(R.string.colorfulBulletSpan) + mCtx.getResources().getString(R.string.modifiedText);
             holder.commentModified.setVisibility(View.VISIBLE);
             holder.commentModified.setText(edited);
             holder.commentModified.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getUpdated_at()), mCtx));
-        }
-        else {
+        } else {
             holder.commentModified.setVisibility(View.INVISIBLE);
         }
 
@@ -285,6 +208,87 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
     @Override
     public int getItemCount() {
         return issuesComments.size();
+    }
+
+    static class IssueCommentViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView issueNumber;
+        private TextView commendId;
+        private ImageView issueCommenterAvatar;
+        private TextView issueComment;
+        private TextView issueCommentDate;
+        private ImageView commentsOptionsMenu;
+        private TextView commendBodyRaw;
+        private TextView commentModified;
+
+        private IssueCommentViewHolder(View itemView) {
+            super(itemView);
+
+            issueNumber = itemView.findViewById(R.id.issueNumber);
+            commendId = itemView.findViewById(R.id.commendId);
+            issueCommenterAvatar = itemView.findViewById(R.id.issueCommenterAvatar);
+            issueComment = itemView.findViewById(R.id.issueComment);
+            issueCommentDate = itemView.findViewById(R.id.issueCommentDate);
+            commentsOptionsMenu = itemView.findViewById(R.id.commentsOptionsMenu);
+            commendBodyRaw = itemView.findViewById(R.id.commendBodyRaw);
+            commentModified = itemView.findViewById(R.id.commentModified);
+
+            commentsOptionsMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    final Context context = v.getContext();
+                    Context context_ = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+
+                    PopupMenu popupMenu = new PopupMenu(context_, v);
+                    popupMenu.inflate(R.menu.issue_comment_menu);
+
+                    Object menuHelper;
+                    Class[] argTypes;
+                    try {
+
+                        Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
+                        fMenuHelper.setAccessible(true);
+                        menuHelper = fMenuHelper.get(popupMenu);
+                        argTypes = new Class[]{boolean.class};
+                        menuHelper.getClass().getDeclaredMethod("setForceShowIcon",
+                                argTypes).invoke(menuHelper, true);
+
+                    } catch (Exception e) {
+
+                        popupMenu.show();
+                        return;
+
+                    }
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.commentMenuEdit:
+
+                                    Intent intent = new Intent(context, ReplyToIssueActivity.class);
+                                    intent.putExtra("commentId", commendId.getText());
+                                    intent.putExtra("commentAction", "edit");
+                                    intent.putExtra("commentBody", commendBodyRaw.getText());
+                                    context.startActivity(intent);
+                                    break;
+
+                                case R.id.commentMenuDelete:
+
+                                    break;
+
+                            }
+                            return false;
+                        }
+                    });
+
+                    popupMenu.show();
+
+                }
+            });
+
+        }
     }
 
 }

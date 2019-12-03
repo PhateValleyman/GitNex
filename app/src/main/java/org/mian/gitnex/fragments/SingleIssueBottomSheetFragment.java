@@ -1,12 +1,19 @@
 package org.mian.gitnex.fragments;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.activities.AddRemoveAssigneesActivity;
@@ -17,10 +24,7 @@ import org.mian.gitnex.activities.MergePullRequestActivity;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.util.TinyDB;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import android.content.ClipboardManager;
-import android.content.ClipData;
+
 import java.util.Objects;
 
 /**
@@ -57,27 +61,24 @@ public class SingleIssueBottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
 
-        if(tinyDB.getString("issueType").equals("pr")) {
+        if (tinyDB.getString("issueType").equals("pr")) {
 
             editIssue.setText(R.string.editPrText);
             copyIssueUrl.setText(R.string.copyPrUrlText);
 
-            if(tinyDB.getBoolean("prMerged")) {
+            if (tinyDB.getBoolean("prMerged")) {
                 mergePullRequest.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 mergePullRequest.setVisibility(View.VISIBLE);
             }
 
-            if(tinyDB.getString("repoType").equals("public")) {
+            if (tinyDB.getString("repoType").equals("public")) {
                 openFilesDiff.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 openFilesDiff.setVisibility(View.GONE);
             }
 
-        }
-        else {
+        } else {
 
             mergePullRequest.setVisibility(View.GONE);
 
@@ -160,7 +161,7 @@ public class SingleIssueBottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
 
-        if(tinyDB.getString("issueType").equals("issue")) {
+        if (tinyDB.getString("issueType").equals("issue")) {
 
             if (tinyDB.getString("issueState").equals("open")) { // close issue
 
@@ -192,8 +193,7 @@ public class SingleIssueBottomSheetFragment extends BottomSheetDialogFragment {
 
             }
 
-        }
-        else {
+        } else {
 
             reOpenIssue.setVisibility(View.GONE);
             closeIssue.setVisibility(View.GONE);

@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.mian.gitnex.R;
+
 import java.util.List;
 
 /**
@@ -18,18 +21,6 @@ import java.util.List;
 public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditsViewHolder> {
 
     private List<CharSequence> creditsList;
-
-    static class CreditsViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView creditText;
-
-        private CreditsViewHolder(View itemView) {
-            super(itemView);
-
-            creditText = itemView.findViewById(R.id.creditText);
-
-        }
-    }
 
     public CreditsAdapter(List<CharSequence> creditsListMain) {
         this.creditsList = creditsListMain;
@@ -54,6 +45,18 @@ public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditsV
     @Override
     public int getItemCount() {
         return creditsList.size();
+    }
+
+    static class CreditsViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView creditText;
+
+        private CreditsViewHolder(View itemView) {
+            super(itemView);
+
+            creditText = itemView.findViewById(R.id.creditText);
+
+        }
     }
 
 }

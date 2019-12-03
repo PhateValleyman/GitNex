@@ -1,20 +1,23 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.TeamMembersByOrgAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.TeamMembersByOrgViewModel;
+
 import java.util.List;
 
 /**
@@ -46,18 +49,16 @@ public class OrgTeamMembersActivity extends AppCompatActivity {
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
 
-        if(getIntent().getStringExtra("teamTitle") != null && !getIntent().getStringExtra("teamTitle").equals("")) {
+        if (getIntent().getStringExtra("teamTitle") != null && !getIntent().getStringExtra("teamTitle").equals("")) {
             toolbarTitle.setText(getIntent().getStringExtra("teamTitle"));
-        }
-        else {
+        } else {
             toolbarTitle.setText(R.string.orgTeamMembers);
         }
 
         String teamId;
-        if(getIntent().getStringExtra("teamId") != null && !getIntent().getStringExtra("teamId").equals("")){
+        if (getIntent().getStringExtra("teamId") != null && !getIntent().getStringExtra("teamId").equals("")) {
             teamId = getIntent().getStringExtra("teamId");
-        }
-        else {
+        } else {
             teamId = "0";
         }
 
@@ -76,11 +77,10 @@ public class OrgTeamMembersActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<UserInfo> teamMembersListMain) {
                 adapter = new TeamMembersByOrgAdapter(getApplicationContext(), teamMembersListMain);
-                if(adapter.getCount() > 0) {
+                if (adapter.getCount() > 0) {
                     mGridView.setAdapter(adapter);
                     noDataMembers.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mGridView.setAdapter(adapter);
                     noDataMembers.setVisibility(View.VISIBLE);

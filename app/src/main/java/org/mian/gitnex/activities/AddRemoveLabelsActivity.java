@@ -1,16 +1,17 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.JsonElement;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -20,8 +21,12 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -29,11 +34,11 @@ import java.util.List;
 
 public class AddRemoveLabelsActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     private ArrayList<MultiSelectModel> listOfLabels = new ArrayList<>();
     private ArrayList<Integer> issueLabelIds = new ArrayList<>();
     private Boolean labelsFlag = false;
     private MultiSelectDialog multiSelectDialogLabels;
-    final Context ctx = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +76,13 @@ public class AddRemoveLabelsActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         List<Labels> labelsList_ = response.body();
 
                         assert labelsList_ != null;
-                        if(labelsList_.size() > 0) {
+                        if (labelsList_.size() > 0) {
                             for (int i = 0; i < labelsList_.size(); i++) {
 
                                 listOfLabels.add(new MultiSelectModel(labelsList_.get(i).getId(), labelsList_.get(i).getName().trim()));
@@ -96,12 +101,12 @@ public class AddRemoveLabelsActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
-                                if(response.code() == 200) {
+                                if (response.code() == 200) {
 
                                     List<Labels> issueLabelsList = response.body();
 
                                     assert issueLabelsList != null;
-                                    if(issueLabelsList.size() > 0) {
+                                    if (issueLabelsList.size() > 0) {
                                         for (int i = 0; i < issueLabelsList.size(); i++) {
 
                                             issueLabelIds.add(issueLabelsList.get(i).getId());
@@ -110,7 +115,7 @@ public class AddRemoveLabelsActivity extends AppCompatActivity {
                                         labelsFlag = true;
                                     }
 
-                                    if(labelsFlag) {
+                                    if (labelsFlag) {
 
                                         multiSelectDialogLabels = new MultiSelectDialog()
                                                 .title(getResources().getString(R.string.newIssueSelectLabelsListTitle))
@@ -135,8 +140,7 @@ public class AddRemoveLabelsActivity extends AppCompatActivity {
                                                                 integers[i] = Integer.parseInt(items[i]);
                                                             }
 
-                                                        }
-                                                        else {
+                                                        } else {
                                                             integers = new int[0];
                                                         }
 
@@ -151,8 +155,7 @@ public class AddRemoveLabelsActivity extends AppCompatActivity {
                                                     }
                                                 });
 
-                                    }
-                                    else {
+                                    } else {
 
                                         multiSelectDialogLabels = new MultiSelectDialog()
                                                 .title(getResources().getString(R.string.newIssueSelectLabelsListTitle))
@@ -176,8 +179,7 @@ public class AddRemoveLabelsActivity extends AppCompatActivity {
                                                                 integers[i] = Integer.parseInt(items[i]);
                                                             }
 
-                                                        }
-                                                        else {
+                                                        } else {
                                                             integers = new int[0];
                                                         }
 
@@ -208,26 +210,22 @@ public class AddRemoveLabelsActivity extends AppCompatActivity {
                         });
                         // get current issue labels
 
-                    }
-                    else if(response.code() == 401) {
+                    } else if (response.code() == 401) {
 
                         AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                                 getResources().getString(R.string.alertDialogTokenRevokedMessage),
                                 getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                                 getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                    }
-                    else if(response.code() == 403) {
+                    } else if (response.code() == 403) {
 
                         Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                    }
-                    else if(response.code() == 404) {
+                    } else if (response.code() == 404) {
 
                         Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                    }
-                    else {
+                    } else {
 
                         Toasty.info(getApplicationContext(), getString(R.string.genericError));
 
@@ -258,30 +256,26 @@ public class AddRemoveLabelsActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.code() == 200) {
+                if (response.code() == 200) {
 
                     Toasty.info(ctx, ctx.getString(R.string.labelsUpdated));
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 403) {
+                } else if (response.code() == 403) {
 
                     Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                }
-                else if(response.code() == 404) {
+                } else if (response.code() == 404) {
 
                     Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                }
-                else {
+                } else {
 
                     Toasty.info(getApplicationContext(), getString(R.string.genericError));
 

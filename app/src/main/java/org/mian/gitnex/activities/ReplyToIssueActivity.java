@@ -1,10 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -14,9 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -27,7 +27,12 @@ import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -35,14 +40,17 @@ import java.util.List;
 
 public class ReplyToIssueActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     public ImageView closeActivity;
     private View.OnClickListener onClickListener;
-
-    final Context ctx = this;
-
     private SocialAutoCompleteTextView addComment;
     private ArrayAdapter<Mention> defaultMentionAdapter;
     private Button replyButton;
+    private View.OnClickListener replyToIssue = new View.OnClickListener() {
+        public void onClick(View v) {
+            processNewCommentReply();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +72,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
         closeActivity = findViewById(R.id.close);
         TextView toolbar_title = findViewById(R.id.toolbar_title);
 
-        if(!tinyDb.getString("issueTitle").isEmpty()) {
+        if (!tinyDb.getString("issueTitle").isEmpty()) {
             toolbar_title.setText(tinyDb.getString("issueTitle"));
         }
 
@@ -73,7 +81,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
 
         replyButton = findViewById(R.id.replyButton);
 
-        if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
+        if (getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
 
             addComment.setText(getIntent().getStringExtra("commentBody"));
             final String commentId = getIntent().getStringExtra("commentId");
@@ -93,7 +101,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
 
         }
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             disableProcessButton();
 
@@ -132,7 +140,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
                     assert response.body() != null;
                     String fullName = "";
                     for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
+                        if (!response.body().get(i).getFull_name().equals("")) {
                             fullName = response.body().get(i).getFull_name();
                         }
                         defaultMentionAdapter.add(
@@ -164,30 +172,23 @@ public class ReplyToIssueActivity extends AppCompatActivity {
         };
     }
 
-    private View.OnClickListener replyToIssue = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewCommentReply();
-        }
-    };
-
     private void processNewCommentReply() {
 
         String newReplyDT = addComment.getText().toString();
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(newReplyDT.equals("")) {
+        if (newReplyDT.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.commentEmptyError));
 
-        }
-        else {
+        } else {
 
             disableProcessButton();
             replyComment(newReplyDT);
@@ -221,7 +222,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     Toasty.info(getApplicationContext(), getString(R.string.commentSuccess));
                     tinyDb.putBoolean("commentPosted", true);
@@ -229,8 +230,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
                     tinyDb.putBoolean("resumePullRequests", true);
                     finish();
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -238,8 +238,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+                } else {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.commentError));
@@ -260,8 +259,8 @@ public class ReplyToIssueActivity extends AppCompatActivity {
     private void disableProcessButton() {
 
         replyButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         replyButton.setBackground(shape);
 
@@ -270,8 +269,8 @@ public class ReplyToIssueActivity extends AppCompatActivity {
     private void enableProcessButton() {
 
         replyButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         replyButton.setBackground(shape);
 

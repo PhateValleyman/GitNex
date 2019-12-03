@@ -1,21 +1,24 @@
 package org.mian.gitnex.activities;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.RepoWatchersAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.RepoWatchersViewModel;
+
 import java.util.List;
 
 /**
@@ -68,11 +71,10 @@ public class RepoWatchersActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<UserInfo> watchersListMain) {
                 adapter = new RepoWatchersAdapter(getApplicationContext(), watchersListMain);
-                if(adapter.getCount() > 0) {
+                if (adapter.getCount() > 0) {
                     mGridView.setAdapter(adapter);
                     noDataWatchers.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mGridView.setAdapter(adapter);
                     noDataWatchers.setVisibility(View.VISIBLE);

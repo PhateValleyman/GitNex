@@ -2,15 +2,6 @@ package org.mian.gitnex.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +12,17 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.RepositoriesByOrgAdapter;
 import org.mian.gitnex.helpers.Authorization;
@@ -28,6 +30,7 @@ import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.RepositoriesByOrgViewModel;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -37,13 +40,12 @@ import java.util.Objects;
 
 public class RepositoriesByOrgFragment extends Fragment {
 
+    private static String orgNameF = "param2";
     private OnFragmentInteractionListener mListener;
-
     private ProgressBar mProgressBar;
     private RepositoriesByOrgAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noData;
-    private static String orgNameF = "param2";
     private String orgName;
 
     public RepositoriesByOrgFragment() {
@@ -129,11 +131,10 @@ public class RepositoriesByOrgFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<UserRepositories> orgReposListMain) {
                 adapter = new RepositoriesByOrgAdapter(getContext(), orgReposListMain);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noData.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mRecyclerView.setAdapter(adapter);
                     noData.setVisibility(View.VISIBLE);
@@ -157,7 +158,7 @@ public class RepositoriesByOrgFragment extends Fragment {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        if(!connToInternet) {
+        if (!connToInternet) {
             return;
         }
 
@@ -169,7 +170,7 @@ public class RepositoriesByOrgFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
                 return false;

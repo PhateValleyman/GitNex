@@ -32,6 +32,74 @@ public class Issues {
         this.body = body;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public int getComments() {
+        return comments;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
+    public Date getDue_date() {
+        return due_date;
+    }
+
+    public Date getClosed_at() {
+        return closed_at;
+    }
+
+    public userObject getUser() {
+        return user;
+    }
+
+    public List<labelsObject> getLabels() {
+        return labels;
+    }
+
+    public pullRequestObject getPull_request() {
+        return pull_request;
+    }
+
+    public milestoneObject getMilestone() {
+        return milestone;
+    }
+
+    public assigneeObject getAssignee() {
+        return assignee;
+    }
+
+    public List<assigneesObject> getAssignees() {
+        return assignees;
+    }
+
     public class userObject {
 
         private int id;
@@ -230,74 +298,6 @@ public class Issues {
         public String getUsername() {
             return username;
         }
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public int getComments() {
-        return comments;
-    }
-
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public Date getUpdated_at() {
-        return updated_at;
-    }
-
-    public Date getDue_date() {
-        return due_date;
-    }
-
-    public Date getClosed_at() {
-        return closed_at;
-    }
-
-    public userObject getUser() {
-        return user;
-    }
-
-    public List<labelsObject> getLabels() {
-        return labels;
-    }
-
-    public pullRequestObject getPull_request() {
-        return pull_request;
-    }
-
-    public milestoneObject getMilestone() {
-        return milestone;
-    }
-
-    public assigneeObject getAssignee() {
-        return assignee;
-    }
-
-    public List<assigneesObject> getAssignees() {
-        return assignees;
     }
 
 }

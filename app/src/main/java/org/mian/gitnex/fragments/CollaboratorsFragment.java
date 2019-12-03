@@ -2,23 +2,26 @@ package org.mian.gitnex.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.CollaboratorsAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.CollaboratorsViewModel;
+
 import java.util.List;
 
 /**
@@ -27,13 +30,12 @@ import java.util.List;
 
 public class CollaboratorsFragment extends Fragment {
 
+    private static String repoNameF = "param2";
+    private static String repoOwnerF = "param1";
     private ProgressBar mProgressBar;
     private CollaboratorsAdapter adapter;
     private GridView mGridView;
     private TextView noDataCollaborators;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
-
     private String repoName;
     private String repoOwner;
 
@@ -92,10 +94,6 @@ public class CollaboratorsFragment extends Fragment {
         mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
     private void fetchDataAsync(String instanceUrl, String instanceToken, String owner, String repo) {
 
         CollaboratorsViewModel collaboratorsModel = new ViewModelProvider(this).get(CollaboratorsViewModel.class);
@@ -104,11 +102,10 @@ public class CollaboratorsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Collaborators> collaboratorsListMain) {
                 adapter = new CollaboratorsAdapter(getContext(), collaboratorsListMain);
-                if(adapter.getCount() > 0) {
+                if (adapter.getCount() > 0) {
                     mGridView.setAdapter(adapter);
                     noDataCollaborators.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mGridView.setAdapter(adapter);
                     noDataCollaborators.setVisibility(View.VISIBLE);
@@ -117,6 +114,10 @@ public class CollaboratorsFragment extends Fragment {
             }
         });
 
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 
 }

@@ -3,10 +3,6 @@ package org.mian.gitnex.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Authorization;
@@ -22,16 +23,18 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.Organization;
 import org.mian.gitnex.util.TinyDB;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+
 /**
  * Author M M Arif
  */
 
 public class OrganizationInfoFragment extends Fragment {
 
+    private static String orgNameF = "param1";
     private Context ctx = getContext();
     private ProgressBar mProgressBar;
-    private static String orgNameF = "param1";
-
     private String orgName;
     private ImageView orgAvatar;
     private TextView orgDescInfo;
@@ -113,8 +116,7 @@ public class OrganizationInfoFragment extends Fragment {
 
                     }
 
-                }
-                else {
+                } else {
                     Log.e("onFailure", String.valueOf(response.code()));
                 }
 

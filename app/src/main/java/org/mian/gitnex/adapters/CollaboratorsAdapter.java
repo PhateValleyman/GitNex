@@ -8,31 +8,23 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
-import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.models.Collaborators;
+
 import java.util.List;
 
 /**
  * Author M M Arif
  */
 
-public class CollaboratorsAdapter extends BaseAdapter  {
+public class CollaboratorsAdapter extends BaseAdapter {
 
     private List<Collaborators> collaboratorsList;
     private Context mCtx;
-
-    private class ViewHolder {
-
-        private ImageView collaboratorAvatar;
-        private TextView collaboratorName;
-
-        ViewHolder(View v) {
-            collaboratorAvatar  = v.findViewById(R.id.collaboratorAvatar);
-            collaboratorName  = v.findViewById(R.id.collaboratorName);
-        }
-    }
 
     public CollaboratorsAdapter(Context mCtx, List<Collaborators> collaboratorsListMain) {
         this.mCtx = mCtx;
@@ -64,8 +56,7 @@ public class CollaboratorsAdapter extends BaseAdapter  {
             finalView = LayoutInflater.from(mCtx).inflate(R.layout.collaborators_list, null);
             viewHolder = new ViewHolder(finalView);
             finalView.setTag(viewHolder);
-        }
-        else {
+        } else {
             viewHolder = (ViewHolder) finalView.getTag();
         }
 
@@ -79,13 +70,23 @@ public class CollaboratorsAdapter extends BaseAdapter  {
         Collaborators currentItem = collaboratorsList.get(position);
         Picasso.get().load(currentItem.getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(180, 180).centerCrop().into(viewHolder.collaboratorAvatar);
 
-        if(!currentItem.getFull_name().equals("")) {
+        if (!currentItem.getFull_name().equals("")) {
             viewHolder.collaboratorName.setText(currentItem.getFull_name());
-        }
-        else {
+        } else {
             viewHolder.collaboratorName.setText(currentItem.getLogin());
         }
 
+    }
+
+    private class ViewHolder {
+
+        private ImageView collaboratorAvatar;
+        private TextView collaboratorName;
+
+        ViewHolder(View v) {
+            collaboratorAvatar = v.findViewById(R.id.collaboratorAvatar);
+            collaboratorName = v.findViewById(R.id.collaboratorName);
+        }
     }
 
 }

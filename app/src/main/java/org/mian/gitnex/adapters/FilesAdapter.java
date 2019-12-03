@@ -8,11 +8,14 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Files;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +30,82 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
     private List<Files> filesListFull;
 
     private FilesAdapterListener filesListener;
+    private Filter filesFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Files> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(filesListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (Files item : filesListFull) {
+                    if (item.getName().toLowerCase().contains(filterPattern) || item.getPath().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            filesList.clear();
+            filesList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
+
+    public FilesAdapter(Context mCtx, List<Files> filesListMain, FilesAdapterListener filesListener) {
+        this.mCtx = mCtx;
+        this.filesList = filesListMain;
+        filesListFull = new ArrayList<>(filesList);
+        this.filesListener = filesListener;
+    }
+
+    @NonNull
+    @Override
+    public FilesAdapter.FilesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.files_list, parent, false);
+        return new FilesAdapter.FilesViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull FilesAdapter.FilesViewHolder holder, int position) {
+
+        Files currentItem = filesList.get(position);
+
+        holder.fileType.setText(currentItem.getType());
+        holder.fileName.setText(currentItem.getName());
+
+        if (currentItem.getType().equals("file")) {
+            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_file_new));
+        } else if (currentItem.getType().equals("dir")) {
+            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_folder_24));
+        } else {
+            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_question_mark_24));
+        }
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return filesList.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return filesFilter;
+    }
 
     public interface FilesAdapterListener {
         void onClickDir(String str);
+
         void onClickFile(String str);
     }
 
@@ -54,13 +130,11 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
 
                     Context context = v.getContext();
 
-                    if(fileType.getText().toString().equals("file")) {
+                    if (fileType.getText().toString().equals("file")) {
                         filesListener.onClickFile(fileName.getText().toString());
-                    }
-                    else if(fileType.getText().toString().equals("dir")) {
+                    } else if (fileType.getText().toString().equals("dir")) {
                         filesListener.onClickDir(fileName.getText().toString());
-                    }
-                    else {
+                    } else {
                         Toasty.info(context, context.getString(R.string.filesGenericError));
                     }
 
@@ -133,80 +207,5 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
 
         }
     }
-
-    public FilesAdapter(Context mCtx, List<Files> filesListMain, FilesAdapterListener filesListener) {
-        this.mCtx = mCtx;
-        this.filesList = filesListMain;
-        filesListFull = new ArrayList<>(filesList);
-        this.filesListener = filesListener;
-    }
-
-    @NonNull
-    @Override
-    public FilesAdapter.FilesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.files_list, parent, false);
-        return new FilesAdapter.FilesViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull FilesAdapter.FilesViewHolder holder, int position) {
-
-        Files currentItem = filesList.get(position);
-
-        holder.fileType.setText(currentItem.getType());
-        holder.fileName.setText(currentItem.getName());
-
-        if(currentItem.getType().equals("file")) {
-            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_file_new));
-        }
-        else if(currentItem.getType().equals("dir")) {
-            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_folder_24));
-        }
-        else {
-            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_question_mark_24));
-        }
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return filesList.size();
-    }
-
-    @Override
-    public Filter getFilter() {
-        return filesFilter;
-    }
-
-    private Filter filesFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<Files> filteredList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(filesListFull);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (Files item : filesListFull) {
-                    if (item.getName().toLowerCase().contains(filterPattern) || item.getPath().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            filesList.clear();
-            filesList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
 
 }

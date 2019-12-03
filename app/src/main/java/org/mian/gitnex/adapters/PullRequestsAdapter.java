@@ -12,9 +12,12 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.helpers.ClickListener;
@@ -23,6 +26,7 @@ import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.models.PullRequests;
 import org.mian.gitnex.util.TinyDB;
 import org.ocpsoft.prettytime.PrettyTime;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,12 +39,42 @@ import java.util.Locale;
 
 public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
-    private Context context;
     private final int TYPE_LOAD = 0;
+    private Context context;
     private List<PullRequests> prList;
     private List<PullRequests> prListFull;
     private PullRequestsAdapter.OnLoadMoreListener loadMoreListener;
     private boolean isLoading = false, isMoreDataAvailable = true;
+    private Filter prFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<PullRequests> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(prList);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (PullRequests item : prList) {
+                    if (item.getTitle().toLowerCase().contains(filterPattern) || item.getBody().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            prList.clear();
+            prList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public PullRequestsAdapter(Context context, List<PullRequests> prListMain) {
 
@@ -56,11 +90,10 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        if(viewType == TYPE_LOAD){
-            return new PullRequestsAdapter.PullRequestsHolder(inflater.inflate(R.layout.repo_pr_list, parent,false));
-        }
-        else {
-            return new PullRequestsAdapter.LoadHolder(inflater.inflate(R.layout.row_load,parent,false));
+        if (viewType == TYPE_LOAD) {
+            return new PullRequestsAdapter.PullRequestsHolder(inflater.inflate(R.layout.repo_pr_list, parent, false));
+        } else {
+            return new PullRequestsAdapter.LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
         }
 
     }
@@ -68,16 +101,16 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        if(position >= getItemCount()-1 && isMoreDataAvailable && !isLoading && loadMoreListener!=null) {
+        if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
 
             isLoading = true;
             loadMoreListener.onLoadMore();
 
         }
 
-        if(getItemViewType(position) == TYPE_LOAD) {
+        if (getItemViewType(position) == TYPE_LOAD) {
 
-            ((PullRequestsAdapter.PullRequestsHolder)holder).bindData(prList.get(position));
+            ((PullRequestsAdapter.PullRequestsHolder) holder).bindData(prList.get(position));
 
         }
 
@@ -86,10 +119,9 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemViewType(int position) {
 
-        if(prList.get(position).getTitle() != null) {
+        if (prList.get(position).getTitle() != null) {
             return TYPE_LOAD;
-        }
-        else {
+        } else {
             return 1;
         }
 
@@ -99,6 +131,44 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public int getItemCount() {
 
         return prList.size();
+
+    }
+
+    public void setMoreDataAvailable(boolean moreDataAvailable) {
+
+        isMoreDataAvailable = moreDataAvailable;
+
+    }
+
+    public void notifyDataChanged() {
+
+        notifyDataSetChanged();
+        isLoading = false;
+
+    }
+
+    public void setLoadMoreListener(PullRequestsAdapter.OnLoadMoreListener loadMoreListener) {
+
+        this.loadMoreListener = loadMoreListener;
+
+    }
+
+    @Override
+    public Filter getFilter() {
+        return prFilter;
+    }
+
+    public interface OnLoadMoreListener {
+
+        void onLoadMore();
+
+    }
+
+    static class LoadHolder extends RecyclerView.ViewHolder {
+
+        LoadHolder(View itemView) {
+            super(itemView);
+        }
 
     }
 
@@ -157,7 +227,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
         @SuppressLint("SetTextI18n")
-        void bindData(PullRequests prModel){
+        void bindData(PullRequests prModel) {
 
             final TinyDB tinyDb = new TinyDB(context);
             final String locale = tinyDb.getString("locale");
@@ -206,74 +276,5 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
     }
-
-    static class LoadHolder extends RecyclerView.ViewHolder {
-
-        LoadHolder(View itemView) {
-            super(itemView);
-        }
-
-    }
-
-    public void setMoreDataAvailable(boolean moreDataAvailable) {
-
-        isMoreDataAvailable = moreDataAvailable;
-
-    }
-
-    public void notifyDataChanged() {
-
-        notifyDataSetChanged();
-        isLoading = false;
-
-    }
-
-    public interface OnLoadMoreListener {
-
-        void onLoadMore();
-
-    }
-
-    public void setLoadMoreListener(PullRequestsAdapter.OnLoadMoreListener loadMoreListener) {
-
-        this.loadMoreListener = loadMoreListener;
-
-    }
-
-    @Override
-    public Filter getFilter() {
-        return prFilter;
-    }
-
-    private Filter prFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<PullRequests> filteredList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(prList);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (PullRequests item : prList) {
-                    if (item.getTitle().toLowerCase().contains(filterPattern) || item.getBody().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            prList.clear();
-            prList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
 
 }

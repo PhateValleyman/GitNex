@@ -11,9 +11,16 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.OpenRepoInBrowserActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
@@ -22,13 +29,10 @@ import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.util.TinyDB;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import androidx.annotation.NonNull;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Author M M Arif
@@ -39,6 +43,108 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
     private List<UserRepositories> reposList;
     private Context mCtx;
     private List<UserRepositories> reposListFull;
+    private Filter myReposFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<UserRepositories> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(reposListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (UserRepositories item : reposListFull) {
+                    if (item.getFullname().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            reposList.clear();
+            reposList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
+
+    public MyReposListAdapter(Context mCtx, List<UserRepositories> reposListMain) {
+        this.mCtx = mCtx;
+        this.reposList = reposListMain;
+        reposListFull = new ArrayList<>(reposList);
+    }
+
+    @NonNull
+    @Override
+    public MyReposListAdapter.MyReposViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_repos_list, parent, false);
+        return new MyReposListAdapter.MyReposViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyReposListAdapter.MyReposViewHolder holder, int position) {
+
+        UserRepositories currentItem = reposList.get(position);
+        holder.mTextView2My.setVisibility(View.GONE);
+
+        ColorGenerator generator = ColorGenerator.MATERIAL;
+        int color = generator.getColor(currentItem.getName());
+        String firstCharacter = String.valueOf(currentItem.getName().charAt(0));
+
+        TextDrawable drawable = TextDrawable.builder()
+                .beginConfig()
+                .useFont(Typeface.DEFAULT)
+                .fontSize(18)
+                .toUpperCase()
+                .width(28)
+                .height(28)
+                .endConfig()
+                .buildRoundRect(firstCharacter, color, 3);
+
+        if (currentItem.getAvatar_url() != null) {
+            if (!currentItem.getAvatar_url().equals("")) {
+                Picasso.get().load(currentItem.getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.imageMy);
+            } else {
+                holder.imageMy.setImageDrawable(drawable);
+            }
+        } else {
+            holder.imageMy.setImageDrawable(drawable);
+        }
+
+        holder.mTextView1My.setText(currentItem.getName());
+        if (!currentItem.getDescription().equals("")) {
+            holder.mTextView2My.setVisibility(View.VISIBLE);
+            holder.mTextView2My.setText(currentItem.getDescription());
+        }
+        holder.fullNameMy.setText(currentItem.getFullname());
+        if (currentItem.getPrivateFlag()) {
+            holder.repoPrivatePublicMy.setImageResource(R.drawable.ic_lock_bold);
+            holder.repoType.setText(R.string.strPrivate);
+        } else {
+            holder.repoPrivatePublicMy.setImageResource(R.drawable.ic_public);
+            holder.repoType.setText(R.string.strPublic);
+        }
+        holder.repoStarsMy.setText(currentItem.getStars_count());
+        holder.repoForksMy.setText(currentItem.getForks_count());
+        holder.repoOpenIssuesCountMy.setText(currentItem.getOpen_issues_count());
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return reposList.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return myReposFilter;
+    }
 
     static class MyReposViewHolder extends RecyclerView.ViewHolder {
 
@@ -100,7 +206,7 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
                         Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
                         fMenuHelper.setAccessible(true);
                         menuHelper = fMenuHelper.get(popupMenu);
-                        argTypes = new Class[] { boolean.class };
+                        argTypes = new Class[]{boolean.class};
                         menuHelper.getClass().getDeclaredMethod("setForceShowIcon",
                                 argTypes).invoke(menuHelper, true);
 
@@ -148,109 +254,4 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
 
         }
     }
-
-    public MyReposListAdapter(Context mCtx, List<UserRepositories> reposListMain) {
-        this.mCtx = mCtx;
-        this.reposList = reposListMain;
-        reposListFull = new ArrayList<>(reposList);
-    }
-
-    @NonNull
-    @Override
-    public MyReposListAdapter.MyReposViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_repos_list, parent, false);
-        return new MyReposListAdapter.MyReposViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull MyReposListAdapter.MyReposViewHolder holder, int position) {
-
-        UserRepositories currentItem = reposList.get(position);
-        holder.mTextView2My.setVisibility(View.GONE);
-
-        ColorGenerator generator = ColorGenerator.MATERIAL;
-        int color = generator.getColor(currentItem.getName());
-        String firstCharacter = String.valueOf(currentItem.getName().charAt(0));
-
-        TextDrawable drawable = TextDrawable.builder()
-                .beginConfig()
-                .useFont(Typeface.DEFAULT)
-                .fontSize(18)
-                .toUpperCase()
-                .width(28)
-                .height(28)
-                .endConfig()
-                .buildRoundRect(firstCharacter, color, 3);
-
-        if (currentItem.getAvatar_url() != null) {
-            if (!currentItem.getAvatar_url().equals("")) {
-                Picasso.get().load(currentItem.getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.imageMy);
-            } else {
-                holder.imageMy.setImageDrawable(drawable);
-            }
-        }
-        else {
-            holder.imageMy.setImageDrawable(drawable);
-        }
-
-        holder.mTextView1My.setText(currentItem.getName());
-        if (!currentItem.getDescription().equals("")) {
-            holder.mTextView2My.setVisibility(View.VISIBLE);
-            holder.mTextView2My.setText(currentItem.getDescription());
-        }
-        holder.fullNameMy.setText(currentItem.getFullname());
-        if(currentItem.getPrivateFlag()) {
-            holder.repoPrivatePublicMy.setImageResource(R.drawable.ic_lock_bold);
-            holder.repoType.setText(R.string.strPrivate);
-        }
-        else {
-            holder.repoPrivatePublicMy.setImageResource(R.drawable.ic_public);
-            holder.repoType.setText(R.string.strPublic);
-        }
-        holder.repoStarsMy.setText(currentItem.getStars_count());
-        holder.repoForksMy.setText(currentItem.getForks_count());
-        holder.repoOpenIssuesCountMy.setText(currentItem.getOpen_issues_count());
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return reposList.size();
-    }
-
-    @Override
-    public Filter getFilter() {
-        return myReposFilter;
-    }
-
-    private Filter myReposFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<UserRepositories> filteredList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(reposListFull);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (UserRepositories item : reposListFull) {
-                    if (item.getFullname().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            reposList.clear();
-            reposList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
 }

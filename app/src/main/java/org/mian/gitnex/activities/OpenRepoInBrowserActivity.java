@@ -3,7 +3,9 @@ package org.mian.gitnex.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import org.mian.gitnex.util.TinyDB;
 
 /**

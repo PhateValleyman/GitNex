@@ -12,9 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.JsonElement;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -24,8 +27,10 @@ import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.NewFile;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -35,18 +40,21 @@ import retrofit2.Callback;
 
 public class NewFileActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     public ImageView closeActivity;
+    List<Branches> branchesList = new ArrayList<>();
     private View.OnClickListener onClickListener;
     private Button newFileCreate;
-
     private EditText newFileName;
     private EditText newFileContent;
     private EditText newFileBranchName;
     private EditText newFileCommitMessage;
     private Spinner newFileBranchesSpinner;
-    final Context ctx = this;
-
-    List<Branches> branchesList = new ArrayList<>();
+    private View.OnClickListener createFileListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            processNewFile();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,34 +91,32 @@ public class NewFileActivity extends AppCompatActivity {
         newFileBranchesSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
         getBranches(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
 
-        newFileBranchesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
+        newFileBranchesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0,
-                                       View arg1, int arg2, long arg3)
-            {
+                                       View arg1, int arg2, long arg3) {
                 Branches bModelValue = (Branches) newFileBranchesSpinner.getSelectedItem();
                 Log.i("bModelSelected", bModelValue.toString());
 
-                if(bModelValue.toString().equals("No branch")) {
+                if (bModelValue.toString().equals("No branch")) {
                     newFileBranchName.setEnabled(true);
-                }
-                else {
+                } else {
                     newFileBranchName.setEnabled(false);
                     newFileBranchName.setText("");
                 }
 
             }
 
-            public void onNothingSelected(AdapterView<?> arg0) {}
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
         });
 
         disableProcessButton();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             newFileCreate.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(8);
             shape.setColor(getResources().getColor(R.color.hintColor));
             newFileCreate.setBackground(shape);
 
@@ -121,12 +127,6 @@ public class NewFileActivity extends AppCompatActivity {
         }
 
     }
-
-    private View.OnClickListener createFileListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewFile();
-        }
-    };
 
     private void processNewFile() {
 
@@ -148,28 +148,27 @@ public class NewFileActivity extends AppCompatActivity {
 
         Branches currentBranch = (Branches) newFileBranchesSpinner.getSelectedItem();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(newFileName_.equals("") || newFileContent_.equals("") || newFileCommitMessage_.equals("")) {
+        if (newFileName_.equals("") || newFileContent_.equals("") || newFileCommitMessage_.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.newFileRequiredFields));
             return;
 
         }
 
-        if(currentBranch.toString().equals("No branch")) {
+        if (currentBranch.toString().equals("No branch")) {
 
-            if(newFileBranchName_.equals("")) {
+            if (newFileBranchName_.equals("")) {
                 Toasty.info(getApplicationContext(), getString(R.string.newFileRequiredFieldNewBranchName));
                 return;
-            }
-            else {
-                if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
+            } else {
+                if (!appUtil.checkStringsWithDash(newFileBranchName_)) {
 
                     Toasty.info(getApplicationContext(), getString(R.string.newFileInvalidBranchName));
                     return;
@@ -179,12 +178,11 @@ public class NewFileActivity extends AppCompatActivity {
 
         }
 
-        if(appUtil.charactersLength(newFileCommitMessage_) > 255) {
+        if (appUtil.charactersLength(newFileCommitMessage_) > 255) {
 
             Toasty.info(getApplicationContext(), getString(R.string.newFileCommitMessageError));
 
-        }
-        else {
+        } else {
 
             disableProcessButton();
             createNewFile(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, newFileName_, appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString());
@@ -196,10 +194,9 @@ public class NewFileActivity extends AppCompatActivity {
     private void createNewFile(final String instanceUrl, final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch) {
 
         NewFile createNewFileJsonStr;
-        if(currentBranch.equals("No branch")) {
+        if (currentBranch.equals("No branch")) {
             createNewFileJsonStr = new NewFile("", fileContent, fileCommitMessage, fileBranchName);
-        }
-        else {
+        } else {
             createNewFileJsonStr = new NewFile(currentBranch, fileContent, fileCommitMessage, "");
         }
 
@@ -213,14 +210,13 @@ public class NewFileActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.newFileSuccessMessage));
                     finish();
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -228,14 +224,12 @@ public class NewFileActivity extends AppCompatActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+                } else {
 
-                    if(response.code() == 404) {
+                    if (response.code() == 404) {
                         enableProcessButton();
                         Toasty.info(getApplicationContext(), getString(R.string.apiNotFound));
-                    }
-                    else {
+                    } else {
                         enableProcessButton();
                         Toasty.info(getApplicationContext(), getString(R.string.orgCreatedError));
                     }
@@ -265,14 +259,14 @@ public class NewFileActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<List<Branches>> call, @NonNull retrofit2.Response<List<Branches>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         List<Branches> branchesList_ = response.body();
 
                         branchesList.add(new Branches("No branch"));
                         assert branchesList_ != null;
-                        if(branchesList_.size() > 0) {
+                        if (branchesList_.size() > 0) {
                             for (int i = 0; i < branchesList_.size(); i++) {
 
                                 Branches data = new Branches(
@@ -315,8 +309,8 @@ public class NewFileActivity extends AppCompatActivity {
     private void disableProcessButton() {
 
         newFileCreate.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         newFileCreate.setBackground(shape);
 
@@ -325,8 +319,8 @@ public class NewFileActivity extends AppCompatActivity {
     private void enableProcessButton() {
 
         newFileCreate.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         newFileCreate.setBackground(shape);
 

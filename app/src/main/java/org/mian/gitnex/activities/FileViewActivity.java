@@ -12,12 +12,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import com.github.chrisbanes.photoview.PhotoView;
 import com.pddstudio.highlightjs.HighlightJsView;
 import com.pddstudio.highlightjs.models.Theme;
+
 import org.apache.commons.io.FilenameUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -26,6 +29,7 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Files;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -35,11 +39,11 @@ import retrofit2.Callback;
 
 public class FileViewActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     private View.OnClickListener onClickListener;
     private TextView singleFileContents;
     private HighlightJsView singleCodeContents;
     private PhotoView imageView;
-    final Context ctx = this;
     private ProgressBar mProgressBar;
     private byte[] imageData;
 
@@ -97,12 +101,12 @@ public class FileViewActivity extends AppCompatActivity {
                     AppUtil appUtil = new AppUtil();
                     assert response.body() != null;
 
-                    if(!response.body().getContent().equals("")) {
+                    if (!response.body().getContent().equals("")) {
 
                         String fileExtension = FilenameUtils.getExtension(filename);
                         mProgressBar.setVisibility(View.GONE);
 
-                        if(appUtil.imageExtension(fileExtension)) { // file is image
+                        if (appUtil.imageExtension(fileExtension)) { // file is image
 
                             singleFileContents.setVisibility(View.GONE);
                             singleCodeContents.setVisibility(View.GONE);
@@ -112,8 +116,7 @@ public class FileViewActivity extends AppCompatActivity {
                             Drawable imageDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(imageData, 0, imageData.length));
                             imageView.setImageDrawable(imageDrawable);
 
-                        }
-                        else if (appUtil.sourceCodeExtension(fileExtension)) { // file is sourcecode
+                        } else if (appUtil.sourceCodeExtension(fileExtension)) { // file is sourcecode
 
                             imageView.setVisibility(View.GONE);
                             singleFileContents.setVisibility(View.GONE);
@@ -123,8 +126,7 @@ public class FileViewActivity extends AppCompatActivity {
                             singleCodeContents.setShowLineNumbers(true);
                             singleCodeContents.setSource(appUtil.decodeBase64(response.body().getContent()));
 
-                        }
-                        else { // file type not known - plain text view
+                        } else { // file type not known - plain text view
 
                             imageView.setVisibility(View.GONE);
                             singleCodeContents.setVisibility(View.GONE);
@@ -134,32 +136,27 @@ public class FileViewActivity extends AppCompatActivity {
 
                         }
 
-                    }
-                    else {
+                    } else {
                         singleFileContents.setText("");
                         mProgressBar.setVisibility(View.GONE);
                     }
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 403) {
+                } else if (response.code() == 403) {
 
                     Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                }
-                else if(response.code() == 404) {
+                } else if (response.code() == 404) {
 
                     Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                }
-                else {
+                } else {
 
                     Toasty.info(getApplicationContext(), getString(R.string.labelGeneralError));
 

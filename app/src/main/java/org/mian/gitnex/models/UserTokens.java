@@ -23,12 +23,12 @@ public class UserTokens {
         return name;
     }
 
-    public String getSha1() {
-        return sha1;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSha1() {
+        return sha1;
     }
 
     public String getToken_last_eight() {

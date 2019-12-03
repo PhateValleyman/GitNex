@@ -1,9 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -14,6 +10,10 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -22,7 +22,11 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Milestones;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.Calendar;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -30,12 +34,17 @@ import java.util.Calendar;
 
 public class NewMilestoneActivity extends AppCompatActivity implements View.OnClickListener {
 
+    final Context ctx = this;
     private EditText milestoneDueDate;
     private View.OnClickListener onClickListener;
     private EditText milestoneTitle;
     private EditText milestoneDescription;
     private Button createNewMilestoneButton;
-    final Context ctx = this;
+    private View.OnClickListener createMilestoneListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            processNewMilestone();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +63,11 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
         closeActivity.setOnClickListener(onClickListener);
         milestoneDueDate.setOnClickListener(this);
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             createNewMilestoneButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(8);
             shape.setColor(getResources().getColor(R.color.hintColor));
             createNewMilestoneButton.setBackground(shape);
 
@@ -69,12 +78,6 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
         }
 
     }
-
-    private View.OnClickListener createMilestoneListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewMilestone();
-        }
-    };
 
     private void processNewMilestone() {
 
@@ -94,21 +97,21 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
         String newMilestoneDescription = milestoneDescription.getText().toString();
         String newMilestoneDueDate = milestoneDueDate.getText().toString();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(newMilestoneTitle.equals("")) {
+        if (newMilestoneTitle.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.milestoneNameErrorEmpty));
             return;
 
         }
 
-        if(!newMilestoneDescription.equals("")) {
+        if (!newMilestoneDescription.equals("")) {
             if (appUtil.charactersLength(newMilestoneDescription) > 255) {
 
                 Toasty.info(getApplicationContext(), getString(R.string.milestoneDescError));
@@ -117,7 +120,7 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
             }
         }
 
-        if(newMilestoneDueDate.equals("")) {
+        if (newMilestoneDueDate.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.milestoneDateEmpty));
             return;
@@ -146,8 +149,8 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onResponse(@NonNull Call<Milestones> call, @NonNull retrofit2.Response<Milestones> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 201) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 201) {
 
                         TinyDB tinyDb = new TinyDB(getApplicationContext());
                         tinyDb.putBoolean("milestoneCreated", true);
@@ -156,8 +159,7 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
                         finish();
 
                     }
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -165,8 +167,7 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+                } else {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.milestoneCreatedError));
@@ -222,8 +223,8 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
     private void disableProcessButton() {
 
         createNewMilestoneButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         createNewMilestoneButton.setBackground(shape);
 
@@ -232,8 +233,8 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
     private void enableProcessButton() {
 
         createNewMilestoneButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         createNewMilestoneButton.setBackground(shape);
 

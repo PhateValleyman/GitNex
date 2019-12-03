@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.mian.gitnex.R;
 
 /**
@@ -16,7 +17,7 @@ public class Toasty {
     public static void info(Context context, String message) {
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate( context.getResources().getLayout(R.layout.custom_toast), null );
+        View view = inflater.inflate(context.getResources().getLayout(R.layout.custom_toast), null);
 
         TextView text = view.findViewById(R.id.toastText);
         text.setText(message);

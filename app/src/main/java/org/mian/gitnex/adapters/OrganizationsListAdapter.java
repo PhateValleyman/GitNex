@@ -1,7 +1,5 @@
 package org.mian.gitnex.adapters;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -11,12 +9,18 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.OrgDetailActivity;
-import org.mian.gitnex.models.UserOrganizations;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.models.UserOrganizations;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,36 +33,36 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
     private List<UserOrganizations> orgList;
     private Context mCtx;
     private List<UserOrganizations> orgListFull;
+    private Filter orgFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<UserOrganizations> filteredList = new ArrayList<>();
 
-    static class OrganizationsViewHolder extends RecyclerView.ViewHolder {
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(orgListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
 
-        private ImageView image;
-        private TextView mTextView1;
-        private TextView mTextView2;
-
-        private OrganizationsViewHolder(View itemView) {
-            super(itemView);
-            mTextView1 = itemView.findViewById(R.id.orgUsername);
-            mTextView2 = itemView.findViewById(R.id.orgDescription);
-            image = itemView.findViewById(R.id.imageAvatar);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, OrgDetailActivity.class);
-                    intent.putExtra("orgName", mTextView1.getText().toString());
-
-                    TinyDB tinyDb = new TinyDB(context);
-                    tinyDb.putString("orgName", mTextView1.getText().toString());
-                    context.startActivity(intent);
-
+                for (UserOrganizations item : orgListFull) {
+                    if (item.getUsername().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
                 }
-            });
+            }
 
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
         }
-    }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            orgList.clear();
+            orgList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public OrganizationsListAdapter(Context mCtx, List<UserOrganizations> orgsListMain) {
         this.mCtx = mCtx;
@@ -98,35 +102,34 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
         return orgFilter;
     }
 
-    private Filter orgFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<UserOrganizations> filteredList = new ArrayList<>();
+    static class OrganizationsViewHolder extends RecyclerView.ViewHolder {
 
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(orgListFull);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+        private ImageView image;
+        private TextView mTextView1;
+        private TextView mTextView2;
 
-                for (UserOrganizations item : orgListFull) {
-                    if (item.getUsername().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
+        private OrganizationsViewHolder(View itemView) {
+            super(itemView);
+            mTextView1 = itemView.findViewById(R.id.orgUsername);
+            mTextView2 = itemView.findViewById(R.id.orgDescription);
+            image = itemView.findViewById(R.id.imageAvatar);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, OrgDetailActivity.class);
+                    intent.putExtra("orgName", mTextView1.getText().toString());
+
+                    TinyDB tinyDb = new TinyDB(context);
+                    tinyDb.putString("orgName", mTextView1.getText().toString());
+                    context.startActivity(intent);
+
                 }
-            }
+            });
 
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
         }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            orgList.clear();
-            orgList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
+    }
 
 }

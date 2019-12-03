@@ -9,31 +9,93 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.amulyakhare.textdrawable.TextDrawable;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.CreateLabelActivity;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.LabelWidthCalculator;
 import org.mian.gitnex.models.Labels;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import androidx.annotation.NonNull;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Author M M Arif
  */
 
-public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsViewHolder>  {
+public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsViewHolder> {
 
-    private List<Labels> labelsList;
     final private Context mCtx;
+    private List<Labels> labelsList;
     private ArrayList<Integer> labelsArray = new ArrayList<>();
+
+    public LabelsAdapter(Context mCtx, List<Labels> labelsMain) {
+        this.mCtx = mCtx;
+        this.labelsList = labelsMain;
+    }
+
+    @NonNull
+    @Override
+    public LabelsAdapter.LabelsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.labels_list, parent, false);
+        return new LabelsAdapter.LabelsViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull LabelsAdapter.LabelsViewHolder holder, int position) {
+
+        Labels currentItem = labelsList.get(position);
+        int width = 33;
+
+        holder.labelTitle.setText(currentItem.getName());
+        holder.labelId.setText(String.valueOf(currentItem.getId()));
+        holder.labelColor.setText(currentItem.getColor());
+
+        String labelColor = currentItem.getColor();
+        String labelName = currentItem.getName();
+        int color = Color.parseColor("#" + labelColor);
+
+        TextDrawable drawable = TextDrawable.builder()
+                .beginConfig()
+                //.useFont(Typeface.DEFAULT)
+                .bold()
+                .textColor(new ColorInverter().getContrastColor(color))
+                .fontSize(36)
+                .width(LabelWidthCalculator.customWidth(getMaxLabelLength()))
+                .height(60)
+                .endConfig()
+                .buildRoundRect(labelName, color, 8);
+        holder.labelsView.setImageDrawable(drawable);
+
+    }
+
+    private int getMaxLabelLength() {
+
+        for (int i = 0; i < labelsList.size(); i++) {
+
+            Labels labelItem = labelsList.get(i);
+            labelsArray.add(labelItem.getName().length());
+
+        }
+
+        return Collections.max(labelsArray);
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return labelsList.size();
+    }
 
     static class LabelsViewHolder extends RecyclerView.ViewHolder {
 
@@ -68,7 +130,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
                         Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
                         fMenuHelper.setAccessible(true);
                         menuHelper = fMenuHelper.get(popupMenu);
-                        argTypes = new Class[] { boolean.class };
+                        argTypes = new Class[]{boolean.class};
                         menuHelper.getClass().getDeclaredMethod("setForceShowIcon",
                                 argTypes).invoke(menuHelper, true);
 
@@ -113,64 +175,6 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
             });
 
         }
-    }
-
-    public LabelsAdapter(Context mCtx, List<Labels> labelsMain) {
-        this.mCtx = mCtx;
-        this.labelsList = labelsMain;
-    }
-
-    @NonNull
-    @Override
-    public LabelsAdapter.LabelsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.labels_list, parent, false);
-        return new LabelsAdapter.LabelsViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull LabelsAdapter.LabelsViewHolder holder, int position) {
-
-        Labels currentItem = labelsList.get(position);
-        int width = 33;
-
-        holder.labelTitle.setText(currentItem.getName());
-        holder.labelId.setText(String.valueOf(currentItem.getId()));
-        holder.labelColor.setText(currentItem.getColor());
-
-        String labelColor = currentItem.getColor();
-        String labelName = currentItem.getName();
-        int color = Color.parseColor("#" + labelColor);
-
-        TextDrawable drawable = TextDrawable.builder()
-                .beginConfig()
-                //.useFont(Typeface.DEFAULT)
-                .bold()
-                .textColor(new ColorInverter().getContrastColor(color))
-                .fontSize(36)
-                .width(LabelWidthCalculator.customWidth(getMaxLabelLength()))
-                .height(60)
-                .endConfig()
-                .buildRoundRect(labelName, color, 8);
-        holder.labelsView.setImageDrawable(drawable);
-
-    }
-
-    private int getMaxLabelLength() {
-
-        for(int i = 0; i < labelsList.size(); i++) {
-
-            Labels labelItem = labelsList.get(i);
-            labelsArray.add(labelItem.getName().length());
-
-        }
-
-        return Collections.max(labelsArray);
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return labelsList.size();
     }
 
 }

@@ -1,19 +1,9 @@
 package org.mian.gitnex.activities;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.gson.JsonElement;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +12,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.gson.JsonElement;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BranchesFragment;
@@ -40,8 +42,11 @@ import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.models.WatchRepository;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+
 import java.util.Objects;
-import android.net.Uri;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -84,11 +89,11 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        if(tinyDb.getBoolean("enableCounterIssueBadge")) {
+        if (tinyDb.getBoolean("enableCounterIssueBadge")) {
 
             @SuppressLint("InflateParams") View tabHeader = LayoutInflater.from(this).inflate(R.layout.badge, null);
             textViewBadge = tabHeader.findViewById(R.id.counterBadge);
-            if(!tinyDb.getString("issuesCounter").isEmpty()) {
+            if (!tinyDb.getString("issuesCounter").isEmpty()) {
                 getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
             }
             Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader);
@@ -118,7 +123,7 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("enableCounterIssueBadge")) {
+        if (tinyDb.getBoolean("enableCounterIssueBadge")) {
             getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
         }
     }
@@ -172,7 +177,7 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
                 TinyDB tinyDb = new TinyDB(getApplicationContext());
                 String repoFullName = tinyDb.getString("repoFullName");
                 String instanceUrlWithProtocol = "https://" + tinyDb.getString("instanceUrlRaw");
-                if(!tinyDb.getString("instanceUrlWithProtocol").isEmpty()) {
+                if (!tinyDb.getString("instanceUrlWithProtocol").isEmpty()) {
                     instanceUrlWithProtocol = tinyDb.getString("instanceUrlWithProtocol");
                 }
                 Uri url = Uri.parse(instanceUrlWithProtocol + "/" + repoFullName);
@@ -182,58 +187,6 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
             case "newFile":
                 startActivity(new Intent(RepoDetailActivity.this, NewFileActivity.class));
                 break;
-        }
-
-    }
-
-    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
-
-        SectionsPagerAdapter(FragmentManager fm) {
-            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-
-            TinyDB tinyDb = new TinyDB(getApplicationContext());
-            String repoFullName = tinyDb.getString("repoFullName");
-            String[] parts = repoFullName.split("/");
-            String repoOwner = parts[0];
-            String repoName = parts[1];
-
-            Fragment fragment = null;
-            switch (position) {
-                case 0: // information
-                    return RepoInfoFragment.newInstance(repoOwner, repoName);
-                case 1: // files
-                    return FilesFragment.newInstance(repoOwner, repoName);
-                case 2: // issues
-                    fragment = new IssuesFragment();
-                    break;
-                case 3: // closed issues
-                    fragment = new ClosedIssuesFragment();
-                    break;
-                case 4: // pull requests
-                    fragment = new PullRequestsFragment();
-                    break;
-                case 5: // milestones
-                    return MilestonesFragment.newInstance(repoOwner, repoName);
-                case 6: // labels
-                    return LabelsFragment.newInstance(repoOwner, repoName);
-                case 7: // branches
-                    return BranchesFragment.newInstance(repoOwner, repoName);
-                case 8: // releases
-                    return ReleasesFragment.newInstance(repoOwner, repoName);
-                case 9: // collaborators
-                    return CollaboratorsFragment.newInstance(repoOwner, repoName);
-            }
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            return 10;
         }
 
     }
@@ -261,8 +214,7 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
 
                     }
 
-                }
-                else {
+                } else {
                     Log.e("onFailure", String.valueOf(response.code()));
                 }
 
@@ -319,13 +271,12 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
 
                 TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-                if(response.code() == 200) {
+                if (response.code() == 200) {
                     assert response.body() != null;
-                    if(response.body().getSubscribed()) {
+                    if (response.body().getSubscribed()) {
                         tinyDb.putBoolean("repositoryWatchStatus", true);
                     }
-                }
-                else {
+                } else {
                     tinyDb.putBoolean("repositoryWatchStatus", false);
                 }
 
@@ -336,6 +287,58 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
                 Log.e("onFailure", t.toString());
             }
         });
+
+    }
+
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+
+        SectionsPagerAdapter(FragmentManager fm) {
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+
+            TinyDB tinyDb = new TinyDB(getApplicationContext());
+            String repoFullName = tinyDb.getString("repoFullName");
+            String[] parts = repoFullName.split("/");
+            String repoOwner = parts[0];
+            String repoName = parts[1];
+
+            Fragment fragment = null;
+            switch (position) {
+                case 0: // information
+                    return RepoInfoFragment.newInstance(repoOwner, repoName);
+                case 1: // files
+                    return FilesFragment.newInstance(repoOwner, repoName);
+                case 2: // issues
+                    fragment = new IssuesFragment();
+                    break;
+                case 3: // closed issues
+                    fragment = new ClosedIssuesFragment();
+                    break;
+                case 4: // pull requests
+                    fragment = new PullRequestsFragment();
+                    break;
+                case 5: // milestones
+                    return MilestonesFragment.newInstance(repoOwner, repoName);
+                case 6: // labels
+                    return LabelsFragment.newInstance(repoOwner, repoName);
+                case 7: // branches
+                    return BranchesFragment.newInstance(repoOwner, repoName);
+                case 8: // releases
+                    return ReleasesFragment.newInstance(repoOwner, repoName);
+                case 9: // collaborators
+                    return CollaboratorsFragment.newInstance(repoOwner, repoName);
+            }
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 10;
+        }
 
     }
 

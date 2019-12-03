@@ -2,13 +2,17 @@ package org.mian.gitnex.viewmodels;
 
 import android.content.Context;
 import android.util.Log;
-import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.models.UserRepositories;
-import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.models.UserRepositories;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,14 +24,6 @@ import retrofit2.Response;
 public class StarredRepositoriesViewModel extends ViewModel {
 
     private static MutableLiveData<List<UserRepositories>> reposList;
-
-    public LiveData<List<UserRepositories>> getUserStarredRepositories(String instanceUrl, String token, Context ctx) {
-
-        reposList = new MutableLiveData<>();
-        loadStarredReposList(instanceUrl, token, ctx);
-
-        return reposList;
-    }
 
     public static void loadStarredReposList(String instanceUrl, String token, Context ctx) {
 
@@ -41,8 +37,8 @@ public class StarredRepositoriesViewModel extends ViewModel {
             @Override
             public void onResponse(@NonNull Call<List<UserRepositories>> call, @NonNull Response<List<UserRepositories>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
                         reposList.postValue(response.body());
 
                     }
@@ -57,6 +53,14 @@ public class StarredRepositoriesViewModel extends ViewModel {
 
         });
 
+    }
+
+    public LiveData<List<UserRepositories>> getUserStarredRepositories(String instanceUrl, String token, Context ctx) {
+
+        reposList = new MutableLiveData<>();
+        loadStarredReposList(instanceUrl, token, ctx);
+
+        return reposList;
     }
 
 }

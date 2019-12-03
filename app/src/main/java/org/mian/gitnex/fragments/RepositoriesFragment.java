@@ -2,14 +2,6 @@ package org.mian.gitnex.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +13,17 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.activities.NewRepoActivity;
@@ -30,9 +33,9 @@ import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.RepositoriesListViewModel;
+
 import java.util.List;
 import java.util.Objects;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * Author M M Arif
@@ -90,7 +93,7 @@ public class RepositoriesFragment extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0 && createNewRepo.isShown()) {
                     createNewRepo.setVisibility(View.GONE);
-                } else if (dy < 0 ) {
+                } else if (dy < 0) {
                     createNewRepo.setVisibility(View.VISIBLE);
 
                 }
@@ -129,7 +132,7 @@ public class RepositoriesFragment extends Fragment {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("repoCreated")) {
+        if (tinyDb.getBoolean("repoCreated")) {
             RepositoriesListViewModel.loadReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext());
             tinyDb.putBoolean("repoCreated", false);
         }
@@ -143,11 +146,10 @@ public class RepositoriesFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<UserRepositories> reposListMain) {
                 adapter = new ReposListAdapter(getContext(), reposListMain);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataRepo.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     adapter.notifyDataSetChanged();
                     mRecyclerView.setAdapter(adapter);
                     noDataRepo.setVisibility(View.VISIBLE);
@@ -183,7 +185,7 @@ public class RepositoriesFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
                 return false;

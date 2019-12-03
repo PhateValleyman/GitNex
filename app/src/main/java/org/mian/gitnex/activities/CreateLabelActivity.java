@@ -1,11 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -16,8 +10,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -28,7 +29,11 @@ import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.LabelsViewModel;
+
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -36,11 +41,21 @@ import java.util.Objects;
 
 public class CreateLabelActivity extends AppCompatActivity {
 
+    final Context ctx = this;
     private View.OnClickListener onClickListener;
     private TextView colorPicker;
     private EditText labelName;
     private Button createLabelButton;
-    final Context ctx = this;
+    private View.OnClickListener createLabelListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            processCreateLabel();
+        }
+    };
+    private View.OnClickListener updateLabelListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            processUpdateLabel();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +71,7 @@ public class CreateLabelActivity extends AppCompatActivity {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(getIntent().getStringExtra("labelAction") != null && Objects.requireNonNull(getIntent().getStringExtra("labelAction")).equals("delete")) {
+        if (getIntent().getStringExtra("labelAction") != null && Objects.requireNonNull(getIntent().getStringExtra("labelAction")).equals("delete")) {
 
             deleteLabel(instanceUrl, instanceToken, repoOwner, repoName, Integer.valueOf(Objects.requireNonNull(getIntent().getStringExtra("labelId"))), loginUid);
             finish();
@@ -93,7 +108,7 @@ public class CreateLabelActivity extends AppCompatActivity {
             }
         });
 
-        if(getIntent().getStringExtra("labelAction") != null && Objects.requireNonNull(getIntent().getStringExtra("labelAction")).equals("edit")) {
+        if (getIntent().getStringExtra("labelAction") != null && Objects.requireNonNull(getIntent().getStringExtra("labelAction")).equals("edit")) {
 
             labelName.setText(getIntent().getStringExtra("labelTitle"));
             int labelColor_ = Color.parseColor("#" + getIntent().getStringExtra("labelColor"));
@@ -110,11 +125,11 @@ public class CreateLabelActivity extends AppCompatActivity {
 
         }
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             createLabelButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(8);
             shape.setColor(getResources().getColor(R.color.hintColor));
             createLabelButton.setBackground(shape);
 
@@ -125,18 +140,6 @@ public class CreateLabelActivity extends AppCompatActivity {
         }
 
     }
-
-    private View.OnClickListener createLabelListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processCreateLabel();
-        }
-    };
-
-    private View.OnClickListener updateLabelListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processUpdateLabel();
-        }
-    };
 
     private void processUpdateLabel() {
 
@@ -154,28 +157,27 @@ public class CreateLabelActivity extends AppCompatActivity {
         String updateLabelName = labelName.getText().toString();
 
         String updateLabelColor;
-        if(tinyDb.getString("labelColor").isEmpty()) {
+        if (tinyDb.getString("labelColor").isEmpty()) {
             updateLabelColor = tinyDb.getString("labelColorDefault");
-        }
-        else {
+        } else {
             updateLabelColor = tinyDb.getString("labelColor");
         }
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(updateLabelName.equals("")) {
+        if (updateLabelName.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.labelEmptyError));
             return;
 
         }
 
-        if(!appUtil.checkStrings(updateLabelName)) {
+        if (!appUtil.checkStrings(updateLabelName)) {
 
             Toasty.info(getApplicationContext(), getString(R.string.labelNameError));
             return;
@@ -202,28 +204,27 @@ public class CreateLabelActivity extends AppCompatActivity {
 
         String newLabelName = labelName.getText().toString();
         String newLabelColor;
-        if(tinyDb.getString("labelColor").isEmpty()) {
+        if (tinyDb.getString("labelColor").isEmpty()) {
             newLabelColor = String.format("#%06X", (0xFFFFFF & ContextCompat.getColor(getApplicationContext(), R.color.releasePre)));
-        }
-        else {
+        } else {
             newLabelColor = tinyDb.getString("labelColor");
         }
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(newLabelName.equals("")) {
+        if (newLabelName.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.labelEmptyError));
             return;
 
         }
 
-        if(!appUtil.checkStrings(newLabelName)) {
+        if (!appUtil.checkStrings(newLabelName)) {
 
             Toasty.info(getApplicationContext(), getString(R.string.labelNameError));
             return;
@@ -252,15 +253,14 @@ public class CreateLabelActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<CreateLabel> call, @NonNull retrofit2.Response<CreateLabel> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     Toasty.info(getApplicationContext(), getString(R.string.labelCreated));
                     tinyDb.putString("labelColor", "");
                     tinyDb.putBoolean("labelsRefresh", true);
                     finish();
 
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -268,8 +268,7 @@ public class CreateLabelActivity extends AppCompatActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+                } else {
 
                     enableProcessButton();
                     tinyDb.putString("labelColor", "");
@@ -306,8 +305,8 @@ public class CreateLabelActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<CreateLabel> call, @NonNull retrofit2.Response<CreateLabel> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         Toasty.info(getApplicationContext(), getString(R.string.labelUpdated));
                         tinyDb.putString("labelColor", "");
@@ -320,8 +319,7 @@ public class CreateLabelActivity extends AppCompatActivity {
                         finish();
 
                     }
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -329,8 +327,7 @@ public class CreateLabelActivity extends AppCompatActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+                } else {
 
                     enableProcessButton();
                     tinyDb.putString("labelColor", "");
@@ -379,8 +376,8 @@ public class CreateLabelActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Labels> call, @NonNull retrofit2.Response<Labels> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 204) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 204) {
 
                         Toasty.info(getApplicationContext(), getString(R.string.labelDeleteText));
                         LabelsViewModel.loadLabelsList(instanceUrl, instanceToken, repoOwner, repoName, getApplicationContext());
@@ -388,16 +385,14 @@ public class CreateLabelActivity extends AppCompatActivity {
                         getIntent().removeExtra("labelId");
 
                     }
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+                } else {
 
                     Toasty.info(getApplicationContext(), getString(R.string.labelDeleteErrorText));
 
@@ -416,8 +411,8 @@ public class CreateLabelActivity extends AppCompatActivity {
     private void disableProcessButton() {
 
         createLabelButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.hintColor));
         createLabelButton.setBackground(shape);
 
@@ -426,8 +421,8 @@ public class CreateLabelActivity extends AppCompatActivity {
     private void enableProcessButton() {
 
         createLabelButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(8);
         shape.setColor(getResources().getColor(R.color.btnBackground));
         createLabelButton.setBackground(shape);
 

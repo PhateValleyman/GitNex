@@ -1,7 +1,9 @@
 package org.mian.gitnex.helpers;
 
 import android.content.Context;
+
 import org.mian.gitnex.util.TinyDB;
+
 import okhttp3.Credentials;
 
 /**
@@ -16,20 +18,18 @@ public class Authorization {
 
         String credential;
 
-        if(tinyDb.getBoolean("basicAuthFlag")) {
+        if (tinyDb.getBoolean("basicAuthFlag")) {
 
             if (!tinyDb.getString("basicAuthPassword").isEmpty()) {
 
                 credential = Credentials.basic(loginUid, tinyDb.getString("basicAuthPassword"));
 
-            }
-            else {
+            } else {
 
                 credential = token;
 
             }
-        }
-        else {
+        } else {
 
             credential = token;
 

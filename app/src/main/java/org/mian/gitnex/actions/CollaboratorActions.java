@@ -2,6 +2,9 @@ package org.mian.gitnex.actions;
 
 import android.content.Context;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.AddCollaboratorToRepositoryActivity;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -11,7 +14,7 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Permission;
 import org.mian.gitnex.util.TinyDB;
-import androidx.annotation.NonNull;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -44,37 +47,33 @@ public class CollaboratorActions {
             @Override
             public void onResponse(@NonNull Call<Collaborators> call, @NonNull retrofit2.Response<Collaborators> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 204) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 204) {
 
                         Toasty.info(context, context.getString(R.string.removeCollaboratorToastText));
-                        ((AddCollaboratorToRepositoryActivity)context).finish();
+                        ((AddCollaboratorToRepositoryActivity) context).finish();
                         //Log.i("addCollaboratorSearch", addCollaboratorSearch.getText().toString());
                         //tinyDb.putBoolean("updateDataSet", true);
                         //AddCollaboratorToRepositoryActivity usersSearchData = new AddCollaboratorToRepositoryActivity();
                         //usersSearchData.loadUserSearchList(instanceUrl, instanceToken, searchKeyword, context);
 
                     }
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 403) {
+                } else if (response.code() == 403) {
 
                     Toasty.info(context, context.getString(R.string.authorizeError));
 
-                }
-                else if(response.code() == 404) {
+                } else if (response.code() == 404) {
 
                     Toasty.info(context, context.getString(R.string.apiNotFound));
 
-                }
-                else {
+                } else {
 
                     Toasty.info(context, context.getString(R.string.genericError));
 
@@ -114,35 +113,31 @@ public class CollaboratorActions {
             @Override
             public void onResponse(@NonNull Call<Permission> call, @NonNull retrofit2.Response<Permission> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 204) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 204) {
 
                         Toasty.info(context, context.getString(R.string.addCollaboratorToastText));
-                        ((AddCollaboratorToRepositoryActivity)context).finish();
+                        ((AddCollaboratorToRepositoryActivity) context).finish();
                         //AddCollaboratorToRepositoryActivity usersSearchData = new AddCollaboratorToRepositoryActivity();
                         //usersSearchData.loadUserSearchList(instanceUrl, instanceToken, searchKeyword, context);
 
                     }
-                }
-                else if(response.code() == 401) {
+                } else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else if(response.code() == 403) {
+                } else if (response.code() == 403) {
 
                     Toasty.info(context, context.getString(R.string.authorizeError));
 
-                }
-                else if(response.code() == 404) {
+                } else if (response.code() == 404) {
 
                     Toasty.info(context, context.getString(R.string.apiNotFound));
 
-                }
-                else {
+                } else {
 
                     Toasty.info(context, context.getString(R.string.genericError));
 

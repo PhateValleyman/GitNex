@@ -2,13 +2,17 @@ package org.mian.gitnex.viewmodels;
 
 import android.content.Context;
 import android.util.Log;
-import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.models.UserRepositories;
-import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.models.UserRepositories;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,16 +24,6 @@ import retrofit2.Response;
 public class MyRepositoriesViewModel extends ViewModel {
 
     private static MutableLiveData<List<UserRepositories>> myReposList;
-
-    public LiveData<List<UserRepositories>> getCurrentUserRepositories(String instanceUrl, String token, String username, Context ctx) {
-
-        //if (myReposList == null) {
-        myReposList = new MutableLiveData<>();
-        loadMyReposList(instanceUrl, token, username, ctx);
-        //}
-
-        return myReposList;
-    }
 
     public static void loadMyReposList(String instanceUrl, String token, String username, Context ctx) {
 
@@ -43,8 +37,8 @@ public class MyRepositoriesViewModel extends ViewModel {
             @Override
             public void onResponse(@NonNull Call<List<UserRepositories>> call, @NonNull Response<List<UserRepositories>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
                         myReposList.postValue(response.body());
 
                     }
@@ -59,6 +53,16 @@ public class MyRepositoriesViewModel extends ViewModel {
 
         });
 
+    }
+
+    public LiveData<List<UserRepositories>> getCurrentUserRepositories(String instanceUrl, String token, String username, Context ctx) {
+
+        //if (myReposList == null) {
+        myReposList = new MutableLiveData<>();
+        loadMyReposList(instanceUrl, token, username, ctx);
+        //}
+
+        return myReposList;
     }
 
 }
