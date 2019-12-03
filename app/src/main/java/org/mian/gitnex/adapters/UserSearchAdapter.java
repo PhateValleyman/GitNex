@@ -9,13 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.squareup.picasso.Picasso;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.CollaboratorActions;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -25,9 +22,7 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.TinyDB;
-
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

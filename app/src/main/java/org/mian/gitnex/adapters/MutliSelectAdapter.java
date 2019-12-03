@@ -11,16 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.MultiSelectDialog;
 import org.mian.gitnex.models.MultiSelectModel;
-
 import java.util.ArrayList;
 
 /**

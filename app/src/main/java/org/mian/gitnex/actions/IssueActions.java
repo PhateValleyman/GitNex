@@ -2,11 +2,8 @@ package org.mian.gitnex.actions;
 
 import android.content.Context;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.google.gson.JsonElement;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -16,7 +13,6 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.IssueComments;
 import org.mian.gitnex.models.UpdateIssueState;
 import org.mian.gitnex.util.TinyDB;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 

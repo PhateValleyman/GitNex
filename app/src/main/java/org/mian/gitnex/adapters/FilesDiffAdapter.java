@@ -8,13 +8,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.models.FileDiffView;
-
 import java.util.List;
 
 /**

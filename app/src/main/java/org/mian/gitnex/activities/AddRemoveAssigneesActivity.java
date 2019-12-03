@@ -6,12 +6,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.gson.JsonElement;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -23,10 +20,8 @@ import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.models.UpdateIssueAssignee;
 import org.mian.gitnex.util.TinyDB;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 

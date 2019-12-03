@@ -11,13 +11,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.GridView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.MembersByOrgAdapter;
 import org.mian.gitnex.helpers.Authorization;
@@ -25,7 +23,6 @@ import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.MembersByOrgViewModel;
-
 import java.util.List;
 import java.util.Objects;
 

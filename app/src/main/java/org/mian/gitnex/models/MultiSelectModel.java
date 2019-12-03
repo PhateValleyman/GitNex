@@ -1,7 +1,8 @@
 package org.mian.gitnex.models;
 
 /**
- * Author com.github.abumoallim, modified by M M Arif
+ * Template Author com.github.abumoallim
+ * Author M M Arif
  */
 
 public class MultiSelectModel {

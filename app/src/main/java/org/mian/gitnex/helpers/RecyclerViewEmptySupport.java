@@ -3,11 +3,11 @@ package org.mian.gitnex.helpers;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * Author com.github.abumoallim, modified by M M Arif
+ * Template Author com.github.abumoallim
+ * Author M M Arif
  */
 
 public class RecyclerViewEmptySupport extends RecyclerView {

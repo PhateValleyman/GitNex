@@ -3,9 +3,7 @@ package org.mian.gitnex.helpers;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import androidx.appcompat.app.AlertDialog;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.CollaboratorActions;
 import org.mian.gitnex.activities.CreateLabelActivity;

@@ -8,14 +8,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Files;
-
 import java.util.ArrayList;
 import java.util.List;
 

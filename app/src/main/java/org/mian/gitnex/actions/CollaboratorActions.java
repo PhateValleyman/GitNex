@@ -2,9 +2,7 @@ package org.mian.gitnex.actions;
 
 import android.content.Context;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.AddCollaboratorToRepositoryActivity;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -14,7 +12,6 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Permission;
 import org.mian.gitnex.util.TinyDB;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 

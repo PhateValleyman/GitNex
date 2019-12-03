@@ -1,9 +1,7 @@
 package org.mian.gitnex.helpers;
 
 import android.content.Context;
-
 import org.mian.gitnex.util.TinyDB;
-
 import okhttp3.Credentials;
 
 /**

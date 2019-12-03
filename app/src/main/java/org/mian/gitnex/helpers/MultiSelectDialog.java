@@ -10,21 +10,19 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.MutliSelectAdapter;
 import org.mian.gitnex.models.MultiSelectModel;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * Author com.github.abumoallim, modified by M M Arif
+ * Template Author com.github.abumoallim
+ * Author M M Arif
  */
 
 public class MultiSelectDialog extends AppCompatDialogFragment implements SearchView.OnQueryTextListener, View.OnClickListener {

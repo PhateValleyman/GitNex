@@ -9,18 +9,14 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.squareup.picasso.Picasso;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.OrgDetailActivity;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.UserOrganizations;
 import org.mian.gitnex.util.TinyDB;
-
 import java.util.ArrayList;
 import java.util.List;
 

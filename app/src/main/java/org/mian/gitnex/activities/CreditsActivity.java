@@ -4,15 +4,12 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.CreditsAdapter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

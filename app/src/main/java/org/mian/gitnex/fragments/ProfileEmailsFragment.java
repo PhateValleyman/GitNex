@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -17,14 +16,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.ProfileEmailsAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.Emails;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.ProfileEmailsViewModel;
-
 import java.util.List;
 
 /**

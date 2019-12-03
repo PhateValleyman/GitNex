@@ -1,7 +1,6 @@
 package org.mian.gitnex.models;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.util.Date;
 
 /**

@@ -1,7 +1,6 @@
 package org.mian.gitnex.interfaces;
 
 import com.google.gson.JsonElement;
-
 import org.mian.gitnex.models.AddEmail;
 import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.Collaborators;
@@ -32,9 +31,7 @@ import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.models.UserSearch;
 import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.models.WatchRepository;
-
 import java.util.List;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;

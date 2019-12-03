@@ -1,15 +1,11 @@
 package org.mian.gitnex.clients;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
 import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.util.AppUtil;
-
 import java.io.File;
 import java.io.IOException;
-
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

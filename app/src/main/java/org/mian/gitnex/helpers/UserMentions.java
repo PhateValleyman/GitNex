@@ -4,9 +4,7 @@ import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-
 import org.mian.gitnex.R;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
