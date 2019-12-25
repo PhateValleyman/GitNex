@@ -6,6 +6,7 @@ import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.Commits;
 import org.mian.gitnex.models.ExploreRepositories;
 import org.mian.gitnex.models.Files;
+import org.mian.gitnex.models.IssueReaction;
 import org.mian.gitnex.models.MergePullRequest;
 import org.mian.gitnex.models.NewFile;
 import org.mian.gitnex.models.PullRequests;
@@ -171,6 +172,15 @@ public interface ApiInterface {
     @PATCH("repos/{owner}/{repo}/issues/comments/{commentId}") // edit a comment
     Call<IssueComments> patchIssueComment(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("commentId") int commentId, @Body IssueComments jsonStr);
 
+    @GET("repos/{owner}/{repo}/issues/comments/{commentId}/reactions") // get comment reactions
+    Call<List<IssueReaction>> getIssueCommentReaction(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("commentId") int commentId);
+
+    @PUT("repos/{owner}/{repo}/issues/comments/{commentId}/reactions") // add reaction to a comment
+    Call<IssueReaction> setIssueCommentReaction(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("commentId") int commentId, @Body IssueReaction jsonStr);
+
+    @DELETE("repos/{owner}/{repo}/issues/comments/{commentId}/reactions") // delete a reaction of a comment
+    Call<IssueReaction> delIssueCommentReaction(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("commentId") int commentId, @Body IssueReaction jsonStr);
+
     @GET("user/followers") // get user followers
     Call<List<UserInfo>> getFollowers(@Header("Authorization") String token);
 
@@ -188,6 +198,15 @@ public interface ApiInterface {
 
     @PUT("repos/{owner}/{repo}/issues/{index}/labels") // replace an issue's labels
     Call<JsonElement> updateIssueLabels(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex, @Body Labels jsonStr);
+
+    @GET("repos/{owner}/{repo}/issues/{index}/reactions") // get issue reactions
+    Call<List<IssueReaction>> getIssueReactions(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex);
+
+    @PUT("repos/{owner}/{repo}/issues/{index}/reactions") // add reaction to an issue
+    Call<IssueReaction> setIssueReaction(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex, @Body IssueReaction jsonStr);
+
+    @DELETE("repos/{owner}/{repo}/issues/{index}/reactions") // delete a reaction of an issue
+    Call<IssueReaction> delIssueReaction(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex, @Body IssueReaction jsonStr);
 
     @GET("repos/{owner}/{repo}/raw/{filename}") // get file contents
     Call<String> getFileContents(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("filename") String filename);
