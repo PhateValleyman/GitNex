@@ -117,15 +117,12 @@ public class NewMilestoneActivity extends AppCompatActivity implements View.OnCl
             }
         }
 
-        if(newMilestoneDueDate.equals("")) {
-
-            Toasty.info(getApplicationContext(), getString(R.string.milestoneDateEmpty));
-            return;
-
+        String finalMilestoneDueDate = null;
+        if(!newMilestoneDueDate.isEmpty()) {
+            finalMilestoneDueDate = (AppUtil.customDateCombine(AppUtil.customDateFormat(newMilestoneDueDate)));
         }
 
         disableProcessButton();
-        String finalMilestoneDueDate = (AppUtil.customDateCombine(AppUtil.customDateFormat(newMilestoneDueDate)));
         createNewMilestone(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, newMilestoneTitle, newMilestoneDescription, finalMilestoneDueDate);
 
     }
