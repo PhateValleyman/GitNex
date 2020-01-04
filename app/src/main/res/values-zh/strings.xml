@@ -90,11 +90,11 @@
     <string name="orgContentAvatar">组织</string>
     <string name="repoContentAvatar">仓库</string>
     <string name="privateAvatar">Pri</string>
-    <string name="removeContent">Remove</string>
+    <string name="removeContent">移除</string>
     <string name="genericApiStatusError">Instance has returned an error. Code\u0020</string>
     <string name="title_activity_repo_detail">RepoDetailActivity</string>
     <string name="tab_text_info">详情</string>
-    <string name="tab_text_files">Files</string>
+    <string name="tab_text_files">文件</string>
     <string name="tab_text_issues">Open Issues</string>
     <string name="tabItemCloseIssues">Closed Issues</string>
     <string name="tab_text_ml">里程碑</string>
@@ -107,15 +107,15 @@
     <string name="noDataIssueTab">没有工单</string>
     <string name="infoTabRepoName1">仓库</string>
     <string name="infoTabRepoOwner1">所有者</string>
-    <string name="infoTabRepoDesc">Description</string>
-    <string name="infoTabRepoWebsite">Website</string>
-    <string name="infoTabRepoSize">Size</string>
+    <string name="infoTabRepoDesc">说明</string>
+    <string name="infoTabRepoWebsite">网站</string>
+    <string name="infoTabRepoSize">尺寸</string>
     <string name="infoTabRepoDefaultBranch">默认分支</string>
     <string name="infoTabRepoSshUrl">SSH URL</string>
     <string name="infoTabRepoCloneUrl">Clone URL</string>
     <string name="infoTabRepoRepoUrl">Repo URL</string>
     <string name="infoTabRepoForksCount">派生仓库</string>
-    <string name="infoTabRepoCreatedAt">Created</string>
+    <string name="infoTabRepoCreatedAt">已创建</string>
     <string name="infoTabRepoUpdatedAt">Last Updated</string>
     <string name="timeAtText">at</string>
     <string name="createdText">Opened\u0020</string>
@@ -183,7 +183,7 @@
     <!-- settings -->
     <string name="settingsLanguageHeaderText">翻译</string>
     <string name="settingsDateTimeHeaderText">Date &amp; Time</string>
-    <string name="settingsSave">设置已保存。</string>
+    <string name="settingsSave">设置已保存</string>
     <string name="settingsLanguageSelectorHeader">语言</string>
     <string name="settingsLanguageSelectedHeaderDefault">英语</string>
     <string name="settingsAppearanceHeader">外观</string>
@@ -436,4 +436,7 @@
     <string name="mergeCommentText">Merge comment</string>
     <string name="mergePRSuccessMsg">Pull Request was merged successfully</string>
     <string name="mergePR404ErrorMsg">Pull Request is not available for merge</string>
+    <string name="settingsCustomFontHeaderText">Font</string>
+    <string name="settingsCustomFontSelectorDialogTitle">Choose Font</string>
+    <string name="settingsCustomFontDefault">Roboto</string>
 </resources>
