@@ -177,12 +177,13 @@
     <string name="issueDescriptionEmpty">Опис проблеми порожній</string>
     <string name="issueCreated">Нову проблему створено успішно</string>
     <string name="issueCreatedError">Щось пішло не так. Будь ласка, спробуйте знову</string>
+    <string name="issueCreatedNoMilestone">No milestone</string>
     <string name="noAssigneesFound">Співавторів не знайдено</string>
     <string name="noLabelsFound">Міток не знайдено</string>
     <!-- settings -->
     <string name="settingsLanguageHeaderText">Переклад</string>
     <string name="settingsDateTimeHeaderText">Дата і час</string>
-    <string name="settingsSave">Налаштування збережено.</string>
+    <string name="settingsSave">Налаштування збережено</string>
     <string name="settingsLanguageSelectorHeader">Мова</string>
     <string name="settingsLanguageSelectedHeaderDefault">Англійська</string>
     <string name="settingsAppearanceHeader">Зовнішній вигляд</string>
@@ -435,4 +436,7 @@
     <string name="mergeCommentText">Коментар до об\'єднання</string>
     <string name="mergePRSuccessMsg">Запит на злиття було успішно об\'єднано</string>
     <string name="mergePR404ErrorMsg">Запит на злиття недоступний для об\'єднання</string>
+    <string name="settingsCustomFontHeaderText">Font</string>
+    <string name="settingsCustomFontSelectorDialogTitle">Choose Font</string>
+    <string name="settingsCustomFontDefault">Roboto</string>
 </resources>

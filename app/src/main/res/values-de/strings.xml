@@ -177,12 +177,13 @@
     <string name="issueDescriptionEmpty">Die Beschreibung des Issues ist leer!</string>
     <string name="issueCreated">Neues Issues wurde erfolgreich erstellt!</string>
     <string name="issueCreatedError">Etwas ist schief gelaufen. Bitte versuche es erneut</string>
+    <string name="issueCreatedNoMilestone">Kein Meilenstein</string>
     <string name="noAssigneesFound">Keine Zuständigen gefunden!</string>
     <string name="noLabelsFound">Keine Labels gefunden!</string>
     <!-- settings -->
     <string name="settingsLanguageHeaderText">Sprachen</string>
     <string name="settingsDateTimeHeaderText">Datum &amp; Uhrzeit</string>
-    <string name="settingsSave">Einstellungen wurden gespeichert!</string>
+    <string name="settingsSave">Einstellungen gespeichert</string>
     <string name="settingsLanguageSelectorHeader">Sprache</string>
     <string name="settingsLanguageSelectedHeaderDefault">Englisch</string>
     <string name="settingsAppearanceHeader">Aussehen</string>
@@ -435,4 +436,7 @@
     <string name="mergeCommentText">Zusammenführ-Kommentar</string>
     <string name="mergePRSuccessMsg">Dieser Pull-Request wurde erfolgreich zusammengeführt</string>
     <string name="mergePR404ErrorMsg">Pull-Request kann nicht zusammengeführt werden</string>
+    <string name="settingsCustomFontHeaderText">Schriftart</string>
+    <string name="settingsCustomFontSelectorDialogTitle">Wähle eine Schriftart</string>
+    <string name="settingsCustomFontDefault">Roboto</string>
 </resources>

@@ -177,6 +177,7 @@
     <string name="issueDescriptionEmpty">Опис проблема је обавезан</string>
     <string name="issueCreated">Проблем је успешно креиран</string>
     <string name="issueCreatedError">Нешто је пошло наопако, покушај поново</string>
+    <string name="issueCreatedNoMilestone">No milestone</string>
     <string name="noAssigneesFound">Ниједан сарадник није пронађен</string>
     <string name="noLabelsFound">Ниједна ознака није пронађена</string>
     <!-- settings -->
@@ -435,4 +436,7 @@
     <string name="mergeCommentText">Merge comment</string>
     <string name="mergePRSuccessMsg">Pull Request was merged successfully</string>
     <string name="mergePR404ErrorMsg">Pull Request is not available for merge</string>
+    <string name="settingsCustomFontHeaderText">Font</string>
+    <string name="settingsCustomFontSelectorDialogTitle">Choose Font</string>
+    <string name="settingsCustomFontDefault">Roboto</string>
 </resources>
