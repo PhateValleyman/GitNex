@@ -385,7 +385,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
                 .getApiInterface()
                 .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
 
-        listOfAssignees.add(new MultiSelectModel(Integer.valueOf(loginUid), loginFullName));
+        listOfAssignees.add(new MultiSelectModel(-1, loginFullName));
 
         call.enqueue(new Callback<List<Collaborators>>() {
 
