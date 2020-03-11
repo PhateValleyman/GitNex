@@ -9,7 +9,7 @@
     <string name="navSettings">الإعدادات</string>
     <string name="navOrgs">المنظمات</string>
     <string name="navAbout">عن التطبيق</string>
-    <string name="navRate">Rate GitNex</string>
+    <string name="navRate">GitNex معدل</string>
     <string name="navLogout">الخروج</string>
     <string name="navExplore">استكشف</string>
     <!-- menu items -->
@@ -21,7 +21,7 @@
     <string name="pageTitleProfile">الملف التعريفي</string>
     <string name="pageTitleNewRepo">مستودع جديد</string>
     <string name="pageTitleOrganizations">المنظمات</string>
-    <string name="pageTitleIssues">Issues</string>
+    <string name="pageTitleIssues">مسائل</string>
     <string name="pageTitleSettings">الإعدادات</string>
     <string name="pageTitleCreateOrganization">منظمة جديدة</string>
     <string name="pageTitleCreateMilestone">New Milestone</string>
@@ -29,7 +29,7 @@
     <string name="pageTitleCreateLabel">New Label</string>
     <string name="pageTitleCredits">Credits</string>
     <string name="pageTitleLabelUpdate">Update Label</string>
-    <string name="pageTitleSponsors">Donators</string>
+    <string name="pageTitleSponsors">التبرعات</string>
     <string name="pageTitleStarredRepos">المستودعات المفضلة</string>
     <string name="pageTitleCreateTeam">فريق جديد</string>
     <string name="pageTitleAddEmail">إضافة عنوان بريد الكتروني</string>

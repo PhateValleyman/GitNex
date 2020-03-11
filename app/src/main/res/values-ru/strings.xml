@@ -177,7 +177,7 @@
     <string name="issueDescriptionEmpty">Описание задачи пустое.</string>
     <string name="issueCreated">Задача успешно добавлена!</string>
     <string name="issueCreatedError">Что-то пошло не так. Пожалуйста, попытайтесь еще раз.</string>
-    <string name="issueCreatedNoMilestone">No milestone</string>
+    <string name="issueCreatedNoMilestone">Нет вехи</string>
     <string name="noAssigneesFound">Сотрудников не обнаружено</string>
     <string name="noLabelsFound">Меток не обнаружено</string>
     <!-- settings -->
@@ -436,7 +436,7 @@
     <string name="mergeCommentText">Комментарий для слияния</string>
     <string name="mergePRSuccessMsg">Запрос на слияние был успешно выполнен</string>
     <string name="mergePR404ErrorMsg">Запрос на слияние не доступен для слияния</string>
-    <string name="settingsCustomFontHeaderText">Font</string>
-    <string name="settingsCustomFontSelectorDialogTitle">Choose Font</string>
+    <string name="settingsCustomFontHeaderText">Шрифт</string>
+    <string name="settingsCustomFontSelectorDialogTitle">Выберите шрифт</string>
     <string name="settingsCustomFontDefault">Roboto</string>
 </resources>

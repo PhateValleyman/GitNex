@@ -429,7 +429,7 @@
     <string name="editPrSuccessMessage">Pull-Request aktualisiert</string>
     <string name="fileDiffViewHeader">%1$s Dateien geändert</string>
     <string name="fileDiffViewHeaderSingle">%1$s Dateien geändert</string>
-    <string name="openFileDiffText">Dateien geändert</string>
+    <string name="openFileDiffText">Diff Anzeigen</string>
     <string name="mergePullRequestText">Pull-Request zusammenführen</string>
     <string name="mergePullRequestButtonText">Zusammenführen</string>
     <string name="mergeNoteText">Zusammenführen kann fehlschlagen, wenn du dafür nicht die Berechtigungen besitzt.</string>
