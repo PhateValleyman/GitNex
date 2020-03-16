@@ -556,5 +556,5 @@
     <string name="downloadFileSaved">File is saved to Download directory</string>
     <string name="excludeFilesInFileviewer">This file type is not supported in file viewer. Download it instead from the three dotted menu?</string>
 
-    <string name="fileInfo">Size</string>
+    <string name="sizeCopy">Size</string>
 </resources>
