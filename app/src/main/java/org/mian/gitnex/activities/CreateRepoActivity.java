@@ -55,7 +55,7 @@ public class CreateRepoActivity extends BaseActivity {
     protected int getLayoutResourceId(){
         return R.layout.activity_new_repo;
     }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +110,6 @@ public class CreateRepoActivity extends BaseActivity {
             createRepo.setOnClickListener(createRepoListener);
 
         }
-
     }
 
     private View.OnClickListener createRepoListener = new View.OnClickListener() {
@@ -168,10 +167,11 @@ public class CreateRepoActivity extends BaseActivity {
 
         }
         else {
+
             disableProcessButton();
             createNewRepository(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), loginUid, newRepoName, newRepoDesc, repoOwner, newRepoAccess);
-        }
 
+        }
     }
 
     private void createNewRepository(final String instanceUrl, final String token, String loginUid, String repoName, String repoDesc, String repoOwner, boolean isPrivate) {
@@ -239,7 +239,6 @@ public class CreateRepoActivity extends BaseActivity {
                 enableProcessButton();
             }
         });
-
     }
 
     private void getOrganizations(String instanceUrl, String instanceToken, final String userLogin) {
@@ -314,7 +313,6 @@ public class CreateRepoActivity extends BaseActivity {
                 enableProcessButton();
             }
         });
-
     }
 
     private void initCloseListener() {
