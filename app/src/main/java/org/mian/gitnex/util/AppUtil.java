@@ -77,15 +77,6 @@ public class AppUtil {
         return str.matches("^[\\w .-]+$");
     }
 
-    public Boolean checkRegex(String str, String[] regex) {
-        for (String reg: regex) {
-            if (str.matches(reg)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public Boolean checkStringsWithAlphaNumericDashDotUnderscore(String str) { // [a-zA-Z0-9-_]
         return str.matches("^[\\w.-]+$");
     }

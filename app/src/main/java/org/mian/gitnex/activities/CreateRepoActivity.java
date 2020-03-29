@@ -27,6 +27,7 @@ import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -49,7 +50,7 @@ public class CreateRepoActivity extends BaseActivity {
 
     //https://github.com/go-gitea/gitea/blob/52cfd2743c0e85b36081cf80a850e6a5901f1865/models/repo.go#L964-L967
     final List<String> reservedRepoNames = Arrays.asList(".", "..");
-    final String[] reservedRepoPatterns = {"*.git", "*.wiki"};
+    final Pattern reservedRepoPatterns = Pattern.compile("\\.(git|wiki)$");
 
     @Override
     protected int getLayoutResourceId(){
@@ -143,10 +144,12 @@ public class CreateRepoActivity extends BaseActivity {
             if (appUtil.charactersLength(newRepoDesc) > 255) {
 
                 Toasty.info(getApplicationContext(), getString(R.string.repoDescError));
+                return;
 
             }
         }
-        else if(newRepoName.equals("")) {
+
+        if(newRepoName.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.repoNameErrorEmpty));
 
@@ -161,7 +164,7 @@ public class CreateRepoActivity extends BaseActivity {
             Toasty.info(getApplicationContext(), getString(R.string.repoNameErroReservedName));
 
         }
-        else if (appUtil.checkRegex(newRepoName, reservedRepoPatterns)) {
+        else if (reservedRepoPatterns.matcher(newRepoName).find()) {
 
             Toasty.info(getApplicationContext(), getString(R.string.repoNameErroReservedPatterns));
 
