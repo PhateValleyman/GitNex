@@ -161,12 +161,12 @@ public class CreateRepoActivity extends BaseActivity {
         }
         else if (reservedRepoNames.contains(newRepoName)) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.repoNameErroReservedName));
+            Toasty.info(getApplicationContext(), getString(R.string.repoNameErrorReservedName));
 
         }
         else if (reservedRepoPatterns.matcher(newRepoName).find()) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.repoNameErroReservedPatterns));
+            Toasty.info(getApplicationContext(), getString(R.string.repoNameErrorReservedPatterns));
 
         }
         else {
