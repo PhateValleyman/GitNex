@@ -565,5 +565,6 @@
     <string name="createRepository">Create Repository</string>
 
     <string name="changelogTitle" translatable="false">Changelog</string>
+    <string name="openSourceLicenses">Open-Source-Licenses</string>
 
 </resources>

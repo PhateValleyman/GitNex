@@ -12,11 +12,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.CreditsActivity;
-import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.activities.SponsorsActivity;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
+import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
+import de.psdev.licensesdialog.model.Notice;
+import de.psdev.licensesdialog.model.Notices;
 
 /**
  * Author M M Arif
@@ -26,7 +29,7 @@ public class AboutFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_about, container, false);
+        View view = inflater.inflate(R.layout.fragment_about, container, false);
 
         TinyDB tinyDb = new TinyDB(getContext());
 
@@ -38,20 +41,23 @@ public class AboutFragment extends Fragment {
         final TextView sponsorsButton;
         final TextView appWebsite;
         final TextView appRepo;
+        final TextView openSourceLicenses;
 
-        appVerBuild = v.findViewById(R.id.appVerBuild);
-        TextView viewTextGiteaVersion = v.findViewById(R.id.giteaVersion);
-        creditsButton = v.findViewById(R.id.creditsButton);
-        donationLink = v.findViewById(R.id.donationLink);
-        donationLinkPatreon = v.findViewById(R.id.donationLinkPatreon);
-        translateLink = v.findViewById(R.id.translateLink);
-        sponsorsButton = v.findViewById(R.id.sponsorsButton);
-        appWebsite = v.findViewById(R.id.appWebsite);
-        appRepo = v.findViewById(R.id.appRepo);
+        appVerBuild = view.findViewById(R.id.appVerBuild);
+        TextView viewTextGiteaVersion = view.findViewById(R.id.giteaVersion);
+        creditsButton = view.findViewById(R.id.creditsButton);
+        donationLink = view.findViewById(R.id.donationLink);
+        donationLinkPatreon = view.findViewById(R.id.donationLinkPatreon);
+        translateLink = view.findViewById(R.id.translateLink);
+        sponsorsButton = view.findViewById(R.id.sponsorsButton);
+        appWebsite = view.findViewById(R.id.appWebsite);
+        appRepo = view.findViewById(R.id.appRepo);
+        openSourceLicenses = view.findViewById(R.id.openSourceLicenses);
 
         appVerBuild.setText(getString(R.string.appVerBuild, AppUtil.getAppVersion(Objects.requireNonNull(getContext())), AppUtil.getAppBuildNo(getContext())));
 
         donationLink.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
@@ -62,6 +68,7 @@ public class AboutFragment extends Fragment {
         });
 
         donationLinkPatreon.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
@@ -72,6 +79,7 @@ public class AboutFragment extends Fragment {
         });
 
         translateLink.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
@@ -82,6 +90,7 @@ public class AboutFragment extends Fragment {
         });
 
         appWebsite.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
@@ -92,6 +101,7 @@ public class AboutFragment extends Fragment {
         });
 
         appRepo.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
@@ -101,13 +111,22 @@ public class AboutFragment extends Fragment {
             }
         });
 
+        openSourceLicenses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLicenseDialog();
+            }
+        });
+
         creditsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), CreditsActivity.class));
             }
         });
 
         sponsorsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), SponsorsActivity.class));
             }
@@ -116,7 +135,19 @@ public class AboutFragment extends Fragment {
         String commit = getResources().getString(R.string.commitPage) + tinyDb.getString("giteaVersion");
         viewTextGiteaVersion.setText(commit);
 
-        return v;
+        return view;
+    }
+
+
+    private void showLicenseDialog() {
+        final Notices notices = new Notices();
+        notices.addNotice(new Notice("Retrofit", "https://square.github.io/retrofit/", "Square, Inc.", new ApacheSoftwareLicense20()));
+
+        new LicensesDialog.Builder(Objects.requireNonNull(getActivity()))
+                .setNotices(notices)
+                .setIncludeOwnLicense(true)
+                .build()
+                .show();
     }
 
 }
