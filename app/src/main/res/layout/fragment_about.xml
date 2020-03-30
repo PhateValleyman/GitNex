@@ -185,7 +185,6 @@
                     android:id="@+id/openSourceLicenses"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:autoLink="web"
                     android:gravity="start"
                     android:text="@string/openSourceLicenses"
                     android:textColor="@color/lightBlue"
