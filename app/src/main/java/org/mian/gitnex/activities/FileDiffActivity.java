@@ -82,7 +82,7 @@ public class FileDiffActivity extends BaseActivity {
 
         Call<ResponseBody> call = RetrofitClient
                 .getInstance(instanceUrl, getApplicationContext())
-                .getApiInterface()
+                .getWebInterface()
                 .getPullDiffContent(owner, repo, filename);
 
         call.enqueue(new Callback<ResponseBody>() {
