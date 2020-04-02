@@ -32,12 +32,14 @@ public class PicassoCache implements Cache {
 
 		try {
 
-			FileInputStream fileInputStream = new FileInputStream(new File(cachePath, Objects.requireNonNull(cacheMap.get(key))));
+			if(cacheMap.containsKey(key) && cacheMap.get(key) != null) {
+				FileInputStream fileInputStream = new FileInputStream(new File(cachePath, cacheMap.get(key)));
 
-			Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-			fileInputStream.close();
+				Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
+				fileInputStream.close();
 
-			return bitmap;
+				return bitmap;
+			}
 		}
 		catch(IOException e) {
 			e.printStackTrace();
@@ -48,11 +50,13 @@ public class PicassoCache implements Cache {
 	}
 
 	private String generateRandomFilename() {
+
 		return UUID.randomUUID().toString();
 	}
 
 	@Override
 	public void set(String key, Bitmap bitmap) {
+
 		try {
 
 			String uuid = generateRandomFilename();
@@ -90,7 +94,7 @@ public class PicassoCache implements Cache {
 
 		File[] files = cachePath.listFiles();
 
-		assert files != null;
+		assert files != null; // Remove
 		for(File file : files) {
 			file.delete();
 		}
@@ -98,7 +102,6 @@ public class PicassoCache implements Cache {
 
 	@Override
 	public void clearKeyUri(String keyPrefix) {
-		// Whats that for?
 
 		for(String key : cacheMap.keySet()) {
 
