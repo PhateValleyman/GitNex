@@ -52,7 +52,7 @@ public class PicassoService {
 						public Response intercept(@NotNull Chain chain) throws IOException {
 
 							Response originalResponse = chain.proceed(chain.request());
-							return originalResponse.newBuilder().header("Cache-Control", "max-age=" + 60).build();
+							return originalResponse.newBuilder().header("Cache-Control", "public, max-stale=" + 60 * 60 * 24 * 30).build();
 						}
 					});
 
