@@ -16,12 +16,13 @@ import java.util.UUID;
  */
 
 public class PicassoCache implements Cache {
+
 	private static final int CACHE_SIZE = 999;
 
 	private File cachePath;
 	private HashMap<String, String> cacheMap;
 
-	public PicassoCache(File cachePath) {
+	PicassoCache(File cachePath) {
 		this.cachePath = cachePath;
 		cacheMap = new HashMap<>();
 	}
