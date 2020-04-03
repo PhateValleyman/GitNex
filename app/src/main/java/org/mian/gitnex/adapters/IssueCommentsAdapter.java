@@ -70,6 +70,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 		private TextView commendBodyRaw;
 		private TextView commentModified;
 		private TextView commenterUsername;
+		private TextView htmlUrl;
 
 		private IssueCommentViewHolder(View itemView) {
 
@@ -84,6 +85,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 			commendBodyRaw = itemView.findViewById(R.id.commendBodyRaw);
 			commentModified = itemView.findViewById(R.id.commentModified);
 			commenterUsername = itemView.findViewById(R.id.commenterUsername);
+			htmlUrl = itemView.findViewById(R.id.htmlUrl);
 
 			commentsOptionsMenu.setOnClickListener(v -> {
 
@@ -127,7 +129,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 					}
 
 					// get comment Url
-					String commentUrl = instanceUrlWithProtocol + "/" + repoFullName + "/issues/" + tinyDb.getString("issueNumber") + "#issuecomment-" + commendId.getText();
+					CharSequence commentUrl = htmlUrl.getText();
 
 					// share issue comment
 					Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -164,7 +166,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 	@Override
 	public IssueCommentsAdapter.IssueCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.issue_comments, parent, false);
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_issue_comments, parent, false);
 		return new IssueCommentsAdapter.IssueCommentViewHolder(v);
 
 	}
@@ -179,6 +181,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 		IssueComments currentItem = issuesComments.get(position);
 
+		holder.htmlUrl.setText(currentItem.getHtml_url());
 		holder.commenterUsername.setText(currentItem.getUser().getUsername());
 		holder.commendId.setText(String.valueOf(currentItem.getId()));
 		holder.commendBodyRaw.setText(currentItem.getBody());
