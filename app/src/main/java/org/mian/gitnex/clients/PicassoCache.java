@@ -20,6 +20,7 @@ import java.util.UUID;
 
 public class PicassoCache implements Cache {
 
+	private static final String CACHE_MAP_FILE = "cacheMap";
 	private static final int CACHE_SIZE = 999;
 
 	private File cachePath;
@@ -140,7 +141,7 @@ public class PicassoCache implements Cache {
 
 	private void saveCacheMap(Map<String, String> cacheMap) throws IOException {
 
-		ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(new File(cachePath, "cacheMap"), false));
+		ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(new File(cachePath, CACHE_MAP_FILE), false));
 
 		objectOutputStream.writeObject(cacheMap);
 		objectOutputStream.flush();
@@ -149,7 +150,7 @@ public class PicassoCache implements Cache {
 
 	private Map<String, String> loadCacheMap() throws IOException, ClassNotFoundException {
 
-		ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(new File(cachePath, "cacheMap")));
+		ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(new File(cachePath, CACHE_MAP_FILE)));
 
 		Map<String, String> map = (HashMap<String, String>) objectInputStream.readObject();
 		objectInputStream.close();
@@ -158,7 +159,7 @@ public class PicassoCache implements Cache {
 	}
 
 	private boolean cacheMapExists(File cachePath) {
-		return new File(cachePath, "cacheMap").exists();
+		return new File(cachePath, CACHE_MAP_FILE).exists();
 	}
 
 }
