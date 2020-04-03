@@ -26,7 +26,7 @@ public class PicassoCache implements Cache {
 	private File cachePath;
 	private HashMap<String, String> cacheMap;
 
-	PicassoCache(File cachePath) throws IOException, ClassNotFoundException {
+	public PicassoCache(File cachePath) throws IOException, ClassNotFoundException {
 
 		this.cachePath = cachePath;
 		cacheMap = new HashMap<>();
