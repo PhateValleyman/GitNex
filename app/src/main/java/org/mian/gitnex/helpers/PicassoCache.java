@@ -12,7 +12,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -21,9 +20,13 @@ import java.util.UUID;
 
 public class PicassoCache implements Cache {
 
-	private static final String CACHE_MAP_FILE = "cacheMap";
-	private static final int CACHE_SIZE = 999;
 	private String TAG = "PicassoCache";
+
+	private static final Bitmap.CompressFormat COMPRESS_FORMAT = Bitmap.CompressFormat.PNG;
+	private static final int COMPRESSION_QUALITY = 0; // 0 = high compression (low file size) | 100 = no compression
+
+	private static final String CACHE_MAP_FILE = "cacheMap";
+	private static final int CACHE_SIZE = 25 * 1024 * 1024; // Cache can hold twenty-five megabytes
 
 	private File cachePath;
 	private HashMap<String, String> cacheMap;
@@ -48,7 +51,7 @@ public class PicassoCache implements Cache {
 
 			if(cacheMap.containsKey(key)) {
 
-				FileInputStream fileInputStream = new FileInputStream(new File(cachePath, Objects.requireNonNull(cacheMap.get(key))));
+				FileInputStream fileInputStream = new FileInputStream(new File(cachePath, cacheMap.get(key)));
 
 				Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
 				fileInputStream.close();
@@ -77,7 +80,7 @@ public class PicassoCache implements Cache {
 			File file = new File(cachePath, uuid);
 
 			FileOutputStream fileOutputStream = new FileOutputStream(file, false);
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+			bitmap.compress(COMPRESS_FORMAT, COMPRESSION_QUALITY, fileOutputStream);
 
 			fileOutputStream.flush();
 			fileOutputStream.close();
@@ -97,7 +100,15 @@ public class PicassoCache implements Cache {
 	@Override
 	public int size() {
 
-		return cacheMap.size();
+		int currentSize = 0;
+
+		for(String key : cacheMap.keySet()) {
+
+			currentSize += new File(cachePath, cacheMap.get(key)).length();
+
+		}
+
+		return currentSize;
 
 	}
 
@@ -147,10 +158,11 @@ public class PicassoCache implements Cache {
 			if(match) {
 
 				//noinspection ResultOfMethodCallIgnored
-				new File(cachePath, Objects.requireNonNull(cacheMap.get(key))).delete();
+				new File(cachePath, cacheMap.get(key)).delete();
 				cacheMap.remove(key);
 
 			}
+
 		}
 
 	}
