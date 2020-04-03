@@ -46,9 +46,11 @@ public class PicassoService {
 			});
 
 			File cachePath = new File(context.getCacheDir() + "/picasso_cache/");
+			//noinspection ResultOfMethodCallIgnored
 			cachePath.mkdirs();
 
 			picasso = builder.memoryCache(new PicassoCache(cachePath)).build();
+
 		}
 		catch(Exception e) {
 

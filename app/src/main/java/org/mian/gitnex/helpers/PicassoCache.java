@@ -2,6 +2,7 @@ package org.mian.gitnex.helpers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import com.squareup.picasso.Cache;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +23,7 @@ public class PicassoCache implements Cache {
 
 	private static final String CACHE_MAP_FILE = "cacheMap";
 	private static final int CACHE_SIZE = 999;
+	private String TAG = "PicassoCache";
 
 	private File cachePath;
 	private HashMap<String, String> cacheMap;
@@ -34,7 +36,9 @@ public class PicassoCache implements Cache {
 		if(cacheMapExists(cachePath)) {
 
 			cacheMap.putAll(loadCacheMap());
+
 		}
+
 	}
 
 	@Override
@@ -44,19 +48,24 @@ public class PicassoCache implements Cache {
 
 			if(cacheMap.containsKey(key)) {
 
-				FileInputStream fileInputStream = new FileInputStream(new File(cachePath, cacheMap.get(key)));
+				FileInputStream fileInputStream = new FileInputStream(new File(cachePath, Objects.requireNonNull(cacheMap.get(key))));
 
 				Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
 				fileInputStream.close();
 
 				return bitmap;
+
 			}
+
 		}
 		catch(IOException e) {
-			e.printStackTrace();
+
+			Log.e(TAG, e.toString());
+
 		}
 
 		return null;
+
 	}
 
 	@Override
@@ -65,9 +74,7 @@ public class PicassoCache implements Cache {
 		try {
 
 			String uuid = generateRandomFilename();
-
 			File file = new File(cachePath, uuid);
-			file.createNewFile();
 
 			FileOutputStream fileOutputStream = new FileOutputStream(file, false);
 			bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
@@ -77,22 +84,28 @@ public class PicassoCache implements Cache {
 
 			cacheMap.put(key, uuid);
 			saveCacheMap(cacheMap);
+
 		}
 		catch(IOException e) {
-			e.printStackTrace();
+
+			Log.e(TAG, e.toString());
+
 		}
+
 	}
 
 	@Override
 	public int size() {
 
 		return cacheMap.size();
+
 	}
 
 	@Override
 	public int maxSize() {
 
 		return CACHE_SIZE;
+
 	}
 
 	@Override
@@ -104,9 +117,13 @@ public class PicassoCache implements Cache {
 
 			for(File file : files) {
 
+				//noinspection ResultOfMethodCallIgnored
 				file.delete();
+
 			}
+
 		}
+
 	}
 
 	@Override
@@ -124,19 +141,24 @@ public class PicassoCache implements Cache {
 					match = false;
 					break;
 				}
+
 			}
 
 			if(match) {
 
+				//noinspection ResultOfMethodCallIgnored
 				new File(cachePath, Objects.requireNonNull(cacheMap.get(key))).delete();
 				cacheMap.remove(key);
+
 			}
 		}
+
 	}
 
 	private String generateRandomFilename() {
 
 		return UUID.randomUUID().toString();
+
 	}
 
 	private void saveCacheMap(Map<String, String> cacheMap) throws IOException {
@@ -146,6 +168,7 @@ public class PicassoCache implements Cache {
 		objectOutputStream.writeObject(cacheMap);
 		objectOutputStream.flush();
 		objectOutputStream.close();
+
 	}
 
 	private Map<String, String> loadCacheMap() throws IOException, ClassNotFoundException {
@@ -156,10 +179,13 @@ public class PicassoCache implements Cache {
 		objectInputStream.close();
 
 		return map;
+
 	}
 
 	private boolean cacheMapExists(File cachePath) {
+
 		return new File(cachePath, CACHE_MAP_FILE).exists();
+
 	}
 
 }
