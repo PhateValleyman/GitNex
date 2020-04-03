@@ -2,6 +2,7 @@ package org.mian.gitnex.clients;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import com.squareup.picasso.Cache;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,19 +33,16 @@ public class PicassoCache implements Cache {
 
 		try {
 
-			if(cacheMap.containsKey(key) && cacheMap.get(key) != null) {
-				FileInputStream fileInputStream = new FileInputStream(new File(cachePath, cacheMap.get(key)));
+			FileInputStream fileInputStream = new FileInputStream(new File(cachePath, Objects.requireNonNull(cacheMap.get(key))));
 
-				Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-				fileInputStream.close();
+			Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
+			fileInputStream.close();
 
-				return bitmap;
-			}
+			return bitmap;
 		}
 		catch(IOException e) {
 			e.printStackTrace();
 		}
-
 
 		return null;
 	}

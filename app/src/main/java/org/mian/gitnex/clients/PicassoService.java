@@ -2,7 +2,6 @@ package org.mian.gitnex.clients;
 
 import android.content.Context;
 import android.util.Log;
-import com.squareup.picasso.LruCache;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 import org.mian.gitnex.helpers.ssl.MemorizingTrustManager;
@@ -45,7 +44,11 @@ public class PicassoService {
 
 			});
 
-			picasso = builder.memoryCache(new PicassoCache(new File(context.getCacheDir() + "picasso_cache/"))).build();
+			File cachePath = new File(context.getCacheDir() + "/picasso_cache/");
+			cachePath.mkdirs();
+
+			picasso =
+					builder.memoryCache(new PicassoCache(cachePath)).build();
 		}
 		catch(Exception e) {
 
