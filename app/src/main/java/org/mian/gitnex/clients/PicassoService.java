@@ -47,8 +47,7 @@ public class PicassoService {
 			File cachePath = new File(context.getCacheDir() + "/picasso_cache/");
 			cachePath.mkdirs();
 
-			picasso =
-					builder.memoryCache(new PicassoCache(cachePath)).build();
+			picasso = builder.memoryCache(new PicassoCache(cachePath)).build();
 		}
 		catch(Exception e) {
 
