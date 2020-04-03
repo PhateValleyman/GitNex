@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+import org.mian.gitnex.helpers.PicassoCache;
 import org.mian.gitnex.helpers.ssl.MemorizingTrustManager;
 import java.io.File;
 import java.security.SecureRandom;

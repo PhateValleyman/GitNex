@@ -1,4 +1,4 @@
-package org.mian.gitnex.clients;
+package org.mian.gitnex.helpers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
