@@ -121,13 +121,6 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 				commentShare.setOnClickListener(ediComment -> {
 
-					// get url of repo
-					String repoFullName = tinyDb.getString("repoFullName");
-					String instanceUrlWithProtocol = "https://" + tinyDb.getString("instanceUrlRaw");
-					if(!tinyDb.getString("instanceUrlWithProtocol").isEmpty()) {
-						instanceUrlWithProtocol = tinyDb.getString("instanceUrlWithProtocol");
-					}
-
 					// get comment Url
 					CharSequence commentUrl = htmlUrl.getText();
 
