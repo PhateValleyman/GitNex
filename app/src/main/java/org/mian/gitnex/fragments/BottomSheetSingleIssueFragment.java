@@ -40,7 +40,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
         View v = inflater.inflate(R.layout.bottom_sheet_single_issue_layout, container, false);
 
-        final TinyDB tinyDB = new TinyDB(getContext());
+        final Context ctx = getContext();
+        final TinyDB tinyDB = new TinyDB(ctx);
 
         TextView replyToIssue = v.findViewById(R.id.replyToIssue);
         TextView editIssue = v.findViewById(R.id.editIssue);
@@ -59,7 +60,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getContext(), ReplyToIssueActivity.class));
+                startActivity(new Intent(ctx, ReplyToIssueActivity.class));
                 dismiss();
 
             }
@@ -96,7 +97,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getContext(), MergePullRequestActivity.class));
+                startActivity(new Intent(ctx, MergePullRequestActivity.class));
                 dismiss();
 
             }
@@ -106,7 +107,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getContext(), FileDiffActivity.class));
+                startActivity(new Intent(ctx, FileDiffActivity.class));
                 dismiss();
 
             }
@@ -116,7 +117,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getContext(), EditIssueActivity.class));
+                startActivity(new Intent(ctx, EditIssueActivity.class));
                 dismiss();
 
             }
@@ -126,7 +127,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getContext(), AddRemoveLabelsActivity.class));
+                startActivity(new Intent(ctx, AddRemoveLabelsActivity.class));
                 dismiss();
 
             }
@@ -136,7 +137,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getContext(), AddRemoveAssigneesActivity.class));
+                startActivity(new Intent(ctx, AddRemoveAssigneesActivity.class));
                 dismiss();
 
             }
@@ -180,14 +181,14 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
                 String issueUrl = instanceUrlWithProtocol + "/" + repoFullName + "/issues/" + tinyDB.getString("issueNumber");
 
                 // copy to clipboard
-                ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getContext()).getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(android.content.Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("issueUrl", issueUrl);
                 assert clipboard != null;
                 clipboard.setPrimaryClip(clip);
 
                 dismiss();
 
-                Toasty.info(getContext(), getContext().getString(R.string.copyIssueUrlToastMsg));
+                Toasty.info(ctx, ctx.getString(R.string.copyIssueUrlToastMsg));
 
             }
         });
@@ -202,7 +203,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
                     @Override
                     public void onClick(View v) {
 
-                        IssueActions.closeReopenIssue(getContext(), Integer.parseInt(tinyDB.getString("issueNumber")), "closed");
+                        IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "closed");
                         dismiss();
 
                     }
@@ -217,7 +218,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
                     @Override
                     public void onClick(View v) {
 
-                        IssueActions.closeReopenIssue(getContext(), Integer.parseInt(tinyDB.getString("issueNumber")), "open");
+                        IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "open");
                         dismiss();
 
                     }
@@ -246,7 +247,6 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
                 final String userLogin = tinyDB.getString("userLogin");
                 final String token = "token " + tinyDB.getString(loginUid + "-token");
                 final int issueNr = Integer.parseInt(tinyDB.getString("issueNumber"));
-                Context ctx = getContext();
 
                 Call<Void> call;
 
@@ -277,7 +277,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
                         }
                         else {
 
-                            Toasty.info(getContext(), getContext().getString(R.string.issueSubscribtionError));
+                            Toasty.info(ctx, ctx.getString(R.string.issueSubscribtionError));
 
                         }
 
@@ -285,7 +285,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
                     @Override
                     public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                        Toasty.info(getContext(), getContext().getString(R.string.issueSubscribtionError));
+                        Toasty.info(ctx, ctx.getString(R.string.issueSubscribtionError));
                     }
                 });
             }
@@ -304,7 +304,6 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
                 final String userLogin = tinyDB.getString("userLogin");
                 final String token = "token " + tinyDB.getString(loginUid + "-token");
                 final int issueNr = Integer.parseInt(tinyDB.getString("issueNumber"));
-                Context ctx = getContext();
 
                 Call<Void> call;
 
@@ -335,7 +334,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
                         }
                         else {
 
-                            Toasty.info(getContext(), getContext().getString(R.string.issueUnsubscribtionError));
+                            Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtionError));
 
                         }
 
@@ -343,7 +342,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
                     @Override
                     public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                        Toasty.info(getContext(), getContext().getString(R.string.issueUnsubscribtionError));
+                        Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtionError));
                     }
                 });
             }
