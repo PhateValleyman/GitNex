@@ -131,7 +131,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        if(tinyDb.getBoolean("enableCounterIssueBadge")) {
+        if(tinyDb.getBoolean("enableCounterBadges")) {
 
             @SuppressLint("InflateParams") View tabHeader2 = LayoutInflater.from(this).inflate(R.layout.badge_issue, null);
             textViewBadgeIssue = tabHeader2.findViewById(R.id.counterBadgeIssue);
@@ -142,10 +142,13 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
             @SuppressLint("InflateParams") View tabHeader6 = LayoutInflater.from(this).inflate(R.layout.badge_release, null);
             textViewBadgeRelease = tabHeader6.findViewById(R.id.counterBadgeRelease);
 
-            if(!tinyDb.getString("issuesCounter").isEmpty()) {
+            //if(!tinyDb.getString("issuesCounter").isEmpty()) {
                 getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
-            }
+            //}
             Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader2);
+
+            textViewBadgePull.setVisibility(View.GONE);
+            textViewBadgeRelease.setVisibility(View.GONE);
 
             // issue count
             TabLayout.Tab tabOpenIssues = tabLayout.getTabAt(2);
@@ -175,6 +178,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
         checkRepositoryStarStatus(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
         checkRepositoryWatchStatus(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
+
     }
 
     @Override
@@ -193,13 +197,16 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
         if(tinyDb.getBoolean("enableCounterIssueBadge")) {
             getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
         }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.repo_dotted_menu, menu);
         return true;
+
     }
 
     @Override
@@ -339,8 +346,15 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
                         assert repoInfo != null;
                         textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
-                        textViewBadgePull.setText(repoInfo.getOpen_pull_count());
-                        textViewBadgeRelease.setText(repoInfo.getRelease_count());
+                        if(repoInfo.getOpen_pull_count() != null) {
+                            textViewBadgePull.setVisibility(View.VISIBLE);
+                            textViewBadgePull.setText(repoInfo.getOpen_pull_count());
+                        }
+
+                        if(repoInfo.getRelease_count() != null) {
+                            textViewBadgeRelease.setVisibility(View.VISIBLE);
+                            textViewBadgeRelease.setText(repoInfo.getRelease_count());
+                        }
 
                     }
 
@@ -355,6 +369,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
             public void onFailure(@NonNull Call<UserRepositories> call, @NonNull Throwable t) {
                 Log.e("onFailure", t.toString());
             }
+
         });
 
     }
