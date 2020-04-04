@@ -329,6 +329,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
     private void getRepoInfo(String instanceUrl, String token, final String owner, String repo) {
 
+        TinyDB tinyDb = new TinyDB(getApplicationContext());
+
         Call<UserRepositories> call = RetrofitClient
                 .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
@@ -345,21 +347,23 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
                     if (response.code() == 200) {
 
-                        assert repoInfo != null;
+                        if(tinyDb.getBoolean("enableCounterBadges")) {
+                            assert repoInfo != null;
 
-                        if(repoInfo.getOpen_pull_count() != null) {
-                            textViewBadgeIssue.setVisibility(View.VISIBLE);
-                            textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
-                        }
+                            if(repoInfo.getOpen_pull_count() != null) {
+                                textViewBadgeIssue.setVisibility(View.VISIBLE);
+                                textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
+                            }
 
-                        if(repoInfo.getOpen_pull_count() != null) {
-                            textViewBadgePull.setVisibility(View.VISIBLE);
-                            textViewBadgePull.setText(repoInfo.getOpen_pull_count());
-                        }
+                            if(repoInfo.getOpen_pull_count() != null) {
+                                textViewBadgePull.setVisibility(View.VISIBLE);
+                                textViewBadgePull.setText(repoInfo.getOpen_pull_count());
+                            }
 
-                        if(repoInfo.getRelease_count() != null) {
-                            textViewBadgeRelease.setVisibility(View.VISIBLE);
-                            textViewBadgeRelease.setText(repoInfo.getRelease_count());
+                            if(repoInfo.getRelease_count() != null) {
+                                textViewBadgeRelease.setVisibility(View.VISIBLE);
+                                textViewBadgeRelease.setText(repoInfo.getRelease_count());
+                            }
                         }
 
                     }
