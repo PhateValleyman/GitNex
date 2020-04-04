@@ -50,7 +50,8 @@ import android.net.Uri;
 
 public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoFragment.BottomSheetListener {
 
-    private TextView textViewBadge;
+    private TextView textViewBadgeIssue;
+    private TextView textViewBadgePull;
 
     @Override
     protected int getLayoutResourceId(){
@@ -131,19 +132,28 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
         if(tinyDb.getBoolean("enableCounterIssueBadge")) {
 
-            @SuppressLint("InflateParams") View tabHeader = LayoutInflater.from(this).inflate(R.layout.badge, null);
-            textViewBadge = tabHeader.findViewById(R.id.counterBadge);
+            @SuppressLint("InflateParams") View tabHeader2 = LayoutInflater.from(this).inflate(R.layout.badge_issue, null);
+            textViewBadgeIssue = tabHeader2.findViewById(R.id.counterBadgeIssue);
+
+            @SuppressLint("InflateParams") View tabHeader4 = LayoutInflater.from(this).inflate(R.layout.badge_pull, null);
+            textViewBadgePull = tabHeader4.findViewById(R.id.counterBadgePull);
+
             if(!tinyDb.getString("issuesCounter").isEmpty()) {
                 getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
             }
-            Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader);
+            Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader2);
 
             TabLayout.Tab tabOpenIssues = tabLayout.getTabAt(2);
             ColorStateList textColor = tabLayout.getTabTextColors();
             assert tabOpenIssues != null;
-            TextView openIssueTabView = Objects.requireNonNull(tabOpenIssues.getCustomView()).findViewById(R.id.counterBadgeText);
+            TextView openIssueTabView = Objects.requireNonNull(tabOpenIssues.getCustomView()).findViewById(R.id.counterBadgeIssueText);
             openIssueTabView.setTextColor(textColor);
 
+            Objects.requireNonNull(tabLayout.getTabAt(4)).setCustomView(tabHeader4);
+            TabLayout.Tab tabOpenPulls = tabLayout.getTabAt(4);
+            assert tabOpenPulls != null;
+            TextView openPullTabView = Objects.requireNonNull(tabOpenPulls.getCustomView()).findViewById(R.id.counterBadgePullText);
+            openPullTabView.setTextColor(textColor);
         }
 
         checkRepositoryStarStatus(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
@@ -311,7 +321,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
                     if (response.code() == 200) {
 
                         assert repoInfo != null;
-                        textViewBadge.setText(repoInfo.getOpen_issues_count());
+                        textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
+                        textViewBadgePull.setText(repoInfo.getOpen_pull_count());
 
                     }
 
