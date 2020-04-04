@@ -2,6 +2,8 @@ package org.mian.gitnex.actions;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
@@ -159,6 +161,119 @@ public class IssueActions {
             }
         });
 
+    }
+
+    public static void subscribe(final Context ctx, final TextView subscribeIssue, final TextView unsubscribeIssue) {
+
+        final TinyDB tinyDB = new TinyDB(ctx);
+
+        final String instanceUrl = tinyDB.getString("instanceUrl");
+        String repoFullName = tinyDB.getString("repoFullName");
+        String[] parts = repoFullName.split("/");
+        final String repoOwner = parts[0];
+        final String repoName = parts[1];
+        final String loginUid = tinyDB.getString("loginUid");
+        final String userLogin = tinyDB.getString("userLogin");
+        final String token = "token " + tinyDB.getString(loginUid + "-token");
+        final int issueNr = Integer.parseInt(tinyDB.getString("issueNumber"));
+
+        Call<Void> call;
+
+        call = RetrofitClient
+                .getInstance(instanceUrl, ctx)
+                .getApiInterface()
+                .addIssueSubscriber(token, repoOwner, repoName, issueNr, userLogin);
+
+        call.enqueue(new Callback<Void>() {
+
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
+
+                if(response.isSuccessful()) {
+
+                    Toasty.info(ctx, ctx.getString(R.string.issueSubscribtion));
+                    subscribeIssue.setVisibility(View.GONE);
+                    unsubscribeIssue.setVisibility(View.VISIBLE);
+
+                }
+                else if(response.code() == 401) {
+
+                    AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+                }
+                else {
+
+                    Toasty.info(ctx, ctx.getString(R.string.issueSubscribtionError));
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toasty.info(ctx, ctx.getString(R.string.issueSubscribtionError));
+            }
+        });
+
+    }
+
+    public static void unsubscribe(final Context ctx, final TextView subscribeIssue, final TextView unsubscribeIssue) {
+
+        final TinyDB tinyDB = new TinyDB(ctx);
+
+        final String instanceUrl = tinyDB.getString("instanceUrl");
+        String repoFullName = tinyDB.getString("repoFullName");
+        String[] parts = repoFullName.split("/");
+        final String repoOwner = parts[0];
+        final String repoName = parts[1];
+        final String loginUid = tinyDB.getString("loginUid");
+        final String userLogin = tinyDB.getString("userLogin");
+        final String token = "token " + tinyDB.getString(loginUid + "-token");
+        final int issueNr = Integer.parseInt(tinyDB.getString("issueNumber"));
+
+        Call<Void> call;
+
+        call = RetrofitClient
+                .getInstance(instanceUrl, ctx)
+                .getApiInterface()
+                .delIssueSubscriber(token, repoOwner, repoName, issueNr, userLogin);
+
+        call.enqueue(new Callback<Void>() {
+
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
+
+                if(response.isSuccessful()) {
+
+                    Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtion));
+                    unsubscribeIssue.setVisibility(View.GONE);
+                    subscribeIssue.setVisibility(View.VISIBLE);
+
+                }
+                else if(response.code() == 401) {
+
+                    AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+                }
+                else {
+
+                    Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtionError));
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtionError));
+            }
+        });
     }
 
 }
