@@ -351,7 +351,10 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
         //if RepoWatch True Provide Unsubscribe first
         // ToDo: API to check if user is subscribed to an issue (do not exist can be guessed by many api endpoints :/)
-        // ToDo
+        if (tinyDB.getBoolean("repoWatch")) {
+            subscribeIssue.setVisibility(View.GONE);
+            unsubscribeIssue.setVisibility(View.VISIBLE);
+        }
 
         return v;
     }
