@@ -142,19 +142,21 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
             @SuppressLint("InflateParams") View tabHeader6 = LayoutInflater.from(this).inflate(R.layout.badge_release, null);
             textViewBadgeRelease = tabHeader6.findViewById(R.id.counterBadgeRelease);
 
-            getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
-
-            Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader2);
-
+            textViewBadgeIssue.setVisibility(View.GONE);
             textViewBadgePull.setVisibility(View.GONE);
             textViewBadgeRelease.setVisibility(View.GONE);
 
-            // issue count
-            TabLayout.Tab tabOpenIssues = tabLayout.getTabAt(2);
+            getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
             ColorStateList textColor = tabLayout.getTabTextColors();
-            assert tabOpenIssues != null;
-            TextView openIssueTabView = Objects.requireNonNull(tabOpenIssues.getCustomView()).findViewById(R.id.counterBadgeIssueText);
-            openIssueTabView.setTextColor(textColor);
+
+            // issue count
+            if (textViewBadgeIssue.getText() != "") {
+                TabLayout.Tab tabOpenIssues = tabLayout.getTabAt(2);
+                Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader2);
+                assert tabOpenIssues != null;
+                TextView openIssueTabView = Objects.requireNonNull(tabOpenIssues.getCustomView()).findViewById(R.id.counterBadgeIssueText);
+                openIssueTabView.setTextColor(textColor);
+            }
 
             // pull count
             if (textViewBadgePull.getText() != "") { // only show if API returned a number
@@ -344,7 +346,12 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
                     if (response.code() == 200) {
 
                         assert repoInfo != null;
-                        textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
+
+                        if(repoInfo.getOpen_pull_count() != null) {
+                            textViewBadgeIssue.setVisibility(View.VISIBLE);
+                            textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
+                        }
+
                         if(repoInfo.getOpen_pull_count() != null) {
                             textViewBadgePull.setVisibility(View.VISIBLE);
                             textViewBadgePull.setText(repoInfo.getOpen_pull_count());
