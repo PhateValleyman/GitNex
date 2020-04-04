@@ -1,5 +1,6 @@
 package org.mian.gitnex.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.util.TinyDB;
 import androidx.annotation.NonNull;
@@ -22,6 +25,8 @@ import androidx.annotation.Nullable;
 import android.content.ClipboardManager;
 import android.content.ClipData;
 import java.util.Objects;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -228,9 +233,125 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
         }
 
-        //test if issue is subscribed
-        //...
+        subscribeIssue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                final String instanceUrl = tinyDB.getString("instanceUrl");
+                String repoFullName = tinyDB.getString("repoFullName");
+                String[] parts = repoFullName.split("/");
+                final String repoOwner = parts[0];
+                final String repoName = parts[1];
+                final String loginUid = tinyDB.getString("loginUid");
+                final String userLogin = tinyDB.getString("userLogin");
+                final String token = "token " + tinyDB.getString(loginUid + "-token");
+                final int issueNr = Integer.parseInt(tinyDB.getString("issueNumber"));
+                Context ctx = getContext();
+
+                Call<Void> call;
+
+                call = RetrofitClient
+                        .getInstance(instanceUrl, ctx)
+                        .getApiInterface()
+                        .addIssueSubscriber(token, repoOwner, repoName, issueNr, userLogin);
+
+                call.enqueue(new Callback<Void>() {
+
+                    @Override
+                    public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
+
+                        if(response.isSuccessful()) {
+
+                            Toasty.info(ctx, getString(R.string.issueSubscribtion));
+                            subscribeIssue.setVisibility(View.GONE);
+                            unsubscribeIssue.setVisibility(View.VISIBLE);
+
+                        }
+                        else if(response.code() == 401) {
+
+                            AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                                    getResources().getString(R.string.alertDialogTokenRevokedMessage),
+                                    getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+                                    getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+                        }
+                        else {
+
+                            Toasty.info(getContext(), getContext().getString(R.string.issueSubscribtionError));
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                        Toasty.info(getContext(), getContext().getString(R.string.issueSubscribtionError));
+                    }
+                });
+            }
+        });
+
+        unsubscribeIssue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String instanceUrl = tinyDB.getString("instanceUrl");
+                String repoFullName = tinyDB.getString("repoFullName");
+                String[] parts = repoFullName.split("/");
+                final String repoOwner = parts[0];
+                final String repoName = parts[1];
+                final String loginUid = tinyDB.getString("loginUid");
+                final String userLogin = tinyDB.getString("userLogin");
+                final String token = "token " + tinyDB.getString(loginUid + "-token");
+                final int issueNr = Integer.parseInt(tinyDB.getString("issueNumber"));
+                Context ctx = getContext();
+
+                Call<Void> call;
+
+                call = RetrofitClient
+                        .getInstance(instanceUrl, ctx)
+                        .getApiInterface()
+                        .delIssueSubscriber(token, repoOwner, repoName, issueNr, userLogin);
+
+                call.enqueue(new Callback<Void>() {
+
+                    @Override
+                    public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
+
+                        if(response.isSuccessful()) {
+
+                            Toasty.info(ctx, getString(R.string.issueUnsubscribtion));
+                            unsubscribeIssue.setVisibility(View.GONE);
+                            subscribeIssue.setVisibility(View.VISIBLE);
+
+                        }
+                        else if(response.code() == 401) {
+
+                            AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                                    getResources().getString(R.string.alertDialogTokenRevokedMessage),
+                                    getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+                                    getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+                        }
+                        else {
+
+                            Toasty.info(getContext(), getContext().getString(R.string.issueUnsubscribtionError));
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                        Toasty.info(getContext(), getContext().getString(R.string.issueUnsubscribtionError));
+                    }
+                });
+            }
+        });
+
+        //if RepoWatch True Provide Unsubscribe first
+        // ToDo: API to check if user is subscribed to an issue (do not exist can be guessed by many api endpoints :/)
+        // ToDo
 
         return v;
     }

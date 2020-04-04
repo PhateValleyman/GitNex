@@ -593,4 +593,9 @@
     <string name="mtm_decision_abort">Abort</string>
 
     <string name="issueCommentShare">Share Comment</string>
+
+    <string name="issueSubscribtion">Issue Subscribed</string>
+    <string name="issueSubscribtionError">Issue Subscription failed</string>
+    <string name="issueUnsubscribtion">Issue Unsubscribed</string>
+    <string name="issueUnsubscribtionError">Issue Un-Subscription failed</string>
 </resources>
