@@ -24,9 +24,9 @@ import retrofit2.Callback;
 
 public class IssueActions {
 
-    public static void editIssueComment(final Context context, final int commentId, final String commentBody) {
+    public static void editIssueComment(final Context ctx, final int commentId, final String commentBody) {
 
-        final TinyDB tinyDb = new TinyDB(context);
+        final TinyDB tinyDb = new TinyDB(ctx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
@@ -39,9 +39,9 @@ public class IssueActions {
         Call<IssueComments> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl, context)
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .patchIssueComment(Authorization.returnAuthentication(context, loginUid, instanceToken), repoOwner, repoName, commentId, commentBodyJson);
+                .patchIssueComment(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, commentId, commentBodyJson);
 
         call.enqueue(new Callback<IssueComments>() {
 
@@ -52,32 +52,32 @@ public class IssueActions {
                     if(response.code() == 200) {
 
                         tinyDb.putBoolean("commentEdited", true);
-                        Toasty.info(context, context.getString(R.string.editCommentUpdatedText));
-                        ((ReplyToIssueActivity)context).finish();
+                        Toasty.info(ctx, ctx.getString(R.string.editCommentUpdatedText));
+                        ((ReplyToIssueActivity)ctx).finish();
 
                     }
                 }
                 else if(response.code() == 401) {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            context.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+                    AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(context, context.getString(R.string.authorizeError));
+                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(context, context.getString(R.string.apiNotFound));
+                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(context, context.getString(R.string.genericError));
+                    Toasty.info(ctx, ctx.getString(R.string.genericError));
 
                 }
 
@@ -91,9 +91,9 @@ public class IssueActions {
 
     }
 
-    public static void closeReopenIssue(final Context context, final int issueIndex, final String issueState) {
+    public static void closeReopenIssue(final Context ctx, final int issueIndex, final String issueState) {
 
-        final TinyDB tinyDb = new TinyDB(context);
+        final TinyDB tinyDb = new TinyDB(ctx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
@@ -106,9 +106,9 @@ public class IssueActions {
         Call<JsonElement> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl, context)
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .closeReopenIssue(Authorization.returnAuthentication(context, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueStatJson);
+                .closeReopenIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueStatJson);
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -121,35 +121,35 @@ public class IssueActions {
                         tinyDb.putBoolean("resumeIssues", true);
                         tinyDb.putBoolean("resumeClosedIssues", true);
                         if(issueState.equals("closed")) {
-                            Toasty.info(context, context.getString(R.string.issueStateClosed));
+                            Toasty.info(ctx, ctx.getString(R.string.issueStateClosed));
                         }
                         else if(issueState.equals("open")) {
-                            Toasty.info(context, context.getString(R.string.issueStateReopened));
+                            Toasty.info(ctx, ctx.getString(R.string.issueStateReopened));
                         }
 
                     }
                 }
                 else if(response.code() == 401) {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            context.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+                    AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(context, context.getString(R.string.authorizeError));
+                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(context, context.getString(R.string.apiNotFound));
+                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(context, context.getString(R.string.genericError));
+                    Toasty.info(ctx, ctx.getString(R.string.genericError));
 
                 }
 
