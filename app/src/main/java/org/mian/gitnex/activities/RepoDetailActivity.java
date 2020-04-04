@@ -350,7 +350,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
                         if(tinyDb.getBoolean("enableCounterBadges")) {
                             assert repoInfo != null;
 
-                            if(repoInfo.getOpen_pull_count() != null) {
+                            if(repoInfo.getOpen_issues_count() != null) {
                                 textViewBadgeIssue.setVisibility(View.VISIBLE);
                                 textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
                             }
