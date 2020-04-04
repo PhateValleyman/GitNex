@@ -142,9 +142,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
             @SuppressLint("InflateParams") View tabHeader6 = LayoutInflater.from(this).inflate(R.layout.badge_release, null);
             textViewBadgeRelease = tabHeader6.findViewById(R.id.counterBadgeRelease);
 
-            //if(!tinyDb.getString("issuesCounter").isEmpty()) {
-                getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
-            //}
+            getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
+
             Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader2);
 
             textViewBadgePull.setVisibility(View.GONE);
