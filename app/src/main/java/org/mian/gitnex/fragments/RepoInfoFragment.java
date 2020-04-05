@@ -66,17 +66,11 @@ public class RepoInfoFragment extends Fragment {
 
     private String repoName;
     private String repoOwner;
-    private TextView repoNameInfo;
-    private TextView repoOwnerInfo;
-    private TextView repoDescriptionInfo;
-    private TextView repoWebsiteInfo;
-    private TextView repoSizeInfo;
-    private TextView repoDefaultBranchInfo;
-    private TextView repoSshUrlInfo;
-    private TextView repoCloneUrlInfo;
-    private TextView repoRepoUrlInfo;
-    private TextView repoForksCountInfo;
-    private TextView repoCreatedAtInfo;
+    private TextView repoMetaName;
+    private TextView repoMetaDescription;
+    private TextView repoMetaCommits;
+    private TextView repoMetaPullRequests;
+    private TextView repoMetaSize;
     private TextView repoFileContents;
     private LinearLayout repoMetaFrame;
     private ImageView repoMetaDataExpandCollapse;
@@ -124,17 +118,11 @@ public class RepoInfoFragment extends Fragment {
         pageContent.setVisibility(View.GONE);
 
         mProgressBar = v.findViewById(R.id.progress_bar);
-        repoNameInfo = v.findViewById(R.id.repoNameInfo);
-        repoOwnerInfo = v.findViewById(R.id.repoOwnerInfo);
-        repoDescriptionInfo = v.findViewById(R.id.repoDescriptionInfo);
-        repoWebsiteInfo = v.findViewById(R.id.repoWebsiteInfo);
-        repoSizeInfo = v.findViewById(R.id.repoSizeInfo);
-        repoDefaultBranchInfo = v.findViewById(R.id.repoDefaultBranchInfo);
-        repoSshUrlInfo = v.findViewById(R.id.repoSshUrlInfo);
-        repoCloneUrlInfo = v.findViewById(R.id.repoCloneUrlInfo);
-        repoRepoUrlInfo = v.findViewById(R.id.repoRepoUrlInfo);
-        repoForksCountInfo = v.findViewById(R.id.repoForksCountInfo);
-        repoCreatedAtInfo = v.findViewById(R.id.repoCreatedAtInfo);
+        repoMetaName = v.findViewById(R.id.repoMetaName);
+        repoMetaDescription = v.findViewById(R.id.repoMetaDescription);
+        repoMetaCommits = v.findViewById(R.id.repoMetaCommits);
+        repoMetaPullRequests = v.findViewById(R.id.repoMetaPullRequests);
+        repoMetaSize = v.findViewById(R.id.repoMetaSize);
         repoFileContents = v.findViewById(R.id.repoFileContents);
         repoMetaFrame = v.findViewById(R.id.repoMetaFrame);
         LinearLayout repoMetaFrameHeader = v.findViewById(R.id.repoMetaFrameHeader);
@@ -235,16 +223,11 @@ public class RepoInfoFragment extends Fragment {
                         if (response.code() == 200) {
 
                             assert repoInfo != null;
-                            repoNameInfo.setText(repoInfo.getName());
-                            repoOwnerInfo.setText(owner);
-                            repoDescriptionInfo.setText(repoInfo.getDescription());
-                            repoWebsiteInfo.setText(repoInfo.getWebsite());
-                            repoSizeInfo.setText(AppUtil.formatFileSize(repoInfo.getSize()));
-                            repoDefaultBranchInfo.setText(repoInfo.getDefault_branch());
-                            repoSshUrlInfo.setText(repoInfo.getSsh_url());
-                            repoCloneUrlInfo.setText(repoInfo.getClone_url());
-                            repoRepoUrlInfo.setText(repoInfo.getHtml_url());
-                            repoForksCountInfo.setText(repoInfo.getForks_count());
+                            repoMetaName.setText(repoInfo.getName());
+                            repoMetaDescription.setText(repoInfo.getDescription());
+                            repoMetaCommits.setText("20");
+                            repoMetaPullRequests.setText("20");
+                            repoMetaSize.setText(AppUtil.formatFileSize(repoInfo.getSize()));
 
                             if(repoInfo.getHas_issues() != null) {
                                 tinyDb.putBoolean("hasIssues", repoInfo.getHas_issues());
@@ -253,6 +236,7 @@ public class RepoInfoFragment extends Fragment {
                                 tinyDb.putBoolean("hasIssues", true);
                             }
 
+                            /*
                             switch (timeFormat) {
                                 case "pretty": {
                                     PrettyTime prettyTime = new PrettyTime(new Locale(locale));
@@ -274,6 +258,7 @@ public class RepoInfoFragment extends Fragment {
                                     break;
                                 }
                             }
+                            */
 
                             mProgressBar.setVisibility(View.GONE);
                             pageContent.setVisibility(View.VISIBLE);
