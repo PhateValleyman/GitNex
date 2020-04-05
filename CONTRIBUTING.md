@@ -8,8 +8,8 @@ Patches, enhancements, features are always welcome. The PR should focus on the s
 Please ask if you are not sure about the scope of work to be submitted to avoid waste of time spent on the work.
 
 **Code Standards**
-Please follow the code standards, this will help other developers to understand your code too.
-It also helps maintaining the code afterwards.
+Please follow the code standards, this will help other developers to understand your code too.  
+It also helps maintaining the code afterwards.  
 It is documented in the Wiki: [Code-Standards](https://gitea.com/gitnex/GitNex/wiki/Code-Standards)
 
 **How to submit a PR**  
