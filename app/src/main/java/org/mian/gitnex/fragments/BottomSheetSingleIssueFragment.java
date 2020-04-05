@@ -16,8 +16,6 @@ import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
-import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.util.TinyDB;
 import androidx.annotation.NonNull;
@@ -25,14 +23,14 @@ import androidx.annotation.Nullable;
 import android.content.ClipboardManager;
 import android.content.ClipData;
 import java.util.Objects;
-import retrofit2.Call;
-import retrofit2.Callback;
 
 /**
  * Author M M Arif
  */
 
 public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
+
+    private BottomSheetSingleIssueFragment.BottomSheetListener bmListener;
 
     @Nullable
     @Override
@@ -260,6 +258,27 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
         }
 
         return v;
+
+    }
+
+    public interface BottomSheetListener {
+
+        void onButtonClicked(String text);
+
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+
+        super.onAttach(context);
+
+        try {
+            bmListener = (BottomSheetSingleIssueFragment.BottomSheetListener) context;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement BottomSheetListener");
+        }
+
     }
 
 }
