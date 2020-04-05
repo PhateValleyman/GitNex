@@ -8,7 +8,7 @@
 
 
 #### Gitea setup : 
- * Version: 
+ * Version : 
  * If ssl used witch kind of cert is used : 
  * (if login issue) witch auth method : 
 
@@ -16,7 +16,7 @@
 #### Android version : 
 
 
-#### Screenshots - if any: 
+#### Screenshots - if any : 
 
 
 #### Logs - if any : 
