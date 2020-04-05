@@ -70,6 +70,7 @@ public class RepoInfoFragment extends Fragment {
     private TextView repoMetaDescription;
     private TextView repoMetaCommits;
     private TextView repoMetaPullRequests;
+    private TextView repoMetaForks;
     private TextView repoMetaSize;
     private TextView repoFileContents;
     private LinearLayout repoMetaFrame;
@@ -122,6 +123,7 @@ public class RepoInfoFragment extends Fragment {
         repoMetaDescription = v.findViewById(R.id.repoMetaDescription);
         repoMetaCommits = v.findViewById(R.id.repoMetaCommits);
         repoMetaPullRequests = v.findViewById(R.id.repoMetaPullRequests);
+        repoMetaForks = v.findViewById(R.id.repoMetaForks);
         repoMetaSize = v.findViewById(R.id.repoMetaSize);
         repoFileContents = v.findViewById(R.id.repoFileContents);
         repoMetaFrame = v.findViewById(R.id.repoMetaFrame);
@@ -225,8 +227,9 @@ public class RepoInfoFragment extends Fragment {
                             assert repoInfo != null;
                             repoMetaName.setText(repoInfo.getName());
                             repoMetaDescription.setText(repoInfo.getDescription());
-                            repoMetaCommits.setText("20");
-                            repoMetaPullRequests.setText("20");
+                            repoMetaCommits.setText("20"); // To be implemented
+                            repoMetaPullRequests.setText("20"); // To be implemented
+                            repoMetaForks.setText(repoInfo.getForks_count());
                             repoMetaSize.setText(AppUtil.formatFileSize(repoInfo.getSize()));
 
                             if(repoInfo.getHas_issues() != null) {
