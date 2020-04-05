@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
@@ -19,7 +20,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.NewFile;
 import org.mian.gitnex.util.AppUtil;
@@ -44,6 +45,7 @@ public class CreateFileActivity extends BaseActivity {
     private EditText newFileBranchName;
     private EditText newFileCommitMessage;
     private Spinner newFileBranchesSpinner;
+    private LinearLayout newFileForm;
     final Context ctx = this;
 
     List<Branches> branchesList = new ArrayList<>();
@@ -76,6 +78,7 @@ public class CreateFileActivity extends BaseActivity {
         newFileContent = findViewById(R.id.newFileContent);
         newFileBranchName = findViewById(R.id.newFileBranchName);
         newFileCommitMessage = findViewById(R.id.newFileCommitMessage);
+        newFileForm = findViewById(R.id.newFileForm);
 
         newFileName.requestFocus();
         assert imm != null;
@@ -132,11 +135,7 @@ public class CreateFileActivity extends BaseActivity {
 
     }
 
-    private View.OnClickListener createFileListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewFile();
-        }
-    };
+    private View.OnClickListener createFileListener = v -> processNewFile();
 
     private void processNewFile() {
 
@@ -160,14 +159,14 @@ public class CreateFileActivity extends BaseActivity {
 
         if(!connToInternet) {
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+            SnackBar.warning(ctx, newFileForm, getString(R.string.checkNetConnection));
             return;
 
         }
 
         if(newFileName_.equals("") || newFileContent_.equals("") || newFileCommitMessage_.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.newFileRequiredFields));
+            SnackBar.warning(ctx, newFileForm, getString(R.string.newFileRequiredFields));
             return;
 
         }
@@ -175,13 +174,14 @@ public class CreateFileActivity extends BaseActivity {
         if(currentBranch.toString().equals("No branch")) {
 
             if(newFileBranchName_.equals("")) {
-                Toasty.info(getApplicationContext(), getString(R.string.newFileRequiredFieldNewBranchName));
+
+                SnackBar.warning(ctx, newFileForm, getString(R.string.newFileRequiredFieldNewBranchName));
                 return;
             }
             else {
                 if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.newFileInvalidBranchName));
+                    SnackBar.warning(ctx, newFileForm, getString(R.string.newFileInvalidBranchName));
                     return;
 
                 }
@@ -191,7 +191,7 @@ public class CreateFileActivity extends BaseActivity {
 
         if(appUtil.charactersLength(newFileCommitMessage_) > 255) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.newFileCommitMessageError));
+            SnackBar.error(ctx, newFileForm, getString(R.string.newFileCommitMessageError));
 
         }
         else {
@@ -226,7 +226,7 @@ public class CreateFileActivity extends BaseActivity {
                 if(response.code() == 201) {
 
                     enableProcessButton();
-                    Toasty.info(getApplicationContext(), getString(R.string.newFileSuccessMessage));
+                    SnackBar.success(ctx, newFileForm, getString(R.string.newFileSuccessMessage));
                     finish();
 
                 }
@@ -242,12 +242,16 @@ public class CreateFileActivity extends BaseActivity {
                 else {
 
                     if(response.code() == 404) {
+
                         enableProcessButton();
-                        Toasty.info(getApplicationContext(), getString(R.string.apiNotFound));
+                        SnackBar.error(ctx, newFileForm, getString(R.string.apiNotFound));
+
                     }
                     else {
+
                         enableProcessButton();
-                        Toasty.info(getApplicationContext(), getString(R.string.orgCreatedError));
+                        SnackBar.error(ctx, newFileForm, getString(R.string.orgCreatedError));
+
                     }
 
                 }
@@ -314,12 +318,7 @@ public class CreateFileActivity extends BaseActivity {
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+        onClickListener = view -> finish();
     }
 
     private void disableProcessButton() {

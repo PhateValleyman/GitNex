@@ -1,9 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -14,11 +10,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
@@ -28,6 +25,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.MultiSelectDialog;
+import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.CreateIssue;
 import org.mian.gitnex.models.Labels;
@@ -35,11 +33,13 @@ import org.mian.gitnex.models.Milestones;
 import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -61,6 +61,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private boolean assigneesFlag;
     private boolean labelsFlag;
     final Context ctx = this;
+    private LinearLayout createIssueForm;
 
     List<Milestones> milestonesList = new ArrayList<>();
     ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
@@ -98,6 +99,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         newIssueTitle = findViewById(R.id.newIssueTitle);
         newIssueDescription = findViewById(R.id.newIssueDescription);
         labelsIdHolder = findViewById(R.id.labelsIdHolder);
+        createIssueForm = findViewById(R.id.createIssueForm);
 
         newIssueTitle.requestFocus();
         assert imm != null;
@@ -132,7 +134,8 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             shape.setColor(getResources().getColor(R.color.hintColor));
             createNewIssueButton.setBackground(shape);
 
-        } else {
+        }
+        else {
 
             createNewIssueButton.setOnClickListener(this);
 
@@ -164,28 +167,29 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         if(!connToInternet) {
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+            SnackBar.warning(ctx, createIssueForm, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if (newIssueTitleForm.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.issueTitleEmpty));
+            SnackBar.warning(ctx, createIssueForm, getResources().getString(R.string.issueTitleEmpty));
             return;
 
         }
 
         /*if (newIssueDescriptionForm.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.issueDescriptionEmpty));
+            SnackBar.warning(ctx, createIssueForm, getResources().getString(R.string.issueDescriptionEmpty));
             return;
 
         }*/
 
         if (newIssueDueDateForm.equals("")) {
             newIssueDueDateForm = null;
-        } else {
+        }
+        else {
             newIssueDueDateForm = (AppUtil.customDateCombine(AppUtil.customDateFormat(newIssueDueDateForm)));
         }
 
@@ -249,7 +253,8 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                                 new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
                     }
 
-                } else {
+                }
+                else {
 
                     Log.i("onResponse", String.valueOf(response.code()));
 
@@ -263,6 +268,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             }
 
         });
+
     }
 
     private void createNewIssueFunc(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, String newIssueDescriptionForm, String newIssueDueDateForm, int newIssueMilestoneIdForm, String newIssueTitleForm, List<String> newIssueAssigneesListForm, int[] newIssueLabelsForm) {
@@ -288,7 +294,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                         TinyDB tinyDb = new TinyDB(getApplicationContext());
                         tinyDb.putBoolean("resumeIssues", true);
 
-                        Toasty.info(getApplicationContext(), getString(R.string.issueCreated));
+                        SnackBar.success(ctx, createIssueForm, getResources().getString(R.string.issueCreated));
                         enableProcessButton();
                         finish();
 
@@ -306,9 +312,8 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 }
                 else {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.issueCreatedError));
+                    SnackBar.error(ctx, createIssueForm, getResources().getString(R.string.issueCreatedError));
                     enableProcessButton();
-                    //Log.i("isSuccessful2", String.valueOf(response2.body()));
 
                 }
 
@@ -316,20 +321,17 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
                 Log.e("onFailure", t.toString());
                 enableProcessButton();
+
             }
         });
 
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+        onClickListener = view -> finish();
     }
 
     private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
@@ -530,7 +532,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
             }
             else {
-                Toasty.info(getApplicationContext(), getResources().getString(R.string.noAssigneesFound));
+                SnackBar.info(ctx, createIssueForm, getResources().getString(R.string.noAssigneesFound));
             }
         }
         else if (v == newIssueLabels) {
@@ -538,7 +540,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 multiSelectDialogLabels.show(getSupportFragmentManager(), "multiSelectDialogLabels");
             }
             else {
-                Toasty.info(getApplicationContext(), getResources().getString(R.string.noLabelsFound));
+                SnackBar.info(ctx, createIssueForm, getResources().getString(R.string.noLabelsFound));
             }
         }
         else if (v == newIssueDueDate) {
@@ -548,17 +550,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             final int mMonth = c.get(Calendar.MONTH);
             final int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
-
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
-
-                            newIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
-
-                        }
-                    }, mYear, mMonth, mDay);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> newIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth)), mYear, mMonth, mDay);
             datePickerDialog.show();
         }
         else if(v == createNewIssueButton) {
