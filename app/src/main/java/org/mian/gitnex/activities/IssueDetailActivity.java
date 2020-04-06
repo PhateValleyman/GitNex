@@ -150,9 +150,37 @@ public class IssueDetailActivity extends BaseActivity {
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+        createNewComment = findViewById(R.id.addNewComment);
+        createNewComment.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(ctx, ReplyToIssueActivity.class));
+
+            }
+        });
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
+                if (dy > 0 && createNewComment.isShown()) {
+                    createNewComment.setVisibility(View.GONE);
+                } else if (dy < 0) {
+                    createNewComment.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
 
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -166,19 +194,6 @@ public class IssueDetailActivity extends BaseActivity {
                 }, 500);
             }
         });
-
-        createNewComment = findViewById(R.id.addNewComment);
-
-        createNewComment.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                startActivity(new Intent(ctx, ReplyToIssueActivity.class));
-
-            }
-        });
-
 
         Typeface myTypeface;
 
