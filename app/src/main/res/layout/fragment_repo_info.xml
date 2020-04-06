@@ -189,6 +189,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:contentDescription="@string/repoWatchersInMenu"
                         app:srcCompat="@drawable/ic_watchers" />
 
                     <LinearLayout
@@ -228,6 +229,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:contentDescription="@string/infoTabRepoCreatedAt"
                         app:srcCompat="@drawable/ic_calendar" />
 
                     <LinearLayout
@@ -267,6 +269,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:contentDescription="@string/infoTabRepoWebsite"
                         app:srcCompat="@drawable/ic_label" />
 
                     <LinearLayout
