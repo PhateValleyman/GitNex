@@ -53,9 +53,9 @@
 
             <LinearLayout
                 android:id="@+id/repoMetaFrame"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/repoMetaName"
@@ -70,6 +70,7 @@
                     android:id="@+id/repoMetaDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
                     android:autoLink="web"
                     android:ellipsize="end"
                     android:maxLines="3"
@@ -95,10 +96,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="TODO"
-                            app:srcCompat="@drawable/ic_info_outline_24dp" />
+                            app:srcCompat="@drawable/ic_star" />
 
                         <TextView
-                            android:id="@+id/repoMetaCommits"
+                            android:id="@+id/repoMetaStars"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="?attr/primaryTextColor"
@@ -167,6 +168,132 @@
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="14sp" />
                     </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="25dp"
+                    android:alpha="0.2"
+                    android:background="@color/lightGray" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_watchers" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/repoWatchersInMenu"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/repoMetaWatchers"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:alpha="0.9"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="14sp"
+                            tools:text="29" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_calendar" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/infoTabRepoCreatedAt"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/repoMetaCreatedAt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:alpha="0.9"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="14sp"
+                            tools:text="29" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_label" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/websiteText"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/repoMetaWebsite"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:alpha="0.9"
+                            android:autoLink="web"
+                            android:textColor="?attr/primaryTextColor"
+                            android:textSize="14sp"
+                            tools:text="29" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>

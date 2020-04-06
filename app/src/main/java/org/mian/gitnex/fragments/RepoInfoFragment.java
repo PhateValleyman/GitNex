@@ -38,14 +38,10 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
-import org.ocpsoft.prettytime.PrettyTime;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -68,10 +64,13 @@ public class RepoInfoFragment extends Fragment {
     private String repoOwner;
     private TextView repoMetaName;
     private TextView repoMetaDescription;
-    private TextView repoMetaCommits;
+    private TextView repoMetaStars;
     private TextView repoMetaPullRequests;
     private TextView repoMetaForks;
     private TextView repoMetaSize;
+    private TextView repoMetaWatchers;
+    private TextView repoMetaCreatedAt;
+    private TextView repoMetaWebsite;
     private TextView repoFileContents;
     private LinearLayout repoMetaFrame;
     private ImageView repoMetaDataExpandCollapse;
@@ -121,10 +120,13 @@ public class RepoInfoFragment extends Fragment {
         mProgressBar = v.findViewById(R.id.progress_bar);
         repoMetaName = v.findViewById(R.id.repoMetaName);
         repoMetaDescription = v.findViewById(R.id.repoMetaDescription);
-        repoMetaCommits = v.findViewById(R.id.repoMetaCommits);
+        repoMetaStars = v.findViewById(R.id.repoMetaStars);
         repoMetaPullRequests = v.findViewById(R.id.repoMetaPullRequests);
         repoMetaForks = v.findViewById(R.id.repoMetaForks);
         repoMetaSize = v.findViewById(R.id.repoMetaSize);
+        repoMetaWatchers = v.findViewById(R.id.repoMetaWatchers);
+        repoMetaCreatedAt = v.findViewById(R.id.repoMetaCreatedAt);
+        repoMetaWebsite = v.findViewById(R.id.repoMetaWebsite);
         repoFileContents = v.findViewById(R.id.repoFileContents);
         repoMetaFrame = v.findViewById(R.id.repoMetaFrame);
         LinearLayout repoMetaFrameHeader = v.findViewById(R.id.repoMetaFrameHeader);
@@ -227,10 +229,20 @@ public class RepoInfoFragment extends Fragment {
                             assert repoInfo != null;
                             repoMetaName.setText(repoInfo.getName());
                             repoMetaDescription.setText(repoInfo.getDescription());
-                            repoMetaCommits.setText("20"); // To be implemented
-                            repoMetaPullRequests.setText("20"); // To be implemented
+                            repoMetaStars.setText(repoInfo.getStars_count());
+                            repoMetaPullRequests.setText(repoInfo.getOpen_pull_count());
                             repoMetaForks.setText(repoInfo.getForks_count());
                             repoMetaSize.setText(AppUtil.formatFileSize(repoInfo.getSize()));
+                            repoMetaWatchers.setText(repoInfo.getWatchers_count());
+                            repoMetaCreatedAt.setText(new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(repoInfo.getCreated_at()));
+
+                            String website = repoInfo.getWebsite();
+                            if(website.trim().isEmpty()) {
+                                repoMetaWebsite.setText(getResources().getString(R.string.noDataWebsite));
+                            }
+                            else {
+                                repoMetaWebsite.setText(website);
+                            }
 
                             if(repoInfo.getHas_issues() != null) {
                                 tinyDb.putBoolean("hasIssues", repoInfo.getHas_issues());
