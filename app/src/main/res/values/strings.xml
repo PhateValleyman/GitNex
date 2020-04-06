@@ -165,6 +165,9 @@
     <string name="infoTabRepoZero" translatable="false">0</string>
     <string name="infoTabRepoDefaultBranchText" translatable="false">master</string>
 
+    <string name="infoButtonAdvanced">Toggle advanced view</string>
+    <string name="infoDialogAdvanced">Advanced view</string>
+
     <string name="timeAtText">at</string>
     <string name="hash" translatable="false">#</string>
     <string name="createdText">Opened\u0020</string>

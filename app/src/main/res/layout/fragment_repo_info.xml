@@ -304,7 +304,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/shape_buttons"
-                    android:text="View additional information"
+                    android:text="@string/infoButtonAdvanced"
                     android:textColor="@color/btnTextColor" />
 
             </LinearLayout>

@@ -274,7 +274,7 @@ public class RepoInfoFragment extends Fragment {
 
 		                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ctx);
 
-		                            alertDialog.setTitle("Additional information");
+		                            alertDialog.setTitle(getResources().getString(R.string.infoDialogAdvanced));
 		                            alertDialog.setMessage(message);
 		                            alertDialog.setPositiveButton("CANCEL", (dialog, which) -> dialog.dismiss());
 		                            alertDialog.create().show();
