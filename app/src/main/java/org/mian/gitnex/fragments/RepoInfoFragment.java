@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
@@ -30,6 +31,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -54,7 +56,7 @@ import java.util.Objects;
 
 public class RepoInfoFragment extends Fragment {
 
-    private Context ctx = getContext();
+    private Context ctx;
     private ProgressBar mProgressBar;
     private LinearLayout pageContent;
     private static String repoNameF = "param2";
@@ -71,6 +73,7 @@ public class RepoInfoFragment extends Fragment {
     private TextView repoMetaWatchers;
     private TextView repoMetaCreatedAt;
     private TextView repoMetaWebsite;
+    private Button repoAdditionalButton;
     private TextView repoFileContents;
     private LinearLayout repoMetaFrame;
     private ImageView repoMetaDataExpandCollapse;
@@ -114,6 +117,8 @@ public class RepoInfoFragment extends Fragment {
         final String locale = tinyDb.getString("locale");
         final String timeFormat = tinyDb.getString("dateFormat");
 
+        ctx = getActivity();
+
         pageContent = v.findViewById(R.id.repoInfoLayout);
         pageContent.setVisibility(View.GONE);
 
@@ -127,6 +132,7 @@ public class RepoInfoFragment extends Fragment {
         repoMetaWatchers = v.findViewById(R.id.repoMetaWatchers);
         repoMetaCreatedAt = v.findViewById(R.id.repoMetaCreatedAt);
         repoMetaWebsite = v.findViewById(R.id.repoMetaWebsite);
+	    repoAdditionalButton = v.findViewById(R.id.repoAdditionalButton);
         repoFileContents = v.findViewById(R.id.repoFileContents);
         repoMetaFrame = v.findViewById(R.id.repoMetaFrame);
         LinearLayout repoMetaFrameHeader = v.findViewById(R.id.repoMetaFrameHeader);
@@ -243,6 +249,27 @@ public class RepoInfoFragment extends Fragment {
                             else {
                                 repoMetaWebsite.setText(website);
                             }
+
+                            repoAdditionalButton.setOnClickListener(new View.OnClickListener() {
+
+	                            @Override
+	                            public void onClick(View v) {
+
+	                            	StringBuilder message = new StringBuilder();
+
+	                            	message.append("Default branch\n").append(repoInfo.getDefault_branch()).append("\n\n");
+	                            	message.append("SSH url\n").append(repoInfo.getSsh_url()).append("\n\n");
+	                            	message.append("Clone url\n").append(repoInfo.getClone_url()).append("\n\n");
+	                            	message.append("Repo url\n").append(repoInfo.getHtml_url()).append("\n\n");
+
+		                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ctx);
+		                            alertDialog.setTitle("Additional information");
+		                            alertDialog.setMessage(message);
+		                            alertDialog.setPositiveButton("CANCEL", (dialog, which) -> dialog.dismiss());
+		                            alertDialog.create().show();
+
+	                            }
+                            });
 
                             if(repoInfo.getHas_issues() != null) {
                                 tinyDb.putBoolean("hasIssues", repoInfo.getHas_issues());
