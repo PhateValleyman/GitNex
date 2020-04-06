@@ -55,7 +55,7 @@ public class ProfileEmailsAdapter extends RecyclerView.Adapter<ProfileEmailsAdap
 
         holder.userEmail.setText(currentItem.getEmail());
 
-        if(currentItem.getPrimary()) {
+        if (currentItem.getPrimary()) {
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
                     .textColor(mCtx.getResources().getColor(R.color.white))

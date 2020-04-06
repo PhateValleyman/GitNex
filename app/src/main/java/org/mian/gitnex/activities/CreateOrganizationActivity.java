@@ -61,7 +61,7 @@ public class CreateOrganizationActivity extends BaseActivity {
 
         createOrganizationButton = findViewById(R.id.createNewOrganizationButton);
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             createOrganizationButton.setEnabled(false);
             GradientDrawable shape =  new GradientDrawable();
@@ -104,14 +104,14 @@ public class CreateOrganizationActivity extends BaseActivity {
         String newOrgName = orgName.getText().toString();
         String newOrgDesc = orgDesc.getText().toString();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(!newOrgDesc.equals("")) {
+        if (!newOrgDesc.equals("")) {
             if (appUtil.charactersLength(newOrgDesc) > 255) {
 
                 Toasty.info(getApplicationContext(), getString(R.string.orgDescError));
@@ -120,12 +120,12 @@ public class CreateOrganizationActivity extends BaseActivity {
             }
         }
 
-        if(newOrgName.equals("")) {
+        if (newOrgName.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.orgNameErrorEmpty));
 
         }
-        else if(!appUtil.checkStrings(newOrgName)) {
+        else if (!appUtil.checkStrings(newOrgName)) {
 
             Toasty.info(getApplicationContext(), getString(R.string.orgNameErrorInvalid));
 
@@ -153,7 +153,7 @@ public class CreateOrganizationActivity extends BaseActivity {
             @Override
             public void onResponse(@NonNull Call<UserOrganizations> call, @NonNull retrofit2.Response<UserOrganizations> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     TinyDB tinyDb = new TinyDB(getApplicationContext());
                     tinyDb.putBoolean("orgCreated", true);
@@ -162,7 +162,7 @@ public class CreateOrganizationActivity extends BaseActivity {
                     finish();
 
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -171,13 +171,13 @@ public class CreateOrganizationActivity extends BaseActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 409) {
+                else if (response.code() == 409) {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.orgExistsError));
 
                 }
-                else if(response.code() == 422) {
+                else if (response.code() == 422) {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.orgExistsError));
@@ -185,7 +185,7 @@ public class CreateOrganizationActivity extends BaseActivity {
                 }
                 else {
 
-                    if(response.code() == 404) {
+                    if (response.code() == 404) {
                         enableProcessButton();
                         Toasty.info(getApplicationContext(), getString(R.string.apiNotFound));
                     }

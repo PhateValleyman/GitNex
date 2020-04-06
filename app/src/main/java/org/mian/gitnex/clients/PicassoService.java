@@ -66,7 +66,7 @@ public class PicassoService {
 
 	public static synchronized PicassoService getInstance(Context context) {
 
-		if(picassoService == null) {
+		if (picassoService == null) {
 			picassoService = new PicassoService(context);
 		}
 

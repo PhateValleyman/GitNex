@@ -101,7 +101,7 @@ public class CreateRepoActivity extends BaseActivity {
         createRepo = findViewById(R.id.createNewRepoButton);
         disableProcessButton();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             disableProcessButton();
 
@@ -133,28 +133,30 @@ public class CreateRepoActivity extends BaseActivity {
         String repoOwner = spinner.getSelectedItem().toString();
         boolean newRepoAccess = repoAccess.isChecked();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(!newRepoDesc.equals("")) {
+        if (!newRepoDesc.equals("")) {
+
             if (appUtil.charactersLength(newRepoDesc) > 255) {
 
                 Toasty.info(getApplicationContext(), getString(R.string.repoDescError));
                 return;
 
             }
+
         }
 
-        if(newRepoName.equals("")) {
+        if (newRepoName.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.repoNameErrorEmpty));
 
         }
-        else if(!appUtil.checkStrings(newRepoName)) {
+        else if (!appUtil.checkStrings(newRepoName)) {
 
             Toasty.info(getApplicationContext(), getString(R.string.repoNameErrorInvalid));
 
@@ -182,7 +184,7 @@ public class CreateRepoActivity extends BaseActivity {
         OrganizationRepository createRepository = new OrganizationRepository(true, repoDesc, null, null, repoName, isPrivate, "Default");
 
         Call<OrganizationRepository> call;
-        if(repoOwner.equals(loginUid)) {
+        if (repoOwner.equals(loginUid)) {
 
             call = RetrofitClient
                     .getInstance(instanceUrl, getApplicationContext())
@@ -204,7 +206,7 @@ public class CreateRepoActivity extends BaseActivity {
             @Override
             public void onResponse(@NonNull Call<OrganizationRepository> call, @NonNull retrofit2.Response<OrganizationRepository> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     TinyDB tinyDb = new TinyDB(getApplicationContext());
                     tinyDb.putBoolean("repoCreated", true);
@@ -212,7 +214,7 @@ public class CreateRepoActivity extends BaseActivity {
                     enableProcessButton();
                     finish();
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -221,7 +223,7 @@ public class CreateRepoActivity extends BaseActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 409) {
+                else if (response.code() == 409) {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.repoExistsError));
@@ -258,8 +260,9 @@ public class CreateRepoActivity extends BaseActivity {
             @Override
             public void onResponse(@NonNull Call<List<OrgOwner>> call, @NonNull retrofit2.Response<List<OrgOwner>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+
+                    if (response.code() == 200) {
 
                         int organizationId = 0;
 
@@ -267,20 +270,23 @@ public class CreateRepoActivity extends BaseActivity {
 
                         organizationsList.add(new OrgOwner(userLogin));
                         assert organizationsList_ != null;
-                        if(organizationsList_.size() > 0) {
+                        if (organizationsList_.size() > 0) {
+
                             for (int i = 0; i < organizationsList_.size(); i++) {
 
-                                if(!tinyDb.getString("organizationId").isEmpty()) {
+                                if (!tinyDb.getString("organizationId").isEmpty()) {
+
                                     if (Integer.parseInt(tinyDb.getString("organizationId")) == organizationsList_.get(i).getId()) {
                                         organizationId = i + 1;
                                     }
+
                                 }
-                                OrgOwner data = new OrgOwner(
-                                        organizationsList_.get(i).getUsername()
-                                );
+
+                                OrgOwner data = new OrgOwner(organizationsList_.get(i).getUsername());
                                 organizationsList.add(data);
 
                             }
+
                         }
 
                         ArrayAdapter<OrgOwner> adapter = new ArrayAdapter<>(getApplicationContext(),
@@ -297,8 +303,9 @@ public class CreateRepoActivity extends BaseActivity {
                         enableProcessButton();
 
                     }
+
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),

@@ -12,6 +12,30 @@ import java.util.Objects;
 
 public class FontsOverride {
 
+    public static Typeface getCustomTypeface(int fontId, Context context) {
+
+        Typeface typeface;
+
+        switch(fontId) {
+
+            case 1:
+                typeface = Typeface.createFromAsset(context.getAssets(), "fonts/manroperegular.ttf");
+                break;
+
+            case 2:
+                typeface = Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf");
+                break;
+
+            default:
+                typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto.ttf");
+                break;
+
+        }
+
+        return typeface;
+
+    }
+
     public static void setDefaultFont(Context context,
                                       String staticTypefaceFieldName, String fontAssetName) {
 

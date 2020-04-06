@@ -22,6 +22,7 @@ import org.mian.gitnex.fragments.BottomSheetOrganizationFragment;
 import org.mian.gitnex.fragments.OrganizationInfoFragment;
 import org.mian.gitnex.fragments.RepositoriesByOrgFragment;
 import org.mian.gitnex.fragments.TeamsByOrgFragment;
+import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
 
@@ -57,38 +58,23 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
         TabLayout tabLayout = findViewById(R.id.tabs);
 
-        Typeface myTypeface;
-        if(tinyDb.getInt("customFontId") == 0) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
-
-        }
-        else if (tinyDb.getInt("customFontId") == 1) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/manroperegular.ttf");
-
-        }
-        else if (tinyDb.getInt("customFontId") == 2) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
-
-        }
-        else {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
-
-        }
+        Typeface myTypeface = FontsOverride.getCustomTypeface(tinyDb.getInt("customFontId"), getApplicationContext());
 
         toolbarTitle.setTypeface(myTypeface);
         toolbarTitle.setText(orgName);
 
         ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
         int tabsCount = vg.getChildCount();
+
         for (int j = 0; j < tabsCount; j++) {
+
             ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
             int tabChildCount = vgTab.getChildCount();
+
             for (int i = 0; i < tabChildCount; i++) {
+
                 View tabViewChild = vgTab.getChildAt(i);
+
                 if (tabViewChild instanceof TextView) {
                     ((TextView) tabViewChild).setTypeface(myTypeface);
                 }
@@ -114,15 +100,19 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
         int id = item.getItemId();
 
         switch (id) {
+
             case android.R.id.home:
                 finish();
                 return true;
+
             case R.id.repoMenu:
                 BottomSheetOrganizationFragment bottomSheet = new BottomSheetOrganizationFragment();
                 bottomSheet.show(getSupportFragmentManager(), "orgBottomSheet");
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
+
         }
 
     }
@@ -133,13 +123,16 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
         TinyDB tinyDb = new TinyDB(getApplicationContext());
 
         switch (text) {
+
             case "repository":
                 tinyDb.putBoolean("organizationAction", true);
                 startActivity(new Intent(OrganizationDetailActivity.this, CreateRepoActivity.class));
                 break;
+
             case "team":
                 startActivity(new Intent(OrganizationDetailActivity.this, CreateTeamByOrgActivity.class));
                 break;
+
         }
         //Log.i("clicked", text);
 
@@ -157,7 +150,9 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
             TinyDB tinyDb = new TinyDB(getApplicationContext());
             String orgName;
+
             if(getIntent().getStringExtra("orgName") != null || !Objects.equals(getIntent().getStringExtra("orgName"), "")) {
+
                 orgName = getIntent().getStringExtra("orgName");
             }
             else {
@@ -165,22 +160,31 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
             }
 
             Fragment fragment = null;
+
             switch (position) {
+
                 case 0: // info
                     return OrganizationInfoFragment.newInstance(orgName);
+
                 case 1: // repos
                     return RepositoriesByOrgFragment.newInstance(orgName);
+
                 case 2: // teams
                     return TeamsByOrgFragment.newInstance(orgName);
+
                 case 3: // members
                     return MembersByOrgFragment.newInstance(orgName);
+
             }
+
+            assert fragment != null;
             return fragment;
 
         }
 
         @Override
         public int getCount() {
+
             return 4;
         }
     }

@@ -119,8 +119,11 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
     public MultiSelectDialog multiSelectList(ArrayList<MultiSelectModel> list) {
         this.mainListOfAdapter = list;
         this.tempMainListOfAdapter = new ArrayList<>(mainListOfAdapter);
-        if(maxSelectionLimit == 0)
+
+        if (maxSelectionLimit == 0) {
             maxSelectionLimit = list.size();
+        }
+
         return this;
     }
 
@@ -223,7 +226,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
                     //to remember last selected ids which were successfully done
                     tempPreviouslySelectedIdsList = new ArrayList<>(callBackListOfIds);
 
-                    if(submitCallbackListener !=null) {
+                    if (submitCallbackListener != null) {
                         submitCallbackListener.onSelected(callBackListOfIds, getSelectNameList(), getSelectedDataString());
                     }
 
@@ -251,7 +254,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
 
         if (view.getId() == R.id.cancel) {
 
-            if(submitCallbackListener!=null){
+            if (submitCallbackListener != null){
                 selectedIdsForCallback.clear();
                 selectedIdsForCallback.addAll(tempPreviouslySelectedIdsList);
                 submitCallbackListener.onCancel();
@@ -266,7 +269,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
 
         String message;
 
-        if(this.minSelectionMessage != null) {
+        if (this.minSelectionMessage != null) {
             message = minSelectionMessage;
         }
         else {
@@ -307,7 +310,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
 
         for(int i=0;i<tempMainListOfAdapter.size();i++){
 
-            if(checkForSelection(tempMainListOfAdapter.get(i).getId())){
+            if (checkForSelection(tempMainListOfAdapter.get(i).getId())){
                 names.add(tempMainListOfAdapter.get(i).getName());
             }
 

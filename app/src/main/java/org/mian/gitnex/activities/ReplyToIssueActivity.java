@@ -74,7 +74,7 @@ public class ReplyToIssueActivity extends BaseActivity {
         assert imm != null;
         imm.showSoftInput(addComment, InputMethodManager.SHOW_IMPLICIT);
 
-        if(!tinyDb.getString("issueTitle").isEmpty()) {
+        if (!tinyDb.getString("issueTitle").isEmpty()) {
             toolbar_title.setText(tinyDb.getString("issueTitle"));
         }
 
@@ -83,7 +83,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
         replyButton = findViewById(R.id.replyButton);
 
-        if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
+        if (getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
 
             addComment.setText(getIntent().getStringExtra("commentBody"));
             final String commentId = getIntent().getStringExtra("commentId");
@@ -103,7 +103,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
         }
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             disableProcessButton();
 
@@ -142,11 +142,13 @@ public class ReplyToIssueActivity extends BaseActivity {
                     assert response.body() != null;
                     String fullName = "";
                     for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
+
+                        if (!response.body().get(i).getFull_name().equals("")) {
                             fullName = response.body().get(i).getFull_name();
                         }
-                        defaultMentionAdapter.add(
-                                new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
+
+                        defaultMentionAdapter.add(new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
+
                     }
 
                 } else {
@@ -185,14 +187,14 @@ public class ReplyToIssueActivity extends BaseActivity {
         String newReplyDT = addComment.getText().toString();
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(newReplyDT.equals("")) {
+        if (newReplyDT.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.commentEmptyError));
 
@@ -231,7 +233,7 @@ public class ReplyToIssueActivity extends BaseActivity {
             @Override
             public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
 
-                if(response.code() == 201) {
+                if (response.code() == 201) {
 
                     Toasty.info(getApplicationContext(), getString(R.string.commentSuccess));
                     tinyDb.putBoolean("commentPosted", true);
@@ -240,7 +242,7 @@ public class ReplyToIssueActivity extends BaseActivity {
                     finish();
 
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),

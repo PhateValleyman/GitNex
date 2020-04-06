@@ -52,12 +52,14 @@ public class RetrofitClient {
 					.addInterceptor(chain -> {
 
 						Request request = chain.request();
-						if(connToInternet) {
+
+						if (connToInternet) {
 							request = request.newBuilder().header("Cache-Control", "public, max-age=" + 60).build();
 						}
 						else {
 							request = request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 30).build();
 						}
+
 						return chain.proceed(request);
 					});
 

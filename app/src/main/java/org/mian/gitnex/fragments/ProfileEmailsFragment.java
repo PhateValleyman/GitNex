@@ -57,6 +57,7 @@ public class ProfileEmailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             repoName = getArguments().getString(repoNameF);
             repoOwner = getArguments().getString(repoOwnerF);
@@ -115,7 +116,8 @@ public class ProfileEmailsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Emails> emailsListMain) {
                 adapter = new ProfileEmailsAdapter(getContext(), emailsListMain);
-                if(adapter.getItemCount() > 0) {
+
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataEmails.setVisibility(View.GONE);
                 }
@@ -124,6 +126,7 @@ public class ProfileEmailsFragment extends Fragment {
                     mRecyclerView.setAdapter(adapter);
                     noDataEmails.setVisibility(View.VISIBLE);
                 }
+
                 mProgressBar.setVisibility(View.GONE);
             }
         });
@@ -131,6 +134,7 @@ public class ProfileEmailsFragment extends Fragment {
     }
 
     public void onButtonPressed(Uri uri) {
+
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }

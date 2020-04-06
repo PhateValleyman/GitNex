@@ -49,15 +49,18 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             }
         });
 
-        if(tinyDb.getBoolean("hasIssues")) {
+        if (tinyDb.getBoolean("hasIssues")) {
+
             createIssue.setVisibility(View.VISIBLE);
             createIssue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     bmListener.onButtonClicked("newIssue");
                     dismiss();
                 }
             });
+
         }
         else {
             createIssue.setVisibility(View.GONE);
@@ -111,7 +114,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             }
         });
 
-        if(tinyDb.getInt("repositoryStarStatus") == 204) { // star a repo
+        if (tinyDb.getInt("repositoryStarStatus") == 204) { // star a repo
 
             starRepository.setVisibility(View.GONE);
 
@@ -127,7 +130,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             });
 
         }
-        else if(tinyDb.getInt("repositoryStarStatus") == 404) {
+        else if (tinyDb.getInt("repositoryStarStatus") == 404) {
 
             unStarRepository.setVisibility(View.GONE);
 
@@ -144,7 +147,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
 
         }
 
-        if(tinyDb.getBoolean("repositoryWatchStatus")) { // watch a repo
+        if (tinyDb.getBoolean("repositoryWatchStatus")) { // watch a repo
 
             watchRepository.setVisibility(View.GONE);
 

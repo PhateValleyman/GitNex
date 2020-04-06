@@ -86,11 +86,13 @@ public class OrganizationsFragment extends Fragment {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
                 if (dy > 0 && createNewOrganization.isShown()) {
                     createNewOrganization.setVisibility(View.GONE);
                 } else if (dy < 0 ) {
                     createNewOrganization.setVisibility(View.VISIBLE);
                 }
+
             }
 
             @Override
@@ -126,7 +128,7 @@ public class OrganizationsFragment extends Fragment {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("orgCreated")) {
+        if (tinyDb.getBoolean("orgCreated")) {
             OrganizationListViewModel.loadOrgsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext());
             tinyDb.putBoolean("orgCreated", false);
         }
@@ -140,7 +142,8 @@ public class OrganizationsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<UserOrganizations> orgsListMain) {
                 adapter = new OrganizationsListAdapter(getContext(), orgsListMain);
-                if(adapter.getItemCount() > 0) {
+
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataOrg.setVisibility(View.GONE);
                 }
@@ -149,6 +152,7 @@ public class OrganizationsFragment extends Fragment {
                     mRecyclerView.setAdapter(adapter);
                     noDataOrg.setVisibility(View.VISIBLE);
                 }
+
                 mProgressBar.setVisibility(View.GONE);
             }
         });
@@ -168,7 +172,7 @@ public class OrganizationsFragment extends Fragment {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        /*if(!connToInternet) {
+        /*if (!connToInternet) {
             return;
         }*/
 
@@ -180,9 +184,11 @@ public class OrganizationsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
+
                 return false;
             }
         });

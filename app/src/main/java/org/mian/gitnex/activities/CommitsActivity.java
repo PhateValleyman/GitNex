@@ -156,9 +156,9 @@ public class CommitsActivity extends BaseActivity implements ItemFilterListener<
 
                     assert response.body() != null;
 
-                    if(response.body().size() > 0) {
+                    if (response.body().size() > 0) {
 
-                        if(response.body().size() == resultLimit) {
+                        if (response.body().size() == resultLimit) {
                             loadNextFlag = true;
                         }
 
@@ -265,7 +265,7 @@ public class CommitsActivity extends BaseActivity implements ItemFilterListener<
 
         }, 1000);
 
-        if(!loadNextFlag) {
+        if (!loadNextFlag) {
 
             footerAdapter.clear();
 

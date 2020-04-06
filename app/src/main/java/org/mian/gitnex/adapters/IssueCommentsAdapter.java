@@ -99,7 +99,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 				TextView commentShare = view.findViewById(R.id.issueCommentShare);
 				//TextView commentMenuDelete = view.findViewById(R.id.commentMenuDelete);
 
-				if(!loginUid.contentEquals(commenterUsername.getText())) {
+				if (!loginUid.contentEquals(commenterUsername.getText())) {
 					commentMenuEdit.setVisibility(View.GONE);
 					//commentMenuDelete.setVisibility(View.GONE);
 				}
@@ -179,7 +179,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 		holder.commendId.setText(String.valueOf(currentItem.getId()));
 		holder.commendBodyRaw.setText(currentItem.getBody());
 
-		if(!currentItem.getUser().getFull_name().equals("")) {
+		if (!currentItem.getUser().getFull_name().equals("")) {
 			holder.issueCommenterAvatar.setOnClickListener(new ClickListener(mCtx.getResources().getString(R.string.issueCommenter) + currentItem.getUser().getFull_name(), mCtx));
 		}
 		else {
@@ -247,7 +247,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 		String edited;
 
-		if(!currentItem.getUpdated_at().equals(currentItem.getCreated_at())) {
+		if (!currentItem.getUpdated_at().equals(currentItem.getCreated_at())) {
 
 			edited = mCtx.getResources().getString(R.string.colorfulBulletSpan) + mCtx.getResources().getString(R.string.modifiedText);
 			holder.commentModified.setVisibility(View.VISIBLE);

@@ -114,7 +114,8 @@ public class ProfileFollowersFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<UserInfo> pfListMain) {
                 adapter = new ProfileFollowersAdapter(getContext(), pfListMain);
-                if(adapter.getItemCount() > 0) {
+
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataFollowers.setVisibility(View.GONE);
                 }
@@ -123,6 +124,7 @@ public class ProfileFollowersFragment extends Fragment {
                     mRecyclerView.setAdapter(adapter);
                     noDataFollowers.setVisibility(View.VISIBLE);
                 }
+
                 mProgressBar.setVisibility(View.GONE);
             }
         });

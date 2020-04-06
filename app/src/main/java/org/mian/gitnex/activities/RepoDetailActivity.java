@@ -37,6 +37,7 @@ import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.fragments.ReleasesFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.models.WatchRepository;
 import org.mian.gitnex.util.AppUtil;
@@ -90,27 +91,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
         TabLayout tabLayout = findViewById(R.id.tabs);
 
-        Typeface myTypeface;
-        if(tinyDb.getInt("customFontId") == 0) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
-
-        }
-        else if (tinyDb.getInt("customFontId") == 1) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/manroperegular.ttf");
-
-        }
-        else if (tinyDb.getInt("customFontId") == 2) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
-
-        }
-        else {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
-
-        }
+        Typeface myTypeface = FontsOverride.getCustomTypeface(tinyDb.getInt("customFontId"), getApplicationContext());
 
         toolbarTitle.setTypeface(myTypeface);
         toolbarTitle.setText(repoName1);

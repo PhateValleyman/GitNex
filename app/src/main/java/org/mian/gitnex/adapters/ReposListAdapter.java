@@ -102,7 +102,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
                         @Override
                         public void onResponse(@NonNull Call<WatchRepository> call, @NonNull retrofit2.Response<WatchRepository> response) {
 
-                            if(response.isSuccessful()) {
+                            if (response.isSuccessful()) {
 
                                 tinyDb.putBoolean("repoWatch", response.body().getSubscribed());
 
@@ -213,6 +213,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
                 .buildRoundRect(firstCharacter, color, 3);
 
         if (currentItem.getAvatar_url() != null) {
+
             if (!currentItem.getAvatar_url().equals("")) {
                 PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.image);
             } else {
@@ -224,12 +225,15 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
         }
 
         holder.mTextView1.setText(currentItem.getName());
+
         if (!currentItem.getDescription().equals("")) {
             holder.mTextView2.setVisibility(View.VISIBLE);
             holder.mTextView2.setText(currentItem.getDescription());
         }
+
         holder.fullName.setText(currentItem.getFullname());
-        if(currentItem.getPrivateFlag()) {
+
+        if (currentItem.getPrivateFlag()) {
             holder.repoPrivatePublic.setImageResource(R.drawable.ic_lock_bold);
             holder.repoType.setText(R.string.strPrivate);
         }
@@ -237,6 +241,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
             holder.repoPrivatePublic.setImageResource(R.drawable.ic_public);
             holder.repoType.setText(R.string.strPublic);
         }
+
         holder.repoStars.setText(currentItem.getStars_count());
         holder.repoForks.setText(currentItem.getForks_count());
         holder.repoOpenIssuesCount.setText(currentItem.getOpen_issues_count());
@@ -264,6 +269,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (UserRepositories item : reposListFull) {
+
                     if (item.getFullname().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }

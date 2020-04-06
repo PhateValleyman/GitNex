@@ -101,7 +101,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<ExploreRepo
                         @Override
                         public void onResponse(@NonNull Call<WatchRepository> call, @NonNull retrofit2.Response<WatchRepository> response) {
 
-                            if(response.isSuccessful()) {
+                            if (response.isSuccessful()) {
 
                                 tinyDb.putBoolean("repoWatch", response.body().getSubscribed());
 
@@ -220,17 +220,21 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<ExploreRepo
         }
 
         holder.mTextView1.setText(currentItem.getName());
+
         if (!currentItem.getDescription().equals("")) {
             holder.mTextView2.setVisibility(View.VISIBLE);
             holder.mTextView2.setText(currentItem.getDescription());
         }
+
         holder.fullName.setText(currentItem.getFullname());
-        if(currentItem.getPrivateFlag()) {
+
+        if (currentItem.getPrivateFlag()) {
             holder.repoPrivatePublic.setImageResource(R.drawable.ic_lock_bold);
         }
         else {
             holder.repoPrivatePublic.setImageResource(R.drawable.ic_public);
         }
+
         holder.repoStars.setText(currentItem.getStars_count());
         holder.repoForks.setText(currentItem.getForks_count());
         holder.repoOpenIssuesCount.setText(currentItem.getOpen_issues_count());

@@ -74,6 +74,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             repoName = getArguments().getString(repoNameF);
             repoOwner = getArguments().getString(repoOwnerF);
@@ -152,7 +153,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
             @Override
             public void onNavigateBack(BreadcrumbItem item, int position) {
 
-                if(position == 0) {
+                if (position == 0) {
                     fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName);
                     fileStructure.setText("");
                     return;
@@ -183,7 +184,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
         Intent intent = new Intent(getContext(), FileViewActivity.class);
 
-        if(!fileStructure.getText().toString().equals("Root")) {
+        if (!fileStructure.getText().toString().equals("Root")) {
 
             intent.putExtra("singleFileName", fileStructure.getText().toString()+"/"+fileName);
         }
@@ -208,7 +209,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
                 adapter = new FilesAdapter(getContext(), filesListMain, FilesFragment.this);
 
                 mBreadcrumbsView.removeItemAfter(1);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mRecyclerView.setAdapter(adapter);
                     filesFrame.setVisibility(View.VISIBLE);
@@ -239,7 +240,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
             @Override
             public void onChanged(@Nullable List<Files> filesListMain2) {
                 adapter = new FilesAdapter(getContext(), filesListMain2, FilesFragment.this);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mRecyclerView.setAdapter(adapter);
                     filesFrame.setVisibility(View.VISIBLE);
@@ -272,7 +273,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.search));
 
-        /*if(!connToInternet) {
+        /*if (!connToInternet) {
             return;
         }*/
 
@@ -284,9 +285,11 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
+
                 return false;
             }
         });
@@ -294,6 +297,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
     }
 
     public void onButtonPressed(Uri uri) {
+
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }

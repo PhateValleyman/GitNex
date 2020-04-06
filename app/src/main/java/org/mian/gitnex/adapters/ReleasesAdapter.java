@@ -93,14 +93,14 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
         holder.releaseTitle.setText(currentItem.getName());
 
-        if(!currentItem.getTag_name().equals("")) {
+        if (!currentItem.getTag_name().equals("")) {
             holder.releaseTag.setText(mCtx.getResources().getString(R.string.releaseTag, currentItem.getTag_name()));
         }
         else {
             holder.releaseTag.setVisibility(View.GONE);
         }
 
-        if(currentItem.isPrerelease()) {
+        if (currentItem.isPrerelease()) {
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
                     //.useFont(Typeface.DEFAULT)
@@ -184,7 +184,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
         Spanned bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(currentItem.getBody()));
 
-        if(!currentItem.getBody().equals("")) {
+        if (!currentItem.getBody().equals("")) {
             markwon.setParsedMarkdown(holder.releaseDescription, bodyWithMD);
         }
         else {

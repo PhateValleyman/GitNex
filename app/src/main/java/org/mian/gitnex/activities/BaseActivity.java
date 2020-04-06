@@ -27,36 +27,28 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResourceId());
 
-        if(tinyDb.getInt("customFontId") == 0) {
+        switch(tinyDb.getInt("customFontId")) {
 
-            FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "SERIF", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/roboto.ttf");
+            case 1:
+                FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/manroperegular.ttf");
+                FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/manroperegular.ttf");
+                FontsOverride.setDefaultFont(this, "SERIF", "fonts/manroperegular.ttf");
+                FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/manroperegular.ttf");
+                break;
 
-        }
-        else if (tinyDb.getInt("customFontId") == 1) {
+            case 2:
+                FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/sourcecodeproregular.ttf");
+                FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/sourcecodeproregular.ttf");
+                FontsOverride.setDefaultFont(this, "SERIF", "fonts/sourcecodeproregular.ttf");
+                FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/sourcecodeproregular.ttf");
+                break;
 
-            FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/manroperegular.ttf");
-            FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/manroperegular.ttf");
-            FontsOverride.setDefaultFont(this, "SERIF", "fonts/manroperegular.ttf");
-            FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/manroperegular.ttf");
-
-        }
-        else if (tinyDb.getInt("customFontId") == 2) {
-
-            FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/sourcecodeproregular.ttf");
-            FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/sourcecodeproregular.ttf");
-            FontsOverride.setDefaultFont(this, "SERIF", "fonts/sourcecodeproregular.ttf");
-            FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/sourcecodeproregular.ttf");
-
-        }
-        else {
-
-            FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "SERIF", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/roboto.ttf");
+            default:
+                FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/roboto.ttf");
+                FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/roboto.ttf");
+                FontsOverride.setDefaultFont(this, "SERIF", "fonts/roboto.ttf");
+                FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/roboto.ttf");
+                break;
 
         }
 

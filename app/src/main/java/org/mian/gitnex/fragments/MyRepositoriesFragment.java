@@ -161,7 +161,7 @@ public class MyRepositoriesFragment extends Fragment {
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         final String userLogin =  tinyDb.getString("userLogin");
 
-        if(tinyDb.getBoolean("repoCreated")) {
+        if (tinyDb.getBoolean("repoCreated")) {
             MyRepositoriesViewModel.loadMyReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), userLogin, getContext(),  pageSize, resultLimit);
             tinyDb.putBoolean("repoCreated", false);
         }
@@ -176,7 +176,8 @@ public class MyRepositoriesFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<UserRepositories> myReposListMain) {
                 adapter = new MyReposListAdapter(getContext(), myReposListMain);
-                if(adapter.getItemCount() > 0) {
+
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataMyRepo.setVisibility(View.GONE);
                 }
@@ -185,6 +186,7 @@ public class MyRepositoriesFragment extends Fragment {
                     mRecyclerView.setAdapter(adapter);
                     noDataMyRepo.setVisibility(View.VISIBLE);
                 }
+
                 mProgressBar.setVisibility(View.GONE);
             }
         });
@@ -204,7 +206,7 @@ public class MyRepositoriesFragment extends Fragment {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        /*if(!connToInternet) {
+        /*if (!connToInternet) {
             return;
         }*/
 
@@ -216,9 +218,11 @@ public class MyRepositoriesFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
+
                 return false;
             }
         });

@@ -85,7 +85,7 @@ public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
         UserInfo currentItem = membersList.get(position);
         PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewHolder.memberAvatar);
 
-        if(!currentItem.getFullname().equals("")) {
+        if (!currentItem.getFullname().equals("")) {
             viewHolder.memberName.setText(currentItem.getFullname());
         }
         else {

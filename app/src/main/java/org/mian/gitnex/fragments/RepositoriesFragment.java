@@ -129,7 +129,7 @@ public class RepositoriesFragment extends Fragment {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("repoCreated")) {
+        if (tinyDb.getBoolean("repoCreated")) {
             RepositoriesListViewModel.loadReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext(), pageSize, resultLimit);
             tinyDb.putBoolean("repoCreated", false);
         }
@@ -143,7 +143,8 @@ public class RepositoriesFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<UserRepositories> reposListMain) {
                 adapter = new ReposListAdapter(getContext(), reposListMain);
-                if(adapter.getItemCount() > 0) {
+
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataRepo.setVisibility(View.GONE);
                 }
@@ -152,6 +153,7 @@ public class RepositoriesFragment extends Fragment {
                     mRecyclerView.setAdapter(adapter);
                     noDataRepo.setVisibility(View.VISIBLE);
                 }
+
                 mProgressBar.setVisibility(View.GONE);
             }
         });
@@ -171,7 +173,7 @@ public class RepositoriesFragment extends Fragment {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        /*if(!connToInternet) {
+        /*if (!connToInternet) {
             return;
         }*/
 
@@ -183,9 +185,11 @@ public class RepositoriesFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
+
                 return false;
             }
         });

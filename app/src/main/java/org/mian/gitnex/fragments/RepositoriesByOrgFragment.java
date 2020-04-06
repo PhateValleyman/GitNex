@@ -119,7 +119,7 @@ public class RepositoriesByOrgFragment extends Fragment {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("repoCreated")) {
+        if (tinyDb.getBoolean("repoCreated")) {
             RepositoriesByOrgViewModel.loadOrgRepos(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName, getContext(), pageSize, resultLimit);
             tinyDb.putBoolean("repoCreated", false);
         }
@@ -134,7 +134,8 @@ public class RepositoriesByOrgFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<UserRepositories> orgReposListMain) {
                 adapter = new RepositoriesByOrgAdapter(getContext(), orgReposListMain);
-                if(adapter.getItemCount() > 0) {
+
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noData.setVisibility(View.GONE);
                 }
@@ -143,6 +144,7 @@ public class RepositoriesByOrgFragment extends Fragment {
                     mRecyclerView.setAdapter(adapter);
                     noData.setVisibility(View.VISIBLE);
                 }
+
                 mProgressBar.setVisibility(View.GONE);
             }
         });
@@ -162,7 +164,7 @@ public class RepositoriesByOrgFragment extends Fragment {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        if(!connToInternet) {
+        if (!connToInternet) {
             return;
         }
 
@@ -174,9 +176,11 @@ public class RepositoriesByOrgFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
+
                 return false;
             }
         });

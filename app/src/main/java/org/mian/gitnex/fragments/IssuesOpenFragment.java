@@ -102,7 +102,7 @@ public class IssuesOpenFragment extends Fragment {
                 recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(issuesList.size() == 10 || pageSize == 10) {
+                        if (issuesList.size() == 10 || pageSize == 10) {
 
                             int page = (issuesList.size() + 10) / 10;
                             loadMore(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, page, resultLimit, requestType);
@@ -142,7 +142,7 @@ public class IssuesOpenFragment extends Fragment {
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("resumeIssues")) {
+        if (tinyDb.getBoolean("resumeIssues")) {
 
             loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, resultLimit, requestType);
             tinyDb.putBoolean("resumeIssues", false);
@@ -160,10 +160,10 @@ public class IssuesOpenFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
 
                     assert response.body() != null;
-                    if(response.body().size() > 0) {
+                    if (response.body().size() > 0) {
 
                         issuesList.clear();
                         issuesList.addAll(response.body());
@@ -206,7 +206,7 @@ public class IssuesOpenFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-                if(response.isSuccessful()){
+                if (response.isSuccessful()){
 
                     //remove loading view
                     issuesList.remove(issuesList.size()-1);
@@ -214,7 +214,7 @@ public class IssuesOpenFragment extends Fragment {
                     List<Issues> result = response.body();
 
                     assert result != null;
-                    if(result.size() > 0) {
+                    if (result.size() > 0) {
 
                         pageSize = result.size();
                         issuesList.addAll(result);
@@ -261,7 +261,7 @@ public class IssuesOpenFragment extends Fragment {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        /*if(!connToInternet) {
+        /*if (!connToInternet) {
             return;
         }*/
 

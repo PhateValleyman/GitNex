@@ -224,7 +224,8 @@ public class AppUtil {
     public String encodeBase64(String str) {
 
         String base64Str = str;
-        if(!str.equals("")) {
+
+        if (!str.equals("")) {
             byte[] data = str.getBytes(StandardCharsets.UTF_8);
             base64Str = Base64.encodeToString(data, Base64.DEFAULT);
         }
@@ -236,7 +237,8 @@ public class AppUtil {
     public String decodeBase64(String str) {
 
         String base64Str = str;
-        if(!str.equals("")) {
+
+        if (!str.equals("")) {
             byte[] data = Base64.decode(base64Str, Base64.DEFAULT);
             base64Str = new String(data, StandardCharsets.UTF_8);
         }

@@ -103,7 +103,9 @@ public enum VersionCheck {
      */
     public static int compareVersion(String A, String B) {
         //throw new IllegalArgumentException
-        if((!A.matches("[0-9]+(\\.[0-9]+)*")) || (!B.matches("[0-9]+(\\.[0-9]+)*"))) throw new IllegalArgumentException("Invalid version format");
+        if ((!A.matches("[0-9]+(\\.[0-9]+)*")) || (!B.matches("[0-9]+(\\.[0-9]+)*"))) {
+            throw new IllegalArgumentException("Invalid version format");
+        }
 
         if (A.contains(".") || B.contains(".")) {
             // example 2 vs 1.3

@@ -63,6 +63,7 @@ public class NetworkObserver implements LifecycleObserver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+
             if (intent.getExtras() != null) {
                 NetworkInfo activeNetworkInfo = mConnectivityMgr.getActiveNetworkInfo();
 

@@ -144,7 +144,7 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
             PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
         }
 
-        if(getItemCount() > 0) {
+        if (getItemCount() > 0) {
 
             TinyDB tinyDb = new TinyDB(mCtx);
             final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -165,16 +165,18 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
                 @Override
                 public void onResponse(@NonNull Call<Collaborators> call, @NonNull Response<Collaborators> response) {
 
-                    if(response.code() == 204) {
-                        if(!currentItem.getUsername().equals(loginUid) && !currentItem.getUsername().equals(repoOwner)) {
+                    if (response.code() == 204) {
+
+                        if (!currentItem.getUsername().equals(loginUid) && !currentItem.getUsername().equals(repoOwner)) {
                             holder.addCollaboratorButtonRemove.setVisibility(View.VISIBLE);
                         }
                         else {
                             holder.addCollaboratorButtonRemove.setVisibility(View.GONE);
                         }
                     }
-                    else if(response.code() == 404) {
-                        if(!currentItem.getUsername().equals(loginUid) && !currentItem.getUsername().equals(repoOwner)) {
+                    else if (response.code() == 404) {
+
+                        if (!currentItem.getUsername().equals(loginUid) && !currentItem.getUsername().equals(repoOwner)) {
                             holder.addCollaboratorButtonAdd.setVisibility(View.VISIBLE);
                         }
                         else {

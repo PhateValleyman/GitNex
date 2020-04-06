@@ -56,7 +56,7 @@ public class ProfileFollowingAdapter extends RecyclerView.Adapter<ProfileFollowi
 
         UserInfo currentItem = followingList.get(position);
 
-        if(!currentItem.getFullname().equals("")) {
+        if (!currentItem.getFullname().equals("")) {
             holder.userFullName.setText(currentItem.getFullname());
             holder.userName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getUsername()));
         }

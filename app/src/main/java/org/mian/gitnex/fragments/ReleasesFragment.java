@@ -116,7 +116,7 @@ public class ReleasesFragment extends Fragment {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("updateReleases")) {
+        if (tinyDb.getBoolean("updateReleases")) {
             ReleasesViewModel.loadReleasesList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, getContext());
             tinyDb.putBoolean("updateReleases", false);
         }
@@ -147,7 +147,8 @@ public class ReleasesFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Releases> releasesListMain) {
                 adapter = new ReleasesAdapter(getContext(), releasesListMain);
-                if(adapter.getItemCount() > 0) {
+
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataReleases.setVisibility(View.GONE);
                 }
@@ -156,6 +157,7 @@ public class ReleasesFragment extends Fragment {
                     mRecyclerView.setAdapter(adapter);
                     noDataReleases.setVisibility(View.VISIBLE);
                 }
+
                 mProgressBar.setVisibility(View.GONE);
             }
         });

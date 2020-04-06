@@ -73,7 +73,7 @@ public class MergePullRequestActivity extends BaseActivity {
         closeActivity = findViewById(R.id.close);
         TextView toolbar_title = findViewById(R.id.toolbar_title);
 
-        if(!tinyDb.getString("issueTitle").isEmpty()) {
+        if (!tinyDb.getString("issueTitle").isEmpty()) {
             toolbar_title.setText(tinyDb.getString("issueTitle"));
         }
 
@@ -82,7 +82,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
         mergeButton = findViewById(R.id.mergeButton);
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             disableProcessButton();
 
@@ -120,12 +120,15 @@ public class MergePullRequestActivity extends BaseActivity {
 
                     assert response.body() != null;
                     String fullName = "";
+
                     for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
+
+                        if (!response.body().get(i).getFull_name().equals("")) {
                             fullName = response.body().get(i).getFull_name();
                         }
-                        defaultMentionAdapter.add(
-                                new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
+
+                        defaultMentionAdapter.add(new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
+
                     }
 
                 }
@@ -165,7 +168,7 @@ public class MergePullRequestActivity extends BaseActivity {
         String mergePRDT = mergePR.getText().toString();
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
@@ -203,7 +206,7 @@ public class MergePullRequestActivity extends BaseActivity {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
 
-                if(response.code() == 200) {
+                if (response.code() == 200) {
 
                     Toasty.info(getApplicationContext(), getString(R.string.mergePRSuccessMsg));
                     tinyDb.putBoolean("prMerged", true);
@@ -211,7 +214,7 @@ public class MergePullRequestActivity extends BaseActivity {
                     finish();
 
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     enableProcessButton();
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -220,7 +223,7 @@ public class MergePullRequestActivity extends BaseActivity {
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     enableProcessButton();
                     Toasty.info(getApplicationContext(), getString(R.string.mergePR404ErrorMsg));

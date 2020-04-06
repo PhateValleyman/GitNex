@@ -205,7 +205,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 	 */
 	public HostnameVerifier wrapHostnameVerifier(final HostnameVerifier defaultVerifier) {
 
-		if(defaultVerifier == null) {
+		if (defaultVerifier == null) {
 			throw new IllegalArgumentException("The default verifier may not be null");
 		}
 
@@ -217,8 +217,10 @@ public class MemorizingTrustManager implements X509TrustManager {
 		try {
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
 			tmf.init(ks);
+
 			for(TrustManager t : tmf.getTrustManagers()) {
-				if(t instanceof X509TrustManager) {
+
+				if (t instanceof X509TrustManager) {
 					return (X509TrustManager) t;
 				}
 			}
@@ -251,7 +253,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 
 		String keystore = keyStoreStorage.getString(KEYSTORE_KEY, null);
 
-		if(keystore != null) {
+		if (keystore != null) {
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.decode(keystore, Base64.DEFAULT));
 
 			try {
@@ -317,10 +319,13 @@ public class MemorizingTrustManager implements X509TrustManager {
 	private static boolean isExpiredException(Throwable e) {
 
 		do {
-			if(e instanceof CertificateExpiredException) {
+
+			if (e instanceof CertificateExpiredException) {
 				return true;
 			}
+
 			e = e.getCause();
+
 		} while(e != null);
 
 		return false;
@@ -329,11 +334,13 @@ public class MemorizingTrustManager implements X509TrustManager {
 	private static boolean isPathException(Throwable e) {
 
 		do {
-			if(e instanceof CertPathValidatorException) {
+
+			if (e instanceof CertPathValidatorException) {
 				return true;
 			}
 
 			e = e.getCause();
+
 		} while(e != null);
 
 		return false;
@@ -342,7 +349,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 	private void checkCertTrusted(X509Certificate[] chain, String authType, boolean isServer) throws CertificateException {
 		try {
 
-			if(isServer) {
+			if (isServer) {
 				appTrustManager.checkServerTrusted(chain, authType);
 			}
 			else {
@@ -351,15 +358,17 @@ public class MemorizingTrustManager implements X509TrustManager {
 		}
 		catch(CertificateException ae) {
 			// if the cert is stored in our appTrustManager, we ignore expiredness
-			if(isExpiredException(ae) || isCertKnown(chain[0])) {
+			if (isExpiredException(ae) || isCertKnown(chain[0])) {
 				return;
 			}
 
 			try {
-				if(defaultTrustManager == null) {
+
+				if (defaultTrustManager == null) {
 					throw ae;
 				}
-				if(isServer) {
+
+				if (isServer) {
 					defaultTrustManager.checkServerTrusted(chain, authType);
 				}
 				else {
@@ -404,7 +413,8 @@ public class MemorizingTrustManager implements X509TrustManager {
 
 		for(int i = 0; i < data.length; i++) {
 			si.append(String.format("%02x", data[i]));
-			if(i < data.length - 1) {
+
+			if (i < data.length - 1) {
 				si.append(":");
 			}
 		}
@@ -448,10 +458,10 @@ public class MemorizingTrustManager implements X509TrustManager {
 		Throwable e = cause;
 		StringBuilder stringBuilder = new StringBuilder();
 
-		if(isPathException(e)) {
+		if (isPathException(e)) {
 			stringBuilder.append(context.getString(R.string.mtm_trust_anchor));
 		}
-		else if(isExpiredException(e)) {
+		else if (isExpiredException(e)) {
 			stringBuilder.append(context.getString(R.string.mtm_cert_expired));
 		}
 		else {
@@ -485,14 +495,15 @@ public class MemorizingTrustManager implements X509TrustManager {
 		try {
 			Collection<List<?>> sans = cert.getSubjectAlternativeNames();
 
-			if(sans == null) {
+			if (sans == null) {
 				stringBuilder.append(cert.getSubjectDN());
 				stringBuilder.append("\n");
 			}
 			else {
 				for(List<?> altName : sans) {
 					Object name = altName.get(1);
-					if(name instanceof String) {
+
+					if (name instanceof String) {
 						stringBuilder.append("[");
 						stringBuilder.append(altName.get(0));
 						stringBuilder.append("] ");
@@ -596,7 +607,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 
 	private void interactCert(final X509Certificate[] chain, String authType, CertificateException cause) throws CertificateException {
 
-		if(interact(certChainMessage(chain, cause), R.string.mtm_accept_cert) == MTMDecision.DECISION_ALWAYS) {
+		if (interact(certChainMessage(chain, cause), R.string.mtm_accept_cert) == MTMDecision.DECISION_ALWAYS) {
 			storeCert(chain[0]); // only store the server cert, not the whole chain
 		} else {
 			throw (cause);
@@ -605,7 +616,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 
 	private boolean interactHostname(X509Certificate cert, String hostname) {
 
-		if(interact(hostNameMessage(cert, hostname), R.string.mtm_accept_servername) == MTMDecision.DECISION_ALWAYS) {
+		if (interact(hostNameMessage(cert, hostname), R.string.mtm_accept_servername) == MTMDecision.DECISION_ALWAYS) {
 			storeCert(hostname, cert);
 			return true;
 		}
@@ -622,7 +633,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 			openDecisions.remove(decisionId);
 		}
 
-		if(d == null) {
+		if (d == null) {
 			return;
 		}
 
@@ -644,7 +655,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 		@Override
 		public boolean verify(String hostname, SSLSession session) {
 			// if the default verifier accepts the hostname, we are done
-			if(defaultVerifier.verify(hostname, session)) {
+			if (defaultVerifier.verify(hostname, session)) {
 				return true;
 			}
 
@@ -652,7 +663,7 @@ public class MemorizingTrustManager implements X509TrustManager {
 			try {
 				X509Certificate cert = (X509Certificate) session.getPeerCertificates()[0];
 
-				if(cert.equals(appKeyStore.getCertificate(hostname.toLowerCase(Locale.US)))) {
+				if (cert.equals(appKeyStore.getCertificate(hostname.toLowerCase(Locale.US)))) {
 					return true;
 				}
 				else {

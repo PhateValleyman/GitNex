@@ -36,7 +36,7 @@ public class PicassoCache implements Cache {
 		this.cachePath = cachePath;
 		cacheMap = new HashMap<>();
 
-		if(cacheMapExists(cachePath)) {
+		if (cacheMapExists(cachePath)) {
 
 			cacheMap.putAll(loadCacheMap());
 
@@ -49,7 +49,7 @@ public class PicassoCache implements Cache {
 
 		try {
 
-			if(cacheMap.containsKey(key)) {
+			if (cacheMap.containsKey(key)) {
 
 				FileInputStream fileInputStream = new FileInputStream(new File(cachePath, cacheMap.get(key)));
 
@@ -124,7 +124,7 @@ public class PicassoCache implements Cache {
 
 		File[] files = cachePath.listFiles();
 
-		if(files != null) {
+		if (files != null) {
 
 			for(File file : files) {
 
@@ -147,7 +147,7 @@ public class PicassoCache implements Cache {
 
 			for(int i=0; i<len; i++) {
 
-				if(key.charAt(i) != keyPrefix.charAt(i)) {
+				if (key.charAt(i) != keyPrefix.charAt(i)) {
 
 					match = false;
 					break;
@@ -155,7 +155,7 @@ public class PicassoCache implements Cache {
 
 			}
 
-			if(match) {
+			if (match) {
 
 				//noinspection ResultOfMethodCallIgnored
 				new File(cachePath, cacheMap.get(key)).delete();

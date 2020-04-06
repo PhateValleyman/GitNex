@@ -21,6 +21,7 @@ import com.google.android.material.tabs.TabLayout;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
@@ -57,27 +58,7 @@ public class ProfileFragment extends Fragment {
         ViewPager mViewPager = v.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        Typeface myTypeface;
-        if(tinyDb.getInt("customFontId") == 0) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "fonts/roboto.ttf");
-
-        }
-        else if (tinyDb.getInt("customFontId") == 1) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "fonts/manroperegular.ttf");
-
-        }
-        else if (tinyDb.getInt("customFontId") == 2) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
-
-        }
-        else {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "fonts/roboto.ttf");
-
-        }
+        Typeface myTypeface = FontsOverride.getCustomTypeface(tinyDb.getInt("customFontId"), ctx);
 
         TabLayout tabLayout = v.findViewById(R.id.tabs);
 

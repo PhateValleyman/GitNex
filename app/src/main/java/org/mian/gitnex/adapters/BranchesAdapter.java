@@ -70,7 +70,7 @@ public class BranchesAdapter extends RecyclerView.Adapter<BranchesAdapter.Branch
         Branches currentItem = branchesList.get(position);
         holder.branchNameTv.setText(currentItem.getName());
 
-        if(currentItem.getCommit().getAuthor().getName() != null || !currentItem.getCommit().getAuthor().getName().equals("")) {
+        if (currentItem.getCommit().getAuthor().getName() != null || !currentItem.getCommit().getAuthor().getName().equals("")) {
             holder.branchCommitAuthor.setText(mCtx.getResources().getString(R.string.commitAuthor, currentItem.getCommit().getAuthor().getName()));
         }
         else {

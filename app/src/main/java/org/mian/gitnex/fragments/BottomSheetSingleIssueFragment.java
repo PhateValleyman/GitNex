@@ -66,20 +66,20 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             }
         });
 
-        if(tinyDB.getString("issueType").equals("pr")) {
+        if (tinyDB.getString("issueType").equals("pr")) {
 
             editIssue.setText(R.string.editPrText);
             copyIssueUrl.setText(R.string.copyPrUrlText);
             shareIssue.setText(R.string.sharePr);
 
-            if(tinyDB.getBoolean("prMerged")) {
+            if (tinyDB.getBoolean("prMerged")) {
                 mergePullRequest.setVisibility(View.GONE);
             }
             else {
                 mergePullRequest.setVisibility(View.VISIBLE);
             }
 
-            if(tinyDB.getString("repoType").equals("public")) {
+            if (tinyDB.getString("repoType").equals("public")) {
                 openFilesDiff.setVisibility(View.VISIBLE);
             }
             else {
@@ -193,7 +193,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             }
         });
 
-        if(tinyDB.getString("issueType").equals("issue")) {
+        if (tinyDB.getString("issueType").equals("issue")) {
 
             if (tinyDB.getString("issueState").equals("open")) { // close issue
 

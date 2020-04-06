@@ -64,6 +64,7 @@ public class ExploreRepositoriesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             String repoName = getArguments().getString(repoNameF);
             String repoOwner = getArguments().getString(repoOwnerF);
@@ -92,13 +93,17 @@ public class ExploreRepositoriesFragment extends Fragment {
         searchKeyword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    if(!searchKeyword.getText().toString().equals("")) {
+
+                    if (!searchKeyword.getText().toString().equals("")) {
+
                         mProgressBar.setVisibility(View.VISIBLE);
                         mRecyclerView.setVisibility(View.GONE);
                         loadSearchReposList(instanceUrl, instanceToken, loginUid, searchKeyword.getText().toString(), repoTypeInclude, sort, order, getContext(), limit);
                     }
                 }
+
                 return false;
             }
         });
@@ -182,7 +187,7 @@ public class ExploreRepositoriesFragment extends Fragment {
                 DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        if(adapter.getItemCount() > 0) {
+        if (adapter.getItemCount() > 0) {
 
             mRecyclerView.setAdapter(adapter);
             noData.setVisibility(View.GONE);
@@ -199,6 +204,7 @@ public class ExploreRepositoriesFragment extends Fragment {
     }
 
     public void onButtonPressed(Uri uri) {
+
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }

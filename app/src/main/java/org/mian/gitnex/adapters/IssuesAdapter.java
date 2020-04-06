@@ -57,7 +57,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        if(viewType == TYPE_LOAD){
+        if (viewType == TYPE_LOAD){
             return new IssuesHolder(inflater.inflate(R.layout.list_issues, parent,false));
         }
         else {
@@ -69,14 +69,14 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        if(position >= getItemCount()-1 && isMoreDataAvailable && !isLoading && loadMoreListener!=null) {
+        if (position >= getItemCount()-1 && isMoreDataAvailable && !isLoading && loadMoreListener!=null) {
 
             isLoading = true;
             loadMoreListener.onLoadMore();
 
         }
 
-        if(getItemViewType(position) == TYPE_LOAD) {
+        if (getItemViewType(position) == TYPE_LOAD) {
 
             ((IssuesHolder)holder).bindData(issuesList.get(position));
 
@@ -87,7 +87,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemViewType(int position) {
 
-        if(issuesList.get(position).getTitle() != null) {
+        if (issuesList.get(position).getTitle() != null) {
             return TYPE_LOAD;
         }
         else {
@@ -168,7 +168,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final String locale = tinyDb.getString("locale");
             final String timeFormat = tinyDb.getString("dateFormat");
 
-            /*if(issuesModel.getPull_request() != null) {
+            /*if (issuesModel.getPull_request() != null) {
                 if (!issuesModel.getPull_request().isMerged()) {
                     relativeLayoutFrame.setVisibility(View.GONE);
                     relativeLayoutFrame.setLayoutParams(new RecyclerView.LayoutParams(0, 0));

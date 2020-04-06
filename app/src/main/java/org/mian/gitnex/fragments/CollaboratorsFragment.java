@@ -104,7 +104,8 @@ public class CollaboratorsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Collaborators> collaboratorsListMain) {
                 adapter = new CollaboratorsAdapter(getContext(), collaboratorsListMain);
-                if(adapter.getCount() > 0) {
+
+                if (adapter.getCount() > 0) {
                     mGridView.setAdapter(adapter);
                     noDataCollaborators.setVisibility(View.GONE);
                 }
@@ -113,6 +114,7 @@ public class CollaboratorsFragment extends Fragment {
                     mGridView.setAdapter(adapter);
                     noDataCollaborators.setVisibility(View.VISIBLE);
                 }
+
                 mProgressBar.setVisibility(View.GONE);
             }
         });

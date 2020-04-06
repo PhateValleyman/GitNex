@@ -58,6 +58,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetSingleIssueFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.models.IssueComments;
@@ -164,27 +165,7 @@ public class IssueDetailActivity extends BaseActivity {
             }
         });
 
-        Typeface myTypeface;
-        if(tinyDb.getInt("customFontId") == 0) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
-
-        }
-        else if (tinyDb.getInt("customFontId") == 1) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/manroperegular.ttf");
-
-        }
-        else if (tinyDb.getInt("customFontId") == 2) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
-
-        }
-        else {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
-
-        }
+        Typeface myTypeface = FontsOverride.getCustomTypeface(tinyDb.getInt("customFontId"), ctx);
 
         toolbarTitle.setTypeface(myTypeface);
         toolbarTitle.setText(repoName);
@@ -233,7 +214,7 @@ public class IssueDetailActivity extends BaseActivity {
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-        if(tinyDb.getBoolean("commentPosted")) {
+        if (tinyDb.getBoolean("commentPosted")) {
             scrollViewComments.post(new Runnable() {
                 @Override
                 public void run() {
@@ -251,7 +232,7 @@ public class IssueDetailActivity extends BaseActivity {
             });
         }
 
-        if(tinyDb.getBoolean("commentEdited")) {
+        if (tinyDb.getBoolean("commentEdited")) {
             scrollViewComments.post(new Runnable() {
                 @Override
                 public void run() {
@@ -261,7 +242,7 @@ public class IssueDetailActivity extends BaseActivity {
             });
         }
 
-        if(tinyDb.getBoolean("singleIssueUpdate")) {
+        if (tinyDb.getBoolean("singleIssueUpdate")) {
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -275,7 +256,7 @@ public class IssueDetailActivity extends BaseActivity {
 
         }
 
-        if(tinyDb.getBoolean("issueEdited")) {
+        if (tinyDb.getBoolean("issueEdited")) {
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -400,7 +381,7 @@ public class IssueDetailActivity extends BaseActivity {
                         LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(80, 80);
                         params1.setMargins(15, 0, 0, 0);
 
-                        if(singleIssue.getAssignees() != null) {
+                        if (singleIssue.getAssignees() != null) {
                             assigneesScrollView.setVisibility(View.VISIBLE);
                             for (int i = 0; i < singleIssue.getAssignees().size(); i++) {
 
@@ -425,7 +406,7 @@ public class IssueDetailActivity extends BaseActivity {
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         params.setMargins(0, 0, 15, 0);
 
-                        if(singleIssue.getLabels() != null) {
+                        if (singleIssue.getLabels() != null) {
                             labelsScrollView.setVisibility(View.VISIBLE);
                             int width = 25;
                             for (int i = 0; i < singleIssue.getLabels().size(); i++) {
@@ -458,7 +439,7 @@ public class IssueDetailActivity extends BaseActivity {
                             labelsScrollView.setVisibility(View.GONE);
                         }
 
-                        if(singleIssue.getDue_date() != null) {
+                        if (singleIssue.getDue_date() != null) {
 
                             if (timeFormat.equals("normal") || timeFormat.equals("pretty")) {
                                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", new Locale(locale));
@@ -479,7 +460,7 @@ public class IssueDetailActivity extends BaseActivity {
 
                         String edited;
 
-                        if(!singleIssue.getUpdated_at().equals(singleIssue.getCreated_at())) {
+                        if (!singleIssue.getUpdated_at().equals(singleIssue.getCreated_at())) {
                             edited = getString(R.string.colorfulBulletSpan) + getString(R.string.modifiedText);
                             issueModified.setVisibility(View.VISIBLE);
                             issueModified.setText(edited);
@@ -489,24 +470,33 @@ public class IssueDetailActivity extends BaseActivity {
                             issueModified.setVisibility(View.INVISIBLE);
                         }
 
-                        if((singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) && singleIssue.getAssignees() != null) {
+                        if ((singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) && singleIssue.getAssignees() != null) {
+
                             paramsDesc.setMargins(0, 35, 0, 0);
                             issueDescription.setLayoutParams(paramsDesc);
+
                         }
-                        else if(singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) {
+                        else if (singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) {
+
                             paramsDesc.setMargins(0, 55, 0, 0);
                             issueDescription.setLayoutParams(paramsDesc);
+
                         }
-                        else if(singleIssue.getAssignees() == null) {
+                        else if (singleIssue.getAssignees() == null) {
+
                             paramsDesc.setMargins(0, 35, 0, 0);
                             issueDescription.setLayoutParams(paramsDesc);
+
                         }
                         else {
+
                             paramsDesc.setMargins(0, 15, 0, 0);
                             issueDescription.setLayoutParams(paramsDesc);
+
                         }
 
                         switch (timeFormat) {
+
                             case "pretty": {
                                 PrettyTime prettyTime = new PrettyTime(new Locale(locale));
                                 String createdTime = prettyTime.format(singleIssue.getCreated_at());
@@ -515,6 +505,7 @@ public class IssueDetailActivity extends BaseActivity {
                                 issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(singleIssue.getCreated_at()), getApplicationContext()));
                                 break;
                             }
+
                             case "normal": {
                                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
                                 String createdTime = formatter.format(singleIssue.getCreated_at());
@@ -522,6 +513,7 @@ public class IssueDetailActivity extends BaseActivity {
                                 issueCreatedTime.setVisibility(View.VISIBLE);
                                 break;
                             }
+
                             case "normal1": {
                                 DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
                                 String createdTime = formatter.format(singleIssue.getCreated_at());
@@ -529,9 +521,10 @@ public class IssueDetailActivity extends BaseActivity {
                                 issueCreatedTime.setVisibility(View.VISIBLE);
                                 break;
                             }
+
                         }
 
-                        if(singleIssue.getMilestone() != null) {
+                        if (singleIssue.getMilestone() != null) {
                             issueMilestone.setText(getString(R.string.issueMilestone, singleIssue.getMilestone().getTitle()));
                         }
                         else {
@@ -547,7 +540,7 @@ public class IssueDetailActivity extends BaseActivity {
                     }
 
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),

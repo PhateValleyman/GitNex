@@ -99,7 +99,7 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
                         @Override
                         public void onResponse(@NonNull Call<WatchRepository> call, @NonNull retrofit2.Response<WatchRepository> response) {
 
-                            if(response.isSuccessful()) {
+                            if (response.isSuccessful()) {
 
                                 tinyDb.putBoolean("repoWatch", response.body().getSubscribed());
 
@@ -222,12 +222,15 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
         }
 
         holder.mTextView1.setText(currentItem.getName());
+
         if (!currentItem.getDescription().equals("")) {
             holder.mTextView2.setVisibility(View.VISIBLE);
             holder.mTextView2.setText(currentItem.getDescription());
         }
+
         holder.fullName.setText(currentItem.getFullname());
-        if(currentItem.getPrivateFlag()) {
+
+        if (currentItem.getPrivateFlag()) {
             holder.repoPrivatePublic.setImageResource(R.drawable.ic_lock_bold);
             holder.repoType.setText(R.string.strPrivate);
         }
@@ -235,6 +238,7 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
             holder.repoPrivatePublic.setImageResource(R.drawable.ic_public);
             holder.repoType.setText(R.string.strPublic);
         }
+
         holder.repoStars.setText(currentItem.getStars_count());
         holder.repoForks.setText(currentItem.getForks_count());
         holder.repoOpenIssuesCount.setText(currentItem.getOpen_issues_count());
@@ -257,11 +261,14 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
             List<UserRepositories> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
+
                 filteredList.addAll(reposListFull);
             } else {
+
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (UserRepositories item : reposListFull) {
+
                     if (item.getFullname().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }

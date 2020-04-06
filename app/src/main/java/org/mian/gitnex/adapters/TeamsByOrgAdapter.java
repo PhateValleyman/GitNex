@@ -77,6 +77,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
         Teams currentItem = teamList.get(position);
         holder.teamId.setText(String.valueOf(currentItem.getId()));
         holder.teamTitle.setText(currentItem.getName());
+
         if (!currentItem.getDescription().equals("")) {
             holder.teamDescription.setVisibility(View.VISIBLE);
             holder.teamDescription.setText(currentItem.getDescription());
@@ -85,6 +86,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
             holder.teamDescription.setVisibility(View.GONE);
             holder.teamDescription.setText("");
         }
+
         holder.teamPermission.setText(mCtx.getResources().getString(R.string.teamPermission, currentItem.getPermission()));
 
     }
@@ -110,6 +112,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Teams item : teamListFull) {
+
                     if (item.getName().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }

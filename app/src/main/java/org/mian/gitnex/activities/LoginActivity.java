@@ -98,7 +98,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
                 String value = getResources().getStringArray(R.array.protocolValues)[pos];
-                if(value.toLowerCase().equals("http")) {
+
+                if (value.toLowerCase().equals("http")) {
                     SnackBar.warning(getApplicationContext(), layoutView,getResources().getString(R.string.protocolError));
                 }
 
@@ -113,7 +114,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         loginMethod.setOnCheckedChangeListener((group, checkedId) -> {
 
-            if(checkedId == R.id.loginToken) {
+            if (checkedId == R.id.loginToken) {
 
                 loginUidET.setVisibility(View.GONE);
                 loginPassword.setVisibility(View.GONE);
@@ -136,7 +137,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         networkMonitor.onInternetStateListener(isAvailable -> {
 
-            if(isAvailable) {
+            if (isAvailable) {
                 enableProcessButton();
                 SnackBar.success(getApplicationContext(), layoutView, getResources().getString(R.string.netConnectionIsBack));
             }
@@ -148,14 +149,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         });
 
         //login_button.setOnClickListener(this);
-        if(!tinyDb.getString("instanceUrlRaw").isEmpty()) {
+        if (!tinyDb.getString("instanceUrlRaw").isEmpty()) {
             instanceUrlET.setText(tinyDb.getString("instanceUrlRaw"));
         }
-        if(!tinyDb.getString("loginUid").isEmpty()) {
+
+        if (!tinyDb.getString("loginUid").isEmpty()) {
             loginUidET.setText(tinyDb.getString("loginUid"));
         }
 
-        if(tinyDb.getBoolean("loggedInMode")) {
+        if (tinyDb.getBoolean("loggedInMode")) {
 
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
@@ -164,7 +166,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         loginButton.setOnClickListener(loginListener);
 
-        if(!tinyDb.getString("uniqueAppId").isEmpty()) {
+        if (!tinyDb.getString("uniqueAppId").isEmpty()) {
             device_id = tinyDb.getString("uniqueAppId");
         }
         else {
@@ -219,9 +221,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         int loginMethodType = loginMethod.getCheckedRadioButtonId();
         String loginToken_ = loginTokenCode.getText().toString().trim();
 
-        if(loginMethodType == R.id.loginUsernamePassword) {
+        if (loginMethodType == R.id.loginUsernamePassword) {
 
-            if(instanceUrl.contains("@")) {
+            if (instanceUrl.contains("@")) {
 
                 String[] urlForHttpAuth = instanceUrl.split("@");
 
@@ -234,14 +236,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             }
 
             String instanceHost;
-            if(AppUtil.httpCheck(instanceUrl)) {
+            if (AppUtil.httpCheck(instanceUrl)) {
 
                 URI uri = null;
+
                 try {
                     uri = new URI(instanceUrl);
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }
+
                 assert uri != null;
                 instanceHost = uri.getHost();
 
@@ -251,7 +255,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             }
 
             String instanceUrlWithProtocol;
-            if(protocol.toLowerCase().equals("https")) {
+
+            if (protocol.toLowerCase().equals("https")) {
                 instanceUrl = "https://" + instanceHost + "/api/v1/";
                 instanceUrlWithProtocol = "https://" + instanceHost;
             }
@@ -265,9 +270,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             tinyDb.putString("instanceUrl", instanceUrl);
             tinyDb.putString("instanceUrlWithProtocol", instanceUrlWithProtocol);
 
-            if(connToInternet) {
+            if (connToInternet) {
 
-                if(instanceUrlET.getText().toString().equals("")) {
+                if (instanceUrlET.getText().toString().equals("")) {
 
                     SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldURL));
                     enableProcessButton();
@@ -275,7 +280,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     return;
 
                 }
-                if(loginUid.equals("")) {
+
+                if (loginUid.equals("")) {
 
                     SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldUsername));
                     enableProcessButton();
@@ -283,7 +289,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     return;
 
                 }
-                if(loginPassword.getText().toString().equals("")) {
+
+                if (loginPassword.getText().toString().equals("")) {
 
                     SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldPassword));
                     enableProcessButton();
@@ -293,9 +300,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
 
                 int loginOTP = 0;
-                if(loginOTP_.length() == 6) {
+                if (loginOTP_.length() == 6) {
 
-                    if(appUtil.checkIntegers(loginOTP_)) {
+                    if (appUtil.checkIntegers(loginOTP_)) {
 
                         loginOTP = Integer.parseInt(loginOTP_);
                     }
@@ -323,14 +330,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         else {
 
             String instanceHost;
-            if(AppUtil.httpCheck(instanceUrl)) {
+            if (AppUtil.httpCheck(instanceUrl)) {
 
                 URI uri = null;
+
                 try {
                     uri = new URI(instanceUrl);
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }
+
                 assert uri != null;
                 instanceHost = uri.getHost();
 
@@ -340,7 +349,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             }
 
             String instanceUrlWithProtocol;
-            if(protocol.toLowerCase().equals("https")) {
+
+            if (protocol.toLowerCase().equals("https")) {
                 instanceUrl = "https://" + instanceHost + "/api/v1/";
                 instanceUrlWithProtocol = "https://" + instanceHost;
             }
@@ -354,7 +364,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             tinyDb.putString("instanceUrl", instanceUrl);
             tinyDb.putString("instanceUrlWithProtocol", instanceUrlWithProtocol);
 
-            if(connToInternet) {
+            if (connToInternet) {
 
                 if (instanceUrlET.getText().toString().equals("")) {
 
@@ -508,7 +518,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     }
 
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
                     enableProcessButton();
@@ -543,7 +553,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         final String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
 
         Call<List<UserTokens>> call;
-        if(loginOTP != 0) {
+
+        if (loginOTP != 0) {
 
             call = RetrofitClient
                     .getInstance(instanceUrl, getApplicationContext())
@@ -579,7 +590,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         assert userTokens != null;
                         if (userTokens.size() > 0) {
 
-                            if(userTokens.get(0).getToken_last_eight() != null) {
+                            if (userTokens.get(0).getToken_last_eight() != null) {
 
                                 for (int i = 0; i < userTokens.size(); i++) {
                                     if (userTokens.get(i).getToken_last_eight().equals(tinyDb.getString(loginUid + "-token-last-eight"))) {
@@ -590,6 +601,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 }
 
                             }
+
                             else {
 
                                 for (int i = 0; i < userTokens.size(); i++) {
@@ -604,7 +616,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                         }
 
-                        if(tinyDb.getString(loginUid + "-token").isEmpty() || !setTokenFlag) {
+                        if (tinyDb.getString(loginUid + "-token").isEmpty() || !setTokenFlag) {
 
                             UserTokens createUserToken = new UserTokens("gitnex-app-" + device_id);
 

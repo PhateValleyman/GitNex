@@ -184,7 +184,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
         markwon.setParsedMarkdown(holder.msTitle, msTitle);
         //holder.msStatus.setText(currentItem.getState());
 
-        if(currentItem.getState().equals("open")) {
+        if (currentItem.getState().equals("open")) {
 
             @SuppressLint("ResourceType") int color = Color.parseColor(mCtx.getResources().getString(R.color.releaseStable));
             TextDrawable drawable = TextDrawable.builder()
@@ -201,7 +201,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
             holder.msStatus.setImageDrawable(drawable);
 
         }
-        else if(currentItem.getState().equals("closed")) {
+        else if (currentItem.getState().equals("closed")) {
 
             @SuppressLint("ResourceType") int color = Color.parseColor(mCtx.getResources().getString(R.color.colorRed));
             TextDrawable drawable = TextDrawable.builder()
@@ -251,19 +251,23 @@ public class MilestonesAdapter extends RecyclerView.Adapter<MilestonesAdapter.Mi
             holder.msProgress.setOnClickListener(new ClickListener(mCtx.getResources().getString(R.string.milestoneCompletion, 0), mCtx));
         }
 
-        if(currentItem.getDue_on() != null) {
+        if (currentItem.getDue_on() != null) {
 
             if (timeFormat.equals("normal") || timeFormat.equals("pretty")) {
+
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", new Locale(locale));
                 Date date = null;
+
                 try {
                     date = formatter.parse(currentItem.getDue_on());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String dueDate = formatter.format(date);
+
                 assert date != null;
-                if(date.before(new Date())) {
+                String dueDate = formatter.format(date);
+
+                if (date.before(new Date())) {
                     holder.msDueDate.setTextColor(mCtx.getResources().getColor(R.color.darkRed));
                 }
 

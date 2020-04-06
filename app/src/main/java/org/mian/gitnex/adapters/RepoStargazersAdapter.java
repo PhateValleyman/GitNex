@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.TinyDB;
@@ -82,25 +83,9 @@ public class RepoStargazersAdapter extends BaseAdapter {
         PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(180, 180).centerCrop().into(viewHolder.memberAvatar);
 
         final TinyDB tinyDb = new TinyDB(mCtx);
-        Typeface myTypeface;
+        Typeface myTypeface = FontsOverride.getCustomTypeface(tinyDb.getInt("customFontId"), mCtx);
 
-        switch(tinyDb.getInt("customFontId")) {
-
-            case 1:
-                myTypeface = Typeface.createFromAsset(mCtx.getAssets(), "fonts/manroperegular.ttf");
-                break;
-
-            case 2:
-                myTypeface = Typeface.createFromAsset(mCtx.getAssets(), "fonts/sourcecodeproregular.ttf");
-                break;
-
-            default:
-                myTypeface = Typeface.createFromAsset(mCtx.getAssets(), "fonts/roboto.ttf");
-                break;
-
-        }
-
-        if(!currentItem.getFullname().equals("")) {
+        if (!currentItem.getFullname().equals("")) {
             viewHolder.memberName.setText(currentItem.getFullname());
             viewHolder.memberName.setTypeface(myTypeface);
         }
@@ -109,7 +94,7 @@ public class RepoStargazersAdapter extends BaseAdapter {
             viewHolder.memberName.setTypeface(myTypeface);
         }
 
-        if(tinyDb.getInt("themeId") == 1) { //light
+        if (tinyDb.getInt("themeId") == 1) { //light
             viewHolder.memberName.setTextColor(mCtx.getResources().getColor(R.color.lightThemeTextColor));
         }
         else { // dark

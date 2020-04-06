@@ -48,8 +48,8 @@ public class IssueActions {
             @Override
             public void onResponse(@NonNull Call<IssueComments> call, @NonNull retrofit2.Response<IssueComments> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         tinyDb.putBoolean("commentEdited", true);
                         Toasty.info(ctx, ctx.getString(R.string.editCommentUpdatedText));
@@ -57,7 +57,7 @@ public class IssueActions {
 
                     }
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -65,12 +65,12 @@ public class IssueActions {
                             ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 403) {
+                else if (response.code() == 403) {
 
                     Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
@@ -115,21 +115,24 @@ public class IssueActions {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 201) {
+                if (response.isSuccessful()) {
+
+                    if (response.code() == 201) {
 
                         tinyDb.putBoolean("resumeIssues", true);
                         tinyDb.putBoolean("resumeClosedIssues", true);
-                        if(issueState.equals("closed")) {
+
+                        if (issueState.equals("closed")) {
                             Toasty.info(ctx, ctx.getString(R.string.issueStateClosed));
                         }
-                        else if(issueState.equals("open")) {
+                        else if (issueState.equals("open")) {
                             Toasty.info(ctx, ctx.getString(R.string.issueStateReopened));
                         }
 
                     }
+
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -137,12 +140,12 @@ public class IssueActions {
                             ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 403) {
+                else if (response.code() == 403) {
 
                     Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
@@ -189,14 +192,14 @@ public class IssueActions {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
 
                     Toasty.info(ctx, ctx.getString(R.string.issueSubscribtion));
                     subscribeIssue.setVisibility(View.GONE);
                     unsubscribeIssue.setVisibility(View.VISIBLE);
 
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -246,14 +249,14 @@ public class IssueActions {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
 
                     Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtion));
                     unsubscribeIssue.setVisibility(View.GONE);
                     subscribeIssue.setVisibility(View.VISIBLE);
 
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),

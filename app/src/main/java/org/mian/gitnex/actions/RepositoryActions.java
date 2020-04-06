@@ -42,15 +42,15 @@ public class RepositoryActions {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 204) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 204) {
 
                         tinyDb.putBoolean("repoCreated", true);
                         Toasty.info(context, context.getString(R.string.starRepositorySuccess));
 
                     }
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -58,12 +58,12 @@ public class RepositoryActions {
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 403) {
+                else if (response.code() == 403) {
 
                     Toasty.info(context, context.getString(R.string.authorizeError));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     Toasty.info(context, context.getString(R.string.apiNotFound));
 
@@ -107,15 +107,15 @@ public class RepositoryActions {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 204) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 204) {
 
                         tinyDb.putBoolean("repoCreated", true);
                         Toasty.info(context, context.getString(R.string.unStarRepositorySuccess));
 
                     }
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -123,12 +123,12 @@ public class RepositoryActions {
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 403) {
+                else if (response.code() == 403) {
 
                     Toasty.info(context, context.getString(R.string.authorizeError));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     Toasty.info(context, context.getString(R.string.apiNotFound));
 
@@ -172,15 +172,15 @@ public class RepositoryActions {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 200) {
 
                         tinyDb.putBoolean("repoCreated", true);
                         Toasty.info(context, context.getString(R.string.watchRepositorySuccess));
 
                     }
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -188,12 +188,12 @@ public class RepositoryActions {
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 403) {
+                else if (response.code() == 403) {
 
                     Toasty.info(context, context.getString(R.string.authorizeError));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     Toasty.info(context, context.getString(R.string.apiNotFound));
 
@@ -237,13 +237,13 @@ public class RepositoryActions {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.code() == 204) {
+                if (response.code() == 204) {
 
                     tinyDb.putBoolean("repoCreated", true);
                     Toasty.info(context, context.getString(R.string.unWatchRepositorySuccess));
 
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -251,12 +251,12 @@ public class RepositoryActions {
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 403) {
+                else if (response.code() == 403) {
 
                     Toasty.info(context, context.getString(R.string.authorizeError));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     Toasty.info(context, context.getString(R.string.apiNotFound));
 

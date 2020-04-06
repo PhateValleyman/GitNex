@@ -104,16 +104,16 @@ public class IssuesClosedFragment extends Fragment {
                 recyclerViewClosed.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(issuesListClosed.size() == 10 || pageSize == 10) {
+
+                        if (issuesListClosed.size() == 10 || pageSize == 10) {
 
                             int page = (issuesListClosed.size() + 10) / 10;
                             loadMore(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, page, issueState, resultLimit, requestType);
 
                         }
+
                         /*else {
-
                             Toasty.info(context, getString(R.string.noMoreData));
-
                         }*/
                     }
                 });
@@ -144,7 +144,7 @@ public class IssuesClosedFragment extends Fragment {
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("resumeClosedIssues")) {
+        if (tinyDb.getBoolean("resumeClosedIssues")) {
 
             loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, issueState, resultLimit, requestType);
             tinyDb.putBoolean("resumeClosedIssues", false);
@@ -162,10 +162,10 @@ public class IssuesClosedFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
 
                     assert response.body() != null;
-                    if(response.body().size() > 0) {
+                    if (response.body().size() > 0) {
 
                         issuesListClosed.clear();
                         issuesListClosed.addAll(response.body());
@@ -208,7 +208,7 @@ public class IssuesClosedFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-                if(response.isSuccessful()){
+                if (response.isSuccessful()){
 
                     //remove loading view
                     issuesListClosed.remove(issuesListClosed.size()-1);
@@ -216,7 +216,7 @@ public class IssuesClosedFragment extends Fragment {
                     List<Issues> result = response.body();
 
                     assert result != null;
-                    if(result.size() > 0) {
+                    if (result.size() > 0) {
 
                         pageSize = result.size();
                         issuesListClosed.addAll(result);
@@ -263,7 +263,7 @@ public class IssuesClosedFragment extends Fragment {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        /*if(!connToInternet) {
+        /*if (!connToInternet) {
             return;
         }*/
 

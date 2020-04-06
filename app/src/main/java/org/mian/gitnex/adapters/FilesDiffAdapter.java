@@ -62,7 +62,7 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
 
         FileDiffView data = dataList.get(position);
 
-        if(data.isFileType()) {
+        if (data.isFileType()) {
 
             holder.fileName.setText(data.getFileName());
 
@@ -105,7 +105,7 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
                 }
                 else {
 
-                    if(eachSplit.length() > 0) {
+                    if (eachSplit.length() > 0) {
                         textLine.setText(eachSplit);
                         holder.allLines.addView(textLine);
 
@@ -119,7 +119,8 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
             }
 
             holder.fileName.setText(data.getFileName());
-            if(!data.getFileInfo().equals("")) {
+
+            if (!data.getFileInfo().equals("")) {
                 holder.fileInfo.setText(ctx.getResources().getString(R.string.fileDiffInfoChanges, data.getFileInfo()));
             }
             else {

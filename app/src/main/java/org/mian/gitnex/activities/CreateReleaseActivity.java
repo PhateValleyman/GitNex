@@ -103,7 +103,7 @@ public class CreateReleaseActivity extends BaseActivity {
         createNewRelease = findViewById(R.id.createNewRelease);
         disableProcessButton();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             disableProcessButton();
 
@@ -141,21 +141,21 @@ public class CreateReleaseActivity extends BaseActivity {
         boolean newReleaseType = releaseType.isChecked();
         boolean newReleaseDraft = releaseDraft.isChecked();
 
-        if(!connToInternet) {
+        if (!connToInternet) {
 
             Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
-        if(newReleaseTagName.equals("")) {
+        if (newReleaseTagName.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.tagNameErrorEmpty));
             return;
 
         }
 
-        if(newReleaseTitle.equals("")) {
+        if (newReleaseTitle.equals("")) {
 
             Toasty.info(getApplicationContext(), getString(R.string.titleErrorEmpty));
             return;
@@ -192,7 +192,7 @@ public class CreateReleaseActivity extends BaseActivity {
                     finish();
 
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     enableProcessButton();
                      AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
@@ -201,13 +201,13 @@ public class CreateReleaseActivity extends BaseActivity {
                              ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 403) {
+                else if (response.code() == 403) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     enableProcessButton();
                     Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
@@ -243,21 +243,25 @@ public class CreateReleaseActivity extends BaseActivity {
             @Override
             public void onResponse(@NonNull Call<List<Branches>> call, @NonNull retrofit2.Response<List<Branches>> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+                if (response.isSuccessful()) {
+
+                    if (response.code() == 200) {
 
                         List<Branches> branchesList_ = response.body();
 
                         assert branchesList_ != null;
-                        if(branchesList_.size() > 0) {
+                        if (branchesList_.size() > 0) {
+
                             for (int i = 0; i < branchesList_.size(); i++) {
 
                                 Branches data = new Branches(
                                         branchesList_.get(i).getName()
                                 );
+
                                 branchesList.add(data);
 
                             }
+
                         }
 
                         ArrayAdapter<Branches> adapter = new ArrayAdapter<>(getApplicationContext(),
@@ -268,8 +272,9 @@ public class CreateReleaseActivity extends BaseActivity {
                         enableProcessButton();
 
                     }
+
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),

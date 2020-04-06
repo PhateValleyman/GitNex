@@ -118,13 +118,14 @@ public class LabelsFragment extends Fragment {
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("labelsRefresh")) {
+        if (tinyDb.getBoolean("labelsRefresh")) {
             LabelsViewModel.loadLabelsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, getContext());
             tinyDb.putBoolean("labelsRefresh", false);
         }
     }
 
     public void onButtonPressed(Uri uri) {
+
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -148,7 +149,7 @@ public class LabelsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Labels> labelsListMain) {
                 adapter = new LabelsAdapter(getContext(), labelsListMain);
-                if(adapter.getItemCount() > 0) {
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noData.setVisibility(View.GONE);
                 }

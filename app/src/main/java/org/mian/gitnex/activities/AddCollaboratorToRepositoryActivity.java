@@ -75,7 +75,8 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    if(!addCollaboratorSearch.getText().toString().equals("")) {
+
+                    if (!addCollaboratorSearch.getText().toString().equals("")) {
                         loadUserSearchList(instanceUrl, instanceToken, addCollaboratorSearch.getText().toString(), getApplicationContext(), loginUid);
                     }
                 }
@@ -126,7 +127,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
         mProgressBar.setVisibility(View.VISIBLE);
 
-        if(adapter.getItemCount() > 0) {
+        if (adapter.getItemCount() > 0) {
             mRecyclerView.setAdapter(adapter);
             noData.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);

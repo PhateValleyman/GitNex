@@ -127,7 +127,7 @@ public class MilestonesFragment extends Fragment {
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("milestoneCreated")) {
+        if (tinyDb.getBoolean("milestoneCreated")) {
             MilestonesViewModel.loadMilestonesList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, msState, getContext());
             tinyDb.putBoolean("milestoneCreated", false);
         }
@@ -157,7 +157,8 @@ public class MilestonesFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Milestones> msListMain) {
                 adapter = new MilestonesAdapter(getContext(), msListMain);
-                if(adapter.getItemCount() > 0) {
+
+                if (adapter.getItemCount() > 0) {
                     mRecyclerView.setAdapter(adapter);
                     noDataMilestone.setVisibility(View.GONE);
                 }
@@ -166,6 +167,7 @@ public class MilestonesFragment extends Fragment {
                     mRecyclerView.setAdapter(adapter);
                     noDataMilestone.setVisibility(View.VISIBLE);
                 }
+
                 mProgressBar.setVisibility(View.GONE);
             }
         });
@@ -185,7 +187,7 @@ public class MilestonesFragment extends Fragment {
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        /*if(!connToInternet) {
+        /*if (!connToInternet) {
             return;
         }*/
 
@@ -197,9 +199,11 @@ public class MilestonesFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(mRecyclerView.getAdapter() != null) {
+
+                if (mRecyclerView.getAdapter() != null) {
                     adapter.getFilter().filter(newText);
                 }
+
                 return false;
             }
         });

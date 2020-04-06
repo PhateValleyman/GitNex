@@ -16,7 +16,7 @@ public class Authorization {
 
         String credential;
 
-        if(tinyDb.getBoolean("basicAuthFlag")) {
+        if (tinyDb.getBoolean("basicAuthFlag")) {
 
             if (!tinyDb.getString("basicAuthPassword").isEmpty()) {
 

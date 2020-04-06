@@ -56,7 +56,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        if(viewType == TYPE_LOAD){
+        if (viewType == TYPE_LOAD){
             return new PullRequestsAdapter.PullRequestsHolder(inflater.inflate(R.layout.list_pr, parent,false));
         }
         else {
@@ -68,14 +68,14 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        if(position >= getItemCount()-1 && isMoreDataAvailable && !isLoading && loadMoreListener!=null) {
+        if (position >= getItemCount()-1 && isMoreDataAvailable && !isLoading && loadMoreListener!=null) {
 
             isLoading = true;
             loadMoreListener.onLoadMore();
 
         }
 
-        if(getItemViewType(position) == TYPE_LOAD) {
+        if (getItemViewType(position) == TYPE_LOAD) {
 
             ((PullRequestsAdapter.PullRequestsHolder)holder).bindData(prList.get(position));
 
@@ -86,7 +86,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemViewType(int position) {
 
-        if(prList.get(position).getTitle() != null) {
+        if (prList.get(position).getTitle() != null) {
             return TYPE_LOAD;
         }
         else {

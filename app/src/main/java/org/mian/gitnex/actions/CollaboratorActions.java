@@ -44,8 +44,8 @@ public class CollaboratorActions {
             @Override
             public void onResponse(@NonNull Call<Collaborators> call, @NonNull retrofit2.Response<Collaborators> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 204) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 204) {
 
                         Toasty.info(context, context.getString(R.string.removeCollaboratorToastText));
                         ((AddCollaboratorToRepositoryActivity)context).finish();
@@ -56,7 +56,7 @@ public class CollaboratorActions {
 
                     }
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -64,12 +64,12 @@ public class CollaboratorActions {
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 403) {
+                else if (response.code() == 403) {
 
                     Toasty.info(context, context.getString(R.string.authorizeError));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     Toasty.info(context, context.getString(R.string.apiNotFound));
 
@@ -114,8 +114,8 @@ public class CollaboratorActions {
             @Override
             public void onResponse(@NonNull Call<Permission> call, @NonNull retrofit2.Response<Permission> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 204) {
+                if (response.isSuccessful()) {
+                    if (response.code() == 204) {
 
                         Toasty.info(context, context.getString(R.string.addCollaboratorToastText));
                         ((AddCollaboratorToRepositoryActivity)context).finish();
@@ -124,7 +124,7 @@ public class CollaboratorActions {
 
                     }
                 }
-                else if(response.code() == 401) {
+                else if (response.code() == 401) {
 
                     AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
@@ -132,12 +132,12 @@ public class CollaboratorActions {
                             context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
                 }
-                else if(response.code() == 403) {
+                else if (response.code() == 403) {
 
                     Toasty.info(context, context.getString(R.string.authorizeError));
 
                 }
-                else if(response.code() == 404) {
+                else if (response.code() == 404) {
 
                     Toasty.info(context, context.getString(R.string.apiNotFound));
 
