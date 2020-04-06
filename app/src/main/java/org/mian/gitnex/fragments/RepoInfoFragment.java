@@ -44,6 +44,8 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+import org.ocpsoft.prettytime.PrettyTime;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -240,14 +242,39 @@ public class RepoInfoFragment extends Fragment {
                             repoMetaForks.setText(repoInfo.getForks_count());
                             repoMetaSize.setText(AppUtil.formatFileSize(repoInfo.getSize()));
                             repoMetaWatchers.setText(repoInfo.getWatchers_count());
-                            repoMetaCreatedAt.setText(new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(repoInfo.getCreated_at()));
 
                             String website = repoInfo.getWebsite();
+
                             if(website.trim().isEmpty()) {
                                 repoMetaWebsite.setText(getResources().getString(R.string.noDataWebsite));
                             }
                             else {
                                 repoMetaWebsite.setText(website);
+                            }
+
+                            switch (timeFormat) {
+
+                                case "pretty": {
+                                    PrettyTime prettyTime = new PrettyTime(new Locale(locale));
+                                    String createdTime = prettyTime.format(repoInfo.getCreated_at());
+                                    repoMetaCreatedAt.setText(createdTime);
+                                    break;
+                                }
+
+                                case "normal": {
+                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
+                                    String createdTime = formatter.format(repoInfo.getCreated_at());
+                                    repoMetaCreatedAt.setText(createdTime);
+                                    break;
+                                }
+
+                                case "normal1": {
+                                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
+                                    String createdTime = formatter.format(repoInfo.getCreated_at());
+                                    repoMetaCreatedAt.setText(createdTime);
+                                    break;
+                                }
+
                             }
 
                             repoAdditionalButton.setOnClickListener(new View.OnClickListener() {
@@ -288,30 +315,6 @@ public class RepoInfoFragment extends Fragment {
                             else {
                                 tinyDb.putBoolean("hasIssues", true);
                             }
-
-                            /*
-                            switch (timeFormat) {
-                                case "pretty": {
-                                    PrettyTime prettyTime = new PrettyTime(new Locale(locale));
-                                    String createdTime = prettyTime.format(repoInfo.getCreated_at());
-                                    repoCreatedAtInfo.setText(createdTime);
-                                    repoCreatedAtInfo.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(repoInfo.getCreated_at()), getContext()));
-                                    break;
-                                }
-                                case "normal": {
-                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                                    String createdTime = formatter.format(repoInfo.getCreated_at());
-                                    repoCreatedAtInfo.setText(createdTime);
-                                    break;
-                                }
-                                case "normal1": {
-                                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                                    String createdTime = formatter.format(repoInfo.getCreated_at());
-                                    repoCreatedAtInfo.setText(createdTime);
-                                    break;
-                                }
-                            }
-                            */
 
                             mProgressBar.setVisibility(View.GONE);
                             pageContent.setVisibility(View.VISIBLE);
