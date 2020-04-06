@@ -257,12 +257,23 @@ public class RepoInfoFragment extends Fragment {
 
 	                            	StringBuilder message = new StringBuilder();
 
-	                            	message.append("Default branch\n").append(repoInfo.getDefault_branch()).append("\n\n");
-	                            	message.append("SSH url\n").append(repoInfo.getSsh_url()).append("\n\n");
-	                            	message.append("Clone url\n").append(repoInfo.getClone_url()).append("\n\n");
-	                            	message.append("Repo url\n").append(repoInfo.getHtml_url()).append("\n\n");
+	                            	message.append(getResources().getString(R.string.infoTabRepoDefaultBranchText))
+				                            .append(":\n").append(repoInfo.getDefault_branch()).append("\n\n");
+
+	                            	message.append(getResources().getString(R.string.infoTabRepoUpdatedAt))
+				                            .append(":\n").append(repoInfo.getUpdated_at()).append("\n\n");
+
+	                            	message.append(getResources().getString(R.string.infoTabRepoSshUrl))
+				                            .append(":\n").append(repoInfo.getSsh_url()).append("\n\n");
+
+	                            	message.append(getResources().getString(R.string.infoTabRepoCloneUrl))
+				                            .append(":\n").append(repoInfo.getClone_url()).append("\n\n");
+
+	                            	message.append(getResources().getString(R.string.infoTabRepoRepoUrl))
+				                            .append(":\n").append(repoInfo.getHtml_url());
 
 		                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ctx);
+
 		                            alertDialog.setTitle("Additional information");
 		                            alertDialog.setMessage(message);
 		                            alertDialog.setPositiveButton("CANCEL", (dialog, which) -> dialog.dismiss());
