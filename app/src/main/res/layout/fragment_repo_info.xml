@@ -95,7 +95,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="TODO"
+                            android:contentDescription="@string/repoStargazersInMenu"
                             app:srcCompat="@drawable/ic_star" />
 
                         <TextView
@@ -116,7 +116,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="TODO"
+                            android:contentDescription="@string/tabPullRequests"
                             app:srcCompat="@drawable/ic_merge" />
 
                         <TextView
@@ -137,7 +137,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="TODO"
+                            android:contentDescription="@string/infoTabRepoForksCount"
                             app:srcCompat="@drawable/ic_forks_24" />
 
                         <TextView
@@ -158,7 +158,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="TODO"
+                            android:contentDescription="@string/infoTabRepoSize"
                             app:srcCompat="@drawable/ic_file_download_24dp" />
 
                         <TextView
