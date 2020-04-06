@@ -28,7 +28,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
 
     public static ArrayList<Integer> selectedIdsForCallback = new ArrayList<>();
 
-    public ArrayList<MultiSelectModel> mainListOfAdapter = new ArrayList<>();
+    private ArrayList<MultiSelectModel> mainListOfAdapter = new ArrayList<>();
     private MutliSelectAdapter mutliSelectAdapter;
     //Default Values
     private String title;
@@ -54,6 +54,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
 
         final Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()));
         Objects.requireNonNull(dialog.getWindow()).requestFeature(Window.FEATURE_NO_TITLE);
+
         dialog.getWindow().setFlags(
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -63,6 +64,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
 
         RecyclerViewEmptySupport mrecyclerView =  dialog.findViewById(R.id.recycler_view);
         SearchView searchView =  dialog.findViewById(R.id.search_view);
+
         dialogTitle =  dialog.findViewById(R.id.title);
         dialogSubmit =  dialog.findViewById(R.id.done);
         dialogCancel =  dialog.findViewById(R.id.cancel);
@@ -157,34 +159,39 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
     private ArrayList<MultiSelectModel> setCheckedIDS(ArrayList<MultiSelectModel> multiselectdata, ArrayList<Integer> listOfIdsSelected) {
 
         for (int i = 0; i < multiselectdata.size(); i++) {
+
             multiselectdata.get(i).setSelected(false);
+
             for (int j = 0; j < listOfIdsSelected.size(); j++) {
                 if (listOfIdsSelected.get(j) == (multiselectdata.get(i).getId())) {
                     multiselectdata.get(i).setSelected(true);
                 }
             }
         }
-        return multiselectdata;
 
+        return multiselectdata;
     }
 
     private ArrayList<MultiSelectModel> filter(ArrayList<MultiSelectModel> models, String query) {
 
         query = query.toLowerCase();
         final ArrayList<MultiSelectModel> filteredModelList = new ArrayList<>();
+
         if (query.equals("") | query.isEmpty()) {
             filteredModelList.addAll(models);
             return filteredModelList;
         }
 
         for (MultiSelectModel model : models) {
+
             final String name = model.getName().toLowerCase();
+
             if (name.contains(query)) {
                 filteredModelList.add(model);
             }
         }
-        return filteredModelList;
 
+        return filteredModelList;
     }
 
     @Override
@@ -210,6 +217,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
             ArrayList<Integer> callBackListOfIds = selectedIdsForCallback;
 
             if (callBackListOfIds.size() >= minSelectionLimit) {
+
                 if (callBackListOfIds.size() <= maxSelectionLimit) {
 
                     //to remember last selected ids which were successfully done
@@ -218,91 +226,107 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
                     if(submitCallbackListener !=null) {
                         submitCallbackListener.onSelected(callBackListOfIds, getSelectNameList(), getSelectedDataString());
                     }
+
                     dismiss();
                 } else {
+
                     String youCan = getResources().getString(R.string.you_can_only_select_upto);
                     String options = getResources().getString(R.string.options);
                     String option = getResources().getString(R.string.option);
-                    String message = "";
 
-                    if(this.maxSelectionMessage != null) {
-                        message = maxSelectionMessage;
-                    }
-                    else {
-                        if (maxSelectionLimit > 1)
-                            message = youCan + " " + maxSelectionLimit + " " + options;
-                        else
-                            message = youCan + " " + maxSelectionLimit + " " + option;
-                    }
+                    String message = getSelectionMessage(youCan, options, option);
                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                 }
+
             } else {
+
                 String pleaseSelect = getResources().getString(R.string.please_select_atleast);
                 String options = getResources().getString(R.string.options);
                 String option = getResources().getString(R.string.option);
-                String message = "";
 
-                if(this.minSelectionMessage != null) {
-                    message = minSelectionMessage;
-                }
-                else {
-                    if (minSelectionLimit > 1)
-                        message = pleaseSelect + " " + minSelectionLimit + " " + options;
-                    else
-                        message = pleaseSelect + " " + minSelectionLimit + " " + option;
-                }
+                String message = getSelectionMessage(pleaseSelect, options, option);
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
             }
         }
 
         if (view.getId() == R.id.cancel) {
+
             if(submitCallbackListener!=null){
                 selectedIdsForCallback.clear();
                 selectedIdsForCallback.addAll(tempPreviouslySelectedIdsList);
                 submitCallbackListener.onCancel();
             }
+
             dismiss();
         }
 
     }
 
-    private String getSelectedDataString() {
+    private String getSelectionMessage(String pleaseSelect, String options, String option) {
 
-        String data = "";
-        for (int i = 0; i < tempMainListOfAdapter.size(); i++) {
-            if (checkForSelection(tempMainListOfAdapter.get(i).getId())) {
-                data = data + ", " + tempMainListOfAdapter.get(i).getName();
+        String message;
+
+        if(this.minSelectionMessage != null) {
+            message = minSelectionMessage;
+        }
+        else {
+
+            if (minSelectionLimit > 1) {
+                message = pleaseSelect + " " + minSelectionLimit + " " + options;
+            }
+            else {
+                message = pleaseSelect + " " + minSelectionLimit + " " + option;
             }
         }
-        if (data.length() > 0) {
-            return data.substring(1);
-        } else {
-            return "";
+
+        return message;
+    }
+
+    private String getSelectedDataString() {
+
+        StringBuilder data = new StringBuilder();
+
+        for (int i = 0; i < tempMainListOfAdapter.size(); i++) {
+
+            if (checkForSelection(tempMainListOfAdapter.get(i).getId())) {
+                data.append(", ").append(tempMainListOfAdapter.get(i).getName());
+            }
         }
 
+        if (data.length() > 0) {
+            return data.substring(1);
+        }
+        else {
+            return "";
+        }
     }
 
     private ArrayList<String> getSelectNameList() {
 
         ArrayList<String> names = new ArrayList<>();
+
         for(int i=0;i<tempMainListOfAdapter.size();i++){
+
             if(checkForSelection(tempMainListOfAdapter.get(i).getId())){
                 names.add(tempMainListOfAdapter.get(i).getName());
             }
-        }
-        return names;
 
+        }
+
+        return names;
     }
 
     private boolean checkForSelection(Integer id) {
 
         for (int i = 0; i < MultiSelectDialog.selectedIdsForCallback.size(); i++) {
+
             if (id.equals(MultiSelectDialog.selectedIdsForCallback.get(i))) {
                 return true;
             }
-        }
-        return false;
 
+        }
+
+        return false;
     }
 
    /* public void setCallbackListener(SubmitCallbackListener submitCallbackListener) {
@@ -310,6 +334,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment implements Search
     }*/
 
     public interface SubmitCallbackListener {
+
         void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String commonSeperatedData);
         void onCancel();
     }

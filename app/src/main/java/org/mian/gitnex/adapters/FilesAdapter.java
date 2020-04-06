@@ -57,14 +57,20 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
 
                     Context context = v.getContext();
 
-                    if(fileType.getText().toString().equals("file")) {
-                        filesListener.onClickFile(fileName.getText().toString());
-                    }
-                    else if(fileType.getText().toString().equals("dir")) {
-                        filesListener.onClickDir(fileName.getText().toString());
-                    }
-                    else {
-                        Toasty.info(context, context.getString(R.string.filesGenericError));
+                    switch(fileType.getText().toString()) {
+
+                        case "file":
+                            filesListener.onClickFile(fileName.getText().toString());
+                            break;
+
+                        case "dir":
+                            filesListener.onClickDir(fileName.getText().toString());
+                            break;
+
+                        default:
+                            Toasty.info(context, context.getString(R.string.filesGenericError));
+                            break;
+
                     }
 
                 }
@@ -159,16 +165,22 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
         holder.fileType.setText(currentItem.getType());
         holder.fileName.setText(currentItem.getName());
 
-        if(currentItem.getType().equals("file")) {
-            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_file_new));
-            holder.fileInfo.setVisibility(View.VISIBLE);
-            holder.fileInfo.setText(AppUtil.formatFileSizeInDetail(currentItem.getSize()));
-        }
-        else if(currentItem.getType().equals("dir")) {
-            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_folder_24));
-        }
-        else {
-            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_question_mark_24));
+        switch(currentItem.getType()) {
+
+            case "file":
+                holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_file_new));
+                holder.fileInfo.setVisibility(View.VISIBLE);
+                holder.fileInfo.setText(AppUtil.formatFileSizeInDetail(currentItem.getSize()));
+                break;
+
+            case "dir":
+                holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_folder_24));
+                break;
+
+            default:
+                holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_question_mark_24));
+                break;
+
         }
 
     }
