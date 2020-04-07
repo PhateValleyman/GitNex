@@ -7,6 +7,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,7 +15,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.FileDiffView;
+import org.w3c.dom.Text;
 import java.util.List;
 
 /**
@@ -44,7 +47,6 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
             // fileInfo = itemView.findViewById(R.id.fileInfo);
             footerImage = itemView.findViewById(R.id.footerImage);
             diffLines = itemView.findViewById(R.id.diffLines);
-
         }
     }
 
@@ -90,12 +92,9 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
 
             for(int i=0; i<splitData.length; i++) {
 
-                LinearLayout linearLayout = new LinearLayout(ctx);
-                linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
                 TextView textLine = new TextView(ctx);
                 textLine.setGravity(0);
-                textLine.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                textLine.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
                 textLine.setPadding(5, 2, 5, 2);
                 textLine.setTypeface(Typeface.createFromAsset(ctx.getAssets(), "fonts/sourcecodeproregular.ttf"));
                 textLine.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -128,11 +127,9 @@ public class FilesDiffAdapter extends RecyclerView.Adapter<FilesDiffAdapter.File
 
                 }
 
-                linearLayout.addView(textLine);
-
-                holder.diffLines.addView(linearLayout);
-
             }
+
+
 
             holder.headerFileName.setText(data.getFileName());
 
