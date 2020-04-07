@@ -61,14 +61,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         // enabling counter badges by default
-        if(tinyDb.getString("enableCounterBadgesInit").isEmpty()) {
+        if(!tinyDb.getBoolean("enableCounterBadgesInit")) {
             tinyDb.putBoolean("enableCounterBadges", true);
-            tinyDb.putString("enableCounterBadgesInit", "yes");
+            tinyDb.putBoolean("enableCounterBadgesInit", true);
         }
 
         // setting default font
-        tinyDb.putString("customFontStr", "Manrope");
-        tinyDb.putInt("customFontId", 1);
+		if(!tinyDb.getBoolean("customFontStrInit")) {
+			tinyDb.putString("customFontStr", "Manrope");
+			tinyDb.putInt("customFontId", 1);
+
+			tinyDb.putBoolean("customFontStrInit", true);
+		}
 
     }
 
