@@ -26,8 +26,8 @@
     <color name="lightGray">#b6bbbf</color>
     <color name="darkGreen">#368f73</color>
     <color name="lightDimGreen">#63fdd9</color>
-    <color name="diffRemovedColor">#ffe0e0</color>
-    <color name="diffAddedColor">#d6fcd6</color>
+    <color name="diffRemovedColor">#FCEDED</color>
+    <color name="diffAddedColor">#EAF8ED</color>
     <color name="dividerColorDark">#1d1d1d</color>
     <color name="lightYellow">#efd34a</color>
 
