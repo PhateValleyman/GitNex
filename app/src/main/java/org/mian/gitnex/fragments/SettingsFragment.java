@@ -173,12 +173,10 @@ public class SettingsFragment extends Fragment {
 
             if (isChecked) {
                 tinyDb.putBoolean("enableCounterBadges", true);
-                tinyDb.putString("enableCounterBadgesInit", "yes");
                 Toasty.info(getContext(), getResources().getString(R.string.settingsSave));
             }
             else {
                 tinyDb.putBoolean("enableCounterBadges", false);
-                tinyDb.putString("enableCounterBadgesInit", "yes");
                 Toasty.info(getContext(), getResources().getString(R.string.settingsSave));
             }
 
