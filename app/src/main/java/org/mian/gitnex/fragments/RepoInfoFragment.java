@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import org.mian.gitnex.R;
@@ -69,6 +70,7 @@ public class RepoInfoFragment extends Fragment {
     private TextView repoMetaDescription;
     private TextView repoMetaStars;
     private TextView repoMetaPullRequests;
+    private ListView repoMetaPullRequestsFrame;
     private TextView repoMetaForks;
     private TextView repoMetaSize;
     private TextView repoMetaWatchers;
@@ -128,6 +130,7 @@ public class RepoInfoFragment extends Fragment {
         repoMetaDescription = v.findViewById(R.id.repoMetaDescription);
         repoMetaStars = v.findViewById(R.id.repoMetaStars);
         repoMetaPullRequests = v.findViewById(R.id.repoMetaPullRequests);
+        repoMetaPullRequestsFrame = v.findViewById(R.id.repoMetaPullRequestsFrame);
         repoMetaForks = v.findViewById(R.id.repoMetaForks);
         repoMetaSize = v.findViewById(R.id.repoMetaSize);
         repoMetaWatchers = v.findViewById(R.id.repoMetaWatchers);
@@ -237,7 +240,14 @@ public class RepoInfoFragment extends Fragment {
                             repoMetaName.setText(repoInfo.getName());
                             repoMetaDescription.setText(repoInfo.getDescription());
                             repoMetaStars.setText(repoInfo.getStars_count());
-                            repoMetaPullRequests.setText(repoInfo.getOpen_pull_count());
+
+                            if(repoInfo.getOpen_pull_count() != null) {
+                                repoMetaPullRequests.setText(repoInfo.getOpen_pull_count());
+                            }
+                            else {
+                                repoMetaPullRequestsFrame.setVisibility(View.GONE);
+                            }
+
                             repoMetaForks.setText(repoInfo.getForks_count());
                             repoMetaSize.setText(AppUtil.formatFileSize(repoInfo.getSize()));
                             repoMetaWatchers.setText(repoInfo.getWatchers_count());
