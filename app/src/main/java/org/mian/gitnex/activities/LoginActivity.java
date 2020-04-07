@@ -172,12 +172,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             tinyDb.putString("uniqueAppId", device_id);
         }
 
-        // enabling counter badges by default
-        if(tinyDb.getString("enableCounterBadgesInit").equals("")) {
-            tinyDb.putBoolean("enableCounterBadges", true);
-            tinyDb.putString("enableCounterBadgesInit", "yes");
-        }
-
     }
 
     @Override
