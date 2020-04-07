@@ -28,8 +28,6 @@ public class IssuesMainFragment extends Fragment {
 
 	private Context ctx;
 
-
-
 	public IssuesMainFragment() {
 
 	}
@@ -73,21 +71,28 @@ public class IssuesMainFragment extends Fragment {
 
 		ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
 		int tabsCount = vg.getChildCount();
+
 		for (int j = 0; j < tabsCount; j++) {
+
 			ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
 			int tabChildCount = vgTab.getChildCount();
+
 			for (int i = 0; i < tabChildCount; i++) {
+
 				View tabViewChild = vgTab.getChildAt(i);
 				if (tabViewChild instanceof TextView) {
 					((TextView) tabViewChild).setTypeface(myTypeface);
 				}
+
 			}
+
 		}
 
 		mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 		tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
 		return v;
+
 	}
 
 	public static class SectionsPagerAdapter extends FragmentStatePagerAdapter {

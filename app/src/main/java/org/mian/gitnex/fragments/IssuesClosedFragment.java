@@ -14,7 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.adapters.ClosedIssuesAdapter;
+import org.mian.gitnex.adapters.IssuesClosedAdapter;
 import org.mian.gitnex.clients.IssuesService;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
@@ -44,7 +44,7 @@ public class IssuesClosedFragment extends Fragment {
     private ProgressBar mProgressBarClosed;
     private RecyclerView recyclerViewClosed;
     private List<Issues> issuesListClosed;
-    private ClosedIssuesAdapter adapterClosed;
+    private IssuesClosedAdapter adapterClosed;
     private ApiInterface apiClosed;
     private String TAG = "closedIssuesListFragment - ";
     private Context context;
@@ -96,8 +96,8 @@ public class IssuesClosedFragment extends Fragment {
             }
         });
 
-        adapterClosed = new ClosedIssuesAdapter(getContext(), issuesListClosed);
-        adapterClosed.setLoadMoreListener(new ClosedIssuesAdapter.OnLoadMoreListener() {
+        adapterClosed = new IssuesClosedAdapter(getContext(), issuesListClosed);
+        adapterClosed.setLoadMoreListener(new IssuesClosedAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
 

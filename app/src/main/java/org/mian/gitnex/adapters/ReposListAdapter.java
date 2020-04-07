@@ -81,7 +81,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
                 TinyDB tinyDb = new TinyDB(context);
                 tinyDb.putString("repoFullName", repoFullName.getText().toString());
                 tinyDb.putString("repoType", repoType_.getText().toString());
-                tinyDb.putBoolean("resumeIssues", true);
+                //tinyDb.putBoolean("resumeIssues", true);
 
                 //store if user is watching this repo
                 {

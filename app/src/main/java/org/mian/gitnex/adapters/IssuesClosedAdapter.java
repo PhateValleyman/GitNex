@@ -34,16 +34,16 @@ import androidx.recyclerview.widget.RecyclerView;
  * Author M M Arif
  */
 
-public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
+public class IssuesClosedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
     private Context context;
     private final int TYPE_LOAD = 0;
     private List<Issues> issuesList;
     private List<Issues> issuesListFull;
-    private OnLoadMoreListener loadMoreListener;
+    private IssuesClosedAdapter.OnLoadMoreListener loadMoreListener;
     private boolean isLoading = false, isMoreDataAvailable = true;
 
-    public IssuesAdapter(Context context, List<Issues> issuesListMain) {
+    public IssuesClosedAdapter(Context context, List<Issues> issuesListMain) {
 
         this.context = context;
         this.issuesList = issuesListMain;
@@ -58,10 +58,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         LayoutInflater inflater = LayoutInflater.from(context);
 
         if(viewType == TYPE_LOAD){
-            return new IssuesHolder(inflater.inflate(R.layout.list_issues, parent,false));
+            return new IssuesClosedAdapter.IssuesHolder(inflater.inflate(R.layout.list_issues, parent,false));
         }
         else {
-            return new LoadHolder(inflater.inflate(R.layout.row_load,parent,false));
+            return new IssuesClosedAdapter.LoadHolder(inflater.inflate(R.layout.row_load,parent,false));
         }
 
     }
@@ -78,7 +78,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if(getItemViewType(position) == TYPE_LOAD) {
 
-            ((IssuesHolder)holder).bindData(issuesList.get(position));
+            ((IssuesClosedAdapter.IssuesHolder)holder).bindData(issuesList.get(position));
 
         }
 
@@ -169,7 +169,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final String timeFormat = tinyDb.getString("dateFormat");
 
             /*if(issuesModel.getPull_request() != null) {
-                if (!issuesModel.getPull_request().isMerged()) {
+                if (issuesModel.getPull_request().isMerged()) {
                     relativeLayoutFrame.setVisibility(View.GONE);
                     relativeLayoutFrame.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
                 }
@@ -181,7 +181,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 issueAssigneeAvatar.setOnClickListener(new ClickListener(context.getResources().getString(R.string.issueCreator) + issuesModel.getUser().getLogin(), context));
             }
 
-            PicassoService.getInstance(context).get().load(issuesModel.getUser().getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(issueAssigneeAvatar);
+            if (issuesModel.getUser().getAvatar_url() != null) {
+                PicassoService.getInstance(context).get().load(issuesModel.getUser().getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(issueAssigneeAvatar);
+            } else {
+                PicassoService.getInstance(context).get().load(issuesModel.getUser().getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(issueAssigneeAvatar);
+            }
 
             String issueNumber_ = "<font color='" + context.getResources().getColor(R.color.lightGray) + "'>" + context.getResources().getString(R.string.hash) + issuesModel.getNumber() + "</font>";
             issueTitle.setText(Html.fromHtml(issueNumber_ + " " + issuesModel.getTitle()));
@@ -242,7 +246,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
-    public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+    public void setLoadMoreListener(IssuesClosedAdapter.OnLoadMoreListener loadMoreListener) {
 
         this.loadMoreListener = loadMoreListener;
 

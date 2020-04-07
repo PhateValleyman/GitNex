@@ -78,7 +78,7 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
                 TinyDB tinyDb = new TinyDB(context);
                 tinyDb.putString("repoFullName", fullName.getText().toString());
                 tinyDb.putString("repoType", repoType.getText().toString());
-                tinyDb.putBoolean("resumeIssues", true);
+                //tinyDb.putBoolean("resumeIssues", true);
 
                 //store if user is watching this repo
                 {
