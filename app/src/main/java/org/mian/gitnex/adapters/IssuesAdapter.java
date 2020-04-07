@@ -189,10 +189,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             issueNumber.setText(String.valueOf(issuesModel.getNumber()));
             issueCommentsCount.setText(String.valueOf(issuesModel.getComments()));
 
-            issueCreatedTime.setText(TimeHelper.formatTime(issuesModel.getClosed_at(), new Locale(locale), timeFormat, context));
+            issueCreatedTime.setText(TimeHelper.formatTime(issuesModel.getCreated_at(), new Locale(locale), timeFormat, context));
 
             if(timeFormat.equals("pretty")) {
-                issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issuesModel.getClosed_at()), context));
+                issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issuesModel.getCreated_at()), context));
             }
 
         }
