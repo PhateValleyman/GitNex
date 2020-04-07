@@ -158,11 +158,11 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/infoTabRepoSize"
-                            app:srcCompat="@drawable/ic_file_download_24dp" />
+                            android:contentDescription="@string/repoWatchersInMenu"
+                            app:srcCompat="@drawable/ic_watchers" />
 
                         <TextView
-                            android:id="@+id/repoMetaSize"
+                            android:id="@+id/repoMetaWatchers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="?attr/primaryTextColor"
@@ -190,7 +190,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/repoWatchersInMenu"
-                        app:srcCompat="@drawable/ic_watchers" />
+                        app:srcCompat="@drawable/ic_file_download_24dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -202,12 +202,12 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/repoWatchersInMenu"
+                            android:text="@string/infoTabRepoSize"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="16sp" />
 
                         <TextView
-                            android:id="@+id/repoMetaWatchers"
+                            android:id="@+id/repoMetaSize"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:alpha="0.9"
