@@ -18,10 +18,12 @@ public class UserRepositories {
     private String stars_count;
     private String watchers_count;
     private String open_issues_count;
+    private String open_pr_counter;
+    private String release_counter;
     private String html_url;
     private String default_branch;
     private Date created_at;
-    private String updated_at;
+    private Date updated_at;
     private String clone_url;
     private long size;
     private String ssh_url;
@@ -54,6 +56,14 @@ public class UserRepositories {
         return stars_count;
     }
 
+    public String getOpen_pull_count() {
+        return open_pr_counter;
+    }
+
+    public String getRelease_count() {
+        return release_counter;
+    }
+
     public String getWatchers_count() {
         return watchers_count;
     }
@@ -74,7 +84,7 @@ public class UserRepositories {
         return created_at;
     }
 
-    public String getUpdated_at() {
+    public Date getUpdated_at() {
         return updated_at;
     }
 
