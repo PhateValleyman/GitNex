@@ -149,15 +149,23 @@ public class RepoInfoFragment extends Fragment {
         getRepoInfo(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, locale, timeFormat);
         getFileContents(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, getResources().getString(R.string.defaultFilename));
 
+        if(isExpandViewVisible()) {
+        	toggleExpandView();
+        }
+
+        if(!isExpandViewMetaVisible()) {
+        	toggleExpandViewMeta();
+        }
+
         fileContentsFrameHeader.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                collapseExpandView();
+                toggleExpandView();
             }
         });
 
         repoMetaFrameHeader.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                collapseExpandViewMeta();
+                toggleExpandViewMeta();
             }
         });
 
@@ -180,7 +188,7 @@ public class RepoInfoFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private void collapseExpandView() {
+    private void toggleExpandView() {
 
         if (repoFileContents.getVisibility() == View.GONE) {
             repoFilenameExpandCollapse.setImageResource(R.drawable.ic_arrow_up);
@@ -194,10 +202,14 @@ public class RepoInfoFragment extends Fragment {
             //Animation slide_up = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
             //fileContentsFrame.startAnimation(slide_up);
         }
-
     }
 
-    private void collapseExpandViewMeta() {
+    private boolean isExpandViewVisible() {
+    	return repoFileContents.getVisibility() == View.VISIBLE;
+    }
+
+    private void toggleExpandViewMeta() {
+
         if (repoMetaFrame.getVisibility() == View.GONE) {
             repoMetaDataExpandCollapse.setImageResource(R.drawable.ic_arrow_up);
             repoMetaFrame.setVisibility(View.VISIBLE);
@@ -210,8 +222,11 @@ public class RepoInfoFragment extends Fragment {
             //Animation slide_up = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
             //repoMetaFrame.startAnimation(slide_up);
         }
-
     }
+
+	private boolean isExpandViewMetaVisible() {
+		return repoMetaFrame.getVisibility() == View.VISIBLE;
+	}
 
     private void getRepoInfo(String instanceUrl, String token, final String owner, String repo, final String locale, final String timeFormat) {
 
@@ -396,12 +411,13 @@ public class RepoInfoFragment extends Fragment {
                             .build();
 
                         Spanned bodyWithMD = null;
+
                         if (response.body() != null) {
                             bodyWithMD = markwon.toMarkdown(response.body());
                         }
+
                         assert bodyWithMD != null;
                         markwon.setParsedMarkdown(repoFileContents, bodyWithMD);
-
 
                     } else if (response.code() == 401) {
 
