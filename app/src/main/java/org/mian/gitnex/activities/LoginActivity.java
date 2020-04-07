@@ -172,10 +172,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             tinyDb.putString("uniqueAppId", device_id);
         }
 
-        // setting default font
-        tinyDb.putString("customFontStr", "Manrope");
-        tinyDb.putInt("customFontId", 1);
-
     }
 
     @Override

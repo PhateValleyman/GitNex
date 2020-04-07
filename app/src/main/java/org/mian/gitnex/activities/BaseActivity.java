@@ -66,6 +66,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             tinyDb.putString("enableCounterBadgesInit", "yes");
         }
 
+        // setting default font
+        tinyDb.putString("customFontStr", "Manrope");
+        tinyDb.putInt("customFontId", 1);
+
     }
 
     protected abstract int getLayoutResourceId();
