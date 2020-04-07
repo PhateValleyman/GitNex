@@ -40,6 +40,8 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.ClickListener;
+import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.util.AppUtil;
@@ -243,39 +245,13 @@ public class RepoInfoFragment extends Fragment {
                             repoMetaSize.setText(AppUtil.formatFileSize(repoInfo.getSize()));
                             repoMetaWatchers.setText(repoInfo.getWatchers_count());
 
-                            String website = repoInfo.getWebsite();
+	                        repoMetaCreatedAt.setText(TimeHelper.formatTime(repoInfo.getCreated_at(), new Locale(locale), timeFormat, ctx));
+	                        if(timeFormat.equals("pretty")) {
+		                        repoMetaCreatedAt.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(repoInfo.getCreated_at()), ctx));
+	                        }
 
-                            if(website.trim().isEmpty()) {
-                                repoMetaWebsite.setText(getResources().getString(R.string.noDataWebsite));
-                            }
-                            else {
-                                repoMetaWebsite.setText(website);
-                            }
-
-                            switch (timeFormat) {
-
-                                case "pretty": {
-                                    PrettyTime prettyTime = new PrettyTime(new Locale(locale));
-                                    String createdTime = prettyTime.format(repoInfo.getCreated_at());
-                                    repoMetaCreatedAt.setText(createdTime);
-                                    break;
-                                }
-
-                                case "normal": {
-                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                                    String createdTime = formatter.format(repoInfo.getCreated_at());
-                                    repoMetaCreatedAt.setText(createdTime);
-                                    break;
-                                }
-
-                                case "normal1": {
-                                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                                    String createdTime = formatter.format(repoInfo.getCreated_at());
-                                    repoMetaCreatedAt.setText(createdTime);
-                                    break;
-                                }
-
-                            }
+                            String website = (repoInfo.getWebsite().isEmpty()) ? getResources().getString(R.string.noDataWebsite) : repoInfo.getWebsite();
+                            repoMetaWebsite.setText(website);
 
                             repoAdditionalButton.setOnClickListener(new View.OnClickListener() {
 
