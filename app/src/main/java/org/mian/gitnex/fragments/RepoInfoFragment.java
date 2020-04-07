@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import org.mian.gitnex.R;
@@ -70,7 +69,7 @@ public class RepoInfoFragment extends Fragment {
     private TextView repoMetaDescription;
     private TextView repoMetaStars;
     private TextView repoMetaPullRequests;
-    private ListView repoMetaPullRequestsFrame;
+    private LinearLayout repoMetaPullRequestsFrame;
     private TextView repoMetaForks;
     private TextView repoMetaSize;
     private TextView repoMetaWatchers;
