@@ -24,7 +24,6 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 		markWatched.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
 				dismiss();
 			}
 		});
@@ -33,7 +32,6 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 
 			@Override
 			public void onClick(View v) {
-
 				dismiss();
 			}
 		});

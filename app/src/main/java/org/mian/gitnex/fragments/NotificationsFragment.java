@@ -77,14 +77,16 @@ public class NotificationsFragment extends Fragment {
 	}
 
 	private void loadNotifications() {
+
 		TinyDB tinyDb = new TinyDB(getContext());
+
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 		final String locale = tinyDb.getString("locale");
 
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MONTH, -2);
+		calendar.add(Calendar.YEAR, -10);
 
 		Call<List<NotificationThread>> call = RetrofitClient.getInstance(instanceUrl, getContext())
 				.getApiInterface()
@@ -98,13 +100,17 @@ public class NotificationsFragment extends Fragment {
 				if(call.isExecuted() && response.code() == 200) {
 
 					if(response.body() != null) {
+
 						notificationThreads.clear();
 						notificationThreads.addAll(response.body());
 						notificationsAdapter.notifyDataSetChanged();
+
 					}
 
 				} else {
+
 					Log.e("onError", String.valueOf(response.code()));
+
 				}
 
 			}
@@ -113,7 +119,9 @@ public class NotificationsFragment extends Fragment {
 			public void onFailure(@NonNull Call<List<NotificationThread>> call, @NonNull Throwable t) {
 				Log.e("onError", t.toString());
 			}
+
 		});
+
 	}
 
 

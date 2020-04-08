@@ -22,13 +22,13 @@ import retrofit2.Response;
  * Author opyale
  */
 
-public class NotifierWorker extends Worker {
+public class NotificationWorker extends Worker {
 	private static final int NOTIFICATION_ID = "opyale".length() * 4;
 
 	private Context context;
 	private TinyDB tinyDB;
 
-	public NotifierWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+	public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
 		super(context, workerParams);
 
 		this.context = context;
@@ -92,7 +92,7 @@ public class NotifierWorker extends Worker {
 		new Thread(() -> {
 
 			sleep();
-			SetupNotifier.setup(context);
+			NotificationMaster.hireWorker(context);
 
 		}).start();
 

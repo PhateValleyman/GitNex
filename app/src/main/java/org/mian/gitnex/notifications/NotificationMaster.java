@@ -10,12 +10,12 @@ import androidx.work.WorkManager;
  * Author opyale
  */
 
-public class SetupNotifier {
-	public SetupNotifier() {
+public class NotificationMaster {
+	public NotificationMaster() {
 
 	}
 
-	public static void setup(Context context) {
+	public static void hireWorker(Context context) {
 
 		WorkManager.getInstance(context).cancelAllWorkByTag("gitnex-notifications");
 
@@ -27,7 +27,7 @@ public class SetupNotifier {
 				.setRequiresCharging(false)
 				.build();
 
-		OneTimeWorkRequest notificationRequest = new OneTimeWorkRequest.Builder(NotifierWorker.class)
+		OneTimeWorkRequest notificationRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
 				.setConstraints(constraints)
 				.addTag("gitnex-notifications")
 				.build();
