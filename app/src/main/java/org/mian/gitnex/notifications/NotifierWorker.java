@@ -51,27 +51,33 @@ public class NotifierWorker extends Worker {
 
 				if(call.isExecuted()) {
 
-					if(response.body() != null) {
+					if(response.code() == 200) {
 
-						int previousUnreadNotifications = tinyDB.getInt("previousUnreadNotifications");
-						int unreadNotifications = response.body().getAsJsonObject().get("new").getAsInt();
+						if(response.body() != null) {
 
-						Log.i("ReceivedNotifications", String.valueOf(unreadNotifications));
+							int previousUnreadNotifications = tinyDB.getInt("previousUnreadNotifications");
+							int unreadNotifications = response.body().getAsJsonObject().get("new").getAsInt();
 
-						if(previousUnreadNotifications != unreadNotifications) {
+							Log.i("ReceivedNotifications", String.valueOf(unreadNotifications));
 
-							if(unreadNotifications > previousUnreadNotifications) {
-								sendNotification(unreadNotifications - previousUnreadNotifications);
+							if(previousUnreadNotifications != unreadNotifications) {
+
+								if(unreadNotifications > previousUnreadNotifications) {
+									sendNotification(unreadNotifications - previousUnreadNotifications);
+								}
+
+								tinyDB.putInt("previousUnreadNotifications", unreadNotifications);
 							}
 
-							tinyDB.putInt("previousUnreadNotifications", unreadNotifications);
 						}
 
-					}else {
+					} else if(response.code() == 204) {
 
-						tinyDB.putInt("previousUnreadNotifications", 0); // Fixes bug in API - should immediately be removed when fixed!
-						Log.e("ReceivedNotifications", "null");
+						Log.e("ReceivedNotifications", "0");
+						tinyDB.putInt("previousUnreadNotifications", 0);
+					} else {
 
+						Log.e("NotifierHttpError", String.valueOf(response.code()));
 					}
 
 				}

@@ -17,22 +17,22 @@ public class SetupNotifier {
 
 	public static void setup(Context context) {
 
-		if(!WorkManager.getInstance(context).getWorkInfosByTagLiveData("gitnex-notifications").hasActiveObservers()) {
-			Constraints constraints = new Constraints.Builder()
-					.setRequiredNetworkType(NetworkType.CONNECTED)
-					.setRequiresBatteryNotLow(false)
-					.setRequiresDeviceIdle(false)
-					.setRequiresStorageNotLow(false)
-					.setRequiresCharging(false)
-					.build();
+		WorkManager.getInstance(context).cancelAllWorkByTag("gitnex-notifications");
 
-			OneTimeWorkRequest notificationRequest = new OneTimeWorkRequest.Builder(NotifierWorker.class)
-					.setConstraints(constraints)
-					.addTag("gitnex-notifications")
-					.build();
+		Constraints constraints = new Constraints.Builder()
+				.setRequiredNetworkType(NetworkType.CONNECTED)
+				.setRequiresBatteryNotLow(false)
+				.setRequiresDeviceIdle(false)
+				.setRequiresStorageNotLow(false)
+				.setRequiresCharging(false)
+				.build();
 
-			WorkManager.getInstance(context).enqueue(notificationRequest);
-		}
+		OneTimeWorkRequest notificationRequest = new OneTimeWorkRequest.Builder(NotifierWorker.class)
+				.setConstraints(constraints)
+				.addTag("gitnex-notifications")
+				.build();
+
+		WorkManager.getInstance(context).enqueue(notificationRequest);
 
 	}
 }

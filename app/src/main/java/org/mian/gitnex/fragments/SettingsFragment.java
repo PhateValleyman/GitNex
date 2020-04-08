@@ -172,12 +172,9 @@ public class SettingsFragment extends Fragment {
                 builder.setMessage("Choose your polling delay in seconds.");
 
                 builder.setCancelable(true);
-                builder.setPositiveButton("SELECT", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        tinyDb.putInt("pollingDelaySeconds", numberPicker.getValue());
-                    }
+                builder.setPositiveButton("SELECT", (dialog, which) -> {
+                    tinyDb.putInt("pollingDelaySeconds", numberPicker.getValue());
+                    Toasty.info(getContext(), getResources().getString(R.string.settingsSave));
                 });
 
                 builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss());

@@ -62,7 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         TinyDB tinyDB = new TinyDB(getApplicationContext());
-        tinyDB.putInt("pollingDelaySeconds", 5); // DEBUGGING
+        tinyDB.putInt("pollingDelaySeconds", 10); // DEBUGGING
 
         if(tinyDB.getInt("pollingDelaySeconds") == 0) {
             tinyDB.putInt("pollingDelaySeconds", 50);
