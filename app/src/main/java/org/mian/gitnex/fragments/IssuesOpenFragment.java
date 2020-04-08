@@ -32,7 +32,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.VersionCheck;
-import org.mian.gitnex.items.IssuesOpenItems;
+import org.mian.gitnex.items.IssuesItems;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
@@ -43,17 +43,17 @@ import static com.mikepenz.fastadapter.adapters.ItemAdapter.items;
  * Author M M Arif
  */
 
-public class IssuesOpenFragment extends Fragment implements ItemFilterListener<IssuesOpenItems> {
+public class IssuesOpenFragment extends Fragment implements ItemFilterListener<IssuesItems> {
 
 	private ProgressBar mProgressBar;
 	private boolean loadNextFlag = false;
-	private String TAG = StaticGlobalVariables.TAGIssuesList;
+	private String TAG = StaticGlobalVariables.tagIssuesListOpen;
 	private TextView noDataIssues;
 	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 	private String requestType = StaticGlobalVariables.issuesRequestType;
 
-	private List<IssuesOpenItems> items = new ArrayList<>();
-	private FastItemAdapter<IssuesOpenItems> fastItemAdapter;
+	private List<IssuesItems> items = new ArrayList<>();
+	private FastItemAdapter<IssuesItems> fastItemAdapter;
 	private ItemAdapter footerAdapter;
 	private EndlessRecyclerOnScrollListener endlessRecyclerOnScrollListener;
 
@@ -92,7 +92,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 		//noinspection unchecked
 		fastItemAdapter.addAdapter(StaticGlobalVariables.issuesPageInit, footerAdapter);
 
-		fastItemAdapter.getItemFilter().withFilterPredicate((IItemAdapter.Predicate<IssuesOpenItems>) (item, constraint) -> item.getIssueTitle().toLowerCase().contains(constraint.toString().toLowerCase()));
+		fastItemAdapter.getItemFilter().withFilterPredicate((IItemAdapter.Predicate<IssuesItems>) (item, constraint) -> item.getIssueTitle().toLowerCase().contains(constraint.toString().toLowerCase()));
 
 		fastItemAdapter.getItemFilter().withItemFilterListener(this);
 
@@ -124,7 +124,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 
 		loadInitial(instanceUrl, instanceToken, repoOwner, repoName, resultLimit, requestType);
 
-		fastItemAdapter.withEventHook(new IssuesOpenItems.IssueTitleClickEvent());
+		fastItemAdapter.withEventHook(new IssuesItems.IssueTitleClickEvent());
 
 		assert savedInstanceState != null;
 		fastItemAdapter.withSavedInstanceState(savedInstanceState);
@@ -169,7 +169,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 						}
 
 						for(int i = 0; i < response.body().size(); i++) {
-							items.add(new IssuesOpenItems(getContext()).withNewItems(response.body().get(i).getTitle(), response.body().get(i).getNumber(), response.body().get(i).getUser().getAvatar_url(), response.body().get(i).getCreated_at(), response.body().get(i).getComments(), response.body().get(i).getUser().getFull_name(), response.body().get(i).getUser().getLogin()));
+							items.add(new IssuesItems(getContext()).withNewItems(response.body().get(i).getTitle(), response.body().get(i).getNumber(), response.body().get(i).getUser().getAvatar_url(), response.body().get(i).getCreated_at(), response.body().get(i).getComments(), response.body().get(i).getUser().getFull_name(), response.body().get(i).getUser().getLogin()));
 						}
 
 						fastItemAdapter.add(items);
@@ -225,7 +225,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 
 							for(int i = 0; i < response.body().size(); i++) {
 
-								fastItemAdapter.add(fastItemAdapter.getAdapterItemCount(), new IssuesOpenItems(getContext()).withNewItems(response.body().get(i).getTitle(), response.body().get(i).getNumber(), response.body().get(i).getUser().getAvatar_url(), response.body().get(i).getCreated_at(), response.body().get(i).getComments(), response.body().get(i).getUser().getFull_name(), response.body().get(i).getUser().getLogin()));
+								fastItemAdapter.add(fastItemAdapter.getAdapterItemCount(), new IssuesItems(getContext()).withNewItems(response.body().get(i).getTitle(), response.body().get(i).getNumber(), response.body().get(i).getUser().getAvatar_url(), response.body().get(i).getCreated_at(), response.body().get(i).getComments(), response.body().get(i).getUser().getFull_name(), response.body().get(i).getUser().getLogin()));
 
 							}
 
@@ -247,7 +247,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 				}
 
 				@Override
-				public void onFailure(@NonNull Call<List<Issues>> call, Throwable t) {
+				public void onFailure(@NonNull Call<List<Issues>> call, @NonNull Throwable t) {
 
 					Log.i(TAG, t.toString());
 				}
@@ -294,7 +294,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 	}
 
 	@Override
-	public void itemsFiltered(@Nullable CharSequence constraint, @Nullable List<IssuesOpenItems> results) {
+	public void itemsFiltered(@Nullable CharSequence constraint, @Nullable List<IssuesItems> results) {
 
 		endlessRecyclerOnScrollListener.disable();
 	}

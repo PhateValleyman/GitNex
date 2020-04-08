@@ -31,7 +31,7 @@ import java.util.Locale;
  * Author M M Arif
  */
 
-public class IssuesOpenItems extends AbstractItem<IssuesOpenItems, IssuesOpenItems.ViewHolder> {
+public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolder> {
 
 	final private Context ctx;
 	private String issueTitle;
@@ -44,11 +44,11 @@ public class IssuesOpenItems extends AbstractItem<IssuesOpenItems, IssuesOpenIte
 
 	private boolean isSelectable = true;
 
-	public IssuesOpenItems(Context ctx) {
+	public IssuesItems(Context ctx) {
 		this.ctx = ctx;
 	}
 
-	public IssuesOpenItems withNewItems(String issueTitle, int issueNumber, String issueAssigneeAvatar, Date issueCreatedTime, int issueCommentsCount, String userFullname, String userLogin) {
+	public IssuesItems withNewItems(String issueTitle, int issueNumber, String issueAssigneeAvatar, Date issueCreatedTime, int issueCommentsCount, String userFullname, String userLogin) {
 
 		this.setNewItems(issueTitle, issueNumber, issueAssigneeAvatar, issueCreatedTime, issueCommentsCount, userFullname, userLogin);
 		return this;
@@ -101,7 +101,7 @@ public class IssuesOpenItems extends AbstractItem<IssuesOpenItems, IssuesOpenIte
 	}
 
 	@Override
-	public IssuesOpenItems withEnabled(boolean enabled) {
+	public IssuesItems withEnabled(boolean enabled) {
 		return null;
 	}
 
@@ -111,7 +111,7 @@ public class IssuesOpenItems extends AbstractItem<IssuesOpenItems, IssuesOpenIte
 	}
 
 	@Override
-	public IssuesOpenItems withSelectable(boolean selectable) {
+	public IssuesItems withSelectable(boolean selectable) {
 		this.isSelectable = selectable;
 		return this;
 	}
@@ -128,11 +128,11 @@ public class IssuesOpenItems extends AbstractItem<IssuesOpenItems, IssuesOpenIte
 
 	@NonNull
 	@Override
-	public IssuesOpenItems.ViewHolder getViewHolder(@NonNull View v) {
-		return new IssuesOpenItems.ViewHolder(v);
+	public IssuesItems.ViewHolder getViewHolder(@NonNull View v) {
+		return new IssuesItems.ViewHolder(v);
 	}
 
-	public class ViewHolder extends FastAdapter.ViewHolder<IssuesOpenItems> {
+	public class ViewHolder extends FastAdapter.ViewHolder<IssuesItems> {
 
 		final TinyDB tinyDb = new TinyDB(ctx);
 		final String locale = tinyDb.getString("locale");
@@ -157,7 +157,7 @@ public class IssuesOpenItems extends AbstractItem<IssuesOpenItems, IssuesOpenIte
 		}
 
 		@Override
-		public void bindView(@NonNull IssuesOpenItems item, @NonNull List<Object> payloads) {
+		public void bindView(@NonNull IssuesItems item, @NonNull List<Object> payloads) {
 
 			if (!item.getUserFullname().equals("")) {
 				issueAssigneeAvatar.setOnClickListener(new ClickListener(ctx.getResources().getString(R.string.issueCreator) + item.getUserFullname(), ctx));
@@ -201,7 +201,7 @@ public class IssuesOpenItems extends AbstractItem<IssuesOpenItems, IssuesOpenIte
 		}
 
 		@Override
-		public void unbindView(@NonNull IssuesOpenItems item) {
+		public void unbindView(@NonNull IssuesItems item) {
 
 			issueTitle.setText(null);
 			issueCommentsCount.setText(null);
@@ -211,13 +211,13 @@ public class IssuesOpenItems extends AbstractItem<IssuesOpenItems, IssuesOpenIte
 
 	}
 
-	public static class IssueTitleClickEvent extends ClickEventHook<IssuesOpenItems> {
+	public static class IssueTitleClickEvent extends ClickEventHook<IssuesItems> {
 
 		@Nullable
 		@Override
 		public List<View> onBindMany(@NonNull RecyclerView.ViewHolder viewHolder) {
 
-			if (viewHolder instanceof IssuesOpenItems.ViewHolder) {
+			if (viewHolder instanceof IssuesItems.ViewHolder) {
 				return EventHookUtil.toList(((ViewHolder) viewHolder).issueTitle);
 			}
 
@@ -226,7 +226,7 @@ public class IssuesOpenItems extends AbstractItem<IssuesOpenItems, IssuesOpenIte
 		}
 
 		@Override
-		public void onClick(View v, int position, @NonNull FastAdapter<IssuesOpenItems> fastAdapter, IssuesOpenItems item) {
+		public void onClick(View v, int position, @NonNull FastAdapter<IssuesItems> fastAdapter, IssuesItems item) {
 
 			Context context = v.getContext();
 
