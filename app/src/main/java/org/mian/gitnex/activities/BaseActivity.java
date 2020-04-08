@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.FontsOverride;
+import org.mian.gitnex.notifications.SetupNotifier;
 import org.mian.gitnex.util.TinyDB;
 
 /**
@@ -59,6 +60,15 @@ public abstract class BaseActivity extends AppCompatActivity {
             FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/roboto.ttf");
 
         }
+
+        TinyDB tinyDB = new TinyDB(getApplicationContext());
+        tinyDB.putInt("pollingDelaySeconds", 5); // DEBUGGING
+
+        if(tinyDB.getInt("pollingDelaySeconds") == 0) {
+            tinyDB.putInt("pollingDelaySeconds", 50);
+        }
+
+        SetupNotifier.setup(getApplicationContext());
 
     }
 
