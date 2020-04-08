@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
 import org.mian.gitnex.R;
@@ -69,6 +70,7 @@ public class SettingsFragment extends Fragment {
         LinearLayout customFontFrame = v.findViewById(R.id.customFontFrame);
         LinearLayout themeFrame = v.findViewById(R.id.themeSelectionFrame);
         LinearLayout certsFrame = v.findViewById(R.id.certsFrame);
+        LinearLayout pollingDelayFrame = v.findViewById(R.id.pollingDelayFrame);
 
         Switch counterBadgesSwitch =  v.findViewById(R.id.switchCounterBadge);
         Switch pdfModeSwitch =  v.findViewById(R.id.switchPdfMode);
@@ -145,6 +147,45 @@ public class SettingsFragment extends Fragment {
         else {
             pdfModeSwitch.setChecked(false);
         }
+
+        // polling delay
+        pollingDelayFrame.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                NumberPicker numberPicker = new NumberPicker(ctx);
+                numberPicker.setMinValue(20);
+                numberPicker.setMaxValue(500);
+
+                if(tinyDb.getInt("pollingDelaySeconds") >= 20) {
+                    numberPicker.setValue(tinyDb.getInt("pollingDelaySeconds"));
+                }
+                else {
+                    numberPicker.setValue(50);
+                }
+
+                numberPicker.setWrapSelectorWheel(true);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                builder.setTitle("Select polling delay");
+                builder.setMessage("Choose your polling delay in seconds.");
+
+                builder.setCancelable(true);
+                builder.setPositiveButton("SELECT", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tinyDb.putInt("pollingDelaySeconds", numberPicker.getValue());
+                    }
+                });
+
+                builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss());
+                builder.setView(numberPicker);
+                builder.create().show();
+
+            }
+        });
 
         // certs deletion
         certsFrame.setOnClickListener(v1 -> {
