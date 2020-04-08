@@ -30,6 +30,7 @@ import org.mian.gitnex.fragments.AboutFragment;
 import org.mian.gitnex.fragments.ExploreRepositoriesFragment;
 import org.mian.gitnex.fragments.MyRepositoriesFragment;
 import org.mian.gitnex.fragments.BottomSheetNavSubMenuFragment;
+import org.mian.gitnex.fragments.NotificationsFragment;
 import org.mian.gitnex.fragments.OrganizationsFragment;
 import org.mian.gitnex.fragments.SettingsFragment;
 import org.mian.gitnex.fragments.StarredRepositoriesFragment;
@@ -149,6 +150,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         else if (fragmentById instanceof ExploreRepositoriesFragment) {
             toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
+        }
+        else if(fragmentById instanceof  NotificationsFragment) {
+            toolbarTitle.setText("Notifications");
         }
         else if (fragmentById instanceof ProfileFragment) {
             toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
@@ -376,6 +380,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ExploreRepositoriesFragment()).commit();
                 break;
+            case R.id.nav_notifications:
+                toolbarTitle.setText("Notifications");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new NotificationsFragment()).commit();
 
         }
 

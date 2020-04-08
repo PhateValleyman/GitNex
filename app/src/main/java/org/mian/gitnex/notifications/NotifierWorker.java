@@ -63,7 +63,7 @@ public class NotifierWorker extends Worker {
 							if(previousUnreadNotifications != unreadNotifications) {
 
 								if(unreadNotifications > previousUnreadNotifications) {
-									sendNotification(unreadNotifications - previousUnreadNotifications);
+									sendNotification(unreadNotifications);
 								}
 
 								tinyDB.putInt("previousUnreadNotifications", unreadNotifications);
@@ -120,7 +120,7 @@ public class NotifierWorker extends Worker {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "gitnex_notification_channel")
 				.setSmallIcon(R.drawable.app_logo_foreground)
 				.setContentTitle("You've received new notification(s)")
-				.setContentText("You've got " + notificationsCount + " notification(s)!")
+				.setContentText("You've got " + notificationsCount + " unread notification(s)!")
 				.setPriority(NotificationCompat.PRIORITY_HIGH)
 				.setContentIntent(pendingIntent)
 				.setAutoCancel(true);
