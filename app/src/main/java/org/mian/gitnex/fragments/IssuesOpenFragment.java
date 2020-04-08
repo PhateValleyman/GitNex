@@ -31,6 +31,7 @@ import com.mikepenz.fastadapter_extensions.scroll.EndlessRecyclerOnScrollListene
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.VersionCheck;
 import org.mian.gitnex.items.IssuesOpenItems;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.TinyDB;
@@ -71,6 +72,10 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 		String[] parts = repoFullName.split("/");
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
+
+		if (VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) < 1) {
+			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+		}
 
 		noDataIssues = v.findViewById(R.id.noDataIssues);
 		mProgressBar = v.findViewById(R.id.progress_bar);
@@ -168,6 +173,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 						}
 
 						fastItemAdapter.add(items);
+						noDataIssues.setVisibility(View.GONE);
 
 					}
 					else {
@@ -224,6 +230,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 							}
 
 							footerAdapter.clear();
+							noDataIssues.setVisibility(View.GONE);
 
 						}
 						else {
