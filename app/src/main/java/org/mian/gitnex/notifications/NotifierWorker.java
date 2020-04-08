@@ -73,7 +73,7 @@ public class NotifierWorker extends Worker {
 
 					} else if(response.code() == 204) {
 
-						Log.e("ReceivedNotifications", "0");
+						Log.i("ReceivedNotifications", "0");
 						tinyDB.putInt("previousUnreadNotifications", 0);
 					} else {
 
