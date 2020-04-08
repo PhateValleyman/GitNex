@@ -61,13 +61,17 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         }
 
-        TinyDB tinyDB = new TinyDB(getApplicationContext());
-
-        if(tinyDB.getInt("pollingDelaySeconds") == 0) {
-            tinyDB.putInt("pollingDelaySeconds", 50);
+        if(tinyDb.getInt("pollingDelaySeconds") == 0) {
+            tinyDb.putInt("pollingDelaySeconds", 50);
         }
 
         NotificationMaster.hireWorker(getApplicationContext());
+
+        // enabling counter badges by default
+        if(tinyDb.getString("enableCounterBadgesInit").isEmpty()) {
+            tinyDb.putBoolean("enableCounterBadges", true);
+            tinyDb.putString("enableCounterBadgesInit", "yes");
+        }
 
     }
 
