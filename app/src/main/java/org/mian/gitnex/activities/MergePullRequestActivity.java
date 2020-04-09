@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,11 +23,11 @@ import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.MergePullRequest;
+import org.mian.gitnex.models.MergePullRequestSpinner;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,6 +48,7 @@ public class MergePullRequestActivity extends BaseActivity {
     private Spinner mergeModeSpinner;
     private ArrayAdapter<Mention> defaultMentionAdapter;
     private Button mergeButton;
+    private String Do;
 
     @Override
     protected int getLayoutResourceId(){
@@ -63,8 +65,6 @@ public class MergePullRequestActivity extends BaseActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         mergeModeSpinner = findViewById(R.id.mergeSpinner);
-        final ArrayAdapter<MergePullRequest.Mode> adapterModes = new ArrayAdapter<>(Objects.requireNonNull(getApplicationContext()), R.layout.spinner_item, MergePullRequest.Mode.values());
-        mergeModeSpinner.setAdapter(adapterModes);
 
         mergePR = findViewById(R.id.mergePR);
         mergePR.setShowSoftInputOnFocus(true);
@@ -72,6 +72,24 @@ public class MergePullRequestActivity extends BaseActivity {
         mergePR.requestFocus();
         assert imm != null;
         imm.showSoftInput(mergePR, InputMethodManager.SHOW_IMPLICIT);
+
+        setMergeAdapter();
+
+        mergeModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                MergePullRequestSpinner mergeId = (MergePullRequestSpinner) parent.getSelectedItem();
+                Do = mergeId.getId();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+
+        });
 
         defaultMentionAdapter = new MentionArrayAdapter<>(this);
         loadCollaboratorsList();
@@ -94,11 +112,27 @@ public class MergePullRequestActivity extends BaseActivity {
 
             disableProcessButton();
 
-        } else {
+        }
+        else {
 
             mergeButton.setOnClickListener(mergePullRequest);
 
         }
+
+    }
+
+    private void setMergeAdapter() {
+
+        ArrayList<MergePullRequestSpinner> mergeList = new ArrayList<>();
+
+        mergeList.add(new MergePullRequestSpinner("merge", "Merge Pull Request"));
+        mergeList.add(new MergePullRequestSpinner("rebase", "Rebase and Merge"));
+        mergeList.add(new MergePullRequestSpinner("rebase-merge", "Rebase and Merge (--no-ff)"));
+        mergeList.add(new MergePullRequestSpinner("squash", "Squash and Merge"));
+
+        ArrayAdapter<MergePullRequestSpinner> adapter = new ArrayAdapter<>(ctx, R.layout.spinner_item, mergeList);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        mergeModeSpinner.setAdapter(adapter);
 
     }
 
@@ -154,23 +188,15 @@ public class MergePullRequestActivity extends BaseActivity {
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+        onClickListener = view -> finish();
     }
 
-    private View.OnClickListener mergePullRequest = new View.OnClickListener() {
-        public void onClick(View v) {
-            processMergePullRequest();
-        }
-    };
+    private View.OnClickListener mergePullRequest = v -> processMergePullRequest();
 
     private void processMergePullRequest() {
 
         String mergePRDT = mergePR.getText().toString();
+
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
 
         if(!connToInternet) {
@@ -181,12 +207,11 @@ public class MergePullRequestActivity extends BaseActivity {
         }
 
         disableProcessButton();
-        MergePullRequest.Mode mode = (MergePullRequest.Mode) mergeModeSpinner.getSelectedItem();
-        mergeFunction(mode, mergePRDT);
+        mergeFunction(Do, mergePRDT);
 
     }
 
-    private void mergeFunction(MergePullRequest.Mode mode, String mergePRDT) {
+    private void mergeFunction(String Do, String mergePRDT) {
 
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
@@ -199,7 +224,7 @@ public class MergePullRequestActivity extends BaseActivity {
         final String repoName = parts[1];
         final int prIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-        MergePullRequest mergePR = new MergePullRequest(mode, mergePRDT, null);
+        MergePullRequest mergePR = new MergePullRequest(Do, mergePRDT, null);
 
         Call<ResponseBody> call = RetrofitClient
                 .getInstance(instanceUrl, getApplicationContext())
