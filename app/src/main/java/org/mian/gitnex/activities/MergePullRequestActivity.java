@@ -1,6 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -13,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
@@ -39,263 +39,259 @@ import retrofit2.Response;
 
 public class MergePullRequestActivity extends BaseActivity {
 
-    public ImageView closeActivity;
-    private View.OnClickListener onClickListener;
+	public ImageView closeActivity;
+	private View.OnClickListener onClickListener;
 
-    final Context ctx = this;
+	final Context ctx = this;
 
-    private SocialAutoCompleteTextView mergePR;
-    private Spinner mergeModeSpinner;
-    private ArrayAdapter<Mention> defaultMentionAdapter;
-    private Button mergeButton;
-    private String Do;
+	private SocialAutoCompleteTextView mergePR;
+	private Spinner mergeModeSpinner;
+	private ArrayAdapter<Mention> defaultMentionAdapter;
+	private Button mergeButton;
+	private String Do;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_merge_pull_request;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+		return R.layout.activity_merge_pull_request;
+	}
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		super.onCreate(savedInstanceState);
 
-        mergeModeSpinner = findViewById(R.id.mergeSpinner);
+		boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+		TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-        mergePR = findViewById(R.id.mergePR);
-        mergePR.setShowSoftInputOnFocus(true);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        mergePR.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(mergePR, InputMethodManager.SHOW_IMPLICIT);
+		mergeModeSpinner = findViewById(R.id.mergeSpinner);
 
-        setMergeAdapter();
+		mergePR = findViewById(R.id.mergePR);
+		mergePR.setShowSoftInputOnFocus(true);
 
-        mergeModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		mergePR.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(mergePR, InputMethodManager.SHOW_IMPLICIT);
 
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		setMergeAdapter();
 
-                MergePullRequestSpinner mergeId = (MergePullRequestSpinner) parent.getSelectedItem();
-                Do = mergeId.getId();
+		mergeModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-            }
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+				MergePullRequestSpinner mergeId = (MergePullRequestSpinner) parent.getSelectedItem();
+				Do = mergeId.getId();
 
-        });
+			}
 
-        defaultMentionAdapter = new MentionArrayAdapter<>(this);
-        loadCollaboratorsList();
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
 
-        mergePR.setMentionAdapter(defaultMentionAdapter);
+			}
 
-        closeActivity = findViewById(R.id.close);
-        TextView toolbar_title = findViewById(R.id.toolbar_title);
+		});
 
-        if(!tinyDb.getString("issueTitle").isEmpty()) {
-            toolbar_title.setText(tinyDb.getString("issueTitle"));
-        }
+		defaultMentionAdapter = new MentionArrayAdapter<>(this);
+		loadCollaboratorsList();
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		mergePR.setMentionAdapter(defaultMentionAdapter);
 
-        mergeButton = findViewById(R.id.mergeButton);
+		closeActivity = findViewById(R.id.close);
+		TextView toolbar_title = findViewById(R.id.toolbar_title);
 
-        if(!connToInternet) {
+		if(!tinyDb.getString("issueTitle").isEmpty()) {
+			toolbar_title.setText(tinyDb.getString("issueTitle"));
+		}
 
-            disableProcessButton();
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        }
-        else {
+		mergeButton = findViewById(R.id.mergeButton);
 
-            mergeButton.setOnClickListener(mergePullRequest);
+		if(!connToInternet) {
 
-        }
+			disableProcessButton();
 
-    }
+		}
+		else {
 
-    private void setMergeAdapter() {
+			mergeButton.setOnClickListener(mergePullRequest);
 
-        ArrayList<MergePullRequestSpinner> mergeList = new ArrayList<>();
+		}
 
-        mergeList.add(new MergePullRequestSpinner("merge", "Merge Pull Request"));
-        mergeList.add(new MergePullRequestSpinner("rebase", "Rebase and Merge"));
-        mergeList.add(new MergePullRequestSpinner("rebase-merge", "Rebase and Merge (--no-ff)"));
-        mergeList.add(new MergePullRequestSpinner("squash", "Squash and Merge"));
+	}
 
-        ArrayAdapter<MergePullRequestSpinner> adapter = new ArrayAdapter<>(ctx, R.layout.spinner_item, mergeList);
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        mergeModeSpinner.setAdapter(adapter);
+	private void setMergeAdapter() {
 
-    }
+		ArrayList<MergePullRequestSpinner> mergeList = new ArrayList<>();
 
-    public void loadCollaboratorsList() {
+		mergeList.add(new MergePullRequestSpinner("merge", getResources().getString(R.string.mergeOptionMerge)));
+		mergeList.add(new MergePullRequestSpinner("rebase", getResources().getString(R.string.mergeOptionRebase)));
+		mergeList.add(new MergePullRequestSpinner("rebase-merge", getResources().getString(R.string.mergeOptionRebaseCommit)));
+		mergeList.add(new MergePullRequestSpinner("squash", getResources().getString(R.string.mergeOptionSquash)));
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		ArrayAdapter<MergePullRequestSpinner> adapter = new ArrayAdapter<>(ctx, R.layout.spinner_item, mergeList);
+		adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+		mergeModeSpinner.setAdapter(adapter);
 
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+	}
 
-        Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
-                .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+	public void loadCollaboratorsList() {
 
-        call.enqueue(new Callback<List<Collaborators>>() {
+		final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-            @Override
-            public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
 
-                if (response.isSuccessful()) {
+		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
 
-                    assert response.body() != null;
-                    String fullName = "";
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
-                            fullName = response.body().get(i).getFull_name();
-                        }
-                        defaultMentionAdapter.add(
-                                new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
-                    }
+		call.enqueue(new Callback<List<Collaborators>>() {
 
-                }
-                else {
+			@Override
+			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
 
-                    Log.i("onResponse", String.valueOf(response.code()));
+				if(response.isSuccessful()) {
 
-                }
+					assert response.body() != null;
+					String fullName = "";
+					for(int i = 0; i < response.body().size(); i++) {
+						if(!response.body().get(i).getFull_name().equals("")) {
+							fullName = response.body().get(i).getFull_name();
+						}
+						defaultMentionAdapter.add(new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
+					}
 
-            }
+				}
+				else {
 
-            @Override
-            public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.toString());
-            }
+					Log.i("onResponse", String.valueOf(response.code()));
 
-        });
-    }
+				}
 
-    private void initCloseListener() {
-        onClickListener = view -> finish();
-    }
+			}
 
-    private View.OnClickListener mergePullRequest = v -> processMergePullRequest();
+			@Override
+			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
 
-    private void processMergePullRequest() {
+				Log.i("onFailure", t.toString());
+			}
 
-        String mergePRDT = mergePR.getText().toString();
+		});
+	}
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+	private void initCloseListener() {
 
-        if(!connToInternet) {
+		onClickListener = view -> finish();
+	}
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
-            return;
+	private View.OnClickListener mergePullRequest = v -> processMergePullRequest();
 
-        }
+	private void processMergePullRequest() {
 
-        disableProcessButton();
-        mergeFunction(Do, mergePRDT);
+		String mergePRDT = mergePR.getText().toString();
 
-    }
+		boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
 
-    private void mergeFunction(String Do, String mergePRDT) {
+		if(!connToInternet) {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+			Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+			return;
 
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final int prIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+		}
 
-        MergePullRequest mergePR = new MergePullRequest(Do, mergePRDT, null);
+		disableProcessButton();
+		mergeFunction(Do, mergePRDT, "pull.title (#pull.index)");
 
-        Call<ResponseBody> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
-                .getApiInterface()
-                .mergePullRequest(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, prIndex, mergePR);
+	}
 
-        call.enqueue(new Callback<ResponseBody>() {
+	private void mergeFunction(String Do, String mergePRDT, String mergeTitle) {
 
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
+		final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-                if(response.code() == 200) {
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final int prIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-                    Toasty.info(getApplicationContext(), getString(R.string.mergePRSuccessMsg));
-                    tinyDb.putBoolean("prMerged", true);
-                    tinyDb.putBoolean("resumePullRequests", true);
-                    finish();
+		MergePullRequest mergePR = new MergePullRequest(Do, mergePRDT, mergeTitle);
 
-                }
-                else if(response.code() == 401) {
+		Call<ResponseBody> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().mergePullRequest(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, prIndex, mergePR);
 
-                    enableProcessButton();
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+		call.enqueue(new Callback<ResponseBody>() {
 
-                }
-                else if(response.code() == 404) {
+			@Override
+			public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
 
-                    enableProcessButton();
-                    Toasty.info(getApplicationContext(), getString(R.string.mergePR404ErrorMsg));
+				if(response.code() == 200) {
 
-                }
-                else {
+					Toasty.info(getApplicationContext(), getString(R.string.mergePRSuccessMsg));
+					tinyDb.putBoolean("prMerged", true);
+					tinyDb.putBoolean("resumePullRequests", true);
+					finish();
 
-                    enableProcessButton();
-                    Toasty.info(getApplicationContext(), getString(R.string.genericError));
+				}
+				else if(response.code() == 401) {
 
-                }
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-            }
+				}
+				else if(response.code() == 404) {
 
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
+					enableProcessButton();
+					Toasty.info(getApplicationContext(), getString(R.string.mergePR404ErrorMsg));
 
-        });
+				}
+				else {
 
-    }
+					enableProcessButton();
+					Toasty.info(getApplicationContext(), getString(R.string.genericError));
 
-    private void disableProcessButton() {
+				}
 
-        mergeButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        mergeButton.setBackground(shape);
+			}
 
-    }
+			@Override
+			public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
 
-    private void enableProcessButton() {
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
 
-        mergeButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        mergeButton.setBackground(shape);
+		});
 
-    }
+	}
+
+	private void disableProcessButton() {
+
+		mergeButton.setEnabled(false);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.hintColor));
+		mergeButton.setBackground(shape);
+
+	}
+
+	private void enableProcessButton() {
+
+		mergeButton.setEnabled(true);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.btnBackground));
+		mergeButton.setBackground(shape);
+
+	}
 
 }
