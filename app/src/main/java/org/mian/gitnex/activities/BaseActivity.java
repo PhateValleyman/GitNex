@@ -6,7 +6,6 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.util.TinyDB;
-import java.util.Calendar;
 
 /**
  * Author M M Arif

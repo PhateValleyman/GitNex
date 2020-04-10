@@ -10,6 +10,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Author M M Arif
+ */
+
 public class TimeHelper {
 
     public static String customDateFormatForToast(String customDate) {
