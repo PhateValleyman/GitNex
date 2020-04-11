@@ -21,6 +21,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.VersionCheck;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.MergePullRequest;
 import org.mian.gitnex.models.MergePullRequestSpinner;
@@ -126,12 +127,17 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	private void setMergeAdapter() {
 
+		TinyDB tinyDb = new TinyDB(getApplicationContext());
+
 		ArrayList<MergePullRequestSpinner> mergeList = new ArrayList<>();
 
 		mergeList.add(new MergePullRequestSpinner("merge", getResources().getString(R.string.mergeOptionMerge)));
 		mergeList.add(new MergePullRequestSpinner("rebase", getResources().getString(R.string.mergeOptionRebase)));
 		mergeList.add(new MergePullRequestSpinner("rebase-merge", getResources().getString(R.string.mergeOptionRebaseCommit)));
-		mergeList.add(new MergePullRequestSpinner("squash", getResources().getString(R.string.mergeOptionSquash)));
+		//squash merge works only on gitea v1.11.5 and higher due to a bug
+		if(VersionCheck.compareVersion("1.11.5", tinyDb.getString("giteaVersion")) < 1) {
+			mergeList.add(new MergePullRequestSpinner("squash", getResources().getString(R.string.mergeOptionSquash)));
+		}
 
 		ArrayAdapter<MergePullRequestSpinner> adapter = new ArrayAdapter<>(ctx, R.layout.spinner_item, mergeList);
 		adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
