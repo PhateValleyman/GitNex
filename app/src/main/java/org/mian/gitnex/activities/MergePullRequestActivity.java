@@ -1,5 +1,6 @@
 package org.mian.gitnex.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ public class MergePullRequestActivity extends BaseActivity {
 		return R.layout.activity_merge_pull_request;
 	}
 
+	@SuppressLint("SetTextI18n")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
