@@ -571,7 +571,6 @@
     <string name="mergeOptionRebaseCommit">Rebase and Merge (--no-ff)</string>
     <string name="mergeOptionSquash">Squash and Merge</string>
 
-
     <string name="downloadFile">Download This File</string>
     <string name="waitLoadingDownloadFile">Please wait for the file to load to memory</string>
     <string name="downloadFileSaved">File is saved to Download directory</string>
