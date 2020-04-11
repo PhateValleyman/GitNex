@@ -568,7 +568,7 @@
     <string name="mergePR404ErrorMsg">Pull Request is not available for merge</string>
     <string name="mergeOptionMerge">Merge Pull Request</string>
     <string name="mergeOptionRebase">Rebase and Merge</string>
-    <string name="mergeOptionRebaseCommit">Rebase and Merge (--no-ff)</string>
+    <string name="mergeOptionRebaseCommit">Rebase and Merge (&#45;&#45;no-ff)</string>
     <string name="mergeOptionSquash">Squash and Merge</string>
 
     <string name="downloadFile">Download This File</string>

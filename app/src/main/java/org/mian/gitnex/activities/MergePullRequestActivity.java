@@ -74,11 +74,10 @@ public class MergePullRequestActivity extends BaseActivity {
 		mergeModeSpinner = findViewById(R.id.mergeSpinner);
 		mergeDescription = findViewById(R.id.mergeDescription);
 		mergeTitle = findViewById(R.id.mergeTitle);
-		mergeTitle.setShowSoftInputOnFocus(true);
-		mergeTitle.requestFocus();
 
+		mergeTitle.requestFocus();
 		assert imm != null;
-		imm.showSoftInput(mergeDescription, InputMethodManager.SHOW_IMPLICIT);
+		imm.showSoftInput(mergeTitle, InputMethodManager.SHOW_IMPLICIT);
 
 		setMergeAdapter();
 
