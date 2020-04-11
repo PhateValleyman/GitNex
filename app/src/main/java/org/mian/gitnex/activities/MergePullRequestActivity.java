@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,7 +46,8 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	final Context ctx = this;
 
-	private SocialAutoCompleteTextView mergePR;
+	private SocialAutoCompleteTextView mergeDescription;
+	private EditText mergeTitle;
 	private Spinner mergeModeSpinner;
 	private ArrayAdapter<Mention> defaultMentionAdapter;
 	private Button mergeButton;
@@ -68,13 +70,13 @@ public class MergePullRequestActivity extends BaseActivity {
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
 		mergeModeSpinner = findViewById(R.id.mergeSpinner);
+		mergeDescription = findViewById(R.id.mergeDescription);
+		mergeTitle = findViewById(R.id.mergeTitle);
+		mergeTitle.setShowSoftInputOnFocus(true);
+		mergeTitle.requestFocus();
 
-		mergePR = findViewById(R.id.mergePR);
-		mergePR.setShowSoftInputOnFocus(true);
-
-		mergePR.requestFocus();
 		assert imm != null;
-		imm.showSoftInput(mergePR, InputMethodManager.SHOW_IMPLICIT);
+		imm.showSoftInput(mergeDescription, InputMethodManager.SHOW_IMPLICIT);
 
 		setMergeAdapter();
 
@@ -98,13 +100,14 @@ public class MergePullRequestActivity extends BaseActivity {
 		defaultMentionAdapter = new MentionArrayAdapter<>(this);
 		loadCollaboratorsList();
 
-		mergePR.setMentionAdapter(defaultMentionAdapter);
+		mergeDescription.setMentionAdapter(defaultMentionAdapter);
 
 		closeActivity = findViewById(R.id.close);
 		TextView toolbar_title = findViewById(R.id.toolbar_title);
 
 		if(!tinyDb.getString("issueTitle").isEmpty()) {
 			toolbar_title.setText(tinyDb.getString("issueTitle"));
+			mergeTitle.setText(tinyDb.getString("issueTitle") + " (#" + tinyDb.getString("issueNumber")+ ")");
 		}
 
 		initCloseListener();
@@ -202,7 +205,8 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	private void processMergePullRequest() {
 
-		String mergePRDT = mergePR.getText().toString();
+		String mergePRDesc = mergeDescription.getText().toString();
+		String mergePRTitle = mergeTitle.getText().toString();
 
 		boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
 
@@ -214,7 +218,7 @@ public class MergePullRequestActivity extends BaseActivity {
 		}
 
 		disableProcessButton();
-		mergeFunction(Do, mergePRDT, "pull.title (#pull.index)");
+		mergeFunction(Do, mergePRDesc, mergePRTitle);
 
 	}
 

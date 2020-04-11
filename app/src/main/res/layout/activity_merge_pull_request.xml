@@ -68,8 +68,22 @@
             android:paddingBottom="30dp"
             android:orientation="vertical">
 
+            <EditText
+                android:id="@+id/mergeTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:padding="10dp"
+                android:textSize="14sp"
+                tools:ignore="Autofill"
+                android:background="@drawable/shape_inputs"
+                android:textColor="?attr/inputTextColor"
+                android:textColorHint="?attr/primaryBackgroundColor"
+                android:textColorHighlight="?attr/primaryTextColor"
+                android:inputType="textCapSentences|text" />
+
             <com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView
-                android:id="@+id/mergePR"
+                android:id="@+id/mergeDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -79,15 +93,15 @@
                 android:maxLines="12"
                 android:minLines="10"
                 tools:ignore="Autofill"
-                android:labelFor="@+id/mergePR"
+                android:labelFor="@+id/mergeDescription"
                 android:scrollbars="vertical"
                 android:gravity="top|start"
                 android:textSize="14sp"
-                android:textColor="@color/white"
+                android:textColor="?attr/inputTextColor"
                 android:hint="@string/mergeCommentText"
-                android:textColorHint="@color/colorAccent"
+                android:textColorHint="?attr/primaryBackgroundColor"
                 android:inputType="textCapSentences|textMultiLine"
-                android:textColorHighlight="@color/white" />
+                android:textColorHighlight="?attr/primaryTextColor" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
