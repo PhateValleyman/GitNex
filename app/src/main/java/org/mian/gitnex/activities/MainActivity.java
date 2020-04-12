@@ -276,10 +276,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
             tinyDb.putBoolean("noConnection", true);
 
-        } else {
+        }
+        else {
 
             displayUserInfo(instanceUrl, instanceToken, loginUid);
-            giteaVersion(instanceUrl);
+
+            if(tinyDb.getBoolean("versionCheckStatus")) {
+                giteaVersion(instanceUrl, instanceToken);
+                tinyDb.putBoolean("versionCheckStatus", false);
+            }
+            else {
+                giteaVersion(instanceUrl, instanceToken);
+            }
             tinyDb.putBoolean("noConnection", false);
 
         }
@@ -400,14 +408,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     }
 
-    private void giteaVersion(final String instanceUrl) {
+    private void giteaVersion(final String instanceUrl, String instanceToken) {
 
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-        Call<GiteaVersion> callVersion = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
-                .getApiInterface()
-                .getGiteaVersion();
+        if(tinyDb.getBoolean("versionCheckStatus")) {
+            Call<GiteaVersion> callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithAuth();
+        }
+        else {
+            Call<GiteaVersion> callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersion();
+        }
 
         callVersion.enqueue(new Callback<GiteaVersion>() {
 

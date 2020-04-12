@@ -387,6 +387,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private void versionCheck(final String instanceUrl, final String loginUid, final String loginPass, final int loginOTP, final String loginToken_, final int loginType) {
 
+        TinyDB tinyDb = new TinyDB(getApplicationContext());
+
         Call<GiteaVersion> callVersion = RetrofitClient
                 .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
@@ -447,6 +449,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
                 else if (responseVersion.code() == 403) {
 
+                    tinyDb.putBoolean("versionCheckStatus", true);
                     login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
 
                 }
