@@ -412,11 +412,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
+        Call<GiteaVersion> callVersion;
+
         if(tinyDb.getBoolean("versionCheckStatus")) {
-            Call<GiteaVersion> callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithAuth();
+            callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithAuth(instanceToken);
         }
         else {
-            Call<GiteaVersion> callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersion();
+            callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersion();
         }
 
         callVersion.enqueue(new Callback<GiteaVersion>() {

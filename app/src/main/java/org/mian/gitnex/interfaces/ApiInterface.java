@@ -54,6 +54,9 @@ public interface ApiInterface {
     @GET("version") // gitea version API
     Call<GiteaVersion> getGiteaVersion();
 
+    @GET("version") // gitea version API with token
+    Call<GiteaVersion> getGiteaVersionWithAuth(@Header("Authorization") String token);
+
     @GET("user") // username, full name, email
     Call<UserInfo> getUserInfo(@Header("Authorization") String token);
 
