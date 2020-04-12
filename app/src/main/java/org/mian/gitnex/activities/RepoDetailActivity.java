@@ -93,7 +93,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
         Typeface myTypeface;
 
-        switch(tinyDb.getInt("customFontId")) {
+        switch(tinyDb.getInt("customFontId", -1)) {
 
             case 0:
                 myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/roboto.ttf");

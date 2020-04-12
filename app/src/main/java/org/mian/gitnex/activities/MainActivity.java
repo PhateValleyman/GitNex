@@ -109,7 +109,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
 
-        switch(tinyDb.getInt("customFontId")) {
+        switch(tinyDb.getInt("customFontId", -1)) {
 
             case 0:
                 myTypeface = Typeface.createFromAsset(getAssets(), "fonts/roboto.ttf");

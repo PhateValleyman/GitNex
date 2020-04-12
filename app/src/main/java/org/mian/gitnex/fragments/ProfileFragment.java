@@ -59,7 +59,7 @@ public class ProfileFragment extends Fragment {
 
         Typeface myTypeface;
 
-        switch(tinyDb.getInt("customFontId")) {
+        switch(tinyDb.getInt("customFontId", -1)) {
 
             case 0:
                 myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "fonts/roboto.ttf");

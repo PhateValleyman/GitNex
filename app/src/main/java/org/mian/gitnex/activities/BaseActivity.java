@@ -40,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutResourceId());
 
-		switch(tinyDb.getInt("customFontId")) {
+		switch(tinyDb.getInt("customFontId", -1)) {
 
 			case 0:
 				FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/roboto.ttf");

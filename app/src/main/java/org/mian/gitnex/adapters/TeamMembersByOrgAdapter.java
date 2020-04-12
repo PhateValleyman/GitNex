@@ -86,7 +86,7 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
         final TinyDB tinyDb = new TinyDB(mCtx);
         Typeface myTypeface;
 
-        switch(tinyDb.getInt("customFontId")) {
+        switch(tinyDb.getInt("customFontId", -1)) {
 
             case 0:
                 myTypeface = Typeface.createFromAsset(mCtx.getAssets(), "fonts/roboto.ttf");
