@@ -377,7 +377,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             }
 
             tinyDb.putString("instanceUrlRaw", instanceHost);
-            //tinyDb.putString("loginUid", loginUid);
             tinyDb.putString("instanceUrl", instanceUrl);
             tinyDb.putString("instanceUrlWithProtocol", instanceUrlWithProtocol);
 
