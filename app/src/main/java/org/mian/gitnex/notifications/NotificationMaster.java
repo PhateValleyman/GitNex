@@ -6,66 +6,51 @@ import androidx.work.Constraints;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.VersionCheck;
-import org.mian.gitnex.models.GiteaVersion;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import org.mian.gitnex.util.TinyDB;
 
 /**
  * Author opyale
  */
 
 public class NotificationMaster {
-	private String notificationsSupported;
+	private static int notificationsSupported = -1;
 
 	public NotificationMaster() {
 
 	}
 
-	private void checkVersion(Context context) {
+	private static void checkVersion(Context context) {
 
-		Call<GiteaVersion> versionCall = RetrofitClient.getInstance("", context).getApiInterface().getGiteaVersion();
-
-		versionCall.enqueue(new Callback<GiteaVersion>() {
-
-			@Override
-			public void onResponse(@NonNull Call<GiteaVersion> call, @NonNull Response<GiteaVersion> response) {
-
-				GiteaVersion giteaVersion = response.body();
-				assert giteaVersion != null;
-
-				VersionCheck.compareVersion("", giteaVersion.getVersion());
-
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<GiteaVersion> call,@NonNull Throwable t) {
-
-			}
-		});
+		TinyDB tinyDB = new TinyDB(context);
+		notificationsSupported = VersionCheck.compareVersion("1.12.0", tinyDB.getString("giteaVersion")) >= 1 ? 1 : 0;
 
 	}
 
-	public void hireWorker(Context context) {
+	public static void hireWorker(Context context) {
 
-		WorkManager.getInstance(context).cancelAllWorkByTag("gitnex-notifications");
+		if(notificationsSupported == -1) {
+			checkVersion(context);
+		}
 
-		Constraints constraints = new Constraints.Builder()
-				.setRequiredNetworkType(NetworkType.CONNECTED)
-				.setRequiresBatteryNotLow(false)
-				.setRequiresDeviceIdle(false)
-				.setRequiresStorageNotLow(false)
-				.setRequiresCharging(false)
-				.build();
+		if(notificationsSupported == 1) {
+			WorkManager.getInstance(context).cancelAllWorkByTag("gitnex-notifications");
 
-		OneTimeWorkRequest notificationRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
-				.setConstraints(constraints)
-				.addTag("gitnex-notifications")
-				.build();
+			Constraints constraints = new Constraints.Builder()
+					.setRequiredNetworkType(NetworkType.CONNECTED)
+					.setRequiresBatteryNotLow(false)
+					.setRequiresDeviceIdle(false)
+					.setRequiresStorageNotLow(false)
+					.setRequiresCharging(false)
+					.build();
 
-		WorkManager.getInstance(context).enqueue(notificationRequest);
+			OneTimeWorkRequest notificationRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+					.setConstraints(constraints)
+					.addTag("gitnex-notifications")
+					.build();
+
+			WorkManager.getInstance(context).enqueue(notificationRequest);
+		}
 
 	}
 
