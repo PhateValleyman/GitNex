@@ -18,24 +18,24 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 		final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-        if(tinyDb.getInt("themeId") == 1) {
-            setTheme(R.style.AppThemeLight);
-        }
-        else if(tinyDb.getInt("themeId") == 2) {
+		if(tinyDb.getInt("themeId") == 1) {
+			setTheme(R.style.AppThemeLight);
+		}
+		else if(tinyDb.getInt("themeId") == 2) {
 
-            boolean timeSetterFlag = TimeHelper.timeBetweenHours(18, 6); // 6pm to 6am
+			boolean timeSetterFlag = TimeHelper.timeBetweenHours(18, 6); // 6pm to 6am
 
-            if(timeSetterFlag) {
-                setTheme(R.style.AppTheme);
-            }
-            else {
-                setTheme(R.style.AppThemeLight);
-            }
+			if(timeSetterFlag) {
+				setTheme(R.style.AppTheme);
+			}
+			else {
+				setTheme(R.style.AppThemeLight);
+			}
 
-        }
-        else {
-            setTheme(R.style.AppTheme);
-        }
+		}
+		else {
+			setTheme(R.style.AppTheme);
+		}
 
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutResourceId());
