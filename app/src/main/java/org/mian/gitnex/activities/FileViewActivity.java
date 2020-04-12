@@ -175,7 +175,25 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
                             pdfViewFrame.setVisibility(View.GONE);
                             singleCodeContents.setVisibility(View.VISIBLE);
 
-                            singleCodeContents.setTheme(Theme.GRUVBOX_DARK);
+                            if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 1) {
+                                singleCodeContents.setTheme(Theme.ARDUINO_LIGHT);
+                            }
+                            else if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 2) {
+                                singleCodeContents.setTheme(Theme.GITHUB);
+                            }
+                            else if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 3) {
+                                singleCodeContents.setTheme(Theme.FAR);
+                            }
+                            else if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 4) {
+                                singleCodeContents.setTheme(Theme.IR_BLACK);
+                            }
+                            else if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 5) {
+                                singleCodeContents.setTheme(Theme.ANDROID_STUDIO);
+                            }
+                            else {
+                                singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
+                            }
+
                             singleCodeContents.setShowLineNumbers(true);
                             singleCodeContents.setSource(appUtil.decodeBase64(response.body().getContent()));
 
