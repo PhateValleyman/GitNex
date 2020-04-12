@@ -1,5 +1,6 @@
 package org.mian.gitnex.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -140,8 +141,14 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
         fileStructure.setText(breadcrumbBuilder);
 
+        String dirName_ = fileStructure.getText().toString();
+        dirName_ = dirName_.startsWith("/") ? dirName_.substring(1) : dirName_;
+        final String finalDirName_ = dirName_;
+
         mBreadcrumbsView.addItem(createItem(dirName));
+        //noinspection unchecked
         mBreadcrumbsView.setCallback(new DefaultBreadcrumbsCallback<BreadcrumbItem>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onNavigateBack(BreadcrumbItem item, int position) {
 
@@ -154,7 +161,10 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
                 String filterDir = fileStructure.getText().toString();
                 String result = filterDir.substring(0, filterDir.indexOf(item.getSelectedItem()));
                 fileStructure.setText(result + item.getSelectedItem());
-                fetchDataAsyncSub(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, fileStructure.getText().toString());
+
+                String currentIndex = (result + item.getSelectedItem()).substring(1);
+
+                fetchDataAsyncSub(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, currentIndex);
 
             }
 
@@ -164,7 +174,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
             }
         });
 
-        fetchDataAsyncSub(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, fileStructure.getText().toString());
+        fetchDataAsyncSub(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, finalDirName_);
 
     }
 
@@ -192,7 +202,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
         FilesViewModel filesModel = new ViewModelProvider(this).get(FilesViewModel.class);
 
-        filesModel.getFilesList(instanceUrl, instanceToken, owner, repo, getContext()).observe(this, new Observer<List<Files>>() {
+        filesModel.getFilesList(instanceUrl, instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Files>>() {
             @Override
             public void onChanged(@Nullable List<Files> filesListMain) {
                 adapter = new FilesAdapter(getContext(), filesListMain, FilesFragment.this);
@@ -260,11 +270,11 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setQueryHint(getContext().getString(R.string.strFilter));
+        //searchView.setQueryHint(getContext().getString(R.string.search));
 
-        if(!connToInternet) {
+        /*if(!connToInternet) {
             return;
-        }
+        }*/
 
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override

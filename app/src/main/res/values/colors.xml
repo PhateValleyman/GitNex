@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#212f3c</color>
-    <color name="colorPrimaryDark">#212f3c</color>
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryDark">#212121</color>
     <color name="colorAccent">#7f7e7b</color>
-    <color name="backgroundColor">#212f3c</color>
+    <color name="backgroundColor">#212121</color>
     <color name="hintColor">#7f7e7b</color>
     <color name="colorWhite">#ffffff</color>
-    <color name="navHeader">#212f3c</color>
+    <color name="navHeader">#212121</color>
     <color name="black">#000009</color>
     <color name="white">#ffffff</color>
     <color name="tooltipBackground">#1e88ce</color>
     <color name="btnBackground">#009486</color>
     <color name="btnTextColor">#ffffff</color>
-    <color name="inputBackground">#161d23</color>
-    <color name="toastBackground">#161d23</color>
-    <color name="divider">#1d2935</color>
+    <color name="inputBackground">#1d1d1d</color>
+    <color name="toastBackground">#1d1d1d</color>
+    <color name="divider">#1d1d1d</color>
     <color name="releasePre">#eb7121</color>
     <color name="releaseStable">#219214</color>
     <color name="colorRed">#eb3718</color>
@@ -24,5 +24,17 @@
     <color name="darkRed">#e74c3c</color>
     <color name="lightBlue">#3faef7</color>
     <color name="lightGray">#b6bbbf</color>
+    <color name="darkGreen">#368f73</color>
+    <color name="lightDimGreen">#63fdd9</color>
+    <color name="diffRemovedColor">#ffe0e0</color>
+    <color name="diffAddedColor">#d6fcd6</color>
+    <color name="dividerColorDark">#1d1d1d</color>
+    <color name="lightYellow">#efd34a</color>
+
+    <color name="lightThemeTextColor">#646565</color>
+    <color name="lightThemeBackground">#f9f9f9</color>
+    <color name="lightThemeInputBackground">#b6bbbf</color>
+    <color name="lightThemeInputTextColor">#212121</color>
+    <color name="lightThemeDividerColor">#dbdbdb</color>
 
 </resources>

@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.CollaboratorActions;
+import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
@@ -68,7 +68,7 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
 
                     final Context context = v.getContext();
 
-                    AlertDialog.Builder pBuilder = new AlertDialog.Builder(context, R.style.confirmDialog);
+                    AlertDialog.Builder pBuilder = new AlertDialog.Builder(context);
 
                     pBuilder.setTitle(R.string.newTeamPermission);
                     pBuilder.setSingleChoiceItems(permissionList, permissionSelectedChoice, new DialogInterface.OnClickListener() {
@@ -120,7 +120,7 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
     @NonNull
     @Override
     public UserSearchAdapter.UserSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.collaborators_list_search, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_collaborators_search, parent, false);
         return new UserSearchAdapter.UserSearchViewHolder(v);
     }
 
@@ -141,7 +141,7 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
         }
 
         if (!currentItem.getAvatar().equals("")) {
-            Picasso.get().load(currentItem.getAvatar()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
+            PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
         }
 
         if(getItemCount() > 0) {
@@ -156,7 +156,7 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
             final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
             Call<Collaborators> call = RetrofitClient
-                    .getInstance(instanceUrl)
+                    .getInstance(instanceUrl, mCtx)
                     .getApiInterface()
                     .checkRepoCollaborator(Authorization.returnAuthentication(mCtx, loginUid, instanceToken), repoOwner, repoName, currentItem.getUsername());
 
@@ -191,7 +191,7 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
 
                 @Override
                 public void onFailure(@NonNull Call<Collaborators> call, @NonNull Throwable t) {
-                    Log.i("onFailure", t.getMessage());
+                    Log.i("onFailure", t.toString());
                 }
 
             });

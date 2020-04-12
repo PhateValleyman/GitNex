@@ -24,8 +24,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.MainActivity;
-import org.mian.gitnex.activities.NewRepoActivity;
+import org.mian.gitnex.activities.CreateRepoActivity;
 import org.mian.gitnex.adapters.StarredReposListAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.UserRepositories;
@@ -48,6 +47,8 @@ public class StarredRepositoriesFragment extends Fragment {
     private StarredReposListAdapter adapter;
     private ImageView createNewRepo;
     private TextView noData;
+    private int pageSize = 1;
+    private int resultLimit = 50;
 
     private OnFragmentInteractionListener mListener;
 
@@ -79,7 +80,6 @@ public class StarredRepositoriesFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_starred_repositories, container, false);
         boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
         setHasOptionsMenu(true);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setActionBarTitle(getResources().getString(R.string.pageTitleStarredRepos));
 
         TinyDB tinyDb = new TinyDB(getContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -104,7 +104,7 @@ public class StarredRepositoriesFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), NewRepoActivity.class);
+                Intent intent = new Intent(view.getContext(), CreateRepoActivity.class);
                 startActivity(intent);
             }
 
@@ -127,27 +127,20 @@ public class StarredRepositoriesFragment extends Fragment {
             }
         });
 
-        if(connToInternet) {
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefresh.setRefreshing(false);
+                        StarredRepositoriesViewModel.loadStarredReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext(), pageSize, resultLimit);
+                    }
+                }, 50);
+            }
+        });
 
-            swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            swipeRefresh.setRefreshing(false);
-                            StarredRepositoriesViewModel.loadStarredReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
-                        }
-                    }, 50);
-                }
-            });
-
-            fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
-
-        }
-        else {
-            mProgressBar.setVisibility(View.GONE);
-        }
+        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), pageSize, resultLimit);
 
         return v;
     }
@@ -160,15 +153,18 @@ public class StarredRepositoriesFragment extends Fragment {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        StarredRepositoriesViewModel.loadStarredReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
+        if(tinyDb.getBoolean("repoCreated")) {
+            StarredRepositoriesViewModel.loadStarredReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext(), pageSize, resultLimit);
+            tinyDb.putBoolean("repoCreated", false);
+        }
 
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken) {
+    private void fetchDataAsync(String instanceUrl, String instanceToken, int pageSize, int resultLimit) {
 
         StarredRepositoriesViewModel starredRepoModel = new ViewModelProvider(this).get(StarredRepositoriesViewModel.class);
 
-        starredRepoModel.getUserStarredRepositories(instanceUrl, instanceToken).observe(this, new Observer<List<UserRepositories>>() {
+        starredRepoModel.getUserStarredRepositories(instanceUrl, instanceToken, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(), new Observer<List<UserRepositories>>() {
             @Override
             public void onChanged(@Nullable List<UserRepositories> starredReposListMain) {
                 adapter = new StarredReposListAdapter(getContext(), starredReposListMain);
@@ -198,11 +194,11 @@ public class StarredRepositoriesFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setQueryHint(getContext().getString(R.string.strFilter));
+        //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        if(!connToInternet) {
+        /*if(!connToInternet) {
             return;
-        }
+        }*/
 
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override

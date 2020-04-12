@@ -3,7 +3,6 @@ package org.mian.gitnex.activities;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonElement;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -14,6 +13,7 @@ import retrofit2.Callback;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,20 +21,23 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.fragments.BottomSheetRepoFragment;
 import org.mian.gitnex.fragments.BranchesFragment;
-import org.mian.gitnex.fragments.ClosedIssuesFragment;
+import org.mian.gitnex.fragments.IssuesClosedFragment;
 import org.mian.gitnex.fragments.CollaboratorsFragment;
 import org.mian.gitnex.fragments.FilesFragment;
-import org.mian.gitnex.fragments.IssuesFragment;
+import org.mian.gitnex.fragments.IssuesOpenFragment;
 import org.mian.gitnex.fragments.LabelsFragment;
 import org.mian.gitnex.fragments.MilestonesFragment;
+import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.fragments.ReleasesFragment;
-import org.mian.gitnex.fragments.RepoBottomSheetFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.VersionCheck;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.models.WatchRepository;
 import org.mian.gitnex.util.AppUtil;
@@ -46,14 +49,20 @@ import android.net.Uri;
  * Author M M Arif
  */
 
-public class RepoDetailActivity extends AppCompatActivity implements RepoBottomSheetFragment.BottomSheetListener {
+public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoFragment.BottomSheetListener {
 
-    private TextView textViewBadge;
+    private TextView textViewBadgeIssue;
+    private TextView textViewBadgePull;
+    private TextView textViewBadgeRelease;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_repo_detail;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_repo_detail);
 
         TinyDB tinyDb = new TinyDB(getApplicationContext());
         String repoFullName = tinyDb.getString("repoFullName");
@@ -69,6 +78,8 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
         AppUtil.setAppLocale(getResources(), appLocale);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(repoName1);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -80,28 +91,98 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
 
         TabLayout tabLayout = findViewById(R.id.tabs);
 
+        Typeface myTypeface;
+        if(tinyDb.getInt("customFontId") == 0) {
+
+            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
+
+        }
+        else if (tinyDb.getInt("customFontId") == 1) {
+
+            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/manroperegular.ttf");
+
+        }
+        else if (tinyDb.getInt("customFontId") == 2) {
+
+            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
+
+        }
+        else {
+
+            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
+
+        }
+
+        toolbarTitle.setTypeface(myTypeface);
+        toolbarTitle.setText(repoName1);
+
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    ((TextView) tabViewChild).setTypeface(myTypeface);
+                }
+            }
+        }
+
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        if(tinyDb.getBoolean("enableCounterIssueBadge")) {
+        if(tinyDb.getBoolean("enableCounterBadges")) {
 
-            @SuppressLint("InflateParams") View tabHeader = LayoutInflater.from(this).inflate(R.layout.badge, null);
-            textViewBadge = tabHeader.findViewById(R.id.counterBadge);
-            if(!tinyDb.getString("issuesCounter").isEmpty()) {
-                getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
-            }
-            Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader);
+            @SuppressLint("InflateParams") View tabHeader2 = LayoutInflater.from(this).inflate(R.layout.badge_issue, null);
+            textViewBadgeIssue = tabHeader2.findViewById(R.id.counterBadgeIssue);
 
-            TabLayout.Tab tabOpenIssues = tabLayout.getTabAt(2);
+            @SuppressLint("InflateParams") View tabHeader4 = LayoutInflater.from(this).inflate(R.layout.badge_pull, null);
+            textViewBadgePull = tabHeader4.findViewById(R.id.counterBadgePull);
+
+            @SuppressLint("InflateParams") View tabHeader6 = LayoutInflater.from(this).inflate(R.layout.badge_release, null);
+            textViewBadgeRelease = tabHeader6.findViewById(R.id.counterBadgeRelease);
+
+            textViewBadgeIssue.setVisibility(View.GONE);
+            textViewBadgePull.setVisibility(View.GONE);
+            textViewBadgeRelease.setVisibility(View.GONE);
+
+            getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
             ColorStateList textColor = tabLayout.getTabTextColors();
-            assert tabOpenIssues != null;
-            TextView openIssueTabView = Objects.requireNonNull(tabOpenIssues.getCustomView()).findViewById(R.id.counterBadgeText);
-            openIssueTabView.setTextColor(textColor);
 
+            // issue count
+            if (textViewBadgeIssue.getText() != "") {
+                TabLayout.Tab tabOpenIssues = tabLayout.getTabAt(2);
+                Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader2);
+                assert tabOpenIssues != null;
+                TextView openIssueTabView = Objects.requireNonNull(tabOpenIssues.getCustomView()).findViewById(R.id.counterBadgeIssueText);
+                openIssueTabView.setTextColor(textColor);
+            }
+
+            // pull count
+            if (textViewBadgePull.getText() != "") { // only show if API returned a number
+                Objects.requireNonNull(tabLayout.getTabAt(4)).setCustomView(tabHeader4);
+                TabLayout.Tab tabOpenPulls = tabLayout.getTabAt(4);
+                assert tabOpenPulls != null;
+                TextView openPullTabView = Objects.requireNonNull(tabOpenPulls.getCustomView()).findViewById(R.id.counterBadgePullText);
+                openPullTabView.setTextColor(textColor);
+            }
+
+            // release count
+            if (VersionCheck.compareVersion("1.11.5", tinyDb.getString("giteaVersion")) < 1) {
+                if(textViewBadgeRelease.getText() != "") { // only show if API returned a number
+                    Objects.requireNonNull(tabLayout.getTabAt(6)).setCustomView(tabHeader6);
+                    TabLayout.Tab tabOpenRelease = tabLayout.getTabAt(6);
+                    assert tabOpenRelease != null;
+                    TextView openReleaseTabView = Objects.requireNonNull(tabOpenRelease.getCustomView()).findViewById(R.id.counterBadgeReleaseText);
+                    openReleaseTabView.setTextColor(textColor);
+                }
+            }
         }
 
         checkRepositoryStarStatus(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
         checkRepositoryWatchStatus(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
+
     }
 
     @Override
@@ -120,13 +201,16 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
         if(tinyDb.getBoolean("enableCounterIssueBadge")) {
             getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
         }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.repo_dotted_menu, menu);
         return true;
+
     }
 
     @Override
@@ -139,7 +223,7 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
                 finish();
                 return true;
             case R.id.repoMenu:
-                RepoBottomSheetFragment bottomSheet = new RepoBottomSheetFragment();
+                BottomSheetRepoFragment bottomSheet = new BottomSheetRepoFragment();
                 bottomSheet.show(getSupportFragmentManager(), "repoBottomSheet");
                 return true;
             default:
@@ -151,6 +235,14 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
     @Override
     public void onButtonClicked(String text) {
 
+        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        String repoFullName = tinyDb.getString("repoFullName");
+        String instanceUrlWithProtocol = "https://" + tinyDb.getString("instanceUrlRaw");
+        if(!tinyDb.getString("instanceUrlWithProtocol").isEmpty()) {
+            instanceUrlWithProtocol = tinyDb.getString("instanceUrlWithProtocol");
+        }
+        Uri url = Uri.parse(instanceUrlWithProtocol + "/" + repoFullName);
+
         switch (text) {
             case "label":
                 startActivity(new Intent(RepoDetailActivity.this, CreateLabelActivity.class));
@@ -159,7 +251,7 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
                 startActivity(new Intent(RepoDetailActivity.this, CreateIssueActivity.class));
                 break;
             case "newMilestone":
-                startActivity(new Intent(RepoDetailActivity.this, NewMilestoneActivity.class));
+                startActivity(new Intent(RepoDetailActivity.this, CreateMilestoneActivity.class));
                 break;
             case "addCollaborator":
                 startActivity(new Intent(RepoDetailActivity.this, AddCollaboratorToRepositoryActivity.class));
@@ -168,18 +260,18 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
                 startActivity(new Intent(RepoDetailActivity.this, CreateReleaseActivity.class));
                 break;
             case "openWebRepo":
-                TinyDB tinyDb = new TinyDB(getApplicationContext());
-                String repoFullName = tinyDb.getString("repoFullName");
-                String instanceUrlWithProtocol = "https://" + tinyDb.getString("instanceUrlRaw");
-                if(!tinyDb.getString("instanceUrlWithProtocol").isEmpty()) {
-                    instanceUrlWithProtocol = tinyDb.getString("instanceUrlWithProtocol");
-                }
-                Uri url = Uri.parse(instanceUrlWithProtocol + "/" + repoFullName);
                 Intent i = new Intent(Intent.ACTION_VIEW, url);
                 startActivity(i);
                 break;
+            case "shareRepo":
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, url);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, url);
+                startActivity(Intent.createChooser(sharingIntent, url.toString()));
+                break;
             case "newFile":
-                startActivity(new Intent(RepoDetailActivity.this, NewFileActivity.class));
+                startActivity(new Intent(RepoDetailActivity.this, CreateFileActivity.class));
                 break;
         }
 
@@ -208,36 +300,42 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
                 case 1: // files
                     return FilesFragment.newInstance(repoOwner, repoName);
                 case 2: // issues
-                    fragment = new IssuesFragment();
+                    fragment = new IssuesOpenFragment();
                     break;
                 case 3: // closed issues
-                    fragment = new ClosedIssuesFragment();
+                    fragment = new IssuesClosedFragment();
                     break;
-                case 4: // milestones
-                    return MilestonesFragment.newInstance(repoOwner, repoName);
-                case 5: // labels
-                    return LabelsFragment.newInstance(repoOwner, repoName);
-                case 6: // branches
+                case 4: // pull requests
+                    fragment = new PullRequestsFragment();
+                    break;
+                case 5: // branches
                     return BranchesFragment.newInstance(repoOwner, repoName);
-                case 7: // releases
+                case 6: // releases
                     return ReleasesFragment.newInstance(repoOwner, repoName);
-                case 8: // collaborators
+                case 7: // milestones
+                    return MilestonesFragment.newInstance(repoOwner, repoName);
+                case 8: // labels
+                    return LabelsFragment.newInstance(repoOwner, repoName);
+                case 9: // collaborators
                     return CollaboratorsFragment.newInstance(repoOwner, repoName);
             }
+            assert fragment != null;
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return 9;
+            return 10;
         }
 
     }
 
     private void getRepoInfo(String instanceUrl, String token, final String owner, String repo) {
 
+        TinyDB tinyDb = new TinyDB(getApplicationContext());
+
         Call<UserRepositories> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getUserRepository(token, owner, repo);
 
@@ -252,8 +350,24 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
 
                     if (response.code() == 200) {
 
-                        assert repoInfo != null;
-                        textViewBadge.setText(repoInfo.getOpen_issues_count());
+                        if(tinyDb.getBoolean("enableCounterBadges")) {
+                            assert repoInfo != null;
+
+                            if(repoInfo.getOpen_issues_count() != null) {
+                                textViewBadgeIssue.setVisibility(View.VISIBLE);
+                                textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
+                            }
+
+                            if(repoInfo.getOpen_pull_count() != null) {
+                                textViewBadgePull.setVisibility(View.VISIBLE);
+                                textViewBadgePull.setText(repoInfo.getOpen_pull_count());
+                            }
+
+                            if(repoInfo.getRelease_count() != null) {
+                                textViewBadgeRelease.setVisibility(View.VISIBLE);
+                                textViewBadgeRelease.setText(repoInfo.getRelease_count());
+                            }
+                        }
 
                     }
 
@@ -268,6 +382,7 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
             public void onFailure(@NonNull Call<UserRepositories> call, @NonNull Throwable t) {
                 Log.e("onFailure", t.toString());
             }
+
         });
 
     }
@@ -277,7 +392,7 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
         Call<JsonElement> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .checkRepoStarStatus(instanceToken, owner, repo);
 
@@ -304,7 +419,7 @@ public class RepoDetailActivity extends AppCompatActivity implements RepoBottomS
         Call<WatchRepository> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .checkRepoWatchStatus(instanceToken, owner, repo);
 

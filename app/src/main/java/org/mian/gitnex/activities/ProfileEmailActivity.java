@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,7 +30,7 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class ProfileEmailActivity extends AppCompatActivity {
+public class ProfileEmailActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
     private EditText userEmail;
@@ -38,15 +38,25 @@ public class ProfileEmailActivity extends AppCompatActivity {
     private Button addEmailButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_profile_email;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_email);
 
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         ImageView closeActivity = findViewById(R.id.close);
         userEmail = findViewById(R.id.userEmail);
         addEmailButton = findViewById(R.id.addEmailButton);
+
+        userEmail.requestFocus();
+        assert imm != null;
+        imm.showSoftInput(userEmail, InputMethodManager.SHOW_IMPLICIT);
 
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
@@ -114,7 +124,7 @@ public class ProfileEmailActivity extends AppCompatActivity {
         Call<JsonElement> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .addNewEmail(token, addEmailFunc);
 

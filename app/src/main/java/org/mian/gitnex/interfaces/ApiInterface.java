@@ -3,10 +3,13 @@ package org.mian.gitnex.interfaces;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.models.AddEmail;
 import org.mian.gitnex.models.Branches;
+import org.mian.gitnex.models.Commits;
 import org.mian.gitnex.models.ExploreRepositories;
 import org.mian.gitnex.models.Files;
+import org.mian.gitnex.models.MergePullRequest;
 import org.mian.gitnex.models.NewFile;
-import org.mian.gitnex.models.UpdateIssueAssignee;
+import org.mian.gitnex.models.PullRequests;
+import org.mian.gitnex.models.UpdateIssueAssignees;
 import org.mian.gitnex.models.UpdateIssueState;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.CreateIssue;
@@ -30,6 +33,7 @@ import org.mian.gitnex.models.UserSearch;
 import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.models.WatchRepository;
 import java.util.List;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -48,7 +52,7 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
     @GET("version") // gitea version API
-    Call<GiteaVersion> getGiteaVersion(@Header("Authorization") String token);
+    Call<GiteaVersion> getGiteaVersion();
 
     @GET("user") // username, full name, email
     Call<UserInfo> getUserInfo(@Header("Authorization") String token);
@@ -78,7 +82,7 @@ public interface ApiInterface {
     Call<List<OrgOwner>> getOrgOwners(@Header("Authorization") String token);
 
     @GET("user/repos") // get user repositories
-    Call<List<UserRepositories>> getUserRepositories(@Header("Authorization") String token);
+    Call<List<UserRepositories>> getUserRepositories(@Header("Authorization") String token, @Query("page") int page, @Query("limit") int limit);
 
     @POST("user/repos") // create new repository
     Call<OrganizationRepository> createNewUserRepository(@Header("Authorization") String token, @Body OrganizationRepository jsonStr);
@@ -87,10 +91,10 @@ public interface ApiInterface {
     Call<UserRepositories> getUserRepository(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
 
     @GET("repos/{owner}/{repo}/issues") // get issues by repo
-    Call<List<Issues>> getIssues(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page);
+    Call<List<Issues>> getIssues(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("limit") int limit, @Query("type") String requestType);
 
     @GET("repos/{owner}/{repo}/issues") // get closed issues by repo
-    Call<List<Issues>> getClosedIssues(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("state") String issueState);
+    Call<List<Issues>> getClosedIssues(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("state") String issueState, @Query("limit") int limit, @Query("type") String requestType);
 
     @GET("repos/{owner}/{repo}/issues/{index}") // get issue by id
     Call<Issues> getIssueByIndex(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex);
@@ -123,7 +127,7 @@ public interface ApiInterface {
     Call<List<Labels>> getlabels(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
 
     @GET("users/{username}/repos") // get current logged in user repositories
-    Call<List<UserRepositories>> getCurrentUserRepositories(@Header("Authorization") String token, @Path("username") String username);
+    Call<List<UserRepositories>> getCurrentUserRepositories(@Header("Authorization") String token, @Path("username") String username, @Query("page") int page, @Query("limit") int limit);
 
     @POST("repos/{owner}/{repo}/labels") // create label
     Call<CreateLabel> createLabel(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Body CreateLabel jsonStr);
@@ -135,10 +139,10 @@ public interface ApiInterface {
     Call<CreateLabel> patchLabel(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int labelIndex, @Body CreateLabel jsonStr);
 
     @GET("user/starred") // get user starred repositories
-    Call<List<UserRepositories>> getUserStarredRepos(@Header("Authorization") String token);
+    Call<List<UserRepositories>> getUserStarredRepos(@Header("Authorization") String token, @Query("page") int page, @Query("limit") int limit);
 
     @GET("orgs/{orgName}/repos") // get repositories by org
-    Call<List<UserRepositories>> getReposByOrg(@Header("Authorization") String token, @Path("orgName") String orgName);
+    Call<List<UserRepositories>> getReposByOrg(@Header("Authorization") String token, @Path("orgName") String orgName, @Query("page") int page, @Query("limit") int limit);
 
     @GET("orgs/{orgName}/teams") // get teams by org
     Call<List<Teams>> getTeamsByOrg(@Header("Authorization") String token, @Path("orgName") String orgName);
@@ -204,7 +208,7 @@ public interface ApiInterface {
     Call<Releases> createNewRelease(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Body Releases jsonStr);
 
     @PATCH("repos/{owner}/{repo}/issues/{issueIndex}") // patch issue assignees
-    Call<JsonElement> patchIssueAssignee(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("issueIndex") int issueIndex, @Body UpdateIssueAssignee jsonStr);
+    Call<JsonElement> patchIssueAssignees(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("issueIndex") int issueIndex, @Body UpdateIssueAssignees jsonStr);
 
     @GET("admin/users") // get all users
     Call<List<UserInfo>> adminGetUsers(@Header("Authorization") String token);
@@ -216,7 +220,7 @@ public interface ApiInterface {
     Call<List<UserInfo>> getRepoWatchers(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
 
     @GET("repos/search") // get all the repos which match the query string
-    Call<ExploreRepositories> queryRepos(@Header("Authorization") String token, @Query("q") String searchKeyword, @Query("private") Boolean repoTypeInclude, @Query("sort") String sort, @Query("order") String order);
+    Call<ExploreRepositories> queryRepos(@Header("Authorization") String token, @Query("q") String searchKeyword, @Query("private") Boolean repoTypeInclude, @Query("sort") String sort, @Query("order") String order, @Query("limit") int limit);
 
     @POST("repos/{owner}/{repo}/contents/{file}") // create new file
     Call<JsonElement> createNewFile(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("file") String fileName, @Body NewFile jsonStr);
@@ -247,4 +251,22 @@ public interface ApiInterface {
 
     @DELETE("repos/{owner}/{repo}/subscription") // un watch a repository
     Call<JsonElement> unWatchRepository(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
+
+    @PUT("repos/{owner}/{repo}/issues/{index}/subscriptions/{user}") // subscribe user to issue
+    Call<Void> addIssueSubscriber(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex, @Path("user") String issueSubscriber);
+
+    @DELETE("repos/{owner}/{repo}/issues/{index}/subscriptions/{user}") // unsubscribe user to issue
+    Call<Void> delIssueSubscriber(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex, @Path("user") String issueSubscriber);
+
+    @GET("repos/{owner}/{repo}/pulls") // get repository pull requests
+    Call<List<PullRequests>> getPullRequests(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("state") String state, @Query("limit") int limit);
+
+    @POST("repos/{owner}/{repo}/pulls/{index}/merge") // merge a pull request
+    Call<ResponseBody> mergePullRequest(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int index, @Body MergePullRequest jsonStr);
+
+    @GET("repos/{owner}/{repo}/commits") // get all commits
+    Call<List<Commits>> getRepositoryCommits(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("sha") String branchName);
+
+    @PATCH("repos/{owner}/{repo}/milestones/{index}") // close / reopen milestone
+    Call<JsonElement> closeReopenMilestone(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int index, @Body Milestones jsonStr);
 }

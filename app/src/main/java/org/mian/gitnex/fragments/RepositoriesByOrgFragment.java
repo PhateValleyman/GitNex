@@ -45,6 +45,8 @@ public class RepositoriesByOrgFragment extends Fragment {
     private TextView noData;
     private static String orgNameF = "param2";
     private String orgName;
+    private int pageSize = 1;
+    private int resultLimit = 50;
 
     public RepositoriesByOrgFragment() {
     }
@@ -97,13 +99,13 @@ public class RepositoriesByOrgFragment extends Fragment {
                     @Override
                     public void run() {
                         swipeRefresh.setRefreshing(false);
-                        RepositoriesByOrgViewModel.loadOrgRepos(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName);
+                        RepositoriesByOrgViewModel.loadOrgRepos(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName, getContext(), pageSize, resultLimit);
                     }
                 }, 200);
             }
         });
 
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName);
+        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName, pageSize, resultLimit);
 
         return v;
     }
@@ -117,15 +119,18 @@ public class RepositoriesByOrgFragment extends Fragment {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        RepositoriesByOrgViewModel.loadOrgRepos(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName);
+        if(tinyDb.getBoolean("repoCreated")) {
+            RepositoriesByOrgViewModel.loadOrgRepos(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName, getContext(), pageSize, resultLimit);
+            tinyDb.putBoolean("repoCreated", false);
+        }
 
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken, String owner) {
+    private void fetchDataAsync(String instanceUrl, String instanceToken, String owner, int pageSize, int resultLimit) {
 
         RepositoriesByOrgViewModel orgRepoModel = new ViewModelProvider(this).get(RepositoriesByOrgViewModel.class);
 
-        orgRepoModel.getRepositoriesByOrg(instanceUrl, instanceToken, owner).observe(this, new Observer<List<UserRepositories>>() {
+        orgRepoModel.getRepositoriesByOrg(instanceUrl, instanceToken, owner, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(), new Observer<List<UserRepositories>>() {
             @Override
             public void onChanged(@Nullable List<UserRepositories> orgReposListMain) {
                 adapter = new RepositoriesByOrgAdapter(getContext(), orgReposListMain);
@@ -155,7 +160,7 @@ public class RepositoriesByOrgFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setQueryHint(getContext().getString(R.string.strFilter));
+        //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
         if(!connToInternet) {
             return;

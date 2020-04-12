@@ -2,7 +2,6 @@ package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,7 +30,7 @@ import android.util.Log;
  * Author M M Arif
  */
 
-public class CreateTeamByOrgActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClickListener {
 
     final Context ctx = CreateTeamByOrgActivity.this;
     private View.OnClickListener onClickListener;
@@ -43,6 +43,11 @@ public class CreateTeamByOrgActivity extends AppCompatActivity implements View.O
     private Button createTeamButton;
     private String[] permissionList = {"Read", "Write", "Admin"};
     public int permissionSelectedChoice = -1;
+
+    @Override
+    protected int getLayoutResourceId(){
+        return R.layout.activity_create_team_by_org;
+    }
 
     private String[] accessControlsList = new String[] {
             "Code",
@@ -67,11 +72,12 @@ public class CreateTeamByOrgActivity extends AppCompatActivity implements View.O
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_team_by_org);
 
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         ImageView closeActivity = findViewById(R.id.close);
         teamName = findViewById(R.id.teamName);
@@ -82,6 +88,10 @@ public class CreateTeamByOrgActivity extends AppCompatActivity implements View.O
         teamAccessControlsArray = findViewById(R.id.teamAccessControlsArray);
         createTeamButton = findViewById(R.id.createTeamButton);
 
+        teamName.requestFocus();
+        assert imm != null;
+        imm.showSoftInput(teamName, InputMethodManager.SHOW_IMPLICIT);
+
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
 
@@ -89,7 +99,7 @@ public class CreateTeamByOrgActivity extends AppCompatActivity implements View.O
             @Override
             public void onClick(View view) {
 
-                AlertDialog.Builder pBuilder = new AlertDialog.Builder(ctx, R.style.confirmDialog);
+                AlertDialog.Builder pBuilder = new AlertDialog.Builder(ctx);
 
                 pBuilder.setTitle(R.string.newTeamPermission);
                 if(permissionSelectedChoice != -1) {
@@ -141,7 +151,7 @@ public class CreateTeamByOrgActivity extends AppCompatActivity implements View.O
                 teamAccessControlsArray.setText("");
                 pushAccessList = Arrays.asList(accessControlsList);
 
-                AlertDialog.Builder aDialogBuilder = new AlertDialog.Builder(ctx, R.style.confirmDialog);
+                AlertDialog.Builder aDialogBuilder = new AlertDialog.Builder(ctx);
 
                 aDialogBuilder.setMultiChoiceItems(accessControlsList, selectedAccessControlsTrueFalse, new DialogInterface.OnMultiChoiceClickListener() {
 
@@ -308,7 +318,7 @@ public class CreateTeamByOrgActivity extends AppCompatActivity implements View.O
         Call<Teams> call3;
 
         call3 = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .createTeamsByOrg(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), orgName, createNewTeamJson);
 

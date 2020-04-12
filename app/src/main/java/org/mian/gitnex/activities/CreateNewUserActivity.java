@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +26,7 @@ import org.mian.gitnex.util.TinyDB;
  * Author M M Arif
  */
 
-public class CreateNewUserActivity extends AppCompatActivity {
+public class CreateNewUserActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
     private EditText fullName;
@@ -37,12 +37,18 @@ public class CreateNewUserActivity extends AppCompatActivity {
     final Context ctx = this;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_create_new_user;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_new_user);
 
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         ImageView closeActivity = findViewById(R.id.close);
         createUserButton = findViewById(R.id.createUserButton);
@@ -50,6 +56,10 @@ public class CreateNewUserActivity extends AppCompatActivity {
         userUserName = findViewById(R.id.userUserName);
         userEmail = findViewById(R.id.userEmail);
         userPassword = findViewById(R.id.userPassword);
+
+        fullName.requestFocus();
+        assert imm != null;
+        imm.showSoftInput(fullName, InputMethodManager.SHOW_IMPLICIT);
 
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
@@ -127,7 +137,7 @@ public class CreateNewUserActivity extends AppCompatActivity {
         Call<UserInfo> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .createNewUser(instanceToken, createUser);
 

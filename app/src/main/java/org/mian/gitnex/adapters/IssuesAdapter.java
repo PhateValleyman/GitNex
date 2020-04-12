@@ -11,10 +11,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
+import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -57,7 +58,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         LayoutInflater inflater = LayoutInflater.from(context);
 
         if(viewType == TYPE_LOAD){
-            return new IssuesHolder(inflater.inflate(R.layout.repo_detail_issues_list, parent,false));
+            return new IssuesHolder(inflater.inflate(R.layout.list_issues, parent,false));
         }
         else {
             return new LoadHolder(inflater.inflate(R.layout.row_load,parent,false));
@@ -109,7 +110,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private TextView issueTitle;
         private TextView issueCreatedTime;
         private TextView issueCommentsCount;
-        private ImageView issueType;
+        private RelativeLayout relativeLayoutFrame;
 
         IssuesHolder(View itemView) {
 
@@ -121,7 +122,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             issueCommentsCount = itemView.findViewById(R.id.issueCommentsCount);
             LinearLayout frameCommentsCount = itemView.findViewById(R.id.frameCommentsCount);
             issueCreatedTime = itemView.findViewById(R.id.issueCreatedTime);
-            issueType = itemView.findViewById(R.id.issueType);
+            relativeLayoutFrame = itemView.findViewById(R.id.relativeLayoutFrame);
 
             issueTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -135,6 +136,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     TinyDB tinyDb = new TinyDB(context);
                     tinyDb.putString("issueNumber", issueNumber.getText().toString());
+                    tinyDb.putString("issueType", "issue");
                     context.startActivity(intent);
 
                 }
@@ -151,6 +153,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     TinyDB tinyDb = new TinyDB(context);
                     tinyDb.putString("issueNumber", issueNumber.getText().toString());
+                    tinyDb.putString("issueType", "issue");
                     context.startActivity(intent);
 
                 }
@@ -165,25 +168,20 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final String locale = tinyDb.getString("locale");
             final String timeFormat = tinyDb.getString("dateFormat");
 
+            /*if(issuesModel.getPull_request() != null) {
+                if (!issuesModel.getPull_request().isMerged()) {
+                    relativeLayoutFrame.setVisibility(View.GONE);
+                    relativeLayoutFrame.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+                }
+            }*/
+
             if (!issuesModel.getUser().getFull_name().equals("")) {
                 issueAssigneeAvatar.setOnClickListener(new ClickListener(context.getResources().getString(R.string.issueCreator) + issuesModel.getUser().getFull_name(), context));
             } else {
                 issueAssigneeAvatar.setOnClickListener(new ClickListener(context.getResources().getString(R.string.issueCreator) + issuesModel.getUser().getLogin(), context));
             }
 
-            if (issuesModel.getUser().getAvatar_url() != null) {
-                Picasso.get().load(issuesModel.getUser().getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(issueAssigneeAvatar);
-            } else {
-                Picasso.get().load(issuesModel.getUser().getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(issueAssigneeAvatar);
-            }
-
-            if (issuesModel.getPull_request() == null) {
-                issueType.setImageResource(R.drawable.ic_issues);
-                issueType.setOnClickListener(new ClickListener(context.getResources().getString(R.string.issueTypeIssue), context));
-            } else {
-                issueType.setImageResource(R.drawable.ic_merge);
-                issueType.setOnClickListener(new ClickListener(context.getResources().getString(R.string.issueTypePullRequest), context));
-            }
+            PicassoService.getInstance(context).get().load(issuesModel.getUser().getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(issueAssigneeAvatar);
 
             String issueNumber_ = "<font color='" + context.getResources().getColor(R.color.lightGray) + "'>" + context.getResources().getString(R.string.hash) + issuesModel.getNumber() + "</font>";
             issueTitle.setText(Html.fromHtml(issueNumber_ + " " + issuesModel.getTitle()));
@@ -191,26 +189,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             issueNumber.setText(String.valueOf(issuesModel.getNumber()));
             issueCommentsCount.setText(String.valueOf(issuesModel.getComments()));
 
-            switch (timeFormat) {
-                case "pretty": {
-                    PrettyTime prettyTime = new PrettyTime(new Locale(locale));
-                    String createdTime = prettyTime.format(issuesModel.getCreated_at());
-                    issueCreatedTime.setText(createdTime);
-                    issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issuesModel.getCreated_at()), context));
-                    break;
-                }
-                case "normal": {
-                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                    String createdTime = formatter.format(issuesModel.getCreated_at());
-                    issueCreatedTime.setText(createdTime);
-                    break;
-                }
-                case "normal1": {
-                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                    String createdTime = formatter.format(issuesModel.getCreated_at());
-                    issueCreatedTime.setText(createdTime);
-                    break;
-                }
+            issueCreatedTime.setText(TimeHelper.formatTime(issuesModel.getCreated_at(), new Locale(locale), timeFormat, context));
+
+            if(timeFormat.equals("pretty")) {
+                issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issuesModel.getCreated_at()), context));
             }
 
         }

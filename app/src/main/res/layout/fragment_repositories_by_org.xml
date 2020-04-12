@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.OrgDetailActivity">
+    tools:context=".activities.OrganizationDetailActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/pullToRefresh"
@@ -14,10 +14,9 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:background="?attr/primaryBackgroundColor"
             android:padding="4dp"
-            android:scrollbars="vertical"
-            />
+            android:scrollbars="vertical" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -28,7 +27,7 @@
         android:layout_margin="15dp"
         android:gravity="center"
         android:text="@string/noData"
-        android:textColor="@color/white"
+        android:textColor="?attr/primaryTextColor"
         android:textSize="20sp"
         android:visibility="gone" />
 

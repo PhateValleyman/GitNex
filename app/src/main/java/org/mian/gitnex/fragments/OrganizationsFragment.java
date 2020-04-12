@@ -23,8 +23,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.MainActivity;
-import org.mian.gitnex.activities.NewOrganizationActivity;
+import org.mian.gitnex.activities.CreateOrganizationActivity;
 import org.mian.gitnex.adapters.OrganizationsListAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.util.AppUtil;
@@ -50,7 +49,6 @@ public class OrganizationsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        ((MainActivity) Objects.requireNonNull(getActivity())).setActionBarTitle(getResources().getString(R.string.pageTitleOrganizations));
         final View v = inflater.inflate(R.layout.fragment_organizations, container, false);
         setHasOptionsMenu(true);
 
@@ -79,7 +77,7 @@ public class OrganizationsFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), NewOrganizationActivity.class);
+                Intent intent = new Intent(view.getContext(), CreateOrganizationActivity.class);
                 startActivity(intent);
             }
 
@@ -101,25 +99,20 @@ public class OrganizationsFragment extends Fragment {
             }
         });
 
-        if(connToInternet) {
-            swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            swipeRefresh.setRefreshing(false);
-                            OrganizationListViewModel.loadOrgsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
-                        }
-                    }, 50);
-                }
-            });
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefresh.setRefreshing(false);
+                        OrganizationListViewModel.loadOrgsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext());
+                    }
+                }, 50);
+            }
+        });
 
-            fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
-        }
-        else {
-            mProgressBar.setVisibility(View.GONE);
-        }
+        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
 
         return v;
 
@@ -134,7 +127,7 @@ public class OrganizationsFragment extends Fragment {
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
         if(tinyDb.getBoolean("orgCreated")) {
-            OrganizationListViewModel.loadOrgsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
+            OrganizationListViewModel.loadOrgsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext());
             tinyDb.putBoolean("orgCreated", false);
         }
     }
@@ -143,7 +136,7 @@ public class OrganizationsFragment extends Fragment {
 
         OrganizationListViewModel orgModel = new ViewModelProvider(this).get(OrganizationListViewModel.class);
 
-        orgModel.getUserOrgs(instanceUrl, instanceToken).observe(this, new Observer<List<UserOrganizations>>() {
+        orgModel.getUserOrgs(instanceUrl, instanceToken, getContext()).observe(getViewLifecycleOwner(), new Observer<List<UserOrganizations>>() {
             @Override
             public void onChanged(@Nullable List<UserOrganizations> orgsListMain) {
                 adapter = new OrganizationsListAdapter(getContext(), orgsListMain);
@@ -173,11 +166,11 @@ public class OrganizationsFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setQueryHint(getContext().getString(R.string.strFilter));
+        //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        if(!connToInternet) {
+        /*if(!connToInternet) {
             return;
-        }
+        }*/
 
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override

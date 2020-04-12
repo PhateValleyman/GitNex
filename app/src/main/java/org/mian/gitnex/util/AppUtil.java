@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -31,6 +32,7 @@ public class AppUtil {
         boolean haveConnectedMobile = false;
 
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert cm != null;
         NetworkInfo[] netInfo = cm.getAllNetworkInfo();
         for (NetworkInfo ni : netInfo) {
             if (ni.getTypeName().equalsIgnoreCase("WIFI"))
@@ -64,7 +66,7 @@ public class AppUtil {
     }
 
     public int charactersLength(String str) {
-         return str.length();
+        return str.length();
     }
 
     public Boolean checkStringsWithAlphaNumeric(String str) { // [a-zA-Z0-9]
@@ -115,7 +117,6 @@ public class AppUtil {
 
         String repoSize = null;
 
-        double k = size;
         double m = size/1024.0;
         double g = ((size/1024.0)/1024.0);
         double t = (((size/1024.0)/1024.0)/1024.0);
@@ -124,15 +125,49 @@ public class AppUtil {
 
         if ( t > 1 ) {
             repoSize = dec.format(t).concat(" TB");
-        } else if ( g > 1 ) {
+        }
+        else if ( g > 1 ) {
             repoSize = dec.format(g).concat(" GB");
-        } else if ( m > 1 ) {
+        }
+        else if ( m > 1 ) {
             repoSize = dec.format(m).concat(" MB");
-        } else if ( k > 1 ) {
-            repoSize = dec.format(k).concat(" KB");
+        }
+        else if ( (double) size > 1 ) {
+            repoSize = dec.format((double) size).concat(" KB");
         }
 
         return repoSize;
+
+    }
+
+    public static String formatFileSizeInDetail(long size) {
+
+        String fileSize = null;
+
+        double k = size/1024.0;
+        double m = ((size/1024.0)/1024.0);
+        double g = (((size/1024.0)/1024.0)/1024.0);
+        double t = ((((size/1024.0)/1024.0)/1024.0)/1024.0);
+
+        DecimalFormat dec = new DecimalFormat("0.00");
+
+        if ( t > 1 ) {
+            fileSize = dec.format(t).concat(" TB");
+        }
+        else if ( g > 1 ) {
+            fileSize = dec.format(g).concat(" GB");
+        }
+        else if ( m > 1 ) {
+            fileSize = dec.format(m).concat(" MB");
+        }
+        else if ( k > 1 ) {
+            fileSize = dec.format(k).concat(" KB");
+        }
+        else if ( (double) size > 1 ) {
+            fileSize = dec.format((double) size).concat(" B");
+        }
+
+        return fileSize;
 
     }
 
@@ -145,16 +180,16 @@ public class AppUtil {
 
         String sMonth;
         if (Integer.parseInt(month) < 10) {
-            sMonth = "0"+String.valueOf(month);
+            sMonth = "0"+ month;
         } else {
-            sMonth = String.valueOf(month);
+            sMonth = month;
         }
 
         String sDay;
         if (Integer.parseInt(day) < 10) {
-            sDay = "0"+String.valueOf(day);
+            sDay = "0"+ day;
         } else {
-            sDay = String.valueOf(day);
+            sDay = day;
         }
 
         return year + "-" + sMonth + "-" + sDay;
@@ -170,14 +205,14 @@ public class AppUtil {
 
         String sMin;
         if ((mMinute) < 10) {
-            sMin = "0"+String.valueOf(mMinute);
+            sMin = "0"+ mMinute;
         } else {
             sMin = String.valueOf(mMinute);
         }
 
         String sSec;
         if ((mSeconds) < 10) {
-            sSec = "0"+String.valueOf(mSeconds);
+            sSec = "0"+ mSeconds;
         } else {
             sSec = String.valueOf(mSeconds);
         }
@@ -210,4 +245,49 @@ public class AppUtil {
 
     }
 
+    public Boolean sourceCodeExtension(String ext) {
+
+        String[] extValues = new String[] {"md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m",
+                "cs", "bash", "sh", "bsh", "cv", "python", "perl", "pm", "rb", "ruby", "javascript",
+                "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs", "lsp", "rkt",
+                "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs",
+                "vhd", "tcl", "wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js",
+                "html", "htm", "volt", "ini", "htaccess", "conf", "gitignore", "gradle", "txt", "properties", "bat",
+                "twig"};
+
+        return Arrays.asList(extValues).contains(ext);
+
+    }
+
+    public Boolean pdfExtension(String ext) {
+
+        String[] extValues = new String[] {"pdf"};
+
+        return Arrays.asList(extValues).contains(ext);
+
+    }
+
+    public Boolean imageExtension(String ext) {
+
+        String[] extValues = new String[] {"jpg", "jpeg", "gif", "png", "ico"};
+
+        return Arrays.asList(extValues).contains(ext);
+
+    }
+
+    public Boolean excludeFilesInFileViewerExtension(String ext) {
+
+        String[] extValues = new String[] {"doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt",
+                "ott", "odf", "ods", "ots", "exe", "jar", "odg", "otg", "odp", "otp", "bin", "dmg", "psd",
+                "xcf"};
+
+        return Arrays.asList(extValues).contains(ext);
+
+    }
+
+    public String getLastCharactersOfWord( String str, int count ) {
+
+        return str.substring(str.length() - count);
+
+    }
 }

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.mian.gitnex">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,12 +14,13 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        tools:targetApi="n">
+        <activity android:name=".activities.MergePullRequestActivity" />
         <activity
             android:name=".activities.FileViewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.NewFileActivity"
+            android:name=".activities.CreateFileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.RepoWatchersActivity"
@@ -38,16 +41,16 @@
         <activity android:name=".activities.ProfileEmailActivity" />
         <activity android:name=".activities.AddCollaboratorToRepositoryActivity" />
         <activity android:name=".activities.CreateTeamByOrgActivity" />
-        <activity android:name=".activities.OrgTeamMembersActivity" />
+        <activity android:name=".activities.OrganizationTeamMembersActivity" />
         <activity
-            android:name=".activities.OrgDetailActivity"
+            android:name=".activities.OrganizationDetailActivity"
             android:label="@string/title_activity_org_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.SponsorsActivity" />
         <activity android:name=".activities.CreditsActivity" />
         <activity android:name=".activities.CreateLabelActivity" />
         <activity android:name=".activities.CreateIssueActivity" />
-        <activity android:name=".activities.NewMilestoneActivity" />
+        <activity android:name=".activities.CreateMilestoneActivity" />
         <activity android:name=".activities.ReplyToIssueActivity" />
         <activity
             android:name=".activities.IssueDetailActivity"
@@ -56,7 +59,7 @@
             android:name=".activities.RepoDetailActivity"
             android:label="@string/title_activity_repo_detail"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.MainActivity" android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -65,10 +68,13 @@
         </activity>
         <activity
             android:name=".activities.LoginActivity"
-            android:launchMode="singleTask" />
-        <activity android:name=".activities.NewRepoActivity" />
-        <activity android:name=".activities.NewOrganizationActivity" />
+            android:launchMode="singleTask" android:theme="@android:style/Theme.NoTitleBar"/>
+        <activity android:name=".activities.CreateRepoActivity" />
+        <activity android:name=".activities.CreateOrganizationActivity" />
         <activity android:name=".activities.OpenRepoInBrowserActivity" />
+        <activity android:name=".activities.FileDiffActivity" />
+        <activity android:name=".activities.CommitsActivity" />
+        <activity android:name=".helpers.ssl.MemorizingActivity" android:theme="@android:style/Theme.Material.Dialog" />
     </application>
 
 </manifest>

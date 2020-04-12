@@ -24,8 +24,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.MainActivity;
-import org.mian.gitnex.activities.NewRepoActivity;
+import org.mian.gitnex.activities.CreateRepoActivity;
 import org.mian.gitnex.adapters.MyReposListAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.UserRepositories;
@@ -48,6 +47,9 @@ public class MyRepositoriesFragment extends Fragment {
     private MyReposListAdapter adapter;
     private ImageView createNewRepo;
     private TextView noDataMyRepo;
+
+    private int pageSize = 1;
+    private int resultLimit = 50;
 
     private String mParam1;
     private String mParam2;
@@ -83,7 +85,6 @@ public class MyRepositoriesFragment extends Fragment {
 
         final View v = inflater.inflate(R.layout.fragment_my_repositories, container, false);
         setHasOptionsMenu(true);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setActionBarTitle(getResources().getString(R.string.pageTitleMyRepos));
 
         TinyDB tinyDb = new TinyDB(getContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -99,18 +100,18 @@ public class MyRepositoriesFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
         createNewRepo = v.findViewById(R.id.addNewRepo);
-
         createNewRepo.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), NewRepoActivity.class);
+
+                Intent intent = new Intent(view.getContext(), CreateRepoActivity.class);
                 startActivity(intent);
+
             }
 
         });
@@ -118,12 +119,13 @@ public class MyRepositoriesFragment extends Fragment {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
                 if (dy > 0 && createNewRepo.isShown()) {
                     createNewRepo.setVisibility(View.GONE);
-                } else if (dy < 0 ) {
+                } else if (dy < 0) {
                     createNewRepo.setVisibility(View.VISIBLE);
-
                 }
+
             }
 
             @Override
@@ -132,27 +134,20 @@ public class MyRepositoriesFragment extends Fragment {
             }
         });
 
-        if(connToInternet) {
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefresh.setRefreshing(false);
+                        MyRepositoriesViewModel.loadMyReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), userLogin, getContext(),  pageSize, resultLimit);
+                    }
+                }, 50);
+            }
+        });
 
-            swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            swipeRefresh.setRefreshing(false);
-                            MyRepositoriesViewModel.loadMyReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), userLogin);
-                        }
-                    }, 50);
-                }
-            });
-
-            fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), userLogin);
-
-        }
-        else {
-            mProgressBar.setVisibility(View.GONE);
-        }
+        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), userLogin, pageSize, resultLimit);
 
         return v;
 
@@ -167,15 +162,18 @@ public class MyRepositoriesFragment extends Fragment {
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         final String userLogin =  tinyDb.getString("userLogin");
 
-        MyRepositoriesViewModel.loadMyReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), userLogin);
+        if(tinyDb.getBoolean("repoCreated")) {
+            MyRepositoriesViewModel.loadMyReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), userLogin, getContext(),  pageSize, resultLimit);
+            tinyDb.putBoolean("repoCreated", false);
+        }
 
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken, String userLogin) {
+    private void fetchDataAsync(String instanceUrl, String instanceToken, String userLogin, int  pageSize, int resultLimit) {
 
         MyRepositoriesViewModel myRepoModel = new ViewModelProvider(this).get(MyRepositoriesViewModel.class);
 
-        myRepoModel.getCurrentUserRepositories(instanceUrl, instanceToken, userLogin).observe(this, new Observer<List<UserRepositories>>() {
+        myRepoModel.getCurrentUserRepositories(instanceUrl, instanceToken, userLogin, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(), new Observer<List<UserRepositories>>() {
             @Override
             public void onChanged(@Nullable List<UserRepositories> myReposListMain) {
                 adapter = new MyReposListAdapter(getContext(), myReposListMain);
@@ -205,11 +203,11 @@ public class MyRepositoriesFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setQueryHint(getContext().getString(R.string.strFilter));
+        //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        if(!connToInternet) {
+        /*if(!connToInternet) {
             return;
-        }
+        }*/
 
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override

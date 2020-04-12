@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +13,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,7 +23,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.UserSearch;
 import org.mian.gitnex.models.UserInfo;
-import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.List;
 
@@ -31,7 +30,7 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class AddCollaboratorToRepositoryActivity extends AppCompatActivity {
+public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
     final Context ctx = this;
@@ -42,11 +41,15 @@ public class AddCollaboratorToRepositoryActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_collaborator_to_repository);
+    protected int getLayoutResourceId(){
+        return R.layout.activity_add_collaborator_to_repository;
+    }
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         TinyDB tinyDb = new TinyDB(getApplicationContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -60,6 +63,10 @@ public class AddCollaboratorToRepositoryActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerViewUserSearch);
         mProgressBar = findViewById(R.id.progress_bar);
         noData = findViewById(R.id.noData);
+
+        addCollaboratorSearch.requestFocus();
+        assert imm != null;
+        imm.showSoftInput(addCollaboratorSearch, InputMethodManager.SHOW_IMPLICIT);
 
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
@@ -81,7 +88,7 @@ public class AddCollaboratorToRepositoryActivity extends AppCompatActivity {
     public void loadUserSearchList(String instanceUrl, String token, String searchKeyword, final Context context, String loginUid) {
 
         Call<UserSearch> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getUserBySearch(Authorization.returnAuthentication(getApplicationContext(), loginUid, token), searchKeyword, 10);
 
@@ -101,7 +108,7 @@ public class AddCollaboratorToRepositoryActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<UserSearch> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.getMessage());
+                Log.i("onFailure", t.toString());
             }
 
         });

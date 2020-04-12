@@ -1,13 +1,11 @@
 package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Window;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -18,7 +16,7 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.MultiSelectModel;
-import org.mian.gitnex.models.UpdateIssueAssignee;
+import org.mian.gitnex.models.UpdateIssueAssignees;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ import retrofit2.Callback;
  * Author M M Arif
  */
 
-public class AddRemoveAssigneesActivity extends AppCompatActivity {
+public class AddRemoveAssigneesActivity extends BaseActivity {
 
     private ArrayList<MultiSelectModel> listOfCollaborators = new ArrayList<>();
     private ArrayList<Integer> issueAssigneesIds = new ArrayList<>();
@@ -38,11 +36,15 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
     final Context ctx = this;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_add_remove_assignees;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_add_remove_assignees);
+        //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
         getWindow().getDecorView().setBackground(new ColorDrawable(Color.TRANSPARENT));
 
@@ -65,7 +67,7 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
         Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
 
@@ -90,7 +92,7 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
 
                         // get current issue assignees
                         Call<Issues> callSingleIssueAssignees = RetrofitClient
-                                .getInstance(instanceUrl)
+                                .getInstance(instanceUrl, getApplicationContext())
                                 .getApiInterface()
                                 .getIssueByIndex(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex);
 
@@ -234,14 +236,14 @@ public class AddRemoveAssigneesActivity extends AppCompatActivity {
 
     private void updateIssueAssignees(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, int issueIndex, List<String> issueAssigneesList) {
 
-        UpdateIssueAssignee updateAssigneeJson = new UpdateIssueAssignee(issueAssigneesList);
+        UpdateIssueAssignees updateAssigneeJson = new UpdateIssueAssignees(issueAssigneesList);
 
         Call<JsonElement> call3;
 
         call3 = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
-                .patchIssueAssignee(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, updateAssigneeJson);
+                .patchIssueAssignees(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, updateAssigneeJson);
 
         call3.enqueue(new Callback<JsonElement>() {
 

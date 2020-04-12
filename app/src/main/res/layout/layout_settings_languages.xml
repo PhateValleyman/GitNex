@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_below="@+id/translationDivider"
-    android:background="@color/colorPrimary">
+    android:background="?attr/primaryBackgroundColor">
 
     <TextView
         android:id="@+id/tvLanguage"
@@ -14,13 +15,14 @@
         android:drawableStart="@drawable/ic_language"
         android:drawablePadding="20dp"
         android:text="@string/settingsLanguageHeaderText"
+        android:textStyle="bold"
         android:textColor="@color/colorDarkGreen"/>
 
     <LinearLayout
         android:id="@+id/langFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -32,7 +34,7 @@
             android:layout_marginStart="44dp"
             android:layout_marginEnd="4dp"
             android:text="@string/settingsLanguageSelectorHeader"
-            android:textColor="@color/white"/>
+            android:textColor="?attr/primaryTextColor"/>
 
         <TextView
             android:id="@+id/tvLanguageSelected"
@@ -42,7 +44,7 @@
             android:layout_marginStart="44dp"
             android:layout_marginEnd="4dp"
             android:text="@string/settingsLanguageSelectedHeaderDefault"
-            android:textColor="@color/white"/>
+            android:textColor="?attr/selectedTextColor"/>
 
         <TextView
             android:id="@+id/helpTranslate"
@@ -53,6 +55,7 @@
             android:layout_marginEnd="4dp"
             android:autoLink="web"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
             android:text="@string/settingsHelpTranslateText"
             android:textColor="@color/lightBlue"/>
 

@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -22,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.AdminGetUsersAdapter;
-import org.mian.gitnex.fragments.AdminUsersBottomSheetFragment;
+import org.mian.gitnex.fragments.BottomSheetAdminUsersFragment;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.AppUtil;
@@ -35,7 +34,7 @@ import java.util.Objects;
  * Author M M Arif
  */
 
-public class AdminGetUsersActivity extends AppCompatActivity implements AdminUsersBottomSheetFragment.BottomSheetListener {
+public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAdminUsersFragment.BottomSheetListener {
 
     private View.OnClickListener onClickListener;
     final Context ctx = this;
@@ -45,10 +44,14 @@ public class AdminGetUsersActivity extends AppCompatActivity implements AdminUse
     private Boolean searchFilter = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_admin_get_users;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_get_users);
 
         TinyDB tinyDb = new TinyDB(getApplicationContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -168,7 +171,7 @@ public class AdminGetUsersActivity extends AppCompatActivity implements AdminUse
                 finish();
                 return true;
             case R.id.genericMenu:
-                AdminUsersBottomSheetFragment bottomSheet = new AdminUsersBottomSheetFragment();
+                BottomSheetAdminUsersFragment bottomSheet = new BottomSheetAdminUsersFragment();
                 bottomSheet.show(getSupportFragmentManager(), "usersBottomSheet");
                 return true;
             default:

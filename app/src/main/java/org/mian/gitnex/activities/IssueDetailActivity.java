@@ -2,10 +2,9 @@ package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +17,6 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
 import io.noties.markwon.ext.tables.TablePlugin;
 import io.noties.markwon.ext.tasklist.TaskListPlugin;
 import io.noties.markwon.html.HtmlPlugin;
-import io.noties.markwon.image.AsyncDrawable;
 import io.noties.markwon.image.DefaultMediaDecoder;
 import io.noties.markwon.image.ImageItem;
 import io.noties.markwon.image.ImagesPlugin;
@@ -30,12 +28,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.Gravity;
@@ -50,12 +51,12 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.squareup.picasso.Picasso;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.IssueCommentsAdapter;
+import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.fragments.SingleIssueBottomSheetFragment;
+import org.mian.gitnex.fragments.BottomSheetSingleIssueFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -67,7 +68,6 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.viewmodels.IssueCommentsViewModel;
-import org.ocpsoft.prettytime.PrettyTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -80,7 +80,7 @@ import java.util.Objects;
  * Author M M Arif
  */
 
-public class IssueDetailActivity extends AppCompatActivity {
+public class IssueDetailActivity extends BaseActivity {
 
     public ImageView closeActivity;
     private IssueCommentsAdapter adapter;
@@ -95,15 +95,20 @@ public class IssueDetailActivity extends AppCompatActivity {
     private HorizontalScrollView assigneesScrollView;
     private ScrollView scrollViewComments;
     private TextView issueModified;
+    private ImageView createNewComment;
     final Context ctx = this;
     private LinearLayout labelsLayout;
     private LinearLayout assigneesLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_issue_detail;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_issue_detail);
 
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
@@ -128,10 +133,13 @@ public class IssueDetailActivity extends AppCompatActivity {
         assigneesScrollView = findViewById(R.id.assigneesScrollView);
         scrollViewComments = findViewById(R.id.scrollViewComments);
         issueModified = findViewById(R.id.issueModified);
+        createNewComment = findViewById(R.id.addNewComment);
         labelsLayout = findViewById(R.id.frameLabels);
         assigneesLayout = findViewById(R.id.frameAssignees);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(repoName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -141,22 +149,61 @@ public class IssueDetailActivity extends AppCompatActivity {
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        IssueCommentsViewModel.loadIssueComments(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex);
-                    }
-                }, 500);
-            }
-        });
+        createNewComment.setOnClickListener(v -> startActivity(new Intent(ctx, ReplyToIssueActivity.class)));
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            scrollViewComments.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+
+                if ((scrollY - oldScrollY) > 0 && createNewComment.isShown()) {
+                    createNewComment.setVisibility(View.GONE);
+                }
+                else if ((scrollY - oldScrollY) < 0) {
+                    createNewComment.setVisibility(View.VISIBLE);
+                }
+
+                if (!scrollViewComments.canScrollVertically(1)) { // bottom
+                    createNewComment.setVisibility(View.GONE);
+                }
+
+                if (!scrollViewComments.canScrollVertically(-1)) { // top
+                    createNewComment.setVisibility(View.VISIBLE);
+                }
+
+            });
+
+        }
+
+        swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
+
+            swipeRefresh.setRefreshing(false);
+            IssueCommentsViewModel.loadIssueComments(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, getApplicationContext());
+
+        }, 500));
+
+        Typeface myTypeface;
+
+        switch(tinyDb.getInt("customFontId")) {
+
+            case 1:
+                myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/manroperegular.ttf");
+                break;
+
+            case 2:
+                myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
+                break;
+
+            default:
+                myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
+                break;
+
+        }
+
+        toolbarTitle.setTypeface(myTypeface);
+        toolbarTitle.setText(repoName);
 
         getSingleIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
         fetchDataAsync(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
@@ -180,7 +227,7 @@ public class IssueDetailActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.genericMenu:
-                SingleIssueBottomSheetFragment bottomSheet = new SingleIssueBottomSheetFragment();
+                BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment();
                 bottomSheet.show(getSupportFragmentManager(), "singleIssueBottomSheet");
                 return true;
             default:
@@ -206,7 +253,7 @@ public class IssueDetailActivity extends AppCompatActivity {
             scrollViewComments.post(new Runnable() {
                 @Override
                 public void run() {
-                    IssueCommentsViewModel.loadIssueComments(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex);
+                    IssueCommentsViewModel.loadIssueComments(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, getApplicationContext());
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -224,7 +271,7 @@ public class IssueDetailActivity extends AppCompatActivity {
             scrollViewComments.post(new Runnable() {
                 @Override
                 public void run() {
-                    IssueCommentsViewModel.loadIssueComments(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex);
+                    IssueCommentsViewModel.loadIssueComments(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, getApplicationContext());
                     tinyDb.putBoolean("commentEdited", false);
                 }
             });
@@ -262,9 +309,9 @@ public class IssueDetailActivity extends AppCompatActivity {
 
     private void fetchDataAsync(String instanceUrl, String instanceToken, String owner, String repo, int index, String loginUid) {
 
-        IssueCommentsViewModel issueCommentsModel = ViewModelProviders.of(this).get(IssueCommentsViewModel.class);
+        IssueCommentsViewModel issueCommentsModel = new ViewModelProvider(this).get(IssueCommentsViewModel.class);
 
-        issueCommentsModel.getIssueCommentList(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), owner, repo, index).observe(this, new Observer<List<IssueComments>>() {
+        issueCommentsModel.getIssueCommentList(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), owner, repo, index, getApplicationContext()).observe(this, new Observer<List<IssueComments>>() {
             @Override
             public void onChanged(@Nullable List<IssueComments> issueCommentsMain) {
                 adapter = new IssueCommentsAdapter(getApplicationContext(), issueCommentsMain);
@@ -278,7 +325,7 @@ public class IssueDetailActivity extends AppCompatActivity {
 
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
         Call<Issues> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getIssueByIndex(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex);
 
@@ -295,44 +342,35 @@ public class IssueDetailActivity extends AppCompatActivity {
 
                         final Markwon markwon = Markwon.builder(Objects.requireNonNull(getApplicationContext()))
                                 .usePlugin(CorePlugin.create())
-                                .usePlugin(ImagesPlugin.create(new ImagesPlugin.ImagesConfigure() {
-                                    @Override
-                                    public void configureImages(@NonNull ImagesPlugin plugin) {
-                                        plugin.addSchemeHandler(new SchemeHandler() {
-                                            @NonNull
-                                            @Override
-                                            public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
+                                .usePlugin(ImagesPlugin.create(plugin -> {
+                                    plugin.addSchemeHandler(new SchemeHandler() {
+                                        @NonNull
+                                        @Override
+                                        public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
 
-                                                final int resourceId = getApplicationContext().getResources().getIdentifier(
-                                                        raw.substring("drawable://".length()),
-                                                        "drawable",
-                                                        getApplicationContext().getPackageName());
+                                            final int resourceId = getApplicationContext().getResources().getIdentifier(
+                                                    raw.substring("drawable://".length()),
+                                                    "drawable",
+                                                    getApplicationContext().getPackageName());
 
-                                                final Drawable drawable = getApplicationContext().getDrawable(resourceId);
+                                            final Drawable drawable = getApplicationContext().getDrawable(resourceId);
 
-                                                assert drawable != null;
-                                                return ImageItem.withResult(drawable);
-                                            }
+                                            assert drawable != null;
+                                            return ImageItem.withResult(drawable);
+                                        }
 
-                                            @NonNull
-                                            @Override
-                                            public Collection<String> supportedSchemes() {
-                                                return Collections.singleton("drawable");
-                                            }
-                                        });
-                                        plugin.placeholderProvider(new ImagesPlugin.PlaceholderProvider() {
-                                            @Nullable
-                                            @Override
-                                            public Drawable providePlaceholder(@NonNull AsyncDrawable drawable) {
-                                                return null;
-                                            }
-                                        });
-                                        plugin.addMediaDecoder(GifMediaDecoder.create(false));
-                                        plugin.addMediaDecoder(SvgMediaDecoder.create(getApplicationContext().getResources()));
-                                        plugin.addMediaDecoder(SvgMediaDecoder.create());
-                                        plugin.defaultMediaDecoder(DefaultMediaDecoder.create(getApplicationContext().getResources()));
-                                        plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
-                                    }
+                                        @NonNull
+                                        @Override
+                                        public Collection<String> supportedSchemes() {
+                                            return Collections.singleton("drawable");
+                                        }
+                                    });
+                                    plugin.placeholderProvider(drawable -> null);
+                                    plugin.addMediaDecoder(GifMediaDecoder.create(false));
+                                    plugin.addMediaDecoder(SvgMediaDecoder.create(getApplicationContext().getResources()));
+                                    plugin.addMediaDecoder(SvgMediaDecoder.create());
+                                    plugin.defaultMediaDecoder(DefaultMediaDecoder.create(getApplicationContext().getResources()));
+                                    plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
 
                                 }))
                                 .usePlugin(new AbstractMarkwonPlugin() {
@@ -357,8 +395,9 @@ public class IssueDetailActivity extends AppCompatActivity {
                         tinyDb.putString("issueState", singleIssue.getState());
                         tinyDb.putString("issueTitle", singleIssue.getTitle());
 
-                        Picasso.get().load(singleIssue.getUser().getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(assigneeAvatar);
-                        issueTitle.setText(getString(R.string.issueTitleWithId, singleIssue.getNumber(), singleIssue.getTitle()));
+                        PicassoService.getInstance(ctx).get().load(singleIssue.getUser().getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(assigneeAvatar);
+                        String issueNumber_ = "<font color='" + getApplicationContext().getResources().getColor(R.color.lightGray) + "'>" + getApplicationContext().getResources().getString(R.string.hash) + singleIssue.getNumber() + "</font>";
+                        issueTitle.setText(Html.fromHtml(issueNumber_ + " " + singleIssue.getTitle()));
                         String cleanIssueDescription = singleIssue.getBody().trim();
                         Spanned bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(cleanIssueDescription));
                         markwon.setParsedMarkdown(issueDescription, UserMentions.UserMentionsFunc(getApplicationContext(), bodyWithMD, cleanIssueDescription));
@@ -374,7 +413,7 @@ public class IssueDetailActivity extends AppCompatActivity {
 
                                 ImageView assigneesView = new ImageView(getApplicationContext());
 
-                                Picasso.get().load(singleIssue.getAssignees().get(i).getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(100, 100).centerCrop().into(assigneesView);
+                                PicassoService.getInstance(ctx).get().load(singleIssue.getAssignees().get(i).getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(100, 100).centerCrop().into(assigneesView);
 
                                 assigneesLayout.addView(assigneesView);
                                 assigneesView.setLayoutParams(params1);
@@ -395,7 +434,7 @@ public class IssueDetailActivity extends AppCompatActivity {
 
                         if(singleIssue.getLabels() != null) {
                             labelsScrollView.setVisibility(View.VISIBLE);
-                            int width = 33;
+                            int width = 25;
                             for (int i = 0; i < singleIssue.getLabels().size(); i++) {
 
                                 String labelColor = singleIssue.getLabels().get(i).getColor();
@@ -411,11 +450,11 @@ public class IssueDetailActivity extends AppCompatActivity {
                                         .beginConfig()
                                         .useFont(Typeface.DEFAULT)
                                         .textColor(new ColorInverter().getContrastColor(color))
-                                        .fontSize(36)
+                                        .fontSize(30)
                                         .width((width * labelName.length()) - ((width / 4) * labelName.length()))
-                                        .height(60)
+                                        .height(50)
                                         .endConfig()
-                                        .buildRoundRect(labelName, color, 8);
+                                        .buildRoundRect(labelName, color, 10);
                                 labelsView.setImageDrawable(drawable);
 
                                 labelsLayout.addView(labelsView);
@@ -474,29 +513,11 @@ public class IssueDetailActivity extends AppCompatActivity {
                             issueDescription.setLayoutParams(paramsDesc);
                         }
 
-                        switch (timeFormat) {
-                            case "pretty": {
-                                PrettyTime prettyTime = new PrettyTime(new Locale(locale));
-                                String createdTime = prettyTime.format(singleIssue.getCreated_at());
-                                issueCreatedTime.setText(createdTime);
-                                issueCreatedTime.setVisibility(View.VISIBLE);
-                                issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(singleIssue.getCreated_at()), getApplicationContext()));
-                                break;
-                            }
-                            case "normal": {
-                                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                                String createdTime = formatter.format(singleIssue.getCreated_at());
-                                issueCreatedTime.setText(createdTime);
-                                issueCreatedTime.setVisibility(View.VISIBLE);
-                                break;
-                            }
-                            case "normal1": {
-                                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                                String createdTime = formatter.format(singleIssue.getCreated_at());
-                                issueCreatedTime.setText(createdTime);
-                                issueCreatedTime.setVisibility(View.VISIBLE);
-                                break;
-                            }
+                        issueCreatedTime.setText(TimeHelper.formatTime(singleIssue.getCreated_at(), new Locale(locale), timeFormat, ctx));
+                        issueCreatedTime.setVisibility(View.VISIBLE);
+
+                        if(timeFormat.equals("pretty")) {
+                            issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(singleIssue.getCreated_at()), ctx));
                         }
 
                         if(singleIssue.getMilestone() != null) {
@@ -535,12 +556,7 @@ public class IssueDetailActivity extends AppCompatActivity {
     }
 
     private void initCloseListener() {
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+        View.OnClickListener onClickListener = view -> finish();
     }
 
 }

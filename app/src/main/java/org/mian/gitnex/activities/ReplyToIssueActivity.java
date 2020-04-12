@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -10,6 +9,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,7 +34,7 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class ReplyToIssueActivity extends AppCompatActivity {
+public class ReplyToIssueActivity extends BaseActivity {
 
     public ImageView closeActivity;
     private View.OnClickListener onClickListener;
@@ -46,10 +46,16 @@ public class ReplyToIssueActivity extends AppCompatActivity {
     private Button replyButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_reply_to_issue;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reply_to_issue);
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
         TinyDB tinyDb = new TinyDB(getApplicationContext());
@@ -64,6 +70,10 @@ public class ReplyToIssueActivity extends AppCompatActivity {
 
         closeActivity = findViewById(R.id.close);
         TextView toolbar_title = findViewById(R.id.toolbar_title);
+
+        addComment.requestFocus();
+        assert imm != null;
+        imm.showSoftInput(addComment, InputMethodManager.SHOW_IMPLICIT);
 
         if(!tinyDb.getString("issueTitle").isEmpty()) {
             toolbar_title.setText(tinyDb.getString("issueTitle"));
@@ -84,6 +94,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
 
             replyButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    disableProcessButton();
                     IssueActions.editIssueComment(ctx, Integer.valueOf(commentId), addComment.getText().toString());
                 }
 
@@ -118,7 +129,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
         final String repoName = parts[1];
 
         Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
 
@@ -217,7 +228,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
         Issues issueComment = new Issues(newReplyDT);
 
         Call<Issues> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .replyCommentToIssue(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, issueComment);
 
@@ -231,6 +242,7 @@ public class ReplyToIssueActivity extends AppCompatActivity {
                     Toasty.info(getApplicationContext(), getString(R.string.commentSuccess));
                     tinyDb.putBoolean("commentPosted", true);
                     tinyDb.putBoolean("resumeIssues", true);
+                    tinyDb.putBoolean("resumePullRequests", true);
                     finish();
 
                 }

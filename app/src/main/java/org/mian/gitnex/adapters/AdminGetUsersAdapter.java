@@ -11,8 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.squareup.picasso.Picasso;
 import org.mian.gitnex.R;
+import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.UserInfo;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
     @NonNull
     @Override
     public AdminGetUsersAdapter.UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.admin_users_list, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_admin_users, parent, false);
         return new AdminGetUsersAdapter.UsersViewHolder(v);
     }
 
@@ -98,7 +98,7 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
             holder.userRole.setVisibility(View.GONE);
         }
 
-        Picasso.get().load(currentItem.getAvatar()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
+        PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,7 +33,7 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class CreateReleaseActivity extends AppCompatActivity {
+public class CreateReleaseActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
     public ImageView closeActivity;
@@ -49,12 +49,18 @@ public class CreateReleaseActivity extends AppCompatActivity {
     List<Branches> branchesList = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_create_release;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_release);
 
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         TinyDB tinyDb = new TinyDB(getApplicationContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -71,6 +77,10 @@ public class CreateReleaseActivity extends AppCompatActivity {
         releaseContent = findViewById(R.id.releaseContent);
         releaseType = findViewById(R.id.releaseType);
         releaseDraft = findViewById(R.id.releaseDraft);
+
+        releaseTagName.requestFocus();
+        assert imm != null;
+        imm.showSoftInput(releaseTagName, InputMethodManager.SHOW_IMPLICIT);
 
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
@@ -164,7 +174,7 @@ public class CreateReleaseActivity extends AppCompatActivity {
         Call<Releases> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .createNewRelease(token, repoOwner, repoName, createReleaseJson);
 
@@ -224,7 +234,7 @@ public class CreateReleaseActivity extends AppCompatActivity {
     private void getBranches(String instanceUrl, String instanceToken, final String repoOwner, final String repoName) {
 
         Call<List<Branches>> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getBranches(instanceToken, repoOwner, repoName);
 

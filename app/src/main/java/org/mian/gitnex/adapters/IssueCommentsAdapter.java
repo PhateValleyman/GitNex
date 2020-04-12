@@ -7,15 +7,15 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.Spanned;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
+import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.models.IssueComments;
@@ -23,7 +23,7 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.helpers.ClickListener;
 import org.ocpsoft.prettytime.PrettyTime;
-import java.lang.reflect.Field;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -33,8 +33,6 @@ import java.util.Locale;
 import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
@@ -59,232 +57,223 @@ import io.noties.markwon.linkify.LinkifyPlugin;
 
 public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdapter.IssueCommentViewHolder> {
 
-    private List<IssueComments> issuesComments;
-    private Context mCtx;
+	private List<IssueComments> issuesComments;
+	private Context mCtx;
 
-    static class IssueCommentViewHolder extends RecyclerView.ViewHolder {
+	static class IssueCommentViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView issueNumber;
-        private TextView commendId;
-        private ImageView issueCommenterAvatar;
-        private TextView issueComment;
-        private TextView issueCommentDate;
-        private ImageView commentsOptionsMenu;
-        private TextView commendBodyRaw;
-        private TextView commentModified;
+		private TextView issueNumber;
+		private TextView commendId;
+		private ImageView issueCommenterAvatar;
+		private TextView issueComment;
+		private TextView issueCommentDate;
+		private ImageView commentsOptionsMenu;
+		private TextView commendBodyRaw;
+		private TextView commentModified;
+		private TextView commenterUsername;
+		private TextView htmlUrl;
 
-        private IssueCommentViewHolder(View itemView) {
-            super(itemView);
+		private IssueCommentViewHolder(View itemView) {
 
-            issueNumber = itemView.findViewById(R.id.issueNumber);
-            commendId = itemView.findViewById(R.id.commendId);
-            issueCommenterAvatar = itemView.findViewById(R.id.issueCommenterAvatar);
-            issueComment = itemView.findViewById(R.id.issueComment);
-            issueCommentDate = itemView.findViewById(R.id.issueCommentDate);
-            commentsOptionsMenu = itemView.findViewById(R.id.commentsOptionsMenu);
-            commendBodyRaw = itemView.findViewById(R.id.commendBodyRaw);
-            commentModified = itemView.findViewById(R.id.commentModified);
+			super(itemView);
 
-            commentsOptionsMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+			issueNumber = itemView.findViewById(R.id.issueNumber);
+			commendId = itemView.findViewById(R.id.commendId);
+			issueCommenterAvatar = itemView.findViewById(R.id.issueCommenterAvatar);
+			issueComment = itemView.findViewById(R.id.issueComment);
+			issueCommentDate = itemView.findViewById(R.id.issueCommentDate);
+			commentsOptionsMenu = itemView.findViewById(R.id.commentsOptionsMenu);
+			commendBodyRaw = itemView.findViewById(R.id.commendBodyRaw);
+			commentModified = itemView.findViewById(R.id.commentModified);
+			commenterUsername = itemView.findViewById(R.id.commenterUsername);
+			htmlUrl = itemView.findViewById(R.id.htmlUrl);
 
-                    final Context context = v.getContext();
-                    Context context_ = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+			commentsOptionsMenu.setOnClickListener(v -> {
 
-                    PopupMenu popupMenu = new PopupMenu(context_, v);
-                    popupMenu.inflate(R.menu.issue_comment_menu);
+				final Context context = v.getContext();
+				final TinyDB tinyDb = new TinyDB(context);
+				final String loginUid = tinyDb.getString("loginUid");
 
-                    Object menuHelper;
-                    Class[] argTypes;
-                    try {
+				@SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_issue_comments, null);
 
-                        Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
-                        fMenuHelper.setAccessible(true);
-                        menuHelper = fMenuHelper.get(popupMenu);
-                        argTypes = new Class[] { boolean.class };
-                        menuHelper.getClass().getDeclaredMethod("setForceShowIcon",
-                                argTypes).invoke(menuHelper, true);
+				TextView commentMenuEdit = view.findViewById(R.id.commentMenuEdit);
+				TextView commentShare = view.findViewById(R.id.issueCommentShare);
+				//TextView commentMenuDelete = view.findViewById(R.id.commentMenuDelete);
 
-                    } catch (Exception e) {
+				if(!loginUid.contentEquals(commenterUsername.getText())) {
+					commentMenuEdit.setVisibility(View.GONE);
+					//commentMenuDelete.setVisibility(View.GONE);
+				}
 
-                        popupMenu.show();
-                        return;
+				BottomSheetDialog dialog = new BottomSheetDialog(context);
+				dialog.setContentView(view);
+				dialog.show();
 
-                    }
+				commentMenuEdit.setOnClickListener(ediComment -> {
 
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.commentMenuEdit:
+					Intent intent = new Intent(context, ReplyToIssueActivity.class);
+					intent.putExtra("commentId", commendId.getText());
+					intent.putExtra("commentAction", "edit");
+					intent.putExtra("commentBody", commendBodyRaw.getText());
+					context.startActivity(intent);
+					dialog.dismiss();
 
-                                    Intent intent = new Intent(context, ReplyToIssueActivity.class);
-                                    intent.putExtra("commentId", commendId.getText());
-                                    intent.putExtra("commentAction", "edit");
-                                    intent.putExtra("commentBody", commendBodyRaw.getText());
-                                    context.startActivity(intent);
-                                    break;
+				});
 
-                                case R.id.commentMenuDelete:
+				commentShare.setOnClickListener(ediComment -> {
 
-                                    break;
+					// get comment Url
+					CharSequence commentUrl = htmlUrl.getText();
 
-                            }
-                            return false;
-                        }
-                    });
+					// share issue comment
+					Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+					sharingIntent.setType("text/plain");
+					String intentHeader = tinyDb.getString("issueNumber") + context.getResources().getString(R.string.hash) + "issuecomment-" + commendId.getText() + " " + tinyDb.getString("issueTitle");
+					sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, intentHeader);
+					sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, commentUrl);
+					context.startActivity(Intent.createChooser(sharingIntent, intentHeader));
 
-                    popupMenu.show();
+					dialog.dismiss();
 
-                }
-            });
+				});
 
-        }
-    }
+                /*commentMenuDelete.setOnClickListener(deleteComment -> {
 
-    public IssueCommentsAdapter(Context mCtx, List<IssueComments> issuesCommentsMain) {
-        this.mCtx = mCtx;
-        this.issuesComments = issuesCommentsMain;
-    }
+                    dialog.dismiss();
 
-    @NonNull
-    @Override
-    public IssueCommentsAdapter.IssueCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.issue_comments, parent, false);
-        return new IssueCommentsAdapter.IssueCommentViewHolder(v);
-    }
+                });*/
 
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onBindViewHolder(@NonNull IssueCommentsAdapter.IssueCommentViewHolder holder, int position) {
+			});
 
-        final TinyDB tinyDb = new TinyDB(mCtx);
-        final String locale = tinyDb.getString("locale");
-        final String timeFormat = tinyDb.getString("dateFormat");
-        final String loginUid = tinyDb.getString("loginUid");
+		}
 
-        IssueComments currentItem = issuesComments.get(position);
+	}
 
-        if(!loginUid.equals(currentItem.getUser().getUsername())) {
-            holder.commentsOptionsMenu.setVisibility(View.INVISIBLE);
-        }
-        holder.commendId.setText(String.valueOf(currentItem.getId()));
-        holder.commendBodyRaw.setText(currentItem.getBody());
+	public IssueCommentsAdapter(Context mCtx, List<IssueComments> issuesCommentsMain) {
 
-        if (!currentItem.getUser().getFull_name().equals("")) {
-            holder.issueCommenterAvatar.setOnClickListener(new ClickListener(mCtx.getResources().getString(R.string.issueCommenter) + currentItem.getUser().getFull_name(), mCtx));
-        } else {
-            holder.issueCommenterAvatar.setOnClickListener(new ClickListener(mCtx.getResources().getString(R.string.issueCommenter) + currentItem.getUser().getLogin(), mCtx));
-        }
+		this.mCtx = mCtx;
+		this.issuesComments = issuesCommentsMain;
 
-        if (currentItem.getUser().getAvatar_url() != null) {
-            Picasso.get().load(currentItem.getUser().getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.issueCommenterAvatar);
-        } else {
-            Picasso.get().load(currentItem.getUser().getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.issueCommenterAvatar);
-        }
+	}
 
-        String cleanIssueComments = currentItem.getBody().trim();
+	@NonNull
+	@Override
+	public IssueCommentsAdapter.IssueCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        final Markwon markwon = Markwon.builder(Objects.requireNonNull(mCtx))
-                .usePlugin(CorePlugin.create())
-                .usePlugin(ImagesPlugin.create(new ImagesPlugin.ImagesConfigure() {
-                    @Override
-                    public void configureImages(@NonNull ImagesPlugin plugin) {
-                        plugin.addSchemeHandler(new SchemeHandler() {
-                            @NonNull
-                            @Override
-                            public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_issue_comments, parent, false);
+		return new IssueCommentsAdapter.IssueCommentViewHolder(v);
 
-                                final int resourceId = mCtx.getResources().getIdentifier(
-                                        raw.substring("drawable://".length()),
-                                        "drawable",
-                                        mCtx.getPackageName());
+	}
 
-                                final Drawable drawable = mCtx.getDrawable(resourceId);
+	@SuppressLint("SetTextI18n")
+	@Override
+	public void onBindViewHolder(@NonNull IssueCommentsAdapter.IssueCommentViewHolder holder, int position) {
 
-                                assert drawable != null;
-                                return ImageItem.withResult(drawable);
-                            }
+		final TinyDB tinyDb = new TinyDB(mCtx);
+		final String locale = tinyDb.getString("locale");
+		final String timeFormat = tinyDb.getString("dateFormat");
 
-                            @NonNull
-                            @Override
-                            public Collection<String> supportedSchemes() {
-                                return Collections.singleton("drawable");
-                            }
-                        });
-                        plugin.placeholderProvider(new ImagesPlugin.PlaceholderProvider() {
-                            @Nullable
-                            @Override
-                            public Drawable providePlaceholder(@NonNull AsyncDrawable drawable) {
-                                return null;
-                            }
-                        });
-                        plugin.addMediaDecoder(GifMediaDecoder.create(false));
-                        plugin.addMediaDecoder(SvgMediaDecoder.create(mCtx.getResources()));
-                        plugin.addMediaDecoder(SvgMediaDecoder.create());
-                        plugin.defaultMediaDecoder(DefaultMediaDecoder.create(mCtx.getResources()));
-                        plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
-                    }
-                }))
-                .usePlugin(new AbstractMarkwonPlugin() {
-                    @Override
-                    public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
-                        builder
-                                .codeTextColor(tinyDb.getInt("codeBlockColor"))
-                                .codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
-                                .linkColor(mCtx.getResources().getColor(R.color.lightBlue));
-                    }
-                })
-                .usePlugin(TablePlugin.create(mCtx))
-                .usePlugin(TaskListPlugin.create(mCtx))
-                .usePlugin(HtmlPlugin.create())
-                .usePlugin(StrikethroughPlugin.create())
-                .usePlugin(LinkifyPlugin.create())
-                .build();
+		IssueComments currentItem = issuesComments.get(position);
 
-        Spanned bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(cleanIssueComments));
-        markwon.setParsedMarkdown(holder.issueComment, UserMentions.UserMentionsFunc(mCtx, bodyWithMD, cleanIssueComments));
+		holder.htmlUrl.setText(currentItem.getHtml_url());
+		holder.commenterUsername.setText(currentItem.getUser().getUsername());
+		holder.commendId.setText(String.valueOf(currentItem.getId()));
+		holder.commendBodyRaw.setText(currentItem.getBody());
 
-        String edited;
+		if(!currentItem.getUser().getFull_name().equals("")) {
+			holder.issueCommenterAvatar.setOnClickListener(new ClickListener(mCtx.getResources().getString(R.string.issueCommenter) + currentItem.getUser().getFull_name(), mCtx));
+		}
+		else {
+			holder.issueCommenterAvatar.setOnClickListener(new ClickListener(mCtx.getResources().getString(R.string.issueCommenter) + currentItem.getUser().getLogin(), mCtx));
+		}
 
-        if(!currentItem.getUpdated_at().equals(currentItem.getCreated_at())) {
-            edited = mCtx.getResources().getString(R.string.colorfulBulletSpan) + mCtx.getResources().getString(R.string.modifiedText);
-            holder.commentModified.setVisibility(View.VISIBLE);
-            holder.commentModified.setText(edited);
-            holder.commentModified.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getUpdated_at()), mCtx));
-        }
-        else {
-            holder.commentModified.setVisibility(View.INVISIBLE);
-        }
+		PicassoService.getInstance(mCtx).get().load(currentItem.getUser().getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.issueCommenterAvatar);
 
-        switch (timeFormat) {
-            case "pretty": {
-                PrettyTime prettyTime = new PrettyTime(new Locale(locale));
-                String createdTime = prettyTime.format(currentItem.getCreated_at());
-                holder.issueCommentDate.setText(createdTime);
-                holder.issueCommentDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getCreated_at()), mCtx));
-                break;
-            }
-            case "normal": {
-                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + mCtx.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                String createdTime = formatter.format(currentItem.getCreated_at());
-                holder.issueCommentDate.setText(createdTime);
-                break;
-            }
-            case "normal1": {
-                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + mCtx.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                String createdTime = formatter.format(currentItem.getCreated_at());
-                holder.issueCommentDate.setText(createdTime);
-                break;
-            }
-        }
+		String cleanIssueComments = currentItem.getBody().trim();
 
-    }
+		final Markwon markwon = Markwon.builder(Objects.requireNonNull(mCtx)).usePlugin(CorePlugin.create()).usePlugin(ImagesPlugin.create(new ImagesPlugin.ImagesConfigure() {
 
-    @Override
-    public int getItemCount() {
-        return issuesComments.size();
-    }
+			@Override
+			public void configureImages(@NonNull ImagesPlugin plugin) {
+
+				plugin.addSchemeHandler(new SchemeHandler() {
+
+					@NonNull
+					@Override
+					public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
+
+						final int resourceId = mCtx.getResources().getIdentifier(raw.substring("drawable://".length()), "drawable", mCtx.getPackageName());
+
+						final Drawable drawable = mCtx.getDrawable(resourceId);
+
+						assert drawable != null;
+						return ImageItem.withResult(drawable);
+
+					}
+
+					@NonNull
+					@Override
+					public Collection<String> supportedSchemes() {
+
+						return Collections.singleton("drawable");
+					}
+				});
+				plugin.placeholderProvider(new ImagesPlugin.PlaceholderProvider() {
+
+					@Nullable
+					@Override
+					public Drawable providePlaceholder(@NonNull AsyncDrawable drawable) {
+
+						return null;
+					}
+				});
+				plugin.addMediaDecoder(GifMediaDecoder.create(false));
+				plugin.addMediaDecoder(SvgMediaDecoder.create(mCtx.getResources()));
+				plugin.addMediaDecoder(SvgMediaDecoder.create());
+				plugin.defaultMediaDecoder(DefaultMediaDecoder.create(mCtx.getResources()));
+				plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
+			}
+		})).usePlugin(new AbstractMarkwonPlugin() {
+
+			@Override
+			public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
+
+				builder.codeTextColor(tinyDb.getInt("codeBlockColor")).codeBackgroundColor(tinyDb.getInt("codeBlockBackground")).linkColor(mCtx.getResources().getColor(R.color.lightBlue));
+			}
+
+		}).usePlugin(TablePlugin.create(mCtx)).usePlugin(TaskListPlugin.create(mCtx)).usePlugin(HtmlPlugin.create()).usePlugin(StrikethroughPlugin.create()).usePlugin(LinkifyPlugin.create()).build();
+
+		Spanned bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(cleanIssueComments));
+		markwon.setParsedMarkdown(holder.issueComment, UserMentions.UserMentionsFunc(mCtx, bodyWithMD, cleanIssueComments));
+
+		String edited;
+
+		if(!currentItem.getUpdated_at().equals(currentItem.getCreated_at())) {
+
+			edited = mCtx.getResources().getString(R.string.colorfulBulletSpan) + mCtx.getResources().getString(R.string.modifiedText);
+			holder.commentModified.setVisibility(View.VISIBLE);
+			holder.commentModified.setText(edited);
+			holder.commentModified.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getUpdated_at()), mCtx));
+
+		}
+		else {
+
+			holder.commentModified.setVisibility(View.INVISIBLE);
+
+		}
+
+		holder.issueCommentDate.setText(TimeHelper.formatTime(currentItem.getCreated_date(), new Locale(locale), timeFormat, mCtx));
+
+		if(timeFormat.equals("pretty")) {
+			holder.issueCommentDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getCreated_at()), mCtx));
+		}
+	}
+
+	@Override
+	public int getItemCount() {
+
+		return issuesComments.size();
+
+	}
 
 }

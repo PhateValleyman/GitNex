@@ -14,7 +14,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:background="?attr/primaryBackgroundColor"
             android:padding="4dp"
             android:scrollbars="vertical" />
 
@@ -38,7 +38,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:background="@drawable/circle"
-        android:padding="12dp"
+        android:padding="@dimen/fab_padding"
         android:contentDescription="@string/addNewContent" />
 
     <TextView
@@ -47,7 +47,7 @@
         android:layout_height="match_parent"
         android:layout_margin="15dp"
         android:text="@string/noData"
-        android:textColor="@color/white"
+        android:textColor="?attr/primaryTextColor"
         android:gravity="center"
         android:textSize="20sp"
         android:visibility="gone" />

@@ -2,6 +2,7 @@
 [![Release](https://img.shields.io/badge/dynamic/json.svg?label=release&url=https://gitea.com/api/v1/repos/gitnex/GitNex/releases&query=$[0].tag_name)](https://gitea.com/gitnex/GitNex/releases)
 [![Build Status](https://drone.gitea.com/api/badges/gitnex/GitNex/status.svg)](https://drone.gitea.com/gitnex/GitNex)
 [![Crowdin](https://badges.crowdin.net/gitnex/localized.svg)](https://crowdin.com/project/gitnex)
+[![Join the Discord chat at https://discord.gg/FbSS4rf](https://img.shields.io/discord/632219664587685908.svg)](https://discord.gg/FbSS4rf)
 
 [<img alt="Become a Patroen" src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" height="40"/>](https://www.patreon.com/mmarif)
 [<img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg" height="40"/>](https://liberapay.com/mmarif/donate)
@@ -19,7 +20,7 @@ No trackers are used and source code is available here for anyone to audit.
 [<img alt='Download APK' src='https://gitnex.com/img/download-apk.png' height="80"/>](https://gitea.com/gitnex/GitNex/releases)
 
 ## Note about Gitea version
-Please make sure that you are on Gitea **1.9.x** stable release or later. Below this may not work as one would expect because of the newly added objects to the API at later versions. Please consider updating your Gitea server.
+Please make sure that you are on latest stable release or later for better app experience.
 
 Check the versions [compatibility page](https://gitea.com/gitnex/GitNex/wiki/Compatibility) which lists all the supported versions with compatibility ratio.
 
@@ -29,12 +30,12 @@ Option 1 - Download the source code, open it in Android Studio and build it ther
 Option 2 - Open terminal(Linux) and cd to the project dir. Run `./gradlew build`.
 
 ## Features
-- My Repositories
-- Repositories list
-- Organizations list
-- Create repository
-- Create organization
+- File and directory browser
+- Create files
+- Explore repositories
 - Issues list
+- Pull requests
+- Merge pull request
 - [MANY MORE](https://gitea.com/gitnex/GitNex/wiki/Features)
 
 ## Contributing
@@ -83,6 +84,14 @@ Open source libraries
 - Abumoallim/android-multi-select-dialog
 - Pes/materialcolorpicker
 - Hendraanggrian/socialview
-- Fython/BreadcrumbsView
+- HamidrezaAmz/BreadcrumbsView
+- Chrisbanes/PhotoView
+- Pddstudio/highlightjs-android
+- Apache/commons-io
+- Caverock/androidsvg
+- Droidsonroids.gif/android-gif-drawable
+- Barteksc/AndroidPdfViewer
+- Mikepenz/fastadapter
+- Ge0rg/MemorizingTrustManager
 
 [Follow me on Fediverse - mastodon.social/@mmarif](https://mastodon.social/@mmarif)

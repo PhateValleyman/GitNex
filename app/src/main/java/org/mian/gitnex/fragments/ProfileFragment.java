@@ -1,6 +1,7 @@
 package org.mian.gitnex.fragments;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,9 +18,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.android.material.tabs.TabLayout;
-import com.squareup.picasso.Picasso;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
+import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
@@ -37,7 +38,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setActionBarTitle(getResources().getString(R.string.pageTitleProfile));
         setHasOptionsMenu(true);
 
         TinyDB tinyDb = new TinyDB(getContext());
@@ -48,16 +48,51 @@ public class ProfileFragment extends Fragment {
         TextView userEmail = v.findViewById(R.id.userEmail);
 
         userFullName.setText(tinyDb.getString("userFullname"));
-        Picasso.get().load(tinyDb.getString("userAvatar")).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(userAvatar);
+        PicassoService.getInstance(ctx).get().load(tinyDb.getString("userAvatar")).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(userAvatar);
         userLogin.setText(getString(R.string.usernameWithAt, tinyDb.getString("userLogin")));
         userEmail.setText(tinyDb.getString("userEmail"));
 
-        ProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new ProfileFragment.SectionsPagerAdapter(getFragmentManager());
+        ProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
         ViewPager mViewPager = v.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        Typeface myTypeface;
+        if(tinyDb.getInt("customFontId") == 0) {
+
+            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "fonts/roboto.ttf");
+
+        }
+        else if (tinyDb.getInt("customFontId") == 1) {
+
+            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "fonts/manroperegular.ttf");
+
+        }
+        else if (tinyDb.getInt("customFontId") == 2) {
+
+            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
+
+        }
+        else {
+
+            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "fonts/roboto.ttf");
+
+        }
+
         TabLayout tabLayout = v.findViewById(R.id.tabs);
+
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    ((TextView) tabViewChild).setTypeface(myTypeface);
+                }
+            }
+        }
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -66,7 +101,7 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+    public static class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -112,9 +147,8 @@ public class ProfileFragment extends Fragment {
                 ((MainActivity)ctx).finish();
                 return true;
             case R.id.profileMenu:
-                ProfileBottomSheetFragment bottomSheet = new ProfileBottomSheetFragment();
-                assert getFragmentManager() != null;
-                bottomSheet.show(getFragmentManager(), "profileBottomSheet");
+                BottomSheetProfileFragment bottomSheet = new BottomSheetProfileFragment();
+                bottomSheet.show(getChildFragmentManager(), "profileBottomSheet");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

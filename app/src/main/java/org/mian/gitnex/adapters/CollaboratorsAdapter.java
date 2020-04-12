@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
 import org.mian.gitnex.R;
+import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import java.util.List;
@@ -61,7 +61,7 @@ public class CollaboratorsAdapter extends BaseAdapter  {
         ViewHolder viewHolder = null;
 
         if (finalView == null) {
-            finalView = LayoutInflater.from(mCtx).inflate(R.layout.collaborators_list, null);
+            finalView = LayoutInflater.from(mCtx).inflate(R.layout.list_collaborators, null);
             viewHolder = new ViewHolder(finalView);
             finalView.setTag(viewHolder);
         }
@@ -77,7 +77,7 @@ public class CollaboratorsAdapter extends BaseAdapter  {
     private void initData(ViewHolder viewHolder, int position) {
 
         Collaborators currentItem = collaboratorsList.get(position);
-        Picasso.get().load(currentItem.getAvatar_url()).transform(new RoundedTransformation(8, 0)).resize(180, 180).centerCrop().into(viewHolder.collaboratorAvatar);
+        PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(180, 180).centerCrop().into(viewHolder.collaboratorAvatar);
 
         if(!currentItem.getFull_name().equals("")) {
             viewHolder.collaboratorName.setText(currentItem.getFull_name());

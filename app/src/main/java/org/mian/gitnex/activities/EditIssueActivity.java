@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -13,6 +12,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -45,7 +45,7 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class EditIssueActivity extends AppCompatActivity implements View.OnClickListener {
+public class EditIssueActivity extends BaseActivity implements View.OnClickListener {
 
     final Context ctx = this;
     private View.OnClickListener onClickListener;
@@ -62,10 +62,16 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
     private ArrayAdapter<Mention> defaultMentionAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_edit_issue;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_issue);
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
@@ -85,6 +91,10 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
         editIssueDescription = findViewById(R.id.editIssueDescription);
         editIssueDueDate = findViewById(R.id.editIssueDueDate);
 
+        editIssueTitle.requestFocus();
+        assert imm != null;
+        imm.showSoftInput(editIssueTitle, InputMethodManager.SHOW_IMPLICIT);
+
         defaultMentionAdapter = new MentionArrayAdapter<>(this);
         loadCollaboratorsList();
 
@@ -100,7 +110,13 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
         editIssueButton.setOnClickListener(this);
 
         if(!tinyDb.getString("issueNumber").isEmpty()) {
-            toolbar_title.setText(getString(R.string.editIssueNavHeader, String.valueOf(issueIndex)));
+
+            if(tinyDb.getString("issueType").equals("pr")) {
+                toolbar_title.setText(getString(R.string.editPrNavHeader, String.valueOf(issueIndex)));
+            }
+            else {
+                toolbar_title.setText(getString(R.string.editIssueNavHeader, String.valueOf(issueIndex)));
+            }
         }
 
         disableProcessButton();
@@ -122,7 +138,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
         final String repoName = parts[1];
 
         Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
 
@@ -153,7 +169,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.getMessage());
+                Log.i("onFailure", t.toString());
             }
 
         });
@@ -229,7 +245,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
         CreateIssue issueData = new CreateIssue(title, description, dueDate, editIssueMilestoneId);
 
         Call<JsonElement> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .patchIssue(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, issueData);
 
@@ -240,7 +256,13 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
 
                 if(response.code() == 201) {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.editIssueSuccessMessage));
+                    if(tinyDb.getString("issueType").equals("pr")) {
+                        Toasty.info(getApplicationContext(), getString(R.string.editPrSuccessMessage));
+                    }
+                    else {
+                        Toasty.info(getApplicationContext(), getString(R.string.editIssueSuccessMessage));
+                    }
+
                     tinyDb.putBoolean("issueEdited", true);
                     tinyDb.putBoolean("resumeIssues", true);
                     finish();
@@ -307,7 +329,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
     private void getIssue(final String instanceUrl, final String instanceToken, final String loginUid, final String repoOwner, final String repoName, int issueIndex) {
 
         Call<Issues> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getIssueByIndex(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex);
 
@@ -331,7 +353,7 @@ public class EditIssueActivity extends AppCompatActivity implements View.OnClick
                     if(response.body().getId() > 0) {
 
                         Call<List<Milestones>> call_ = RetrofitClient
-                                .getInstance(instanceUrl)
+                                .getInstance(instanceUrl, getApplicationContext())
                                 .getApiInterface()
                                 .getMilestones(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, msState);
 

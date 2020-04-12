@@ -1,5 +1,6 @@
 package org.mian.gitnex.viewmodels;
 
+import android.content.Context;
 import android.util.Log;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.models.UserRepositories;
@@ -20,22 +21,22 @@ public class RepositoriesListViewModel extends ViewModel {
 
     private static MutableLiveData<List<UserRepositories>> reposList;
 
-    public LiveData<List<UserRepositories>> getUserRepositories(String instanceUrl, String token) {
+    public LiveData<List<UserRepositories>> getUserRepositories(String instanceUrl, String token, Context ctx, int page, int limit) {
 
         //if (reposList == null) {
             reposList = new MutableLiveData<>();
-            loadReposList(instanceUrl, token);
+            loadReposList(instanceUrl, token, ctx, page, limit);
         //}
 
         return reposList;
     }
 
-    public static void loadReposList(String instanceUrl, String token) {
+    public static void loadReposList(String instanceUrl, String token, Context ctx, int page, int limit) {
 
         Call<List<UserRepositories>> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getUserRepositories(token);
+                .getUserRepositories(token, page, limit);
 
         call.enqueue(new Callback<List<UserRepositories>>() {
 

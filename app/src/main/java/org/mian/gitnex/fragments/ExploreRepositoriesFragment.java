@@ -17,13 +17,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.ExploreRepositoriesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.ExploreRepositories;
 import org.mian.gitnex.models.UserRepositories;
-import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.List;
 import java.util.Objects;
@@ -46,9 +44,8 @@ public class ExploreRepositoriesFragment extends Fragment {
     private TextView searchKeyword;
     private Boolean repoTypeInclude = true;
     private String sort = "updated";
-    private String order = "asc";
-
-    private ExploreRepositoriesAdapter adapter;
+    private String order = "desc";
+    private int limit = 50;
 
     private OnFragmentInteractionListener mListener;
 
@@ -77,11 +74,8 @@ public class ExploreRepositoriesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
-
         final View v = inflater.inflate(R.layout.fragment_explore_repo, container, false);
         //setHasOptionsMenu(true);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setActionBarTitle(getResources().getString(R.string.pageTitleExplore));
 
         TinyDB tinyDb = new TinyDB(getContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -93,37 +87,35 @@ public class ExploreRepositoriesFragment extends Fragment {
         mProgressBar = v.findViewById(R.id.progress_bar);
         mRecyclerView = v.findViewById(R.id.recyclerViewReposSearch);
 
-        if(connToInternet) {
+        mProgressBar.setVisibility(View.VISIBLE);
 
-            searchKeyword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_SEND) {
-                        if(!searchKeyword.getText().toString().equals("")) {
-                            mProgressBar.setVisibility(View.VISIBLE);
-                            mRecyclerView.setVisibility(View.GONE);
-                            loadSearchReposList(instanceUrl, instanceToken, loginUid, searchKeyword.getText().toString(), repoTypeInclude, sort, order, getContext());
-                        }
+        searchKeyword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    if(!searchKeyword.getText().toString().equals("")) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
+                        loadSearchReposList(instanceUrl, instanceToken, loginUid, searchKeyword.getText().toString(), repoTypeInclude, sort, order, getContext(), limit);
                     }
-                    return false;
                 }
-            });
+                return false;
+            }
+        });
 
-        }
-        else {
-            mProgressBar.setVisibility(View.GONE);
-        }
+        int limitDefault = 10;
+        loadDefaultList(instanceUrl, instanceToken, loginUid, repoTypeInclude, sort, order, getContext(), limitDefault);
 
         return v;
 
     }
 
-    private void loadSearchReposList(String instanceUrl, String instanceToken, String loginUid, String searchKeyword, Boolean repoTypeInclude, String sort, String order, final Context context) {
+    private void loadDefaultList(String instanceUrl, String instanceToken, String loginUid, Boolean repoTypeInclude, String sort, String order, final Context context, int limit) {
 
         Call<ExploreRepositories> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getContext())
                 .getApiInterface()
-                .queryRepos(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), searchKeyword, repoTypeInclude, sort, order);
+                .queryRepos(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), null, repoTypeInclude, sort, order, limit);
 
         call.enqueue(new Callback<ExploreRepositories>() {
 
@@ -141,7 +133,37 @@ public class ExploreRepositoriesFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<ExploreRepositories> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.getMessage());
+                Log.i("onFailure", Objects.requireNonNull(t.getMessage()));
+            }
+
+        });
+
+    }
+
+    private void loadSearchReposList(String instanceUrl, String instanceToken, String loginUid, String searchKeyword, Boolean repoTypeInclude, String sort, String order, final Context context, int limit) {
+
+        Call<ExploreRepositories> call = RetrofitClient
+                .getInstance(instanceUrl, getContext())
+                .getApiInterface()
+                .queryRepos(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), searchKeyword, repoTypeInclude, sort, order, limit);
+
+        call.enqueue(new Callback<ExploreRepositories>() {
+
+            @Override
+            public void onResponse(@NonNull Call<ExploreRepositories> call, @NonNull Response<ExploreRepositories> response) {
+
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    getReposList(response.body().getSearchedData(), context);
+                } else {
+                    Log.i("onResponse", String.valueOf(response.code()));
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ExploreRepositories> call, @NonNull Throwable t) {
+                Log.i("onFailure", Objects.requireNonNull(t.getMessage()));
             }
 
         });
@@ -150,7 +172,7 @@ public class ExploreRepositoriesFragment extends Fragment {
 
     private void getReposList(List<UserRepositories> dataList, Context context) {
 
-        adapter = new ExploreRepositoriesAdapter(dataList, context);
+        ExploreRepositoriesAdapter adapter = new ExploreRepositoriesAdapter(dataList, context);
 
         mRecyclerView.setVisibility(View.VISIBLE);
 

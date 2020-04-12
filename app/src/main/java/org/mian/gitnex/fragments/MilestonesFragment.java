@@ -104,7 +104,7 @@ public class MilestonesFragment extends Fragment {
                     @Override
                     public void run() {
                         swipeRefresh.setRefreshing(false);
-                        MilestonesViewModel.loadMilestonesList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, msState);
+                        MilestonesViewModel.loadMilestonesList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, msState, getContext());
                     }
                 }, 50);
             }
@@ -128,7 +128,7 @@ public class MilestonesFragment extends Fragment {
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
         if(tinyDb.getBoolean("milestoneCreated")) {
-            MilestonesViewModel.loadMilestonesList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, msState);
+            MilestonesViewModel.loadMilestonesList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, msState, getContext());
             tinyDb.putBoolean("milestoneCreated", false);
         }
     }
@@ -153,7 +153,7 @@ public class MilestonesFragment extends Fragment {
 
         MilestonesViewModel msModel = new ViewModelProvider(this).get(MilestonesViewModel.class);
 
-        msModel.getMilestonesList(instanceUrl, instanceToken, owner, repo, msState).observe(this, new Observer<List<Milestones>>() {
+        msModel.getMilestonesList(instanceUrl, instanceToken, owner, repo, msState, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Milestones>>() {
             @Override
             public void onChanged(@Nullable List<Milestones> msListMain) {
                 adapter = new MilestonesAdapter(getContext(), msListMain);
@@ -183,11 +183,11 @@ public class MilestonesFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setQueryHint(getContext().getString(R.string.strFilter));
+        //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
-        if(!connToInternet) {
+        /*if(!connToInternet) {
             return;
-        }
+        }*/
 
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override

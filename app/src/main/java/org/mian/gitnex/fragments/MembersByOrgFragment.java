@@ -83,7 +83,7 @@ public class MembersByOrgFragment extends Fragment {
 
         MembersByOrgViewModel membersModel= new ViewModelProvider(this).get(MembersByOrgViewModel.class);
 
-        membersModel.getMembersList(instanceUrl, instanceToken, owner).observe(this, new Observer<List<UserInfo>>() {
+        membersModel.getMembersList(instanceUrl, instanceToken, owner, getContext()).observe(getViewLifecycleOwner(), new Observer<List<UserInfo>>() {
             @Override
             public void onChanged(@Nullable List<UserInfo> membersListMain) {
                 adapter = new MembersByOrgAdapter(getContext(), membersListMain);
@@ -112,7 +112,7 @@ public class MembersByOrgFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setQueryHint(getContext().getString(R.string.strFilter));
+        //searchView.setQueryHint(getContext().getString(R.string.strFilter));
 
         if(!connToInternet) {
             return;

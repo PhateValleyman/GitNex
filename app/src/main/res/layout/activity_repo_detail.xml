@@ -6,23 +6,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="?attr/primaryBackgroundColor"
     tools:context=".activities.RepoDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/Widget.AppCompat.SearchView">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_weight="1"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/primaryBackgroundColor"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:title="@string/app_name">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:textSize="18sp"
+                android:textColor="?attr/primaryTextColor"
+                android:id="@+id/toolbar_title" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -31,6 +40,8 @@
             app:tabMode="scrollable"
             app:tabTextAppearance="@style/customTabLayout"
             android:layout_width="match_parent"
+            android:background="?attr/primaryBackgroundColor"
+            app:tabTextColor="?attr/primaryTextColor"
             android:layout_height="wrap_content">
 
             <com.google.android.material.tabs.TabItem
@@ -58,16 +69,10 @@
                 android:text="@string/tabItemCloseIssues" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItem3_ml"
+                android:id="@+id/tabItemPullRequests"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tab_text_ml" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItem4_labels"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tab_text_labels" />
+                android:text="@string/tabPullRequests" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabItem5_branches"
@@ -80,6 +85,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tab_text_releases" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabItem3_ml"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_text_ml" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabItem4_labels"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_text_labels" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabItem7_collaborators"

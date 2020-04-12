@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -12,6 +11,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -45,7 +45,7 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class CreateIssueActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreateIssueActivity extends BaseActivity implements View.OnClickListener {
 
     private View.OnClickListener onClickListener;
     MultiSelectDialog multiSelectDialog;
@@ -68,15 +68,22 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private ArrayAdapter<Mention> defaultMentionAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected int getLayoutResourceId(){
+        return R.layout.activity_create_issue;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_issue);
 
         boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         TinyDB tinyDb = new TinyDB(getApplicationContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
+        final String loginFullName = tinyDb.getString("userFullname");
         String repoFullName = tinyDb.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         final String repoOwner = parts[0];
@@ -91,6 +98,10 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         newIssueTitle = findViewById(R.id.newIssueTitle);
         newIssueDescription = findViewById(R.id.newIssueDescription);
         labelsIdHolder = findViewById(R.id.labelsIdHolder);
+
+        newIssueTitle.requestFocus();
+        assert imm != null;
+        imm.showSoftInput(newIssueTitle, InputMethodManager.SHOW_IMPLICIT);
 
         defaultMentionAdapter = new MentionArrayAdapter<>(this);
         loadCollaboratorsList();
@@ -109,7 +120,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
 
         getLabels(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
-        getCollaborators(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
+        getCollaborators(instanceUrl, instanceToken, repoOwner, repoName, loginUid, loginFullName);
 
         disableProcessButton();
 
@@ -217,7 +228,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         final String repoName = parts[1];
 
         Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
 
@@ -248,7 +259,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.getMessage());
+                Log.i("onFailure", t.toString());
             }
 
         });
@@ -261,7 +272,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         Call<JsonElement> call3;
 
         call3 = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .createNewIssue(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, createNewIssueJson);
 
@@ -325,7 +336,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
 
         String msState = "open";
         Call<List<Milestones>> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getMilestones(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, msState);
 
@@ -339,13 +350,13 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
 
                         List<Milestones> milestonesList_ = response.body();
 
-                        milestonesList.add(new Milestones(0,"No milestone"));
+                        milestonesList.add(new Milestones(0,getString(R.string.issueCreatedNoMilestone)));
                         assert milestonesList_ != null;
                         if(milestonesList_.size() > 0) {
                             for (int i = 0; i < milestonesList_.size(); i++) {
 
-                                //String mStone = getString(R.string.spinnerMilestoneText, milestonesList_.get(i).getTitle(), milestonesList_.get(i).getState());
-                                if(milestonesList_.get(i).getState().equals(getString(R.string.issueStatusOpen))) {
+                                //Don't translate "open" is a enum
+                                if(milestonesList_.get(i).getState().equals("open")) {
                                     Milestones data = new Milestones(
                                             milestonesList_.get(i).getId(),
                                             milestonesList_.get(i).getTitle()
@@ -376,12 +387,14 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    private void getCollaborators(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
+    private void getCollaborators(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, String loginFullName) {
 
         Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+
+        listOfAssignees.add(new MultiSelectModel(-1, loginFullName));
 
         call.enqueue(new Callback<List<Collaborators>>() {
 
@@ -449,7 +462,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private void getLabels(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
 
         Call<List<Labels>> call = RetrofitClient
-                .getInstance(instanceUrl)
+                .getInstance(instanceUrl, getApplicationContext())
                 .getApiInterface()
                 .getlabels(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
 

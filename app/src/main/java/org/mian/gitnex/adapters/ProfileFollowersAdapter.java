@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
 import org.mian.gitnex.R;
+import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.UserInfo;
 import java.util.List;
@@ -47,7 +47,7 @@ public class ProfileFollowersAdapter extends RecyclerView.Adapter<ProfileFollowe
     @NonNull
     @Override
     public ProfileFollowersAdapter.FollowersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.profile_followers_list, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_profile_followers, parent, false);
         return new ProfileFollowersAdapter.FollowersViewHolder(v);
     }
 
@@ -65,7 +65,7 @@ public class ProfileFollowersAdapter extends RecyclerView.Adapter<ProfileFollowe
             holder.userName.setVisibility(View.GONE);
         }
 
-        Picasso.get().load(currentItem.getAvatar()).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
+        PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
     }
 
     @Override
