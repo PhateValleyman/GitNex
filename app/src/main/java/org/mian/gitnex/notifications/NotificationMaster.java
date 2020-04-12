@@ -1,7 +1,6 @@
 package org.mian.gitnex.notifications;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import androidx.work.Constraints;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
@@ -34,6 +33,7 @@ public class NotificationMaster {
 		}
 
 		if(notificationsSupported == 1) {
+
 			WorkManager.getInstance(context).cancelAllWorkByTag("gitnex-notifications");
 
 			Constraints constraints = new Constraints.Builder()
@@ -50,6 +50,7 @@ public class NotificationMaster {
 					.build();
 
 			WorkManager.getInstance(context).enqueue(notificationRequest);
+
 		}
 
 	}
