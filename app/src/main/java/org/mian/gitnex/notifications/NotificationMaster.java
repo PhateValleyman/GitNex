@@ -7,6 +7,7 @@ import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.VersionCheck;
 import org.mian.gitnex.models.GiteaVersion;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,6 +32,11 @@ public class NotificationMaster {
 
 			@Override
 			public void onResponse(@NonNull Call<GiteaVersion> call, @NonNull Response<GiteaVersion> response) {
+
+				GiteaVersion giteaVersion = response.body();
+				assert giteaVersion != null;
+
+				VersionCheck.compareVersion("", giteaVersion.getVersion());
 
 			}
 
