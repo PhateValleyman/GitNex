@@ -45,7 +45,7 @@ public class SettingsFragment extends Fragment {
 	private static String[] customFontList = {"Roboto", "Manrope", "Source Code Pro"};
 	private static int customFontSelectedChoice = 0;
 
-	private static String[] themeList = {"Dark", "Light"};
+	private static String[] themeList = {"Dark", "Light", "Auto (Day/Night)"};
 	private static int themeSelectedChoice = 0;
 
 	@Nullable
@@ -126,7 +126,7 @@ public class SettingsFragment extends Fragment {
 		}
 
 		if(customFontSelectedChoice == 0) {
-			customFontSelectedChoice = tinyDb.getInt("customFontId");
+			customFontSelectedChoice = tinyDb.getInt("customFontId", 1);
 		}
 
 		if(themeSelectedChoice == 0) {
