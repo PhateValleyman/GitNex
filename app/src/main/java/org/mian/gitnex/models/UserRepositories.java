@@ -9,131 +9,157 @@ import java.util.Date;
 
 public class UserRepositories {
 
-    private int id;
-    private String name;
-    private String full_name;
-    private String description;
-    @SerializedName("private")
-    private boolean privateFlag;
-    private String stars_count;
-    private String watchers_count;
-    private String open_issues_count;
-    private String open_pr_counter;
-    private String release_counter;
-    private String html_url;
-    private String default_branch;
-    private Date created_at;
-    private Date updated_at;
-    private String clone_url;
-    private long size;
-    private String ssh_url;
-    private String website;
-    private String forks_count;
-    private Boolean has_issues;
-    private String avatar_url;
+	private int id;
+	private String name;
+	private String full_name;
+	private String description;
+	@SerializedName("private")
+	private boolean privateFlag;
+	private String stars_count;
+	private String watchers_count;
+	private String open_issues_count;
+	private String open_pr_counter;
+	private String release_counter;
+	private String html_url;
+	private String default_branch;
+	private Date created_at;
+	private Date updated_at;
+	private String clone_url;
+	private long size;
+	private String ssh_url;
+	private String website;
+	private String forks_count;
+	private Boolean has_issues;
+	private String avatar_url;
 
-    private permissionsObject permissions;
+	private permissionsObject permissions;
 
-    public class permissionsObject{
+	public class permissionsObject {
 
-        private boolean admin;
-        private boolean push;
-        private boolean pull;
+		private boolean admin;
+		private boolean push;
+		private boolean pull;
 
-        public boolean isAdmin() {
-            return admin;
-        }
+		public boolean isAdmin() {
 
-        public boolean canPush() {
-            return push;
-        }
+			return admin;
+		}
 
-        public boolean canPull() {
-            return pull;
-        }
-    }
+		public boolean canPush() {
 
-    public int getId() {
-        return id;
-    }
+			return push;
+		}
 
-    public String getName() {
-        return name;
-    }
+		public boolean canPull() {
 
-    public String getFullname() {
-        return full_name;
-    }
+			return pull;
+		}
 
-    public String getDescription() {
-        return description;
-    }
+	}
 
-    public Boolean getPrivateFlag() {
-        return privateFlag;
-    }
+	public int getId() {
 
-    public String getStars_count() {
-        return stars_count;
-    }
+		return id;
+	}
 
-    public String getOpen_pull_count() {
-        return open_pr_counter;
-    }
+	public String getName() {
 
-    public String getRelease_count() {
-        return release_counter;
-    }
+		return name;
+	}
 
-    public String getWatchers_count() {
-        return watchers_count;
-    }
+	public String getFullname() {
 
-    public String getOpen_issues_count() {
-        return open_issues_count;
-    }
+		return full_name;
+	}
 
-    public String getHtml_url() {
-        return html_url;
-    }
+	public String getDescription() {
 
-    public String getDefault_branch() {
-        return default_branch;
-    }
+		return description;
+	}
 
-    public Date getCreated_at() {
-        return created_at;
-    }
+	public Boolean getPrivateFlag() {
 
-    public Date getUpdated_at() {
-        return updated_at;
-    }
+		return privateFlag;
+	}
 
-    public String getClone_url() {
-        return clone_url;
-    }
+	public String getStars_count() {
 
-    public long getSize() {
-        return size;
-    }
+		return stars_count;
+	}
 
-    public String getSsh_url() {
-        return ssh_url;
-    }
+	public String getOpen_pull_count() {
 
-    public String getWebsite() {
-        return website;
-    }
+		return open_pr_counter;
+	}
 
-    public String getForks_count() {
-        return forks_count;
-    }
+	public String getRelease_count() {
 
-    public Boolean getHas_issues() {
-        return has_issues;
-    }
+		return release_counter;
+	}
 
-    public String getAvatar_url() {
-        return avatar_url;
-    }
+	public String getWatchers_count() {
+
+		return watchers_count;
+	}
+
+	public String getOpen_issues_count() {
+
+		return open_issues_count;
+	}
+
+	public String getHtml_url() {
+
+		return html_url;
+	}
+
+	public String getDefault_branch() {
+
+		return default_branch;
+	}
+
+	public Date getCreated_at() {
+
+		return created_at;
+	}
+
+	public Date getUpdated_at() {
+
+		return updated_at;
+	}
+
+	public String getClone_url() {
+
+		return clone_url;
+	}
+
+	public long getSize() {
+
+		return size;
+	}
+
+	public String getSsh_url() {
+
+		return ssh_url;
+	}
+
+	public String getWebsite() {
+
+		return website;
+	}
+
+	public String getForks_count() {
+
+		return forks_count;
+	}
+
+	public Boolean getHas_issues() {
+
+		return has_issues;
+	}
+
+	public String getAvatar_url() {
+
+		return avatar_url;
+	}
+
 }
