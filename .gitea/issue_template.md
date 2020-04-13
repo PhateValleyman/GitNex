@@ -1,7 +1,10 @@
-## # What do you want to address? (a bug, feature or suggestion)
+## # What do you want to address?
 ---
-(This step is required)
+(This step is required; examples are shown below)
 
+- [ ] Bug
+- [ ] Feature
+- [ ] Suggestion
 
 ## # Describe your matter briefly.  
 (This step is required)
