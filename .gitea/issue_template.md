@@ -1,5 +1,4 @@
-## # What do you want to address?  
-###### A BUG, FEATURE OR SUGGESTION?  
+## # What do you want to address? (a bug, feature or suggestion)
 ---
 (This step is required)
 
@@ -8,14 +7,12 @@
 (This step is required)
 
 
-##### What did you expect?  
-###### USEFUL WHEN ADDRESSING BUGS  
+##### What did you expect? (Useful when addressing bugs)
 ---
 _(This step is optional)_
 
 
-##### Some additional details  
-###### USEFUL, WHEN WE ARE TRYING TO REPRODUCE A BUG  
+##### Some additional details (Useful, when we are trying to reproduce a bug)
 ---
 _(This step is optional; an example is shown below)_
 
