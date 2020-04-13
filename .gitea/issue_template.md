@@ -19,9 +19,13 @@ _(This step is optional)_
 ---
 _(This step is optional; an example is shown below)_
 
-I'm using gitea version `1.0.0` and a certificate signed by `ExampleCA` .
-I logged myself on using a password and username and the version of android I am currently using is `Android 9.1`.
+* The version of Gitea you are using: 
+* The type of certificate you are using (self-signed, signed): 
+* How you used to log in (via password or token): 
 
 
 ##### We would appreciate some screenshots or stacktrace's, but this is also not required.
+---
+_(Screenshots and stacktrace's can go here)_
+
 #### Thank you for your time.
