@@ -55,6 +55,7 @@
             android:id="@+id/repository"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?attr/primaryTextColor"
             tools:text="gitnex/GitNex" />
     </LinearLayout>
 
