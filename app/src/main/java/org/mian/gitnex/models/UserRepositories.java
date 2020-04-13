@@ -32,6 +32,27 @@ public class UserRepositories {
     private Boolean has_issues;
     private String avatar_url;
 
+    private permissionsObject permissions;
+
+    public class permissionsObject{
+
+        private boolean admin;
+        private boolean push;
+        private boolean pull;
+
+        public boolean isAdmin() {
+            return admin;
+        }
+
+        public boolean canPush() {
+            return push;
+        }
+
+        public boolean canPull() {
+            return pull;
+        }
+    }
+
     public int getId() {
         return id;
     }
