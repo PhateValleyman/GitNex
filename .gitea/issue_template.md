@@ -5,7 +5,7 @@
 - [ ] Feature
 - [ ] Suggestion
 
-## # Describe your matter briefly.  
+## # Describe your matter briefly
 (This step is required)
 
 
@@ -18,7 +18,8 @@ _(This step is optional)_
 ---
 _(This step is optional; an example is shown below)_
 
-* The version of Gitea you are using: 
+* The version of **Gitea** you are using: 
+* The version of **GitNex** you are using: 
 * The type of certificate you are using (self-signed, signed): 
 * How you used to log in (via password or token): 
 
