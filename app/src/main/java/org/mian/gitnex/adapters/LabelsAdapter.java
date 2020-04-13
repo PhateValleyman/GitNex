@@ -125,9 +125,9 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
                 .useFont(Typeface.DEFAULT)
                 .bold()
                 .textColor(new ColorInverter().getContrastColor(color))
-                .fontSize(40)
+                .fontSize(35)
                 .width(LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, 40, 20))
-                .height(60)
+                .height(55)
                 .endConfig()
                 .buildRoundRect(labelName, color, 10);
 
