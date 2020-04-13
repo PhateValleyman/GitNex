@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -46,9 +47,10 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
     static class OrgReposViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView image;
-        private TextView mTextView1;
-        private TextView mTextView2;
+        private TextView repoName;
+        private TextView repoDescription;
         private TextView fullName;
+        private CheckBox isRepoAdmin;
         private ImageView repoPrivatePublic;
         private TextView repoStars;
         private TextView repoForks;
@@ -79,6 +81,7 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
                 tinyDb.putString("repoFullName", fullName.getText().toString());
                 tinyDb.putString("repoType", repoType.getText().toString());
                 tinyDb.putBoolean("resumeIssues", true);
+                tinyDb.putBoolean("isRepoAdmin", isRepoAdmin.isChecked());
 
                 //store if user is watching this repo
                 {
@@ -237,6 +240,11 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
         holder.repoStars.setText(currentItem.getStars_count());
         holder.repoForks.setText(currentItem.getForks_count());
         holder.repoOpenIssuesCount.setText(currentItem.getOpen_issues_count());
+
+        if (holder.isRepoAdmin == null) {
+            holder.isRepoAdmin = new CheckBox(mCtx);
+        }
+        holder.isRepoAdmin.setChecked(currentItem.getPermissions().isAdmin());
 
     }
 

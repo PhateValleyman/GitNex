@@ -77,6 +77,11 @@ public class UserRepositories {
 		return description;
 	}
 
+	public permissionsObject getPermissions() {
+
+		return permissions;
+	}
+
 	public Boolean getPrivateFlag() {
 
 		return privateFlag;
