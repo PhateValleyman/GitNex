@@ -46,8 +46,8 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
     static class StarredReposViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView image;
-        private TextView mTextView1;
-        private TextView mTextView2;
+        private TextView repoName;
+        private TextView repoDescription;
         private TextView fullName;
         private ImageView repoPrivatePublic;
         private TextView repoStars;
@@ -57,8 +57,8 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
 
         private StarredReposViewHolder(View itemView) {
             super(itemView);
-            mTextView1 = itemView.findViewById(R.id.repoName);
-            mTextView2 = itemView.findViewById(R.id.repoDescription);
+            repoName = itemView.findViewById(R.id.repoName);
+            repoDescription = itemView.findViewById(R.id.repoDescription);
             image = itemView.findViewById(R.id.imageAvatar);
             fullName = itemView.findViewById(R.id.repoFullName);
             repoPrivatePublic = itemView.findViewById(R.id.imageRepoType);
@@ -194,7 +194,7 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
     public void onBindViewHolder(@NonNull StarredReposListAdapter.StarredReposViewHolder holder, int position) {
 
         UserRepositories currentItem = reposList.get(position);
-        holder.mTextView2.setVisibility(View.GONE);
+        holder.repoDescription.setVisibility(View.GONE);
 
         ColorGenerator generator = ColorGenerator.MATERIAL;
         int color = generator.getColor(currentItem.getName());
@@ -221,10 +221,10 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
             holder.image.setImageDrawable(drawable);
         }
 
-        holder.mTextView1.setText(currentItem.getName());
+        holder.repoName.setText(currentItem.getName());
         if (!currentItem.getDescription().equals("")) {
-            holder.mTextView2.setVisibility(View.VISIBLE);
-            holder.mTextView2.setText(currentItem.getDescription());
+            holder.repoDescription.setVisibility(View.VISIBLE);
+            holder.repoDescription.setText(currentItem.getDescription());
         }
         holder.fullName.setText(currentItem.getFullname());
         if(currentItem.getPrivateFlag()) {
