@@ -52,7 +52,13 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
     @GET("version") // gitea version API
-    Call<GiteaVersion> getGiteaVersion();
+    Call<GiteaVersion> getGiteaVersionWithBasic(@Header("Authorization") String authorization);
+
+    @GET("version") // gitea version API
+    Call<GiteaVersion> getGiteaVersionWithOTP(@Header("Authorization") String authorization, @Header("X-Gitea-OTP") int loginOTP);
+
+    @GET("version") // gitea version API
+    Call<GiteaVersion> getGiteaVersionWithToken(@Header("Authorization") String token);
 
     @GET("user") // username, full name, email
     Call<UserInfo> getUserInfo(@Header("Authorization") String token);
@@ -266,4 +272,7 @@ public interface ApiInterface {
 
     @GET("repos/{owner}/{repo}/commits") // get all commits
     Call<List<Commits>> getRepositoryCommits(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("sha") String branchName);
+
+    @PATCH("repos/{owner}/{repo}/milestones/{index}") // close / reopen milestone
+    Call<JsonElement> closeReopenMilestone(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int index, @Body Milestones jsonStr);
 }
