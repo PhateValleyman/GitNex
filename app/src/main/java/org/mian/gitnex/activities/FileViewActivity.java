@@ -175,23 +175,24 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
                             pdfViewFrame.setVisibility(View.GONE);
                             singleCodeContents.setVisibility(View.VISIBLE);
 
-                            if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 1) {
-                                singleCodeContents.setTheme(Theme.ARDUINO_LIGHT);
-                            }
-                            else if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 2) {
-                                singleCodeContents.setTheme(Theme.GITHUB);
-                            }
-                            else if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 3) {
-                                singleCodeContents.setTheme(Theme.FAR);
-                            }
-                            else if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 4) {
-                                singleCodeContents.setTheme(Theme.IR_BLACK);
-                            }
-                            else if(tinyDb.getInt("fileviewerSourceCodeThemeId") == 5) {
-                                singleCodeContents.setTheme(Theme.ANDROID_STUDIO);
-                            }
-                            else {
-                                singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
+                            switch(tinyDb.getInt("fileviewerSourceCodeThemeId")) {
+                                case 1:
+                                    singleCodeContents.setTheme(Theme.ARDUINO_LIGHT);
+                                    break;
+                                case 2:
+                                    singleCodeContents.setTheme(Theme.GITHUB);
+                                    break;
+                                case 3:
+                                    singleCodeContents.setTheme(Theme.FAR);
+                                    break;
+                                case 4:
+                                    singleCodeContents.setTheme(Theme.IR_BLACK);
+                                    break;
+                                case 5:
+                                    singleCodeContents.setTheme(Theme.ANDROID_STUDIO);
+                                    break;
+                                default:
+                                    singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
                             }
 
                             singleCodeContents.setShowLineNumbers(true);
