@@ -72,6 +72,8 @@
     <string name="newCreateButtonCopy">Create</string>
     <string name="newUpdateButtonCopy">Update</string>
 
+    <string name="noDataNotifications">No notifications found</string>
+
     <string name="newRepoTintCopy">Repository Name</string>
     <string name="newRepoDescTintCopy">Repository Description</string>
     <string name="newRepoPrivateCopy">Private</string>

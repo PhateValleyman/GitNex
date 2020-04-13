@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,11 +28,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Author opyale
+ */
+
 public class NotificationsFragment extends Fragment {
-	private ListView listView;
+
 	private List<NotificationThread> notificationThreads;
 	private NotificationsAdapter notificationsAdapter;
 
+	private ProgressBar progressBar;
+	private TextView noDataNotifications;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,10 +51,13 @@ public class NotificationsFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		final View v = inflater.inflate(R.layout.fragment_notifications, container, false);
 
+		progressBar = v.findViewById(R.id.progress_bar);
+		noDataNotifications = v.findViewById(R.id.noDataNotifications);
+
 		notificationThreads = new ArrayList<>();
 		notificationsAdapter = new NotificationsAdapter(getContext(), notificationThreads);
 
-		listView = v.findViewById(R.id.notifications);
+		ListView listView = v.findViewById(R.id.notifications);
 		listView.setAdapter(notificationsAdapter);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -113,6 +123,18 @@ public class NotificationsFragment extends Fragment {
 
 				}
 
+				progressBar.setVisibility(View.GONE);
+
+				if(notificationThreads.size() > 0) {
+
+					noDataNotifications.setVisibility(View.GONE);
+
+				} else {
+
+					noDataNotifications.setVisibility(View.VISIBLE);
+
+				}
+
 			}
 
 			@Override
@@ -123,7 +145,5 @@ public class NotificationsFragment extends Fragment {
 		});
 
 	}
-
-
 
 }
