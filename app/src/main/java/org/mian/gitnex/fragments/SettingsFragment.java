@@ -48,6 +48,9 @@ public class SettingsFragment extends Fragment {
 	private static String[] themeList = {"Dark", "Light", "Auto (Day/Night)"};
 	private static int themeSelectedChoice = 0;
 
+	private static String[] fileveiwerSourceCodeThemesList = {"Sublime", "Arduino Light", "Github", "Far ", "Ir Black", "Android Studio"};
+	private static int fileveiwerSourceCodeThemesSelectedChoice = 0;
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,6 +64,7 @@ public class SettingsFragment extends Fragment {
 		final TextView homeScreenSelected = v.findViewById(R.id.homeScreenSelected); // setter for home screen
 		final TextView customFontSelected = v.findViewById(R.id.customFontSelected); // setter for custom font
 		final TextView themeSelected = v.findViewById(R.id.themeSelected); // setter for theme
+		final TextView fileveiwerSourceCodeThemesSelected = v.findViewById(R.id.sourceCodeThemeSelected); // setter for fileviewer theme
 
         LinearLayout langFrame = v.findViewById(R.id.langFrame);
         LinearLayout timeFrame = v.findViewById(R.id.timeFrame);
@@ -70,6 +74,7 @@ public class SettingsFragment extends Fragment {
         LinearLayout themeFrame = v.findViewById(R.id.themeSelectionFrame);
         LinearLayout certsFrame = v.findViewById(R.id.certsFrame);
         LinearLayout pollingDelayFrame = v.findViewById(R.id.pollingDelayFrame);
+		LinearLayout sourceCodeThemeFrame = v.findViewById(R.id.sourceCodeThemeFrame);
 
 		Switch counterBadgesSwitch = v.findViewById(R.id.switchCounterBadge);
 		Switch pdfModeSwitch = v.findViewById(R.id.switchPdfMode);
@@ -109,6 +114,10 @@ public class SettingsFragment extends Fragment {
 			themeSelected.setText(tinyDb.getString("themeStr"));
 		}
 
+		if(!tinyDb.getString("fileviewerSourceCodeThemeStr").isEmpty()) {
+			fileveiwerSourceCodeThemesSelected.setText(tinyDb.getString("fileviewerSourceCodeThemeStr"));
+		}
+
 		if(langSelectedChoice == 0) {
 			langSelectedChoice = tinyDb.getInt("langId");
 		}
@@ -131,6 +140,10 @@ public class SettingsFragment extends Fragment {
 
 		if(themeSelectedChoice == 0) {
 			themeSelectedChoice = tinyDb.getInt("themeId");
+		}
+
+		if(fileveiwerSourceCodeThemesSelectedChoice == 0) {
+			fileveiwerSourceCodeThemesSelectedChoice = tinyDb.getInt("fileviewerThemeId");
 		}
 
 		if(tinyDb.getBoolean("enableCounterBadges")) {
@@ -182,6 +195,38 @@ public class SettingsFragment extends Fragment {
 
             }
         });
+
+		// fileviewer srouce code theme selection dialog
+		sourceCodeThemeFrame.setOnClickListener(view -> {
+
+			AlertDialog.Builder fvtsBuilder = new AlertDialog.Builder(ctx);
+
+			fvtsBuilder.setTitle(R.string.fileviewerSourceCodeThemeSelectorDialogTitle);
+			if(fileveiwerSourceCodeThemesSelectedChoice != -1) {
+				fvtsBuilder.setCancelable(true);
+			}
+			else {
+				fvtsBuilder.setCancelable(false);
+			}
+
+			fvtsBuilder.setSingleChoiceItems(fileveiwerSourceCodeThemesList, fileveiwerSourceCodeThemesSelectedChoice, (dialogInterfaceTheme, i) -> {
+
+				fileveiwerSourceCodeThemesSelectedChoice = i;
+				fileveiwerSourceCodeThemesSelected.setText(fileveiwerSourceCodeThemesList[i]);
+				tinyDb.putString("fileviewerSourceCodeThemeStr", fileveiwerSourceCodeThemesList[i]);
+				tinyDb.putInt("fileviewerSourceCodeThemeId", i);
+
+				Objects.requireNonNull(getActivity()).recreate();
+				getActivity().overridePendingTransition(0, 0);
+				dialogInterfaceTheme.dismiss();
+				Toasty.info(getContext(), getResources().getString(R.string.settingsSave));
+
+			});
+
+			AlertDialog cfDialog = fvtsBuilder.create();
+			cfDialog.show();
+
+		});
 
 		// certs deletion
 		certsFrame.setOnClickListener(v1 -> {
