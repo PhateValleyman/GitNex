@@ -81,7 +81,6 @@ public class ExploreRepositoriesFragment extends Fragment {
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        tinyDb.putBoolean("isRepoAdmin", false);
 
         searchKeyword = v.findViewById(R.id.searchKeyword);
         noData = v.findViewById(R.id.noData);
