@@ -87,5 +87,4 @@ dependencies {
     implementation "com.mikepenz:fastadapter-commons:$fastadapter"
     implementation "com.mikepenz:fastadapter-extensions:$fastadapter"
     implementation "androidx.work:work-runtime:$work_version"
-    implementation "androidx.work:work-runtime-ktx:$work_version"
 }
