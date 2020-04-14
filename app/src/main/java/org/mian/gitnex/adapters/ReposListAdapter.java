@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -46,9 +47,10 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
     static class ReposViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView image;
-        private TextView mTextView1;
-        private TextView mTextView2;
+        private TextView repoName;
+        private TextView repoDescription;
         private TextView fullName;
+        private CheckBox isRepoAdmin;
         private ImageView repoPrivatePublic;
         private TextView repoStars;
         private TextView repoForks;
@@ -58,8 +60,9 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
         private ReposViewHolder(View itemView) {
 
             super(itemView);
-            mTextView1 = itemView.findViewById(R.id.repoName);
-            mTextView2 = itemView.findViewById(R.id.repoDescription);
+            repoName = itemView.findViewById(R.id.repoName);
+            repoDescription = itemView.findViewById(R.id.repoDescription);
+            isRepoAdmin = itemView.findViewById(R.id.repoIsAdmin);
             image = itemView.findViewById(R.id.imageAvatar);
             fullName = itemView.findViewById(R.id.repoFullName);
             repoPrivatePublic = itemView.findViewById(R.id.imageRepoType);
@@ -82,6 +85,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
                 tinyDb.putString("repoFullName", repoFullName.getText().toString());
                 tinyDb.putString("repoType", repoType_.getText().toString());
                 tinyDb.putBoolean("resumeIssues", true);
+                tinyDb.putBoolean("isRepoAdmin", isRepoAdmin.isChecked());
 
                 //store if user is watching this repo
                 {
@@ -196,7 +200,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
     public void onBindViewHolder(@NonNull ReposViewHolder holder, int position) {
 
         UserRepositories currentItem = reposList.get(position);
-        holder.mTextView2.setVisibility(View.GONE);
+        holder.repoDescription.setVisibility(View.GONE);
 
         ColorGenerator generator = ColorGenerator.MATERIAL;
         int color = generator.getColor(currentItem.getName());
@@ -223,10 +227,10 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
             holder.image.setImageDrawable(drawable);
         }
 
-        holder.mTextView1.setText(currentItem.getName());
+        holder.repoName.setText(currentItem.getName());
         if (!currentItem.getDescription().equals("")) {
-            holder.mTextView2.setVisibility(View.VISIBLE);
-            holder.mTextView2.setText(currentItem.getDescription());
+            holder.repoDescription.setVisibility(View.VISIBLE);
+            holder.repoDescription.setText(currentItem.getDescription());
         }
         holder.fullName.setText(currentItem.getFullname());
         if(currentItem.getPrivateFlag()) {
@@ -240,6 +244,10 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
         holder.repoStars.setText(currentItem.getStars_count());
         holder.repoForks.setText(currentItem.getForks_count());
         holder.repoOpenIssuesCount.setText(currentItem.getOpen_issues_count());
+        if (holder.isRepoAdmin == null) {
+            holder.isRepoAdmin = new CheckBox(mCtx);
+        }
+        holder.isRepoAdmin.setChecked(currentItem.getPermissions().isAdmin());
 
     }
 
