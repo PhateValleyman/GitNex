@@ -27,13 +27,13 @@
                 android:id="@+id/issuesTabOpen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/issueStatusOpen" />
+                android:text="@string/tabIssueOpen" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/issuesTabClosed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/issueStatusClosed" />
+                android:text="@string/tabIssueClosed" />
 
         </com.google.android.material.tabs.TabLayout>
 

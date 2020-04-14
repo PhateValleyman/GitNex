@@ -613,4 +613,7 @@
     <string name="closeMilestone">Close Milestone</string>
     <string name="openMilestone">Open Milestone</string>
     <string name="milestoneStatusUpdate">Milestone status updated successfully</string>
+    
+    <string name="tabIssueOpen">Open</string>
+    <string name="tabIssueClosed">Closed</string>
 </resources>
