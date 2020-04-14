@@ -91,24 +91,20 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
         TabLayout tabLayout = findViewById(R.id.tabs);
 
         Typeface myTypeface;
-        if(tinyDb.getInt("customFontId") == 0) {
 
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
+        switch(tinyDb.getInt("customFontId", -1)) {
 
-        }
-        else if (tinyDb.getInt("customFontId") == 1) {
+            case 0:
+                myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/roboto.ttf");
+                break;
 
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/manroperegular.ttf");
+            case 2:
+                myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/sourcecodeproregular.ttf");
+                break;
 
-        }
-        else if (tinyDb.getInt("customFontId") == 2) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
-
-        }
-        else {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
+            default:
+                myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/manroperegular.ttf");
+                break;
 
         }
 
@@ -126,6 +122,15 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
                     ((TextView) tabViewChild).setTypeface(myTypeface);
                 }
             }
+        }
+
+        // only show Collaborators if you have permission to
+        final View collaboratorTab = vg.getChildAt(8);
+        if (tinyDb.getBoolean("isRepoAdmin")) {
+            collaboratorTab.setVisibility(View.VISIBLE);
+        }
+        else {
+            collaboratorTab.setVisibility(View.GONE);
         }
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

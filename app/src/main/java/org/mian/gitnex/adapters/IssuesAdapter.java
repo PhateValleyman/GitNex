@@ -1,4 +1,4 @@
-package org.mian.gitnex.items;
+package org.mian.gitnex.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +31,7 @@ import java.util.Locale;
  * Author M M Arif
  */
 
-public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolder> {
+public class IssuesAdapter extends AbstractItem<IssuesAdapter, IssuesAdapter.ViewHolder> {
 
 	final private Context ctx;
 	private String issueTitle;
@@ -44,11 +44,11 @@ public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolde
 
 	private boolean isSelectable = true;
 
-	public IssuesItems(Context ctx) {
+	public IssuesAdapter(Context ctx) {
 		this.ctx = ctx;
 	}
 
-	public IssuesItems withNewItems(String issueTitle, int issueNumber, String issueAssigneeAvatar, Date issueCreatedTime, int issueCommentsCount, String userFullname, String userLogin) {
+	public IssuesAdapter withNewItems(String issueTitle, int issueNumber, String issueAssigneeAvatar, Date issueCreatedTime, int issueCommentsCount, String userFullname, String userLogin) {
 
 		this.setNewItems(issueTitle, issueNumber, issueAssigneeAvatar, issueCreatedTime, issueCommentsCount, userFullname, userLogin);
 		return this;
@@ -101,7 +101,7 @@ public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolde
 	}
 
 	@Override
-	public IssuesItems withEnabled(boolean enabled) {
+	public IssuesAdapter withEnabled(boolean enabled) {
 		return null;
 	}
 
@@ -111,7 +111,7 @@ public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolde
 	}
 
 	@Override
-	public IssuesItems withSelectable(boolean selectable) {
+	public IssuesAdapter withSelectable(boolean selectable) {
 		this.isSelectable = selectable;
 		return this;
 	}
@@ -128,11 +128,11 @@ public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolde
 
 	@NonNull
 	@Override
-	public IssuesItems.ViewHolder getViewHolder(@NonNull View v) {
-		return new IssuesItems.ViewHolder(v);
+	public IssuesAdapter.ViewHolder getViewHolder(@NonNull View v) {
+		return new IssuesAdapter.ViewHolder(v);
 	}
 
-	public class ViewHolder extends FastAdapter.ViewHolder<IssuesItems> {
+	public class ViewHolder extends FastAdapter.ViewHolder<IssuesAdapter> {
 
 		final TinyDB tinyDb = new TinyDB(ctx);
 		final String locale = tinyDb.getString("locale");
@@ -157,7 +157,7 @@ public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolde
 		}
 
 		@Override
-		public void bindView(@NonNull IssuesItems item, @NonNull List<Object> payloads) {
+		public void bindView(@NonNull IssuesAdapter item, @NonNull List<Object> payloads) {
 
 			if (!item.getUserFullname().equals("")) {
 				issueAssigneeAvatar.setOnClickListener(new ClickListener(ctx.getResources().getString(R.string.issueCreator) + item.getUserFullname(), ctx));
@@ -201,7 +201,7 @@ public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolde
 		}
 
 		@Override
-		public void unbindView(@NonNull IssuesItems item) {
+		public void unbindView(@NonNull IssuesAdapter item) {
 
 			issueTitle.setText(null);
 			issueCommentsCount.setText(null);
@@ -211,13 +211,13 @@ public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolde
 
 	}
 
-	public static class IssueTitleClickEvent extends ClickEventHook<IssuesItems> {
+	public static class IssueTitleClickEvent extends ClickEventHook<IssuesAdapter> {
 
 		@Nullable
 		@Override
 		public List<View> onBindMany(@NonNull RecyclerView.ViewHolder viewHolder) {
 
-			if (viewHolder instanceof IssuesItems.ViewHolder) {
+			if (viewHolder instanceof IssuesAdapter.ViewHolder) {
 				return EventHookUtil.toList(((ViewHolder) viewHolder).issueTitle);
 			}
 
@@ -226,7 +226,7 @@ public class IssuesItems extends AbstractItem<IssuesItems, IssuesItems.ViewHolde
 		}
 
 		@Override
-		public void onClick(View v, int position, @NonNull FastAdapter<IssuesItems> fastAdapter, IssuesItems item) {
+		public void onClick(View v, int position, @NonNull FastAdapter<IssuesAdapter> fastAdapter, IssuesAdapter item) {
 
 			Context context = v.getContext();
 

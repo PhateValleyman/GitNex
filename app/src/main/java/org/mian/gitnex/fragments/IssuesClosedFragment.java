@@ -17,7 +17,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.VersionCheck;
-import org.mian.gitnex.items.IssuesItems;
+import org.mian.gitnex.adapters.IssuesAdapter;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ import static com.mikepenz.fastadapter.adapters.ItemAdapter.items;
  * Author M M Arif
  */
 
-public class IssuesClosedFragment extends Fragment implements ItemFilterListener<IssuesItems> {
+public class IssuesClosedFragment extends Fragment implements ItemFilterListener<IssuesAdapter> {
 
     private Context ctx;
     private ProgressBar mProgressBarClosed;
@@ -55,8 +55,8 @@ public class IssuesClosedFragment extends Fragment implements ItemFilterListener
     private String requestType = StaticGlobalVariables.issuesRequestType;
     private String issueState = StaticGlobalVariables.issueStateClosed;
 
-    private List<IssuesItems> items = new ArrayList<>();
-    private FastItemAdapter<IssuesItems> fastItemAdapter;
+    private List<IssuesAdapter> items = new ArrayList<>();
+    private FastItemAdapter<IssuesAdapter> fastItemAdapter;
     private ItemAdapter footerAdapter;
     private EndlessRecyclerOnScrollListener endlessRecyclerOnScrollListener;
 
@@ -95,7 +95,7 @@ public class IssuesClosedFragment extends Fragment implements ItemFilterListener
         //noinspection unchecked
         fastItemAdapter.addAdapter(StaticGlobalVariables.issuesPageInit, footerAdapter);
 
-        fastItemAdapter.getItemFilter().withFilterPredicate((IItemAdapter.Predicate<IssuesItems>) (item, constraint) -> item.getIssueTitle().toLowerCase().contains(constraint.toString().toLowerCase()));
+        fastItemAdapter.getItemFilter().withFilterPredicate((IItemAdapter.Predicate<IssuesAdapter>) (item, constraint) -> item.getIssueTitle().toLowerCase().contains(constraint.toString().toLowerCase()));
 
         fastItemAdapter.getItemFilter().withItemFilterListener(this);
 
@@ -127,7 +127,7 @@ public class IssuesClosedFragment extends Fragment implements ItemFilterListener
 
         loadInitial(instanceUrl, instanceToken, repoOwner, repoName, issueState, resultLimit, requestType);
 
-        fastItemAdapter.withEventHook(new IssuesItems.IssueTitleClickEvent());
+        fastItemAdapter.withEventHook(new IssuesAdapter.IssueTitleClickEvent());
 
         assert savedInstanceState != null;
         fastItemAdapter.withSavedInstanceState(savedInstanceState);
@@ -172,7 +172,7 @@ public class IssuesClosedFragment extends Fragment implements ItemFilterListener
                         }
 
                         for(int i = 0; i < response.body().size(); i++) {
-                            items.add(new IssuesItems(getContext()).withNewItems(response.body().get(i).getTitle(), response.body().get(i).getNumber(), response.body().get(i).getUser().getAvatar_url(), response.body().get(i).getCreated_at(), response.body().get(i).getComments(), response.body().get(i).getUser().getFull_name(), response.body().get(i).getUser().getLogin()));
+                            items.add(new IssuesAdapter(getContext()).withNewItems(response.body().get(i).getTitle(), response.body().get(i).getNumber(), response.body().get(i).getUser().getAvatar_url(), response.body().get(i).getCreated_at(), response.body().get(i).getComments(), response.body().get(i).getUser().getFull_name(), response.body().get(i).getUser().getLogin()));
                         }
 
                         fastItemAdapter.add(items);
@@ -228,7 +228,7 @@ public class IssuesClosedFragment extends Fragment implements ItemFilterListener
 
                             for(int i = 0; i < response.body().size(); i++) {
 
-                                fastItemAdapter.add(fastItemAdapter.getAdapterItemCount(), new IssuesItems(getContext()).withNewItems(response.body().get(i).getTitle(), response.body().get(i).getNumber(), response.body().get(i).getUser().getAvatar_url(), response.body().get(i).getCreated_at(), response.body().get(i).getComments(), response.body().get(i).getUser().getFull_name(), response.body().get(i).getUser().getLogin()));
+                                fastItemAdapter.add(fastItemAdapter.getAdapterItemCount(), new IssuesAdapter(getContext()).withNewItems(response.body().get(i).getTitle(), response.body().get(i).getNumber(), response.body().get(i).getUser().getAvatar_url(), response.body().get(i).getCreated_at(), response.body().get(i).getComments(), response.body().get(i).getUser().getFull_name(), response.body().get(i).getUser().getLogin()));
 
                             }
 
@@ -297,7 +297,7 @@ public class IssuesClosedFragment extends Fragment implements ItemFilterListener
     }
 
     @Override
-    public void itemsFiltered(@Nullable CharSequence constraint, @Nullable List<IssuesItems> results) {
+    public void itemsFiltered(@Nullable CharSequence constraint, @Nullable List<IssuesAdapter> results) {
 
         endlessRecyclerOnScrollListener.disable();
     }

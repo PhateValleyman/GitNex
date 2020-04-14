@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.FontsOverride;
+import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.util.TinyDB;
 
 /**
@@ -12,63 +13,67 @@ import org.mian.gitnex.util.TinyDB;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-        if(tinyDb.getInt("themeId") == 1) {
-            setTheme(R.style.AppThemeLight);
-        }
-        else {
-            setTheme(R.style.AppTheme);
-        }
+		if(tinyDb.getInt("themeId") == 1) {
+			setTheme(R.style.AppThemeLight);
+		}
+		else if(tinyDb.getInt("themeId") == 2) {
 
-        super.onCreate(savedInstanceState);
-        setContentView(getLayoutResourceId());
+			boolean timeSetterFlag = TimeHelper.timeBetweenHours(18, 6); // 6pm to 6am
 
-        if(tinyDb.getInt("customFontId") == 0) {
+			if(timeSetterFlag) {
+				setTheme(R.style.AppTheme);
+			}
+			else {
+				setTheme(R.style.AppThemeLight);
+			}
 
-            FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "SERIF", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/roboto.ttf");
+		}
+		else {
+			setTheme(R.style.AppTheme);
+		}
 
-        }
-        else if (tinyDb.getInt("customFontId") == 1) {
+		super.onCreate(savedInstanceState);
+		setContentView(getLayoutResourceId());
 
-            FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/manroperegular.ttf");
-            FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/manroperegular.ttf");
-            FontsOverride.setDefaultFont(this, "SERIF", "fonts/manroperegular.ttf");
-            FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/manroperegular.ttf");
+		switch(tinyDb.getInt("customFontId", -1)) {
 
-        }
-        else if (tinyDb.getInt("customFontId") == 2) {
+			case 0:
+				FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/roboto.ttf");
+				FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/roboto.ttf");
+				FontsOverride.setDefaultFont(this, "SERIF", "fonts/roboto.ttf");
+				FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/roboto.ttf");
+				break;
 
-            FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/sourcecodeproregular.ttf");
-            FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/sourcecodeproregular.ttf");
-            FontsOverride.setDefaultFont(this, "SERIF", "fonts/sourcecodeproregular.ttf");
-            FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/sourcecodeproregular.ttf");
+			case 2:
+				FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/sourcecodeproregular.ttf");
+				FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/sourcecodeproregular.ttf");
+				FontsOverride.setDefaultFont(this, "SERIF", "fonts/sourcecodeproregular.ttf");
+				FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/sourcecodeproregular.ttf");
+				break;
 
-        }
-        else {
+			default:
+				FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/manroperegular.ttf");
+				FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/manroperegular.ttf");
+				FontsOverride.setDefaultFont(this, "SERIF", "fonts/manroperegular.ttf");
+				FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/manroperegular.ttf");
+				break;
 
-            FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "SERIF", "fonts/roboto.ttf");
-            FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/roboto.ttf");
+		}
 
-        }
+		// enabling counter badges by default
+		if(tinyDb.getString("enableCounterBadgesInit").isEmpty()) {
+			tinyDb.putBoolean("enableCounterBadges", true);
+			tinyDb.putString("enableCounterBadgesInit", "yes");
+		}
 
-        // enabling counter badges by default
-        if(tinyDb.getString("enableCounterBadgesInit").isEmpty()) {
-            tinyDb.putBoolean("enableCounterBadges", true);
-            tinyDb.putString("enableCounterBadgesInit", "yes");
-        }
+	}
 
-    }
-
-    protected abstract int getLayoutResourceId();
+	protected abstract int getLayoutResourceId();
 
 }
 
