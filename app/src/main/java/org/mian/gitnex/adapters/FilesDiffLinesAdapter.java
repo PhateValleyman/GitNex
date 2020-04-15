@@ -111,6 +111,8 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 
 					/*
 
+					// Used to allow for code comments
+
 					textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
 						@Override
