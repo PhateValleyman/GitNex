@@ -18,7 +18,6 @@ import org.mian.gitnex.helpers.DiffTextView;
 import org.mian.gitnex.models.FileDiffView;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -27,30 +26,44 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 public class FilesDiffLinesAdapter extends BaseAdapter {
 
-	private static Map<Integer, View> selectedViews;
+	private static Map<Integer, View> SELECTED_VIEWS;
+
+	private static int COLOR_ADDED;
+	private static int COLOR_REMOVED;
+	private static int COLOR_NORMAL;
+	private static int COLOR_SELECTED;
 
 	private Context context;
 	private List<FileDiffView> fileDiffViews;
 
 	public FilesDiffLinesAdapter(Context context, List<FileDiffView> fileDiffViews) {
+
 		this.context = context;
 		this.fileDiffViews = fileDiffViews;
 
-		selectedViews = new ConcurrentSkipListMap<>();
+		SELECTED_VIEWS = new ConcurrentSkipListMap<>();
+		COLOR_ADDED = context.getResources().getColor(R.color.diffAddedColor);
+		COLOR_REMOVED = context.getResources().getColor(R.color.diffRemovedColor);
+		COLOR_NORMAL = context.getResources().getColor(R.color.white);
+		COLOR_SELECTED = context.getResources().getColor(R.color.md_grey_200);
+
 	}
 
 	@Override
 	public int getCount() {
+
 		return fileDiffViews.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
+
 		return fileDiffViews.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
+
 		return position;
 	}
 
@@ -97,11 +110,11 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 					boolean check = true;
 
 
-					for(View view : selectedViews.values()) {
+					for(View view : SELECTED_VIEWS.values()) {
 
 						if(((DiffTextView) view).getPosition() == l) {
 
-							diffTextView.setBackgroundColor(context.getResources().getColor(R.color.md_grey_200));
+							diffTextView.setBackgroundColor(COLOR_SELECTED);
 							check = false;
 							break;
 
@@ -116,7 +129,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 						diffTextView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
 
 						if(check) {
-							diffTextView.setInitialBackgroundColor(context.getResources().getColor(R.color.diffAddedColor));
+							diffTextView.setInitialBackgroundColor(COLOR_ADDED);
 						}
 
 					} else if(codeLines[l].startsWith("-")) {
@@ -125,7 +138,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 						diffTextView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
 
 						if(check) {
-							diffTextView.setInitialBackgroundColor(context.getResources().getColor(R.color.diffRemovedColor));
+							diffTextView.setInitialBackgroundColor(COLOR_REMOVED);
 						}
 
 					} else {
@@ -134,7 +147,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 						diffTextView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
 
 						if(check) {
-							diffTextView.setInitialBackgroundColor(context.getResources().getColor(R.color.white));
+							diffTextView.setInitialBackgroundColor(COLOR_NORMAL);
 						}
 
 					}
@@ -142,14 +155,14 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 
 					diffTextView.setOnClickListener(v -> {
 
-						if(((DiffTextView) v).getCurrentBackgroundColor() != context.getResources().getColor(R.color.md_grey_200)) {
+						if(((DiffTextView) v).getCurrentBackgroundColor() != COLOR_SELECTED) {
 
-							selectedViews.put(((DiffTextView) v).getPosition(), v);
-							v.setBackgroundColor(context.getResources().getColor(R.color.md_grey_200));
+							SELECTED_VIEWS.put(((DiffTextView) v).getPosition(), v);
+							v.setBackgroundColor(COLOR_SELECTED);
 
 						} else {
 
-							selectedViews.remove(((DiffTextView) v).getPosition());
+							SELECTED_VIEWS.remove(((DiffTextView) v).getPosition());
 							v.setBackgroundColor(((DiffTextView) v).getInitialBackgroundColor());
 
 						}
@@ -159,12 +172,12 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 
 					diffTextView.setOnLongClickListener(v -> {
 
-						if(((DiffTextView) v).getCurrentBackgroundColor() == context.getResources().getColor(R.color.md_grey_200)) {
+						if(((DiffTextView) v).getCurrentBackgroundColor() == COLOR_SELECTED) {
 
 							StringBuilder stringBuilder = new StringBuilder();
 							stringBuilder.append("```\n");
 
-							for(View view : selectedViews.values()) {
+							for(View view : SELECTED_VIEWS.values()) {
 
 								stringBuilder.append(((DiffTextView) view).getText());
 								stringBuilder.append("\n");
@@ -173,7 +186,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 
 							stringBuilder.append("```");
 
-							selectedViews.clear();
+							SELECTED_VIEWS.clear();
 
 							Intent intent = new Intent(context, ReplyToIssueActivity.class);
 							intent.putExtra("commentBody", stringBuilder.toString());
