@@ -91,6 +91,7 @@ public class MyRepositoriesFragment extends Fragment {
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         final String userLogin =  tinyDb.getString("userLogin");
+        tinyDb.putBoolean("isRepoAdmin", true);
 
         final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
 
@@ -100,18 +101,18 @@ public class MyRepositoriesFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
         createNewRepo = v.findViewById(R.id.addNewRepo);
-
         createNewRepo.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(view.getContext(), CreateRepoActivity.class);
                 startActivity(intent);
+
             }
 
         });
@@ -119,12 +120,13 @@ public class MyRepositoriesFragment extends Fragment {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
                 if (dy > 0 && createNewRepo.isShown()) {
                     createNewRepo.setVisibility(View.GONE);
-                } else if (dy < 0 ) {
+                } else if (dy < 0) {
                     createNewRepo.setVisibility(View.VISIBLE);
-
                 }
+
             }
 
             @Override

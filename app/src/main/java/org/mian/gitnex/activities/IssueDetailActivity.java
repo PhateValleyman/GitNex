@@ -17,7 +17,6 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
 import io.noties.markwon.ext.tables.TablePlugin;
 import io.noties.markwon.ext.tasklist.TaskListPlugin;
 import io.noties.markwon.html.HtmlPlugin;
-import io.noties.markwon.image.AsyncDrawable;
 import io.noties.markwon.image.DefaultMediaDecoder;
 import io.noties.markwon.image.ImageItem;
 import io.noties.markwon.image.ImagesPlugin;
@@ -29,10 +28,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -58,6 +59,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetSingleIssueFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.LabelWidthCalculator;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.models.IssueComments;
@@ -67,7 +69,6 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.viewmodels.IssueCommentsViewModel;
-import org.ocpsoft.prettytime.PrettyTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -95,6 +96,7 @@ public class IssueDetailActivity extends BaseActivity {
     private HorizontalScrollView assigneesScrollView;
     private ScrollView scrollViewComments;
     private TextView issueModified;
+    private ImageView createNewComment;
     final Context ctx = this;
     private LinearLayout labelsLayout;
     private LinearLayout assigneesLayout;
@@ -132,6 +134,7 @@ public class IssueDetailActivity extends BaseActivity {
         assigneesScrollView = findViewById(R.id.assigneesScrollView);
         scrollViewComments = findViewById(R.id.scrollViewComments);
         issueModified = findViewById(R.id.issueModified);
+        createNewComment = findViewById(R.id.addNewComment);
         labelsLayout = findViewById(R.id.frameLabels);
         assigneesLayout = findViewById(R.id.frameAssignees);
 
@@ -147,42 +150,56 @@ public class IssueDetailActivity extends BaseActivity {
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        IssueCommentsViewModel.loadIssueComments(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, getApplicationContext());
-                    }
-                }, 500);
-            }
-        });
+        createNewComment.setOnClickListener(v -> startActivity(new Intent(ctx, ReplyToIssueActivity.class)));
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            scrollViewComments.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+
+                if ((scrollY - oldScrollY) > 0 && createNewComment.isShown()) {
+                    createNewComment.setVisibility(View.GONE);
+                }
+                else if ((scrollY - oldScrollY) < 0) {
+                    createNewComment.setVisibility(View.VISIBLE);
+                }
+
+                if (!scrollViewComments.canScrollVertically(1)) { // bottom
+                    createNewComment.setVisibility(View.GONE);
+                }
+
+                if (!scrollViewComments.canScrollVertically(-1)) { // top
+                    createNewComment.setVisibility(View.VISIBLE);
+                }
+
+            });
+
+        }
+
+        swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
+
+            swipeRefresh.setRefreshing(false);
+            IssueCommentsViewModel.loadIssueComments(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, getApplicationContext());
+
+        }, 500));
 
         Typeface myTypeface;
-        if(tinyDb.getInt("customFontId") == 0) {
 
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
+        switch(tinyDb.getInt("customFontId", -1)) {
 
-        }
-        else if (tinyDb.getInt("customFontId") == 1) {
+            case 1:
+                myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/manroperegular.ttf");
+                break;
 
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/manroperegular.ttf");
+            case 2:
+                myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
+                break;
 
-        }
-        else if (tinyDb.getInt("customFontId") == 2) {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/sourcecodeproregular.ttf");
-
-        }
-        else {
-
-            myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
+            default:
+                myTypeface = Typeface.createFromAsset(Objects.requireNonNull(getApplicationContext()).getAssets(), "fonts/roboto.ttf");
+                break;
 
         }
 
@@ -326,44 +343,35 @@ public class IssueDetailActivity extends BaseActivity {
 
                         final Markwon markwon = Markwon.builder(Objects.requireNonNull(getApplicationContext()))
                                 .usePlugin(CorePlugin.create())
-                                .usePlugin(ImagesPlugin.create(new ImagesPlugin.ImagesConfigure() {
-                                    @Override
-                                    public void configureImages(@NonNull ImagesPlugin plugin) {
-                                        plugin.addSchemeHandler(new SchemeHandler() {
-                                            @NonNull
-                                            @Override
-                                            public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
+                                .usePlugin(ImagesPlugin.create(plugin -> {
+                                    plugin.addSchemeHandler(new SchemeHandler() {
+                                        @NonNull
+                                        @Override
+                                        public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
 
-                                                final int resourceId = getApplicationContext().getResources().getIdentifier(
-                                                        raw.substring("drawable://".length()),
-                                                        "drawable",
-                                                        getApplicationContext().getPackageName());
+                                            final int resourceId = getApplicationContext().getResources().getIdentifier(
+                                                    raw.substring("drawable://".length()),
+                                                    "drawable",
+                                                    getApplicationContext().getPackageName());
 
-                                                final Drawable drawable = getApplicationContext().getDrawable(resourceId);
+                                            final Drawable drawable = getApplicationContext().getDrawable(resourceId);
 
-                                                assert drawable != null;
-                                                return ImageItem.withResult(drawable);
-                                            }
+                                            assert drawable != null;
+                                            return ImageItem.withResult(drawable);
+                                        }
 
-                                            @NonNull
-                                            @Override
-                                            public Collection<String> supportedSchemes() {
-                                                return Collections.singleton("drawable");
-                                            }
-                                        });
-                                        plugin.placeholderProvider(new ImagesPlugin.PlaceholderProvider() {
-                                            @Nullable
-                                            @Override
-                                            public Drawable providePlaceholder(@NonNull AsyncDrawable drawable) {
-                                                return null;
-                                            }
-                                        });
-                                        plugin.addMediaDecoder(GifMediaDecoder.create(false));
-                                        plugin.addMediaDecoder(SvgMediaDecoder.create(getApplicationContext().getResources()));
-                                        plugin.addMediaDecoder(SvgMediaDecoder.create());
-                                        plugin.defaultMediaDecoder(DefaultMediaDecoder.create(getApplicationContext().getResources()));
-                                        plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
-                                    }
+                                        @NonNull
+                                        @Override
+                                        public Collection<String> supportedSchemes() {
+                                            return Collections.singleton("drawable");
+                                        }
+                                    });
+                                    plugin.placeholderProvider(drawable -> null);
+                                    plugin.addMediaDecoder(GifMediaDecoder.create(false));
+                                    plugin.addMediaDecoder(SvgMediaDecoder.create(getApplicationContext().getResources()));
+                                    plugin.addMediaDecoder(SvgMediaDecoder.create());
+                                    plugin.defaultMediaDecoder(DefaultMediaDecoder.create(getApplicationContext().getResources()));
+                                    plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
 
                                 }))
                                 .usePlugin(new AbstractMarkwonPlugin() {
@@ -444,7 +452,7 @@ public class IssueDetailActivity extends BaseActivity {
                                         .useFont(Typeface.DEFAULT)
                                         .textColor(new ColorInverter().getContrastColor(color))
                                         .fontSize(30)
-                                        .width((width * labelName.length()) - ((width / 4) * labelName.length()))
+                                        .width(LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, 30, 15))
                                         .height(50)
                                         .endConfig()
                                         .buildRoundRect(labelName, color, 10);
@@ -506,29 +514,11 @@ public class IssueDetailActivity extends BaseActivity {
                             issueDescription.setLayoutParams(paramsDesc);
                         }
 
-                        switch (timeFormat) {
-                            case "pretty": {
-                                PrettyTime prettyTime = new PrettyTime(new Locale(locale));
-                                String createdTime = prettyTime.format(singleIssue.getCreated_at());
-                                issueCreatedTime.setText(createdTime);
-                                issueCreatedTime.setVisibility(View.VISIBLE);
-                                issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(singleIssue.getCreated_at()), getApplicationContext()));
-                                break;
-                            }
-                            case "normal": {
-                                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                                String createdTime = formatter.format(singleIssue.getCreated_at());
-                                issueCreatedTime.setText(createdTime);
-                                issueCreatedTime.setVisibility(View.VISIBLE);
-                                break;
-                            }
-                            case "normal1": {
-                                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
-                                String createdTime = formatter.format(singleIssue.getCreated_at());
-                                issueCreatedTime.setText(createdTime);
-                                issueCreatedTime.setVisibility(View.VISIBLE);
-                                break;
-                            }
+                        issueCreatedTime.setText(TimeHelper.formatTime(singleIssue.getCreated_at(), new Locale(locale), timeFormat, ctx));
+                        issueCreatedTime.setVisibility(View.VISIBLE);
+
+                        if(timeFormat.equals("pretty")) {
+                            issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(singleIssue.getCreated_at()), ctx));
                         }
 
                         if(singleIssue.getMilestone() != null) {
@@ -567,12 +557,7 @@ public class IssueDetailActivity extends BaseActivity {
     }
 
     private void initCloseListener() {
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+        View.OnClickListener onClickListener = view -> finish();
     }
 
 }
