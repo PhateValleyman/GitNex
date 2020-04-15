@@ -111,18 +111,18 @@ public class FileDiffActivity extends BaseActivity {
 
                                     String[] fileContents_ = level2nd[1].split("@@"); // file info / content part
                                     String fileInfoFinal = fileContents_[0];
-                                    String fileContentsFinal = (fileContents_[1]);
+                                    StringBuilder fileContentsFinal = new StringBuilder(fileContents_[1]);
 
                                     if(level2nd.length > 2) {
                                         for (int j = 2; j < level2nd.length; j++) {
-                                            fileContentsFinal += (level2nd[j]);
+                                            fileContentsFinal.append(level2nd[j]);
                                         }
                                     }
 
                                     String fileExtension = FileUtils.getExtension(fileNameFinal);
 
-                                    String fileContentsFinalWithBlankLines = fileContentsFinal.replaceAll( ".*@@.*", "" );
-                                    String fileContentsFinalWithoutBlankLines = fileContentsFinal.replaceAll( ".*@@.*(\r?\n|\r)?", "" );
+                                    String fileContentsFinalWithBlankLines = fileContentsFinal.toString().replaceAll( ".*@@.*", "" );
+                                    String fileContentsFinalWithoutBlankLines = fileContentsFinal.toString().replaceAll( ".*@@.*(\r?\n|\r)?", "" );
                                     fileContentsFinalWithoutBlankLines = fileContentsFinalWithoutBlankLines.replaceAll( ".*\\ No newline at end of file.*(\r?\n|\r)?", "" );
 
                                     fileContentsArray.add(new FileDiffView(fileNameFinal, appUtil.imageExtension(fileExtension), fileInfoFinal, fileContentsFinalWithoutBlankLines));
