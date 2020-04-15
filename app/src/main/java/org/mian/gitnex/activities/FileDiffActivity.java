@@ -2,18 +2,16 @@ package org.mian.gitnex.activities;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
-import org.mian.gitnex.adapters.FilesDiffAdapter;
+import org.mian.gitnex.adapters.FilesDiffLinesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
@@ -35,7 +33,7 @@ public class FileDiffActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
     private TextView toolbar_title;
-    private RecyclerView mRecyclerView;
+    private ListView mListView;
     private ProgressBar mProgressBar;
 
     @Override
@@ -61,11 +59,10 @@ public class FileDiffActivity extends BaseActivity {
 
         ImageView closeActivity = findViewById(R.id.close);
         toolbar_title = findViewById(R.id.toolbar_title);
-        mRecyclerView = findViewById(R.id.recyclerView);
+        mListView = findViewById(R.id.listView);
         mProgressBar = findViewById(R.id.progress_bar);
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mListView.setDivider(null);
 
         toolbar_title.setText(R.string.processingText);
         initCloseListener();
@@ -162,8 +159,8 @@ public class FileDiffActivity extends BaseActivity {
                             toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
                         }
 
-                        FilesDiffAdapter adapter = new FilesDiffAdapter(fileContentsArray, getApplicationContext());
-                        mRecyclerView.setAdapter(adapter);
+                        FilesDiffLinesAdapter adapter = new FilesDiffLinesAdapter(getApplicationContext(), fileContentsArray);
+                        mListView.setAdapter(adapter);
 
                         mProgressBar.setVisibility(View.GONE);
 
