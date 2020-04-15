@@ -83,9 +83,12 @@ public class ReplyToIssueActivity extends BaseActivity {
 
         replyButton = findViewById(R.id.replyButton);
 
+        if(getIntent().getStringExtra("commentBody") != null) {
+            addComment.setText(getIntent().getStringExtra("commentBody"));
+        }
+
         if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
 
-            addComment.setText(getIntent().getStringExtra("commentBody"));
             final String commentId = getIntent().getStringExtra("commentId");
 
             toolbar_title.setText(getResources().getString(R.string.editCommentTitle));
@@ -94,7 +97,7 @@ public class ReplyToIssueActivity extends BaseActivity {
             replyButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     disableProcessButton();
-                    IssueActions.editIssueComment(ctx, Integer.valueOf(commentId), addComment.getText().toString());
+                    IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
                 }
 
             });
