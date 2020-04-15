@@ -127,7 +127,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 						if(((DiffTextView) v).getCurrentBackgroundColor() == context.getResources().getColor(R.color.md_grey_200)) {
 
 							StringBuilder stringBuilder = new StringBuilder();
-							stringBuilder.append("```");
+							stringBuilder.append("```\n");
 
 							for(View view : selectedViews) {
 
