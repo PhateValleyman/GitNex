@@ -48,7 +48,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		convertView = LayoutInflater.from(context).inflate(R.layout.list_files_diffs_new, null, false);
+		convertView = LayoutInflater.from(context).inflate(R.layout.list_files_diffs, null, false);
 
 		TextView headerFileName = convertView.findViewById(R.id.headerFileName);
 		TextView headerFileInfo = convertView.findViewById(R.id.headerFileInfo);
