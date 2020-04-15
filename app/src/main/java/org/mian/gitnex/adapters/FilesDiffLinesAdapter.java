@@ -88,7 +88,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 			textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 			textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-			textView.setText("Binary file cannot be shown.");
+			textView.setText(context.getResources().getString(R.string.binaryFileError));
 			diffLines.addView(textView);
 
 		} else {
@@ -184,7 +184,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 
 							}
 
-							stringBuilder.append("```");
+							stringBuilder.append("```\n\n");
 
 							SELECTED_VIEWS.clear();
 
