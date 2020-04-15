@@ -9,8 +9,9 @@ import android.util.AttributeSet;
 
 public class DiffTextView extends androidx.appcompat.widget.AppCompatTextView {
 
-	private int initialBackgroundColor = -1;
-	private int currentBackgroundColor = -1;
+	private int initialBackgroundColor;
+	private int currentBackgroundColor;
+	private int position;
 
 	public DiffTextView(Context context) {
 
@@ -30,13 +31,14 @@ public class DiffTextView extends androidx.appcompat.widget.AppCompatTextView {
 	@Override
 	public void setBackgroundColor(int color) {
 
-		if(initialBackgroundColor == -1) {
-			initialBackgroundColor = color;
-		}
-
 		currentBackgroundColor = color;
-
 		super.setBackgroundColor(color);
+	}
+
+	public void setInitialBackgroundColor(int initialBackgroundColor) {
+
+		setBackgroundColor(initialBackgroundColor);
+		this.initialBackgroundColor = initialBackgroundColor;
 	}
 
 	public int getInitialBackgroundColor() {
@@ -47,6 +49,16 @@ public class DiffTextView extends androidx.appcompat.widget.AppCompatTextView {
 	public int getCurrentBackgroundColor() {
 
 		return currentBackgroundColor;
+	}
+
+	public int getPosition() {
+
+		return position;
+	}
+
+	public void setPosition(int position) {
+
+		this.position = position;
 	}
 
 }
