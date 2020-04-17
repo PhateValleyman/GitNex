@@ -252,12 +252,10 @@ public class SettingsFragment extends Fragment {
 
 			if(isChecked) {
 				tinyDb.putBoolean("crashReportingEnabled", true);
-				tinyDb.putString("crashReportingEnabledInit", "yes");
 				Toasty.info(getContext(), getResources().getString(R.string.settingsSave));
 			}
 			else {
 				tinyDb.putBoolean("crashReportingEnabled", false);
-				tinyDb.putString("crashReportingEnabledInit", "yes");
 				Toasty.info(getContext(), getResources().getString(R.string.settingsSave));
 			}
 

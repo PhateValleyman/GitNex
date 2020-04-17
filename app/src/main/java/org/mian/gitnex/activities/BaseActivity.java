@@ -84,6 +84,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 			tinyDb.putString("enableCounterBadgesInit", "yes");
 		}
 
+		// enable crash reports by default
+		if(tinyDb.getString("crashReportingEnabledInit").isEmpty()) {
+			tinyDb.putBoolean("crashReportingEnabled", true);
+			tinyDb.putString("crashReportingEnabledInit", "yes");
+		}
+
 		if (tinyDb.getBoolean("crashReportingEnabled")) {
 
 			CoreConfigurationBuilder ACRABuilder = new CoreConfigurationBuilder(this);
