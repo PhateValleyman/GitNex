@@ -192,8 +192,9 @@ public class FilesDiffAdapter extends BaseAdapter {
 							SELECTED_VIEWS.clear();
 
 							Intent intent = new Intent(context, ReplyToIssueActivity.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							intent.putExtra("commentBody", stringBuilder.toString());
+							intent.putExtra("cursorToEnd", true);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 							context.startActivity(intent);
 

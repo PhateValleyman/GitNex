@@ -85,6 +85,10 @@ public class ReplyToIssueActivity extends BaseActivity {
 
         if(getIntent().getStringExtra("commentBody") != null) {
             addComment.setText(getIntent().getStringExtra("commentBody"));
+
+            if(getIntent().getBooleanExtra("cursorToEnd", false)) {
+                addComment.setSelection(addComment.length());
+            }
         }
 
         if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
