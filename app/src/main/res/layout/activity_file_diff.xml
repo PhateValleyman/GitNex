@@ -22,8 +22,8 @@
 
             <ImageView
                 android:id="@+id/close"
-                android:layout_width="@dimen/close_size"
-                android:layout_height="@dimen/close_size"
+                android:layout_width="@dimen/close_button_size"
+                android:layout_height="@dimen/close_button_size"
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
                 android:gravity="center_vertical"
@@ -48,34 +48,27 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
+        android:id="@+id/filesDiffFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/filesDiffFrame"
+        <ListView
+            android:id="@+id/listView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ListView
-                android:id="@+id/listView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:scrollbars="vertical" />
-
-        </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="@style/Base.Widget.AppCompat.ProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone" />
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:scrollbars="vertical" />
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Base.Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="true"
+        android:visibility="visible" />
 
 </LinearLayout>

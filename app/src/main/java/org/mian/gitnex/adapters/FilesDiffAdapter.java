@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * Author opyale
  */
 
-public class FilesDiffLinesAdapter extends BaseAdapter {
+public class FilesDiffAdapter extends BaseAdapter {
 
 	private static Map<Integer, View> SELECTED_VIEWS;
 
@@ -36,7 +37,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 	private Context context;
 	private List<FileDiffView> fileDiffViews;
 
-	public FilesDiffLinesAdapter(Context context, List<FileDiffView> fileDiffViews) {
+	public FilesDiffAdapter(Context context, List<FileDiffView> fileDiffViews) {
 
 		this.context = context;
 		this.fileDiffViews = fileDiffViews;
@@ -45,7 +46,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 		COLOR_ADDED = context.getResources().getColor(R.color.diffAddedColor);
 		COLOR_REMOVED = context.getResources().getColor(R.color.diffRemovedColor);
 		COLOR_NORMAL = context.getResources().getColor(R.color.white);
-		COLOR_SELECTED = context.getResources().getColor(R.color.md_grey_200);
+		COLOR_SELECTED = context.getResources().getColor(R.color.md_grey_300);
 
 	}
 
@@ -86,6 +87,8 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 
 			TextView textView = new TextView(context);
 			textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+			textView.setTypeface(Typeface.DEFAULT);
+			textView.setGravity(Gravity.CENTER);
 			textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
 			textView.setText(context.getResources().getString(R.string.binaryFileError));
@@ -101,7 +104,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 
 					DiffTextView diffTextView = new DiffTextView(context);
 					diffTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-					diffTextView.setPadding(5, 2, 5, 2);
+					diffTextView.setPadding(15, 2, 15, 2);
 					diffTextView.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf"));
 					diffTextView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -189,6 +192,7 @@ public class FilesDiffLinesAdapter extends BaseAdapter {
 							SELECTED_VIEWS.clear();
 
 							Intent intent = new Intent(context, ReplyToIssueActivity.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							intent.putExtra("commentBody", stringBuilder.toString());
 
 							context.startActivity(intent);

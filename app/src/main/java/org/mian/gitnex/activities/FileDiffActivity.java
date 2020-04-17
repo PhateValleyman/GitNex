@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
-import org.mian.gitnex.adapters.FilesDiffLinesAdapter;
+import org.mian.gitnex.adapters.FilesDiffAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
@@ -159,7 +159,7 @@ public class FileDiffActivity extends BaseActivity {
                             toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
                         }
 
-                        FilesDiffLinesAdapter adapter = new FilesDiffLinesAdapter(getApplicationContext(), fileContentsArray);
+                        FilesDiffAdapter adapter = new FilesDiffAdapter(getApplicationContext(), fileContentsArray);
                         mListView.setAdapter(adapter);
 
                         mProgressBar.setVisibility(View.GONE);

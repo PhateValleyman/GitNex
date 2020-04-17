@@ -118,7 +118,7 @@
     <string name="orgCreatedError">Something went wrong, please try again</string>
     <string name="orgExistsError">Organization already exists</string>
 
-    <string name="binaryFileError">Binary files cannot be shown.</string>
+    <string name="binaryFileError">Binary files are not supported yet.</string>
 
     <string name="processingText">Processing</string>
     <string name="search">Search</string>
