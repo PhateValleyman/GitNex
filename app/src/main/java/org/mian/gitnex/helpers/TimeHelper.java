@@ -35,6 +35,10 @@ public class TimeHelper {
 
     public static String formatTime(Date date, Locale locale, String timeFormat, Context context) {
 
+        if(date == null) {
+            return "";
+        }
+
         switch (timeFormat) {
 
             case "pretty": {
