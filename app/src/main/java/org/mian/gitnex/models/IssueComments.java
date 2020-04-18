@@ -14,7 +14,6 @@ public class IssueComments {
     private String issue_url;
     private String body;
     private Date created_at;
-    private Date created_date;
     private Date updated_at;
 
     private userObject user;
@@ -85,10 +84,6 @@ public class IssueComments {
 
     public Date getCreated_at() {
         return created_at;
-    }
-
-    public Date getCreated_date() {
-        return created_date;
     }
 
     public userObject getUser() {
