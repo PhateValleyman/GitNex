@@ -11,7 +11,7 @@ public class DiffTextView extends androidx.appcompat.widget.AppCompatTextView {
 
 	private int initialBackgroundColor;
 	private int currentBackgroundColor;
-	private int position;
+	private long position;
 
 	public DiffTextView(Context context) {
 
@@ -51,7 +51,7 @@ public class DiffTextView extends androidx.appcompat.widget.AppCompatTextView {
 		return currentBackgroundColor;
 	}
 
-	public int getPosition() {
+	public long getPosition() {
 
 		return position;
 	}
