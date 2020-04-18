@@ -106,14 +106,14 @@ public class FilesDiffAdapter extends BaseAdapter {
 						diffTextView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 						diffTextView.setPosition(uniquePosition);
 
-						boolean check = true;
+						boolean isSelected = false;
 
 						for(View view : SELECTED_VIEWS.values()) {
 
 							if(((DiffTextView) view).getPosition() == uniquePosition) {
 
 								diffTextView.setBackgroundColor(COLOR_SELECTED);
-								check = false;
+								isSelected = true;
 								break;
 
 							}
@@ -126,7 +126,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 							diffTextView.setText(codeLines[l]);
 							diffTextView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
 
-							if(check) {
+							if(!isSelected) {
 								diffTextView.setInitialBackgroundColor(COLOR_ADDED);
 							}
 
@@ -135,7 +135,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 							diffTextView.setText(codeLines[l]);
 							diffTextView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
 
-							if(check) {
+							if(!isSelected) {
 								diffTextView.setInitialBackgroundColor(COLOR_REMOVED);
 							}
 
@@ -144,7 +144,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 							diffTextView.setText(codeLines[l]);
 							diffTextView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
 
-							if(check) {
+							if(!isSelected) {
 								diffTextView.setInitialBackgroundColor(COLOR_NORMAL);
 							}
 
