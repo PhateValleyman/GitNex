@@ -84,11 +84,13 @@ public class ReplyToIssueActivity extends BaseActivity {
         replyButton = findViewById(R.id.replyButton);
 
         if(getIntent().getStringExtra("commentBody") != null) {
+
             addComment.setText(getIntent().getStringExtra("commentBody"));
 
             if(getIntent().getBooleanExtra("cursorToEnd", false)) {
                 addComment.setSelection(addComment.length());
             }
+
         }
 
         if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
@@ -98,12 +100,9 @@ public class ReplyToIssueActivity extends BaseActivity {
             toolbar_title.setText(getResources().getString(R.string.editCommentTitle));
             replyButton.setText(getResources().getString(R.string.editCommentButtonText));
 
-            replyButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    disableProcessButton();
-                    IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
-                }
-
+            replyButton.setOnClickListener(v -> {
+                disableProcessButton();
+                IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
             });
 
             return;
