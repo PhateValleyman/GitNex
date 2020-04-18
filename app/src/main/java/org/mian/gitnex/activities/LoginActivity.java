@@ -511,7 +511,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             public void onFailure(@NonNull Call<GiteaVersion> callVersion, Throwable t) {
 
                 Log.e("onFailure-version", t.toString());
-                SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
+                SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.errorOnLogin));
                 enableProcessButton();
                 loginButton.setText(R.string.btnLogin);
 
