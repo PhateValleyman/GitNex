@@ -33,6 +33,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 	private static int COLOR_REMOVED;
 	private static int COLOR_NORMAL;
 	private static int COLOR_SELECTED;
+	private static int COLOR_FONT;
 
 	private Context context;
 	private List<FileDiffView> fileDiffViews;
@@ -47,6 +48,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 		COLOR_REMOVED = context.getResources().getColor(R.color.diffRemovedColor);
 		COLOR_NORMAL = context.getResources().getColor(R.color.white);
 		COLOR_SELECTED = context.getResources().getColor(R.color.md_grey_300);
+		COLOR_FONT = context.getResources().getColor(R.color.colorPrimary);
 
 	}
 
@@ -124,7 +126,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 						if(codeLines[l].startsWith("+")) {
 
 							diffTextView.setText(codeLines[l]);
-							diffTextView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+							diffTextView.setTextColor(COLOR_FONT);
 
 							if(!isSelected) {
 								diffTextView.setInitialBackgroundColor(COLOR_ADDED);
@@ -133,7 +135,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 						} else if(codeLines[l].startsWith("-")) {
 
 							diffTextView.setText(codeLines[l]);
-							diffTextView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+							diffTextView.setTextColor(COLOR_FONT);
 
 							if(!isSelected) {
 								diffTextView.setInitialBackgroundColor(COLOR_REMOVED);
@@ -142,7 +144,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 						} else {
 
 							diffTextView.setText(codeLines[l]);
-							diffTextView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+							diffTextView.setTextColor(COLOR_FONT);
 
 							if(!isSelected) {
 								diffTextView.setInitialBackgroundColor(COLOR_NORMAL);
@@ -220,6 +222,8 @@ public class FilesDiffAdapter extends BaseAdapter {
 	private TextView getMessageView(String message) {
 
 		TextView textView = new TextView(context);
+		textView.setTextColor(COLOR_FONT);
+		textView.setBackgroundColor(COLOR_NORMAL);
 		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 		textView.setPadding(15, 15, 15, 15);
 		textView.setTypeface(Typeface.DEFAULT);
