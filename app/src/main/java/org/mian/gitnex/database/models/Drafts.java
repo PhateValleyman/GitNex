@@ -1,5 +1,6 @@
 package org.mian.gitnex.database.models;
 
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -11,12 +12,12 @@ import static androidx.room.ForeignKey.CASCADE;
  * Author M M Arif
  */
 
-@Entity(tableName = "commentsDraft", foreignKeys = @ForeignKey(entity = Repositories.class,
+@Entity(tableName = "Drafts", foreignKeys = @ForeignKey(entity = Repositories.class,
         parentColumns = "repositoryId",
         childColumns = "draftRepositoryId",
         onDelete = CASCADE),
         indices = {@Index("draftRepositoryId")})
-public class CommentsDraft implements Serializable {
+public class Drafts implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int draftId;
@@ -25,6 +26,8 @@ public class CommentsDraft implements Serializable {
     private int draftAccountId;
     private int issueId;
     private String draftText;
+    @Nullable
+    private String draftType;
 
     public int getDraftId() {
         return draftId;
@@ -65,4 +68,16 @@ public class CommentsDraft implements Serializable {
     public void setDraftText(String draftText) {
         this.draftText = draftText;
     }
+
+    @Nullable
+    public String getDraftType() {
+
+        return draftType;
+    }
+
+    public void setDraftType(@Nullable String draftType) {
+
+        this.draftType = draftType;
+    }
+
 }

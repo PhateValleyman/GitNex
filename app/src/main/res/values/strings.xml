@@ -538,8 +538,8 @@
     <string name="unWatchRepository">Unwatch Repository</string>
     <string name="watchRepositorySuccess">Repository added to watch list</string>
     <string name="unWatchRepositorySuccess">Repository removed from watch list</string>
-    <string name="navCommentsDraft">Drafts</string>
-    <string name="pageTitleCommentsDraft">Drafts</string>
+    <string name="navDrafts">Drafts</string>
+    <string name="pageTitleDrafts">Drafts</string>
     <string name="filesBreadcrumbRoot" translatable="false">Root</string>
 
     <string name="versionUnsupportedOld">Unsupported old version(%1$s) of Gitea detected. Please update to latest stable version. If you continue, the app may not function properly.</string>

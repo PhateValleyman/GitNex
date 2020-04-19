@@ -7,6 +7,7 @@ import org.mian.gitnex.database.dao.UserAccountsDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
 import org.mian.gitnex.database.models.UserAccounts;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Author M M Arif
@@ -37,6 +38,7 @@ public class UserAccountsRepository {
     }
 
     private static void insertNewAccountAsync(final UserAccounts userAccounts) {
+
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -44,6 +46,7 @@ public class UserAccountsRepository {
                 return null;
             }
         }.execute();
+        
     }
 
     public static void updateServerVersion(final String serverVersion, final int accountId) {
@@ -70,8 +73,22 @@ public class UserAccountsRepository {
 
     }
 
-    public LiveData<UserAccounts> checkUserAccount(String userName, String instanceUrl) {
-        return userAccountsDao.checkAccount(userName, instanceUrl);
+	public UserAccounts getAccountData(String accountName) throws ExecutionException, InterruptedException {
+		return new GetAccountByNameAsyncTask().execute(accountName).get();
+	}
+
+	private static class GetAccountByNameAsyncTask extends AsyncTask<String, Void, UserAccounts>
+	{
+
+		@Override
+		protected UserAccounts doInBackground(String... params) {
+			return userAccountsDao.fetchRowByAccount_(params[0]);
+		}
+
+	}
+
+    public static LiveData<Integer> getCount(String accountName) {
+        return userAccountsDao.getCount(accountName);
     }
 
     public LiveData<List<UserAccounts>> getAllAccounts() {

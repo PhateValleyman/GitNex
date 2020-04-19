@@ -20,9 +20,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.LifecycleOwner;
 import com.tooltip.Tooltip;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.database.repository.UserAccountsRepository;
 import org.mian.gitnex.helpers.NetworkObserver;
 import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.helpers.VersionCheck;
@@ -31,6 +33,7 @@ import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+import org.mian.gitnex.viewmodels.UserAccountsViewModel;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -45,7 +48,7 @@ import retrofit2.Callback;
  * Author M M Arif
  */
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener, LifecycleOwner {
 
     private Button loginButton;
     private EditText instanceUrlET, loginUidET, loginPassword, otpCode, loginTokenCode;
@@ -547,6 +550,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         tinyDb.putString("loginUid", userDetails.getLogin());
                         tinyDb.putString("userLogin", userDetails.getUsername());
 
+	                    // insert new account to db if does not exist
+	                    String accountName =  userDetails.getUsername() + "@" + instanceUrl;
+	                    UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
+
+	                    UserAccountsViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
+
+		                    if(count == 0) {
+			                    userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken_,"");
+		                    }
+
+	                    });
+
                         enableProcessButton();
                         loginButton.setText(R.string.btnLogin);
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -711,6 +726,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                                                 tinyDb.putString(loginUid + "-token", newToken.getSha1());
                                                                 tinyDb.putString(loginUid + "-token-last-eight", appUtil.getLastCharactersOfWord(newToken.getSha1(), 8));
 
+	                                                            // insert new account to db if does not exist
+	                                                            String accountName =  userDetails.getUsername() + "@" + instanceUrl;
+	                                                            UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
+
+	                                                            UserAccountsViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
+
+		                                                            if(count == 0) {
+			                                                            userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(),"");
+		                                                            }
+
+	                                                            });
+
                                                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                                                 finish();
 
@@ -771,7 +798,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         }
                         else {
 
-                            String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+                        	String token = tinyDb.getString(loginUid + "-token");
+                            String instanceToken = "token " + token;
 
                             Call<UserInfo> callGetUsername = RetrofitClient
                                     .getInstance(instanceUrl, getApplicationContext())
@@ -793,6 +821,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                             tinyDb.putString("userLogin", userDetails.getUsername());
 
                                             tinyDb.putBoolean("loggedInMode", true);
+
+                                            // insert new account to db if does not exist
+                                            String accountName =  userDetails.getUsername() + "@" + instanceUrl;
+                                            UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
+
+	                                        UserAccountsViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
+
+		                                        if(count == 0) {
+			                                        userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), token,"");
+		                                        }
+
+	                                        });
+
                                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                             finish();
 

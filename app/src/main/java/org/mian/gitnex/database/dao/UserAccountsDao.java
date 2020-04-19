@@ -20,11 +20,14 @@ public interface UserAccountsDao {
     @Query("SELECT * FROM userAccounts ORDER BY accountId ASC")
     LiveData<List<UserAccounts>> fetchAllAccounts();
 
-    @Query("SELECT * FROM userAccounts WHERE accountId = :accountId")
-    LiveData<UserAccounts> fetchSingleRow(int accountId);
+    @Query("SELECT COUNT(accountId) FROM userAccounts WHERE accountName = :accountName")
+    LiveData<Integer> getCount(String accountName);
 
-    @Query("SELECT * FROM userAccounts WHERE userName = :userName AND instanceUrl = :instanceUrl ")
-    LiveData<UserAccounts> checkAccount(String userName, String instanceUrl);
+    @Query("SELECT * FROM userAccounts WHERE accountName = :accountName")
+    UserAccounts fetchRowByAccount_(String accountName);
+
+    @Query("SELECT * FROM userAccounts WHERE accountId = :accountId")
+    UserAccounts fetchRowByAccountId(int accountId);
 
     @Query("UPDATE userAccounts SET serverVersion = :serverVersion WHERE accountId = :accountId")
     void updateServerVersion(String serverVersion, int accountId);

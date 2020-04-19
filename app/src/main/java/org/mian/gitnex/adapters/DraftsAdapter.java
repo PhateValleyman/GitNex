@@ -8,23 +8,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.database.models.CommentsDraft;
+import org.mian.gitnex.database.models.Drafts;
 import java.util.List;
 
 /**
  * Author M M Arif
  */
 
-public class CommentsDraftAdapter extends RecyclerView.Adapter<CommentsDraftAdapter.CommentsViewHolder> {
+public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsViewHolder> {
 
-    private List<CommentsDraft> draftsList;
+    private List<Drafts> draftsList;
     private Context mCtx;
     //private List<CommentsDraft> draftsListFull;
 
-    class CommentsViewHolder extends RecyclerView.ViewHolder {
+    static class DraftsViewHolder extends RecyclerView.ViewHolder {
 
         private TextView draftText;
-        private CommentsViewHolder(View itemView) {
+        private DraftsViewHolder(View itemView) {
 
             super(itemView);
             draftText = itemView.findViewById(R.id.draftText);
@@ -44,7 +44,7 @@ public class CommentsDraftAdapter extends RecyclerView.Adapter<CommentsDraftAdap
         }
     }
 
-    public CommentsDraftAdapter(Context mCtx, List<CommentsDraft> draftsListMain) {
+    public DraftsAdapter(Context mCtx, List<Drafts> draftsListMain) {
         this.mCtx = mCtx;
         this.draftsList = draftsListMain;
         //draftsListFull = new ArrayList<>(draftsList);
@@ -52,15 +52,15 @@ public class CommentsDraftAdapter extends RecyclerView.Adapter<CommentsDraftAdap
 
     @NonNull
     @Override
-    public CommentsDraftAdapter.CommentsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_draft_list, parent, false);
-        return new CommentsDraftAdapter.CommentsViewHolder(v);
+    public DraftsAdapter.DraftsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_drafts, parent, false);
+        return new DraftsViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommentsDraftAdapter.CommentsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DraftsAdapter.DraftsViewHolder holder, int position) {
 
-        CommentsDraft currentItem = draftsList.get(position);
+        Drafts currentItem = draftsList.get(position);
 
         holder.draftText.setText(currentItem.getDraftText());
 

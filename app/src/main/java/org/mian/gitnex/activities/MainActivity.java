@@ -26,8 +26,10 @@ import com.squareup.picasso.NetworkPolicy;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.database.models.UserAccounts;
+import org.mian.gitnex.database.repository.UserAccountsRepository;
 import org.mian.gitnex.fragments.AboutFragment;
-import org.mian.gitnex.fragments.CommentsDraftFragment;
+import org.mian.gitnex.fragments.DraftsFragment;
 import org.mian.gitnex.fragments.ExploreRepositoriesFragment;
 import org.mian.gitnex.fragments.MyRepositoriesFragment;
 import org.mian.gitnex.fragments.BottomSheetNavSubMenuFragment;
@@ -46,6 +48,7 @@ import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.fragments.ProfileFragment;
 import org.mian.gitnex.fragments.RepositoriesFragment;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -107,6 +110,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             return;
         }
 
+	    String accountName =  loginUid + "@" + instanceUrl;
+	    try {
+		    getAcountData(accountName);
+	    }
+	    catch(ExecutionException | InterruptedException e) {
+		    Log.e("getAcountData", e.toString());
+	    }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
 
@@ -151,6 +162,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         else if (fragmentById instanceof AboutFragment) {
             toolbarTitle.setText(getResources().getString(R.string.pageTitleAbout));
+        }
+        else if (fragmentById instanceof DraftsFragment) {
+            toolbarTitle.setText(getResources().getString(R.string.pageTitleDrafts));
         }
 
         drawer = findViewById(R.id.drawer_layout);
@@ -304,6 +318,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
+    public void getAcountData(String accountName) throws ExecutionException, InterruptedException {
+
+	    UserAccountsRepository accountData = new UserAccountsRepository(ctx);
+	    UserAccounts data = accountData.getAccountData(accountName);
+	    Log.i("accountData", data.getInstanceUrl());
+
+
+    }
+
     public void setActionBarTitle (@NonNull String title) {
         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
     }
@@ -373,8 +396,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         new ExploreRepositoriesFragment()).commit();
                 break;
             case R.id.nav_comments_draft:
+                toolbarTitle.setText(getResources().getString(R.string.pageTitleDrafts));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new CommentsDraftFragment()).commit();
+                        new DraftsFragment()).commit();
                 break;
 
         }

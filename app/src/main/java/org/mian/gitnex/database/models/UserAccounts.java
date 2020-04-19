@@ -1,5 +1,6 @@
 package org.mian.gitnex.database.models;
 
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.io.Serializable;
@@ -14,10 +15,12 @@ public class UserAccounts implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int accountId;
 
+    @Nullable
     private String accountName;
     private String instanceUrl;
     private String userName;
     private String token;
+    @Nullable
     private String serverVersion;
 
     public int getAccountId() {
@@ -28,11 +31,12 @@ public class UserAccounts implements Serializable {
         this.accountId = accountId;
     }
 
+    @Nullable
     public String getAccountName() {
         return accountName;
     }
 
-    public void setAccountName(String accountName) {
+    public void setAccountName(@Nullable String accountName) {
         this.accountName = accountName;
     }
 
@@ -60,11 +64,12 @@ public class UserAccounts implements Serializable {
         this.token = token;
     }
 
+    @Nullable
     public String getServerVersion() {
         return serverVersion;
     }
 
-    public void setServerVersion(String serverVersion) {
+    public void setServerVersion(@Nullable String serverVersion) {
         this.serverVersion = serverVersion;
     }
 }

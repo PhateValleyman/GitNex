@@ -20,7 +20,7 @@ import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.database.repository.CommentsDraftRepository;
+import org.mian.gitnex.database.repository.DraftsRepository;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
@@ -95,7 +95,7 @@ public class ReplyToIssueActivity extends BaseActivity {
             replyButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     disableProcessButton();
-                    IssueActions.editIssueComment(ctx, Integer.valueOf(commentId), addComment.getText().toString());
+                    IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
                 }
 
             });
@@ -202,8 +202,8 @@ public class ReplyToIssueActivity extends BaseActivity {
         }
         else {
 
-            CommentsDraftRepository commentsRepository = new CommentsDraftRepository(getApplicationContext());
-            commentsRepository.insertComment(1, 1, Integer.parseInt(tinyDb.getString("issueNumber")), newReplyDT);
+            //DraftsRepository draftsRepository = new DraftsRepository(getApplicationContext());
+            //draftsRepository.insertDraftQuery(1, 1, Integer.parseInt(tinyDb.getString("issueNumber")), newReplyDT, "comment");
 
             disableProcessButton();
             replyComment(newReplyDT);

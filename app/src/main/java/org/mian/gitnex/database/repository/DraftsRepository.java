@@ -3,65 +3,66 @@ package org.mian.gitnex.database.repository;
 import android.content.Context;
 import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
-import org.mian.gitnex.database.dao.CommentsDraftDao;
+import org.mian.gitnex.database.dao.DraftsDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
-import org.mian.gitnex.database.models.CommentsDraft;
+import org.mian.gitnex.database.models.Drafts;
 import java.util.List;
 
 /**
  * Author M M Arif
  */
 
-public class CommentsDraftRepository {
+public class DraftsRepository {
 
-    private static CommentsDraftDao commentsDraftDao;
+    private static DraftsDao draftsDao;
 
-    public CommentsDraftRepository(Context context) {
+    public DraftsRepository(Context context) {
 
         GitnexDatabase db;
         db = GitnexDatabase.getDatabaseInstance(context);
-        commentsDraftDao = db.commentsDraftDao();
+        draftsDao = db.draftsDao();
 
     }
 
-    public void insertComment(int repositoryId, int draftAccountId, int issueId, String draftText) {
+    public void insertDraftQuery(int repositoryId, int draftAccountId, int issueId, String draftText, String draftType) {
 
-        CommentsDraft commentsDraft = new CommentsDraft();
-        commentsDraft.setDraftRepositoryId(repositoryId);
-        commentsDraft.setDraftAccountId(draftAccountId);
-        commentsDraft.setIssueId(issueId);
-        commentsDraft.setDraftText(draftText);
+        Drafts drafts = new Drafts();
+        drafts.setDraftRepositoryId(repositoryId);
+        drafts.setDraftAccountId(draftAccountId);
+        drafts.setIssueId(issueId);
+        drafts.setDraftText(draftText);
+	    drafts.setDraftType(draftType);
 
-        insertCommentAsync(commentsDraft);
+	    insertDraftAsync(drafts);
     }
 
-    private static void insertCommentAsync(final CommentsDraft commentsDraft) {
+    private static void insertDraftAsync(final Drafts drafts) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                commentsDraftDao.insertComment(commentsDraft);
+                draftsDao.insertDraft(drafts);
                 return null;
             }
         }.execute();
     }
 
-    public LiveData<List<CommentsDraft>> getDrafts(int accountId) {
-        return commentsDraftDao.fetchAllDrafts(accountId);
+    public LiveData<List<Drafts>> getDrafts(int accountId) {
+        return draftsDao.fetchAllDrafts(accountId);
     }
 
-    public LiveData<CommentsDraft> getCommentByIssueId(int issueId) {
-        return commentsDraftDao.fetchDraftByIssueId(issueId);
+    public LiveData<Drafts> getDraftByIssueId(int issueId) {
+        return draftsDao.fetchDraftByIssueId(issueId);
     }
 
     public static void deleteSingleDraft(final int draftId) {
 
-        final LiveData<CommentsDraft> draft = commentsDraftDao.fetchDraftById(draftId);
+        final LiveData<Drafts> draft = draftsDao.fetchDraftById(draftId);
 
         if(draft != null) {
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... voids) {
-                    commentsDraftDao.deleteByDraftId(draftId);
+                    draftsDao.deleteByDraftId(draftId);
                     return null;
                 }
             }.execute();
@@ -73,7 +74,7 @@ public class CommentsDraftRepository {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                commentsDraftDao.deleteAllDrafts(accountId);
+                draftsDao.deleteAllDrafts(accountId);
                 return null;
             }
         }.execute();
@@ -85,7 +86,7 @@ public class CommentsDraftRepository {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                commentsDraftDao.updateDraft(draftText, draftId);
+                draftsDao.updateDraft(draftText, draftId);
                 return null;
             }
         }.execute();
