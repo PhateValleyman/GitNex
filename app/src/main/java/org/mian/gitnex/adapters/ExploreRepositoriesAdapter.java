@@ -100,17 +100,18 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<ExploreRepo
 
 				try {
 
-					Integer count = repositoryData.checkRepository(currentActiveAccountId, repoName, repoOwner);
+					//RepositoriesRepository.deleteRepositoriesByAccount(currentActiveAccountId);
+					Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
 					if(count == 0) {
 
-						long id = repositoryData.insertRepository(currentActiveAccountId, repoName, repoOwner);
+						long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
 						tinyDb.putLong("repositoryId", id);
 
 					}
 					else {
 
-						Repositories data = repositoryData.getRepository(currentActiveAccountId, repoName, repoOwner);
+						Repositories data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
 						tinyDb.putLong("repositoryId", data.getRepositoryId());
 
 					}
