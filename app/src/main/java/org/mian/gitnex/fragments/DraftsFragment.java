@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.DraftsAdapter;
 import org.mian.gitnex.database.repository.DraftsRepository;
+import org.mian.gitnex.util.TinyDB;
 
 /**
  * Author M M Arif
@@ -31,6 +32,8 @@ public class DraftsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_drafts, container, false);
+
+        TinyDB tinyDb = new TinyDB(getContext());
 
         draftsRepository = new DraftsRepository(getContext());
 
@@ -52,7 +55,9 @@ public class DraftsFragment extends Fragment {
 
         }, 250));
 
-        fetchDataAsync(1);
+        int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
+
+        fetchDataAsync(currentActiveAccountId);
 
         return v;
 

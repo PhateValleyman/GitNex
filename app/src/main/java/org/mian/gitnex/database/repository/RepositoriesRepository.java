@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import org.mian.gitnex.database.dao.RepositoriesDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
 import org.mian.gitnex.database.models.Repositories;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -59,7 +60,7 @@ public class RepositoriesRepository {
 			}.execute().get();
 		}
 		catch(ExecutionException | InterruptedException e) {
-			Log.e("checkRepository", e.toString());
+			Log.e(StaticGlobalVariables.repositoriesRepository, e.toString());
 		}
 
 		return repositoryId;

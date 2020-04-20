@@ -2,11 +2,15 @@ package org.mian.gitnex.database.repository;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import org.mian.gitnex.database.dao.DraftsDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
 import org.mian.gitnex.database.models.Drafts;
+import org.mian.gitnex.database.models.DraftsWithRepositories;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Author M M Arif
@@ -15,6 +19,7 @@ import java.util.List;
 public class DraftsRepository {
 
     private static DraftsDao draftsDao;
+    private static long draftId;
 
     public DraftsRepository(Context context) {
 
@@ -24,29 +29,71 @@ public class DraftsRepository {
 
     }
 
-    public void insertDraftQuery(int repositoryId, int draftAccountId, int issueId, String draftText, String draftType) {
+    public long insertDraft(int repositoryId, int draftAccountId, int issueId, String draftText, String draftType) {
 
         Drafts drafts = new Drafts();
         drafts.setDraftRepositoryId(repositoryId);
         drafts.setDraftAccountId(draftAccountId);
         drafts.setIssueId(issueId);
         drafts.setDraftText(draftText);
-	    drafts.setDraftType(draftType);
+        drafts.setDraftType(draftType);
 
-	    insertDraftAsync(drafts);
+        return insertDraftAsyncTask(drafts);
+
     }
 
-    private static void insertDraftAsync(final Drafts drafts) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                draftsDao.insertDraft(drafts);
-                return null;
-            }
-        }.execute();
+    private static long insertDraftAsyncTask(final Drafts drafts) {
+
+        try {
+            new AsyncTask<Void, Void, Long>() {
+
+                @Override
+                protected Long doInBackground(Void... voids) {
+
+                    draftId = draftsDao.insertDraft(drafts);
+                    return draftId;
+                }
+
+                @Override
+                protected void onPostExecute(Long draftId) {
+
+                    super.onPostExecute(draftId);
+                }
+
+            }.execute().get();
+        }
+        catch(ExecutionException | InterruptedException e) {
+            Log.e(StaticGlobalVariables.draftsRepository, e.toString());
+        }
+
+        return draftId;
     }
 
-    public LiveData<List<Drafts>> getDrafts(int accountId) {
+    public Integer checkDraft(int issueId, int draftRepositoryId) throws ExecutionException, InterruptedException {
+
+        return new DraftsRepository.checkDraftAsyncTask(issueId, draftRepositoryId).execute().get();
+    }
+
+    private static class checkDraftAsyncTask extends AsyncTask<Void, Void, Integer> {
+
+        int issueId;
+        int draftRepositoryId;
+
+        checkDraftAsyncTask(int issueId, int draftRepositoryId) {
+
+            this.issueId = issueId;
+            this.draftRepositoryId = draftRepositoryId;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+
+            return draftsDao.checkDraftDao(issueId, draftRepositoryId);
+        }
+
+    }
+
+    public LiveData<List<DraftsWithRepositories>> getDrafts(int accountId) {
         return draftsDao.fetchAllDrafts(accountId);
     }
 
@@ -92,5 +139,18 @@ public class DraftsRepository {
         }.execute();
 
     }
+
+    public static void updateDraftByIssueIdAsycTask(final String draftText, final int issueId, final int draftRepositoryId) {
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                draftsDao.updateDraftByIssueId(draftText, issueId, draftRepositoryId);
+                return null;
+            }
+        }.execute();
+
+    }
+
 
 }

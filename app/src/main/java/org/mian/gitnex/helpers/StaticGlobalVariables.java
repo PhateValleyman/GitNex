@@ -7,8 +7,6 @@ package org.mian.gitnex.helpers;
 public interface StaticGlobalVariables {
 
 	// issues variables
-	String tagIssuesListOpen = "IssuesListOpenFragment - ";
-	String tagIssuesListClosed = "IssuesListClosedFragment - ";
 	int issuesPageInit = 1;
 	int resultLimitNewGiteaInstances = 25; // Gitea 1.12 and above
 	int resultLimitOldGiteaInstances = 10; // Gitea 1.11 and below
@@ -18,4 +16,11 @@ public interface StaticGlobalVariables {
 	// drafts
 	String draftTypeComment = "comment";
 	String draftTypeIssue = "issue";
+
+	// TAGS
+	String tagIssuesListOpen = "IssuesListOpenFragment";
+	String tagIssuesListClosed = "IssuesListClosedFragment";
+	String draftsRepository = "DraftsRepository";
+	String repositoriesRepository = "RepositoriesRepository";
+	String replyToIssueActivity = "ReplyToIssueActivity";
 }

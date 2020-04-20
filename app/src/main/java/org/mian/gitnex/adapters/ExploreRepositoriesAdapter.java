@@ -164,7 +164,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<ExploreRepo
 
 						}
 					});
-					
+
 				}
 
 				context.startActivity(intent);

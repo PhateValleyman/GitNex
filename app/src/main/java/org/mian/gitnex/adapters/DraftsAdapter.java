@@ -1,5 +1,6 @@
 package org.mian.gitnex.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.database.models.Drafts;
+import org.mian.gitnex.database.models.DraftsWithRepositories;
 import java.util.List;
 
 /**
@@ -17,17 +18,20 @@ import java.util.List;
 
 public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsViewHolder> {
 
-    private List<Drafts> draftsList;
+    private List<DraftsWithRepositories> draftsList;
     private Context mCtx;
     //private List<CommentsDraft> draftsListFull;
 
     static class DraftsViewHolder extends RecyclerView.ViewHolder {
 
         private TextView draftText;
+        private TextView repoInfo;
+
         private DraftsViewHolder(View itemView) {
 
             super(itemView);
             draftText = itemView.findViewById(R.id.draftText);
+            repoInfo = itemView.findViewById(R.id.repoInfo);
 
             //ImageView draftsDropdownMenu = itemView.findViewById(R.id.draftsDropdownMenu);
 
@@ -44,7 +48,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
         }
     }
 
-    public DraftsAdapter(Context mCtx, List<Drafts> draftsListMain) {
+    public DraftsAdapter(Context mCtx, List<DraftsWithRepositories> draftsListMain) {
         this.mCtx = mCtx;
         this.draftsList = draftsListMain;
         //draftsListFull = new ArrayList<>(draftsList);
@@ -57,12 +61,14 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
         return new DraftsViewHolder(v);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull DraftsAdapter.DraftsViewHolder holder, int position) {
 
-        Drafts currentItem = draftsList.get(position);
+        DraftsWithRepositories currentItem = draftsList.get(position);
 
         holder.draftText.setText(currentItem.getDraftText());
+        holder.repoInfo.setText(String.format("%s/%s %s%d", currentItem.getRepositoryOwner(), currentItem.getRepositoryName(), mCtx.getResources().getString(R.string.hash), currentItem.getIssueId()));
 
     }
 

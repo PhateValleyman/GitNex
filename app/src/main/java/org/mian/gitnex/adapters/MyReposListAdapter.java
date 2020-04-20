@@ -23,9 +23,7 @@ import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.models.Repositories;
-import org.mian.gitnex.database.models.UserAccounts;
 import org.mian.gitnex.database.repository.RepositoriesRepository;
-import org.mian.gitnex.database.repository.UserAccountsRepository;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserRepositories;
@@ -97,17 +95,18 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
 
                 try {
 
-                    Integer count = repositoryData.checkRepository(currentActiveAccountId, repoName, repoOwner);
+                    //RepositoriesRepository.deleteRepositoriesByAccount(currentActiveAccountId);
+                    Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
                     if(count == 0) {
 
-                        long id = repositoryData.insertRepository(currentActiveAccountId, repoName, repoOwner);
+                        long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
 	                    tinyDb.putLong("repositoryId", id);
 
                     }
                     else {
 
-	                    Repositories data = repositoryData.getRepository(currentActiveAccountId, repoName, repoOwner);
+	                    Repositories data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
 	                    tinyDb.putLong("repositoryId", data.getRepositoryId());
 
                     }

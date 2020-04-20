@@ -30,6 +30,7 @@ import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Author M M Arif
@@ -203,8 +204,27 @@ public class ReplyToIssueActivity extends BaseActivity {
         }
         else {
 
-            //DraftsRepository draftsRepository = new DraftsRepository(getApplicationContext());
-            //draftsRepository.insertDraftQuery(1, 1, Integer.parseInt(tinyDb.getString("issueNumber")), newReplyDT, StaticGlobalVariables.draftTypeComment);
+            int repositoryId = (int) tinyDb.getLong("repositoryId", 0);
+            int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
+            int issueNumber = Integer.parseInt(tinyDb.getString("issueNumber"));
+
+            DraftsRepository draftsRepository = new DraftsRepository(getApplicationContext());
+
+            try {
+
+                int count = draftsRepository.checkDraft(issueNumber, repositoryId);
+
+                if(count == 0) {
+                    long draftId = draftsRepository.insertDraft(repositoryId, currentActiveAccountId, issueNumber, newReplyDT, StaticGlobalVariables.draftTypeComment);
+                }
+                else {
+                    DraftsRepository.updateDraftByIssueIdAsycTask(newReplyDT, issueNumber, repositoryId);
+                }
+
+            }
+            catch(ExecutionException | InterruptedException e) {
+                Log.e(StaticGlobalVariables.replyToIssueActivity, e.toString());
+            }
 
             disableProcessButton();
             replyComment(newReplyDT);
