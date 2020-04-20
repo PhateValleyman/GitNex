@@ -322,8 +322,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	    UserAccountsRepository accountData = new UserAccountsRepository(ctx);
 	    UserAccounts data = accountData.getAccountData(accountName);
-	    Log.i("accountData", data.getInstanceUrl());
-
+        TinyDB tinyDb = new TinyDB(ctx.getApplicationContext());
+        tinyDb.putInt("currentActiveAccountId", data.getAccountId());
 
     }
 

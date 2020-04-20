@@ -8,7 +8,7 @@ import org.mian.gitnex.database.repository.UserAccountsRepository;
  * Author M M Arif
  */
 
-public class UserAccountsViewModel extends ViewModel {
+public class UserAccountsDatabaseViewModel extends ViewModel {
 
 	private static LiveData<Integer> totalCount;
 

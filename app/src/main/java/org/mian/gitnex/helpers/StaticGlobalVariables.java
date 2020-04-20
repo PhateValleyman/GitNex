@@ -15,4 +15,7 @@ public interface StaticGlobalVariables {
 	String issuesRequestType = "issues";
 	String issueStateClosed = "closed";
 
+	// drafts
+	String draftTypeComment = "comment";
+	String draftTypeIssue = "issue";
 }

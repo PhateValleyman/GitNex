@@ -33,7 +33,7 @@ import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.viewmodels.UserAccountsViewModel;
+import org.mian.gitnex.viewmodels.UserAccountsDatabaseViewModel;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -48,7 +48,7 @@ import retrofit2.Callback;
  * Author M M Arif
  */
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener, LifecycleOwner {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private Button loginButton;
     private EditText instanceUrlET, loginUidET, loginPassword, otpCode, loginTokenCode;
@@ -554,7 +554,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 	                    String accountName =  userDetails.getUsername() + "@" + instanceUrl;
 	                    UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
 
-	                    UserAccountsViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
+	                    UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
 
 		                    if(count == 0) {
 			                    userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken_,"");
@@ -730,7 +730,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 	                                                            String accountName =  userDetails.getUsername() + "@" + instanceUrl;
 	                                                            UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
 
-	                                                            UserAccountsViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
+	                                                            UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
 
 		                                                            if(count == 0) {
 			                                                            userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(),"");
@@ -826,7 +826,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                             String accountName =  userDetails.getUsername() + "@" + instanceUrl;
                                             UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
 
-	                                        UserAccountsViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
+	                                        UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
 
 		                                        if(count == 0) {
 			                                        userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), token,"");

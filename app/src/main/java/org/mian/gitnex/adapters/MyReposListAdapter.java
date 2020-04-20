@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,10 @@ import org.mian.gitnex.activities.RepoStargazersActivity;
 import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.database.models.Repositories;
+import org.mian.gitnex.database.models.UserAccounts;
+import org.mian.gitnex.database.repository.RepositoriesRepository;
+import org.mian.gitnex.database.repository.UserAccountsRepository;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserRepositories;
@@ -28,6 +33,7 @@ import org.mian.gitnex.models.WatchRepository;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
@@ -56,7 +62,9 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
         private TextView repoType;
 
         private MyReposViewHolder(View itemView) {
+
             super(itemView);
+
             mTextView1My = itemView.findViewById(R.id.repoNameMy);
             mTextView2My = itemView.findViewById(R.id.repoDescriptionMy);
             imageMy = itemView.findViewById(R.id.imageAvatarMy);
@@ -80,12 +88,39 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
                 tinyDb.putString("repoType", repoType.getText().toString());
                 //tinyDb.putBoolean("resumeIssues", true);
 
+                String[] parts = fullNameMy.getText().toString().split("/");
+                final String repoOwner = parts[0];
+                final String repoName = parts[1];
+
+                int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
+                RepositoriesRepository repositoryData = new RepositoriesRepository(context);
+
+                try {
+
+                    Integer count = repositoryData.checkRepository(currentActiveAccountId, repoName, repoOwner);
+
+                    if(count == 0) {
+
+                        long id = repositoryData.insertRepository(currentActiveAccountId, repoName, repoOwner);
+	                    tinyDb.putLong("repositoryId", id);
+
+                    }
+                    else {
+
+	                    Repositories data = repositoryData.getRepository(currentActiveAccountId, repoName, repoOwner);
+	                    tinyDb.putLong("repositoryId", data.getRepositoryId());
+
+                    }
+
+                }
+                catch(ExecutionException | InterruptedException e) {
+                    Log.e("checkRepository", e.toString());
+                }
+
                 //store if user is watching this repo
                 {
+
                     final String instanceUrl = tinyDb.getString("instanceUrl");
-                    String[] parts = fullNameMy.getText().toString().split("/");
-                    final String repoOwner = parts[0];
-                    final String repoName = parts[1];
                     final String token = "token " + tinyDb.getString(tinyDb.getString("loginUid") + "-token");
 
                     WatchRepository watch = new WatchRepository();
@@ -126,6 +161,7 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
 
                         }
                     });
+
                 }
 
                 context.startActivity(intent);

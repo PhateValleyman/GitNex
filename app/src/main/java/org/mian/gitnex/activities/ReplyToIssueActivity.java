@@ -23,6 +23,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.repository.DraftsRepository;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Issues;
@@ -203,7 +204,7 @@ public class ReplyToIssueActivity extends BaseActivity {
         else {
 
             //DraftsRepository draftsRepository = new DraftsRepository(getApplicationContext());
-            //draftsRepository.insertDraftQuery(1, 1, Integer.parseInt(tinyDb.getString("issueNumber")), newReplyDT, "comment");
+            //draftsRepository.insertDraftQuery(1, 1, Integer.parseInt(tinyDb.getString("issueNumber")), newReplyDT, StaticGlobalVariables.draftTypeComment);
 
             disableProcessButton();
             replyComment(newReplyDT);
