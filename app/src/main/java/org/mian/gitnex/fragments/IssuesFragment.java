@@ -29,6 +29,7 @@ import com.mikepenz.fastadapter.listeners.ItemFilterListener;
 import com.mikepenz.fastadapter_extensions.items.ProgressItem;
 import com.mikepenz.fastadapter_extensions.scroll.EndlessRecyclerOnScrollListener;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.VersionCheck;
@@ -37,13 +38,14 @@ import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import static com.mikepenz.fastadapter.adapters.ItemAdapter.items;
 
 /**
  * Author M M Arif
  */
 
-public class IssuesOpenFragment extends Fragment implements ItemFilterListener<IssuesAdapter> {
+public class IssuesFragment extends Fragment implements ItemFilterListener<IssuesAdapter> {
 
 	private ProgressBar mProgressBar;
 	private boolean loadNextFlag = false;
@@ -100,12 +102,21 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 		recyclerView.setItemAnimator(new DefaultItemAnimator());
 		recyclerView.setAdapter(fastItemAdapter);
 
+		((RepoDetailActivity) Objects.requireNonNull(getActivity())).setFragmentRefreshListener(issuesState -> {
+
+			tinyDb.putString("repoIssuesState", "open");
+			mProgressBar.setVisibility(View.VISIBLE);
+			fastItemAdapter.clear();
+			loadNext(instanceUrl, instanceToken, repoOwner, repoName, resultLimit, requestType, 0, issuesState);
+
+		});
+
 		endlessRecyclerOnScrollListener = new EndlessRecyclerOnScrollListener(footerAdapter) {
 
 			@Override
 			public void onLoadMore(final int currentPage) {
 
-				loadNext(instanceUrl, instanceToken, repoOwner, repoName, resultLimit, requestType, currentPage);
+				loadNext(instanceUrl, instanceToken, repoOwner, repoName, resultLimit, requestType, currentPage,  tinyDb.getString("repoIssuesState"));
 
 			}
 
@@ -122,12 +133,12 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 
 		recyclerView.addOnScrollListener(endlessRecyclerOnScrollListener);
 
-		loadInitial(instanceUrl, instanceToken, repoOwner, repoName, resultLimit, requestType);
+		loadInitial(instanceUrl, instanceToken, repoOwner, repoName, resultLimit, requestType, tinyDb.getString("repoIssuesState"));
 
 		fastItemAdapter.withEventHook(new IssuesAdapter.IssueTitleClickEvent());
 
 		assert savedInstanceState != null;
-		fastItemAdapter.withSavedInstanceState(savedInstanceState);
+		//fastItemAdapter.withSavedInstanceState(savedInstanceState);
 
 		return v;
 
@@ -150,9 +161,9 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 
 	}
 
-	private void loadInitial(String instanceUrl, String token, String repoOwner, String repoName, int resultLimit, String requestType) {
+	private void loadInitial(String instanceUrl, String token, String repoOwner, String repoName, int resultLimit, String requestType, String issueState) {
 
-		Call<List<Issues>> call = RetrofitClient.getInstance(instanceUrl, getContext()).getApiInterface().getIssues(token, repoOwner, repoName, 1, resultLimit, requestType);
+		Call<List<Issues>> call = RetrofitClient.getInstance(instanceUrl, getContext()).getApiInterface().getIssues(token, repoOwner, repoName, 1, resultLimit, requestType, issueState);
 
 		call.enqueue(new Callback<List<Issues>>() {
 
@@ -199,7 +210,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 
 	}
 
-	private void loadNext(String instanceUrl, String token, String repoOwner, String repoName, int resultLimit, String requestType, final int currentPage) {
+	private void loadNext(String instanceUrl, String token, String repoOwner, String repoName, int resultLimit, String requestType, final int currentPage, String issueState) {
 
 		footerAdapter.clear();
 		//noinspection unchecked
@@ -208,7 +219,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 
 		handler.postDelayed(() -> {
 
-			Call<List<Issues>> call = RetrofitClient.getInstance(instanceUrl, getContext()).getApiInterface().getIssues(token, repoOwner, repoName, currentPage + 1, resultLimit, requestType);
+			Call<List<Issues>> call = RetrofitClient.getInstance(instanceUrl, getContext()).getApiInterface().getIssues(token, repoOwner, repoName, currentPage + 1, resultLimit, requestType, issueState);
 
 			call.enqueue(new Callback<List<Issues>>() {
 
@@ -266,6 +277,7 @@ public class IssuesOpenFragment extends Fragment implements ItemFilterListener<I
 	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
 		inflater.inflate(R.menu.search_menu, menu);
+		inflater.inflate(R.menu.filter_menu, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 
 		MenuItem searchItem = menu.findItem(R.id.action_search);

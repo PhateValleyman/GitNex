@@ -25,11 +25,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.fragments.BottomSheetIssuesFilterFragment;
+import org.mian.gitnex.fragments.BottomSheetPullRequestFilterFragment;
 import org.mian.gitnex.fragments.BottomSheetRepoFragment;
 import org.mian.gitnex.fragments.BranchesFragment;
 import org.mian.gitnex.fragments.CollaboratorsFragment;
 import org.mian.gitnex.fragments.FilesFragment;
-import org.mian.gitnex.fragments.IssuesMainFragment;
+import org.mian.gitnex.fragments.IssuesFragment;
 import org.mian.gitnex.fragments.LabelsFragment;
 import org.mian.gitnex.fragments.MilestonesFragment;
 import org.mian.gitnex.fragments.PullRequestsFragment;
@@ -48,11 +50,25 @@ import android.net.Uri;
  * Author M M Arif
  */
 
-public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoFragment.BottomSheetListener {
+public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoFragment.BottomSheetListener, BottomSheetIssuesFilterFragment.BottomSheetListener, BottomSheetPullRequestFilterFragment.BottomSheetListener {
 
     private TextView textViewBadgeIssue;
     private TextView textViewBadgePull;
     private TextView textViewBadgeRelease;
+
+    private FragmentRefreshListener fragmentRefreshListener;
+
+    public FragmentRefreshListener getFragmentRefreshListener() {
+        return fragmentRefreshListener;
+    }
+
+    public void setFragmentRefreshListener(FragmentRefreshListener fragmentRefreshListener) {
+        this.fragmentRefreshListener = fragmentRefreshListener;
+    }
+
+    public interface FragmentRefreshListener {
+        void onRefresh(String text);
+    }
 
     @Override
     protected int getLayoutResourceId(){
@@ -72,6 +88,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
         final String repoOwner = parts[0];
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+
+        tinyDb.putString("repoIssuesState", "open");
+        tinyDb.putString("repoPrState", "open");
 
         String appLocale = tinyDb.getString("locale");
         AppUtil.setAppLocale(getResources(), appLocale);
@@ -230,6 +249,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
                 BottomSheetRepoFragment bottomSheet = new BottomSheetRepoFragment();
                 bottomSheet.show(getSupportFragmentManager(), "repoBottomSheet");
                 return true;
+            case R.id.filter:
+                BottomSheetIssuesFilterFragment filterBottomSheet = new BottomSheetIssuesFilterFragment();
+                filterBottomSheet.show(getSupportFragmentManager(), "repoFilterMenuBottomSheet");
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -277,6 +300,28 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
             case "newFile":
                 startActivity(new Intent(RepoDetailActivity.this, CreateFileActivity.class));
                 break;
+            case "openIssues":
+                if(getFragmentRefreshListener()!= null){
+                    getFragmentRefreshListener().onRefresh("open");
+                }
+                break;
+            case "closedIssues":
+                if(getFragmentRefreshListener()!= null){
+                    getFragmentRefreshListener().onRefresh("closed");
+                }
+                break;
+            case "openPr":
+                //noinspection DuplicateBranchesInSwitch
+                if(getFragmentRefreshListener()!= null){
+                    getFragmentRefreshListener().onRefresh("open");
+                }
+                break;
+            case "closedPr":
+                //noinspection DuplicateBranchesInSwitch
+                if(getFragmentRefreshListener()!= null){
+                    getFragmentRefreshListener().onRefresh("closed");
+                }
+                break;
         }
 
     }
@@ -304,7 +349,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
                 case 1: // files
                     return FilesFragment.newInstance(repoOwner, repoName);
                 case 2: // issues
-                    fragment = new IssuesMainFragment();
+                    fragment = new IssuesFragment();
                     break;
                 case 3: // pull requests
                     fragment = new PullRequestsFragment();

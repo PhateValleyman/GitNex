@@ -105,7 +105,7 @@ public class IssuesMainFragment extends Fragment {
 			Fragment fragment = null;
 			switch (position) {
 				case 0: // open issues
-					fragment = new IssuesOpenFragment();
+					fragment = new IssuesFragment();
 					break;
 				case 1: // closed issues
 					fragment = new IssuesClosedFragment();

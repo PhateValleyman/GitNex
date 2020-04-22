@@ -216,7 +216,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
-    public void updateList(List<PullRequests> list){
+    public void updateList(List<PullRequests> list) {
         prList = list;
         notifyDataSetChanged();
     }

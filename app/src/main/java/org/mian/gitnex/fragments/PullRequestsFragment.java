@@ -21,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.PullRequestsAdapter;
 import org.mian.gitnex.clients.PullRequestsService;
 import org.mian.gitnex.helpers.Authorization;
@@ -30,6 +31,7 @@ import org.mian.gitnex.models.PullRequests;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,7 +51,6 @@ public class PullRequestsFragment extends Fragment {
     private Context context;
     private int pageSize = 1;
     private TextView noData;
-    private String prState = "open";
     private int resultLimit = 50;
 
     @Nullable
@@ -61,7 +62,6 @@ public class PullRequestsFragment extends Fragment {
 
         TinyDB tinyDb = new TinyDB(getContext());
         String repoFullName = tinyDb.getString("repoFullName");
-        //Log.i("repoFullName", tinyDb.getString("repoFullName"));
         String[] parts = repoFullName.split("/");
         final String repoOwner = parts[0];
         final String repoName = parts[1];
@@ -78,46 +78,25 @@ public class PullRequestsFragment extends Fragment {
         mProgressBar = v.findViewById(R.id.progress_bar);
         noData = v.findViewById(R.id.noData);
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+        swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
 
-                        swipeRefresh.setRefreshing(false);
-                        loadInitial(instanceToken, repoOwner, repoName, pageSize, prState, resultLimit);
-                        adapter.notifyDataChanged();
+            swipeRefresh.setRefreshing(false);
+            loadInitial(instanceToken, repoOwner, repoName, pageSize, tinyDb.getString("repoPrState"), resultLimit);
+            adapter.notifyDataChanged();
 
-                    }
-                }, 200);
-            }
-        });
+        }, 200));
 
         adapter = new PullRequestsAdapter(getContext(), prList);
-        adapter.setLoadMoreListener(new PullRequestsAdapter.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
+        adapter.setLoadMoreListener(() -> recyclerView.post(() -> {
 
-                recyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(prList.size() == 10 || pageSize == 10) {
+            if(prList.size() == 10 || pageSize == resultLimit) {
 
-                            int page = (prList.size() + 10) / 10;
-                            loadMore(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, page, prState, resultLimit);
-
-                        }
-                        /*else {
-
-                            Toasty.info(context, getString(R.string.noMoreData));
-
-                        }*/
-                    }
-                });
+                int page = (prList.size() + resultLimit) / resultLimit;
+                loadMore(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, page, tinyDb.getString("repoPrState"), resultLimit);
 
             }
-        });
+
+        }));
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
@@ -126,8 +105,18 @@ public class PullRequestsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
 
+        ((RepoDetailActivity) Objects.requireNonNull(getActivity())).setFragmentRefreshListener(prState -> {
+
+            adapter = new PullRequestsAdapter(getContext(), prList);
+            tinyDb.putString("repoPrState", prState);
+            mProgressBar.setVisibility(View.VISIBLE);
+            loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, pageSize, prState, resultLimit);
+            recyclerView.setAdapter(adapter);
+
+        });
+
         apiPR = PullRequestsService.createService(ApiInterface.class, instanceUrl, getContext());
-        loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, pageSize, prState, resultLimit);
+        loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, pageSize, tinyDb.getString("repoPrState"), resultLimit);
 
         return v;
 
@@ -147,7 +136,7 @@ public class PullRequestsFragment extends Fragment {
 
         if(tinyDb.getBoolean("resumePullRequests")) {
 
-            loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, pageSize, prState, resultLimit);
+            loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, pageSize, tinyDb.getString("repoPrState"), resultLimit);
             tinyDb.putBoolean("resumePullRequests", false);
             tinyDb.putBoolean("prMerged", false);
 
@@ -258,6 +247,7 @@ public class PullRequestsFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
         inflater.inflate(R.menu.search_menu, menu);
+        inflater.inflate(R.menu.filter_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -283,7 +273,7 @@ public class PullRequestsFragment extends Fragment {
 
     }
 
-    private void filter(String text){
+    private void filter(String text) {
 
         List<PullRequests> arr = new ArrayList<>();
 
