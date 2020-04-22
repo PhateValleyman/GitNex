@@ -322,8 +322,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	    UserAccountsRepository accountData = new UserAccountsRepository(ctx);
 	    UserAccounts data = accountData.getAccountData(accountName);
-        TinyDB tinyDb = new TinyDB(ctx.getApplicationContext());
-        tinyDb.putInt("currentActiveAccountId", data.getAccountId());
+
+	    if(data != null) {
+            TinyDB tinyDb = new TinyDB(ctx.getApplicationContext());
+            tinyDb.putInt("currentActiveAccountId", data.getAccountId());
+        }
+	    else {
+	        // todo : log the user out for the 1st time
+        }
 
     }
 
