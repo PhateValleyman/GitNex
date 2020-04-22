@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.R;
-import org.mian.gitnex.util.TinyDB;
 
 /**
  * Author M M Arif
@@ -25,8 +24,6 @@ public class BottomSheetPullRequestFilterFragment extends BottomSheetDialogFragm
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 		View v = inflater.inflate(R.layout.bottom_sheet_pull_request_filter, container, false);
-
-		TinyDB tinyDb = new TinyDB(v.getContext());
 
 		TextView openPr = v.findViewById(R.id.openPr);
 		TextView closedPr = v.findViewById(R.id.closedPr);

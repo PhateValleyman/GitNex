@@ -105,7 +105,7 @@ public class PullRequestsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
 
-        ((RepoDetailActivity) Objects.requireNonNull(getActivity())).setFragmentRefreshListener(prState -> {
+        ((RepoDetailActivity) Objects.requireNonNull(getActivity())).setFragmentRefreshListenerPr(prState -> {
 
             adapter = new PullRequestsAdapter(getContext(), prList);
             tinyDb.putString("repoPrState", prState);
@@ -247,7 +247,7 @@ public class PullRequestsFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
         inflater.inflate(R.menu.search_menu, menu);
-        inflater.inflate(R.menu.filter_menu, menu);
+        inflater.inflate(R.menu.filter_menu_pr, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);

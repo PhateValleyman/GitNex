@@ -57,7 +57,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
     private TextView textViewBadgeRelease;
 
     private FragmentRefreshListener fragmentRefreshListener;
+    private FragmentRefreshListenerPr fragmentRefreshListenerPr;
 
+    // issues interface
     public FragmentRefreshListener getFragmentRefreshListener() {
         return fragmentRefreshListener;
     }
@@ -67,6 +69,19 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
     }
 
     public interface FragmentRefreshListener {
+        void onRefresh(String text);
+    }
+
+    // pr interface
+    public FragmentRefreshListenerPr getFragmentRefreshListenerPr() {
+        return fragmentRefreshListenerPr;
+    }
+
+    public void setFragmentRefreshListenerPr(FragmentRefreshListenerPr fragmentRefreshListenerPr) {
+        this.fragmentRefreshListenerPr = fragmentRefreshListenerPr;
+    }
+
+    public interface FragmentRefreshListenerPr {
         void onRefresh(String text);
     }
 
@@ -253,6 +268,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
                 BottomSheetIssuesFilterFragment filterBottomSheet = new BottomSheetIssuesFilterFragment();
                 filterBottomSheet.show(getSupportFragmentManager(), "repoFilterMenuBottomSheet");
                 return true;
+            case R.id.filterPr:
+                BottomSheetPullRequestFilterFragment filterPrBottomSheet = new BottomSheetPullRequestFilterFragment();
+                filterPrBottomSheet.show(getSupportFragmentManager(), "repoFilterMenuPrBottomSheet");
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -311,15 +330,13 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
                 }
                 break;
             case "openPr":
-                //noinspection DuplicateBranchesInSwitch
-                if(getFragmentRefreshListener()!= null){
-                    getFragmentRefreshListener().onRefresh("open");
+                if(getFragmentRefreshListenerPr()!= null){
+                    getFragmentRefreshListenerPr().onRefresh("open");
                 }
                 break;
             case "closedPr":
-                //noinspection DuplicateBranchesInSwitch
-                if(getFragmentRefreshListener()!= null){
-                    getFragmentRefreshListener().onRefresh("closed");
+                if(getFragmentRefreshListenerPr()!= null){
+                    getFragmentRefreshListenerPr().onRefresh("closed");
                 }
                 break;
         }
