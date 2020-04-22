@@ -9,8 +9,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +34,6 @@ public class IssuesMainFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		View v = inflater.inflate(R.layout.fragment_issues_main, container, false);
-		setHasOptionsMenu(true);
 
 		TinyDB tinyDb = new TinyDB(getContext());
 
@@ -122,15 +119,6 @@ public class IssuesMainFragment extends Fragment {
 		public int getCount() {
 			return 2;
 		}
-
-	}
-
-	@Override
-	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-
-		menu.clear();
-		Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.repo_dotted_menu, menu);
-		super.onCreateOptionsMenu(menu, inflater);
 
 	}
 

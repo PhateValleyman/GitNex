@@ -27,7 +27,6 @@ import org.mian.gitnex.activities.FileViewActivity;
 import org.mian.gitnex.adapters.FilesAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.Files;
-import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.FilesViewModel;
 import java.util.ArrayList;
@@ -262,19 +261,12 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
-
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        //searchView.setQueryHint(getContext().getString(R.string.search));
-
-        /*if(!connToInternet) {
-            return;
-        }*/
 
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override

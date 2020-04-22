@@ -27,11 +27,9 @@ import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.PullRequests;
-import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -259,19 +257,12 @@ public class PullRequestsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
-
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        //searchView.setQueryHint(getContext().getString(R.string.strFilter));
-
-        /*if(!connToInternet) {
-            return;
-        }*/
 
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
 
@@ -283,13 +274,26 @@ public class PullRequestsFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                adapter.getFilter().filter(newText);
+                filter(newText);
                 return false;
 
             }
 
         });
 
+    }
+
+    private void filter(String text){
+
+        List<PullRequests> arr = new ArrayList<>();
+
+        for(PullRequests d: prList){
+            if(d.getTitle().toLowerCase().contains(text) || d.getBody().toLowerCase().contains(text)){
+                arr.add(d);
+            }
+        }
+
+        adapter.updateList(arr);
     }
 
 }

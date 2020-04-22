@@ -7,8 +7,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,10 +20,6 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.models.PullRequests;
 import org.mian.gitnex.util.TinyDB;
-import org.ocpsoft.prettytime.PrettyTime;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,12 +27,11 @@ import java.util.Locale;
  * Author M M Arif
  */
 
-public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
+public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private final int TYPE_LOAD = 0;
     private List<PullRequests> prList;
-    private List<PullRequests> prListFull;
     private PullRequestsAdapter.OnLoadMoreListener loadMoreListener;
     private boolean isLoading = false, isMoreDataAvailable = true;
 
@@ -46,7 +39,6 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         this.context = context;
         this.prList = prListMain;
-        prListFull = new ArrayList<>(prList);
 
     }
 
@@ -224,40 +216,9 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
-    @Override
-    public Filter getFilter() {
-        return prFilter;
+    public void updateList(List<PullRequests> list){
+        prList = list;
+        notifyDataSetChanged();
     }
-
-    private Filter prFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<PullRequests> filteredList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(prList);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (PullRequests item : prList) {
-                    if (item.getTitle().toLowerCase().contains(filterPattern) || item.getBody().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            prList.clear();
-            prList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
 
 }
