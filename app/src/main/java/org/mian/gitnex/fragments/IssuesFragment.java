@@ -123,6 +123,7 @@ public class IssuesFragment extends Fragment {
 			adapter = new IssuesAdapter(getContext(), issuesList);
 			tinyDb.putString("repoIssuesState", issueState);
 			mProgressBar.setVisibility(View.VISIBLE);
+			noDataIssues.setVisibility(View.GONE);
 			loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, resultLimit, requestType, issueState);
 			recyclerView.setAdapter(adapter);
 

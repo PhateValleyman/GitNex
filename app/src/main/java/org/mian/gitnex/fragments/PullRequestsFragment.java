@@ -126,6 +126,7 @@ public class PullRequestsFragment extends Fragment {
             adapter = new PullRequestsAdapter(context, prList);
             tinyDb.putString("repoPrState", prState);
             mProgressBar.setVisibility(View.VISIBLE);
+            noData.setVisibility(View.GONE);
             loadInitial(Authorization.returnAuthentication(context, loginUid, instanceToken), repoOwner, repoName, pageSize, prState, resultLimit);
             recyclerView.setAdapter(adapter);
 
