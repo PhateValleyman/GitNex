@@ -11,11 +11,9 @@ public interface StaticGlobalVariables {
 	int resultLimitOldGiteaInstances = 10; // Gitea 1.11 and below
 
 	// issues variables
-	String tagIssuesListOpen = "IssuesListOpenFragment - ";
-	String tagIssuesListClosed = "IssuesListClosedFragment - ";
+	String tagIssuesList = "IssuesListFragment";
 	int issuesPageInit = 1;
 	String issuesRequestType = "issues";
-	String issueStateClosed = "closed";
 
 	// pull request
 	String tagPullRequestsList = "PullRequestsListFragment";
