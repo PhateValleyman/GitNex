@@ -2,15 +2,6 @@ package org.mian.gitnex.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +13,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.IssuesAdapter;
@@ -36,6 +33,9 @@ import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -76,7 +76,7 @@ public class IssuesFragment extends Fragment {
 		final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
 
 		// if gitea is 1.12 or higher use the new limit
-		if (VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) < 1) {
+		if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) < 1) {
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}
 
@@ -159,7 +159,7 @@ public class IssuesFragment extends Fragment {
 
 	private void loadInitial(String token, String repoOwner, String repoName, int resultLimit, String requestType, String issueState) {
 
-		Call<List<Issues>> call = api.getIssues(token, repoOwner, repoName,  1, resultLimit, requestType, issueState);
+		Call<List<Issues>> call = api.getIssues(token, repoOwner, repoName, 1, resultLimit, requestType, issueState);
 
 		call.enqueue(new Callback<List<Issues>>() {
 
@@ -192,6 +192,7 @@ public class IssuesFragment extends Fragment {
 
 			@Override
 			public void onFailure(@NonNull Call<List<Issues>> call, @NonNull Throwable t) {
+
 				Log.e(TAG, t.toString());
 			}
 
@@ -199,7 +200,7 @@ public class IssuesFragment extends Fragment {
 
 	}
 
-	private void loadMore(String token, String repoOwner, String repoName, int page, int resultLimit, String requestType, String issueState){
+	private void loadMore(String token, String repoOwner, String repoName, int page, int resultLimit, String requestType, String issueState) {
 
 		//add loading progress view
 		issuesList.add(new Issues("load"));
@@ -212,10 +213,10 @@ public class IssuesFragment extends Fragment {
 			@Override
 			public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-				if(response.isSuccessful()){
+				if(response.isSuccessful()) {
 
 					//remove loading view
-					issuesList.remove(issuesList.size()-1);
+					issuesList.remove(issuesList.size() - 1);
 
 					List<Issues> result = response.body();
 
@@ -279,6 +280,7 @@ public class IssuesFragment extends Fragment {
 
 			@Override
 			public boolean onQueryTextSubmit(String query) {
+
 				return false;
 			}
 
@@ -298,8 +300,8 @@ public class IssuesFragment extends Fragment {
 
 		List<Issues> arr = new ArrayList<>();
 
-		for(Issues d: issuesList){
-			if(d.getTitle().toLowerCase().contains(text) || d.getBody().toLowerCase().contains(text)){
+		for(Issues d : issuesList) {
+			if(d.getTitle().toLowerCase().contains(text) || d.getBody().toLowerCase().contains(text)) {
 				arr.add(d);
 			}
 		}

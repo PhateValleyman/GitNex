@@ -42,17 +42,20 @@ public class BottomSheetPullRequestFilterFragment extends BottomSheetDialogFragm
 	}
 
 	public interface BottomSheetListener {
+
 		void onButtonClicked(String text);
+
 	}
 
 	@Override
 	public void onAttach(@NonNull Context context) {
+
 		super.onAttach(context);
 
 		try {
 			bmListener = (BottomSheetPullRequestFilterFragment.BottomSheetListener) context;
 		}
-		catch (ClassCastException e) {
+		catch(ClassCastException e) {
 			throw new ClassCastException(context.toString() + " must implement BottomSheetListener");
 		}
 	}

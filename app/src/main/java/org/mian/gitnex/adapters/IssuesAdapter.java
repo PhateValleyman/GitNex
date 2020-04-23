@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
@@ -23,8 +25,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Author M M Arif
@@ -51,11 +51,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 		LayoutInflater inflater = LayoutInflater.from(context);
 
-		if(viewType == TYPE_LOAD){
-			return new IssuesHolder(inflater.inflate(R.layout.list_issues, parent,false));
+		if(viewType == TYPE_LOAD) {
+			return new IssuesHolder(inflater.inflate(R.layout.list_issues, parent, false));
 		}
 		else {
-			return new LoadHolder(inflater.inflate(R.layout.row_load,parent,false));
+			return new LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
 		}
 
 	}
@@ -63,7 +63,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	@Override
 	public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-		if(position >= getItemCount()-1 && isMoreDataAvailable && !isLoading && loadMoreListener!=null) {
+		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
 
 			isLoading = true;
 			loadMoreListener.onLoadMore();
@@ -72,7 +72,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 		if(getItemViewType(position) == TYPE_LOAD) {
 
-			((IssuesHolder)holder).bindData(issuesList.get(position));
+			((IssuesHolder) holder).bindData(issuesList.get(position));
 
 		}
 
@@ -146,15 +146,16 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		}
 
 		@SuppressLint("SetTextI18n")
-		void bindData(Issues issuesModel){
+		void bindData(Issues issuesModel) {
 
 			final TinyDB tinyDb = new TinyDB(context);
 			final String locale = tinyDb.getString("locale");
 			final String timeFormat = tinyDb.getString("dateFormat");
 
-			if (!issuesModel.getUser().getFull_name().equals("")) {
+			if(!issuesModel.getUser().getFull_name().equals("")) {
 				issueAssigneeAvatar.setOnClickListener(new ClickListener(context.getResources().getString(R.string.issueCreator) + issuesModel.getUser().getFull_name(), context));
-			} else {
+			}
+			else {
 				issueAssigneeAvatar.setOnClickListener(new ClickListener(context.getResources().getString(R.string.issueCreator) + issuesModel.getUser().getLogin(), context));
 			}
 
@@ -166,7 +167,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			issueNumber.setText(String.valueOf(issuesModel.getNumber()));
 			issueCommentsCount.setText(String.valueOf(issuesModel.getComments()));
 
-			switch (timeFormat) {
+			switch(timeFormat) {
 				case "pretty": {
 					PrettyTime prettyTime = new PrettyTime(new Locale(locale));
 					String createdTime = prettyTime.format(issuesModel.getCreated_at());
@@ -195,6 +196,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	static class LoadHolder extends RecyclerView.ViewHolder {
 
 		LoadHolder(View itemView) {
+
 			super(itemView);
 		}
 
@@ -226,6 +228,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	}
 
 	public void updateList(List<Issues> list) {
+
 		issuesList = list;
 		notifyDataSetChanged();
 	}
