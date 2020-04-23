@@ -131,18 +131,6 @@ public class PullRequestsFragment extends Fragment {
 
         });
 
-	    Handler handler = new Handler();
-	    handler.postDelayed(() -> {
-
-		    if(tinyDb.getString("repoPrState").equals("closed")) {
-			    menu.getItem(1).setIcon(R.drawable.ic_filter_closed);
-		    }
-		    else {
-			    menu.getItem(1).setIcon(R.drawable.ic_filter);
-		    }
-
-	    }, 10);
-
         apiPR = PullRequestsService.createService(ApiInterface.class, instanceUrl, context);
         loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, pageSize, tinyDb.getString("repoPrState"), resultLimit);
 
@@ -278,6 +266,15 @@ public class PullRequestsFragment extends Fragment {
         inflater.inflate(R.menu.search_menu, menu);
         inflater.inflate(R.menu.filter_menu_pr, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
+        TinyDB tinyDb = new TinyDB(context);
+
+	    if(tinyDb.getString("repoPrState").equals("closed")) {
+		    menu.getItem(1).setIcon(R.drawable.ic_filter_closed);
+	    }
+	    else {
+		    menu.getItem(1).setIcon(R.drawable.ic_filter);
+	    }
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
