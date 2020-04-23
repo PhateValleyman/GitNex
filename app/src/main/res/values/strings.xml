@@ -614,8 +614,10 @@
 
 
     <string name="issueSubscribtion">Issue Subscribed</string>
+    <string name="issueAlreadySubscribed">Already Subscribed to Issue</string>
     <string name="issueSubscribtionError">Issue Subscription failed</string>
     <string name="issueUnsubscribtion">Issue Unsubscribed</string>
+    <string name="issueAlreadyUnsubscribed">Already Unsubscribed to Issue</string>
     <string name="issueUnsubscribtionError">Issue Un-Subscription failed</string>
 
     <string name="closeMilestone">Close Milestone</string>

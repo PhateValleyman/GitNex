@@ -190,7 +190,13 @@ public class IssueActions {
 						unsubscribeIssue.setVisibility(View.VISIBLE);
 						subscribeIssue.setVisibility(View.GONE);
 						Toasty.info(ctx, ctx.getString(R.string.issueSubscribtion));
-						tinyDB.putString("issueSubscriptionState", "unsubscribeToIssue");
+						tinyDB.putBoolean("issueSubscribed", true);
+
+					}
+					else if(response.code() == 200) {
+
+						tinyDB.putBoolean("issueSubscribed", true);
+						Toasty.info(ctx, ctx.getString(R.string.issueAlreadySubscribed));
 
 					}
 
@@ -247,7 +253,13 @@ public class IssueActions {
 						unsubscribeIssue.setVisibility(View.GONE);
 						subscribeIssue.setVisibility(View.VISIBLE);
 						Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtion));
-						tinyDB.putString("issueSubscriptionState", "subscribeToIssue");
+						tinyDB.putBoolean("issueSubscribed", false);
+
+					}
+					else if(response.code() == 200) {
+
+						tinyDB.putBoolean("issueSubscribed", false);
+						Toasty.info(ctx, ctx.getString(R.string.issueAlreadyUnsubscribed));
 
 					}
 
