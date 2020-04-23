@@ -25,7 +25,9 @@ import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.PullRequestsAdapter;
 import org.mian.gitnex.clients.PullRequestsService;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.VersionCheck;
 import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.PullRequests;
 import org.mian.gitnex.util.TinyDB;
@@ -42,16 +44,17 @@ import retrofit2.Response;
 
 public class PullRequestsFragment extends Fragment {
 
+	private Menu menu;
     private ProgressBar mProgressBar;
     private RecyclerView recyclerView;
     private List<PullRequests> prList;
     private PullRequestsAdapter adapter;
     private ApiInterface apiPR;
-    private String TAG = "PullRequestsListFragment - ";
+	private String TAG = StaticGlobalVariables.tagPullRequestsList;
     private Context context;
-    private int pageSize = 1;
+    private int pageSize = StaticGlobalVariables.prPageInit;
     private TextView noData;
-    private int resultLimit = 50;
+    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 
     @Nullable
     @Override
@@ -59,6 +62,7 @@ public class PullRequestsFragment extends Fragment {
 
         final View v = inflater.inflate(R.layout.fragment_pull_requests, container, false);
         setHasOptionsMenu(true);
+	    context = getContext();
 
         TinyDB tinyDb = new TinyDB(getContext());
         String repoFullName = tinyDb.getString("repoFullName");
@@ -71,7 +75,11 @@ public class PullRequestsFragment extends Fragment {
 
         final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
 
-        context = getContext();
+        // if gitea is 1.12 or higher use the new limit
+	    if (VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) < 1) {
+		    resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+	    }
+
         recyclerView = v.findViewById(R.id.recyclerView);
         prList = new ArrayList<>();
 
@@ -107,15 +115,35 @@ public class PullRequestsFragment extends Fragment {
 
         ((RepoDetailActivity) Objects.requireNonNull(getActivity())).setFragmentRefreshListenerPr(prState -> {
 
-            adapter = new PullRequestsAdapter(getContext(), prList);
+	        if(prState.equals("closed")) {
+		        menu.getItem(1).setIcon(R.drawable.ic_filter_closed);
+	        }
+	        else {
+		        menu.getItem(1).setIcon(R.drawable.ic_filter);
+	        }
+
+        	prList.clear();
+            adapter = new PullRequestsAdapter(context, prList);
             tinyDb.putString("repoPrState", prState);
             mProgressBar.setVisibility(View.VISIBLE);
-            loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, pageSize, prState, resultLimit);
+            loadInitial(Authorization.returnAuthentication(context, loginUid, instanceToken), repoOwner, repoName, pageSize, prState, resultLimit);
             recyclerView.setAdapter(adapter);
 
         });
 
-        apiPR = PullRequestsService.createService(ApiInterface.class, instanceUrl, getContext());
+	    Handler handler = new Handler();
+	    handler.postDelayed(() -> {
+
+		    if(tinyDb.getString("repoPrState").equals("closed")) {
+			    menu.getItem(1).setIcon(R.drawable.ic_filter_closed);
+		    }
+		    else {
+			    menu.getItem(1).setIcon(R.drawable.ic_filter);
+		    }
+
+	    }, 10);
+
+        apiPR = PullRequestsService.createService(ApiInterface.class, instanceUrl, context);
         loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, pageSize, tinyDb.getString("repoPrState"), resultLimit);
 
         return v;
@@ -175,7 +203,7 @@ public class PullRequestsFragment extends Fragment {
                     Log.i(TAG, String.valueOf(response.code()));
                 }
 
-                Log.i("http", String.valueOf(response.code()));
+                Log.i(TAG, String.valueOf(response.code()));
 
             }
 
@@ -246,6 +274,7 @@ public class PullRequestsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
+	    this.menu = menu;
         inflater.inflate(R.menu.search_menu, menu);
         inflater.inflate(R.menu.filter_menu_pr, menu);
         super.onCreateOptionsMenu(menu, inflater);

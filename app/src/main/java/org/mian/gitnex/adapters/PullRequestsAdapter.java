@@ -113,37 +113,31 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             LinearLayout frameCommentsCount = itemView.findViewById(R.id.frameCommentsCount);
             prCreatedTime = itemView.findViewById(R.id.prCreatedTime);
 
-            prTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            prTitle.setOnClickListener(v -> {
 
-                    Context context = v.getContext();
+                Context context = v.getContext();
 
-                    Intent intent = new Intent(context, IssueDetailActivity.class);
-                    intent.putExtra("issueNumber", prNumber.getText());
+                Intent intent = new Intent(context, IssueDetailActivity.class);
+                intent.putExtra("issueNumber", prNumber.getText());
 
-                    TinyDB tinyDb = new TinyDB(context);
-                    tinyDb.putString("issueNumber", prNumber.getText().toString());
-                    tinyDb.putString("issueType", "pr");
-                    context.startActivity(intent);
+                TinyDB tinyDb = new TinyDB(context);
+                tinyDb.putString("issueNumber", prNumber.getText().toString());
+                tinyDb.putString("issueType", "pr");
+                context.startActivity(intent);
 
-                }
             });
-            frameCommentsCount.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            frameCommentsCount.setOnClickListener(v -> {
 
-                    Context context = v.getContext();
+                Context context = v.getContext();
 
-                    Intent intent = new Intent(context, IssueDetailActivity.class);
-                    intent.putExtra("issueNumber", prNumber.getText());
+                Intent intent = new Intent(context, IssueDetailActivity.class);
+                intent.putExtra("issueNumber", prNumber.getText());
 
-                    TinyDB tinyDb = new TinyDB(context);
-                    tinyDb.putString("issueNumber", prNumber.getText().toString());
-                    tinyDb.putString("issueType", "pr");
-                    context.startActivity(intent);
+                TinyDB tinyDb = new TinyDB(context);
+                tinyDb.putString("issueNumber", prNumber.getText().toString());
+                tinyDb.putString("issueType", "pr");
+                context.startActivity(intent);
 
-                }
             });
 
         }

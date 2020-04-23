@@ -56,7 +56,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
             copyIssueUrl.setText(R.string.copyPrUrlText);
             shareIssue.setText(R.string.sharePr);
 
-            if(tinyDB.getBoolean("prMerged")) {
+            if(tinyDB.getBoolean("prMerged") || tinyDB.getString("repoPrState").equals("closed")) {
                 mergePullRequest.setVisibility(View.GONE);
             }
             else {
