@@ -4,14 +4,6 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import com.google.android.material.navigation.NavigationView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
@@ -22,6 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.NetworkPolicy;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
@@ -30,23 +30,23 @@ import org.mian.gitnex.database.models.UserAccounts;
 import org.mian.gitnex.database.repository.UserAccountsRepository;
 import org.mian.gitnex.fragments.AboutFragment;
 import org.mian.gitnex.fragments.DraftsFragment;
+import org.mian.gitnex.fragments.AdministrationFragment;
 import org.mian.gitnex.fragments.ExploreRepositoriesFragment;
 import org.mian.gitnex.fragments.MyRepositoriesFragment;
-import org.mian.gitnex.fragments.BottomSheetNavSubMenuFragment;
 import org.mian.gitnex.fragments.OrganizationsFragment;
+import org.mian.gitnex.fragments.ProfileFragment;
+import org.mian.gitnex.fragments.RepositoriesFragment;
 import org.mian.gitnex.fragments.SettingsFragment;
 import org.mian.gitnex.fragments.StarredRepositoriesFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.ChangeLog;
+import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.GiteaVersion;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.fragments.ProfileFragment;
-import org.mian.gitnex.fragments.RepositoriesFragment;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import retrofit2.Call;
@@ -166,19 +166,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         else if (fragmentById instanceof DraftsFragment) {
             toolbarTitle.setText(getResources().getString(R.string.pageTitleDrafts));
         }
+        else if (fragmentById instanceof AdministrationFragment) {
+	        toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
+        }
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         final View hView = navigationView.getHeaderView(0);
-
-        ImageView navSubMenu = hView.findViewById(R.id.navSubMenu);
-        navSubMenu.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                BottomSheetNavSubMenuFragment bottomSheet = new BottomSheetNavSubMenuFragment();
-                bottomSheet.show(getSupportFragmentManager(), "adminMenuBottomSheet");
-            }
-        });
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -406,6 +401,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new DraftsFragment()).commit();
                 break;
+	        case R.id.nav_administration:
+	        	toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
+	        	getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+				        new AdministrationFragment()).commit();
+		        break;
 
         }
 
@@ -473,109 +473,110 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     }
 
-    private void displayUserInfo(String instanceUrl, String token, String loginUid) {
+	private void displayUserInfo(String instanceUrl, String token, String loginUid) {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-        Call<UserInfo> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
-                .getApiInterface()
-                .getUserInfo(Authorization.returnAuthentication(getApplicationContext(), loginUid, token));
+		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserInfo(Authorization.returnAuthentication(getApplicationContext(), loginUid, token));
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        final View hView =  navigationView.getHeaderView(0);
+		NavigationView navigationView = findViewById(R.id.nav_view);
+		final View hView = navigationView.getHeaderView(0);
 
-        call.enqueue(new Callback<UserInfo>() {
+		call.enqueue(new Callback<UserInfo>() {
 
-            @Override
-            public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
+			@Override
+			public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
 
-                UserInfo userDetails = response.body();
+				UserInfo userDetails = response.body();
 
-                if (response.isSuccessful()) {
+				if(response.isSuccessful()) {
 
-                    if (response.code() == 200) {
+					if(response.code() == 200) {
 
-                        assert userDetails != null;
-                        if(userDetails.getIs_admin() != null) {
-                            tinyDb.putBoolean("userIsAdmin", userDetails.getIs_admin());
-                        }
-                        tinyDb.putString("userLogin", userDetails.getLogin());
-                        tinyDb.putInt("userId", userDetails.getId());
-                        if(!userDetails.getFullname().equals("")) {
-                            tinyDb.putString("userFullname", userDetails.getFullname());
-                        }
-                        else {
-                            tinyDb.putString("userFullname", userDetails.getLogin());
-                        }
+						assert userDetails != null;
+						if(userDetails.getIs_admin() != null) {
+							tinyDb.putBoolean("userIsAdmin", userDetails.getIs_admin());
+							navigationView.getMenu().findItem(R.id.nav_administration).setVisible(userDetails.getIs_admin());
+						}
+						tinyDb.putString("userLogin", userDetails.getLogin());
+						tinyDb.putInt("userId", userDetails.getId());
+						if(!userDetails.getFullname().equals("")) {
+							tinyDb.putString("userFullname", userDetails.getFullname());
+						}
+						else {
+							tinyDb.putString("userFullname", userDetails.getLogin());
+						}
 
-                        tinyDb.putString("userEmail", userDetails.getEmail());
-                        tinyDb.putString("userAvatar", userDetails.getAvatar());
-                        if(userDetails.getLang() != null) {
-                            tinyDb.putString("userLang", userDetails.getLang());
-                        }
-                        else
-                        {
-                            tinyDb.putString("userLang", "...");
-                        }
+						tinyDb.putString("userEmail", userDetails.getEmail());
+						tinyDb.putString("userAvatar", userDetails.getAvatar());
+						if(userDetails.getLang() != null) {
+							tinyDb.putString("userLang", userDetails.getLang());
+						}
+						else {
+							tinyDb.putString("userLang", "...");
+						}
 
-                        userAvatar = hView.findViewById(R.id.userAvatar);
-                        if (!Objects.requireNonNull(userDetails).getAvatar().equals("")) {
-                            PicassoService.getInstance(ctx).get().load(userDetails.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(160, 160).centerCrop().into(userAvatar);
-                        } else {
-                            userAvatar.setImageResource(R.mipmap.app_logo_round);
-                        }
+						userAvatar = hView.findViewById(R.id.userAvatar);
+						if(!Objects.requireNonNull(userDetails).getAvatar().equals("")) {
+							PicassoService.getInstance(ctx).get().load(userDetails.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(160, 160).centerCrop().into(userAvatar);
+						}
+						else {
+							userAvatar.setImageResource(R.mipmap.app_logo_round);
+						}
 
-                        userFullName = hView.findViewById(R.id.userFullname);
-                        if (!userDetails.getFullname().equals("")) {
-                            userFullName.setText(userDetails.getFullname());
-                        } else if (!userDetails.getLogin().equals("")) {
-                            userFullName.setText(userDetails.getLogin());
-                        } else {
-                            userFullName.setText("...");
-                        }
+						userFullName = hView.findViewById(R.id.userFullname);
+						if(!userDetails.getFullname().equals("")) {
+							userFullName.setText(userDetails.getFullname());
+						}
+						else if(!userDetails.getLogin().equals("")) {
+							userFullName.setText(userDetails.getLogin());
+						}
+						else {
+							userFullName.setText("...");
+						}
 
-                        userEmail = hView.findViewById(R.id.userEmail);
-                        if (!userDetails.getEmail().equals("")) {
-                            userEmail.setText(userDetails.getEmail());
-                        } else {
-                            userEmail.setText("...");
-                        }
+						userEmail = hView.findViewById(R.id.userEmail);
+						if(!userDetails.getEmail().equals("")) {
+							userEmail.setText(userDetails.getEmail());
+						}
+						else {
+							userEmail.setText("...");
+						}
 
-                        userAvatar.setOnClickListener(new View.OnClickListener() {
-                            public void onClick(View v) {
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                        new ProfileFragment()).commit();
-                                drawer.closeDrawers();
-                            }
-                        });
+						userAvatar.setOnClickListener(new View.OnClickListener() {
 
-                    }
+							public void onClick(View v) {
 
-                }
-                else if(response.code() == 401) {
+								getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+								drawer.closeDrawers();
+							}
+						});
 
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					}
 
-                }
-                else {
+				}
+				else if(response.code() == 401) {
 
-                    String toastError = getResources().getString(R.string.genericApiStatusError) + String.valueOf(response.code());
-                    Toasty.info(getApplicationContext(), toastError);
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
+				}
+				else {
 
-            }
+					String toastError = getResources().getString(R.string.genericApiStatusError) + String.valueOf(response.code());
+					Toasty.info(getApplicationContext(), toastError);
 
-            @Override
-            public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+				}
 
-    }
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
 
 }
