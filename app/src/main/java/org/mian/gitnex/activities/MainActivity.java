@@ -77,7 +77,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         final TinyDB tinyDb = new TinyDB(getApplicationContext());
         tinyDb.putBoolean("noConnection", false);
-        //userAvatar = findViewById(R.id.userAvatar);
 
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
@@ -216,12 +215,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     PicassoService.getInstance(ctx).get().load(userAvatarNav).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(160, 160).centerCrop().into(userAvatar);
                 }
 
-                userAvatar.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                new ProfileFragment()).commit();
-                        drawer.closeDrawers();
-                    }
+                userAvatar.setOnClickListener(v -> {
+
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            new ProfileFragment()).commit();
+                    drawer.closeDrawers();
+
                 });
 
             }
@@ -323,16 +322,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             tinyDb.putInt("currentActiveAccountId", data.getAccountId());
         }
 	    else {
-	        // todo : log the user out for the 1st time
+		    AlertDialogs.forceLogoutDialog(ctx, getResources().getString(R.string.forceLogoutDialogHeader), getResources().getString(R.string.forceLogoutDialogDescription), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
         }
 
     }
 
-    public void setActionBarTitle (@NonNull String title) {
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
-    }
-
-    @Override
+	@Override
     public void onBackPressed() {
 
         if(drawer.isDrawerOpen(GravityCompat.START)) {
@@ -543,13 +538,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 							userEmail.setText("...");
 						}
 
-						userAvatar.setOnClickListener(new View.OnClickListener() {
+						userAvatar.setOnClickListener(v -> {
 
-							public void onClick(View v) {
+							getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+							drawer.closeDrawers();
 
-								getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
-								drawer.closeDrawers();
-							}
 						});
 
 					}
@@ -562,7 +555,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				}
 				else {
 
-					String toastError = getResources().getString(R.string.genericApiStatusError) + String.valueOf(response.code());
+					String toastError = getResources().getString(R.string.genericApiStatusError) + response.code();
 					Toasty.info(getApplicationContext(), toastError);
 
 				}

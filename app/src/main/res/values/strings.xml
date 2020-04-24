@@ -629,4 +629,7 @@
     <string name="crashTitle">GitNex has stopped :(</string>
     <string name="setCrashReports">Crash reports</string>
     <string name="crashMessage">You can tap the OK button to send the crash report by email. It will help to fix it :)\n\nYou can also add additional content in the email. Thank you!</string>
+
+    <string name="forceLogoutDialogHeader">Re-login is Required</string>
+    <string name="forceLogoutDialogDescription">There are new updates introduced in the recent version, for compatibility the app will log you out to reinitiate the process. Sorry for the inconvience.\n\nPlease click the Logout button to continue.</string>
 </resources>
