@@ -10,7 +10,13 @@
     android:orientation="vertical"
     android:layout_margin="10dp"
     android:background="?attr/primaryBackgroundColor"
-    tools:context=".activities.MainActivity" >
+    tools:context=".activities.MainActivity">
+
+    <TextView
+        android:id="@+id/draftId"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/frameDraftInfo"
@@ -35,7 +41,7 @@
             android:layout_height="20dp"
             android:layout_gravity="end"
             android:src="@drawable/ic_delete"
-            android:contentDescription="@string/menuDeleteText"/>
+            android:contentDescription="@string/menuDeleteText" />
 
     </LinearLayout>
 
@@ -46,7 +52,7 @@
         android:layout_marginBottom="0dp"
         android:textColor="?attr/primaryTextColor"
         android:textSize="12sp"
-        android:text="@string/noDataFound"/>
+        android:text="@string/noDataFound" />
 
 </LinearLayout>
 
