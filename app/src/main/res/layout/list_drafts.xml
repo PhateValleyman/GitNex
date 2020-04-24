@@ -13,7 +13,37 @@
     tools:context=".activities.MainActivity">
 
     <TextView
+        android:id="@+id/repoId"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/draftId"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/issueNumber"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/issueType"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/repoOwner"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/repoName"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:visibility="gone" />

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -327,7 +328,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				DraftsFragment frag = (DraftsFragment) fm.findFragmentById(R.id.fragment_container);
 
 				if(frag != null) {
-					frag.deleteAllDrafts(currentActiveAccountId);
+
+					new AlertDialog.Builder(ctx)
+							.setTitle(R.string.deleteAllDrafts)
+							.setIcon(R.drawable.ic_delete)
+							.setCancelable(false)
+							.setMessage(R.string.deleteAllDraftsDialogMessage)
+							.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
+
+								frag.deleteAllDrafts(currentActiveAccountId);
+								dialog.dismiss();
+
+							})
+							.setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss())
+							.show();
+
 				}
 				else {
 					Toasty.error(ctx, getResources().getString(R.string.genericError));

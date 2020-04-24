@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
@@ -32,20 +31,8 @@ public class BottomSheetDraftsFragment extends BottomSheetDialogFragment {
 
 		deleteAllDrafts.setOnClickListener(v1 -> {
 
-			Context ctx = v1.getContext();
 			dismiss();
-
-			new AlertDialog.Builder(ctx)
-					.setTitle(R.string.deleteAllDrafts)
-					.setIcon(R.drawable.ic_delete)
-					.setCancelable(false)
-					.setMessage(R.string.deleteAllDraftsDialogMessage)
-					.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
-						bmListener.onButtonClicked("deleteDrafts");
-						dialog.dismiss();
-					})
-					.setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss())
-					.show();
+			bmListener.onButtonClicked("deleteDrafts");
 
 		});
 

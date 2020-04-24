@@ -2,6 +2,7 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.ReplyToIssueActivity;
 import org.mian.gitnex.database.models.DraftsWithRepositories;
 import org.mian.gitnex.database.repository.DraftsRepository;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.util.TinyDB;
 import java.util.List;
 
 /**
@@ -28,7 +31,12 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
         private TextView draftText;
         private TextView repoInfo;
+        private TextView repoId;
         private TextView draftId;
+        private TextView issueNumber;
+        private TextView issueType;
+        private TextView repoOwner;
+        private TextView repoName;
 
         private DraftsViewHolder(View itemView) {
 
@@ -36,7 +44,12 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
             draftText = itemView.findViewById(R.id.draftText);
             repoInfo = itemView.findViewById(R.id.repoInfo);
+            repoId = itemView.findViewById(R.id.repoId);
             draftId = itemView.findViewById(R.id.draftId);
+            issueNumber = itemView.findViewById(R.id.issueNumber);
+            issueType = itemView.findViewById(R.id.issueType);
+            repoOwner = itemView.findViewById(R.id.repoOwner);
+            repoName = itemView.findViewById(R.id.repoName);
             ImageView deleteDraft = itemView.findViewById(R.id.deleteDraft);
 
             deleteDraft.setOnClickListener(itemDelete -> {
@@ -44,6 +57,23 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
                 int getDraftId = Integer.parseInt(draftId.getText().toString());
                 deleteDraft(getAdapterPosition());
                 DraftsRepository.deleteSingleDraft(getDraftId);
+
+            });
+
+            draftText.setOnClickListener(itemEdit -> {
+
+                Intent intent = new Intent(mCtx, ReplyToIssueActivity.class);
+                intent.putExtra("commentBody", draftText.getText());
+                intent.putExtra("issueNumber", issueNumber.getText());
+                intent.putExtra("repositoryId", repoId.getText());
+                intent.putExtra("draftTitle", repoInfo.getText());
+
+                TinyDB tinyDb = new TinyDB(mCtx);
+                tinyDb.putString("issueNumber", issueNumber.getText().toString());
+                tinyDb.putLong("repositoryId", Long.parseLong(repoId.getText().toString()));
+                //tinyDb.putString("issueType", issueType.getText().toString());
+
+                mCtx.startActivity(intent);
 
             });
 
@@ -78,7 +108,12 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
         DraftsWithRepositories currentItem = draftsList.get(position);
 
+        holder.repoId.setText(String.valueOf(currentItem.getRepositoryId()));
         holder.draftId.setText(String.valueOf(currentItem.getDraftId()));
+        holder.issueNumber.setText(String.valueOf(currentItem.getIssueId()));
+        holder.issueType.setText(currentItem.getDraftType());
+        holder.repoOwner.setText(currentItem.getRepositoryOwner());
+        holder.repoName.setText(currentItem.getRepositoryName());
         holder.draftText.setText(currentItem.getDraftText());
         holder.repoInfo.setText(String.format("%s/%s %s%d", currentItem.getRepositoryOwner(), currentItem.getRepositoryName(), mCtx.getResources().getString(R.string.hash), currentItem.getIssueId()));
 

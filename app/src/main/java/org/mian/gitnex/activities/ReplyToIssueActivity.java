@@ -7,6 +7,8 @@ import retrofit2.Response;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -46,6 +48,7 @@ public class ReplyToIssueActivity extends BaseActivity {
     private SocialAutoCompleteTextView addComment;
     private ArrayAdapter<Mention> defaultMentionAdapter;
     private Button replyButton;
+    private String TAG = StaticGlobalVariables.replyToIssueActivity;
 
     @Override
     protected int getLayoutResourceId(){
@@ -86,25 +89,67 @@ public class ReplyToIssueActivity extends BaseActivity {
 
         replyButton = findViewById(R.id.replyButton);
 
-        if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
+        if(getIntent().getStringExtra("commentBody") != null) {
 
             addComment.setText(getIntent().getStringExtra("commentBody"));
+
+        }
+
+        if(getIntent().getStringExtra("draftTitle") != null) {
+
+            toolbar_title.setText(getIntent().getStringExtra("draftTitle"));
+
+        }
+
+        if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
+
             final String commentId = getIntent().getStringExtra("commentId");
 
             toolbar_title.setText(getResources().getString(R.string.editCommentTitle));
             replyButton.setText(getResources().getString(R.string.editCommentButtonText));
 
-            replyButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    disableProcessButton();
-                    IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
+            addComment.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {
                 }
+
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    saveDraft(addComment.getText().toString());
+
+                }
+
+            });
+
+            replyButton.setOnClickListener(v -> {
+
+                disableProcessButton();
+                IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
 
             });
 
             return;
 
         }
+
+        addComment.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                saveDraft(addComment.getText().toString());
+
+            }
+
+        });
 
         if(!connToInternet) {
 
@@ -114,6 +159,34 @@ public class ReplyToIssueActivity extends BaseActivity {
 
             replyButton.setOnClickListener(replyToIssue);
 
+        }
+
+    }
+
+    private void saveDraft(String draftText) {
+
+        TinyDB tinyDb = new TinyDB(getApplicationContext());
+
+        int repositoryId = (int) tinyDb.getLong("repositoryId", 0);
+        int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
+        int issueNumber = Integer.parseInt(tinyDb.getString("issueNumber"));
+
+        DraftsRepository draftsRepository = new DraftsRepository(getApplicationContext());
+
+        try {
+
+            int countDraft = draftsRepository.checkDraft(issueNumber, repositoryId);
+
+            if(countDraft == 0) {
+                long draftId = draftsRepository.insertDraft(repositoryId, currentActiveAccountId, issueNumber, draftText, StaticGlobalVariables.draftTypeComment);
+            }
+            else {
+                DraftsRepository.updateDraftByIssueIdAsycTask(draftText, issueNumber, repositoryId);
+            }
+
+        }
+        catch(ExecutionException | InterruptedException e) {
+            Log.e(TAG, e.toString());
         }
 
     }
@@ -154,7 +227,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
                 } else {
 
-                    Log.i("onResponse", String.valueOf(response.code()));
+                    Log.i(TAG, String.valueOf(response.code()));
 
                 }
 
@@ -162,7 +235,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
             @Override
             public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.getMessage());
+                Log.e(TAG, t.toString());
             }
 
         });
@@ -203,28 +276,6 @@ public class ReplyToIssueActivity extends BaseActivity {
 
         }
         else {
-
-            int repositoryId = (int) tinyDb.getLong("repositoryId", 0);
-            int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
-            int issueNumber = Integer.parseInt(tinyDb.getString("issueNumber"));
-
-            DraftsRepository draftsRepository = new DraftsRepository(getApplicationContext());
-
-            try {
-
-                int count = draftsRepository.checkDraft(issueNumber, repositoryId);
-
-                if(count == 0) {
-                    long draftId = draftsRepository.insertDraft(repositoryId, currentActiveAccountId, issueNumber, newReplyDT, StaticGlobalVariables.draftTypeComment);
-                }
-                else {
-                    DraftsRepository.updateDraftByIssueIdAsycTask(newReplyDT, issueNumber, repositoryId);
-                }
-
-            }
-            catch(ExecutionException | InterruptedException e) {
-                Log.e(StaticGlobalVariables.replyToIssueActivity, e.toString());
-            }
 
             disableProcessButton();
             replyComment(newReplyDT);
@@ -287,7 +338,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
             @Override
             public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
+                Log.e(TAG, t.toString());
                 enableProcessButton();
             }
         });

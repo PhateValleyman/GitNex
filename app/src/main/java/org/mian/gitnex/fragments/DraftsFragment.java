@@ -36,6 +36,7 @@ public class DraftsFragment extends Fragment {
     private DraftsRepository draftsRepository;
     private TextView noData;
 	private List<DraftsWithRepositories> draftsList_;
+	private int currentActiveAccountId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,12 +66,13 @@ public class DraftsFragment extends Fragment {
 
         swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
 
+	        draftsList_.clear();
             swipeRefresh.setRefreshing(false);
             fetchDataAsync(1);
 
         }, 250));
 
-        int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
+        currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
 
         fetchDataAsync(currentActiveAccountId);
 
@@ -85,6 +87,7 @@ public class DraftsFragment extends Fragment {
             assert drafts != null;
             if(drafts.size() > 0) {
 
+	            draftsList_.clear();
                 noData.setVisibility(View.GONE);
 	            draftsList_.addAll(drafts);
 	            adapter.notifyDataSetChanged();
@@ -100,6 +103,13 @@ public class DraftsFragment extends Fragment {
         });
 
     }
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		draftsList_.clear();
+		fetchDataAsync(currentActiveAccountId);
+	}
 
 	public void deleteAllDrafts(int accountId) {
 
