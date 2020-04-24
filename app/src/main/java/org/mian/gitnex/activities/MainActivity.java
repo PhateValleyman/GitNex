@@ -29,6 +29,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.models.UserAccounts;
 import org.mian.gitnex.database.repository.UserAccountsRepository;
 import org.mian.gitnex.fragments.AboutFragment;
+import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
 import org.mian.gitnex.fragments.DraftsFragment;
 import org.mian.gitnex.fragments.AdministrationFragment;
 import org.mian.gitnex.fragments.ExploreRepositoriesFragment;
@@ -56,7 +57,7 @@ import retrofit2.Callback;
  * Author M M Arif
  */
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomSheetDraftsFragment.BottomSheetListener  {
 
     private DrawerLayout drawer;
     private TextView userFullName;
@@ -312,6 +313,35 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
+	@Override
+	public void onButtonClicked(String text) {
+
+		TinyDB tinyDb = new TinyDB(ctx);
+		int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
+
+		if("deleteDrafts".equals(text)) {
+
+			if(currentActiveAccountId > 0) {
+
+				FragmentManager fm = getSupportFragmentManager();
+				DraftsFragment frag = (DraftsFragment) fm.findFragmentById(R.id.fragment_container);
+
+				if(frag != null) {
+					frag.deleteAllDrafts(currentActiveAccountId);
+				}
+				else {
+					Toasty.error(ctx, getResources().getString(R.string.genericError));
+				}
+
+			}
+			else {
+				Toasty.error(ctx, getResources().getString(R.string.genericError));
+			}
+
+		}
+
+	}
+
     public void getAcountData(String accountName) throws ExecutionException, InterruptedException {
 
 	    UserAccountsRepository accountData = new UserAccountsRepository(ctx);
@@ -429,6 +459,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         ctx.startActivity(new Intent(ctx, LoginActivity.class));
 
     }
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		int id = item.getItemId();
+
+		if(id == R.id.genericMenu) {
+			BottomSheetDraftsFragment bottomSheet = new BottomSheetDraftsFragment();
+			bottomSheet.show(getSupportFragmentManager(), "draftsBottomSheet");
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+
+	}
 
     private void giteaVersion(final String instanceUrl) {
 
@@ -570,6 +615,5 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		});
 
 	}
-
 
 }

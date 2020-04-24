@@ -632,4 +632,10 @@
 
     <string name="forceLogoutDialogHeader">Re-login is Required</string>
     <string name="forceLogoutDialogDescription">There are new updates introduced in the recent version, for compatibility the app will log you out to reinitiate the process. Sorry for the inconvience.\n\nPlease click the Logout button to continue.</string>
+
+    <string name="deleteAllDrafts">Delete All Drafts</string>
+    <string name="draftsListEmptyError">No drafts found</string>
+    <string name="draftsDeleteSuccess">Drafts deleted successfully</string>
+    <string name="draftsSingleDeleteSuccess">Draft deleted successfully</string>
+    <string name="deleteAllDraftsDialogMessage">This will delete all the drafts for this account. \n\nProceed with deletion?</string>
 </resources>

@@ -27,4 +27,5 @@ public interface StaticGlobalVariables {
 	String draftsRepository = "DraftsRepository";
 	String repositoriesRepository = "RepositoriesRepository";
 	String replyToIssueActivity = "ReplyToIssueActivity";
+	String tagDraftsBottomSheet = "BottomSheetDraftsFragment";
 }

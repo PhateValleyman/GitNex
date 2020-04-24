@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.database.models.DraftsWithRepositories;
 import org.mian.gitnex.database.repository.DraftsRepository;
+import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
 
 /**
@@ -60,6 +61,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
         draftsList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, draftsList.size());
+        Toasty.info(mCtx, mCtx.getResources().getString(R.string.draftsSingleDeleteSuccess));
 
     }
 
