@@ -1,5 +1,6 @@
 package org.mian.gitnex.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.method.ScrollingMovementMethod;
@@ -13,49 +14,44 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.mikepenz.fastadapter.IItemAdapter;
-import com.mikepenz.fastadapter.adapters.ItemAdapter;
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
-import com.mikepenz.fastadapter.listeners.ItemFilterListener;
-import com.mikepenz.fastadapter_extensions.items.ProgressItem;
-import com.mikepenz.fastadapter_extensions.scroll.EndlessRecyclerOnScrollListener;
 import org.mian.gitnex.R;
-import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.adapters.CommitsAdapter;
+import org.mian.gitnex.clients.IssuesService;
+import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.Commits;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import static com.mikepenz.fastadapter.adapters.ItemAdapter.items;
 
 /**
  * Author M M Arif
  */
 
-public class CommitsActivity extends BaseActivity implements ItemFilterListener<CommitsAdapter> {
+public class CommitsActivity extends BaseActivity {
 
+    private Context ctx;
     private View.OnClickListener onClickListener;
     private TextView noData;
     private ProgressBar progressBar;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private String TAG = "CommitsActivity - ";
-    private int resultLimit = 50;
-    private boolean loadNextFlag = false;
+    private String TAG = "CommitsActivity";
+    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+    private int pageSize = StaticGlobalVariables.issuesPageInit;
 
-    private List<CommitsAdapter> items = new ArrayList<>();
-    private FastItemAdapter<CommitsAdapter> fastItemAdapter;
-    private ItemAdapter footerAdapter;
-    private EndlessRecyclerOnScrollListener endlessRecyclerOnScrollListener;
+    private RecyclerView recyclerView;
+    private List<Commits> commitsList;
+    private CommitsAdapter adapter;
+    private ApiInterface api;
 
     @Override
     protected int getLayoutResourceId(){
@@ -68,6 +64,7 @@ public class CommitsActivity extends BaseActivity implements ItemFilterListener<
         super.onCreate(savedInstanceState);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ctx = getApplicationContext();
 
         TinyDB tinyDb = new TinyDB(getApplicationContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -87,98 +84,128 @@ public class CommitsActivity extends BaseActivity implements ItemFilterListener<
         ImageView closeActivity = findViewById(R.id.close);
         noData = findViewById(R.id.noDataCommits);
         progressBar = findViewById(R.id.progress_bar);
-        swipeRefreshLayout = findViewById(R.id.pullToRefresh);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerView.setHasFixedSize(true);
+        SwipeRefreshLayout swipeRefresh = findViewById(R.id.pullToRefresh);
 
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
 
-        fastItemAdapter = new FastItemAdapter<>();
-        fastItemAdapter.withSelectable(true);
+        // if gitea is 1.12 or higher use the new limit
+        if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) < 1) {
+            resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+        }
 
-        footerAdapter = items();
-        //noinspection unchecked
-        fastItemAdapter.addAdapter(1, footerAdapter);
+        recyclerView = findViewById(R.id.recyclerView);
+        commitsList = new ArrayList<>();
 
-        fastItemAdapter.getItemFilter().withFilterPredicate((IItemAdapter.Predicate<CommitsAdapter>) (item, constraint) -> item.getCommitTitle().toLowerCase().contains(Objects.requireNonNull(constraint).toString().toLowerCase()));
+        swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
 
-        fastItemAdapter.getItemFilter().withItemFilterListener(this);
+            swipeRefresh.setRefreshing(false);
+            loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
+            adapter.notifyDataChanged();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(fastItemAdapter);
+        }, 200));
 
-        endlessRecyclerOnScrollListener = new EndlessRecyclerOnScrollListener(footerAdapter) {
+        adapter = new CommitsAdapter(getApplicationContext(), commitsList);
+        adapter.setLoadMoreListener(() -> recyclerView.post(() -> {
 
-            @Override
-            public void onLoadMore(final int currentPage) {
+            if(commitsList.size() == resultLimit || pageSize == resultLimit) {
 
-                loadNext(instanceUrl, instanceToken, repoOwner, repoName, currentPage, branchName);
+                int page = (commitsList.size() + resultLimit) / resultLimit;
+                loadMore(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, page, branchName);
 
             }
 
-        };
+        }));
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
+        Log.e("resultLimit", String.valueOf(resultLimit));
 
-            progressBar.setVisibility(View.VISIBLE);
-            fastItemAdapter.clear();
-            endlessRecyclerOnScrollListener.resetPageCount();
-            swipeRefreshLayout.setRefreshing(false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
+        recyclerView.setAdapter(adapter);
 
-        });
-
-        recyclerView.addOnScrollListener(endlessRecyclerOnScrollListener);
-
-        loadInitial(instanceUrl, instanceToken, repoOwner, repoName, branchName);
-
-        assert savedInstanceState != null;
-        fastItemAdapter.withSavedInstanceState(savedInstanceState);
+        api = IssuesService.createService(ApiInterface.class, instanceUrl, ctx);
+        loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
 
     }
 
-    private void loadInitial(String instanceUrl, String token, String repoOwner, String repoName, String branchName) {
+    private void loadInitial(String token, String repoOwner, String repoName, String branchName) {
 
-        Call<List<Commits>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
-                .getApiInterface()
-                .getRepositoryCommits(token, repoOwner, repoName,  1, branchName);
+        Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName,  1, branchName);
 
         call.enqueue(new Callback<List<Commits>>() {
 
             @Override
             public void onResponse(@NonNull Call<List<Commits>> call, @NonNull Response<List<Commits>> response) {
 
-                if (response.isSuccessful()) {
+                if(response.isSuccessful()) {
 
                     assert response.body() != null;
-
                     if(response.body().size() > 0) {
 
-                        if(response.body().size() == resultLimit) {
-                            loadNextFlag = true;
-                        }
+                        commitsList.clear();
+                        commitsList.addAll(response.body());
+                        adapter.notifyDataChanged();
+                        noData.setVisibility(View.GONE);
 
-                        for (int i = 0; i < response.body().size(); i++) {
+                    }
+                    else {
+                        commitsList.clear();
+                        adapter.notifyDataChanged();
+                        noData.setVisibility(View.VISIBLE);
+                    }
+                    progressBar.setVisibility(View.GONE);
+                }
+                else {
+                    Log.e(TAG, String.valueOf(response.code()));
+                }
 
-                            items.add(new CommitsAdapter(getApplicationContext()).withNewItems(response.body().get(i).getCommit().getMessage(), response.body().get(i).getHtml_url(),
-                                    response.body().get(i).getCommit().getCommitter().getName(), response.body().get(i).getCommit().getCommitter().getDate()));
+            }
 
-                        }
+            @Override
+            public void onFailure(@NonNull Call<List<Commits>> call, @NonNull Throwable t) {
 
-                        fastItemAdapter.add(items);
+                Log.e(TAG, t.toString());
+            }
+
+        });
+
+    }
+
+    private void loadMore(String token, String repoOwner, String repoName, final int page, String branchName) {
+
+        //add loading progress view
+        commitsList.add(new Commits("load"));
+        adapter.notifyItemInserted((commitsList.size() - 1));
+
+        Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName, page, branchName);
+
+        call.enqueue(new Callback<List<Commits>>() {
+
+            @Override
+            public void onResponse(@NonNull Call<List<Commits>> call, @NonNull Response<List<Commits>> response) {
+
+                if(response.isSuccessful()) {
+
+                    //remove loading view
+                    commitsList.remove(commitsList.size() - 1);
+
+                    List<Commits> result = response.body();
+
+                    assert result != null;
+                    if(result.size() > 0) {
+
+                        pageSize = result.size();
+                        commitsList.addAll(result);
 
                     }
                     else {
 
-                        noData.setVisibility(View.VISIBLE);
+                        Toasty.info(ctx, getString(R.string.noMoreData));
+                        adapter.setMoreDataAvailable(false);
 
                     }
 
-                    progressBar.setVisibility(View.GONE);
+                    adapter.notifyDataChanged();
 
                 }
                 else {
@@ -197,79 +224,6 @@ public class CommitsActivity extends BaseActivity implements ItemFilterListener<
             }
 
         });
-
-    }
-
-    private void loadNext(String instanceUrl, String token, String repoOwner, String repoName, final int currentPage, String branchName) {
-
-        footerAdapter.clear();
-        //noinspection unchecked
-        footerAdapter.add(new ProgressItem().withEnabled(false));
-        Handler handler = new Handler();
-
-        handler.postDelayed(() -> {
-
-            Call<List<Commits>> call = RetrofitClient
-                    .getInstance(instanceUrl, getApplicationContext())
-                    .getApiInterface()
-                    .getRepositoryCommits(token, repoOwner, repoName, currentPage + 1, branchName);
-
-            call.enqueue(new Callback<List<Commits>>() {
-
-                @Override
-                public void onResponse(@NonNull Call<List<Commits>> call, @NonNull Response<List<Commits>> response) {
-
-                    if (response.isSuccessful()) {
-
-                        assert response.body() != null;
-
-                        if (response.body().size() > 0) {
-
-                            loadNextFlag = response.body().size() == resultLimit;
-
-                            for (int i = 0; i < response.body().size(); i++) {
-
-                                fastItemAdapter.add(fastItemAdapter.getAdapterItemCount(), new CommitsAdapter(getApplicationContext()).withNewItems(response.body().get(i).getCommit().getMessage(),
-                                        response.body().get(i).getHtml_url(), response.body().get(i).getCommit().getCommitter().getName(),
-                                        response.body().get(i).getCommit().getCommitter().getDate()));
-
-                            }
-
-                            footerAdapter.clear();
-
-                        }
-                        else {
-
-                            footerAdapter.clear();
-                        }
-
-                        progressBar.setVisibility(View.GONE);
-
-                    }
-                    else {
-
-                        Log.e(TAG, String.valueOf(response.code()));
-
-                    }
-
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<List<Commits>> call, @NonNull Throwable t) {
-
-                    Log.e(TAG, t.toString());
-
-                }
-
-            });
-
-        }, 1000);
-
-        if(!loadNextFlag) {
-
-            footerAdapter.clear();
-
-        }
 
     }
 
@@ -292,25 +246,27 @@ public class CommitsActivity extends BaseActivity implements ItemFilterListener<
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                fastItemAdapter.filter(newText);
+                filter(newText);
                 return true;
             }
 
         });
 
-        endlessRecyclerOnScrollListener.enable();
         return super.onCreateOptionsMenu(menu);
 
     }
 
-    @Override
-    public void itemsFiltered(@Nullable CharSequence constraint, @Nullable List<CommitsAdapter> results) {
-        endlessRecyclerOnScrollListener.disable();
-    }
+    private void filter(String text) {
 
-    @Override
-    public void onReset() {
-        endlessRecyclerOnScrollListener.enable();
+        List<Commits> arr = new ArrayList<>();
+
+        for(Commits d : commitsList) {
+            if(d.getCommit().getMessage().toLowerCase().contains(text)) {
+                arr.add(d);
+            }
+        }
+
+        adapter.updateList(arr);
     }
 
     private void initCloseListener() {
