@@ -76,6 +76,7 @@
         <activity android:name=".activities.CommitsActivity" />
         <activity android:name=".helpers.ssl.MemorizingActivity" android:theme="@android:style/Theme.Material.Dialog" />
         <activity android:name=".activities.SettingsAppearanceActivity" />
+        <activity android:name=".activities.SettingsFileViewerActivity" />
     </application>
 
 </manifest>
