@@ -10,9 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.AdminGetUsersActivity;
 import org.mian.gitnex.activities.SettingsAppearanceActivity;
 import org.mian.gitnex.activities.SettingsFileViewerActivity;
+import org.mian.gitnex.activities.SettingsSecurityActivity;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
 
@@ -38,11 +38,11 @@ public class SettingsFragment extends Fragment {
 
 		fileViewerFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsFileViewerActivity.class)));
 
-		securityFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminGetUsersActivity.class)));
+		securityFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsSecurityActivity.class)));
 
-		languagesFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminGetUsersActivity.class)));
+		languagesFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsSecurityActivity.class)));
 
-		reportsFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminGetUsersActivity.class)));
+		reportsFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsSecurityActivity.class)));
 
 		return v;
 
