@@ -33,25 +33,15 @@
                     android:contentDescription="@string/close"
                     android:src="@drawable/ic_close" />
 
-                <HorizontalScrollView
-                    android:id="@+id/replyToIssueNavHeader"
+                <TextView
+                    android:id="@+id/toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fillViewport="true"
-                    android:foregroundGravity="right"
-                    android:scrollbarThumbHorizontal="@android:color/transparent">
-
-                    <TextView
-                        android:id="@+id/toolbar_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:maxLines="1"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="20sp" />
-
-                </HorizontalScrollView>
+                    android:maxLines="1"
+                    android:text="@string/commentButtonText"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:id="@+id/replyButton"
