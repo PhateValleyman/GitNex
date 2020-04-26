@@ -45,11 +45,11 @@ public class FilesDiffAdapter extends BaseAdapter {
 
 		selectedViews = new ConcurrentSkipListMap<>();
 
-		COLOR_ADDED = context.getResources().getColor(R.color.diffAddedColor);
-		COLOR_REMOVED = context.getResources().getColor(R.color.diffRemovedColor);
+		COLOR_ADDED = getColorFromAttribute(R.attr.diffAddedColor);
+		COLOR_REMOVED = getColorFromAttribute(R.attr.diffRemovedColor);
 		COLOR_NORMAL = getColorFromAttribute(R.attr.primaryBackgroundColor);
-		COLOR_SELECTED = context.getResources().getColor(R.color.md_grey_300);
-		COLOR_FONT = getColorFromAttribute(R.attr.primaryTextColor);
+		COLOR_SELECTED = getColorFromAttribute(R.attr.diffSelectedColor);
+		COLOR_FONT = getColorFromAttribute(R.attr.inputTextColor);
 
 	}
 
