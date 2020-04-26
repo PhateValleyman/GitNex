@@ -13,6 +13,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.SettingsAppearanceActivity;
 import org.mian.gitnex.activities.SettingsFileViewerActivity;
 import org.mian.gitnex.activities.SettingsSecurityActivity;
+import org.mian.gitnex.activities.SettingsTranslationActivity;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
 
@@ -40,7 +41,7 @@ public class SettingsFragment extends Fragment {
 
 		securityFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsSecurityActivity.class)));
 
-		languagesFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsSecurityActivity.class)));
+		languagesFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsTranslationActivity.class)));
 
 		reportsFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsSecurityActivity.class)));
 
