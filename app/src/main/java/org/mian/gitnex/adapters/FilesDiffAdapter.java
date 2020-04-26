@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 public class FilesDiffAdapter extends BaseAdapter {
 
-	private static Map<Long, View> SELECTED_VIEWS;
+	private static Map<Long, View> selectedViews;
 	private static final int MAXIMUM_LINES = 5000;
 
 	private static int COLOR_ADDED;
@@ -43,12 +43,13 @@ public class FilesDiffAdapter extends BaseAdapter {
 		this.context = context;
 		this.fileDiffViews = fileDiffViews;
 
-		SELECTED_VIEWS = new ConcurrentSkipListMap<>();
+		selectedViews = new ConcurrentSkipListMap<>();
+
 		COLOR_ADDED = context.getResources().getColor(R.color.diffAddedColor);
 		COLOR_REMOVED = context.getResources().getColor(R.color.diffRemovedColor);
-		COLOR_NORMAL = context.getResources().getColor(R.color.white);
+		COLOR_NORMAL = getColorFromAttribute(R.attr.primaryBackgroundColor);
 		COLOR_SELECTED = context.getResources().getColor(R.color.md_grey_300);
-		COLOR_FONT = context.getResources().getColor(R.color.colorPrimary);
+		COLOR_FONT = getColorFromAttribute(R.attr.primaryTextColor);
 
 	}
 
@@ -102,6 +103,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 						int uniquePosition = l + (position * MAXIMUM_LINES);
 
 						DiffTextView diffTextView = new DiffTextView(context);
+
 						diffTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
 						diffTextView.setPadding(15, 2, 15, 2);
 						diffTextView.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf"));
@@ -110,7 +112,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 
 						boolean isSelected = false;
 
-						for(View view : SELECTED_VIEWS.values()) {
+						for(View view : selectedViews.values()) {
 
 							if(((DiffTextView) view).getPosition() == uniquePosition) {
 
@@ -157,12 +159,12 @@ public class FilesDiffAdapter extends BaseAdapter {
 
 							if(((DiffTextView) v).getCurrentBackgroundColor() != COLOR_SELECTED) {
 
-								SELECTED_VIEWS.put(((DiffTextView) v).getPosition(), v);
+								selectedViews.put(((DiffTextView) v).getPosition(), v);
 								v.setBackgroundColor(COLOR_SELECTED);
 
 							} else {
 
-								SELECTED_VIEWS.remove(((DiffTextView) v).getPosition());
+								selectedViews.remove(((DiffTextView) v).getPosition());
 								v.setBackgroundColor(((DiffTextView) v).getInitialBackgroundColor());
 
 							}
@@ -177,7 +179,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 								StringBuilder stringBuilder = new StringBuilder();
 								stringBuilder.append("```\n");
 
-								for(View view : SELECTED_VIEWS.values()) {
+								for(View view : selectedViews.values()) {
 
 									stringBuilder.append(((DiffTextView) view).getText());
 									stringBuilder.append("\n");
@@ -186,7 +188,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 
 								stringBuilder.append("```\n\n");
 
-								SELECTED_VIEWS.clear();
+								selectedViews.clear();
 
 								Intent intent = new Intent(context, ReplyToIssueActivity.class);
 								intent.putExtra("commentBody", stringBuilder.toString());
@@ -222,6 +224,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 	private TextView getMessageView(String message) {
 
 		TextView textView = new TextView(context);
+
 		textView.setTextColor(COLOR_FONT);
 		textView.setBackgroundColor(COLOR_NORMAL);
 		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
@@ -237,6 +240,15 @@ public class FilesDiffAdapter extends BaseAdapter {
 	private String[] getLines(String content) {
 
 		return content.split("\\R");
+
+	}
+
+	private int getColorFromAttribute(int resid) {
+
+		TypedValue typedValue = new TypedValue();
+		context.getTheme().resolveAttribute(resid, typedValue, true);
+
+		return typedValue.data;
 
 	}
 
