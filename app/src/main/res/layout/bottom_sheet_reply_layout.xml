@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Widget.AppCompat.SearchView">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/primaryBackgroundColor"
+            tools:ignore="UnusedAttribute">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/close"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="0"
+                    android:contentDescription="@string/close"
+                    android:src="@drawable/ic_close" />
+
+                <HorizontalScrollView
+                    android:id="@+id/replyToIssueNavHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fillViewport="true"
+                    android:foregroundGravity="right"
+                    android:scrollbarThumbHorizontal="@android:color/transparent">
+
+                    <TextView
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="20sp" />
+
+                </HorizontalScrollView>
+
+                <ImageView
+                    android:id="@+id/replyButton"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="0"
+                    android:contentDescription="@string/close"
+                    android:src="@drawable/ic_reply" />
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:background="?attr/primaryBackgroundColor">
+
+        <com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView
+            android:id="@+id/addComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:completionThreshold="1"
+            android:maxLines="12"
+            android:minLines="5"
+            android:labelFor="@+id/newReplyToIssue"
+            android:scrollbars="vertical"
+            android:gravity="top|start"
+            android:textSize="14sp"
+            android:textColor="?attr/inputTextColor"
+            android:textColorHint="?attr/primaryBackgroundColor"
+            android:textColorHighlight="?attr/primaryTextColor"
+            android:inputType="textCapSentences|textMultiLine" />
+
+    </ScrollView>
+
+</LinearLayout>
