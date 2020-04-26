@@ -2,11 +2,12 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -95,7 +96,7 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView commitTitle;
         TextView commitCommitter;
         TextView commitDate;
-        TextView commitHtmlUrl;
+        Button commitHtmlUrl;
 
         CommitsHolder(View itemView) {
 
@@ -124,8 +125,7 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 commitDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(commitsModel.getCommit().getCommitter().getDate()), ctx));
             }
 
-            commitHtmlUrl.setText(Html.fromHtml("<a href='" + commitsModel.getHtml_url() + "'>" + ctx.getResources().getString(R.string.viewInBrowser) + "</a> "));
-            commitHtmlUrl.setMovementMethod(LinkMovementMethod.getInstance());
+            commitHtmlUrl.setOnClickListener(v -> ctx.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(commitsModel.getHtml_url()))));
 
         }
 
