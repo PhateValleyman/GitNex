@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.CommitsAdapter;
-import org.mian.gitnex.clients.IssuesService;
+import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.Toasty;
@@ -46,7 +46,7 @@ public class CommitsActivity extends BaseActivity {
     private ProgressBar progressBar;
     private String TAG = "CommitsActivity";
     private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
-    private int pageSize = StaticGlobalVariables.issuesPageInit;
+    private int pageSize = 1;
 
     private RecyclerView recyclerView;
     private List<Commits> commitsList;
@@ -64,9 +64,9 @@ public class CommitsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ctx = getApplicationContext();
+        ctx = this;
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        TinyDB tinyDb = new TinyDB(ctx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
@@ -89,7 +89,7 @@ public class CommitsActivity extends BaseActivity {
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
 
-        // if gitea is 1.12 or higher use the new limit
+        // if gitea is 1.12 or higher use the new limit (resultLimitNewGiteaInstances)
         if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) < 1) {
             resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
         }
@@ -105,7 +105,7 @@ public class CommitsActivity extends BaseActivity {
 
         }, 200));
 
-        adapter = new CommitsAdapter(getApplicationContext(), commitsList);
+        adapter = new CommitsAdapter(ctx, commitsList);
         adapter.setLoadMoreListener(() -> recyclerView.post(() -> {
 
             if(commitsList.size() == resultLimit || pageSize == resultLimit) {
@@ -117,13 +117,11 @@ public class CommitsActivity extends BaseActivity {
 
         }));
 
-        Log.e("resultLimit", String.valueOf(resultLimit));
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
         recyclerView.setAdapter(adapter);
 
-        api = IssuesService.createService(ApiInterface.class, instanceUrl, ctx);
+        api = AppApiService.createService(ApiInterface.class, instanceUrl, ctx);
         loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
 
     }
@@ -153,10 +151,14 @@ public class CommitsActivity extends BaseActivity {
                         adapter.notifyDataChanged();
                         noData.setVisibility(View.VISIBLE);
                     }
+
                     progressBar.setVisibility(View.GONE);
+
                 }
                 else {
+
                     Log.e(TAG, String.valueOf(response.code()));
+
                 }
 
             }
