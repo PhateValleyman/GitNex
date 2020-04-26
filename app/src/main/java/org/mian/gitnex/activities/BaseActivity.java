@@ -19,7 +19,7 @@ import org.mian.gitnex.util.TinyDB;
  * Author M M Arif
  */
 
-@AcraNotification(resIcon = R.mipmap.app_logo,
+@AcraNotification(resIcon = R.drawable.gitnex_transparent,
 		resTitle = R.string.crashTitle,
 		resChannelName = R.string.setCrashReports,
 		resText = R.string.crashMessage)
@@ -49,6 +49,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 		else {
 			setTheme(R.style.AppTheme);
 		}
+
+		String appLocale = tinyDb.getString("locale");
+		AppUtil.setAppLocale(getResources(), appLocale);
 
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutResourceId());
