@@ -90,7 +90,8 @@ public class FilesDiffAdapter extends BaseAdapter {
 
 			diffLines.addView(getMessageView(context.getResources().getString(R.string.binaryFileError)));
 
-		} else {
+		}
+		else {
 
 			String[] codeLines = getLines(data.getFileContents());
 
@@ -131,24 +132,29 @@ public class FilesDiffAdapter extends BaseAdapter {
 							diffTextView.setTextColor(COLOR_FONT);
 
 							if(!isSelected) {
+
 								diffTextView.setInitialBackgroundColor(COLOR_ADDED);
 							}
 
-						} else if(codeLines[l].startsWith("-")) {
+						}
+						else if(codeLines[l].startsWith("-")) {
 
 							diffTextView.setText(codeLines[l]);
 							diffTextView.setTextColor(COLOR_FONT);
 
 							if(!isSelected) {
+
 								diffTextView.setInitialBackgroundColor(COLOR_REMOVED);
 							}
 
-						} else {
+						}
+						else {
 
 							diffTextView.setText(codeLines[l]);
 							diffTextView.setTextColor(COLOR_FONT);
 
 							if(!isSelected) {
+
 								diffTextView.setInitialBackgroundColor(COLOR_NORMAL);
 							}
 
@@ -162,7 +168,8 @@ public class FilesDiffAdapter extends BaseAdapter {
 								selectedViews.put(((DiffTextView) v).getPosition(), v);
 								v.setBackgroundColor(COLOR_SELECTED);
 
-							} else {
+							}
+							else {
 
 								selectedViews.remove(((DiffTextView) v).getPosition());
 								v.setBackgroundColor(((DiffTextView) v).getInitialBackgroundColor());
@@ -209,7 +216,8 @@ public class FilesDiffAdapter extends BaseAdapter {
 
 				}
 
-			} else {
+			}
+			else {
 
 				diffLines.addView(getMessageView(context.getResources().getString(R.string.fileTooLarge)));
 
