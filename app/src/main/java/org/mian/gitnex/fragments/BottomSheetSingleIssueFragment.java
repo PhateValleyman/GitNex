@@ -222,15 +222,15 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		subscribeIssue.setOnClickListener(subscribeToIssue -> {
 
-			IssueActions.subscribe(ctx, subscribeIssue, unsubscribeIssue);
-			//dismiss();
+			IssueActions.subscribe(ctx);
+			dismiss();
 
 		});
 
 		unsubscribeIssue.setOnClickListener(unsubscribeToIssue -> {
 
-			IssueActions.unsubscribe(ctx, subscribeIssue, unsubscribeIssue);
-			//dismiss();
+			IssueActions.unsubscribe(ctx);
+			dismiss();
 
 		});
 

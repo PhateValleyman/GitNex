@@ -2,8 +2,6 @@ package org.mian.gitnex.actions;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
@@ -160,23 +158,22 @@ public class IssueActions {
 
 	}
 
-	public static void subscribe(final Context ctx, final TextView subscribeIssue, final TextView unsubscribeIssue) {
+	public static void subscribe(final Context ctx) {
 
 		final TinyDB tinyDB = new TinyDB(ctx);
 
 		final String instanceUrl = tinyDB.getString("instanceUrl");
-		String repoFullName = tinyDB.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		final String repoOwner = parts[0];
-		final String repoName = parts[1];
-		final String loginUid = tinyDB.getString("loginUid");
+		String[] repoFullName = tinyDB.getString("repoFullName").split("/");
+		if(repoFullName.length != 2) {
+			return;
+		}
 		final String userLogin = tinyDB.getString("userLogin");
-		final String token = "token " + tinyDB.getString(loginUid + "-token");
+		final String token = "token " + tinyDB.getString(tinyDB.getString("loginUid") + "-token");
 		final int issueNr = Integer.parseInt(tinyDB.getString("issueNumber"));
 
 		Call<Void> call;
 
-		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().addIssueSubscriber(token, repoOwner, repoName, issueNr, userLogin);
+		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().addIssueSubscriber(token, repoFullName[0], repoFullName[1], issueNr, userLogin);
 
 		call.enqueue(new Callback<Void>() {
 
@@ -187,8 +184,6 @@ public class IssueActions {
 
 					if(response.code() == 201) {
 
-						unsubscribeIssue.setVisibility(View.VISIBLE);
-						subscribeIssue.setVisibility(View.GONE);
 						Toasty.info(ctx, ctx.getString(R.string.issueSubscribtion));
 						tinyDB.putBoolean("issueSubscribed", true);
 
@@ -223,23 +218,22 @@ public class IssueActions {
 
 	}
 
-	public static void unsubscribe(final Context ctx, final TextView subscribeIssue, final TextView unsubscribeIssue) {
+	public static void unsubscribe(final Context ctx) {
 
 		final TinyDB tinyDB = new TinyDB(ctx);
 
 		final String instanceUrl = tinyDB.getString("instanceUrl");
-		String repoFullName = tinyDB.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		final String repoOwner = parts[0];
-		final String repoName = parts[1];
-		final String loginUid = tinyDB.getString("loginUid");
+		String[] repoFullName = tinyDB.getString("repoFullName").split("/");
+		if(repoFullName.length != 2) {
+			return;
+		}
 		final String userLogin = tinyDB.getString("userLogin");
-		final String token = "token " + tinyDB.getString(loginUid + "-token");
+		final String token = "token " + tinyDB.getString(tinyDB.getString("loginUid") + "-token");
 		final int issueNr = Integer.parseInt(tinyDB.getString("issueNumber"));
 
 		Call<Void> call;
 
-		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().delIssueSubscriber(token, repoOwner, repoName, issueNr, userLogin);
+		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().delIssueSubscriber(token, repoFullName[0], repoFullName[1], issueNr, userLogin);
 
 		call.enqueue(new Callback<Void>() {
 
@@ -250,8 +244,6 @@ public class IssueActions {
 
 					if(response.code() == 201) {
 
-						unsubscribeIssue.setVisibility(View.GONE);
-						subscribeIssue.setVisibility(View.VISIBLE);
 						Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtion));
 						tinyDB.putBoolean("issueSubscribed", false);
 
