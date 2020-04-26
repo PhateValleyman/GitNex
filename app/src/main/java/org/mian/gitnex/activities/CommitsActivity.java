@@ -263,7 +263,7 @@ public class CommitsActivity extends BaseActivity {
         List<Commits> arr = new ArrayList<>();
 
         for(Commits d : commitsList) {
-            if(d.getCommit().getMessage().toLowerCase().contains(text)) {
+            if(d.getCommit().getMessage().toLowerCase().contains(text) || d.getSha().toLowerCase().contains(text)) {
                 arr.add(d);
             }
         }
