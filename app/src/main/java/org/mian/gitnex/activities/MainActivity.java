@@ -93,23 +93,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
         }
 
-        if(tinyDb.getString("enableCounterIssueBadgeInit").isEmpty()) {
-            tinyDb.putBoolean("enableCounterIssueBadge", true);
-        }
+	    if(tinyDb.getString("enableCounterIssueBadgeInit").isEmpty()) {
+		    tinyDb.putBoolean("enableCounterIssueBadge", true);
+	    }
 
-        if(tinyDb.getString("homeScreenStr").isEmpty()) {
-            tinyDb.putInt("homeScreenId", 0);
-        }
+	    if(tinyDb.getString("homeScreenStr").isEmpty()) {
+		    tinyDb.putInt("homeScreenId", 0);
+	    }
 
-        String appLocale = tinyDb.getString("locale");
-        AppUtil.setAppLocale(getResources(), appLocale);
+	    boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
-
-        if(!tinyDb.getBoolean("loggedInMode")) {
-            logout(this, ctx);
-            return;
-        }
+	    if(!tinyDb.getBoolean("loggedInMode")) {
+		    logout(this, ctx);
+		    return;
+	    }
 
 	    String accountName =  loginUid + "@" + instanceUrl;
 	    try {
