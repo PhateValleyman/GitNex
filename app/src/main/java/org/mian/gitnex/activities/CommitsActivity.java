@@ -90,7 +90,7 @@ public class CommitsActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         // if gitea is 1.12 or higher use the new limit (resultLimitNewGiteaInstances)
-        if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) < 1) {
+        if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) <= 1) {
             resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
         }
 
