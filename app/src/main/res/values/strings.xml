@@ -2,7 +2,7 @@
 
     <string name="app_name" translatable="false">GitNex</string>
     <string name="appAuthor" translatable="false">Developer : M M Arif</string>
-    <string name="appEmail" translatable="false">gitnex@gitnex.com</string>
+    <string name="appEmail" translatable="false">gitnex@swatian.com</string>
     <string name="appRepo" translatable="false">Source code</string>
     <string name="appRepoLink" translatable="false">https://gitea.com/gitnex/GitNex</string>
     <string name="appRepoIssuesLink" translatable="false">https://gitea.com/gitnex/GitNex/issues</string>
@@ -15,6 +15,7 @@
     <string name="appVerBuild" translatable="false">%1$s / build %2$d</string>
     <string name="appDesc" translatable="false">GitNex is a free, open-source Android client for Git repository management tool Gitea. GitNex is Licensed under GPLv3.\n\nThanks to all the contributors and donators for your generous work and donations.</string>
     <string name="crowdInLink" translatable="false">https://crowdin.com/project/gitnex</string>
+    <string name="crashReportEmailSubject" translatable="false">[GitNex] - Crash Report #%1$d</string>
 
     <string name="appRepoIssuesText" translatable="false">Report issues at Gitea</string>
     <string name="supportText" translatable="false">Support the App on Liberapay</string>
@@ -31,6 +32,7 @@
     <string name="navRate">Rate GitNex</string>
     <string name="navLogout">Logout</string>
     <string name="navExplore">Explore</string>
+    <string name="navAdministration">Administration</string>
     <!-- menu items -->
 
     <!-- page titles -->
@@ -55,6 +57,7 @@
     <string name="pageTitleAddEmail">Add Email Address</string>
     <string name="pageTitleNewFile">New File</string>
     <string name="pageTitleExplore">Explore</string>
+    <string name="pageTitleAdministration">Gitea Administration</string>
     <!-- page titles -->
 
     <string name="appVersion">Version\u0020:\u0020</string>
@@ -100,7 +103,7 @@
     <string name="emptyFieldPassword">Password is required</string>
 
     <string name="checkNetConnection">Cannot access network, please check your Internet connection</string>
-    <string name="netConnectionIsBack">Yay, Internet connection is back</string>
+    <string name="netConnectionIsBack">Yay, We have Internet connection!</string>
 
     <string name="repoNameErrorEmpty">Repository name is empty</string>
     <string name="repoNameErrorInvalid">Repository name is not valid. [a&#8211;z A&#8211;Z 0&#8211;9 &#8211; _]</string>
@@ -165,8 +168,8 @@
     <string name="infoTabRepoZero" translatable="false">0</string>
     <string name="infoTabRepoDefaultBranchText" translatable="false">master</string>
 
-    <string name="infoShowMoreInformation">Show more information</string>
-    <string name="infoMoreInformation">More information</string>
+    <string name="infoShowMoreInformation">Show More Information</string>
+    <string name="infoMoreInformation">More Information</string>
 
     <string name="timeAtText">at</string>
     <string name="hash" translatable="false">#</string>
@@ -272,13 +275,16 @@
     <string name="settingshomeScreenSelectorDialogTitle">Select Home Screen</string>
     <string name="settingsCustomFontHeaderText">Font</string>
     <string name="settingsCustomFontSelectorDialogTitle">Choose Font</string>
-    <string name="settingsCustomFontDefault">Roboto</string>
+    <string name="settingsCustomFontDefault" translatable="false">Manrope</string>
     <string name="themeSelectorDialogTitle">Select App Theme</string>
     <string name="themeSelectionHeaderText">Theme</string>
     <string name="themeSelectionSelectedText" translatable="false">Dark</string>
     <string name="settingsPdfModeHeaderText">PDF Night Mode</string>
     <string name="fileViewerHeader">File Viewer</string>
     <string name="settingsCounterBadges">Counter Badges</string>
+    <string name="settingsFileviewerSourceCodeHeaderText">Source Code Theme</string>
+    <string name="settingsFileviewerSourceCodeSelectedText" translatable="false">Sublime</string>
+    <string name="fileviewerSourceCodeThemeSelectorDialogTitle">Select Source Code Theme</string>
     <!-- settings -->
 
     <string name="noMoreData">No more data available</string>
@@ -409,7 +415,7 @@
 
     <!-- admin -->
     <string name="adminCreateNewUser">Add New User</string>
-    <string name="adminUsers">Users</string>
+    <string name="adminUsers">System Users</string>
     <string name="userRoleAdmin">Admin</string>
     <!-- admin -->
 
@@ -566,6 +572,10 @@
     <string name="mergeCommentText">Merge comment</string>
     <string name="mergePRSuccessMsg">Pull Request was merged successfully</string>
     <string name="mergePR404ErrorMsg">Pull Request is not available for merge</string>
+    <string name="mergeOptionMerge">Merge Pull Request</string>
+    <string name="mergeOptionRebase">Rebase and Merge</string>
+    <string name="mergeOptionRebaseCommit">Rebase and Merge (&#45;&#45;no-ff)</string>
+    <string name="mergeOptionSquash">Squash and Merge</string>
 
     <string name="downloadFile">Download This File</string>
     <string name="waitLoadingDownloadFile">Please wait for the file to load to memory</string>
@@ -606,4 +616,21 @@
     <string name="closeMilestone">Close Milestone</string>
     <string name="openMilestone">Open Milestone</string>
     <string name="milestoneStatusUpdate">Milestone status updated successfully</string>
+    
+    <string name="tabIssueOpen">Open</string>
+    <string name="tabIssueClosed">Closed</string>
+
+    <string name="errorOnLogin">We cannot reach the server, please check your server status</string>
+
+    <string name="reportViewerHeader">Crash Reports</string>
+    <string name="settingsEnableReportsText">Enable Crash Reports</string>
+    <string name="crashTitle">GitNex has stopped :(</string>
+    <string name="setCrashReports">Crash reports</string>
+    <string name="crashMessage">You can tap the OK button to send the crash report by email. It will help to fix it :)\n\nYou can also add additional content in the email. Thank you!</string>
+
+    <string name="appreanceHintText">Themes, fonts, badges, code block theme</string>
+    <string name="fileViewerHintText">PDF mode, source code theme</string>
+    <string name="securityHintText">SSL certificates</string>
+    <string name="languagesHintText">Languages</string>
+    <string name="reportsHintText">Crash reports</string>
 </resources>

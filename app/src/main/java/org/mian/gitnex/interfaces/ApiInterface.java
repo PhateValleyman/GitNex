@@ -53,7 +53,13 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
     @GET("version") // gitea version API
-    Call<GiteaVersion> getGiteaVersion();
+    Call<GiteaVersion> getGiteaVersionWithBasic(@Header("Authorization") String authorization);
+
+    @GET("version") // gitea version API
+    Call<GiteaVersion> getGiteaVersionWithOTP(@Header("Authorization") String authorization, @Header("X-Gitea-OTP") int loginOTP);
+
+    @GET("version") // gitea version API
+    Call<GiteaVersion> getGiteaVersionWithToken(@Header("Authorization") String token);
 
     @GET("user") // username, full name, email
     Call<UserInfo> getUserInfo(@Header("Authorization") String token);
@@ -92,10 +98,7 @@ public interface ApiInterface {
     Call<UserRepositories> getUserRepository(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
 
     @GET("repos/{owner}/{repo}/issues") // get issues by repo
-    Call<List<Issues>> getIssues(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("limit") int limit, @Query("type") String requestType);
-
-    @GET("repos/{owner}/{repo}/issues") // get closed issues by repo
-    Call<List<Issues>> getClosedIssues(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("state") String issueState, @Query("limit") int limit, @Query("type") String requestType);
+    Call<List<Issues>> getIssues(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("limit") int limit, @Query("type") String requestType, @Query("state") String issueState);
 
     @GET("repos/{owner}/{repo}/issues/{index}") // get issue by id
     Call<Issues> getIssueByIndex(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex);

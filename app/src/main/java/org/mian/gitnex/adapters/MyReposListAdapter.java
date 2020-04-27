@@ -78,7 +78,7 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
                 TinyDB tinyDb = new TinyDB(context);
                 tinyDb.putString("repoFullName", fullNameMy.getText().toString());
                 tinyDb.putString("repoType", repoType.getText().toString());
-                tinyDb.putBoolean("resumeIssues", true);
+                //tinyDb.putBoolean("resumeIssues", true);
 
                 //store if user is watching this repo
                 {
@@ -101,13 +101,18 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
 
                             if(response.isSuccessful()) {
 
+                                assert response.body() != null;
                                 tinyDb.putBoolean("repoWatch", response.body().getSubscribed());
 
-                            }
-                            else {
+                            } else {
 
                                 tinyDb.putBoolean("repoWatch", false);
-                                Toasty.info(context, context.getString(R.string.genericApiStatusError));
+
+                                if(response.code() != 404) {
+
+                                    Toasty.info(context, context.getString(R.string.genericApiStatusError));
+
+                                }
 
                             }
 
