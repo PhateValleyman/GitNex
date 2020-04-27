@@ -76,7 +76,7 @@ public class IssuesFragment extends Fragment {
 		final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
 
 		// if gitea is 1.12 or higher use the new limit
-		if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) < 1) {
+		if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) >= 1) {
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}
 
@@ -120,10 +120,24 @@ public class IssuesFragment extends Fragment {
 			}
 
 			issuesList.clear();
+
 			adapter = new IssuesAdapter(getContext(), issuesList);
+			adapter.setLoadMoreListener(() -> recyclerView.post(() -> {
+
+				if(issuesList.size() == resultLimit || pageSize == resultLimit) {
+
+					int page = (issuesList.size() + resultLimit) / resultLimit;
+					loadMore(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, page, resultLimit, requestType, tinyDb.getString("repoIssuesState"));
+
+				}
+
+			}));
+
 			tinyDb.putString("repoIssuesState", issueState);
+
 			mProgressBar.setVisibility(View.VISIBLE);
 			noDataIssues.setVisibility(View.GONE);
+
 			loadInitial(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, resultLimit, requestType, issueState);
 			recyclerView.setAdapter(adapter);
 
