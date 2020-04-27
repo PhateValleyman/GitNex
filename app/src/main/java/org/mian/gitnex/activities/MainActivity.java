@@ -144,7 +144,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		else if(fragmentById instanceof ExploreRepositoriesFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
 		}
-		else if(fragmentById instanceof  NotificationsFragment) {
+		else if(fragmentById instanceof NotificationsFragment) {
 			toolbarTitle.setText("Notifications");
 		}
 		else if(fragmentById instanceof ProfileFragment) {
@@ -358,6 +358,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			case R.id.nav_notifications:
 				toolbarTitle.setText("Notifications");
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
+				break;
 			case R.id.nav_administration:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdministrationFragment()).commit();
