@@ -23,21 +23,25 @@ public class NotificationsAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
+
 		return notificationThreads.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
+
 		return notificationThreads.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
+
 		return position;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.list_notifications, parent, false);
 		}
@@ -60,6 +64,7 @@ public class NotificationsAdapter extends BaseAdapter {
 		}
 
 		switch(notificationThread.getSubject().getType()) {
+
 			case "Pull":
 				type.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_merge, null));
 				break;
@@ -67,6 +72,7 @@ public class NotificationsAdapter extends BaseAdapter {
 			case "Issue":
 				type.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_info_outline_24dp, null));
 				break;
+
 		}
 
 		more.setOnClickListener(new View.OnClickListener() {

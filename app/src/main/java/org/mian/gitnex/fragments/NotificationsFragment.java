@@ -59,27 +59,18 @@ public class NotificationsFragment extends Fragment {
 
 		ListView listView = v.findViewById(R.id.notifications);
 		listView.setAdapter(notificationsAdapter);
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		listView.setOnItemClickListener((parent, view, position, id) -> {
 
 				Toasty.info(getContext(), ((TextView) view.findViewById(R.id.repository)).getText().toString());
-			}
 		});
 
 		loadNotifications();
 
 		SwipeRefreshLayout pullToRefresh = v.findViewById(R.id.pullToRefresh);
-		pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+		pullToRefresh.setOnRefreshListener(() -> {
 
-			@Override
-			public void onRefresh() {
-
-				loadNotifications();
-				pullToRefresh.setRefreshing(false);
-
-			}
+			loadNotifications();
+			pullToRefresh.setRefreshing(false);
 
 		});
 
@@ -128,11 +119,9 @@ public class NotificationsFragment extends Fragment {
 				if(notificationThreads.size() > 0) {
 
 					noDataNotifications.setVisibility(View.GONE);
-
 				} else {
 
 					noDataNotifications.setVisibility(View.VISIBLE);
-
 				}
 
 			}
