@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.ssl.MemorizingTrustManager;
 import org.mian.gitnex.util.TinyDB;
 
@@ -39,6 +41,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 		closeActivity.setOnClickListener(onClickListener);
 
 		LinearLayout certsFrame = findViewById(R.id.certsFrame);
+		LinearLayout pollingDelayFrame = findViewById(R.id.pollingDelayFrame);
 
 		// certs deletion
 		certsFrame.setOnClickListener(v1 -> {
@@ -65,6 +68,42 @@ public class SettingsSecurityActivity extends BaseActivity {
 			builder.setNeutralButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss());
 			builder.create().show();
 
+		});
+
+		// polling delay
+		pollingDelayFrame.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				NumberPicker numberPicker = new NumberPicker(ctx);
+				numberPicker.setMinValue(20);
+				numberPicker.setMaxValue(500);
+
+				if(tinyDb.getInt("pollingDelaySeconds") >= 20) {
+					numberPicker.setValue(tinyDb.getInt("pollingDelaySeconds"));
+				}
+				else {
+					numberPicker.setValue(50);
+				}
+
+				numberPicker.setWrapSelectorWheel(true);
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+				builder.setTitle("Select polling delay");
+				builder.setMessage("Choose your polling delay in seconds.");
+
+				builder.setCancelable(true);
+				builder.setPositiveButton("SELECT", (dialog, which) -> {
+					tinyDb.putInt("pollingDelaySeconds", numberPicker.getValue());
+					Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				});
+
+				builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss());
+				builder.setView(numberPicker);
+				builder.create().show();
+
+			}
 		});
 
 	}
