@@ -6,8 +6,8 @@ android {
         applicationId "org.mian.gitnex"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 100
-        versionName "2.5.0-rc1"
+        versionCode 295
+        versionName "3.0.0-dev"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -35,8 +35,8 @@ configurations {
 dependencies {
     def lifecycle_version = "2.2.0"
     def markwon_version = '4.3.1'
-    def fastadapter = "3.3.1"
     def work_version = "2.3.4"
+    def acra = "5.5.0"
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:1.1.0"
@@ -82,9 +82,8 @@ dependencies {
     implementation "com.github.chrisbanes:PhotoView:2.3.0"
     implementation "com.pddstudio:highlightjs-android:1.5.0"
     implementation "com.github.barteksc:android-pdf-viewer:3.2.0-beta.1"
-    //noinspection GradleDependency
-    implementation "com.mikepenz:fastadapter:$fastadapter"
-    implementation "com.mikepenz:fastadapter-commons:$fastadapter"
-    implementation "com.mikepenz:fastadapter-extensions:$fastadapter"
+    implementation "ch.acra:acra-mail:$acra"
+    implementation "ch.acra:acra-limiter:$acra"
+    implementation "ch.acra:acra-notification:$acra"
     implementation "androidx.work:work-runtime:$work_version"
 }
