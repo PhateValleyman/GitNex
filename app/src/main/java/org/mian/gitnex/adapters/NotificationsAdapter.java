@@ -17,6 +17,7 @@ public class NotificationsAdapter extends BaseAdapter {
 	private List<NotificationThread> notificationThreads;
 
 	public NotificationsAdapter(Context context, List<NotificationThread> notificationThreads) {
+
 		this.context = context;
 		this.notificationThreads = notificationThreads;
 	}
@@ -48,12 +49,14 @@ public class NotificationsAdapter extends BaseAdapter {
 
 		NotificationThread notificationThread = (NotificationThread) getItem(position);
 
+		TextView notificationId = convertView.findViewById(R.id.notification_id);
 		TextView subject = convertView.findViewById(R.id.subject);
 		TextView repository = convertView.findViewById(R.id.repository);
 		ImageView type = convertView.findViewById(R.id.type);
 		ImageView pinned = convertView.findViewById(R.id.pinned);
 		ImageButton more = convertView.findViewById(R.id.more);
 
+		notificationId.setText("#" + notificationThread.getId());
 		subject.setText(notificationThread.getSubject().getTitle());
 		repository.setText(notificationThread.getRepository().getFullname());
 
@@ -84,6 +87,7 @@ public class NotificationsAdapter extends BaseAdapter {
 		});
 
 		return convertView;
+
 	}
 
 }

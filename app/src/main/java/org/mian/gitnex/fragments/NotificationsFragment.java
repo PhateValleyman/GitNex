@@ -49,6 +49,7 @@ public class NotificationsFragment extends Fragment {
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
 		final View v = inflater.inflate(R.layout.fragment_notifications, container, false);
 
 		progressBar = v.findViewById(R.id.progress_bar);
