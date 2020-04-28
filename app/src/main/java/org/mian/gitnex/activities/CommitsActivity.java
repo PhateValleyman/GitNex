@@ -62,9 +62,9 @@ public class CommitsActivity extends BaseActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		appCtx = getApplicationContext();
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 

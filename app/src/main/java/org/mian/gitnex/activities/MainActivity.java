@@ -74,6 +74,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
+
 		final TinyDB tinyDb = new TinyDB(appCtx);
 		tinyDb.putBoolean("noConnection", false);
 		//userAvatar = findViewById(R.id.userAvatar);

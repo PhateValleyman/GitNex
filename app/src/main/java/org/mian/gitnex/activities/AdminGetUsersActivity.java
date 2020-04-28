@@ -51,9 +51,9 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAd
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        appCtx = getApplicationContext();
 
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");

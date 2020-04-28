@@ -42,6 +42,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
 

@@ -43,9 +43,9 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        appCtx = getApplicationContext();
 
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
         getWindow().getDecorView().setBackground(new ColorDrawable(Color.TRANSPARENT));

@@ -75,6 +75,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
 

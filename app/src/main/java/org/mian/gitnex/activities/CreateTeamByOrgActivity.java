@@ -74,6 +74,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
 

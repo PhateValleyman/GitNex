@@ -57,9 +57,9 @@ public class CreateFileActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        appCtx = getApplicationContext();
 
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 

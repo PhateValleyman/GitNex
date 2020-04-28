@@ -66,8 +66,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         appCtx = getApplicationContext();
+
         TinyDB tinyDb = new TinyDB(appCtx);
         NetworkObserver networkMonitor = new NetworkObserver(this);
 

@@ -69,6 +69,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
 

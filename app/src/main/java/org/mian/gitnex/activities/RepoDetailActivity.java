@@ -105,6 +105,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
 
