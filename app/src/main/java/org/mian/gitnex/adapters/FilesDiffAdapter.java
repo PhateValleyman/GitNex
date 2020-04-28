@@ -80,18 +80,22 @@ public class FilesDiffAdapter extends BaseAdapter {
 		TextView headerFileName = convertView.findViewById(R.id.headerFileName);
 		TextView headerFileInfo = convertView.findViewById(R.id.headerFileInfo);
 		ImageView footerImage = convertView.findViewById(R.id.footerImage);
+		LinearLayout diffStats = convertView.findViewById(R.id.diff_stats);
 		LinearLayout diffLines = convertView.findViewById(R.id.diffLines);
 
 		FileDiffView data = (FileDiffView) getItem(position);
 		headerFileName.setText(data.getFileName());
-		headerFileInfo.setText(data.getFileInfo());
 
 		if(data.isFileType()) {
 
+			diffStats.setVisibility(View.GONE);
 			diffLines.addView(getMessageView(context.getResources().getString(R.string.binaryFileError)));
 
 		}
 		else {
+
+			diffStats.setVisibility(View.VISIBLE);
+			headerFileInfo.setText(data.getFileInfo());
 
 			String[] codeLines = getLines(data.getFileContents());
 

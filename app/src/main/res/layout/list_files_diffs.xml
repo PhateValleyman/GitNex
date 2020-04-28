@@ -29,6 +29,7 @@ xmlns:tools="http://schemas.android.com/tools"
             tools:text="app/src/main/java/org/mian/gitnex/activities/IssueDetailActivity.java" />
 
         <LinearLayout
+            android:id="@+id/diff_stats"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
