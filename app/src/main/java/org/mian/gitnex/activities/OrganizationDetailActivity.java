@@ -33,7 +33,7 @@ import java.util.Objects;
 public class OrganizationDetailActivity extends BaseActivity implements BottomSheetOrganizationFragment.BottomSheetListener {
 
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -43,6 +43,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         TinyDB tinyDb = new TinyDB(appCtx);
         String orgName = tinyDb.getString("orgName");

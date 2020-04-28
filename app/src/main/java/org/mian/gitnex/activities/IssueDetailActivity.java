@@ -98,7 +98,7 @@ public class IssueDetailActivity extends BaseActivity {
     private TextView issueModified;
     private ImageView createNewComment;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
     private LinearLayout labelsLayout;
     private LinearLayout assigneesLayout;
 
@@ -111,6 +111,7 @@ public class IssueDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         final TinyDB tinyDb = new TinyDB(appCtx);
 

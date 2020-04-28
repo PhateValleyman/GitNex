@@ -41,7 +41,7 @@ public class CreateLabelActivity extends BaseActivity {
     private EditText labelName;
     private Button createLabelButton;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -51,6 +51,7 @@ public class CreateLabelActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 

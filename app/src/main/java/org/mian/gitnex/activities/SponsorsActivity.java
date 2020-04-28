@@ -21,8 +21,7 @@ import java.util.List;
 public class SponsorsActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
-
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -32,6 +31,7 @@ public class SponsorsActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         ImageView closeActivity = findViewById(R.id.close);
 

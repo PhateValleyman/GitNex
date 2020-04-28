@@ -60,7 +60,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private HighlightJsView singleCodeContents;
 	private PhotoView imageView;
 	final Context ctx = this;
-	final Context appCtx = getApplicationContext();
+	private Context appCtx;
 	private ProgressBar mProgressBar;
 	private byte[] imageData;
 	private PDFView pdfView;
@@ -79,6 +79,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
+
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 

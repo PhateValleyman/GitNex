@@ -35,7 +35,7 @@ public class CreateNewUserActivity extends BaseActivity {
     private EditText userPassword;
     private Button createUserButton;
     final Context ctx = this;
-    final Context appCtx = ctx;
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -44,8 +44,8 @@ public class CreateNewUserActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 

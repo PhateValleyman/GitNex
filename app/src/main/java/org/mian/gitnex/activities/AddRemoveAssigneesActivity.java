@@ -34,7 +34,7 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
     private Boolean assigneesFlag = false;
     private MultiSelectDialog multiSelectDialogAssignees;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -43,6 +43,7 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        appCtx = getApplicationContext();
 
         super.onCreate(savedInstanceState);
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);

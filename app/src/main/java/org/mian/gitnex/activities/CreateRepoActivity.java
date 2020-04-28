@@ -45,7 +45,7 @@ public class CreateRepoActivity extends BaseActivity {
     private EditText repoDesc;
     private CheckBox repoAccess;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     List<OrgOwner> organizationsList = new ArrayList<>();
 
@@ -61,6 +61,7 @@ public class CreateRepoActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.haveNetworkConnection(ctx);
 

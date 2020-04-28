@@ -13,12 +13,13 @@ import org.mian.gitnex.util.TinyDB;
 
 public class OpenRepoInBrowserActivity extends AppCompatActivity {
 
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         TinyDB tinyDb = new TinyDB(appCtx);
         String instanceUrlWithProtocol = "https://" + tinyDb.getString("instanceUrlRaw");

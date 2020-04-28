@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private ImageView userAvatar;
 	private TextView toolbarTitle;
 	final Context ctx = this;
-	final Context appCtx = getApplicationContext();
+	private Context appCtx;
 	private Typeface myTypeface;
 
 	@Override
@@ -73,6 +73,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 		final TinyDB tinyDb = new TinyDB(appCtx);
 		tinyDb.putBoolean("noConnection", false);
 		//userAvatar = findViewById(R.id.userAvatar);

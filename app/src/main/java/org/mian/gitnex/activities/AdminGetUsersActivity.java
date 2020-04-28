@@ -38,7 +38,7 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAd
 
     private View.OnClickListener onClickListener;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
     private AdminGetUsersAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataUsers;
@@ -51,6 +51,7 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAd
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        appCtx = getApplicationContext();
 
         super.onCreate(savedInstanceState);
 

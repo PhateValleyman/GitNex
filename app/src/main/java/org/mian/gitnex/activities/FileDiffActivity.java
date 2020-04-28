@@ -38,7 +38,7 @@ public class FileDiffActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -49,6 +49,8 @@ public class FileDiffActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

@@ -46,7 +46,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		this.appCtx = getApplicationContext();
+		appCtx = getApplicationContext();
 		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		ImageView closeActivity = findViewById(R.id.close);

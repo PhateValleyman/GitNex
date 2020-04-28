@@ -48,7 +48,7 @@ import java.util.List;
 public class EditIssueActivity extends BaseActivity implements View.OnClickListener {
 
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
     private View.OnClickListener onClickListener;
 
     private EditText editIssueTitle;
@@ -69,8 +69,8 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 

@@ -46,7 +46,7 @@ public class MergePullRequestActivity extends BaseActivity {
 	private View.OnClickListener onClickListener;
 
 	final Context ctx = this;
-	final Context appCtx = getApplicationContext();
+	private Context appCtx;
 
 	private SocialAutoCompleteTextView mergeDescription;
 	private EditText mergeTitle;
@@ -66,6 +66,7 @@ public class MergePullRequestActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
 		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 		TinyDB tinyDb = new TinyDB(appCtx);

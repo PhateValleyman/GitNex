@@ -39,7 +39,7 @@ public class ReplyToIssueActivity extends BaseActivity {
     private View.OnClickListener onClickListener;
 
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     private SocialAutoCompleteTextView addComment;
     private ArrayAdapter<Mention> defaultMentionAdapter;
@@ -52,8 +52,8 @@ public class ReplyToIssueActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 

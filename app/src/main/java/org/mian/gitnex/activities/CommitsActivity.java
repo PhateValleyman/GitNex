@@ -41,7 +41,7 @@ import retrofit2.Response;
 public class CommitsActivity extends BaseActivity {
 
 	final Context ctx = this;
-	final  Context appCtx = getApplicationContext();
+	private Context appCtx;
 	private View.OnClickListener onClickListener;
 	private TextView noData;
 	private ProgressBar progressBar;
@@ -62,6 +62,7 @@ public class CommitsActivity extends BaseActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		appCtx = getApplicationContext();
 
 		super.onCreate(savedInstanceState);
 		Toolbar toolbar = findViewById(R.id.toolbar);

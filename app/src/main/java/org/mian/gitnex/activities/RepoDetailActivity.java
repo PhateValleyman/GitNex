@@ -61,7 +61,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	private FragmentRefreshListenerPr fragmentRefreshListenerPr;
 
 	final Context ctx = this;
-	final Context appCtx = getApplicationContext();
+	private Context appCtx;
 
 	// issues interface
 	public FragmentRefreshListener getFragmentRefreshListener() {
@@ -105,8 +105,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
 		TinyDB tinyDb = new TinyDB(appCtx);
 		String repoFullName = tinyDb.getString("repoFullName");

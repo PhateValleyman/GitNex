@@ -28,7 +28,7 @@ public class SettingsReportsActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		this.appCtx = getApplicationContext();
+		appCtx = getApplicationContext();
 		TinyDB tinyDb = new TinyDB(appCtx);
 
 		ImageView closeActivity = findViewById(R.id.close);

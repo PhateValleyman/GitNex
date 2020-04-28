@@ -45,7 +45,7 @@ public class CreateReleaseActivity extends BaseActivity {
     private CheckBox releaseDraft;
     private Button createNewRelease;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     List<Branches> branchesList = new ArrayList<>();
 
@@ -56,8 +56,8 @@ public class CreateReleaseActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 

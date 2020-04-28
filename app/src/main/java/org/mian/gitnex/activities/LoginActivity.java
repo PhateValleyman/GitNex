@@ -53,7 +53,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private TextView otpInfo;
     private RadioGroup loginMethod;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
     private String device_id = "token";
     private ScrollView layoutView;
 
@@ -67,6 +67,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         super.onCreate(savedInstanceState);
 
+        appCtx = getApplicationContext();
         TinyDB tinyDb = new TinyDB(appCtx);
         NetworkObserver networkMonitor = new NetworkObserver(this);
 

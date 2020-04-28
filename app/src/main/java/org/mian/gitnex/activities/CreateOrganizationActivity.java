@@ -34,7 +34,7 @@ public class CreateOrganizationActivity extends BaseActivity {
     private EditText orgName;
     private EditText orgDesc;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -44,6 +44,7 @@ public class CreateOrganizationActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 

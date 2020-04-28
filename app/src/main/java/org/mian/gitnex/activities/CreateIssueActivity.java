@@ -61,7 +61,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private boolean assigneesFlag;
     private boolean labelsFlag;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     List<Milestones> milestonesList = new ArrayList<>();
     ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
@@ -76,6 +76,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 

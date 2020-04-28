@@ -33,7 +33,7 @@ import android.util.Log;
 public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClickListener {
 
     final Context ctx = CreateTeamByOrgActivity.this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
     private View.OnClickListener onClickListener;
     private TextView teamName;
     private TextView teamDesc;
@@ -75,6 +75,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 

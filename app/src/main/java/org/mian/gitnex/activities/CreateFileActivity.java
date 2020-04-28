@@ -46,7 +46,7 @@ public class CreateFileActivity extends BaseActivity {
     private EditText newFileCommitMessage;
     private Spinner newFileBranchesSpinner;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     List<Branches> branchesList = new ArrayList<>();
 
@@ -57,6 +57,7 @@ public class CreateFileActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        appCtx = getApplicationContext();
 
         super.onCreate(savedInstanceState);
 

@@ -34,7 +34,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
     private TextView addCollaboratorSearch;
     private TextView noData;
     private ProgressBar mProgressBar;
@@ -48,6 +48,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        appCtx = getApplicationContext();
         super.onCreate(savedInstanceState);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

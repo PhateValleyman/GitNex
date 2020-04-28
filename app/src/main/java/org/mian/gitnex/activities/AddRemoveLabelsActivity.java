@@ -32,7 +32,7 @@ public class AddRemoveLabelsActivity extends BaseActivity {
     private Boolean labelsFlag = false;
     private MultiSelectDialog multiSelectDialogLabels;
     final Context ctx = this;
-    final Context appCtx = getApplicationContext();
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -41,6 +41,8 @@ public class AddRemoveLabelsActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        appCtx = getApplicationContext();
+
         super.onCreate(savedInstanceState);
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
