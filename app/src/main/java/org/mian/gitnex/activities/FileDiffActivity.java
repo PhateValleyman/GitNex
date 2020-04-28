@@ -1,5 +1,6 @@
 package org.mian.gitnex.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +37,8 @@ public class FileDiffActivity extends BaseActivity {
     private TextView toolbar_title;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
+    final Context ctx = this;
+    final Context appCtx = getApplicationContext();
 
     @Override
     protected int getLayoutResourceId(){
@@ -49,7 +52,7 @@ public class FileDiffActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
         String repoFullName = tinyDb.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         final String repoOwner = parts[0];
@@ -64,7 +67,7 @@ public class FileDiffActivity extends BaseActivity {
         mProgressBar = findViewById(R.id.progress_bar);
 
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 
         toolbar_title.setText(R.string.processingText);
         initCloseListener();
@@ -81,7 +84,7 @@ public class FileDiffActivity extends BaseActivity {
     private void getPullDiffContent(String instanceUrl, String owner, String repo, String filename) {
 
         Call<ResponseBody> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getWebInterface()
                 .getPullDiffContent(owner, repo, filename);
 
@@ -161,7 +164,7 @@ public class FileDiffActivity extends BaseActivity {
                             toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
                         }
 
-                        FilesDiffAdapter adapter = new FilesDiffAdapter(fileContentsArray, getApplicationContext());
+                        FilesDiffAdapter adapter = new FilesDiffAdapter(fileContentsArray, ctx);
                         mRecyclerView.setAdapter(adapter);
 
                         mProgressBar.setVisibility(View.GONE);
@@ -173,7 +176,7 @@ public class FileDiffActivity extends BaseActivity {
                 }
                 else if(response.code() == 401) {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(getApplicationContext(), getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
@@ -181,17 +184,17 @@ public class FileDiffActivity extends BaseActivity {
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(getApplicationContext(), getApplicationContext().getString(R.string.authorizeError));
+                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(getApplicationContext(), getApplicationContext().getString(R.string.apiNotFound));
+                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.labelGeneralError));
+                    Toasty.info(ctx, getString(R.string.labelGeneralError));
 
                 }
 

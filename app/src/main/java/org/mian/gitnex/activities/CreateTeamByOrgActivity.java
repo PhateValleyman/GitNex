@@ -33,6 +33,7 @@ import android.util.Log;
 public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClickListener {
 
     final Context ctx = CreateTeamByOrgActivity.this;
+    final Context appCtx = getApplicationContext();
     private View.OnClickListener onClickListener;
     private TextView teamName;
     private TextView teamDesc;
@@ -75,7 +76,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -247,13 +248,13 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
     private void processCreateTeam() {
 
         AppUtil appUtil = new AppUtil();
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         final String orgName = tinyDb.getString("orgName");;
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
         String newTeamName = teamName.getText().toString();
         String newTeamDesc = teamDesc.getText().toString();
         String newTeamPermission = teamPermission.getText().toString().toLowerCase();
@@ -261,21 +262,21 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 
         if(!connToInternet) {
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if (newTeamName.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.teamNameEmpty));
+            Toasty.info(ctx, getString(R.string.teamNameEmpty));
             return;
 
         }
 
         if(!appUtil.checkStringsWithAlphaNumericDashDotUnderscore(newTeamName)) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.teamNameError));
+            Toasty.info(ctx, getString(R.string.teamNameError));
             return;
 
         }
@@ -283,12 +284,12 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
         if(!newTeamDesc.equals("")) {
 
             if(!appUtil.checkStrings(newTeamDesc)) {
-                Toasty.info(getApplicationContext(), getString(R.string.teamDescError));
+                Toasty.info(ctx, getString(R.string.teamDescError));
                 return;
             }
 
             if(newTeamDesc.length() > 100) {
-                Toasty.info(getApplicationContext(), getString(R.string.teamDescLimit));
+                Toasty.info(ctx, getString(R.string.teamDescLimit));
                 return;
             }
 
@@ -296,7 +297,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 
         if (newTeamPermission.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.teamPermissionEmpty));
+            Toasty.info(ctx, getString(R.string.teamPermissionEmpty));
             return;
 
         }
@@ -318,9 +319,9 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
         Call<Teams> call3;
 
         call3 = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .createTeamsByOrg(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), orgName, createNewTeamJson);
+                .createTeamsByOrg(Authorization.returnAuthentication(ctx, loginUid, instanceToken), orgName, createNewTeamJson);
 
         call3.enqueue(new Callback<Teams>() {
 
@@ -330,10 +331,10 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
                 if(response2.isSuccessful()) {
                     if(response2.code() == 201) {
 
-                        TinyDB tinyDb = new TinyDB(getApplicationContext());
+                        TinyDB tinyDb = new TinyDB(appCtx);
                         tinyDb.putBoolean("resumeTeams", true);
 
-                        Toasty.info(getApplicationContext(), getString(R.string.teamCreated));
+                        Toasty.info(ctx, getString(R.string.teamCreated));
                         finish();
 
                     }
@@ -341,7 +342,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
                 }
                 else if(response2.code() == 404) {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.apiNotFound));
+                    Toasty.info(ctx, getString(R.string.apiNotFound));
 
                 }
                 else if(response2.code() == 401) {
@@ -354,7 +355,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
                 }
                 else {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.teamCreatedError));
+                    Toasty.info(ctx, getString(R.string.teamCreatedError));
 
                 }
 

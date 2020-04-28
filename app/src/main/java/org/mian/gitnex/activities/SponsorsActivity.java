@@ -3,6 +3,7 @@ package org.mian.gitnex.activities;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +21,8 @@ import java.util.List;
 public class SponsorsActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
+
+    final Context appCtx = getApplicationContext();
 
     @Override
     protected int getLayoutResourceId(){
@@ -43,7 +46,7 @@ public class SponsorsActivity extends BaseActivity {
         RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
 
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(appCtx));
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);

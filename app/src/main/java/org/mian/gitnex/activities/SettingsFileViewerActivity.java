@@ -18,7 +18,7 @@ import org.mian.gitnex.util.TinyDB;
 
 public class SettingsFileViewerActivity extends BaseActivity {
 
-	private Context ctx;
+	private Context appCtx;
 	private View.OnClickListener onClickListener;
 
 	private static String[] fileveiwerSourceCodeThemesList = {"Sublime", "Arduino Light", "Github", "Far ", "Ir Black", "Android Studio"};
@@ -34,8 +34,8 @@ public class SettingsFileViewerActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		this.ctx = getApplicationContext();
-		final TinyDB tinyDb = new TinyDB(ctx);
+		this.appCtx = getApplicationContext();
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		ImageView closeActivity = findViewById(R.id.close);
 
@@ -84,7 +84,7 @@ public class SettingsFileViewerActivity extends BaseActivity {
 				tinyDb.putInt("fileviewerSourceCodeThemeId", i);
 
 				dialogInterfaceTheme.dismiss();
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
 
 			});
 
@@ -99,12 +99,12 @@ public class SettingsFileViewerActivity extends BaseActivity {
 			if(isChecked) {
 				tinyDb.putBoolean("enablePdfMode", true);
 				tinyDb.putString("enablePdfModeInit", "yes");
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
 			}
 			else {
 				tinyDb.putBoolean("enablePdfMode", false);
 				tinyDb.putString("enablePdfModeInit", "yes");
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
 			}
 
 		});

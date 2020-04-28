@@ -48,6 +48,7 @@ import java.util.List;
 public class EditIssueActivity extends BaseActivity implements View.OnClickListener {
 
     final Context ctx = this;
+    final Context appCtx = getApplicationContext();
     private View.OnClickListener onClickListener;
 
     private EditText editIssueTitle;
@@ -73,7 +74,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
 
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
@@ -127,7 +128,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
     public void loadCollaboratorsList() {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
 
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
@@ -138,9 +139,9 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         final String repoName = parts[1];
 
         Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
         call.enqueue(new Callback<List<Collaborators>>() {
 
@@ -186,8 +187,8 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
     private void processEditIssue() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         String repoFullName = tinyDb.getString("repoFullName");
@@ -207,21 +208,21 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         if(!connToInternet) {
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if (editIssueTitleForm.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.issueTitleEmpty));
+            Toasty.info(ctx, getString(R.string.issueTitleEmpty));
             return;
 
         }
 
         /*if (editIssueDescriptionForm.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.issueDescriptionEmpty));
+            Toasty.info(ctx, getString(R.string.issueDescriptionEmpty));
             return;
 
         }*/
@@ -240,14 +241,14 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
     private void editIssue(String instanceUrl, String instanceToken, String repoOwner, String repoName, int issueIndex, String loginUid, String title, String description, String dueDate, int editIssueMilestoneId) {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
 
         CreateIssue issueData = new CreateIssue(title, description, dueDate, editIssueMilestoneId);
 
         Call<JsonElement> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .patchIssue(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, issueData);
+                .patchIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueData);
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -257,10 +258,10 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                 if(response.code() == 201) {
 
                     if(tinyDb.getString("issueType").equals("pr")) {
-                        Toasty.info(getApplicationContext(), getString(R.string.editPrSuccessMessage));
+                        Toasty.info(ctx, getString(R.string.editPrSuccessMessage));
                     }
                     else {
-                        Toasty.info(getApplicationContext(), getString(R.string.editIssueSuccessMessage));
+                        Toasty.info(ctx, getString(R.string.editIssueSuccessMessage));
                     }
 
                     tinyDb.putBoolean("issueEdited", true);
@@ -280,7 +281,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                 else {
 
                     enableProcessButton();
-                    Toasty.info(getApplicationContext(), getString(R.string.genericError));
+                    Toasty.info(ctx, getString(R.string.genericError));
 
                 }
 
@@ -329,9 +330,9 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
     private void getIssue(final String instanceUrl, final String instanceToken, final String loginUid, final String repoOwner, final String repoName, int issueIndex) {
 
         Call<Issues> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getIssueByIndex(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex);
+                .getIssueByIndex(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
 
         call.enqueue(new Callback<Issues>() {
 
@@ -353,9 +354,9 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                     if(response.body().getId() > 0) {
 
                         Call<List<Milestones>> call_ = RetrofitClient
-                                .getInstance(instanceUrl, getApplicationContext())
+                                .getInstance(instanceUrl, ctx)
                                 .getApiInterface()
-                                .getMilestones(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, msState);
+                                .getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, msState);
 
                         final int finalMsId = msId;
 
@@ -432,7 +433,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                 }
                 else {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.genericError));
+                    Toasty.info(ctx, getString(R.string.genericError));
 
                 }
 

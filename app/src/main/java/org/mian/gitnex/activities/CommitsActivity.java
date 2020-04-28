@@ -40,7 +40,8 @@ import retrofit2.Response;
 
 public class CommitsActivity extends BaseActivity {
 
-	private Context ctx;
+	final Context ctx = this;
+	final  Context appCtx = getApplicationContext();
 	private View.OnClickListener onClickListener;
 	private TextView noData;
 	private ProgressBar progressBar;
@@ -65,9 +66,8 @@ public class CommitsActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		ctx = this;
 
-		TinyDB tinyDb = new TinyDB(ctx);
+		TinyDB tinyDb = new TinyDB(appCtx);
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");

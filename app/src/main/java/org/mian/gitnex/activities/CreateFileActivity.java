@@ -46,6 +46,7 @@ public class CreateFileActivity extends BaseActivity {
     private EditText newFileCommitMessage;
     private Spinner newFileBranchesSpinner;
     final Context ctx = this;
+    final Context appCtx = getApplicationContext();
 
     List<Branches> branchesList = new ArrayList<>();
 
@@ -59,11 +60,11 @@ public class CreateFileActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         String repoFullName = tinyDb.getString("repoFullName");
@@ -144,9 +145,9 @@ public class CreateFileActivity extends BaseActivity {
 
     private void processNewFile() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
         AppUtil appUtil = new AppUtil();
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
@@ -164,14 +165,14 @@ public class CreateFileActivity extends BaseActivity {
 
         if(!connToInternet) {
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if(newFileName_.equals("") || newFileContent_.equals("") || newFileCommitMessage_.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.newFileRequiredFields));
+            Toasty.info(ctx, getString(R.string.newFileRequiredFields));
             return;
 
         }
@@ -179,13 +180,13 @@ public class CreateFileActivity extends BaseActivity {
         if(currentBranch.toString().equals("No branch")) {
 
             if(newFileBranchName_.equals("")) {
-                Toasty.info(getApplicationContext(), getString(R.string.newFileRequiredFieldNewBranchName));
+                Toasty.info(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
                 return;
             }
             else {
                 if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.newFileInvalidBranchName));
+                    Toasty.info(ctx, getString(R.string.newFileInvalidBranchName));
                     return;
 
                 }
@@ -195,13 +196,13 @@ public class CreateFileActivity extends BaseActivity {
 
         if(appUtil.charactersLength(newFileCommitMessage_) > 255) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.newFileCommitMessageError));
+            Toasty.info(ctx, getString(R.string.newFileCommitMessageError));
 
         }
         else {
 
             disableProcessButton();
-            createNewFile(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, newFileName_, appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString());
+            createNewFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newFileName_, appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString());
 
         }
 
@@ -218,7 +219,7 @@ public class CreateFileActivity extends BaseActivity {
         }
 
         Call<JsonElement> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
                 .createNewFile(token, repoOwner, repoName, fileName, createNewFileJsonStr);
 
@@ -230,7 +231,7 @@ public class CreateFileActivity extends BaseActivity {
                 if(response.code() == 201) {
 
                     enableProcessButton();
-                    Toasty.info(getApplicationContext(), getString(R.string.newFileSuccessMessage));
+                    Toasty.info(ctx, getString(R.string.newFileSuccessMessage));
                     finish();
 
                 }
@@ -247,11 +248,11 @@ public class CreateFileActivity extends BaseActivity {
 
                     if(response.code() == 404) {
                         enableProcessButton();
-                        Toasty.info(getApplicationContext(), getString(R.string.apiNotFound));
+                        Toasty.info(ctx, getString(R.string.apiNotFound));
                     }
                     else {
                         enableProcessButton();
-                        Toasty.info(getApplicationContext(), getString(R.string.orgCreatedError));
+                        Toasty.info(ctx, getString(R.string.orgCreatedError));
                     }
 
                 }
@@ -270,9 +271,9 @@ public class CreateFileActivity extends BaseActivity {
     private void getBranches(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
 
         Call<List<Branches>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getBranches(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+                .getBranches(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
         call.enqueue(new Callback<List<Branches>>() {
 

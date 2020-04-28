@@ -46,6 +46,7 @@ public class MergePullRequestActivity extends BaseActivity {
 	private View.OnClickListener onClickListener;
 
 	final Context ctx = this;
+	final Context appCtx = getApplicationContext();
 
 	private SocialAutoCompleteTextView mergeDescription;
 	private EditText mergeTitle;
@@ -66,8 +67,8 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 
-		boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
-		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		TinyDB tinyDb = new TinyDB(appCtx);
 
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -131,7 +132,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	private void setMergeAdapter() {
 
-		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		TinyDB tinyDb = new TinyDB(appCtx);
 
 		ArrayList<MergePullRequestSpinner> mergeList = new ArrayList<>();
 
@@ -151,7 +152,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	public void loadCollaboratorsList() {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
@@ -161,7 +162,7 @@ public class MergePullRequestActivity extends BaseActivity {
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
 
-		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
 		call.enqueue(new Callback<List<Collaborators>>() {
 
@@ -209,11 +210,11 @@ public class MergePullRequestActivity extends BaseActivity {
 		String mergePRDesc = mergeDescription.getText().toString();
 		String mergePRTitle = mergeTitle.getText().toString();
 
-		boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
 		if(!connToInternet) {
 
-			Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
 			return;
 
 		}
@@ -225,7 +226,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	private void mergeFunction(String Do, String mergePRDT, String mergeTitle) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
@@ -238,7 +239,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		MergePullRequest mergePR = new MergePullRequest(Do, mergePRDT, mergeTitle);
 
-		Call<ResponseBody> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().mergePullRequest(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, prIndex, mergePR);
+		Call<ResponseBody> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().mergePullRequest(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, prIndex, mergePR);
 
 		call.enqueue(new Callback<ResponseBody>() {
 
@@ -247,7 +248,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 				if(response.code() == 200) {
 
-					Toasty.info(getApplicationContext(), getString(R.string.mergePRSuccessMsg));
+					Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
 					tinyDb.putBoolean("prMerged", true);
 					tinyDb.putBoolean("resumePullRequests", true);
 					finish();
@@ -262,13 +263,13 @@ public class MergePullRequestActivity extends BaseActivity {
 				else if(response.code() == 404) {
 
 					enableProcessButton();
-					Toasty.info(getApplicationContext(), getString(R.string.mergePR404ErrorMsg));
+					Toasty.info(ctx, getString(R.string.mergePR404ErrorMsg));
 
 				}
 				else {
 
 					enableProcessButton();
-					Toasty.info(getApplicationContext(), getString(R.string.genericError));
+					Toasty.info(ctx, getString(R.string.genericError));
 
 				}
 
