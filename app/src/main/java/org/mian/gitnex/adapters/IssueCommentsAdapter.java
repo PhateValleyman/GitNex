@@ -11,29 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.helpers.ClickListener;
+import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.models.IssueComments;
-import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.helpers.ClickListener;
-import org.ocpsoft.prettytime.PrettyTime;
-import java.sql.Time;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.core.CorePlugin;
@@ -42,7 +37,6 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
 import io.noties.markwon.ext.tables.TablePlugin;
 import io.noties.markwon.ext.tasklist.TaskListPlugin;
 import io.noties.markwon.html.HtmlPlugin;
-import io.noties.markwon.image.AsyncDrawable;
 import io.noties.markwon.image.DefaultMediaDecoder;
 import io.noties.markwon.image.ImageItem;
 import io.noties.markwon.image.ImagesPlugin;
@@ -67,7 +61,6 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 		private ImageView issueCommenterAvatar;
 		private TextView issueComment;
 		private TextView issueCommentDate;
-		private ImageView commentsOptionsMenu;
 		private TextView commendBodyRaw;
 		private TextView commentModified;
 		private TextView commenterUsername;
@@ -82,7 +75,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 			issueCommenterAvatar = itemView.findViewById(R.id.issueCommenterAvatar);
 			issueComment = itemView.findViewById(R.id.issueComment);
 			issueCommentDate = itemView.findViewById(R.id.issueCommentDate);
-			commentsOptionsMenu = itemView.findViewById(R.id.commentsOptionsMenu);
+			ImageView commentsOptionsMenu = itemView.findViewById(R.id.commentsOptionsMenu);
 			commendBodyRaw = itemView.findViewById(R.id.commendBodyRaw);
 			commentModified = itemView.findViewById(R.id.commentModified);
 			commenterUsername = itemView.findViewById(R.id.commenterUsername);
@@ -98,11 +91,11 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 				TextView commentMenuEdit = view.findViewById(R.id.commentMenuEdit);
 				TextView commentShare = view.findViewById(R.id.issueCommentShare);
-				//TextView commentMenuDelete = view.findViewById(R.id.commentMenuDelete);
+				TextView commentMenuDelete = view.findViewById(R.id.commentMenuDelete);
 
 				if(!loginUid.contentEquals(commenterUsername.getText())) {
 					commentMenuEdit.setVisibility(View.GONE);
-					//commentMenuDelete.setVisibility(View.GONE);
+					commentMenuDelete.setVisibility(View.GONE);
 				}
 
 				BottomSheetDialog dialog = new BottomSheetDialog(context);
@@ -137,11 +130,11 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 				});
 
-                /*commentMenuDelete.setOnClickListener(deleteComment -> {
+                commentMenuDelete.setOnClickListener(deleteComment -> {
 
                     dialog.dismiss();
 
-                });*/
+                });
 
 			});
 
@@ -218,20 +211,13 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 						return Collections.singleton("drawable");
 					}
 				});
-				plugin.placeholderProvider(new ImagesPlugin.PlaceholderProvider() {
-
-					@Nullable
-					@Override
-					public Drawable providePlaceholder(@NonNull AsyncDrawable drawable) {
-
-						return null;
-					}
-				});
+				plugin.placeholderProvider(drawable -> null);
 				plugin.addMediaDecoder(GifMediaDecoder.create(false));
 				plugin.addMediaDecoder(SvgMediaDecoder.create(mCtx.getResources()));
 				plugin.addMediaDecoder(SvgMediaDecoder.create());
 				plugin.defaultMediaDecoder(DefaultMediaDecoder.create(mCtx.getResources()));
 				plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
+
 			}
 		})).usePlugin(new AbstractMarkwonPlugin() {
 
