@@ -613,7 +613,6 @@
     <string name="mtm_decision_abort">Abort</string>
 
 
-
     <string name="issueSubscribtion">Issue Subscribed</string>
     <string name="issueSubscribtionError">Issue Subscription failed</string>
     <string name="issueUnsubscribtion">Issue Unsubscribed</string>
@@ -622,7 +621,7 @@
     <string name="closeMilestone">Close Milestone</string>
     <string name="openMilestone">Open Milestone</string>
     <string name="milestoneStatusUpdate">Milestone status updated successfully</string>
-    
+
     <string name="tabIssueOpen">Open</string>
     <string name="tabIssueClosed">Closed</string>
 
