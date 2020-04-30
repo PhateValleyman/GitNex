@@ -14,14 +14,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.JsonElement;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
-import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.models.IssueComments;
 import org.mian.gitnex.util.TinyDB;
@@ -45,6 +48,8 @@ import io.noties.markwon.image.SchemeHandler;
 import io.noties.markwon.image.gif.GifMediaDecoder;
 import io.noties.markwon.image.svg.SvgMediaDecoder;
 import io.noties.markwon.linkify.LinkifyPlugin;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -55,7 +60,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 	private List<IssueComments> issuesComments;
 	private Context mCtx;
 
-	static class IssueCommentViewHolder extends RecyclerView.ViewHolder {
+	public IssueCommentsAdapter(Context mCtx, List<IssueComments> issuesCommentsMain) {
+
+		this.mCtx = mCtx;
+		this.issuesComments = issuesCommentsMain;
+
+	}
+
+	class IssueCommentViewHolder extends RecyclerView.ViewHolder {
 
 		private TextView issueNumber;
 		private TextView commendId;
@@ -133,9 +145,8 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 				commentMenuDelete.setOnClickListener(deleteComment -> {
 
+					deleteIssueComment(ctx, Integer.parseInt(commendId.getText().toString()), getAdapterPosition());
 					dialog.dismiss();
-					this.itemView.setVisibility(View.GONE); // ToDo: delete it from view
-					IssueActions.deleteIssueComment(ctx.getApplicationContext(), commendId.getText().toString());
 
 				});
 
@@ -145,10 +156,78 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 	}
 
-	public IssueCommentsAdapter(Context mCtx, List<IssueComments> issuesCommentsMain) {
+	private void upadteAdapter(int position) {
 
-		this.mCtx = mCtx;
-		this.issuesComments = issuesCommentsMain;
+		issuesComments.remove(position);
+		notifyItemRemoved(position);
+		notifyItemRangeChanged(position, issuesComments.size());
+
+	}
+
+	private void deleteIssueComment(final Context ctx, final int commentId, int position) {
+
+		final TinyDB tinyDB = new TinyDB(ctx);
+
+		final String instanceUrl = tinyDB.getString("instanceUrl");
+		String repoFullName = tinyDB.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final String loginUid = tinyDB.getString("loginUid");
+		final String token = "token " + tinyDB.getString(loginUid + "-token");
+
+		Call<JsonElement> call;
+
+		call = RetrofitClient
+				.getInstance(instanceUrl, ctx)
+				.getApiInterface()
+				.deleteComment(token, repoOwner, repoName, commentId);
+
+		call.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+				if(response.code() == 204) {
+
+					upadteAdapter(position);
+					Toasty.info(ctx, ctx.getResources().getString(R.string.deleteCommentSuccess));
+
+				}
+				else if(response.code() == 401) {
+
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+							ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+							ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+							ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+				}
+				else if(response.code() == 403) {
+
+					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+
+				}
+				else if(response.code() == 404) {
+
+					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+
+				}
+				else {
+
+					Toasty.info(ctx, ctx.getString(R.string.genericError));
+
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
+
+			}
+
+		});
 
 	}
 

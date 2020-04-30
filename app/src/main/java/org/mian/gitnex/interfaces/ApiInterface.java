@@ -274,5 +274,5 @@ public interface ApiInterface {
     Call<JsonElement> closeReopenMilestone(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int index, @Body Milestones jsonStr);
 
     @DELETE("repos/{owner}/{repo}/issues/comments/{id}") // delete own comment from issue
-    Call<JsonElement> deleteComment(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("id") String commentIndex);
+    Call<JsonElement> deleteComment(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("id") int commentIndex);
 }
