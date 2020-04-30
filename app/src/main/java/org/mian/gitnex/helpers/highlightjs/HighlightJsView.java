@@ -23,6 +23,7 @@ public class HighlightJsView extends WebView {
 
 	private boolean zoomSupport = false;
     private boolean showLineNumbers = true;
+    private TextWrap textWrap = TextWrap.NO_WRAP;
 
     public HighlightJsView(Context context) {
 
@@ -66,7 +67,7 @@ public class HighlightJsView extends WebView {
 
         source = (source == null) ? " " : source;
 
-        String html_content = SourceUtils.generateContent(source, theme.getName(), language.getName(), zoomSupport, showLineNumbers);
+        String html_content = SourceUtils.generateContent(source, theme.getName(), language.getName(), zoomSupport, showLineNumbers, textWrap);
         loadDataWithBaseURL("file:///android_asset/", html_content, "text/html", "utf-8", null);
 
     }
@@ -84,6 +85,10 @@ public class HighlightJsView extends WebView {
         this.theme = theme;
     }
 
+	public void setTextWrap(TextWrap textWrap) {
+    	this.textWrap = textWrap;
+    }
+
     public Language getHighlightLanguage() {
         return language;
     }
@@ -99,5 +104,9 @@ public class HighlightJsView extends WebView {
 	public void setShowLineNumbers(boolean showLineNumbers) {
         this.showLineNumbers = showLineNumbers;
     }
+
+	public enum TextWrap {
+		NO_WRAP, WORD_WRAP, BREAK_ALL
+	}
 
 }
