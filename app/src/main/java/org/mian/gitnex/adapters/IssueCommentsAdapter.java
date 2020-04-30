@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
+import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.ClickListener;
@@ -83,11 +84,11 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 			commentsOptionsMenu.setOnClickListener(v -> {
 
-				final Context context = v.getContext();
-				final TinyDB tinyDb = new TinyDB(context);
+				final Context ctx = v.getContext();
+				final TinyDB tinyDb = new TinyDB(ctx);
 				final String loginUid = tinyDb.getString("loginUid");
 
-				@SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_issue_comments, null);
+				@SuppressLint("InflateParams") View view = LayoutInflater.from(ctx).inflate(R.layout.bottom_sheet_issue_comments, null);
 
 				TextView commentMenuEdit = view.findViewById(R.id.commentMenuEdit);
 				TextView commentShare = view.findViewById(R.id.issueCommentShare);
@@ -98,17 +99,17 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 					commentMenuDelete.setVisibility(View.GONE);
 				}
 
-				BottomSheetDialog dialog = new BottomSheetDialog(context);
+				BottomSheetDialog dialog = new BottomSheetDialog(ctx);
 				dialog.setContentView(view);
 				dialog.show();
 
 				commentMenuEdit.setOnClickListener(ediComment -> {
 
-					Intent intent = new Intent(context, ReplyToIssueActivity.class);
+					Intent intent = new Intent(ctx, ReplyToIssueActivity.class);
 					intent.putExtra("commentId", commendId.getText());
 					intent.putExtra("commentAction", "edit");
 					intent.putExtra("commentBody", commendBodyRaw.getText());
-					context.startActivity(intent);
+					ctx.startActivity(intent);
 					dialog.dismiss();
 
 				});
@@ -121,20 +122,22 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 					// share issue comment
 					Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 					sharingIntent.setType("text/plain");
-					String intentHeader = tinyDb.getString("issueNumber") + context.getResources().getString(R.string.hash) + "issuecomment-" + commendId.getText() + " " + tinyDb.getString("issueTitle");
+					String intentHeader = tinyDb.getString("issueNumber") + ctx.getResources().getString(R.string.hash) + "issuecomment-" + commendId.getText() + " " + tinyDb.getString("issueTitle");
 					sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, intentHeader);
 					sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, commentUrl);
-					context.startActivity(Intent.createChooser(sharingIntent, intentHeader));
+					ctx.startActivity(Intent.createChooser(sharingIntent, intentHeader));
 
 					dialog.dismiss();
 
 				});
 
-                commentMenuDelete.setOnClickListener(deleteComment -> {
+				commentMenuDelete.setOnClickListener(deleteComment -> {
 
-                    dialog.dismiss();
+					dialog.dismiss();
+					this.itemView.setVisibility(View.GONE); // ToDo: delete it from view
+					IssueActions.deleteIssueComment(ctx.getApplicationContext(), commendId.getText().toString());
 
-                });
+				});
 
 			});
 

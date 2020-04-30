@@ -91,6 +91,72 @@ public class IssueActions {
 
     }
 
+    public static void deleteIssueComment(final Context ctx, final String commentId) {
+
+        final TinyDB tinyDb = new TinyDB(ctx);
+        final String instanceUrl = tinyDb.getString("instanceUrl");
+        final String loginUid = tinyDb.getString("loginUid");
+        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+        String[] repoFullName = tinyDb.getString("repoFullName").split("/");
+        if (repoFullName.length != 2) {
+            return;
+        }
+        final String repoOwner = repoFullName[0];
+        final String repoName = repoFullName[1];
+
+        Call<JsonElement> call;
+
+        call = RetrofitClient
+                .getInstance(instanceUrl, ctx)
+                .getApiInterface()
+                .deleteComment(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, commentId);
+
+        call.enqueue(new Callback<JsonElement>() {
+
+            @Override
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+                if(response.isSuccessful()) {
+                    if(response.code() == 204) {
+
+                        Toasty.info(ctx, ctx.getString(R.string.deleteCommentSuccess));
+
+                    }
+                }
+                else if(response.code() == 401) {
+
+                    AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+                            ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+                }
+                else if(response.code() == 403) {
+
+                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+
+                }
+                else if(response.code() == 404) {
+
+                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+
+                }
+                else {
+
+                    Toasty.info(ctx, ctx.getString(R.string.genericError));
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                Log.e("onFailure", t.toString());
+            }
+        });
+
+    }
+
     public static void closeReopenIssue(final Context ctx, final int issueIndex, final String issueState) {
 
         final TinyDB tinyDb = new TinyDB(ctx);

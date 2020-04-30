@@ -360,6 +360,7 @@
     <string name="editCommentTitle">Edit Comment</string>
     <string name="editCommentButtonText">Edit</string>
     <string name="editCommentUpdatedText">Comment updated</string>
+    <string name="deleteCommentSuccess">Comment deleted</string>
     <!-- edit comment -->
 
     <!-- add collaborator -->
