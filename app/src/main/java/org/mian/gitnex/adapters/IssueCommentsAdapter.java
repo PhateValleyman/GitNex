@@ -156,7 +156,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 	}
 
-	private void upadteAdapter(int position) {
+	private void updateAdapter(int position) {
 
 		issuesComments.remove(position);
 		notifyItemRemoved(position);
@@ -190,7 +190,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 				if(response.code() == 204) {
 
-					upadteAdapter(position);
+					updateAdapter(position);
 					Toasty.info(ctx, ctx.getResources().getString(R.string.deleteCommentSuccess));
 
 				}
