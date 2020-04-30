@@ -166,22 +166,23 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 	private void deleteIssueComment(final Context ctx, final int commentId, int position) {
 
-		final TinyDB tinyDB = new TinyDB(ctx);
-
-		final String instanceUrl = tinyDB.getString("instanceUrl");
-		String repoFullName = tinyDB.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		final String repoOwner = parts[0];
-		final String repoName = parts[1];
-		final String loginUid = tinyDB.getString("loginUid");
-		final String token = "token " + tinyDB.getString(loginUid + "-token");
+		final TinyDB tinyDb = new TinyDB(ctx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String[] repoFullName = tinyDb.getString("repoFullName").split("/");
+		if (repoFullName.length != 2) {
+			return;
+		}
+		final String repoOwner = repoFullName[0];
+		final String repoName = repoFullName[1];
 
 		Call<JsonElement> call;
 
 		call = RetrofitClient
 				.getInstance(instanceUrl, ctx)
 				.getApiInterface()
-				.deleteComment(token, repoOwner, repoName, commentId);
+				.deleteComment(instanceToken, repoOwner, repoName, commentId);
 
 		call.enqueue(new Callback<JsonElement>() {
 
