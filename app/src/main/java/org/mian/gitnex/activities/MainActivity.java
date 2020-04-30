@@ -61,6 +61,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private ImageView userAvatar;
 	private TextView toolbarTitle;
 	final Context ctx = this;
+	private Context appCtx;
 	private Typeface myTypeface;
 
 	@Override
@@ -73,7 +74,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		appCtx = getApplicationContext();
+
+		final TinyDB tinyDb = new TinyDB(appCtx);
 		tinyDb.putBoolean("noConnection", false);
 		//userAvatar = findViewById(R.id.userAvatar);
 
@@ -98,7 +101,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			tinyDb.putInt("homeScreenId", 0);
 		}
 
-		boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
 		if(!tinyDb.getBoolean("loggedInMode")) {
 			logout(this, ctx);
@@ -177,7 +180,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			public void onDrawerOpened(@NonNull View drawerView) {
 
 				if(tinyDb.getBoolean("noConnection")) {
-					Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+					Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
 					tinyDb.putBoolean("noConnection", false);
 				}
 
@@ -262,7 +265,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		if(!connToInternet) {
 
 			if(!tinyDb.getBoolean("noConnection")) {
-				Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+				Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
 			}
 
 			tinyDb.putBoolean("noConnection", true);
@@ -279,7 +282,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		// Changelog popup
 		int versionCode = 0;
 		try {
-			PackageInfo packageInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
+			PackageInfo packageInfo = appCtx.getPackageManager().getPackageInfo(appCtx.getPackageName(), 0);
 			versionCode = packageInfo.versionCode;
 		}
 		catch(PackageManager.NameNotFoundException e) {
@@ -394,11 +397,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	private void giteaVersion(final String instanceUrl) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		final String token = "token " + tinyDb.getString(tinyDb.getString("loginUid") + "-token");
 
-		Call<GiteaVersion> callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithToken(token);
+		Call<GiteaVersion> callVersion = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithToken(token);
 
 		callVersion.enqueue(new Callback<GiteaVersion>() {
 
@@ -429,9 +432,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	private void displayUserInfo(String instanceUrl, String token, String loginUid) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserInfo(Authorization.returnAuthentication(getApplicationContext(), loginUid, token));
+		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserInfo(Authorization.returnAuthentication(ctx, loginUid, token));
 
 		NavigationView navigationView = findViewById(R.id.nav_view);
 		final View hView = navigationView.getHeaderView(0);
@@ -517,7 +520,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				else {
 
 					String toastError = getResources().getString(R.string.genericApiStatusError) + String.valueOf(response.code());
-					Toasty.info(getApplicationContext(), toastError);
+					Toasty.info(ctx, toastError);
 
 				}
 

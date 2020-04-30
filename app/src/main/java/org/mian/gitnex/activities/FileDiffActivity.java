@@ -1,15 +1,15 @@
 package org.mian.gitnex.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.FilesDiffAdapter;
@@ -34,8 +34,10 @@ public class FileDiffActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
     private TextView toolbar_title;
-    private RecyclerView mRecyclerView;
+    private ListView mListView;
     private ProgressBar mProgressBar;
+    final Context ctx = this;
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -46,10 +48,12 @@ public class FileDiffActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
         String repoFullName = tinyDb.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         final String repoOwner = parts[0];
@@ -60,11 +64,10 @@ public class FileDiffActivity extends BaseActivity {
 
         ImageView closeActivity = findViewById(R.id.close);
         toolbar_title = findViewById(R.id.toolbar_title);
-        mRecyclerView = findViewById(R.id.recyclerView);
+        mListView = findViewById(R.id.listView);
         mProgressBar = findViewById(R.id.progress_bar);
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mListView.setDivider(null);
 
         toolbar_title.setText(R.string.processingText);
         initCloseListener();
@@ -81,7 +84,7 @@ public class FileDiffActivity extends BaseActivity {
     private void getPullDiffContent(String instanceUrl, String owner, String repo, String filename) {
 
         Call<ResponseBody> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getWebInterface()
                 .getPullDiffContent(owner, repo, filename);
 
@@ -113,18 +116,18 @@ public class FileDiffActivity extends BaseActivity {
 
                                     String[] fileContents_ = level2nd[1].split("@@"); // file info / content part
                                     String fileInfoFinal = fileContents_[0];
-                                    String fileContentsFinal = (fileContents_[1]);
+                                    StringBuilder fileContentsFinal = new StringBuilder(fileContents_[1]);
 
                                     if(level2nd.length > 2) {
                                         for (int j = 2; j < level2nd.length; j++) {
-                                            fileContentsFinal += (level2nd[j]);
+                                            fileContentsFinal.append(level2nd[j]);
                                         }
                                     }
 
                                     String fileExtension = FileUtils.getExtension(fileNameFinal);
 
-                                    String fileContentsFinalWithBlankLines = fileContentsFinal.replaceAll( ".*@@.*", "" );
-                                    String fileContentsFinalWithoutBlankLines = fileContentsFinal.replaceAll( ".*@@.*(\r?\n|\r)?", "" );
+                                    String fileContentsFinalWithBlankLines = fileContentsFinal.toString().replaceAll( ".*@@.*", "" );
+                                    String fileContentsFinalWithoutBlankLines = fileContentsFinal.toString().replaceAll( ".*@@.*(\r?\n|\r)?", "" );
                                     fileContentsFinalWithoutBlankLines = fileContentsFinalWithoutBlankLines.replaceAll( ".*\\ No newline at end of file.*(\r?\n|\r)?", "" );
 
                                     fileContentsArray.add(new FileDiffView(fileNameFinal, appUtil.imageExtension(fileExtension), fileInfoFinal, fileContentsFinalWithoutBlankLines));
@@ -161,8 +164,8 @@ public class FileDiffActivity extends BaseActivity {
                             toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
                         }
 
-                        FilesDiffAdapter adapter = new FilesDiffAdapter(fileContentsArray, getApplicationContext());
-                        mRecyclerView.setAdapter(adapter);
+                        FilesDiffAdapter adapter = new FilesDiffAdapter(ctx, fileContentsArray);
+                        mListView.setAdapter(adapter);
 
                         mProgressBar.setVisibility(View.GONE);
 
@@ -173,7 +176,7 @@ public class FileDiffActivity extends BaseActivity {
                 }
                 else if(response.code() == 401) {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(getApplicationContext(), getResources().getString(R.string.alertDialogTokenRevokedTitle),
+                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
@@ -181,17 +184,17 @@ public class FileDiffActivity extends BaseActivity {
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(getApplicationContext(), getApplicationContext().getString(R.string.authorizeError));
+                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(getApplicationContext(), getApplicationContext().getString(R.string.apiNotFound));
+                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.labelGeneralError));
+                    Toasty.info(ctx, getString(R.string.labelGeneralError));
 
                 }
 

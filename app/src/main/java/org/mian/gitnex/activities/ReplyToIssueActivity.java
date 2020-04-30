@@ -39,6 +39,7 @@ public class ReplyToIssueActivity extends BaseActivity {
     private View.OnClickListener onClickListener;
 
     final Context ctx = this;
+    private Context appCtx;
 
     private SocialAutoCompleteTextView addComment;
     private ArrayAdapter<Mention> defaultMentionAdapter;
@@ -53,11 +54,12 @@ public class ReplyToIssueActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+        TinyDB tinyDb = new TinyDB(appCtx);
 
         addComment = findViewById(R.id.addComment);
         addComment.setShowSoftInputOnFocus(true);
@@ -83,20 +85,26 @@ public class ReplyToIssueActivity extends BaseActivity {
 
         replyButton = findViewById(R.id.replyButton);
 
-        if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
+        if(getIntent().getStringExtra("commentBody") != null) {
 
             addComment.setText(getIntent().getStringExtra("commentBody"));
+
+            if(getIntent().getBooleanExtra("cursorToEnd", false)) {
+                addComment.setSelection(addComment.length());
+            }
+
+        }
+
+        if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
+
             final String commentId = getIntent().getStringExtra("commentId");
 
             toolbar_title.setText(getResources().getString(R.string.editCommentTitle));
             replyButton.setText(getResources().getString(R.string.editCommentButtonText));
 
-            replyButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    disableProcessButton();
-                    IssueActions.editIssueComment(ctx, Integer.valueOf(commentId), addComment.getText().toString());
-                }
-
+            replyButton.setOnClickListener(v -> {
+                disableProcessButton();
+                IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
             });
 
             return;
@@ -117,7 +125,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
     public void loadCollaboratorsList() {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
 
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
@@ -128,9 +136,9 @@ public class ReplyToIssueActivity extends BaseActivity {
         final String repoName = parts[1];
 
         Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
         call.enqueue(new Callback<List<Collaborators>>() {
 
@@ -183,18 +191,18 @@ public class ReplyToIssueActivity extends BaseActivity {
     private void processNewCommentReply() {
 
         String newReplyDT = addComment.getText().toString();
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
         if(!connToInternet) {
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if(newReplyDT.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.commentEmptyError));
+            Toasty.info(ctx, getString(R.string.commentEmptyError));
 
         }
         else {
@@ -208,7 +216,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
     private void replyComment(String newReplyDT) {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
 
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
@@ -222,9 +230,9 @@ public class ReplyToIssueActivity extends BaseActivity {
         Issues issueComment = new Issues(newReplyDT);
 
         Call<Issues> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .replyCommentToIssue(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, issueComment);
+                .replyCommentToIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueComment);
 
         call.enqueue(new Callback<Issues>() {
 
@@ -233,7 +241,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
                 if(response.code() == 201) {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.commentSuccess));
+                    Toasty.info(ctx, getString(R.string.commentSuccess));
                     tinyDb.putBoolean("commentPosted", true);
                     tinyDb.putBoolean("resumeIssues", true);
                     tinyDb.putBoolean("resumePullRequests", true);
@@ -252,7 +260,7 @@ public class ReplyToIssueActivity extends BaseActivity {
                 else {
 
                     enableProcessButton();
-                    Toasty.info(getApplicationContext(), getString(R.string.commentError));
+                    Toasty.info(ctx, getString(R.string.commentError));
 
                 }
 

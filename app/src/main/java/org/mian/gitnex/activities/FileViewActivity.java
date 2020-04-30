@@ -28,14 +28,14 @@ import androidx.core.content.ContextCompat;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.pddstudio.highlightjs.HighlightJsView;
-import com.pddstudio.highlightjs.models.Theme;
 import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetFileViewerFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.highlightjs.HighlightJsView;
+import org.mian.gitnex.helpers.highlightjs.models.Theme;
 import org.mian.gitnex.models.Files;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
@@ -60,6 +60,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private HighlightJsView singleCodeContents;
 	private PhotoView imageView;
 	final Context ctx = this;
+	private Context appCtx;
 	private ProgressBar mProgressBar;
 	private byte[] imageData;
 	private PDFView pdfView;
@@ -78,10 +79,12 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
+
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 		final String repoOwner = parts[0];
@@ -131,9 +134,9 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 	private void getSingleFileContents(String instanceUrl, String token, final String owner, String repo, final String filename) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-		Call<Files> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getSingleFileContents(token, owner, repo, filename);
+		Call<Files> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getSingleFileContents(token, owner, repo, filename);
 
 		call.enqueue(new Callback<Files>() {
 
@@ -193,7 +196,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 									singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
 							}
 
-							singleCodeContents.setShowLineNumbers(true);
 							singleCodeContents.setSource(appUtil.decodeBase64(response.body().getContent()));
 
 						}
@@ -257,7 +259,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				}
 				else {
 
-					Toasty.info(getApplicationContext(), getString(R.string.labelGeneralError));
+					Toasty.info(ctx, getString(R.string.labelGeneralError));
 
 				}
 
@@ -324,7 +326,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 	private void requestFileDownload() {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		if(!tinyDb.getString("downloadFileContents").isEmpty()) {
 
@@ -340,7 +342,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				Objects.requireNonNull(fileOutputStream).write(pdfAsBytes);
 				fileOutputStream.flush();
 				fileOutputStream.close();
-				Toasty.info(getApplicationContext(), getString(R.string.downloadFileSaved));
+				Toasty.info(ctx, getString(R.string.downloadFileSaved));
 
 			}
 			catch(IOException e) {
@@ -349,7 +351,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		}
 		else {
-			Toasty.error(getApplicationContext(), getString(R.string.waitLoadingDownloadFile));
+			Toasty.error(ctx, getString(R.string.waitLoadingDownloadFile));
 		}
 
 	}
