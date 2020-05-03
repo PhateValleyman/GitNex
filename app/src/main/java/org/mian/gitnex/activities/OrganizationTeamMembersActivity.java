@@ -3,7 +3,6 @@ package org.mian.gitnex.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -136,11 +135,10 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
 
         TinyDB tinyDb = new TinyDB(appCtx);
 
-        switch(text) {
-            case "newMember":
-                startActivity(new Intent(OrganizationTeamMembersActivity.this, CreateLabelActivity.class));
-                Log.i("teamId", teamId);
-                break;
+        if("newMember".equals(text)) {
+            Intent intent = new Intent(OrganizationTeamMembersActivity.this, AddNewTeamMemberActivity.class);
+            intent.putExtra("teamId", teamId);
+            startActivity(intent);
         }
 
     }
