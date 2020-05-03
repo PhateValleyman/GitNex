@@ -1,28 +1,31 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.TeamMembersByOrgAdapter;
+import org.mian.gitnex.fragments.BottomSheetOrganizationTeamsFragment;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.TeamMembersByOrgViewModel;
-import java.util.List;
 import java.util.Objects;
 
 /**
  * Author M M Arif
  */
 
-public class OrganizationTeamMembersActivity extends BaseActivity {
+public class OrganizationTeamMembersActivity extends BaseActivity implements BottomSheetOrganizationTeamsFragment.BottomSheetListener {
 
     private TextView noDataMembers;
     private View.OnClickListener onClickListener;
@@ -31,6 +34,8 @@ public class OrganizationTeamMembersActivity extends BaseActivity {
 
     final Context ctx = this;
     private Context appCtx;
+
+    private String teamId;
 
     @Override
     protected int getLayoutResourceId(){
@@ -42,6 +47,8 @@ public class OrganizationTeamMembersActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -63,7 +70,6 @@ public class OrganizationTeamMembersActivity extends BaseActivity {
             toolbarTitle.setText(R.string.orgTeamMembers);
         }
 
-        String teamId;
         if(getIntent().getStringExtra("teamId") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamId")).equals("")){
             teamId = getIntent().getStringExtra("teamId");
         }
@@ -71,11 +77,8 @@ public class OrganizationTeamMembersActivity extends BaseActivity {
             teamId = "0";
         }
 
-        getIntent().getStringExtra("teamId");
-        //Log.i("teamId", getIntent().getStringExtra("teamId"));
-
         assert teamId != null;
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), Integer.valueOf(teamId));
+        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), Integer.parseInt(teamId));
 
     }
 
@@ -83,30 +86,66 @@ public class OrganizationTeamMembersActivity extends BaseActivity {
 
         TeamMembersByOrgViewModel teamMembersModel = new ViewModelProvider(this).get(TeamMembersByOrgViewModel.class);
 
-        teamMembersModel.getMembersByOrgList(instanceUrl, instanceToken, teamId, ctx).observe(this, new Observer<List<UserInfo>>() {
-            @Override
-            public void onChanged(@Nullable List<UserInfo> teamMembersListMain) {
-                adapter = new TeamMembersByOrgAdapter(ctx, teamMembersListMain);
-                if(adapter.getCount() > 0) {
-                    mGridView.setAdapter(adapter);
-                    noDataMembers.setVisibility(View.GONE);
-                }
-                else {
-                    adapter.notifyDataSetChanged();
-                    mGridView.setAdapter(adapter);
-                    noDataMembers.setVisibility(View.VISIBLE);
-                }
+        teamMembersModel.getMembersByOrgList(instanceUrl, instanceToken, teamId, ctx).observe(this, teamMembersListMain -> {
+
+            adapter = new TeamMembersByOrgAdapter(ctx, teamMembersListMain);
+            if(adapter.getCount() > 0) {
+                mGridView.setAdapter(adapter);
+                noDataMembers.setVisibility(View.GONE);
             }
+            else {
+                adapter.notifyDataSetChanged();
+                mGridView.setAdapter(adapter);
+                noDataMembers.setVisibility(View.VISIBLE);
+            }
+
         });
 
     }
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch(id) {
+            case android.R.id.home:
                 finish();
-            }
-        };
+                return true;
+            case R.id.genericMenu:
+                BottomSheetOrganizationTeamsFragment bottomSheet = new BottomSheetOrganizationTeamsFragment();
+                bottomSheet.show(getSupportFragmentManager(), "orgTeamsBottomSheet");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    @Override
+    public void onButtonClicked(String text) {
+
+        TinyDB tinyDb = new TinyDB(appCtx);
+
+        switch(text) {
+            case "newMember":
+                startActivity(new Intent(OrganizationTeamMembersActivity.this, CreateLabelActivity.class));
+                Log.i("teamId", teamId);
+                break;
+        }
+
+    }
+
+    private void initCloseListener() {
+        onClickListener = view -> finish();
     }
 }

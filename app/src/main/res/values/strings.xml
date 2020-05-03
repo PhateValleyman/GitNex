@@ -335,6 +335,7 @@
     <string name="noDataMembers">No members found</string>
     <string name="orgMember">Org members</string>
     <string name="orgTeamMembers">Organization team members</string>
+    <string name="addNewMember">Add New Member</string>
     <!-- org tabbed layout str -->
 
     <!-- create team -->
