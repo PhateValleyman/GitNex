@@ -71,22 +71,22 @@ public class AlertDialogs {
 
     }
 
-    public static void addMemberDialog(final Context context, final String userNameMain, String title, String message, String positiveButton, String negativeButton, final String searchKeyword, int teamId) {
+    public static void addMemberDialog(final Context context, final String userNameMain, String title, String message, String positiveButton, String negativeButton, int teamId) {
 
         new AlertDialog.Builder(context)
                 .setTitle(title + userNameMain)
                 .setMessage(message)
-                .setPositiveButton(positiveButton, (dialog, whichButton) -> TeamActions.addTeamMember(context,  searchKeyword, userNameMain, teamId))
+                .setPositiveButton(positiveButton, (dialog, whichButton) -> TeamActions.addTeamMember(context, userNameMain, teamId))
                 .setNegativeButton(negativeButton, null).show();
 
     }
 
-    public static void removeMemberDialog(final Context context, final String userNameMain, String title, String message, String positiveButton, String negativeButton, final String searchKeyword, int teamId) {
+    public static void removeMemberDialog(final Context context, final String userNameMain, String title, String message, String positiveButton, String negativeButton, int teamId) {
 
         new AlertDialog.Builder(context)
                 .setTitle(title + userNameMain)
                 .setMessage(message)
-                .setPositiveButton(positiveButton, (dialog, whichButton) -> TeamActions.removeTeamMember(context,  searchKeyword, userNameMain, teamId))
+                .setPositiveButton(positiveButton, (dialog, whichButton) -> TeamActions.removeTeamMember(context, userNameMain, teamId))
                 .setNegativeButton(negativeButton, null).show();
 
     }

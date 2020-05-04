@@ -1,7 +1,6 @@
 package org.mian.gitnex.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.TinyDB;
 import java.util.List;
@@ -66,8 +66,8 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 				AlertDialogs.addMemberDialog(context, userNameMain.getText().toString(),
 						context.getResources().getString(R.string.addTeamMemberTitle),
 						context.getResources().getString(R.string.addTeamMemberMessage),
-						context.getResources().getString(R.string.removeButton),
-						context.getResources().getString(R.string.cancelButton), "fa", Integer.parseInt(teamId_.getText().toString()));
+						context.getResources().getString(R.string.addButton),
+						context.getResources().getString(R.string.cancelButton), Integer.parseInt(teamId_.getText().toString()));
 
 			});
 
@@ -79,7 +79,7 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 						context.getResources().getString(R.string.removeTeamMemberTitle),
 						context.getResources().getString(R.string.removeTeamMemberMessage),
 						context.getResources().getString(R.string.removeButton),
-						context.getResources().getString(R.string.cancelButton), "fa", Integer.parseInt(teamId_.getText().toString()));
+						context.getResources().getString(R.string.cancelButton), Integer.parseInt(teamId_.getText().toString()));
 
 			});
 
@@ -136,7 +136,7 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 				@Override
 				public void onResponse(@NonNull Call<UserInfo> call, @NonNull Response<UserInfo> response) {
 
-					if(response.code() == 204) {
+					if(response.code() == 200) {
 
 						if(!currentItem.getLogin().equals(loginUid) && !currentItem.getLogin().equals(repoOwner)) {
 							holder.addMemberButtonRemove.setVisibility(View.VISIBLE);
@@ -165,7 +165,9 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 
 				@Override
 				public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
-					Log.i("onFailure", t.toString());
+
+					Toasty.error(mCtx, mCtx.getResources().getString(R.string.genericServerResponseError));
+
 				}
 
 			});

@@ -81,6 +81,22 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
 
     }
 
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        TinyDB tinyDb = new TinyDB(appCtx);
+        final String instanceUrl = tinyDb.getString("instanceUrl");
+        final String loginUid = tinyDb.getString("loginUid");
+        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+
+        if(tinyDb.getBoolean("teamActionFlag")) {
+            fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), Integer.parseInt(teamId));
+            tinyDb.putBoolean("teamActionFlag", false);
+        }
+
+    }
+
     private void fetchDataAsync(String instanceUrl, String instanceToken, int teamId) {
 
         TeamMembersByOrgViewModel teamMembersModel = new ViewModelProvider(this).get(TeamMembersByOrgViewModel.class);
