@@ -15,15 +15,7 @@ public class FilesData {
 
 	public static int returnOnlyNumber(String fileSize) {
 
-		String sizeInNumber = "";
-		if(fileSize.contains("MB")) {
-			sizeInNumber = fileSize.replace(" MB", "");
-		}
-		else {
-			sizeInNumber = fileSize.replace(" GB", "");
-		}
-
-		return Integer.parseInt(sizeInNumber);
+		return Integer.parseInt(fileSize.substring(0, fileSize.indexOf(" ")));
 
 	}
 

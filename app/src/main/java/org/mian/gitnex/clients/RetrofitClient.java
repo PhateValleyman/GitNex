@@ -33,7 +33,7 @@ public class RetrofitClient {
 
 		TinyDB tinyDb = new TinyDB(ctx);
 		final boolean connToInternet = AppUtil.haveNetworkConnection(ctx);
-		int cacheSize = FilesData.returnOnlyNumber(tinyDb.getString("cacheSizeStr")) * 1024 * 1024; // 50MB
+		int cacheSize = FilesData.returnOnlyNumber(tinyDb.getString("cacheSizeStr")) * 1024 * 1024;
 		File httpCacheDirectory = new File(ctx.getCacheDir(), "responses");
 		Cache cache = new Cache(httpCacheDirectory, cacheSize);
 
