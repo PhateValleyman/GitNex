@@ -48,6 +48,7 @@ public class NotificationsAdapter extends BaseAdapter {
 		}
 
 		NotificationThread notificationThread = (NotificationThread) getItem(position);
+		String url = notificationThread.getUrl();
 
 		TextView notificationId = convertView.findViewById(R.id.notification_id);
 		TextView subject = convertView.findViewById(R.id.subject);
@@ -56,7 +57,7 @@ public class NotificationsAdapter extends BaseAdapter {
 		ImageView pinned = convertView.findViewById(R.id.pinned);
 		ImageButton more = convertView.findViewById(R.id.more);
 
-		notificationId.setText("#" + notificationThread.getId());
+		notificationId.setText("#" + url.substring(url.lastIndexOf("/")));
 		subject.setText(notificationThread.getSubject().getTitle());
 		repository.setText(notificationThread.getRepository().getFullname());
 

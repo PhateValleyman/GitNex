@@ -77,7 +77,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 
-				NumberPicker numberPicker = new NumberPicker(ctx);
+				NumberPicker numberPicker = new NumberPicker(appCtx);
 				numberPicker.setMinValue(20);
 				numberPicker.setMaxValue(500);
 
@@ -90,14 +90,14 @@ public class SettingsSecurityActivity extends BaseActivity {
 
 				numberPicker.setWrapSelectorWheel(true);
 
-				AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+				AlertDialog.Builder builder = new AlertDialog.Builder(appCtx);
 				builder.setTitle("Select polling delay");
 				builder.setMessage("Choose your polling delay in seconds.");
 
 				builder.setCancelable(true);
 				builder.setPositiveButton("SELECT", (dialog, which) -> {
 					tinyDb.putInt("pollingDelaySeconds", numberPicker.getValue());
-					Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+					Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
 				});
 
 				builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss());
