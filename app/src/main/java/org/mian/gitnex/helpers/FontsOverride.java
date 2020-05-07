@@ -12,11 +12,9 @@ import java.util.Objects;
 
 public class FontsOverride {
 
-    public static void setDefaultFont(Context context,
-                                      String staticTypefaceFieldName, String fontAssetName) {
+    public static void setDefaultFont(Context context, String staticTypefaceFieldName, String fontAssetName) {
 
-        final Typeface regular = Typeface.createFromAsset(context.getAssets(),
-                fontAssetName);
+        final Typeface regular = Typeface.createFromAsset(context.getAssets(), fontAssetName);
         replaceFont(staticTypefaceFieldName, regular);
 
     }
@@ -26,8 +24,7 @@ public class FontsOverride {
 
         try {
 
-            final Field staticField = Typeface.class
-                    .getDeclaredField(staticTypefaceFieldName);
+            final Field staticField = Typeface.class.getDeclaredField(staticTypefaceFieldName);
             staticField.setAccessible(true);
             staticField.set(null, newTypeface);
 
