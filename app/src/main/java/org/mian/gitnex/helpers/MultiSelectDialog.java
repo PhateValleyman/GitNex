@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import org.mian.gitnex.adapters.MultiSelectAdapter;
 import org.mian.gitnex.models.MultiSelectModel;
 import java.util.List;
 
@@ -46,17 +47,15 @@ public class MultiSelectDialog extends AlertDialog.Builder {
             searchView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             searchView.setOnQueryTextListener(new OnQueryTextTypeListener());
 
-            // todo listview filter
-
             linearLayout.addView(searchView);
 
         }
 
-        MultiSelec
+	    MultiSelectAdapter multiSelectAdapter = new MultiSelectAdapter(context, multiSelectModels, selectedItems);
 
         ListView listView = new ListView(context);
         listView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        listView.setAdapter(null); //todo
+        listView.setAdapter(multiSelectAdapter);
 
         setView(linearLayout);
         return super.create();
@@ -73,7 +72,7 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 
         @Override
         public boolean onQueryTextChange(String newText) {
-
+	        // todo listview filter
             return false;
         }
 

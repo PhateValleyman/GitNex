@@ -1,7 +1,7 @@
 package org.mian.gitnex.models;
 
 /**
- * Author com.github.abumoallim, modified by M M Arif
+ * Author com.github.abumoallim, modified by M M Arif, modified by opyale
  */
 
 public class MultiSelectModel {
@@ -31,7 +31,7 @@ public class MultiSelectModel {
         this.name = name;
     }
 
-    public Boolean getSelected() {
+    public Boolean isSelected() {
         return isSelected;
     }
 
