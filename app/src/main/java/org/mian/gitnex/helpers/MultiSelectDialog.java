@@ -8,6 +8,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import org.mian.gitnex.adapters.MultiSelectAdapter;
 import org.mian.gitnex.models.MultiSelectModel;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,7 @@ import java.util.List;
 public class MultiSelectDialog extends AlertDialog.Builder {
 
     private Context context;
+	private MultiSelectAdapter multiSelectAdapter;
 
     private List<MultiSelectModel> multiSelectModels;
     private List<Integer> selectedItems;
@@ -45,13 +47,30 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 
             SearchView searchView = new SearchView(context);
             searchView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            searchView.setOnQueryTextListener(new OnQueryTextTypeListener());
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+	            @Override
+	            public boolean onQueryTextSubmit(String query) {
+
+		            return false;
+	            }
+
+	            @Override
+	            public boolean onQueryTextChange(String newText) {
+
+	            	multiSelectModels = filterItems(newText);
+					multiSelectAdapter.notifyDataSetChanged();
+
+		            return false;
+
+	            }
+            });
 
             linearLayout.addView(searchView);
 
         }
 
-	    MultiSelectAdapter multiSelectAdapter = new MultiSelectAdapter(context, multiSelectModels, selectedItems);
+        multiSelectAdapter = new MultiSelectAdapter(context, multiSelectModels, selectedItems);
 
         ListView listView = new ListView(context);
         listView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -62,19 +81,18 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 
     }
 
-    public static class OnQueryTextTypeListener implements SearchView.OnQueryTextListener {
+    private List<MultiSelectModel> filterItems(String query) {
 
-        @Override
-        public boolean onQueryTextSubmit(String query) {
+    	List<MultiSelectModel> multiSelectModels = new ArrayList<>();
 
-            return false;
-        }
+    	for(MultiSelectModel multiSelectModel : this.multiSelectModels) {
 
-        @Override
-        public boolean onQueryTextChange(String newText) {
-	        // todo listview filter
-            return false;
-        }
+    		if(multiSelectModel.getName().startsWith(query)) {
+    			multiSelectModels.add(multiSelectModel);
+		    }
+	    }
+
+    	return multiSelectModels;
 
     }
 

@@ -1,6 +1,7 @@
 package org.mian.gitnex.adapters;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -58,6 +59,8 @@ public class MultiSelectAdapter extends BaseAdapter {
 
 		TextView textView = new TextView(context);
 		textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+		textView.setPadding(15, 0, 0, 0);
 		textView.setText(multiSelectModel.getName());
 
 		CheckBox checkBox = new CheckBox(context);
