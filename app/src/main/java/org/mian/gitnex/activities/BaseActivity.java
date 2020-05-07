@@ -1,5 +1,6 @@
 package org.mian.gitnex.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import org.acra.ACRA;
@@ -27,10 +28,13 @@ import org.mian.gitnex.util.TinyDB;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+	private Context appCtx;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		appCtx = getApplicationContext();
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		switch(tinyDb.getInt("themeId")) {
 
@@ -88,7 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             tinyDb.putInt("pollingDelaySeconds", 50);
         }
 
-        NotificationMaster.hireWorker(getApplicationContext());
+        NotificationMaster.hireWorker(appCtx);
 
         // enabling counter badges by default
         if(tinyDb.getString("enableCounterBadgesInit").isEmpty()) {

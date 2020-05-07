@@ -22,7 +22,11 @@ public class NotificationMaster {
 	private static void checkVersion(Context context) {
 
 		TinyDB tinyDB = new TinyDB(context);
-		notificationsSupported = VersionCheck.compareVersion("1.12.0", tinyDB.getString("giteaVersion")) >= 1 ? 1 : 0;
+		String currentVersion = tinyDB.getString("giteaVersion");
+
+		if(tinyDB.getBoolean("loggedInMode") && !currentVersion.isEmpty()) {
+			notificationsSupported = VersionCheck.compareVersion("1.12.0", currentVersion) >= 1 ? 1 : 0;
+		}
 
 	}
 
