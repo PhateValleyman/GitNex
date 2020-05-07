@@ -426,28 +426,14 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                             assigneesFlag = true;
                         }
 
-                        multiSelectDialog = new MultiSelectDialog()
-                                .title(getResources().getString(R.string.newIssueSelectAssigneesListTitle))
-                                .titleSize(25)
-                                .positiveText(getResources().getString(R.string.okButton))
-                                .negativeText(getResources().getString(R.string.cancelButton))
-                                .setMinSelectionLimit(0)
-                                .setMaxSelectionLimit(listOfAssignees.size())
-                                .multiSelectList(listOfAssignees)
-                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                    @Override
-                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                        multiSelectDialog = new MultiSelectDialog(ctx);
+                        multiSelectDialog.setItems(listOfAssignees);
+                        multiSelectDialog.setTitle(getResources().getString(R.string.newIssueSelectAssigneesListTitle));
+                        multiSelectDialog.setNegativeButton(getResources().getString(R.string.cancelButton), (dialog, which) -> dialog.dismiss());
+                        multiSelectDialog.setPositiveButton(getResources().getString(R.string.okButton), (dialog, which) -> {
 
-                                        assigneesList.setText(dataString);
-
-                                    }
-
-                                    @Override
-                                    public void onCancel() {
-                                        //Log.d("multiSelect","Dialog cancelled");
-
-                                    }
-                                });
+                        	assigneesList.setText(MultiSelectModel.resolveList(multiSelectDialog.getSelectedModels()));
+                        });
 
                     }
                 }
@@ -489,29 +475,15 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                             labelsFlag = true;
                         }
 
-                        multiSelectDialogLabels = new MultiSelectDialog()
-                                .title(getResources().getString(R.string.newIssueSelectLabelsListTitle))
-                                .titleSize(25)
-                                .positiveText(getResources().getString(R.string.okButton))
-                                .negativeText(getResources().getString(R.string.cancelButton))
-                                .setMinSelectionLimit(0)
-                                .setMaxSelectionLimit(listOfLabels.size())
-                                .multiSelectList(listOfLabels)
-                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                    @Override
-                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+	                    multiSelectDialog = new MultiSelectDialog(ctx);
+	                    multiSelectDialog.setItems(listOfLabels);
+	                    multiSelectDialog.setTitle(getResources().getString(R.string.newIssueSelectLabelsListTitle));
+	                    multiSelectDialog.setNegativeButton(getResources().getString(R.string.cancelButton), (dialog, which) -> dialog.dismiss());
+	                    multiSelectDialog.setPositiveButton(getResources().getString(R.string.okButton), (dialog, which) -> {
 
-                                        newIssueLabels.setText(dataString.trim());
-                                        labelsIdHolder.setText(selectedIds.toString());
-
-                                    }
-
-                                    @Override
-                                    public void onCancel() {
-                                        //Log.d("multiSelect","Dialog cancelled");
-
-                                    }
-                                });
+		                    newIssueLabels.setText(MultiSelectModel.resolveList(multiSelectDialog.getSelectedModels()));
+		                    labelsIdHolder.setText(multiSelectDialog.getSelectedItemIds().toString());
+	                    });
 
                     }
                 }
@@ -530,7 +502,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     public void onClick(View v) {
         if (v == assigneesList) {
             if(assigneesFlag) {
-                multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
+	            multiSelectDialog.create().show();
             }
             else {
                 Toasty.info(ctx, getResources().getString(R.string.noAssigneesFound));
@@ -538,7 +510,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         }
         else if (v == newIssueLabels) {
             if(labelsFlag) {
-                multiSelectDialogLabels.show(getSupportFragmentManager(), "multiSelectDialogLabels");
+	            multiSelectDialog.create().show();
             }
             else {
                 Toasty.info(ctx, getResources().getString(R.string.noLabelsFound));

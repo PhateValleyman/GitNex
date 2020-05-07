@@ -19,13 +19,13 @@ public class MultiSelectAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<MultiSelectModel> multiSelectModels;
-	private List<Integer> selectedItems;
+	private List<Integer> selectedItemsIds;
 
-	public MultiSelectAdapter(Context context, List<MultiSelectModel> multiSelectModels, List<Integer> selectedItems) {
+	public MultiSelectAdapter(Context context, List<MultiSelectModel> multiSelectModels, List<Integer> selectedItemsIds) {
 
 		this.context = context;
 		this.multiSelectModels = multiSelectModels;
-		this.selectedItems = selectedItems;
+		this.selectedItemsIds = selectedItemsIds;
 
 	}
 
@@ -70,10 +70,10 @@ public class MultiSelectAdapter extends BaseAdapter {
 
 			if(isChecked) {
 				multiSelectModel.setSelected(true);
-				selectedItems.remove(multiSelectModel.getId());
+				selectedItemsIds.remove(multiSelectModel.getId());
 			} else {
 				multiSelectModel.setSelected(false);
-				selectedItems.add(multiSelectModel.getId());
+				selectedItemsIds.add(multiSelectModel.getId());
 			}
 
 		});

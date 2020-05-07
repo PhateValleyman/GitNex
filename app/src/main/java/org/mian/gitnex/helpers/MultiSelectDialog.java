@@ -21,11 +21,11 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 	private MultiSelectAdapter multiSelectAdapter;
 
     private List<MultiSelectModel> multiSelectModels;
-    private List<Integer> selectedItems;
+    private List<Integer> selectedItemIds;
 
-    private boolean searchViewEnabled;
+    private boolean searchViewEnabled = true;
 
-    protected MultiSelectDialog(Context context) {
+    public MultiSelectDialog(Context context) {
 
         super(context);
         this.context = context;
@@ -34,6 +34,9 @@ public class MultiSelectDialog extends AlertDialog.Builder {
     protected MultiSelectDialog(Context context, int themeResId) {
 
         super(context, themeResId);
+
+        this.multiSelectModels = new ArrayList<>();
+        this.selectedItemIds = new ArrayList<>();
         this.context = context;
     }
 
@@ -70,7 +73,7 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 
         }
 
-        multiSelectAdapter = new MultiSelectAdapter(context, multiSelectModels, selectedItems);
+        multiSelectAdapter = new MultiSelectAdapter(context, multiSelectModels, selectedItemIds);
 
         ListView listView = new ListView(context);
         listView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -81,7 +84,7 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 
     }
 
-    private List<MultiSelectModel> filterItems(String query) {
+	private List<MultiSelectModel> filterItems(String query) {
 
     	List<MultiSelectModel> multiSelectModels = new ArrayList<>();
 
@@ -96,24 +99,58 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 
     }
 
-    public void enableSearchView(boolean searchViewEnabled) {
+    public MultiSelectDialog enableSearchView(boolean searchViewEnabled) {
 
         this.searchViewEnabled = searchViewEnabled;
+        return this;
     }
 
-    public void setItems(List<MultiSelectModel> multiSelectModels) {
+    public MultiSelectDialog setItems(List<MultiSelectModel> multiSelectModels) {
 
-        this.multiSelectModels = multiSelectModels;
+        this.multiSelectModels.addAll(multiSelectModels);
+        return this;
     }
 
-    public void setSelectedItems(List<Integer> selectedItems) {
+    public MultiSelectDialog setSelectedItemIDs(List<Integer> selectedItemIds) {
 
-        this.selectedItems = selectedItems;
+        this.selectedItemIds.addAll(selectedItemIds);
+
+        for(MultiSelectModel multiSelectModel : multiSelectModels) {
+
+        	for(Integer selectedItemId : selectedItemIds) {
+
+        		if(multiSelectModel.getId() == selectedItemId) {
+
+			        multiSelectModel.setSelected(true);
+		        } else {
+
+        			break;
+		        }
+	        }
+        }
+
+        return this;
+
     }
 
-    public List<Integer> getSelectedItems() {
+	public List<Integer> getSelectedItemIds() {
 
-        return selectedItems;
+		return selectedItemIds;
+	}
+
+	public List<MultiSelectModel> getSelectedModels() {
+
+    	List<MultiSelectModel> multiSelectModels = new ArrayList<>();
+
+    	for(MultiSelectModel multiSelectModel : this.multiSelectModels) {
+
+    		if(selectedItemIds.contains(multiSelectModel.getId())) {
+
+    			multiSelectModels.add(multiSelectModel);
+		    }
+	    }
+
+        return multiSelectModels;
     }
 
 }

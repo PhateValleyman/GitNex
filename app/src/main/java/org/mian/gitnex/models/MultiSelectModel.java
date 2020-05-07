@@ -1,5 +1,7 @@
 package org.mian.gitnex.models;
 
+import java.util.List;
+
 /**
  * Author com.github.abumoallim, modified by M M Arif, modified by opyale
  */
@@ -37,6 +39,24 @@ public class MultiSelectModel {
 
     public void setSelected(Boolean selected) {
         isSelected = selected;
+    }
+
+    public static String resolveList(List<MultiSelectModel> multiSelectModels) {
+
+    	StringBuilder stringBuilder = new StringBuilder();
+
+    	for(int i=0; i<multiSelectModels.size(); i++) {
+
+		    stringBuilder.append(multiSelectModels.get(i).getName());
+
+    		if(i != (multiSelectModels.size() - 1)) {
+
+			    stringBuilder.append(", ");
+		    }
+	    }
+
+    	return stringBuilder.toString();
+
     }
 
 }
