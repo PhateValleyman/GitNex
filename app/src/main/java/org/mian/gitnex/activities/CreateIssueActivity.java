@@ -475,11 +475,11 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                             labelsFlag = true;
                         }
 
-	                    multiSelectDialog = new MultiSelectDialog(ctx);
-	                    multiSelectDialog.setItems(listOfLabels);
-	                    multiSelectDialog.setTitle(getResources().getString(R.string.newIssueSelectLabelsListTitle));
-	                    multiSelectDialog.setNegativeButton(getResources().getString(R.string.cancelButton), (dialog, which) -> dialog.dismiss());
-	                    multiSelectDialog.setPositiveButton(getResources().getString(R.string.okButton), (dialog, which) -> {
+                        multiSelectDialogLabels = new MultiSelectDialog(ctx);
+                        multiSelectDialogLabels.setItems(listOfLabels);
+                        multiSelectDialogLabels.setTitle(getResources().getString(R.string.newIssueSelectLabelsListTitle));
+                        multiSelectDialogLabels.setNegativeButton(getResources().getString(R.string.cancelButton), (dialog, which) -> dialog.dismiss());
+                        multiSelectDialogLabels.setPositiveButton(getResources().getString(R.string.okButton), (dialog, which) -> {
 
 		                    newIssueLabels.setText(MultiSelectModel.resolveList(multiSelectDialog.getSelectedModels()));
 		                    labelsIdHolder.setText(multiSelectDialog.getSelectedItemIds().toString());
@@ -510,7 +510,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         }
         else if (v == newIssueLabels) {
             if(labelsFlag) {
-	            multiSelectDialog.create().show();
+                multiSelectDialogLabels.create().show();
             }
             else {
                 Toasty.info(ctx, getResources().getString(R.string.noLabelsFound));
