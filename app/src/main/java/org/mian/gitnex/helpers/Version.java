@@ -22,9 +22,8 @@ public class Version {
 	/**
 	 * regex used to identify the type of version
 	 **/
-	final Pattern pattern_major_minor_patch_release = Pattern.compile("^[v,V]?(\\d+)\\.(\\d+)\\.(\\d+)");
-	final Pattern pattern_dev_release = Pattern.compile("^[v,V]?(\\d).(\\d+).(\\d+)(\\D)(.+)");
-
+	final private Pattern pattern_major_minor_patch_release = Pattern.compile("^[v,V]?(\\d+)\\.(\\d+)\\.(\\d+)");
+	final private Pattern pattern_dev_release = Pattern.compile("^[v,V]?(\\d).(\\d+).(\\d+)(\\D)(.+)");
 
 	/**
 	 * public static Version check(String min, String last, String value) {
@@ -76,12 +75,27 @@ public class Version {
 	public Version(String value) {
 
 		raw = value;
+		this.init();
 
 	}
 
 	/**
 	 * HELPER
 	 **/
+
+	/**
+	 * init parse and store values for other functions of an Version instance
+	 * it use the raw variable as base
+	 *
+	 * @return if parse was successfully
+	 */
+	private boolean init() {
+
+		this.raw = raw;
+		// ....
+		return true;
+
+	}
 
 	/**
 	 * @param min
