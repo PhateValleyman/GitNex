@@ -25,7 +25,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.NetworkObserver;
 import org.mian.gitnex.helpers.SnackBar;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.GiteaVersion;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.models.UserTokens;
@@ -35,7 +35,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import okhttp3.Credentials;
 import retrofit2.Call;
@@ -448,46 +447,55 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     GiteaVersion version = responseVersion.body();
                     assert version != null;
 
-                    VersionCheck vt = VersionCheck.check(getString(R.string.versionLow), getString(R.string.versionHigh), version.getVersion());
+                    // init
+                    Version gitea_version = new Version(getString(R.string.versionLow));
+                    try {
+                        gitea_version = new Version(version.getVersion());
+                    } catch(Error e) {
+                        SnackBar.error(ctx, layoutView, getResources().getString(R.string.versionUnknow));
+                        enableProcessButton();
+                    }
+                            //(getString(R.string.versionLow), getString(), version.getVersion());
 
-                    switch (vt) {
-                        case UNSUPPORTED_NEW:
-                            //SnackBar.warning(ctx, layoutView, getResources().getString(R.string.versionUnsupportedNew));
-                        case SUPPORTED_LATEST:
-                        case SUPPORTED_OLD:
-                        case DEVELOPMENT:
-                            login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
-                            return;
-                        case UNSUPPORTED_OLD:
+                    // UNSUPPORTED_OLD
+                    if (gitea_version.less(getString(R.string.versionLow))) {
 
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
 
-                            alertDialogBuilder
-                                    .setTitle(getString(R.string.versionAlertDialogHeader))
-                                    .setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion()))
-                                    .setCancelable(true)
-                                    .setIcon(R.drawable.ic_warning)
-                                    .setNegativeButton(getString(R.string.cancelButton), (dialog, which) -> {
+                        alertDialogBuilder
+                                .setTitle(getString(R.string.versionAlertDialogHeader))
+                                .setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion()))
+                                .setCancelable(true)
+                                .setIcon(R.drawable.ic_warning)
+                                .setNegativeButton(getString(R.string.cancelButton), (dialog, which) -> {
 
-                                        dialog.dismiss();
-                                        enableProcessButton();
+                                    dialog.dismiss();
+                                    enableProcessButton();
 
-                                    })
-                                    .setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
+                                })
+                                .setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
 
-                                        dialog.dismiss();
-                                        login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
+                                    dialog.dismiss();
+                                    login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
 
-                                    });
+                                });
 
-                            AlertDialog alertDialog = alertDialogBuilder.create();
+                        AlertDialog alertDialog = alertDialogBuilder.create();
 
-                            alertDialog.show();
-                            return;
-                        default: // UNKNOWN
-                            SnackBar.error(ctx, layoutView, getResources().getString(R.string.versionUnknow));
-                            enableProcessButton();
+                        alertDialog.show();
+                        return;
 
+                    }
+                    // SUPPORTED
+                    else if (gitea_version.lessOrEqual(getString(R.string.versionHigh))) {
+                        login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
+                        return;
+                    }
+                    // UNSUPPORTED_NEW
+                    else {
+                        SnackBar.info(ctx, layoutView, getResources().getString(R.string.versionUnsupportedNew));
+                        login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
+                        return;
                     }
 
                 }
