@@ -98,8 +98,8 @@ public class VersionTest {
 		assertTrue(new Version("1.12").higherOrEqual("1.11.0"));
 		assertTrue(new Version("1.12.0+dev-211-g316db0fe7").higherOrEqual("v1.11"));
 		assertTrue(new Version("v2").higherOrEqual("1.12.0"));
-		assertFalse(new Version("1.12.1-wowowow").higherOrEqual("v1.12.0")); // Test if CI catch this
-		assertFalse(new Version("1.2.4").higherOrEqual("1.2.3")); ; // Test if CI catch this
+		assertTrue(new Version("1.12.1-wowowow").higherOrEqual("v1.12.0"));
+		assertTrue(new Version("1.2.4").higherOrEqual("1.2.3"));
 		assertTrue(new Version("1").higherOrEqual("1.1.10"));
 		assertTrue(new Version("1.12.0").higherOrEqual("1.12.0"));
 
