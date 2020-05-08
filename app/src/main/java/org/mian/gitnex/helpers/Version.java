@@ -16,10 +16,6 @@ public class Version {
 	private String raw;
 	// the version numbers in its order (dot separated)
 	private List<Integer> values;
-	// if version git-annotated
-	private String commit;
-	// if its a dev release or a rc or stable ...
-	private String type;
 
 	public Version(String value) {
 
@@ -36,14 +32,8 @@ public class Version {
 	 */
 	private void init() {
 
-		/**
-		 * regex used to identify the type of version
-		 **/
 		final Pattern pattern_valid = Pattern.compile("^[v,V]?(\\d+)+(\\.(\\d+))*([_,\\-,+][\\w,\\d,_,\\-,+]*)?$");
-		// final Pattern pattern_major_minor_patch_release = Pattern.compile("^[v,V]?(\\d+)\\.(\\d+)\\.(\\d+)");
-		// final Pattern pattern_dev_release = Pattern.compile("^[v,V]?(\\d).(\\d+).(\\d+)(\\D)(.+)");
-
-		final Pattern find_number_dot_number = Pattern.compile("^\\d+(\\.(\\d)+)*");
+		final Pattern pattern_number_dot_number = Pattern.compile("^\\d+(\\.(\\d)+)*");
 
 		if(!pattern_valid.matcher(raw).find()) {
 			throw new IllegalArgumentException("Invalid version format");
@@ -54,16 +44,13 @@ public class Version {
 		}
 
 		values = new ArrayList<Integer>();
-		Matcher match = find_number_dot_number.matcher(raw);
+		Matcher match = pattern_number_dot_number.matcher(raw);
 		match.find();
 		for(String i : match.group().split("\\.")) {
 			values.add(Integer.parseInt(i));
 		}
 
 	}
-
-
-	// compare functions
 
 	/**
 	 * equal return true if version is the same
