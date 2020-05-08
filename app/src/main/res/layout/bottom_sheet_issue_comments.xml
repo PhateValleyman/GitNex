@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="8dp"
     android:background="?attr/primaryBackgroundColor"
-    android:paddingTop="8dp">
+    android:orientation="vertical"
+    android:paddingBottom="8dp">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -14,44 +12,90 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingTop="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="15dp">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        android:text="👍"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="25sp" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        android:text="😀"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="25sp" />
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        android:text="😇"
+                        android:textColor="?attr/primaryTextColor"
+                        android:textSize="25sp" />
+
+
+                </LinearLayout>
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/commentMenuEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/menuEditText"
                 android:drawableStart="@drawable/ic_edit"
                 android:drawablePadding="24dp"
+                android:padding="16dp"
+                android:text="@string/menuEditText"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:padding="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/commentMenuDelete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/menuDeleteText"
                 android:drawableStart="@drawable/ic_delete"
                 android:drawablePadding="24dp"
+                android:padding="16dp"
+                android:text="@string/menuDeleteText"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:padding="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/issueCommentShare"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/issueCommentShare"
                 android:drawableStart="@drawable/ic_share_24dp"
                 android:drawablePadding="24dp"
+                android:padding="16dp"
+                android:text="@string/issueCommentShare"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:padding="16dp" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 
