@@ -1,5 +1,7 @@
 package org.mian.gitnex.helpers;
 
+import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,59 +21,6 @@ public class Version {
 	// if its a dev release or a rc or stable ...
 	private String type;
 
-	/**
-	 * regex used to identify the type of version
-	 **/
-	final private Pattern pattern_major_minor_patch_release = Pattern.compile("^[v,V]?(\\d+)\\.(\\d+)\\.(\\d+)");
-	final private Pattern pattern_dev_release = Pattern.compile("^[v,V]?(\\d).(\\d+).(\\d+)(\\D)(.+)");
-
-	/**
-	 * public static Version check(String min, String last, String value) {
-	 * <p>
-	 * final Pattern pattern_stable_release = Pattern.compile("^(\\d)\\.(\\d+)\\.(\\d+)$");
-	 * final Pattern pattern_dev_release = Pattern.compile("^(\\d).(\\d+).(\\d+)(\\D)(.+)");
-	 * Matcher match;
-	 * <p>
-	 * if(!pattern_stable_release.matcher(min).find() || !pattern_stable_release.matcher(last).find()) {
-	 * throw new IllegalArgumentException("VersionCheck: wrong format for min or last version given");
-	 * }
-	 * <p>
-	 * match = pattern_stable_release.matcher(value);
-	 * if(match.find()) {
-	 * <p>
-	 * switch(correlate(min, last, match.group())) {
-	 * case 0:
-	 * return UNSUPPORTED_OLD;
-	 * case 1:
-	 * return SUPPORTED_OLD;
-	 * case 2:
-	 * return SUPPORTED_LATEST;
-	 * default:
-	 * return UNSUPPORTED_NEW;
-	 * }
-	 * <p>
-	 * }
-	 * <p>
-	 * match = pattern_dev_release.matcher(value);
-	 * if(match.find()) {
-	 * <p>
-	 * match = Pattern.compile("^(\\d)\\.(\\d+)\\.(\\d+)").matcher(value);
-	 * match.find();
-	 * <p>
-	 * if(correlate(min, last, match.group()) > 0) {
-	 * return DEVELOPMENT;
-	 * }
-	 * else {
-	 * return UNSUPPORTED_OLD;
-	 * }
-	 * <p>
-	 * }
-	 * <p>
-	 * return UNKNOWN;
-	 * <p>
-	 * }
-	 **/
-
 	public Version(String value) {
 
 		raw = value;
@@ -80,127 +29,207 @@ public class Version {
 	}
 
 	/**
-	 * HELPER
-	 **/
-
-	/**
 	 * init parse and store values for other functions of an Version instance
 	 * it use the raw variable as base
 	 *
 	 * @return if parse was successfully
 	 */
-	private boolean init() {
+	private void init() {
 
-		this.raw = raw;
-		// ....
+		/**
+		 * regex used to identify the type of version
+		 **/
+		final Pattern pattern_valid = Pattern.compile("^[v,V]?(\\d+)+(\\.(\\d+))*([_,\\-,+][\\w,\\d,_,\\-,+]*)?$");
+		// final Pattern pattern_major_minor_patch_release = Pattern.compile("^[v,V]?(\\d+)\\.(\\d+)\\.(\\d+)");
+		// final Pattern pattern_dev_release = Pattern.compile("^[v,V]?(\\d).(\\d+).(\\d+)(\\D)(.+)");
+
+		final Pattern find_number_dot_number = Pattern.compile("^\\d+(\\.(\\d)+)*");
+
+		if(!pattern_valid.matcher(raw).find()) {
+			throw new IllegalArgumentException("Invalid version format");
+		}
+
+		if(raw.charAt(0) == 'v' || raw.charAt(0) == 'V') {
+			raw = raw.substring(1);
+		}
+
+		values = new ArrayList<Integer>();
+		Matcher match = find_number_dot_number.matcher(raw);
+		match.find();
+		for(String i : match.group().split("\\.")) {
+			values.add(Integer.parseInt(i));
+		}
+
+	}
+
+
+	// compare functions
+
+	/**
+	 * equal return true if version is the same
+	 *
+	 * @param value
+	 * @return true/false
+	 */
+	public boolean equal(String value) {
+
+		return this.equal(new Version(value));
+
+	}
+
+	/**
+	 * equal return true if version is the same
+	 *
+	 * @param v
+	 * @return
+	 */
+	public boolean equal(@NotNull Version v) {
+
+		int rounds = Math.min(this.values.size(), v.values.size());
+		for(int i = 0; i < rounds; i++) {
+			if(this.values.get(i) != v.values.get(i)) {
+				return false;
+			}
+		}
+		return true;
+
+	}
+
+
+	/**
+	 * less return true if version is less
+	 *
+	 * @param value
+	 * @return true/false
+	 */
+	public boolean less(String value) {
+
+		return this.less(new Version(value));
+
+	}
+
+	/**
+	 * less return true if version is less
+	 *
+	 * @param v
+	 * @return
+	 */
+	public boolean less(@NotNull Version v) {
+
+		int rounds = Math.min(this.values.size(), v.values.size());
+		for(int i = 0; i < rounds; i++) {
+			if(i + 1 == rounds) {
+				if(this.values.get(i) >= v.values.get(i)) {
+					return false;
+				}
+			}
+			else {
+				if(this.values.get(i) > v.values.get(i)) {
+					return false;
+				}
+			}
+		}
+		return true;
+
+	}
+
+
+	/**
+	 * higher return true if version is higher
+	 *
+	 * @param value
+	 * @return true/false
+	 */
+	public boolean higher(String value) {
+
+		return this.higher(new Version(value));
+
+	}
+
+	/**
+	 * higher return true if version is higher
+	 *
+	 * @param v
+	 * @return
+	 */
+	public boolean higher(@NotNull Version v) {
+
+		int rounds = Math.min(this.values.size(), v.values.size());
+		for(int i = 0; i < rounds; i++) {
+			if(i + 1 == rounds) {
+				if(this.values.get(i) <= v.values.get(i)) {
+					return false;
+				}
+			}
+			else {
+				if(this.values.get(i) < v.values.get(i)) {
+					return false;
+				}
+			}
+		}
 		return true;
 
 	}
 
 	/**
-	 * @param min
-	 * @param last
+	 * lessOrEqual return true if version is less or equal
+	 *
 	 * @param value
-	 * @return 0=less; 1=in-range; 2=max; 3=above
+	 * @return true/false
 	 */
-	private static int correlate(String min, String last, String value) {
+	public boolean lessOrEqual(String value) {
 
-		int min_check = compareVersion(value, min);
-		int max_check = compareVersion(value, last);
-		int range_check = compareVersion(min, last);
-
-		switch(range_check) {
-			case 2:
-				throw new IllegalArgumentException("Minimum Version higher than Last Version");
-			case 1: //min == last
-				switch(min_check) {
-					case 0:
-						return 0;
-					case 1:
-						return 2;
-					default:
-						return 3;
-				}
-			default:
-				if(max_check > 1) {
-					return 3;
-				}
-				if(max_check == 1) {
-					return 2;
-				}
-				if(min_check < 1) {
-					return 0;
-				}
-				return 1;
-		}
+		return this.lessOrEqual(new Version(value));
 
 	}
 
 	/**
-	 * @param A doted formatted Versions
-	 * @param B doted formatted Versions
-	 * @return 0|1|2
-	 * 0 = less
-	 * 1 = same
-	 * 2 = more
-	 * @description compare doted formatted Versions
+	 * lessOrEqual return true if version is less or equal
+	 *
+	 * @param v
+	 * @return
 	 */
-	public static int compareVersion(String A, String B) {
+	public boolean lessOrEqual(@NotNull Version v) {
 
-		final Pattern pattern_stable_release = Pattern.compile("^(\\d)\\.(\\d+)\\.(\\d+)");
-		final Pattern pattern_dev_release = Pattern.compile("^(\\d).(\\d+).(\\d+)(\\D)(.+)");
-		Matcher match;
-		match = pattern_dev_release.matcher(A);
-		if(match.find()) {
-			match = pattern_stable_release.matcher(A);
-			match.find();
-			A = match.group();
+		int rounds = Math.min(this.values.size(), v.values.size());
+		for(int i = 0; i < rounds; i++) {
+			if(this.values.get(i) > v.values.get(i)) {
+				return false;
+			}
 		}
-		match = pattern_dev_release.matcher(B);
-		if(match.find()) {
-			match = pattern_stable_release.matcher(B);
-			match.find();
-			B = match.group();
-		}
+		return true;
 
-		//throw new IllegalArgumentException
-		if((!A.matches("[0-9]+(\\.[0-9]+)*")) || (!B.matches("[0-9]+(\\.[0-9]+)*"))) {
-			throw new IllegalArgumentException("Invalid version format");
-		}
+	}
 
-		if(A.contains(".") || B.contains(".")) {
-			// example 2 vs 1.3
-			if(!(A.contains(".") && B.contains("."))) {
-				if(A.contains(".")) {
-					return compareVersion(A, B + ".0");
-				}
-				if(B.contains(".")) {
-					return compareVersion(A + ".0", B);
-				}
-			}
 
-			//normal compare
-			int a = Integer.parseInt(A.substring(0, A.indexOf(".")));
-			int b = Integer.parseInt(B.substring(0, B.indexOf(".")));
-			if(a < b) {
-				return 0;
+	/**
+	 * higherOrEqual return true if version is higher or equal
+	 *
+	 * @param value
+	 * @return true/false
+	 */
+	public boolean higherOrEqual(String value) {
+
+		return this.higherOrEqual(new Version(value));
+
+	}
+
+	/**
+	 * higherOrEqual return true if version is higher or equal
+	 *
+	 * @param v
+	 * @return
+	 */
+	public boolean higherOrEqual(@NotNull Version v) {
+
+		int rounds = Math.min(this.values.size(), v.values.size());
+		for(int i = 0; i < rounds; i++) {
+			if(this.values.get(i) < v.values.get(i)) {
+				return false;
 			}
-			if(a == b) {
-				return compareVersion(A.substring(A.indexOf(".") + 1), B.substring(B.indexOf(".") + 1));
-			}
-			return 2; //if (a > b)
 		}
-		else {
-			int a = Integer.parseInt(A);
-			int b = Integer.parseInt(B);
-			if(a < b) {
-				return 0;
-			}
-			if(a == b) {
-				return 1;
-			}
-			return 2; //if (a > b)
-		}
+		return true;
+
 	}
 
 }
