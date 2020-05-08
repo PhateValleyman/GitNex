@@ -117,90 +117,83 @@ public class AddRemoveLabelsActivity extends BaseActivity {
 
                                     if(labelsFlag) {
 
-                                        multiSelectDialogLabels = new MultiSelectDialog()
-                                                .title(getResources().getString(R.string.newIssueSelectLabelsListTitle))
-                                                .titleSize(25)
-                                                .positiveText(getResources().getString(R.string.saveButton))
-                                                .negativeText(getResources().getString(R.string.cancelButton))
-                                                .setMinSelectionLimit(0)
-                                                .preSelectIDsList(issueLabelIds)
-                                                .setMaxSelectionLimit(listOfLabels.size())
-                                                .multiSelectList(listOfLabels)
-                                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                                    @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                        multiSelectDialogLabels = new MultiSelectDialog(ctx);
+	                                    multiSelectDialogLabels.setItems(listOfLabels);
+	                                    multiSelectDialogLabels.setSelectedItemIds(issueLabelIds);
+	                                    multiSelectDialogLabels.setTitle(getResources().getString(R.string.newIssueSelectAssigneesListTitle));
+	                                    multiSelectDialogLabels.setNegativeButton(getResources().getString(R.string.cancelButton), (dialog, which) -> {
 
-                                                        String labelIds = selectedIds.toString();
-                                                        int[] integers;
-                                                        if (selectedIds.size() > 0) {
+	                                    	dialog.dismiss();
+	                                    	CloseActivity();
+	                                    });
 
-                                                            String[] items = labelIds.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
-                                                            integers = new int[items.length];
-                                                            for (int i = 0; i < integers.length; i++) {
-                                                                integers[i] = Integer.parseInt(items[i]);
-                                                            }
+	                                    multiSelectDialogLabels.setPositiveButton(getResources().getString(R.string.okButton), (dialog, which) -> {
 
-                                                        }
-                                                        else {
-                                                            integers = new int[0];
-                                                        }
+		                                    String labelIds = multiSelectDialogLabels.getSelectedItemIds().toString();
+		                                    int[] integers;
 
-                                                        updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
-                                                        tinyDb.putBoolean("singleIssueUpdate", true);
-                                                        CloseActivity();
-                                                    }
+		                                    if (multiSelectDialogLabels.getSelectedItemIds().size() > 0) {
 
-                                                    @Override
-                                                    public void onCancel() {
-                                                        CloseActivity();
-                                                    }
-                                                });
+			                                    String[] items = labelIds.replaceAll("\\[", "").replaceAll("]", "").replaceAll("\\s", "").split(",");
+			                                    integers = new int[items.length];
+
+			                                    for (int i = 0; i < integers.length; i++) {
+				                                    integers[i] = Integer.parseInt(items[i]);
+			                                    }
+
+		                                    }
+		                                    else {
+
+			                                    integers = new int[0];
+		                                    }
+
+		                                    updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
+		                                    tinyDb.putBoolean("singleIssueUpdate", true);
+		                                    CloseActivity();
+
+	                                    });
 
                                     }
                                     else {
 
-                                        multiSelectDialogLabels = new MultiSelectDialog()
-                                                .title(getResources().getString(R.string.newIssueSelectLabelsListTitle))
-                                                .titleSize(25)
-                                                .positiveText(getResources().getString(R.string.saveButton))
-                                                .negativeText(getResources().getString(R.string.cancelButton))
-                                                .setMinSelectionLimit(0)
-                                                .setMaxSelectionLimit(listOfLabels.size())
-                                                .multiSelectList(listOfLabels)
-                                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                                    @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+	                                    multiSelectDialogLabels = new MultiSelectDialog(ctx);
+	                                    multiSelectDialogLabels.setItems(listOfLabels);
+	                                    multiSelectDialogLabels.setTitle(getResources().getString(R.string.newIssueSelectAssigneesListTitle));
+	                                    multiSelectDialogLabels.setNegativeButton(getResources().getString(R.string.cancelButton), (dialog, which) -> {
 
-                                                        String labelIds = selectedIds.toString();
-                                                        int[] integers;
-                                                        if (selectedIds.size() > 0) {
+		                                    dialog.dismiss();
+		                                    CloseActivity();
+	                                    });
 
-                                                            String[] items = labelIds.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
-                                                            integers = new int[items.length];
-                                                            for (int i = 0; i < integers.length; i++) {
-                                                                integers[i] = Integer.parseInt(items[i]);
-                                                            }
+	                                    multiSelectDialogLabels.setPositiveButton(getResources().getString(R.string.okButton), (dialog, which) -> {
 
-                                                        }
-                                                        else {
-                                                            integers = new int[0];
-                                                        }
+		                                    String labelIds = multiSelectDialogLabels.getSelectedItemIds().toString();
+		                                    int[] integers;
 
-                                                        updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
-                                                        tinyDb.putBoolean("singleIssueUpdate", true);
-                                                        CloseActivity();
+		                                    if (multiSelectDialogLabels.getSelectedItemIds().size() > 0) {
 
-                                                    }
+			                                    String[] items = labelIds.replaceAll("\\[", "").replaceAll("]", "").replaceAll("\\s", "").split(",");
+			                                    integers = new int[items.length];
 
-                                                    @Override
-                                                    public void onCancel() {
-                                                        CloseActivity();
-                                                    }
-                                                });
+			                                    for (int i = 0; i < integers.length; i++) {
+				                                    integers[i] = Integer.parseInt(items[i]);
+			                                    }
+
+		                                    }
+		                                    else {
+
+			                                    integers = new int[0];
+		                                    }
+
+		                                    updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
+		                                    tinyDb.putBoolean("singleIssueUpdate", true);
+		                                    CloseActivity();
+
+	                                    });
 
                                     }
 
-                                    multiSelectDialogLabels.show(getSupportFragmentManager(), "issueMultiSelectDialog");
+                                    multiSelectDialogLabels.create().show();
 
                                 }
                             }

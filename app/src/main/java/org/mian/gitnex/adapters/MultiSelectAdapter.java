@@ -1,13 +1,14 @@
 package org.mian.gitnex.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import org.mian.gitnex.R;
 import org.mian.gitnex.models.MultiSelectModel;
 import java.util.List;
 
@@ -47,30 +48,23 @@ public class MultiSelectAdapter extends BaseAdapter {
 		return position;
 	}
 
+	@SuppressLint("ViewHolder")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		MultiSelectModel multiSelectModel = (MultiSelectModel) getItem(position);
+		convertView = LayoutInflater.from(context).inflate(R.layout.list_multi_select_item, parent, false);
 
-		LinearLayout linearLayout = new LinearLayout(context);
-		linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-		linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-		linearLayout.setPadding(15, 15, 15, 15);
-
-		TextView textView = new TextView(context);
-		textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-		textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-		textView.setPadding(15, 0, 0, 0);
+		TextView textView = convertView.findViewById(R.id.textView);
 		textView.setText(multiSelectModel.getName());
 
-		CheckBox checkBox = new CheckBox(context);
-		checkBox.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		CheckBox checkBox = convertView.findViewById(R.id.checkBox);
 		checkBox.setChecked(multiSelectModel.isSelected());
 		checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
 			if(isChecked) {
 				multiSelectModel.setSelected(true);
-				selectedItemsIds.remove(multiSelectModel.getId());
+				// selectedItemsIds.remove((Object) position);
 			} else {
 				multiSelectModel.setSelected(false);
 				selectedItemsIds.add(multiSelectModel.getId());
@@ -78,10 +72,7 @@ public class MultiSelectAdapter extends BaseAdapter {
 
 		});
 
-		linearLayout.addView(checkBox);
-		linearLayout.addView(textView);
-
-		return linearLayout;
+		return convertView;
 
 	}
 

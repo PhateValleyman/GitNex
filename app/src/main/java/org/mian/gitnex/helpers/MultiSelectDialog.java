@@ -2,10 +2,14 @@ package org.mian.gitnex.helpers;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import androidx.annotation.NonNull;
+import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.MultiSelectAdapter;
 import org.mian.gitnex.models.MultiSelectModel;
 import java.util.ArrayList;
@@ -28,7 +32,10 @@ public class MultiSelectDialog extends AlertDialog.Builder {
     public MultiSelectDialog(Context context) {
 
         super(context);
-        this.context = context;
+
+	    this.multiSelectModels = new ArrayList<>();
+	    this.selectedItemIds = new ArrayList<>();
+	    this.context = context;
     }
 
     protected MultiSelectDialog(Context context, int themeResId) {
@@ -43,13 +50,12 @@ public class MultiSelectDialog extends AlertDialog.Builder {
     @Override
     public AlertDialog create() {
 
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+	    View mainView = LayoutInflater.from(context).inflate(R.layout.layout_multi_select_dialog, null);
+	    setView(mainView);
 
         if(searchViewEnabled) {
 
-            SearchView searchView = new SearchView(context);
-            searchView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            SearchView searchView = mainView.findViewById(R.id.searchView);
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
 	            @Override
@@ -69,17 +75,15 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 	            }
             });
 
-            linearLayout.addView(searchView);
-
         }
 
         multiSelectAdapter = new MultiSelectAdapter(context, multiSelectModels, selectedItemIds);
 
-        ListView listView = new ListView(context);
-        listView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        ListView listView = mainView.findViewById(R.id.listView);
         listView.setAdapter(multiSelectAdapter);
+	    listView.setOnItemClickListener(null);
+	    listView.setDivider(null);
 
-        setView(linearLayout);
         return super.create();
 
     }
@@ -99,44 +103,35 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 
     }
 
-    public MultiSelectDialog enableSearchView(boolean searchViewEnabled) {
+    public void enableSearchView(boolean searchViewEnabled) {
 
         this.searchViewEnabled = searchViewEnabled;
-        return this;
     }
 
-    public MultiSelectDialog setItems(List<MultiSelectModel> multiSelectModels) {
+    public void setItems(List<MultiSelectModel> multiSelectModels) {
 
-        this.multiSelectModels.addAll(multiSelectModels);
-        return this;
+	    this.multiSelectModels.addAll(multiSelectModels);
     }
 
-    public MultiSelectDialog setSelectedItemIDs(List<Integer> selectedItemIds) {
+    public void setSelectedItemIds(List<Integer> selectedItemIds) {
 
-        this.selectedItemIds.addAll(selectedItemIds);
+	    this.selectedItemIds.addAll(selectedItemIds);
 
-        for(MultiSelectModel multiSelectModel : multiSelectModels) {
+	    for(MultiSelectModel multiSelectModel : multiSelectModels) {
 
-        	for(Integer selectedItemId : selectedItemIds) {
+		    for(Integer selectedItemId : selectedItemIds) {
 
-        		if(multiSelectModel.getId() == selectedItemId) {
+			    if(multiSelectModel.getId() == selectedItemId) {
 
-			        multiSelectModel.setSelected(true);
-		        } else {
+				    multiSelectModel.setSelected(true);
+			    } else {
 
-        			break;
-		        }
-	        }
-        }
-
-        return this;
+				    break;
+			    }
+		    }
+	    }
 
     }
-
-	public List<Integer> getSelectedItemIds() {
-
-		return selectedItemIds;
-	}
 
 	public List<MultiSelectModel> getSelectedModels() {
 
@@ -152,5 +147,10 @@ public class MultiSelectDialog extends AlertDialog.Builder {
 
         return multiSelectModels;
     }
+
+	public List<Integer> getSelectedItemIds() {
+
+		return selectedItemIds;
+	}
 
 }

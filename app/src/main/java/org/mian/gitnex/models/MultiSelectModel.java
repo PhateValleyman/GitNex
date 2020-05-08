@@ -1,5 +1,6 @@
 package org.mian.gitnex.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,11 +9,11 @@ import java.util.List;
 
 public class MultiSelectModel {
 
-    private Integer id;
+    private int id;
     private String name;
-    private Boolean isSelected;
+    private boolean isSelected;
 
-    public MultiSelectModel(Integer id, String name) {
+    public MultiSelectModel(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -21,7 +22,7 @@ public class MultiSelectModel {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -33,11 +34,11 @@ public class MultiSelectModel {
         this.name = name;
     }
 
-    public Boolean isSelected() {
+    public boolean isSelected() {
         return isSelected;
     }
 
-    public void setSelected(Boolean selected) {
+    public void setSelected(boolean selected) {
         isSelected = selected;
     }
 
@@ -56,6 +57,19 @@ public class MultiSelectModel {
 	    }
 
     	return stringBuilder.toString();
+
+    }
+
+    public static List<String> extractNamesFromList(List<MultiSelectModel> multiSelectModels) {
+
+	    ArrayList<String> arrayList = new ArrayList<>();
+
+    	for(MultiSelectModel multiSelectModel : multiSelectModels) {
+
+    		arrayList.add(multiSelectModel.getName());
+	    }
+
+    	return arrayList;
 
     }
 

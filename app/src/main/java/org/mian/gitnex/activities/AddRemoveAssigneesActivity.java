@@ -128,62 +128,55 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
 
                                     if(assigneesFlag) {
 
-                                        multiSelectDialogAssignees = new MultiSelectDialog()
-                                                .title(getResources().getString(R.string.newIssueSelectAssigneesListTitle))
-                                                .titleSize(25)
-                                                .positiveText(getResources().getString(R.string.saveButton))
-                                                .negativeText(getResources().getString(R.string.cancelButton))
-                                                .setMinSelectionLimit(0)
-                                                .preSelectIDsList(issueAssigneesIds)
-                                                .setMaxSelectionLimit(listOfCollaborators.size())
-                                                .multiSelectList(listOfCollaborators)
-                                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                                    @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+	                                    multiSelectDialogAssignees = new MultiSelectDialog(ctx);
+	                                    multiSelectDialogAssignees.setItems(listOfCollaborators);
+	                                    multiSelectDialogAssignees.setSelectedItemIds(issueAssigneesIds);
+	                                    multiSelectDialogAssignees.setTitle(getResources().getString(R.string.newIssueSelectAssigneesListTitle));
+	                                    multiSelectDialogAssignees.setNegativeButton(getResources().getString(R.string.cancelButton), (dialog, which) -> {
 
-                                                        Log.i("selectedNames", String.valueOf(selectedNames));
+		                                    dialog.dismiss();
+		                                    CloseActivity();
+	                                    });
 
-                                                        updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, selectedNames);
-                                                        tinyDb.putBoolean("singleIssueUpdate", true);
-                                                        CloseActivity();
-                                                    }
+	                                    multiSelectDialogAssignees.setPositiveButton(getResources().getString(R.string.okButton), (dialog, which) -> {
 
-                                                    @Override
-                                                    public void onCancel() {
-                                                        CloseActivity();
-                                                    }
-                                                });
+	                                        List<String> extractedNames = MultiSelectModel.extractNamesFromList(multiSelectDialogAssignees.getSelectedModels());
+
+                                            Log.i("selectedNames", String.valueOf(extractedNames));
+
+                                            updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, extractedNames);
+                                            tinyDb.putBoolean("singleIssueUpdate", true);
+                                            CloseActivity();
+
+	                                    });
 
                                     }
                                     else {
 
-                                        multiSelectDialogAssignees = new MultiSelectDialog()
-                                                .title(getResources().getString(R.string.newIssueSelectAssigneesListTitle))
-                                                .titleSize(25)
-                                                .positiveText(getResources().getString(R.string.saveButton))
-                                                .negativeText(getResources().getString(R.string.cancelButton))
-                                                .setMinSelectionLimit(0)
-                                                .setMaxSelectionLimit(listOfCollaborators.size())
-                                                .multiSelectList(listOfCollaborators)
-                                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                                    @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                        multiSelectDialogAssignees = new MultiSelectDialog(ctx);
+                                        multiSelectDialogAssignees.setItems(listOfCollaborators);
+                                        multiSelectDialogAssignees.setTitle(getResources().getString(R.string.newIssueSelectAssigneesListTitle));
+                                        multiSelectDialogAssignees.setNegativeButton(getResources().getString(R.string.cancelButton), (dialog, which) -> {
 
-                                                        updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, selectedNames);
-                                                        tinyDb.putBoolean("singleIssueUpdate", true);
-                                                        CloseActivity();
+                                            dialog.dismiss();
+                                            CloseActivity();
+                                        });
 
-                                                    }
+                                        multiSelectDialogAssignees.setPositiveButton(getResources().getString(R.string.okButton), (dialog, which) -> {
 
-                                                    @Override
-                                                    public void onCancel() {
-                                                        CloseActivity();
-                                                    }
-                                                });
+                                            List<String> extractedNames = MultiSelectModel.extractNamesFromList(multiSelectDialogAssignees.getSelectedModels());
+
+                                            Log.i("selectedNames", String.valueOf(extractedNames));
+
+                                            updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, extractedNames);
+                                            tinyDb.putBoolean("singleIssueUpdate", true);
+                                            CloseActivity();
+
+                                        });
 
                                     }
 
-                                    multiSelectDialogAssignees.show(getSupportFragmentManager(), "issueMultiSelectDialog");
+                                    multiSelectDialogAssignees.create().show();
 
                                 }
                             }
