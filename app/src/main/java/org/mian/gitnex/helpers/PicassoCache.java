@@ -26,7 +26,7 @@ public class PicassoCache implements Cache {
 	private String TAG = "PicassoCache";
 
 	private static final Bitmap.CompressFormat COMPRESS_FORMAT = Bitmap.CompressFormat.PNG;
-	private static final int COMPRESSION_QUALITY = 0; // 0 = high compression (low file size) | 100 = no compression
+	private static final int COMPRESSION_QUALITY = 50; // 0 = high compression (low file size) | 100 = no compression
 	private final int CACHE_SIZE;
 
 	private static final String CACHE_MAP_FILE = "cacheMap";
