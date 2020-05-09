@@ -2,9 +2,10 @@ package org.mian.gitnex.activities;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -20,6 +21,7 @@ import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.models.UserSearch;
 import org.mian.gitnex.util.TinyDB;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import retrofit2.Call;
@@ -36,6 +38,8 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	private ProgressBar mProgressBar;
 
 	private RecyclerView mRecyclerView;
+	private List<UserInfo> dataList;
+	private UserSearchForTeamMemberAdapter adapter;
 
 	private String teamId;
 
@@ -79,15 +83,35 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 			teamId = "0";
 		}
 
-		addNewTeamMeber.setOnEditorActionListener((v, actionId, event) -> {
+		mRecyclerView.setHasFixedSize(true);
+		mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 
-			if (actionId == EditorInfo.IME_ACTION_SEND) {
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),	DividerItemDecoration.VERTICAL);
+		mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+		dataList = new ArrayList<>();
+
+		addNewTeamMeber.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
 				if(!addNewTeamMeber.getText().toString().equals("")) {
+
+					adapter = new UserSearchForTeamMemberAdapter(dataList, ctx, Integer.parseInt(teamId));
 					loadUserSearchList(instanceUrl, instanceToken, addNewTeamMeber.getText().toString(), loginUid, teamId);
+
 				}
+
 			}
 
-			return false;
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
 
 		});
 
@@ -106,44 +130,39 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 			public void onResponse(@NonNull Call<UserSearch> call, @NonNull Response<UserSearch> response) {
 
 				if (response.isSuccessful()) {
+
 					assert response.body() != null;
-					getUsersList(response.body().getData(), ctx, teamId);
-				} else {
-					Log.i("onResponse", String.valueOf(response.code()));
+					if(response.body().getData().size() > 0) {
+
+						dataList.clear();
+						dataList.addAll(response.body().getData());
+						mRecyclerView.setAdapter(adapter);
+						noData.setVisibility(View.GONE);
+						mProgressBar.setVisibility(View.GONE);
+
+					}
+					else {
+
+						noData.setVisibility(View.VISIBLE);
+						mProgressBar.setVisibility(View.GONE);
+
+					}
+
+				}
+				else {
+
+					Log.e("onResponse", String.valueOf(response.code()));
+
 				}
 
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<UserSearch> call, @NonNull Throwable t) {
-				Log.i("onFailure", t.toString());
+				Log.e("onFailure", t.toString());
 			}
 
 		});
-	}
-
-	private void getUsersList(List<UserInfo> dataList, Context context, String teamId) {
-
-		UserSearchForTeamMemberAdapter adapter = new UserSearchForTeamMemberAdapter(dataList, context, Integer.parseInt(teamId));
-
-		mRecyclerView.setHasFixedSize(true);
-		mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-				DividerItemDecoration.VERTICAL);
-		mRecyclerView.addItemDecoration(dividerItemDecoration);
-
-		mProgressBar.setVisibility(View.VISIBLE);
-
-		if(adapter.getItemCount() > 0) {
-			mRecyclerView.setAdapter(adapter);
-			noData.setVisibility(View.GONE);
-			mProgressBar.setVisibility(View.GONE);
-		}
-		else {
-			noData.setVisibility(View.VISIBLE);
-			mProgressBar.setVisibility(View.GONE);
-		}
-
 	}
 
 	private void initCloseListener() {

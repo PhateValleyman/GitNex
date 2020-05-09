@@ -335,7 +335,7 @@
     <string name="noDataMembers">No members found</string>
     <string name="orgMember">Org members</string>
     <string name="orgTeamMembers">Organization team members</string>
-    <string name="addNewMember">Add New Member</string>
+    <string name="addNewMember">Add / Remove New Member</string>
     <string name="removeTeamMemberTitle">Remove\u0020</string>
     <string name="addTeamMemberTitle">Add\u0020</string>
     <string name="addTeamMemberMessage">Do you want to add this user to the team?</string>
