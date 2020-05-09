@@ -27,6 +27,7 @@ public class PicassoCache implements Cache {
 
 	private static final Bitmap.CompressFormat COMPRESS_FORMAT = Bitmap.CompressFormat.PNG;
 	private static final int COMPRESSION_QUALITY = 0; // 0 = high compression (low file size) | 100 = no compression
+	private final int CACHE_SIZE;
 
 	private static final String CACHE_MAP_FILE = "cacheMap";
 
@@ -35,6 +36,9 @@ public class PicassoCache implements Cache {
 
 	public PicassoCache(File cachePath, Context ctx) throws IOException, ClassNotFoundException {
 
+		TinyDB tinyDb = new TinyDB(ctx);
+
+		CACHE_SIZE = FilesData.returnOnlyNumber(tinyDb.getString("cacheSizeImagesStr")) * 1024 * 1024;
 		this.cachePath = cachePath;
 		cacheMap = new HashMap<>();
 		this.ctx = ctx;
@@ -118,8 +122,7 @@ public class PicassoCache implements Cache {
 	@Override
 	public int maxSize() {
 
-		TinyDB tinyDb = new TinyDB(ctx);
-		return FilesData.returnOnlyNumber(tinyDb.getString("cacheSizeImagesStr")) * 1024 * 1024;
+		return CACHE_SIZE;
 
 	}
 
