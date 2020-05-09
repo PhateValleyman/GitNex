@@ -33,7 +33,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	private View.OnClickListener onClickListener;
 	final Context ctx = this;
 	private Context appCtx;
-	private TextView addNewTeamMeber;
+	private TextView addNewTeamMember;
 	private TextView noData;
 	private ProgressBar mProgressBar;
 
@@ -44,7 +44,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	private String teamId;
 
 	@Override
-	protected int getLayoutResourceId(){
+	protected int getLayoutResourceId() {
 		return R.layout.activity_add_new_team_member;
 	}
 
@@ -64,19 +64,19 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		ImageView closeActivity = findViewById(R.id.close);
-		addNewTeamMeber = findViewById(R.id.addNewTeamMeber);
+		addNewTeamMember = findViewById(R.id.addNewTeamMeber);
 		mRecyclerView = findViewById(R.id.recyclerViewUserSearch);
 		mProgressBar = findViewById(R.id.progress_bar);
 		noData = findViewById(R.id.noData);
 
-		addNewTeamMeber.requestFocus();
+		addNewTeamMember.requestFocus();
 		assert imm != null;
-		imm.showSoftInput(addNewTeamMeber, InputMethodManager.SHOW_IMPLICIT);
+		imm.showSoftInput(addNewTeamMember, InputMethodManager.SHOW_IMPLICIT);
 
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		if(getIntent().getStringExtra("teamId") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamId")).equals("")){
+		if(getIntent().getStringExtra("teamId") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamId")).equals("")) {
 			teamId = getIntent().getStringExtra("teamId");
 		}
 		else {
@@ -91,15 +91,15 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 		dataList = new ArrayList<>();
 
-		addNewTeamMeber.addTextChangedListener(new TextWatcher() {
+		addNewTeamMember.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-				if(!addNewTeamMeber.getText().toString().equals("")) {
+				if(!addNewTeamMember.getText().toString().equals("")) {
 
 					adapter = new UserSearchForTeamMemberAdapter(dataList, ctx, Integer.parseInt(teamId));
-					loadUserSearchList(instanceUrl, instanceToken, addNewTeamMeber.getText().toString(), loginUid, teamId);
+					loadUserSearchList(instanceUrl, instanceToken, addNewTeamMember.getText().toString(), loginUid, teamId);
 
 				}
 
@@ -119,17 +119,14 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 	public void loadUserSearchList(String instanceUrl, String token, String searchKeyword, String loginUid, String teamId) {
 
-		Call<UserSearch> call = RetrofitClient
-				.getInstance(instanceUrl, ctx)
-				.getApiInterface()
-				.getUserBySearch(Authorization.returnAuthentication(ctx, loginUid, token), searchKeyword, 10);
+		Call<UserSearch> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserBySearch(Authorization.returnAuthentication(ctx, loginUid, token), searchKeyword, 10);
 
 		call.enqueue(new Callback<UserSearch>() {
 
 			@Override
 			public void onResponse(@NonNull Call<UserSearch> call, @NonNull Response<UserSearch> response) {
 
-				if (response.isSuccessful()) {
+				if(response.isSuccessful()) {
 
 					assert response.body() != null;
 					if(response.body().getData().size() > 0) {
@@ -147,11 +144,6 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 						mProgressBar.setVisibility(View.GONE);
 
 					}
-
-				}
-				else {
-
-					Log.e("onResponse", String.valueOf(response.code()));
 
 				}
 
