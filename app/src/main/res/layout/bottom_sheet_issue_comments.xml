@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/primaryBackgroundColor"
@@ -34,9 +35,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:layout_weight="1"
+                        android:background="@drawable/circle_light"
+                        android:padding="10dp"
                         android:text="👍"
                         android:textColor="?attr/primaryTextColor"
-                        android:textSize="25sp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -44,9 +47,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:layout_weight="1"
+                        android:background="@drawable/circle_light"
+                        android:padding="10dp"
                         android:text="😀"
                         android:textColor="?attr/primaryTextColor"
-                        android:textSize="25sp" />
+                        android:textSize="20sp" />
+
 
                     <TextView
                         android:id="@+id/textView4"
@@ -54,10 +60,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:layout_weight="1"
+                        android:background="@drawable/circle_light"
+                        android:padding="10dp"
                         android:text="😇"
                         android:textColor="?attr/primaryTextColor"
-                        android:textSize="25sp" />
-
+                        android:textSize="20sp" />
 
                 </LinearLayout>
             </HorizontalScrollView>
