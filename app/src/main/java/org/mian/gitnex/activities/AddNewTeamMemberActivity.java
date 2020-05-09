@@ -40,7 +40,8 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	private String teamId;
 
 	@Override
-	protected int getLayoutResourceId(){
+	protected int getLayoutResourceId() {
+
 		return R.layout.activity_add_new_team_member;
 	}
 
@@ -72,7 +73,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		if(getIntent().getStringExtra("teamId") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamId")).equals("")){
+		if(getIntent().getStringExtra("teamId") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamId")).equals("")) {
 			teamId = getIntent().getStringExtra("teamId");
 		}
 		else {
@@ -81,7 +82,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 		addNewTeamMeber.setOnEditorActionListener((v, actionId, event) -> {
 
-			if (actionId == EditorInfo.IME_ACTION_SEND) {
+			if(actionId == EditorInfo.IME_ACTION_SEND) {
 				if(!addNewTeamMeber.getText().toString().equals("")) {
 					loadUserSearchList(instanceUrl, instanceToken, addNewTeamMeber.getText().toString(), loginUid, teamId);
 				}
@@ -95,20 +96,18 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 	public void loadUserSearchList(String instanceUrl, String token, String searchKeyword, String loginUid, String teamId) {
 
-		Call<UserSearch> call = RetrofitClient
-				.getInstance(instanceUrl, ctx)
-				.getApiInterface()
-				.getUserBySearch(Authorization.returnAuthentication(ctx, loginUid, token), searchKeyword, 10);
+		Call<UserSearch> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserBySearch(Authorization.returnAuthentication(ctx, loginUid, token), searchKeyword, 10);
 
 		call.enqueue(new Callback<UserSearch>() {
 
 			@Override
 			public void onResponse(@NonNull Call<UserSearch> call, @NonNull Response<UserSearch> response) {
 
-				if (response.isSuccessful()) {
+				if(response.isSuccessful()) {
 					assert response.body() != null;
 					getUsersList(response.body().getData(), ctx, teamId);
-				} else {
+				}
+				else {
 					Log.i("onResponse", String.valueOf(response.code()));
 				}
 
@@ -116,6 +115,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 			@Override
 			public void onFailure(@NonNull Call<UserSearch> call, @NonNull Throwable t) {
+
 				Log.i("onFailure", t.toString());
 			}
 
@@ -128,8 +128,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 		mRecyclerView.setHasFixedSize(true);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-				DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
 		mProgressBar.setVisibility(View.VISIBLE);
@@ -147,6 +146,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
+
 		onClickListener = view -> finish();
 	}
 
