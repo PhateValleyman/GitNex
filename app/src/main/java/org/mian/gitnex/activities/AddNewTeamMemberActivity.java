@@ -31,7 +31,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	private View.OnClickListener onClickListener;
 	final Context ctx = this;
 	private Context appCtx;
-	private TextView addNewTeamMeber;
+	private TextView addNewTeamMember;
 	private TextView noData;
 	private ProgressBar mProgressBar;
 
@@ -61,14 +61,14 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		ImageView closeActivity = findViewById(R.id.close);
-		addNewTeamMeber = findViewById(R.id.addNewTeamMeber);
+		addNewTeamMember = findViewById(R.id.addNewTeamMeber);
 		mRecyclerView = findViewById(R.id.recyclerViewUserSearch);
 		mProgressBar = findViewById(R.id.progress_bar);
 		noData = findViewById(R.id.noData);
 
-		addNewTeamMeber.requestFocus();
+		addNewTeamMember.requestFocus();
 		assert imm != null;
-		imm.showSoftInput(addNewTeamMeber, InputMethodManager.SHOW_IMPLICIT);
+		imm.showSoftInput(addNewTeamMember, InputMethodManager.SHOW_IMPLICIT);
 
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
@@ -80,11 +80,11 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 			teamId = "0";
 		}
 
-		addNewTeamMeber.setOnEditorActionListener((v, actionId, event) -> {
+		addNewTeamMember.setOnEditorActionListener((v, actionId, event) -> {
 
 			if(actionId == EditorInfo.IME_ACTION_SEND) {
-				if(!addNewTeamMeber.getText().toString().equals("")) {
-					loadUserSearchList(instanceUrl, instanceToken, addNewTeamMeber.getText().toString(), loginUid, teamId);
+				if(!addNewTeamMember.getText().toString().equals("")) {
+					loadUserSearchList(instanceUrl, instanceToken, addNewTeamMember.getText().toString(), loginUid, teamId);
 				}
 			}
 
