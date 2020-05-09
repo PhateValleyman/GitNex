@@ -18,11 +18,11 @@
         android:textSize="50sp" />
 
     <TextView
+        android:id="@+id/customTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:gravity="center_horizontal"
-        android:text="@string/featureDeprecated"
         android:textColor="?attr/primaryTextColor"
         android:textSize="16sp" />
 

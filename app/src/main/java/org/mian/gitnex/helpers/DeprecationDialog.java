@@ -16,12 +16,15 @@ import org.mian.gitnex.R;
 public class DeprecationDialog extends AlertDialog.Builder {
 
 	private Context context;
-	private String message = "";
+
+	private String title;
+	private String message;
 
 	public DeprecationDialog(@NonNull Context context) {
 
 		super(context);
 		this.context = context;
+		setup();
 
 	}
 
@@ -29,6 +32,7 @@ public class DeprecationDialog extends AlertDialog.Builder {
 
 		super(context, themeResId);
 		this.context = context;
+		setup();
 
 	}
 
@@ -37,21 +41,37 @@ public class DeprecationDialog extends AlertDialog.Builder {
 	@Override
 	public AlertDialog create() {
 
+		setCancelable(false);
 		setPositiveButton(context.getResources().getString(R.string.okButton), (dialog, which) -> dialog.dismiss());
 
 		View view = LayoutInflater.from(context).inflate(R.layout.layout_deprecation_dialog, null);
 
-		TextView textView = view.findViewById(R.id.customMessage);
-		textView.setText(message);
+		TextView customTitle = view.findViewById(R.id.customTitle);
+		TextView customMessage = view.findViewById(R.id.customMessage);
+
+		customTitle.setText(title);
+		customMessage.setText(message);
 
 		setView(view);
 		return super.create();
 
 	}
 
+	private void setup() {
+
+		this.message = "";
+		this.title = context.getResources().getString(R.string.featureDeprecated);
+
+	}
+
 	public void setMessage(String message) {
 
 		this.message = message;
+	}
+
+	public void setTitle(String title) {
+
+		this.title = title;
 	}
 
 }
