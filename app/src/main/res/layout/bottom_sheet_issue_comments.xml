@@ -18,10 +18,12 @@
             android:orientation="vertical">
 
             <HorizontalScrollView
+                android:id="@+id/commentAddReactionsFrame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/commentAddReactionsContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
@@ -30,7 +32,7 @@
                     android:paddingBottom="15dp">
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/commentAddReaction1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
@@ -42,7 +44,7 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/commentAddReaction2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
@@ -55,7 +57,7 @@
 
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/commentAddReaction3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
