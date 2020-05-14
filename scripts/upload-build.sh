@@ -12,17 +12,28 @@ upload_filename="signed.apk"
 upload_timeout=300
 upload_retries=3
 
+proxy_enabled=false
+proxy_url=""
+
 # Main uploading logic
 
 upload_repeated=0
 
 upload_file() {
 
-  curl --upload-file $upload_filename --user $nc_user:$nc_password $nc_url --progress-bar --max-time $upload_timeout
+  if [ $proxy_enabled == true ]; then
+
+    curl --proxy $proxy_url --upload-file $upload_filename --user $nc_user:$nc_password $nc_url --progress-bar --max-time $upload_timeout
+
+  else
+
+    curl --upload-file $upload_filename --user $nc_user:$nc_password $nc_url --progress-bar --max-time $upload_timeout
+
+  fi
 
 }
 
-while (($? == 0)) && (($upload_repeated < $upload_retries)); do
+while [[ ($? == 0) && ($upload_repeated < $upload_retries) ]]; do
 
   upload_repeated=$(($upload_repeated + 1))
   echo "Upload pass $upload_repeated"
@@ -30,7 +41,7 @@ while (($? == 0)) && (($upload_repeated < $upload_retries)); do
 
 done
 
-if (($? != 0)); then
+if [ $? != 0 ]; then
 
   echo "Upload has failed."
   exit 1
