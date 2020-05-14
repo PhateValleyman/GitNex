@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
+# Script used to upload builds via WebDAV
+# @author opyale
+
 [ -z "${NC_TOKEN}" ] && { echo "Nextcloud token missing."; exit 1; }
 
-# Variables
+# Customizable variables
 
 nc_user="GitNexBot"
 nc_password=$NC_TOKEN
@@ -15,7 +18,7 @@ upload_retries=3
 proxy_enabled=false
 proxy_url="socks5://{ip_adress}:{port}"
 
-# Main uploading logic
+# Uploading logic
 
 upload_repeated=0
 
