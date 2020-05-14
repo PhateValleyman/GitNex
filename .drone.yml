@@ -42,7 +42,7 @@ steps:
       - ./scripts/sign-build.sh
 
   - name: publish
-    image: nextcloudci/android:android-49
+    image: alpine
     environment:
       NC_TOKEN:
         from_secret: NC_TOKEN
