@@ -6,7 +6,7 @@
 
 nc_user="GitNexBot"
 nc_password=$NC_TOKEN
-nc_filename="latest.apk"
+nc_filename="signed.apk"
 nc_url="https://cloud.swatian.com/remote.php/dav/files/GitNexBot/GitNex-Builds/latest.apk"
 
 upload_timeout=3600
