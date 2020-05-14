@@ -6,9 +6,9 @@
 
 nc_user="GitNexBot"
 nc_password=$NC_TOKEN
-nc_filename="signed.apk"
 nc_url="https://cloud.swatian.com/remote.php/dav/files/GitNexBot/GitNex-Builds/latest.apk"
 
+upload_filename="signed.apk"
 upload_timeout=300
 upload_retries=3
 
@@ -18,7 +18,7 @@ upload_repeated=0
 
 upload_file() {
 
-  curl --upload-file $nc_filename --user $nc_user:$nc_password $nc_url --progress-bar --max-time $upload_timeout
+  curl --upload-file $upload_filename --user $nc_user:$nc_password $nc_url --progress-bar --max-time $upload_timeout
 
 }
 
