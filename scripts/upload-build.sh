@@ -13,7 +13,7 @@ upload_timeout=300
 upload_retries=3
 
 proxy_enabled=false
-proxy_url=""
+proxy_url="socks5://{ip_adress}:{port}"
 
 # Main uploading logic
 
@@ -22,13 +22,9 @@ upload_repeated=0
 upload_file() {
 
   if [ $proxy_enabled == true ]; then
-
     curl --proxy $proxy_url --upload-file $upload_filename --user $nc_user:$nc_password $nc_url --progress-bar --max-time $upload_timeout
-
   else
-
     curl --upload-file $upload_filename --user $nc_user:$nc_password $nc_url --progress-bar --max-time $upload_timeout
-
   fi
 
 }
