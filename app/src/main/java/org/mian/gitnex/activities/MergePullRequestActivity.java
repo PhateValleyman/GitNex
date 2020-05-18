@@ -2,7 +2,6 @@ package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -281,11 +280,8 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		viewBinding.mergeButton.setEnabled(false);
 		viewBinding.mergeAndDeleteBranchButton.setEnabled(false);
-		GradientDrawable shape = new GradientDrawable();
-		shape.setCornerRadius(8);
-		shape.setColor(getResources().getColor(R.color.hintColor));
-		viewBinding.mergeButton.setBackground(shape);
-		viewBinding.mergeAndDeleteBranchButton.setBackground(shape);
+		viewBinding.mergeAndDeleteBranchButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons_disabled));
+		viewBinding.mergeButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons_disabled));
 
 	}
 
@@ -293,11 +289,8 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		viewBinding.mergeButton.setEnabled(true);
 		viewBinding.mergeAndDeleteBranchButton.setEnabled(true);
-		GradientDrawable shape = new GradientDrawable();
-		shape.setCornerRadius(8);
-		shape.setColor(getResources().getColor(R.color.btnBackground));
-		viewBinding.mergeButton.setBackground(shape);
-		viewBinding.mergeAndDeleteBranchButton.setBackground(shape);
+		viewBinding.mergeAndDeleteBranchButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons));
+		viewBinding.mergeButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons));
 
 	}
 
