@@ -24,6 +24,7 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.helpers.VersionNew;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.MergePullRequest;
 import org.mian.gitnex.models.MergePullRequestSpinner;
@@ -53,6 +54,7 @@ public class MergePullRequestActivity extends BaseActivity {
 	private Spinner mergeModeSpinner;
 	private ArrayAdapter<Mention> defaultMentionAdapter;
 	private Button mergeButton;
+	private Button mergeAndDeleteBranchButton;
 	private String Do;
 
 	@Override
@@ -117,6 +119,12 @@ public class MergePullRequestActivity extends BaseActivity {
 		closeActivity.setOnClickListener(onClickListener);
 
 		mergeButton = findViewById(R.id.mergeButton);
+		mergeAndDeleteBranchButton = findViewById(R.id.mergeAndDeleteBranchButton);
+
+		// if gitea version is greater/equal than user installed version (installed.higherOrEqual(compareVer))
+		if(new VersionNew(tinyDb.getString("giteaVersion")).higherOrEqual("1.12")) {
+			mergeAndDeleteBranchButton.setVisibility(View.VISIBLE);
+		}
 
 		if(!connToInternet) {
 

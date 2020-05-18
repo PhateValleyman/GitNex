@@ -587,6 +587,7 @@
     <string name="openFileDiffText">Files Changed</string>
     <string name="mergePullRequestText">Merge Pull Request</string>
     <string name="mergePullRequestButtonText">Merge</string>
+    <string name="mergeAndDeleteBranchPullRequestButtonText">Merge and Delete Branch</string>
     <string name="mergeNoteText">Merge may fail if you are not authorized to merge this Pull Request.</string>
     <string name="mergeCommentText">Merge comment</string>
     <string name="mergePRSuccessMsg">Pull Request was merged successfully</string>
