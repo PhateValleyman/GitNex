@@ -104,7 +104,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		// if gitea version is greater/equal than user installed version (installed.higherOrEqual(compareVer))
 		if(new VersionNew(tinyDb.getString("giteaVersion")).higherOrEqual("1.12")) {
-			viewBinding.mergeAndDeleteBranchButton.setVisibility(View.VISIBLE);
+			viewBinding.deleteBranch.setVisibility(View.VISIBLE);
 		}
 
 		if(!connToInternet) {
@@ -279,8 +279,6 @@ public class MergePullRequestActivity extends BaseActivity {
 	private void disableProcessButton() {
 
 		viewBinding.mergeButton.setEnabled(false);
-		viewBinding.mergeAndDeleteBranchButton.setEnabled(false);
-		viewBinding.mergeAndDeleteBranchButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons_disabled));
 		viewBinding.mergeButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons_disabled));
 
 	}
@@ -288,8 +286,6 @@ public class MergePullRequestActivity extends BaseActivity {
 	private void enableProcessButton() {
 
 		viewBinding.mergeButton.setEnabled(true);
-		viewBinding.mergeAndDeleteBranchButton.setEnabled(true);
-		viewBinding.mergeAndDeleteBranchButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons));
 		viewBinding.mergeButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons));
 
 	}
