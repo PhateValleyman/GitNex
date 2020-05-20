@@ -20,6 +20,7 @@ import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
 
@@ -234,7 +235,11 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		});
 
-		if(tinyDB.getBoolean("issueSubscribed")) {
+		if(new Version(tinyDB.getString("giteaVersion")).less("1.12.0")) {
+			subscribeIssue.setVisibility(View.GONE);
+			unsubscribeIssue.setVisibility(View.GONE);
+		}
+		else if(tinyDB.getBoolean("issueSubscribed")) {
 			subscribeIssue.setVisibility(View.GONE);
 			unsubscribeIssue.setVisibility(View.VISIBLE);
 		}

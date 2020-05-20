@@ -47,7 +47,7 @@ import org.mian.gitnex.helpers.LabelWidthCalculator;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.UserMentions;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.IssueComments;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.WatchInfo;
@@ -552,7 +552,7 @@ public class IssueDetailActivity extends BaseActivity {
 			}
 		});
 
-		if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) >= 1) {
+		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 
 			Call<WatchInfo> call2 = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().checkIssueWatchStatus(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
 
@@ -581,12 +581,6 @@ public class IssueDetailActivity extends BaseActivity {
 
 				}
 			});
-
-		}
-		else {
-
-			// fallback the RepoWatch is used to guess the issue subscription
-			tinyDb.putBoolean("issueSubscribed", tinyDb.getBoolean("repoWatch"));
 
 		}
 
