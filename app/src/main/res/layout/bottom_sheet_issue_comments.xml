@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/primaryBackgroundColor"
@@ -17,59 +16,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <HorizontalScrollView
-                android:id="@+id/commentAddReactionsFrame"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:id="@+id/commentAddReactionsContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:paddingTop="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingBottom="15dp">
-
-                    <TextView
-                        android:id="@+id/commentAddReaction1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_reactions"
-                        android:padding="10dp"
-                        android:text="👍"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/commentAddReaction2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_reactions"
-                        android:padding="10dp"
-                        android:text="😀"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="20sp" />
-
-
-                    <TextView
-                        android:id="@+id/commentAddReaction3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_reactions"
-                        android:padding="10dp"
-                        android:text="😇"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="20sp" />
-
-                </LinearLayout>
-            </HorizontalScrollView>
+            <include layout="@layout/layout_add_reactions"/>
 
             <TextView
                 android:id="@+id/commentMenuEdit"
