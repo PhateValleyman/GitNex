@@ -184,14 +184,14 @@ public class IssueActions {
 
 					if(response.code() == 201) {
 
-						Toasty.info(ctx, ctx.getString(R.string.issueSubscribtion));
+						Toasty.info(ctx, ctx.getString(R.string.subscribedSuccessfully));
 						tinyDB.putBoolean("issueSubscribed", true);
 
 					}
 					else if(response.code() == 200) {
 
 						tinyDB.putBoolean("issueSubscribed", true);
-						Toasty.info(ctx, ctx.getString(R.string.issueAlreadySubscribed));
+						Toasty.info(ctx, ctx.getString(R.string.alreadySubscribed));
 
 					}
 
@@ -203,7 +203,7 @@ public class IssueActions {
 				}
 				else {
 
-					Toasty.info(ctx, ctx.getString(R.string.issueSubscribtionError));
+					Toasty.info(ctx, ctx.getString(R.string.subscribtionError));
 
 				}
 
@@ -212,7 +212,7 @@ public class IssueActions {
 			@Override
 			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
-				Toasty.info(ctx, ctx.getString(R.string.issueSubscribtionError));
+				Toasty.info(ctx, ctx.getString(R.string.unsubscribedSuccessfully));
 			}
 		});
 
@@ -244,14 +244,14 @@ public class IssueActions {
 
 					if(response.code() == 201) {
 
-						Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtion));
+						Toasty.info(ctx, ctx.getString(R.string.unsubscribedSuccessfully));
 						tinyDB.putBoolean("issueSubscribed", false);
 
 					}
 					else if(response.code() == 200) {
 
 						tinyDB.putBoolean("issueSubscribed", false);
-						Toasty.info(ctx, ctx.getString(R.string.issueAlreadyUnsubscribed));
+						Toasty.info(ctx, ctx.getString(R.string.alreadyUnsubscribed));
 
 					}
 
@@ -263,7 +263,7 @@ public class IssueActions {
 				}
 				else {
 
-					Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtionError));
+					Toasty.info(ctx, ctx.getString(R.string.unsubscribtionError));
 
 				}
 
@@ -272,7 +272,7 @@ public class IssueActions {
 			@Override
 			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
-				Toasty.info(ctx, ctx.getString(R.string.issueUnsubscribtionError));
+				Toasty.info(ctx, ctx.getString(R.string.unsubscribtionError));
 			}
 		});
 	}
