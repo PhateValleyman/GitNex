@@ -38,9 +38,9 @@ import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.fragments.ReleasesFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.UserRepositories;
-import org.mian.gitnex.models.WatchRepository;
+import org.mian.gitnex.models.WatchInfo;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
@@ -222,7 +222,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			}
 
 			// release count
-			if(VersionCheck.compareVersion("1.11.5", tinyDb.getString("giteaVersion")) < 1) {
+			if(new Version("1.11.4").less(tinyDb.getString("giteaVersion"))) {
 				if(textViewBadgeRelease.getText() != "") { // only show if API returned a number
 					Objects.requireNonNull(tabLayout.getTabAt(5)).setCustomView(tabHeader6);
 					TabLayout.Tab tabOpenRelease = tabLayout.getTabAt(5);
@@ -486,14 +486,14 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 	private void checkRepositoryWatchStatus(String instanceUrl, String instanceToken, final String owner, String repo) {
 
-		Call<WatchRepository> call;
+		Call<WatchInfo> call;
 
 		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().checkRepoWatchStatus(instanceToken, owner, repo);
 
-		call.enqueue(new Callback<WatchRepository>() {
+		call.enqueue(new Callback<WatchInfo>() {
 
 			@Override
-			public void onResponse(@NonNull Call<WatchRepository> call, @NonNull retrofit2.Response<WatchRepository> response) {
+			public void onResponse(@NonNull Call<WatchInfo> call, @NonNull retrofit2.Response<WatchInfo> response) {
 
 				TinyDB tinyDb = new TinyDB(appCtx);
 
@@ -510,7 +510,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<WatchRepository> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<WatchInfo> call, @NonNull Throwable t) {
 
 				Log.e("onFailure", t.toString());
 			}

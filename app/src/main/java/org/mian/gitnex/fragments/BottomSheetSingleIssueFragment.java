@@ -20,6 +20,7 @@ import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
 
@@ -33,7 +34,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		View v = inflater.inflate(R.layout.bottom_sheet_single_issue_layout, container, false);
+		View v = inflater.inflate(R.layout.bottom_sheet_single_issue, container, false);
 
 		final Context ctx = getContext();
 		final TinyDB tinyDB = new TinyDB(ctx);
@@ -222,23 +223,29 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		subscribeIssue.setOnClickListener(subscribeToIssue -> {
 
-			IssueActions.subscribe(ctx, subscribeIssue, unsubscribeIssue);
-			//dismiss();
+			IssueActions.subscribe(ctx);
+			dismiss();
 
 		});
 
 		unsubscribeIssue.setOnClickListener(unsubscribeToIssue -> {
 
-			IssueActions.unsubscribe(ctx, subscribeIssue, unsubscribeIssue);
-			//dismiss();
+			IssueActions.unsubscribe(ctx);
+			dismiss();
 
 		});
 
-		//if RepoWatch True Provide Unsubscribe first
-		// ToDo: API to check if user is subscribed to an issue (do not exist can be guessed by many api endpoints :/)
-		if(tinyDB.getBoolean("repoWatch")) {
+		if(new Version(tinyDB.getString("giteaVersion")).less("1.12.0")) {
+			subscribeIssue.setVisibility(View.GONE);
+			unsubscribeIssue.setVisibility(View.GONE);
+		}
+		else if(tinyDB.getBoolean("issueSubscribed")) {
 			subscribeIssue.setVisibility(View.GONE);
 			unsubscribeIssue.setVisibility(View.VISIBLE);
+		}
+		else {
+			subscribeIssue.setVisibility(View.VISIBLE);
+			unsubscribeIssue.setVisibility(View.GONE);
 		}
 
 		return v;

@@ -31,7 +31,7 @@ import org.mian.gitnex.models.UserOrganizations;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.models.UserSearch;
 import org.mian.gitnex.models.UserTokens;
-import org.mian.gitnex.models.WatchRepository;
+import org.mian.gitnex.models.WatchInfo;
 import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -247,13 +247,16 @@ public interface ApiInterface {
     Call<JsonElement> unStarRepository(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
 
     @GET("repos/{owner}/{repo}/subscription") // check watch status of a repository
-    Call<WatchRepository> checkRepoWatchStatus(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
+    Call<WatchInfo> checkRepoWatchStatus(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
 
     @PUT("repos/{owner}/{repo}/subscription") // watch a repository
     Call<JsonElement> watchRepository(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
 
     @DELETE("repos/{owner}/{repo}/subscription") // un watch a repository
     Call<JsonElement> unWatchRepository(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
+
+    @GET("repos/{owner}/{repo}/issues/{index}/subscriptions/check")
+    Call<WatchInfo> checkIssueWatchStatus(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex);
 
     @PUT("repos/{owner}/{repo}/issues/{index}/subscriptions/{user}") // subscribe user to issue
     Call<Void> addIssueSubscriber(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int issueIndex, @Path("user") String issueSubscriber);
@@ -275,4 +278,13 @@ public interface ApiInterface {
 
     @DELETE("repos/{owner}/{repo}/issues/comments/{id}") // delete own comment from issue
     Call<JsonElement> deleteComment(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("id") int commentIndex);
+
+    @GET("teams/{teamId}/members/{username}") // check team member
+    Call<UserInfo> checkTeamMember(@Header("Authorization") String token, @Path("teamId") int teamId, @Path("username") String username);
+
+    @PUT("teams/{teamId}/members/{username}") // add new team member
+    Call<JsonElement> addTeamMember(@Header("Authorization") String token, @Path("teamId") int teamId, @Path("username") String username);
+
+    @DELETE("teams/{teamId}/members/{username}") // remove team member
+    Call<JsonElement> removeTeamMember(@Header("Authorization") String token, @Path("teamId") int teamId, @Path("username") String username);
 }

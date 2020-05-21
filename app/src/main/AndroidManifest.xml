@@ -5,7 +5,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -80,6 +79,7 @@
         <activity android:name=".activities.SettingsSecurityActivity" />
         <activity android:name=".activities.SettingsTranslationActivity" />
         <activity android:name=".activities.SettingsReportsActivity" />
+        <activity android:name=".activities.AddNewTeamMemberActivity" />
     </application>
 
 </manifest>
