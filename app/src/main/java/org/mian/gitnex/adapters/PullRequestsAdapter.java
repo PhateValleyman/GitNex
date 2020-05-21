@@ -99,6 +99,8 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 		private TextView prNumber;
 		private TextView prMergeable;
 		private TextView prHeadBranch;
+		private TextView prIsFork;
+		private TextView prForkFullName;
 		private ImageView assigneeAvatar;
 		private TextView prTitle;
 		private TextView prCreatedTime;
@@ -111,6 +113,8 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			prNumber = itemView.findViewById(R.id.prNumber);
 			prMergeable = itemView.findViewById(R.id.prMergeable);
 			prHeadBranch = itemView.findViewById(R.id.prHeadBranch);
+			prIsFork = itemView.findViewById(R.id.prIsFork);
+			prForkFullName = itemView.findViewById(R.id.prForkFullName);
 			assigneeAvatar = itemView.findViewById(R.id.assigneeAvatar);
 			prTitle = itemView.findViewById(R.id.prTitle);
 			prCommentsCount = itemView.findViewById(R.id.prCommentsCount);
@@ -130,6 +134,8 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 				tinyDb.putString("issueNumber", prNumber.getText().toString());
 				tinyDb.putString("prMergeable", prMergeable.getText().toString());
 				tinyDb.putString("prHeadBranch", prHeadBranch.getText().toString());
+				tinyDb.putString("prIsFork", prIsFork.getText().toString());
+				tinyDb.putString("prForkFullName", prForkFullName.getText().toString());
 				tinyDb.putString("issueType", "pr");
 				context.startActivity(intent);
 
@@ -147,6 +153,8 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 				tinyDb.putString("issueNumber", prNumber.getText().toString());
 				tinyDb.putString("prMergeable", prMergeable.getText().toString());
 				tinyDb.putString("prHeadBranch", prHeadBranch.getText().toString());
+				tinyDb.putString("prIsFork", prIsFork.getText().toString());
+				tinyDb.putString("prForkFullName", prForkFullName.getText().toString());
 				tinyDb.putString("issueType", "pr");
 				context.startActivity(intent);
 
@@ -181,6 +189,8 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			prNumber.setText(String.valueOf(prModel.getNumber()));
 			prMergeable.setText(String.valueOf(prModel.isMergeable()));
 			prHeadBranch.setText(prModel.getHead().getRef());
+			prIsFork.setText(String.valueOf(prModel.getHead().getRepo().isFork()));
+			prForkFullName.setText(prModel.getHead().getRepo().getFull_name());
 			prCommentsCount.setText(String.valueOf(prModel.getComments()));
 
 			prCreatedTime.setText(TimeHelper.formatTime(prModel.getCreated_at(), new Locale(locale), timeFormat, context));

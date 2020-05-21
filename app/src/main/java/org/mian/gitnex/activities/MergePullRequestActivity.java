@@ -115,6 +115,13 @@ public class MergePullRequestActivity extends BaseActivity {
 			viewBinding.mergeInfoDisabledMessage.setVisibility(View.GONE);
 		}
 
+		if(tinyDb.getString("prIsFork").equals("true")) {
+			viewBinding.deleteBranchForkInfo.setVisibility(View.VISIBLE);
+		}
+		else {
+			viewBinding.deleteBranchForkInfo.setVisibility(View.GONE);
+		}
+
 		if(!connToInternet) {
 
 			disableProcessButton();

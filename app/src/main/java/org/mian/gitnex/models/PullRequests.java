@@ -91,7 +91,7 @@ public class PullRequests {
             private ownerObject owner;
             private permissionsObject permissions;
 
-            public class ownerObject {
+            public static class ownerObject {
 
                 private int repo_id;
                 private boolean is_admin;
@@ -135,7 +135,7 @@ public class PullRequests {
                 }
             }
 
-            public class permissionsObject {
+            public static class permissionsObject {
 
                 private boolean admin;
                 private boolean pull;

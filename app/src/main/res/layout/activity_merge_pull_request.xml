@@ -135,6 +135,16 @@
                 android:textColor="?attr/primaryTextColor"/>
 
             <TextView
+                android:id="@+id/deleteBranchForkInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/deleteBranchForkInfo"
+                android:textColor="?attr/hintColor"
+                android:textSize="12sp"
+                android:gravity="start"
+                android:layout_marginTop="0dp" />
+
+            <TextView
                 android:id="@+id/mergeInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -142,7 +152,7 @@
                 android:textColor="?attr/hintColor"
                 android:textSize="12sp"
                 android:gravity="start"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="15dp" />
 
             <Button
                 android:id="@+id/mergeButton"
