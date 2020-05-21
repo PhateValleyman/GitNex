@@ -131,6 +131,7 @@
                 android:checked="false"
                 android:textSize="16sp"
                 android:layout_marginTop="10dp"
+                android:visibility="gone"
                 android:textColor="?attr/primaryTextColor"/>
 
             <TextView
@@ -153,6 +154,17 @@
                 android:text="@string/mergePullRequestButtonText"
                 android:background="@drawable/shape_buttons"
                 android:textColor="@color/btnTextColor" />
+
+            <TextView
+                android:id="@+id/mergeInfoDisabledMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mergeInfoDisabledMessage"
+                android:textColor="?attr/hintColor"
+                android:textSize="12sp"
+                android:gravity="start"
+                android:visibility="gone"
+                android:layout_marginTop="10dp" />
 
         </LinearLayout>
 

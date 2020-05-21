@@ -102,9 +102,17 @@ public class MergePullRequestActivity extends BaseActivity {
 		initCloseListener();
 		viewBinding.close.setOnClickListener(onClickListener);
 
-		// if gitea version is greater/equal than user installed version (installed.higherOrEqual(compareVer))
-		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12")) {
+		// if gitea version is greater/equal(1.12.0) than user installed version (installed.higherOrEqual(compareVer))
+		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 			viewBinding.deleteBranch.setVisibility(View.VISIBLE);
+		}
+
+		if(tinyDb.getString("prMergeable").equals("false")) {
+			disableProcessButton();
+			viewBinding.mergeInfoDisabledMessage.setVisibility(View.VISIBLE);
+		}
+		else {
+			viewBinding.mergeInfoDisabledMessage.setVisibility(View.GONE);
 		}
 
 		if(!connToInternet) {
@@ -129,7 +137,7 @@ public class MergePullRequestActivity extends BaseActivity {
 		mergeList.add(new MergePullRequestSpinner("merge", getResources().getString(R.string.mergeOptionMerge)));
 		mergeList.add(new MergePullRequestSpinner("rebase", getResources().getString(R.string.mergeOptionRebase)));
 		mergeList.add(new MergePullRequestSpinner("rebase-merge", getResources().getString(R.string.mergeOptionRebaseCommit)));
-		//squash merge works only on gitea > v1.11.4 due to a bug
+		// squash merge works only on gitea > v1.11.4 due to a bug
 		if(new Version(tinyDb.getString("giteaVersion")).higher("1.11.4")) {
 			mergeList.add(new MergePullRequestSpinner("squash", getResources().getString(R.string.mergeOptionSquash)));
 		}
@@ -199,6 +207,9 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		String mergePRDesc = viewBinding.mergeDescription.getText().toString();
 		String mergePRTitle = viewBinding.mergeTitle.getText().toString();
+		boolean deleteBranch = viewBinding.deleteBranch.isChecked();
+
+		Log.i("PRequest", String.valueOf(deleteBranch));
 
 		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
@@ -209,8 +220,8 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		}
 
-		disableProcessButton();
-		mergeFunction(Do, mergePRDesc, mergePRTitle);
+		//disableProcessButton();
+		//mergeFunction(Do, mergePRDesc, mergePRTitle);
 
 	}
 
