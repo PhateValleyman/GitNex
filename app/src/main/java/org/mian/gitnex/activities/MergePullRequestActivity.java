@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
+import com.google.gson.JsonElement;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import org.mian.gitnex.R;
@@ -216,8 +217,6 @@ public class MergePullRequestActivity extends BaseActivity {
 		String mergePRTitle = viewBinding.mergeTitle.getText().toString();
 		boolean deleteBranch = viewBinding.deleteBranch.isChecked();
 
-		Log.i("PRequest", String.valueOf(deleteBranch));
-
 		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
 		if(!connToInternet) {
@@ -227,12 +226,12 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		}
 
-		//disableProcessButton();
-		//mergeFunction(Do, mergePRDesc, mergePRTitle);
+		disableProcessButton();
+		mergeFunction(Do, mergePRDesc, mergePRTitle, deleteBranch);
 
 	}
 
-	private void mergeFunction(String Do, String mergePRDT, String mergeTitle) {
+	private void mergeFunction(String Do, String mergePRDT, String mergeTitle, boolean deleteBranch) {
 
 		final TinyDB tinyDb = new TinyDB(appCtx);
 
@@ -256,10 +255,48 @@ public class MergePullRequestActivity extends BaseActivity {
 
 				if(response.code() == 200) {
 
-					Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
-					tinyDb.putBoolean("prMerged", true);
-					tinyDb.putBoolean("resumePullRequests", true);
-					finish();
+					if(deleteBranch) {
+
+						if(tinyDb.getString("prIsFork").equals("true")) {
+
+							String repoFullName = tinyDb.getString("prForkFullName");
+							String[] parts = repoFullName.split("/");
+							final String repoOwner = parts[0];
+							final String repoName = parts[1];
+
+							deleteBranchFunction(repoOwner, repoName);
+
+							Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
+							tinyDb.putBoolean("prMerged", true);
+							tinyDb.putBoolean("resumePullRequests", true);
+							finish();
+
+						}
+						else {
+
+							String repoFullName = tinyDb.getString("repoFullName");
+							String[] parts = repoFullName.split("/");
+							final String repoOwner = parts[0];
+							final String repoName = parts[1];
+
+							deleteBranchFunction(repoOwner, repoName);
+
+							Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
+							tinyDb.putBoolean("prMerged", true);
+							tinyDb.putBoolean("resumePullRequests", true);
+							finish();
+
+						}
+
+					}
+					else {
+
+						Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
+						tinyDb.putBoolean("prMerged", true);
+						tinyDb.putBoolean("resumePullRequests", true);
+						finish();
+
+					}
 
 				}
 				else if(response.code() == 401) {
@@ -288,6 +325,45 @@ public class MergePullRequestActivity extends BaseActivity {
 
 				Log.e("onFailure", t.toString());
 				enableProcessButton();
+			}
+
+		});
+
+	}
+
+	private void deleteBranchFunction(String repoOwner, String repoName) {
+
+		TinyDB tinyDb = new TinyDB(appCtx);
+
+		String instanceUrl = tinyDb.getString("instanceUrl");
+		String loginUid = tinyDb.getString("loginUid");
+		String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String branchName = tinyDb.getString("prHeadBranch");
+
+		Call<JsonElement> call = RetrofitClient
+				.getInstance(instanceUrl, ctx)
+				.getApiInterface()
+				.deleteBranch(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
+
+		call.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+				if(response.code() == 204) {
+
+					Log.i("deleteBranch", "Branch deleted successfully");
+
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+
 			}
 
 		});
