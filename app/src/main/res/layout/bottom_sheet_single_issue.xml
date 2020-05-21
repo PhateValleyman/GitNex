@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingBottom="8dp"
     android:background="?attr/primaryBackgroundColor"
-    android:paddingTop="8dp">
+    android:paddingTop="5dp">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -16,6 +16,8 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="wrap_content">
+
+            <include layout="@layout/layout_add_reactions"/>
 
             <TextView
                 android:id="@+id/openFilesDiff"
