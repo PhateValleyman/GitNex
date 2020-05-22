@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.MilestoneActions;
 import org.mian.gitnex.helpers.ClickListener;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.models.Milestones;
 import org.mian.gitnex.util.TinyDB;
@@ -60,6 +62,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private OnLoadMoreListener loadMoreListener;
     private boolean isLoading = false;
     private boolean isMoreDataAvailable = true;
+    private String TAG = StaticGlobalVariables.tagMilestonesAdapter;
 
     public MilestonesAdapter(Context context, List<Milestones> dataListMain) {
 
@@ -306,12 +309,14 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if(dataModel.getDue_on() != null) {
 
                 if (timeFormat.equals("normal") || timeFormat.equals("pretty")) {
+
                     DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", new Locale(locale));
                     Date date = null;
                     try {
                         date = formatter.parse(dataModel.getDue_on());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    }
+                    catch (ParseException e) {
+                        Log.e(TAG, e.toString());
                     }
                     assert date != null;
                     String dueDate = formatter.format(date);
@@ -323,17 +328,21 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     msDueDate.setText(dueDate);
                     msDueDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToast(dataModel.getDue_on()), context));
 
-                } else if (timeFormat.equals("normal1")) {
+                }
+                else if (timeFormat.equals("normal1")) {
+
                     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", new Locale(locale));
                     Date date1 = null;
                     try {
                         date1 = formatter.parse(dataModel.getDue_on());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    }
+                    catch (ParseException e) {
+                        Log.e(TAG, e.toString());
                     }
                     assert date1 != null;
                     String dueDate = formatter.format(date1);
                     msDueDate.setText(dueDate);
+
                 }
 
             }

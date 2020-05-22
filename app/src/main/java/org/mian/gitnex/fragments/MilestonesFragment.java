@@ -82,7 +82,7 @@ public class MilestonesFragment extends Fragment {
             if(dataList.size() == resultLimit || pageSize == resultLimit) {
 
                 int page = (dataList.size() + resultLimit) / resultLimit;
-                //loadMore(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, page, resultLimit, tinyDb.getString("milestoneState"));
+                loadMore(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, page, resultLimit, tinyDb.getString("milestoneState"));
 
             }
 

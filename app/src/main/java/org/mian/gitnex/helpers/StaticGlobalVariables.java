@@ -10,16 +10,20 @@ public interface StaticGlobalVariables {
 	int resultLimitNewGiteaInstances = 25; // Gitea 1.12 and above
 	int resultLimitOldGiteaInstances = 10; // Gitea 1.11 and below
 
-	// issues variables
+	// tags
+	String tagMilestonesFragment = "MilestonesFragment";
+	String tagPullRequestsList = "PullRequestsListFragment";
 	String tagIssuesList = "IssuesListFragment";
+	String tagMilestonesAdapter = "MilestonesAdapter";
+
+	// issues variables
 	int issuesPageInit = 1;
 	String issuesRequestType = "issues";
 
 	// pull request
-	String tagPullRequestsList = "PullRequestsListFragment";
 	int prPageInit = 1;
 
-	// tags
-	String tagMilestonesFragment = "MilestonesFragment";
+	// milestone
 	int milestonesPageInit = 1;
+
 }
