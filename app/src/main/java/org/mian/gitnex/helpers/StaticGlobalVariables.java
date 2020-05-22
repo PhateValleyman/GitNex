@@ -19,4 +19,7 @@ public interface StaticGlobalVariables {
 	String tagPullRequestsList = "PullRequestsListFragment";
 	int prPageInit = 1;
 
+	// tags
+	String tagMilestonesFragment = "MilestonesFragment";
+	int milestonesPageInit = 1;
 }

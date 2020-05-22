@@ -553,6 +553,8 @@
     <string name="strPublic" translatable="false">public</string>
     <string name="defaultCopy" translatable="false">Default</string>
     <string name="viewInBrowser">View in Browser</string>
+    <string name="open">Open</string>
+    <string name="closed">Closed</string>
     <string name="genericServerResponseError">We cannot reach the server at the moment, please check your server status and try again</string>
     <!-- generic copy -->
 
