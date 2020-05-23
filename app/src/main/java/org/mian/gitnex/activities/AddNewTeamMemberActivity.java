@@ -45,6 +45,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 	@Override
 	protected int getLayoutResourceId() {
+
 		return R.layout.activity_add_new_team_member;
 	}
 
@@ -86,7 +87,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 		mRecyclerView.setHasFixedSize(true);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),	DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
 		dataList = new ArrayList<>();
@@ -107,10 +108,12 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
+
 			}
 
 		});
@@ -151,6 +154,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 			@Override
 			public void onFailure(@NonNull Call<UserSearch> call, @NonNull Throwable t) {
+
 				Log.e("onFailure", t.toString());
 			}
 
@@ -158,6 +162,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
+
 		onClickListener = view -> finish();
 	}
 
