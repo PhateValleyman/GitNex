@@ -244,7 +244,7 @@ public class PullRequestsFragment extends Fragment {
 			@Override
 			public void onResponse(@NonNull Call<List<PullRequests>> call, @NonNull Response<List<PullRequests>> response) {
 
-				if(response.isSuccessful()) {
+				if(response.code() == 200) {
 
 					//remove loading view
 					prList.remove(prList.size() - 1);
