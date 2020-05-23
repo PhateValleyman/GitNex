@@ -1,13 +1,31 @@
 ---
 kind: pipeline
+type: docker
 name: gitnex-ci-test
 
 steps:
 
   - name: test
     image: nextcloudci/android:android-49
+    depends_on: [ clone ]
     commands:
       - ./gradlew test
+
+  - name: check-formatting
+    image: tarampampam/node:13-alpine
+    depends_on: [ clone ]
+    commands:
+      - npm install -g eclint
+      - eclint check $(git ls-files)
+
+  # This may be used in the future, because it makes of intellij's native code inspection/formatting capabilities.
+  # Additional information: https://www.jetbrains.com/help/idea/command-line-formatter.html
+  #
+  #  - name: do-or-check-formatting
+  #    image: dlsniper/docker-intellij
+  #    depends_on: [ clone ]
+  #    commands:
+  #      - /opt/intellij/bin/idea.sh inspect/format ...
 
 trigger:
   event:
@@ -15,6 +33,7 @@ trigger:
 
 ---
 kind: pipeline
+type: docker
 name: gitnex-ci-build
 
 steps:
