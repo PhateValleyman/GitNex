@@ -1,13 +1,13 @@
 package org.mian.gitnex.activities;
 
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.CreditsAdapter;
 import java.util.ArrayList;
@@ -20,49 +20,53 @@ import java.util.List;
 
 public class CreditsActivity extends BaseActivity {
 
-    private View.OnClickListener onClickListener;
-    final Context ctx = this;
+	private View.OnClickListener onClickListener;
+	final Context ctx = this;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_credits;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_credits;
+	}
 
-        super.onCreate(savedInstanceState);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        ImageView closeActivity = findViewById(R.id.close);
+		super.onCreate(savedInstanceState);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		ImageView closeActivity = findViewById(R.id.close);
 
-        Resources res = getResources();
-        CharSequence[] creditsInfo = res.getTextArray(R.array.creditsInfo);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        List<CharSequence> creditsList = new ArrayList<>(Arrays.asList(creditsInfo));
+		Resources res = getResources();
+		CharSequence[] creditsInfo = res.getTextArray(R.array.creditsInfo);
 
-        RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
+		List<CharSequence> creditsList = new ArrayList<>(Arrays.asList(creditsInfo));
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
+		RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
+		mRecyclerView.setHasFixedSize(true);
+		mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 
-        CreditsAdapter adapter = new CreditsAdapter(creditsList);
-        mRecyclerView.setAdapter(adapter);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-    }
+		CreditsAdapter adapter = new CreditsAdapter(creditsList);
+		mRecyclerView.setAdapter(adapter);
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+	}
+
+	private void initCloseListener() {
+
+		onClickListener = new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+
+				finish();
+			}
+		};
+	}
+
 }
