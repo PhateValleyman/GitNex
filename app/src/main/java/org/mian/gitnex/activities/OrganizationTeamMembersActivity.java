@@ -26,140 +26,143 @@ import java.util.Objects;
 
 public class OrganizationTeamMembersActivity extends BaseActivity implements BottomSheetOrganizationTeamsFragment.BottomSheetListener {
 
-    private TextView noDataMembers;
-    private View.OnClickListener onClickListener;
-    private TeamMembersByOrgAdapter adapter;
-    private GridView mGridView;
+	private TextView noDataMembers;
+	private View.OnClickListener onClickListener;
+	private TeamMembersByOrgAdapter adapter;
+	private GridView mGridView;
 
-    final Context ctx = this;
-    private Context appCtx;
+	final Context ctx = this;
+	private Context appCtx;
 
-    private String teamId;
+	private String teamId;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_org_team_members;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_org_team_members;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 
-        ImageView closeActivity = findViewById(R.id.close);
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
-        noDataMembers = findViewById(R.id.noDataMembers);
-        mGridView = findViewById(R.id.gridView);
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		ImageView closeActivity = findViewById(R.id.close);
+		TextView toolbarTitle = findViewById(R.id.toolbar_title);
+		noDataMembers = findViewById(R.id.noDataMembers);
+		mGridView = findViewById(R.id.gridView);
 
-        if(getIntent().getStringExtra("teamTitle") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamTitle")).equals("")) {
-            toolbarTitle.setText(getIntent().getStringExtra("teamTitle"));
-        }
-        else {
-            toolbarTitle.setText(R.string.orgTeamMembers);
-        }
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        if(getIntent().getStringExtra("teamId") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamId")).equals("")){
-            teamId = getIntent().getStringExtra("teamId");
-        }
-        else {
-            teamId = "0";
-        }
+		if(getIntent().getStringExtra("teamTitle") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamTitle")).equals("")) {
+			toolbarTitle.setText(getIntent().getStringExtra("teamTitle"));
+		}
+		else {
+			toolbarTitle.setText(R.string.orgTeamMembers);
+		}
 
-        assert teamId != null;
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), Integer.parseInt(teamId));
+		if(getIntent().getStringExtra("teamId") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamId")).equals("")) {
+			teamId = getIntent().getStringExtra("teamId");
+		}
+		else {
+			teamId = "0";
+		}
 
-    }
+		assert teamId != null;
+		fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), Integer.parseInt(teamId));
 
-    @Override
-    public void onResume() {
+	}
 
-        super.onResume();
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+	@Override
+	public void onResume() {
 
-        if(tinyDb.getBoolean("teamActionFlag")) {
-            fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), Integer.parseInt(teamId));
-            tinyDb.putBoolean("teamActionFlag", false);
-        }
+		super.onResume();
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-    }
+		if(tinyDb.getBoolean("teamActionFlag")) {
+			fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), Integer.parseInt(teamId));
+			tinyDb.putBoolean("teamActionFlag", false);
+		}
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken, int teamId) {
+	}
 
-        TeamMembersByOrgViewModel teamMembersModel = new ViewModelProvider(this).get(TeamMembersByOrgViewModel.class);
+	private void fetchDataAsync(String instanceUrl, String instanceToken, int teamId) {
 
-        teamMembersModel.getMembersByOrgList(instanceUrl, instanceToken, teamId, ctx).observe(this, teamMembersListMain -> {
+		TeamMembersByOrgViewModel teamMembersModel = new ViewModelProvider(this).get(TeamMembersByOrgViewModel.class);
 
-            adapter = new TeamMembersByOrgAdapter(ctx, teamMembersListMain);
-            if(adapter.getCount() > 0) {
-                mGridView.setAdapter(adapter);
-                noDataMembers.setVisibility(View.GONE);
-            }
-            else {
-                adapter.notifyDataSetChanged();
-                mGridView.setAdapter(adapter);
-                noDataMembers.setVisibility(View.VISIBLE);
-            }
+		teamMembersModel.getMembersByOrgList(instanceUrl, instanceToken, teamId, ctx).observe(this, teamMembersListMain -> {
 
-        });
+			adapter = new TeamMembersByOrgAdapter(ctx, teamMembersListMain);
+			if(adapter.getCount() > 0) {
+				mGridView.setAdapter(adapter);
+				noDataMembers.setVisibility(View.GONE);
+			}
+			else {
+				adapter.notifyDataSetChanged();
+				mGridView.setAdapter(adapter);
+				noDataMembers.setVisibility(View.VISIBLE);
+			}
 
-    }
+		});
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+	}
 
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
-        return true;
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
 
-    }
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
+		return true;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+	}
 
-        int id = item.getItemId();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch(id) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.genericMenu:
-                BottomSheetOrganizationTeamsFragment bottomSheet = new BottomSheetOrganizationTeamsFragment();
-                bottomSheet.show(getSupportFragmentManager(), "orgTeamsBottomSheet");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+		int id = item.getItemId();
 
-    }
+		switch(id) {
+			case android.R.id.home:
+				finish();
+				return true;
+			case R.id.genericMenu:
+				BottomSheetOrganizationTeamsFragment bottomSheet = new BottomSheetOrganizationTeamsFragment();
+				bottomSheet.show(getSupportFragmentManager(), "orgTeamsBottomSheet");
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 
-    @Override
-    public void onButtonClicked(String text) {
+	}
 
-        TinyDB tinyDb = new TinyDB(appCtx);
+	@Override
+	public void onButtonClicked(String text) {
 
-        if("newMember".equals(text)) {
-            Intent intent = new Intent(OrganizationTeamMembersActivity.this, AddNewTeamMemberActivity.class);
-            intent.putExtra("teamId", teamId);
-            startActivity(intent);
-        }
+		TinyDB tinyDb = new TinyDB(appCtx);
 
-    }
+		if("newMember".equals(text)) {
+			Intent intent = new Intent(OrganizationTeamMembersActivity.this, AddNewTeamMemberActivity.class);
+			intent.putExtra("teamId", teamId);
+			startActivity(intent);
+		}
 
-    private void initCloseListener() {
-        onClickListener = view -> finish();
-    }
+	}
+
+	private void initCloseListener() {
+
+		onClickListener = view -> finish();
+	}
+
 }
