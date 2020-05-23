@@ -1,18 +1,17 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -24,7 +23,8 @@ import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import android.util.Log;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -32,360 +32,345 @@ import android.util.Log;
 
 public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClickListener {
 
-    final Context ctx = CreateTeamByOrgActivity.this;
-    private Context appCtx;
-    private View.OnClickListener onClickListener;
-    private TextView teamName;
-    private TextView teamDesc;
-    private TextView teamPermission;
-    private TextView teamPermissionDetail;
-    private TextView teamAccessControls;
-    private TextView teamAccessControlsArray;
-    private Button createTeamButton;
-    private String[] permissionList = {"Read", "Write", "Admin"};
-    public int permissionSelectedChoice = -1;
-
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_create_team_by_org;
-    }
-
-    private String[] accessControlsList = new String[] {
-            "Code",
-            "Issues",
-            "Pull Request",
-            "Releases",
-            "Wiki",
-            "External Wiki",
-            "External Issues"
-    };
-
-    private List<String> pushAccessList;
-
-    private boolean[] selectedAccessControlsTrueFalse = new boolean[]{
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false
-    };
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        ImageView closeActivity = findViewById(R.id.close);
-        teamName = findViewById(R.id.teamName);
-        teamDesc = findViewById(R.id.teamDesc);
-        teamPermission = findViewById(R.id.teamPermission);
-        teamPermissionDetail = findViewById(R.id.teamPermissionDetail);
-        teamAccessControls = findViewById(R.id.teamAccessControls);
-        teamAccessControlsArray = findViewById(R.id.teamAccessControlsArray);
-        createTeamButton = findViewById(R.id.createTeamButton);
-
-        teamName.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(teamName, InputMethodManager.SHOW_IMPLICIT);
-
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
-
-        teamPermission.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                AlertDialog.Builder pBuilder = new AlertDialog.Builder(ctx);
-
-                pBuilder.setTitle(R.string.newTeamPermission);
-                if(permissionSelectedChoice != -1) {
-                    pBuilder.setCancelable(true);
-                }
-                else {
-                    pBuilder.setCancelable(false);
-                }
-                pBuilder.setSingleChoiceItems(permissionList, permissionSelectedChoice, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        permissionSelectedChoice = i;
-                        teamPermission.setText(permissionList[i]);
-
-                        if(permissionList[i].equals("Read")) {
-                            teamPermissionDetail.setVisibility(View.VISIBLE);
-                            teamPermissionDetail.setText(R.string.newTeamPermissionRead);
-                        }
-                        else if(permissionList[i].equals("Write")) {
-                            teamPermissionDetail.setVisibility(View.VISIBLE);
-                            teamPermissionDetail.setText(R.string.newTeamPermissionWrite);
-                        }
-                        else if(permissionList[i].equals("Admin")) {
-                            teamPermissionDetail.setVisibility(View.VISIBLE);
-                            teamPermissionDetail.setText(R.string.newTeamPermissionAdmin);
-                        }
-                        else {
-                            teamPermissionDetail.setVisibility(View.GONE);
-                        }
+	final Context ctx = CreateTeamByOrgActivity.this;
+	private Context appCtx;
+	private View.OnClickListener onClickListener;
+	private TextView teamName;
+	private TextView teamDesc;
+	private TextView teamPermission;
+	private TextView teamPermissionDetail;
+	private TextView teamAccessControls;
+	private TextView teamAccessControlsArray;
+	private Button createTeamButton;
+	private String[] permissionList = {"Read", "Write", "Admin"};
+	public int permissionSelectedChoice = -1;
 
-                        dialogInterface.dismiss();
+	@Override
+	protected int getLayoutResourceId() {
 
-                    }
-                });
+		return R.layout.activity_create_team_by_org;
+	}
 
-                AlertDialog pDialog = pBuilder.create();
-                pDialog.show();
+	private String[] accessControlsList = new String[]{"Code", "Issues", "Pull Request", "Releases", "Wiki", "External Wiki", "External Issues"};
 
-            }
-        });
+	private List<String> pushAccessList;
 
+	private boolean[] selectedAccessControlsTrueFalse = new boolean[]{false, false, false, false, false, false, false};
 
-        teamAccessControls.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-                teamAccessControls.setText("");
-                teamAccessControlsArray.setText("");
-                pushAccessList = Arrays.asList(accessControlsList);
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-                AlertDialog.Builder aDialogBuilder = new AlertDialog.Builder(ctx);
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
-                aDialogBuilder.setMultiChoiceItems(accessControlsList, selectedAccessControlsTrueFalse, new DialogInterface.OnMultiChoiceClickListener() {
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+		ImageView closeActivity = findViewById(R.id.close);
+		teamName = findViewById(R.id.teamName);
+		teamDesc = findViewById(R.id.teamDesc);
+		teamPermission = findViewById(R.id.teamPermission);
+		teamPermissionDetail = findViewById(R.id.teamPermissionDetail);
+		teamAccessControls = findViewById(R.id.teamAccessControls);
+		teamAccessControlsArray = findViewById(R.id.teamAccessControlsArray);
+		createTeamButton = findViewById(R.id.createTeamButton);
+
+		teamName.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(teamName, InputMethodManager.SHOW_IMPLICIT);
+
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
+
+		teamPermission.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+
+				AlertDialog.Builder pBuilder = new AlertDialog.Builder(ctx);
+
+				pBuilder.setTitle(R.string.newTeamPermission);
+				if(permissionSelectedChoice != -1) {
+					pBuilder.setCancelable(true);
+				}
+				else {
+					pBuilder.setCancelable(false);
+				}
+				pBuilder.setSingleChoiceItems(permissionList, permissionSelectedChoice, new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+
+						permissionSelectedChoice = i;
+						teamPermission.setText(permissionList[i]);
+
+						if(permissionList[i].equals("Read")) {
+							teamPermissionDetail.setVisibility(View.VISIBLE);
+							teamPermissionDetail.setText(R.string.newTeamPermissionRead);
+						}
+						else if(permissionList[i].equals("Write")) {
+							teamPermissionDetail.setVisibility(View.VISIBLE);
+							teamPermissionDetail.setText(R.string.newTeamPermissionWrite);
+						}
+						else if(permissionList[i].equals("Admin")) {
+							teamPermissionDetail.setVisibility(View.VISIBLE);
+							teamPermissionDetail.setText(R.string.newTeamPermissionAdmin);
+						}
+						else {
+							teamPermissionDetail.setVisibility(View.GONE);
+						}
+
+						dialogInterface.dismiss();
+
+					}
+				});
+
+				AlertDialog pDialog = pBuilder.create();
+				pDialog.show();
 
-                        }
+			}
+		});
 
-                    })
-                    .setCancelable(false)
-                    .setTitle(R.string.newTeamAccessControls)
-                    .setPositiveButton(R.string.okButton, new DialogInterface.OnClickListener() {
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+		teamAccessControls.setOnClickListener(new View.OnClickListener() {
 
-                            int selectedVal = 0;
-                            while(selectedVal < selectedAccessControlsTrueFalse.length)
-                            {
-                                boolean value = selectedAccessControlsTrueFalse[selectedVal];
+			@Override
+			public void onClick(View v) {
 
-                                String repoCode = "";
-                                if(selectedVal == 0) {
-                                    repoCode = "repo.code";
-                                }
-                                if(selectedVal == 1) {
-                                    repoCode = "repo.issues";
-                                }
-                                if(selectedVal == 2) {
-                                    repoCode = "repo.pulls";
-                                }
-                                if(selectedVal == 3) {
-                                    repoCode = "repo.releases";
-                                }
-                                if(selectedVal == 4) {
-                                    repoCode = "repo.wiki";
-                                }
-                                if(selectedVal == 5) {
-                                    repoCode = "repo.ext_wiki";
-                                }
-                                if(selectedVal == 6) {
-                                    repoCode = "repo.ext_issues";
-                                }
+				teamAccessControls.setText("");
+				teamAccessControlsArray.setText("");
+				pushAccessList = Arrays.asList(accessControlsList);
 
-                                if(value){
-                                    teamAccessControls.setText(getString(R.string.newTeamPermissionValues, teamAccessControls.getText(), pushAccessList.get(selectedVal)));
-                                    teamAccessControlsArray.setText(getString(R.string.newTeamPermissionValuesFinal, teamAccessControlsArray.getText(), repoCode));
-                                }
+				AlertDialog.Builder aDialogBuilder = new AlertDialog.Builder(ctx);
 
-                                selectedVal++;
-                            }
+				aDialogBuilder.setMultiChoiceItems(accessControlsList, selectedAccessControlsTrueFalse, new DialogInterface.OnMultiChoiceClickListener() {
 
-                            String data = String.valueOf(teamAccessControls.getText());
-                            if(!data.equals("")) {
-                                teamAccessControls.setText(data.substring(0, data.length() - 2));
-                            }
+					@Override
+					public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 
-                            String dataArray = String.valueOf(teamAccessControlsArray.getText());
-                            if(!dataArray.equals("")) {
-                                teamAccessControlsArray.setText(dataArray.substring(0, dataArray.length() - 2));
-                            }
-                            //Log.i("orgName", String.valueOf(teamAccessControlsArray.getText()));
+					}
 
-                        }
+				}).setCancelable(false).setTitle(R.string.newTeamAccessControls).setPositiveButton(R.string.okButton, new DialogInterface.OnClickListener() {
 
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
 
-                    });
+						int selectedVal = 0;
+						while(selectedVal < selectedAccessControlsTrueFalse.length) {
+							boolean value = selectedAccessControlsTrueFalse[selectedVal];
 
-                AlertDialog aDialog = aDialogBuilder.create();
-                aDialog.show();
-            }
-        });
+							String repoCode = "";
+							if(selectedVal == 0) {
+								repoCode = "repo.code";
+							}
+							if(selectedVal == 1) {
+								repoCode = "repo.issues";
+							}
+							if(selectedVal == 2) {
+								repoCode = "repo.pulls";
+							}
+							if(selectedVal == 3) {
+								repoCode = "repo.releases";
+							}
+							if(selectedVal == 4) {
+								repoCode = "repo.wiki";
+							}
+							if(selectedVal == 5) {
+								repoCode = "repo.ext_wiki";
+							}
+							if(selectedVal == 6) {
+								repoCode = "repo.ext_issues";
+							}
 
-        createTeamButton.setEnabled(false);
+							if(value) {
+								teamAccessControls.setText(getString(R.string.newTeamPermissionValues, teamAccessControls.getText(), pushAccessList.get(selectedVal)));
+								teamAccessControlsArray.setText(getString(R.string.newTeamPermissionValuesFinal, teamAccessControlsArray.getText(), repoCode));
+							}
 
-        if(!connToInternet) {
+							selectedVal++;
+						}
 
-            createTeamButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            createTeamButton.setBackground(shape);
+						String data = String.valueOf(teamAccessControls.getText());
+						if(!data.equals("")) {
+							teamAccessControls.setText(data.substring(0, data.length() - 2));
+						}
 
-        } else {
+						String dataArray = String.valueOf(teamAccessControlsArray.getText());
+						if(!dataArray.equals("")) {
+							teamAccessControlsArray.setText(dataArray.substring(0, dataArray.length() - 2));
+						}
+						//Log.i("orgName", String.valueOf(teamAccessControlsArray.getText()));
 
-            createTeamButton.setEnabled(true);
-            createTeamButton.setOnClickListener(this);
+					}
 
-        }
 
-    }
+				});
 
-    private void processCreateTeam() {
+				AlertDialog aDialog = aDialogBuilder.create();
+				aDialog.show();
+			}
+		});
 
-        AppUtil appUtil = new AppUtil();
-        final TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        final String orgName = tinyDb.getString("orgName");;
+		createTeamButton.setEnabled(false);
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-        String newTeamName = teamName.getText().toString();
-        String newTeamDesc = teamDesc.getText().toString();
-        String newTeamPermission = teamPermission.getText().toString().toLowerCase();
-        String newTeamAccessControls = teamAccessControlsArray.getText().toString();
+		if(!connToInternet) {
 
-        if(!connToInternet) {
+			createTeamButton.setEnabled(false);
+			GradientDrawable shape = new GradientDrawable();
+			shape.setCornerRadius(8);
+			shape.setColor(getResources().getColor(R.color.hintColor));
+			createTeamButton.setBackground(shape);
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
-            return;
+		}
+		else {
 
-        }
+			createTeamButton.setEnabled(true);
+			createTeamButton.setOnClickListener(this);
 
-        if (newTeamName.equals("")) {
+		}
 
-            Toasty.info(ctx, getString(R.string.teamNameEmpty));
-            return;
+	}
 
-        }
+	private void processCreateTeam() {
 
-        if(!appUtil.checkStringsWithAlphaNumericDashDotUnderscore(newTeamName)) {
+		AppUtil appUtil = new AppUtil();
+		final TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		final String orgName = tinyDb.getString("orgName");
+		;
 
-            Toasty.info(ctx, getString(R.string.teamNameError));
-            return;
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		String newTeamName = teamName.getText().toString();
+		String newTeamDesc = teamDesc.getText().toString();
+		String newTeamPermission = teamPermission.getText().toString().toLowerCase();
+		String newTeamAccessControls = teamAccessControlsArray.getText().toString();
 
-        }
+		if(!connToInternet) {
 
-        if(!newTeamDesc.equals("")) {
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			return;
 
-            if(!appUtil.checkStrings(newTeamDesc)) {
-                Toasty.info(ctx, getString(R.string.teamDescError));
-                return;
-            }
+		}
 
-            if(newTeamDesc.length() > 100) {
-                Toasty.info(ctx, getString(R.string.teamDescLimit));
-                return;
-            }
+		if(newTeamName.equals("")) {
 
-        }
+			Toasty.info(ctx, getString(R.string.teamNameEmpty));
+			return;
 
-        if (newTeamPermission.equals("")) {
+		}
 
-            Toasty.info(ctx, getString(R.string.teamPermissionEmpty));
-            return;
+		if(!appUtil.checkStringsWithAlphaNumericDashDotUnderscore(newTeamName)) {
 
-        }
+			Toasty.info(ctx, getString(R.string.teamNameError));
+			return;
 
-        List<String> newTeamAccessControls_ = new ArrayList<>(Arrays.asList(newTeamAccessControls.split(",")));
+		}
 
-        for (int i = 0; i < newTeamAccessControls_.size(); i++) {
-            newTeamAccessControls_.set(i, newTeamAccessControls_.get(i).trim());
-        }
+		if(!newTeamDesc.equals("")) {
 
-        createNewTeamCall(instanceUrl, instanceToken, orgName, newTeamName, newTeamDesc, newTeamPermission, newTeamAccessControls_, loginUid);
+			if(!appUtil.checkStrings(newTeamDesc)) {
+				Toasty.info(ctx, getString(R.string.teamDescError));
+				return;
+			}
 
-    }
+			if(newTeamDesc.length() > 100) {
+				Toasty.info(ctx, getString(R.string.teamDescLimit));
+				return;
+			}
 
-    private void createNewTeamCall(final String instanceUrl, final String instanceToken, String orgName, String newTeamName, String newTeamDesc, String newTeamPermission, List<String> newTeamAccessControls, String loginUid) {
+		}
 
-        Teams createNewTeamJson = new Teams(newTeamName, newTeamDesc, newTeamPermission, newTeamAccessControls);
+		if(newTeamPermission.equals("")) {
 
-        Call<Teams> call3;
+			Toasty.info(ctx, getString(R.string.teamPermissionEmpty));
+			return;
 
-        call3 = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .createTeamsByOrg(Authorization.returnAuthentication(ctx, loginUid, instanceToken), orgName, createNewTeamJson);
+		}
 
-        call3.enqueue(new Callback<Teams>() {
+		List<String> newTeamAccessControls_ = new ArrayList<>(Arrays.asList(newTeamAccessControls.split(",")));
 
-            @Override
-            public void onResponse(@NonNull Call<Teams> call, @NonNull retrofit2.Response<Teams> response2) {
+		for(int i = 0; i < newTeamAccessControls_.size(); i++) {
+			newTeamAccessControls_.set(i, newTeamAccessControls_.get(i).trim());
+		}
 
-                if(response2.isSuccessful()) {
-                    if(response2.code() == 201) {
+		createNewTeamCall(instanceUrl, instanceToken, orgName, newTeamName, newTeamDesc, newTeamPermission, newTeamAccessControls_, loginUid);
 
-                        TinyDB tinyDb = new TinyDB(appCtx);
-                        tinyDb.putBoolean("resumeTeams", true);
+	}
 
-                        Toasty.info(ctx, getString(R.string.teamCreated));
-                        finish();
+	private void createNewTeamCall(final String instanceUrl, final String instanceToken, String orgName, String newTeamName, String newTeamDesc, String newTeamPermission, List<String> newTeamAccessControls, String loginUid) {
 
-                    }
+		Teams createNewTeamJson = new Teams(newTeamName, newTeamDesc, newTeamPermission, newTeamAccessControls);
 
-                }
-                else if(response2.code() == 404) {
+		Call<Teams> call3;
 
-                    Toasty.info(ctx, getString(R.string.apiNotFound));
+		call3 = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().createTeamsByOrg(Authorization.returnAuthentication(ctx, loginUid, instanceToken), orgName, createNewTeamJson);
 
-                }
-                else if(response2.code() == 401) {
+		call3.enqueue(new Callback<Teams>() {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+			@Override
+			public void onResponse(@NonNull Call<Teams> call, @NonNull retrofit2.Response<Teams> response2) {
 
-                }
-                else {
+				if(response2.isSuccessful()) {
+					if(response2.code() == 201) {
 
-                    Toasty.info(ctx, getString(R.string.teamCreatedError));
+						TinyDB tinyDb = new TinyDB(appCtx);
+						tinyDb.putBoolean("resumeTeams", true);
 
-                }
+						Toasty.info(ctx, getString(R.string.teamCreated));
+						finish();
 
-            }
+					}
 
-            @Override
-            public void onFailure(@NonNull Call<Teams> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+				}
+				else if(response2.code() == 404) {
 
-    }
+					Toasty.info(ctx, getString(R.string.apiNotFound));
 
-    @Override
-    public void onClick(View v) {
-        if(v == createTeamButton) {
-            processCreateTeam();
-        }
+				}
+				else if(response2.code() == 401) {
 
-    }
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+				}
+				else {
+
+					Toasty.info(ctx, getString(R.string.teamCreatedError));
+
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<Teams> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
+	@Override
+	public void onClick(View v) {
+
+		if(v == createTeamButton) {
+			processCreateTeam();
+		}
+
+	}
+
+	private void initCloseListener() {
+
+		onClickListener = new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+
+				finish();
+			}
+		};
+	}
 
 }
