@@ -113,6 +113,7 @@ public class SettingsFileViewerActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
+
 		onClickListener = view -> finish();
 	}
 
