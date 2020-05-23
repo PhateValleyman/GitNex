@@ -1,13 +1,13 @@
 package org.mian.gitnex.activities;
 
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.SponsorsAdapter;
 import java.util.ArrayList;
@@ -20,51 +20,54 @@ import java.util.List;
 
 public class SponsorsActivity extends BaseActivity {
 
-    private View.OnClickListener onClickListener;
-    private Context appCtx;
+	private View.OnClickListener onClickListener;
+	private Context appCtx;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_sponsors;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_sponsors;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        ImageView closeActivity = findViewById(R.id.close);
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		ImageView closeActivity = findViewById(R.id.close);
 
-        Resources res = getResources();
-        CharSequence[] sponsorsInfo = res.getTextArray(R.array.sponsorsInfo);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        List<CharSequence> sponsorsList = new ArrayList<>(Arrays.asList(sponsorsInfo));
+		Resources res = getResources();
+		CharSequence[] sponsorsInfo = res.getTextArray(R.array.sponsorsInfo);
 
-        RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
+		List<CharSequence> sponsorsList = new ArrayList<>(Arrays.asList(sponsorsInfo));
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(appCtx));
+		RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
+		mRecyclerView.setHasFixedSize(true);
+		mRecyclerView.setLayoutManager(new LinearLayoutManager(appCtx));
 
-        SponsorsAdapter adapter = new SponsorsAdapter(sponsorsList);
-        mRecyclerView.setAdapter(adapter);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-    }
+		SponsorsAdapter adapter = new SponsorsAdapter(sponsorsList);
+		mRecyclerView.setAdapter(adapter);
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+	}
+
+	private void initCloseListener() {
+
+		onClickListener = new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+
+				finish();
+			}
+		};
+	}
 
 }
