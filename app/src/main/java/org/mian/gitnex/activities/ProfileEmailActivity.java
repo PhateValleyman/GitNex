@@ -1,8 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -13,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -25,6 +23,8 @@ import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -32,190 +32,192 @@ import java.util.List;
 
 public class ProfileEmailActivity extends BaseActivity {
 
-    private View.OnClickListener onClickListener;
-    private EditText userEmail;
-    final Context ctx = this;
-    private Context appCtx;
-    private Button addEmailButton;
+	private View.OnClickListener onClickListener;
+	private EditText userEmail;
+	final Context ctx = this;
+	private Context appCtx;
+	private Button addEmailButton;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_profile_email;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_profile_email;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
-        ImageView closeActivity = findViewById(R.id.close);
-        userEmail = findViewById(R.id.userEmail);
-        addEmailButton = findViewById(R.id.addEmailButton);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        userEmail.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(userEmail, InputMethodManager.SHOW_IMPLICIT);
+		ImageView closeActivity = findViewById(R.id.close);
+		userEmail = findViewById(R.id.userEmail);
+		addEmailButton = findViewById(R.id.addEmailButton);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		userEmail.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(userEmail, InputMethodManager.SHOW_IMPLICIT);
 
-        if(!connToInternet) {
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-            disableProcessButton();
+		if(!connToInternet) {
 
-        } else {
+			disableProcessButton();
 
-            addEmailButton.setOnClickListener(addEmailListener);
+		}
+		else {
 
-        }
+			addEmailButton.setOnClickListener(addEmailListener);
 
-    }
+		}
 
-    private View.OnClickListener addEmailListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processAddNewEmail();
-        }
-    };
+	}
 
-    private void processAddNewEmail() {
+	private View.OnClickListener addEmailListener = new View.OnClickListener() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		public void onClick(View v) {
 
-        String newUserEmail = userEmail.getText().toString().trim();
+			processAddNewEmail();
+		}
+	};
 
-        if(!connToInternet) {
+	private void processAddNewEmail() {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
-            return;
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        }
+		String newUserEmail = userEmail.getText().toString().trim();
 
-        if(newUserEmail.equals("")) {
+		if(!connToInternet) {
 
-            Toasty.info(ctx, getString(R.string.emailErrorEmpty));
-            return;
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			return;
 
-        }
-        else if(!Patterns.EMAIL_ADDRESS.matcher(newUserEmail).matches()) {
+		}
 
-            Toasty.info(ctx, getString(R.string.emailErrorInvalid));
-            return;
+		if(newUserEmail.equals("")) {
 
-        }
+			Toasty.info(ctx, getString(R.string.emailErrorEmpty));
+			return;
 
-        List<String> newEmailList = new ArrayList<>(Arrays.asList(newUserEmail.split(",")));
+		}
+		else if(!Patterns.EMAIL_ADDRESS.matcher(newUserEmail).matches()) {
 
-        disableProcessButton();
-        addNewEmail(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), newEmailList);
+			Toasty.info(ctx, getString(R.string.emailErrorInvalid));
+			return;
 
-    }
+		}
 
-    private void addNewEmail(final String instanceUrl, final String token, List<String> newUserEmail) {
+		List<String> newEmailList = new ArrayList<>(Arrays.asList(newUserEmail.split(",")));
 
-        AddEmail addEmailFunc = new AddEmail(newUserEmail);
-        final TinyDB tinyDb = new TinyDB(appCtx);
+		disableProcessButton();
+		addNewEmail(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), newEmailList);
 
-        Call<JsonElement> call;
+	}
 
-        call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .addNewEmail(token, addEmailFunc);
+	private void addNewEmail(final String instanceUrl, final String token, List<String> newUserEmail) {
 
-        call.enqueue(new Callback<JsonElement>() {
+		AddEmail addEmailFunc = new AddEmail(newUserEmail);
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+		Call<JsonElement> call;
 
-                if(response.code() == 201) {
+		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().addNewEmail(token, addEmailFunc);
 
-                    Toasty.info(ctx, getString(R.string.emailAddedText));
-                    tinyDb.putBoolean("emailsRefresh", true);
-                    enableProcessButton();
-                    finish();
+		call.enqueue(new Callback<JsonElement>() {
 
-                }
-                else if(response.code() == 401) {
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                    enableProcessButton();
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+				if(response.code() == 201) {
 
-                }
-                else if(response.code() == 403) {
+					Toasty.info(ctx, getString(R.string.emailAddedText));
+					tinyDb.putBoolean("emailsRefresh", true);
+					enableProcessButton();
+					finish();
 
-                    enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+				}
+				else if(response.code() == 401) {
 
-                }
-                else if(response.code() == 404) {
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                    enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+				}
+				else if(response.code() == 403) {
 
-                }
-                else if(response.code() == 422) {
+					enableProcessButton();
+					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                    enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.emailErrorInUse));
+				}
+				else if(response.code() == 404) {
 
-                }
-                else {
+					enableProcessButton();
+					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                    enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.labelGeneralError));
+				}
+				else if(response.code() == 422) {
 
-                }
+					enableProcessButton();
+					Toasty.info(ctx, ctx.getString(R.string.emailErrorInUse));
 
-            }
+				}
+				else {
 
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
-        });
+					enableProcessButton();
+					Toasty.info(ctx, getString(R.string.labelGeneralError));
 
-    }
+				}
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+			}
 
-    private void disableProcessButton() {
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
-        addEmailButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        addEmailButton.setBackground(shape);
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
+		});
 
-    }
+	}
 
-    private void enableProcessButton() {
+	private void initCloseListener() {
 
-        addEmailButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        addEmailButton.setBackground(shape);
+		onClickListener = new View.OnClickListener() {
 
-    }
+			@Override
+			public void onClick(View view) {
+
+				finish();
+			}
+		};
+	}
+
+	private void disableProcessButton() {
+
+		addEmailButton.setEnabled(false);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.hintColor));
+		addEmailButton.setBackground(shape);
+
+	}
+
+	private void enableProcessButton() {
+
+		addEmailButton.setEnabled(true);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.btnBackground));
+		addEmailButton.setBackground(shape);
+
+	}
 
 }
