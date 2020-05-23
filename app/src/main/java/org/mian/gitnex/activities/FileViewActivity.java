@@ -341,7 +341,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		final TinyDB tinyDb = new TinyDB(appCtx);
 
-		if (requestCode == 40 && resultCode == RESULT_OK) {
+		if(requestCode == 40 && resultCode == RESULT_OK) {
 
 			try {
 
@@ -360,7 +360,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				Toasty.info(ctx, getString(R.string.downloadFileSaved));
 
 			}
-			catch (IOException e) {
+			catch(IOException e) {
 				Log.e("errorFileDownloading", Objects.requireNonNull(e.getMessage()));
 			}
 
