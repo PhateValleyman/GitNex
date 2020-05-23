@@ -22,8 +22,7 @@ public class SettingsTranslationActivity extends BaseActivity {
 	private Context appCtx;
 	private View.OnClickListener onClickListener;
 
-	private static String[] langList = {"English", "Arabic", "Chinese", "Finnish", "French", "German", "Italian", "Latvian", "Persian", "Polish", "Portuguese/Brazilian", "Russian", "Serbian", "Spanish", "Turkish",
-			"Ukrainian"};
+	private static String[] langList = {"English", "Arabic", "Chinese", "Finnish", "French", "German", "Italian", "Latvian", "Persian", "Polish", "Portuguese/Brazilian", "Russian", "Serbian", "Spanish", "Turkish", "Ukrainian"};
 	private static int langSelectedChoice = 0;
 
 	@Override
@@ -157,6 +156,7 @@ public class SettingsTranslationActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
+
 		onClickListener = view -> {
 			finish();
 		};
