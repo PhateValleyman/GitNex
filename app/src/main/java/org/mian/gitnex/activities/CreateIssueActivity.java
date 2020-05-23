@@ -248,7 +248,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
 
-                if (response.isSuccessful()) {
+                if(response.code() == 200) {
 
                     assert response.body() != null;
                     String fullName = "";

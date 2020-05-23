@@ -129,7 +129,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 			@Override
 			public void onResponse(@NonNull Call<UserSearch> call, @NonNull Response<UserSearch> response) {
 
-				if(response.isSuccessful()) {
+				if(response.code() == 200) {
 
 					assert response.body() != null;
 					if(response.body().getData().size() > 0) {

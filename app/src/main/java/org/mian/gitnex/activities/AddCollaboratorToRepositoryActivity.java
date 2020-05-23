@@ -97,7 +97,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 			@Override
 			public void onResponse(@NonNull Call<UserSearch> call, @NonNull Response<UserSearch> response) {
 
-				if(response.isSuccessful()) {
+				if(response.code() == 200) {
 					assert response.body() != null;
 					getUsersList(response.body().getData(), ctx);
 				}
