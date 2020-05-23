@@ -1,8 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -13,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import androidx.annotation.NonNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -21,6 +19,8 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -28,211 +28,213 @@ import org.mian.gitnex.util.TinyDB;
 
 public class CreateNewUserActivity extends BaseActivity {
 
-    private View.OnClickListener onClickListener;
-    private EditText fullName;
-    private EditText userUserName;
-    private EditText userEmail;
-    private EditText userPassword;
-    private Button createUserButton;
-    final Context ctx = this;
-    private Context appCtx;
+	private View.OnClickListener onClickListener;
+	private EditText fullName;
+	private EditText userUserName;
+	private EditText userEmail;
+	private EditText userPassword;
+	private Button createUserButton;
+	final Context ctx = this;
+	private Context appCtx;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_create_new_user;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_create_new_user;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
-        ImageView closeActivity = findViewById(R.id.close);
-        createUserButton = findViewById(R.id.createUserButton);
-        fullName = findViewById(R.id.fullName);
-        userUserName = findViewById(R.id.userUserName);
-        userEmail = findViewById(R.id.userEmail);
-        userPassword = findViewById(R.id.userPassword);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        fullName.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(fullName, InputMethodManager.SHOW_IMPLICIT);
+		ImageView closeActivity = findViewById(R.id.close);
+		createUserButton = findViewById(R.id.createUserButton);
+		fullName = findViewById(R.id.fullName);
+		userUserName = findViewById(R.id.userUserName);
+		userEmail = findViewById(R.id.userEmail);
+		userPassword = findViewById(R.id.userPassword);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		fullName.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(fullName, InputMethodManager.SHOW_IMPLICIT);
 
-        if(!connToInternet) {
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-            disableProcessButton();
+		if(!connToInternet) {
 
-        } else {
+			disableProcessButton();
 
-            createUserButton.setOnClickListener(createNewUserListener);
+		}
+		else {
 
-        }
+			createUserButton.setOnClickListener(createNewUserListener);
 
-    }
+		}
 
-    private void processCreateNewUser() {
+	}
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-        AppUtil appUtil = new AppUtil();
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+	private void processCreateNewUser() {
 
-        String newFullName = fullName.getText().toString().trim();
-        String newUserName = userUserName.getText().toString().trim();
-        String newUserEmail = userEmail.getText().toString().trim();
-        String newUserPassword = userPassword.getText().toString();
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		AppUtil appUtil = new AppUtil();
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(!connToInternet) {
+		String newFullName = fullName.getText().toString().trim();
+		String newUserName = userUserName.getText().toString().trim();
+		String newUserEmail = userEmail.getText().toString().trim();
+		String newUserPassword = userPassword.getText().toString();
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
-            return;
+		if(!connToInternet) {
 
-        }
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			return;
 
-        if(newFullName.equals("") || newUserName.equals("") | newUserEmail.equals("") || newUserPassword.equals("")) {
+		}
 
-            Toasty.info(ctx, getString(R.string.emptyFields));
-            return;
+		if(newFullName.equals("") || newUserName.equals("") | newUserEmail.equals("") || newUserPassword.equals("")) {
 
-        }
+			Toasty.info(ctx, getString(R.string.emptyFields));
+			return;
 
-        if(!appUtil.checkStrings(newFullName)) {
+		}
 
-            Toasty.info(ctx, getString(R.string.userInvalidFullName));
-            return;
+		if(!appUtil.checkStrings(newFullName)) {
 
-        }
+			Toasty.info(ctx, getString(R.string.userInvalidFullName));
+			return;
 
-        if(!appUtil.checkStringsWithAlphaNumeric(newUserName)) {
+		}
 
-            Toasty.info(ctx, getString(R.string.userInvalidUserName));
-            return;
+		if(!appUtil.checkStringsWithAlphaNumeric(newUserName)) {
 
-        }
+			Toasty.info(ctx, getString(R.string.userInvalidUserName));
+			return;
 
-        if(!Patterns.EMAIL_ADDRESS.matcher(newUserEmail).matches()) {
+		}
 
-            Toasty.info(ctx, getString(R.string.userInvalidEmail));
-            return;
+		if(!Patterns.EMAIL_ADDRESS.matcher(newUserEmail).matches()) {
 
-        }
+			Toasty.info(ctx, getString(R.string.userInvalidEmail));
+			return;
 
-        disableProcessButton();
-        createNewUser(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), newFullName, newUserName, newUserEmail, newUserPassword);
+		}
 
-    }
+		disableProcessButton();
+		createNewUser(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), newFullName, newUserName, newUserEmail, newUserPassword);
 
-    private void createNewUser(final String instanceUrl, final String instanceToken, String newFullName, String newUserName, String newUserEmail, String newUserPassword) {
+	}
 
-        UserInfo createUser = new UserInfo(newUserEmail, newFullName, newUserName, newUserPassword, newUserName, 0, true);
+	private void createNewUser(final String instanceUrl, final String instanceToken, String newFullName, String newUserName, String newUserEmail, String newUserPassword) {
 
-        Call<UserInfo> call;
+		UserInfo createUser = new UserInfo(newUserEmail, newFullName, newUserName, newUserPassword, newUserName, 0, true);
 
-        call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .createNewUser(instanceToken, createUser);
+		Call<UserInfo> call;
 
-        call.enqueue(new Callback<UserInfo>() {
+		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().createNewUser(instanceToken, createUser);
 
-            @Override
-            public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
+		call.enqueue(new Callback<UserInfo>() {
 
-                if(response.code() == 201) {
+			@Override
+			public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
 
-                    Toasty.info(ctx, getString(R.string.userCreatedText));
-                    enableProcessButton();
-                    finish();
+				if(response.code() == 201) {
 
-                }
-                else if(response.code() == 401) {
+					Toasty.info(ctx, getString(R.string.userCreatedText));
+					enableProcessButton();
+					finish();
 
-                    enableProcessButton();
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+				}
+				else if(response.code() == 401) {
 
-                }
-                else if(response.code() == 403) {
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                    enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+				}
+				else if(response.code() == 403) {
 
-                }
-                else if(response.code() == 404) {
+					enableProcessButton();
+					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                    enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+				}
+				else if(response.code() == 404) {
 
-                }
-                else if(response.code() == 422) {
+					enableProcessButton();
+					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                    enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.userExistsError));
+				}
+				else if(response.code() == 422) {
 
-                }
-                else {
+					enableProcessButton();
+					Toasty.info(ctx, ctx.getString(R.string.userExistsError));
 
-                    enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.genericError));
+				}
+				else {
 
-                }
+					enableProcessButton();
+					Toasty.info(ctx, getString(R.string.genericError));
 
-            }
+				}
 
-            @Override
-            public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
-        });
+			}
 
-    }
+			@Override
+			public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
 
-    private View.OnClickListener createNewUserListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processCreateNewUser();
-        }
-    };
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
+		});
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+	}
 
-    private void disableProcessButton() {
+	private View.OnClickListener createNewUserListener = new View.OnClickListener() {
 
-        createUserButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createUserButton.setBackground(shape);
+		public void onClick(View v) {
 
-    }
+			processCreateNewUser();
+		}
+	};
 
-    private void enableProcessButton() {
+	private void initCloseListener() {
 
-        createUserButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createUserButton.setBackground(shape);
+		onClickListener = new View.OnClickListener() {
 
-    }
+			@Override
+			public void onClick(View view) {
+
+				finish();
+			}
+		};
+	}
+
+	private void disableProcessButton() {
+
+		createUserButton.setEnabled(false);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.hintColor));
+		createUserButton.setBackground(shape);
+
+	}
+
+	private void enableProcessButton() {
+
+		createUserButton.setEnabled(true);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.btnBackground));
+		createUserButton.setBackground(shape);
+
+	}
 
 }
