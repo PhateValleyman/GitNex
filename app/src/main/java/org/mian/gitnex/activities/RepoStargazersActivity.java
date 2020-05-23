@@ -2,14 +2,14 @@ package org.mian.gitnex.activities;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.RepoStargazersAdapter;
 import org.mian.gitnex.helpers.Authorization;
@@ -24,81 +24,87 @@ import java.util.List;
 
 public class RepoStargazersActivity extends BaseActivity {
 
-    private TextView noDataStargazers;
-    private View.OnClickListener onClickListener;
-    private RepoStargazersAdapter adapter;
-    private GridView mGridView;
-    private ProgressBar mProgressBar;
+	private TextView noDataStargazers;
+	private View.OnClickListener onClickListener;
+	private RepoStargazersAdapter adapter;
+	private GridView mGridView;
+	private ProgressBar mProgressBar;
 
-    final Context ctx = this;
-    private Context appCtx;
+	final Context ctx = this;
+	private Context appCtx;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_repo_stargazers;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_repo_stargazers;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        ImageView closeActivity = findViewById(R.id.close);
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
-        noDataStargazers = findViewById(R.id.noDataStargazers);
-        mGridView = findViewById(R.id.gridView);
-        mProgressBar = findViewById(R.id.progress_bar);
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        String repoFullNameForStars = getIntent().getStringExtra("repoFullNameForStars");
-        String[] parts = repoFullNameForStars.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+		ImageView closeActivity = findViewById(R.id.close);
+		TextView toolbarTitle = findViewById(R.id.toolbar_title);
+		noDataStargazers = findViewById(R.id.noDataStargazers);
+		mGridView = findViewById(R.id.gridView);
+		mProgressBar = findViewById(R.id.progress_bar);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		String repoFullNameForStars = getIntent().getStringExtra("repoFullNameForStars");
+		String[] parts = repoFullNameForStars.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
 
-        toolbarTitle.setText(R.string.repoStargazersInMenu);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+		toolbarTitle.setText(R.string.repoStargazersInMenu);
 
-    }
+		fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken, String repoOwner, String repoName) {
+	}
 
-        RepoStargazersViewModel repoStargazersModel = new ViewModelProvider(this).get(RepoStargazersViewModel.class);
+	private void fetchDataAsync(String instanceUrl, String instanceToken, String repoOwner, String repoName) {
 
-        repoStargazersModel.getRepoStargazers(instanceUrl, instanceToken, repoOwner, repoName, ctx).observe(this, new Observer<List<UserInfo>>() {
-            @Override
-            public void onChanged(@Nullable List<UserInfo> stargazersListMain) {
-                adapter = new RepoStargazersAdapter(ctx, stargazersListMain);
-                if(adapter.getCount() > 0) {
-                    mGridView.setAdapter(adapter);
-                    noDataStargazers.setVisibility(View.GONE);
-                }
-                else {
-                    adapter.notifyDataSetChanged();
-                    mGridView.setAdapter(adapter);
-                    noDataStargazers.setVisibility(View.VISIBLE);
-                }
-                mProgressBar.setVisibility(View.GONE);
-            }
-        });
+		RepoStargazersViewModel repoStargazersModel = new ViewModelProvider(this).get(RepoStargazersViewModel.class);
 
-    }
+		repoStargazersModel.getRepoStargazers(instanceUrl, instanceToken, repoOwner, repoName, ctx).observe(this, new Observer<List<UserInfo>>() {
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+			@Override
+			public void onChanged(@Nullable List<UserInfo> stargazersListMain) {
+
+				adapter = new RepoStargazersAdapter(ctx, stargazersListMain);
+				if(adapter.getCount() > 0) {
+					mGridView.setAdapter(adapter);
+					noDataStargazers.setVisibility(View.GONE);
+				}
+				else {
+					adapter.notifyDataSetChanged();
+					mGridView.setAdapter(adapter);
+					noDataStargazers.setVisibility(View.VISIBLE);
+				}
+				mProgressBar.setVisibility(View.GONE);
+			}
+		});
+
+	}
+
+	private void initCloseListener() {
+
+		onClickListener = new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+
+				finish();
+			}
+		};
+	}
 
 }
