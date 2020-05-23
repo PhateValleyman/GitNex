@@ -36,311 +36,305 @@ import retrofit2.Callback;
 
 public class CreateFileActivity extends BaseActivity {
 
-    public ImageView closeActivity;
-    private View.OnClickListener onClickListener;
-    private Button newFileCreate;
-
-    private EditText newFileName;
-    private EditText newFileContent;
-    private EditText newFileBranchName;
-    private EditText newFileCommitMessage;
-    private Spinner newFileBranchesSpinner;
-    final Context ctx = this;
-    private Context appCtx;
+	public ImageView closeActivity;
+	private View.OnClickListener onClickListener;
+	private Button newFileCreate;
 
-    List<Branches> branchesList = new ArrayList<>();
-
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_new_file;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+	private EditText newFileName;
+	private EditText newFileContent;
+	private EditText newFileBranchName;
+	private EditText newFileCommitMessage;
+	private Spinner newFileBranchesSpinner;
+	final Context ctx = this;
+	private Context appCtx;
 
-        closeActivity = findViewById(R.id.close);
-        newFileName = findViewById(R.id.newFileName);
-        newFileContent = findViewById(R.id.newFileContent);
-        newFileBranchName = findViewById(R.id.newFileBranchName);
-        newFileCommitMessage = findViewById(R.id.newFileCommitMessage);
-        TextView branchNameId = findViewById(R.id.branchNameId);
-        TextView branchNameHintText = findViewById(R.id.branchNameHintText);
+	List<Branches> branchesList = new ArrayList<>();
 
-        newFileName.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(newFileName, InputMethodManager.SHOW_IMPLICIT);
+	@Override
+	protected int getLayoutResourceId() {
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		return R.layout.activity_new_file;
+	}
 
-        newFileCreate = findViewById(R.id.newFileCreate);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        newFileBranchesSpinner = findViewById(R.id.newFileBranchesSpinner);
-        newFileBranchesSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-        getBranches(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
-        newFileBranchesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            public void onItemSelected(AdapterView<?> arg0,
-                                       View arg1, int arg2, long arg3)
-            {
-                Branches bModelValue = (Branches) newFileBranchesSpinner.getSelectedItem();
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                if(bModelValue.toString().equals("No branch")) {
-                    newFileBranchName.setEnabled(true);
-                    newFileBranchName.setVisibility(View.VISIBLE);
-                    branchNameId.setVisibility(View.VISIBLE);
-                    branchNameHintText.setVisibility(View.VISIBLE);
-                }
-                else {
-                    newFileBranchName.setEnabled(false);
-                    newFileBranchName.setVisibility(View.GONE);
-                    branchNameId.setVisibility(View.GONE);
-                    branchNameHintText.setVisibility(View.GONE);
-                    newFileBranchName.setText("");
-                }
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-            }
+		closeActivity = findViewById(R.id.close);
+		newFileName = findViewById(R.id.newFileName);
+		newFileContent = findViewById(R.id.newFileContent);
+		newFileBranchName = findViewById(R.id.newFileBranchName);
+		newFileCommitMessage = findViewById(R.id.newFileCommitMessage);
+		TextView branchNameId = findViewById(R.id.branchNameId);
+		TextView branchNameHintText = findViewById(R.id.branchNameHintText);
 
-            public void onNothingSelected(AdapterView<?> arg0) {}
-        });
+		newFileName.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(newFileName, InputMethodManager.SHOW_IMPLICIT);
 
-        disableProcessButton();
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        if(!connToInternet) {
+		newFileCreate = findViewById(R.id.newFileCreate);
 
-            newFileCreate.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            newFileCreate.setBackground(shape);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        } else {
+		newFileBranchesSpinner = findViewById(R.id.newFileBranchesSpinner);
+		newFileBranchesSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+		getBranches(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
 
-            newFileCreate.setOnClickListener(createFileListener);
+		newFileBranchesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-        }
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-    }
+				Branches bModelValue = (Branches) newFileBranchesSpinner.getSelectedItem();
 
-    private View.OnClickListener createFileListener = v -> processNewFile();
+				if(bModelValue.toString().equals("No branch")) {
+					newFileBranchName.setEnabled(true);
+					newFileBranchName.setVisibility(View.VISIBLE);
+					branchNameId.setVisibility(View.VISIBLE);
+					branchNameHintText.setVisibility(View.VISIBLE);
+				}
+				else {
+					newFileBranchName.setEnabled(false);
+					newFileBranchName.setVisibility(View.GONE);
+					branchNameId.setVisibility(View.GONE);
+					branchNameHintText.setVisibility(View.GONE);
+					newFileBranchName.setText("");
+				}
 
-    private void processNewFile() {
+			}
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-        AppUtil appUtil = new AppUtil();
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+			public void onNothingSelected(AdapterView<?> arg0) {
 
-        String newFileName_ = newFileName.getText().toString();
-        String newFileContent_ = newFileContent.getText().toString();
-        String newFileBranchName_ = newFileBranchName.getText().toString();
-        String newFileCommitMessage_ = newFileCommitMessage.getText().toString();
+			}
+		});
 
-        Branches currentBranch = (Branches) newFileBranchesSpinner.getSelectedItem();
+		disableProcessButton();
 
-        if(!connToInternet) {
+		if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
-            return;
+			newFileCreate.setEnabled(false);
+			GradientDrawable shape = new GradientDrawable();
+			shape.setCornerRadius(8);
+			shape.setColor(getResources().getColor(R.color.hintColor));
+			newFileCreate.setBackground(shape);
 
-        }
+		}
+		else {
 
-        if(newFileName_.equals("") || newFileContent_.equals("") || newFileCommitMessage_.equals("")) {
+			newFileCreate.setOnClickListener(createFileListener);
 
-            Toasty.info(ctx, getString(R.string.newFileRequiredFields));
-            return;
+		}
 
-        }
+	}
 
-        if(currentBranch.toString().equals("No branch")) {
+	private View.OnClickListener createFileListener = v -> processNewFile();
 
-            if(newFileBranchName_.equals("")) {
-                Toasty.info(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
-                return;
-            }
-            else {
-                if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
+	private void processNewFile() {
 
-                    Toasty.info(ctx, getString(R.string.newFileInvalidBranchName));
-                    return;
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		AppUtil appUtil = new AppUtil();
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
 
-                }
-            }
+		String newFileName_ = newFileName.getText().toString();
+		String newFileContent_ = newFileContent.getText().toString();
+		String newFileBranchName_ = newFileBranchName.getText().toString();
+		String newFileCommitMessage_ = newFileCommitMessage.getText().toString();
 
-        }
+		Branches currentBranch = (Branches) newFileBranchesSpinner.getSelectedItem();
 
-        if(appUtil.charactersLength(newFileCommitMessage_) > 255) {
+		if(!connToInternet) {
 
-            Toasty.info(ctx, getString(R.string.newFileCommitMessageError));
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			return;
 
-        }
-        else {
+		}
 
-            disableProcessButton();
-            createNewFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newFileName_, appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString());
+		if(newFileName_.equals("") || newFileContent_.equals("") || newFileCommitMessage_.equals("")) {
 
-        }
+			Toasty.info(ctx, getString(R.string.newFileRequiredFields));
+			return;
 
-    }
+		}
 
-    private void createNewFile(final String instanceUrl, final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch) {
+		if(currentBranch.toString().equals("No branch")) {
 
-        NewFile createNewFileJsonStr;
-        if(currentBranch.equals("No branch")) {
-            createNewFileJsonStr = new NewFile("", fileContent, fileCommitMessage, fileBranchName);
-        }
-        else {
-            createNewFileJsonStr = new NewFile(currentBranch, fileContent, fileCommitMessage, "");
-        }
+			if(newFileBranchName_.equals("")) {
+				Toasty.info(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
+				return;
+			}
+			else {
+				if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
 
-        Call<JsonElement> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .createNewFile(token, repoOwner, repoName, fileName, createNewFileJsonStr);
+					Toasty.info(ctx, getString(R.string.newFileInvalidBranchName));
+					return;
 
-        call.enqueue(new Callback<JsonElement>() {
+				}
+			}
 
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+		}
 
-                if(response.code() == 201) {
+		if(appUtil.charactersLength(newFileCommitMessage_) > 255) {
 
-                    enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.newFileSuccessMessage));
-                    finish();
+			Toasty.info(ctx, getString(R.string.newFileCommitMessageError));
 
-                }
-                else if(response.code() == 401) {
+		}
+		else {
 
-                    enableProcessButton();
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+			disableProcessButton();
+			createNewFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newFileName_, appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString());
 
-                }
-                else {
+		}
 
-                    if(response.code() == 404) {
-                        enableProcessButton();
-                        Toasty.info(ctx, getString(R.string.apiNotFound));
-                    }
-                    else {
-                        enableProcessButton();
-                        Toasty.info(ctx, getString(R.string.orgCreatedError));
-                    }
+	}
 
-                }
+	private void createNewFile(final String instanceUrl, final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch) {
 
-            }
+		NewFile createNewFileJsonStr;
+		if(currentBranch.equals("No branch")) {
+			createNewFileJsonStr = new NewFile("", fileContent, fileCommitMessage, fileBranchName);
+		}
+		else {
+			createNewFileJsonStr = new NewFile(currentBranch, fileContent, fileCommitMessage, "");
+		}
 
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
-        });
+		Call<JsonElement> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().createNewFile(token, repoOwner, repoName, fileName, createNewFileJsonStr);
 
-    }
+		call.enqueue(new Callback<JsonElement>() {
 
-    private void getBranches(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-        Call<List<Branches>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getBranches(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+				if(response.code() == 201) {
 
-        call.enqueue(new Callback<List<Branches>>() {
+					enableProcessButton();
+					Toasty.info(ctx, getString(R.string.newFileSuccessMessage));
+					finish();
 
-            @Override
-            public void onResponse(@NonNull Call<List<Branches>> call, @NonNull retrofit2.Response<List<Branches>> response) {
+				}
+				else if(response.code() == 401) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                        List<Branches> branchesList_ = response.body();
+				}
+				else {
 
-                        branchesList.add(new Branches("No branch"));
-                        assert branchesList_ != null;
-                        if(branchesList_.size() > 0) {
-                            for (int i = 0; i < branchesList_.size(); i++) {
+					if(response.code() == 404) {
+						enableProcessButton();
+						Toasty.info(ctx, getString(R.string.apiNotFound));
+					}
+					else {
+						enableProcessButton();
+						Toasty.info(ctx, getString(R.string.orgCreatedError));
+					}
 
-                                Branches data = new Branches(
-                                        branchesList_.get(i).getName()
-                                );
-                                branchesList.add(data);
+				}
 
-                            }
-                        }
+			}
 
-                        ArrayAdapter<Branches> adapter = new ArrayAdapter<>(CreateFileActivity.this,
-                                R.layout.spinner_item, branchesList);
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
-                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                        newFileBranchesSpinner.setAdapter(adapter);
-                        enableProcessButton();
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
+		});
 
-                    }
-                }
+	}
 
-            }
+	private void getBranches(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
 
-            @Override
-            public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+		Call<List<Branches>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getBranches(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
-    }
+		call.enqueue(new Callback<List<Branches>>() {
 
-    private void initCloseListener() {
-        onClickListener = view -> finish();
-    }
+			@Override
+			public void onResponse(@NonNull Call<List<Branches>> call, @NonNull retrofit2.Response<List<Branches>> response) {
 
-    private void disableProcessButton() {
+				if(response.isSuccessful()) {
+					if(response.code() == 200) {
 
-        newFileCreate.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        newFileCreate.setBackground(shape);
+						List<Branches> branchesList_ = response.body();
 
-    }
+						branchesList.add(new Branches("No branch"));
+						assert branchesList_ != null;
+						if(branchesList_.size() > 0) {
+							for(int i = 0; i < branchesList_.size(); i++) {
 
-    private void enableProcessButton() {
+								Branches data = new Branches(branchesList_.get(i).getName());
+								branchesList.add(data);
 
-        newFileCreate.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        newFileCreate.setBackground(shape);
+							}
+						}
 
-    }
+						ArrayAdapter<Branches> adapter = new ArrayAdapter<>(CreateFileActivity.this, R.layout.spinner_item, branchesList);
+
+						adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+						newFileBranchesSpinner.setAdapter(adapter);
+						enableProcessButton();
+
+					}
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
+	private void initCloseListener() {
+
+		onClickListener = view -> finish();
+	}
+
+	private void disableProcessButton() {
+
+		newFileCreate.setEnabled(false);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.hintColor));
+		newFileCreate.setBackground(shape);
+
+	}
+
+	private void enableProcessButton() {
+
+		newFileCreate.setEnabled(true);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.btnBackground));
+		newFileCreate.setBackground(shape);
+
+	}
 
 }
