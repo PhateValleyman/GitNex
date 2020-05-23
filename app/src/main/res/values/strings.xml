@@ -553,8 +553,6 @@
     <string name="viewInBrowser">View in Browser</string>
     <string name="isOpen">Open</string>
     <string name="isClosed">Closed</string>
-    <string name="doOpen">open</string>
-    <string name="doClose">close</string>
     <string name="genericServerResponseError">We cannot reach the server at the moment, please check your server status and try again</string>
     <!-- generic copy -->
 
