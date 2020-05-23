@@ -103,7 +103,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 					this.overridePendingTransition(0, 0);
 
 				}
-				catch (IOException e) {
+				catch(IOException e) {
 
 					Log.e("SettingsSecurity", e.toString());
 
@@ -206,6 +206,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
+
 		onClickListener = view -> {
 			finish();
 		};
