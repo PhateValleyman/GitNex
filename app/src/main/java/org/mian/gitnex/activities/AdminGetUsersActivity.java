@@ -1,13 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +11,14 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.AdminGetUsersAdapter;
 import org.mian.gitnex.fragments.BottomSheetAdminUsersFragment;
@@ -28,7 +28,6 @@ import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.AdminGetUsersViewModel;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Author M M Arif
@@ -36,170 +35,184 @@ import java.util.Objects;
 
 public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAdminUsersFragment.BottomSheetListener {
 
-    private View.OnClickListener onClickListener;
-    final Context ctx = this;
-    private Context appCtx;
-    private AdminGetUsersAdapter adapter;
-    private RecyclerView mRecyclerView;
-    private TextView noDataUsers;
-    private Boolean searchFilter = false;
+	private View.OnClickListener onClickListener;
+	final Context ctx = this;
+	private Context appCtx;
+	private AdminGetUsersAdapter adapter;
+	private RecyclerView mRecyclerView;
+	private TextView noDataUsers;
+	private Boolean searchFilter = false;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_admin_get_users;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_admin_get_users;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        ImageView closeActivity = findViewById(R.id.close);
-        noDataUsers = findViewById(R.id.noDataUsers);
-        mRecyclerView = findViewById(R.id.recyclerView);
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        final SwipeRefreshLayout swipeRefresh = findViewById(R.id.pullToRefresh);
+		ImageView closeActivity = findViewById(R.id.close);
+		noDataUsers = findViewById(R.id.noDataUsers);
+		mRecyclerView = findViewById(R.id.recyclerView);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+		final SwipeRefreshLayout swipeRefresh = findViewById(R.id.pullToRefresh);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
+		mRecyclerView.setHasFixedSize(true);
+		mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        AdminGetUsersViewModel.loadUsersList(ctx, instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken));
-                    }
-                }, 500);
-            }
-        });
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        fetchDataAsync(ctx, instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken));
+		swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
-    }
+			@Override
+			public void onRefresh() {
 
-    private void fetchDataAsync(Context ctx, String instanceUrl, String instanceToken) {
+				new Handler().postDelayed(new Runnable() {
 
-        AdminGetUsersViewModel usersModel = ViewModelProviders.of(this).get(AdminGetUsersViewModel.class);
+					@Override
+					public void run() {
 
-        usersModel.getUsersList(ctx, instanceUrl, instanceToken).observe(this, new Observer<List<UserInfo>>() {
-            @Override
-            public void onChanged(@Nullable List<UserInfo> usersListMain) {
-                adapter = new AdminGetUsersAdapter(ctx, usersListMain);
-                if(adapter.getItemCount() > 0) {
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    mRecyclerView.setAdapter(adapter);
-                    noDataUsers.setVisibility(View.GONE);
-                    searchFilter = true;
-                }
-                else {
-                    //adapter.notifyDataSetChanged();
-                    //mRecyclerView.setAdapter(adapter);
-                    mRecyclerView.setVisibility(View.GONE);
-                    noDataUsers.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+						swipeRefresh.setRefreshing(false);
+						AdminGetUsersViewModel.loadUsersList(ctx, instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken));
+					}
+				}, 500);
+			}
+		});
 
-    }
+		fetchDataAsync(ctx, instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken));
 
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
+	}
 
-        final MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
+	private void fetchDataAsync(Context ctx, String instanceUrl, String instanceToken) {
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(searchFilter) {
+		AdminGetUsersViewModel usersModel = ViewModelProviders.of(this).get(AdminGetUsersViewModel.class);
 
-                    boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		usersModel.getUsersList(ctx, instanceUrl, instanceToken).observe(this, new Observer<List<UserInfo>>() {
 
-                    inflater.inflate(R.menu.search_menu, menu);
+			@Override
+			public void onChanged(@Nullable List<UserInfo> usersListMain) {
 
-                    MenuItem searchItem = menu.findItem(R.id.action_search);
-                    androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
-                    searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+				adapter = new AdminGetUsersAdapter(ctx, usersListMain);
+				if(adapter.getItemCount() > 0) {
+					mRecyclerView.setVisibility(View.VISIBLE);
+					mRecyclerView.setAdapter(adapter);
+					noDataUsers.setVisibility(View.GONE);
+					searchFilter = true;
+				}
+				else {
+					//adapter.notifyDataSetChanged();
+					//mRecyclerView.setAdapter(adapter);
+					mRecyclerView.setVisibility(View.GONE);
+					noDataUsers.setVisibility(View.VISIBLE);
+				}
+			}
+		});
 
-                    if(!connToInternet) {
-                        return;
-                    }
+	}
 
-                    searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String query) {
-                            return true;
-                        }
+	@Override
+	public boolean onCreateOptionsMenu(final Menu menu) {
 
-                        @Override
-                        public boolean onQueryTextChange(String newText) {
-                            adapter.getFilter().filter(newText);
-                            return false;
-                        }
-                    });
-                }
-            }
-        }, 500);
+		final MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
 
-        return true;
-    }
+		new Handler().postDelayed(new Runnable() {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+			@Override
+			public void run() {
 
-        int id = item.getItemId();
+				if(searchFilter) {
 
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.genericMenu:
-                BottomSheetAdminUsersFragment bottomSheet = new BottomSheetAdminUsersFragment();
-                bottomSheet.show(getSupportFragmentManager(), "usersBottomSheet");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+					boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
-    }
+					inflater.inflate(R.menu.search_menu, menu);
 
-    @Override
-    public void onButtonClicked(String text) {
+					MenuItem searchItem = menu.findItem(R.id.action_search);
+					androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+					searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
-        switch (text) {
-            case "newUser":
-                startActivity(new Intent(AdminGetUsersActivity.this, CreateNewUserActivity.class));
-                break;
-        }
+					if(!connToInternet) {
+						return;
+					}
 
-    }
+					searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+						@Override
+						public boolean onQueryTextSubmit(String query) {
+
+							return true;
+						}
+
+						@Override
+						public boolean onQueryTextChange(String newText) {
+
+							adapter.getFilter().filter(newText);
+							return false;
+						}
+					});
+				}
+			}
+		}, 500);
+
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		int id = item.getItemId();
+
+		switch(id) {
+			case android.R.id.home:
+				finish();
+				return true;
+			case R.id.genericMenu:
+				BottomSheetAdminUsersFragment bottomSheet = new BottomSheetAdminUsersFragment();
+				bottomSheet.show(getSupportFragmentManager(), "usersBottomSheet");
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+
+	}
+
+	@Override
+	public void onButtonClicked(String text) {
+
+		switch(text) {
+			case "newUser":
+				startActivity(new Intent(AdminGetUsersActivity.this, CreateNewUserActivity.class));
+				break;
+		}
+
+	}
+
+	private void initCloseListener() {
+
+		onClickListener = new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+
+				finish();
+			}
+		};
+	}
 
 }
