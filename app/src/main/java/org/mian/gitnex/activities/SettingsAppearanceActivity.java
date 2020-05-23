@@ -119,7 +119,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		// counter badge switcher
 		counterBadgesSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-			if (isChecked) {
+			if(isChecked) {
 				tinyDb.putBoolean("enableCounterBadges", true);
 				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
 			}
@@ -320,6 +320,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
+
 		onClickListener = view -> {
 			finish();
 		};
