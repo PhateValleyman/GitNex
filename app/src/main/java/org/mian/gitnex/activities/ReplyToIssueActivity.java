@@ -1,9 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -14,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
@@ -28,6 +25,9 @@ import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -35,264 +35,264 @@ import java.util.List;
 
 public class ReplyToIssueActivity extends BaseActivity {
 
-    public ImageView closeActivity;
-    private View.OnClickListener onClickListener;
+	public ImageView closeActivity;
+	private View.OnClickListener onClickListener;
 
-    final Context ctx = this;
-    private Context appCtx;
+	final Context ctx = this;
+	private Context appCtx;
 
-    private SocialAutoCompleteTextView addComment;
-    private ArrayAdapter<Mention> defaultMentionAdapter;
-    private Button replyButton;
+	private SocialAutoCompleteTextView addComment;
+	private ArrayAdapter<Mention> defaultMentionAdapter;
+	private Button replyButton;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_reply_to_issue;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_reply_to_issue;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-        TinyDB tinyDb = new TinyDB(appCtx);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        addComment = findViewById(R.id.addComment);
-        addComment.setShowSoftInputOnFocus(true);
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		TinyDB tinyDb = new TinyDB(appCtx);
 
-        defaultMentionAdapter = new MentionArrayAdapter<>(this);
-        loadCollaboratorsList();
+		addComment = findViewById(R.id.addComment);
+		addComment.setShowSoftInputOnFocus(true);
 
-        addComment.setMentionAdapter(defaultMentionAdapter);
+		defaultMentionAdapter = new MentionArrayAdapter<>(this);
+		loadCollaboratorsList();
 
-        closeActivity = findViewById(R.id.close);
-        TextView toolbar_title = findViewById(R.id.toolbar_title);
+		addComment.setMentionAdapter(defaultMentionAdapter);
 
-        addComment.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(addComment, InputMethodManager.SHOW_IMPLICIT);
+		closeActivity = findViewById(R.id.close);
+		TextView toolbar_title = findViewById(R.id.toolbar_title);
 
-        if(!tinyDb.getString("issueTitle").isEmpty()) {
-            toolbar_title.setText(tinyDb.getString("issueTitle"));
-        }
+		addComment.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(addComment, InputMethodManager.SHOW_IMPLICIT);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		if(!tinyDb.getString("issueTitle").isEmpty()) {
+			toolbar_title.setText(tinyDb.getString("issueTitle"));
+		}
 
-        replyButton = findViewById(R.id.replyButton);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        if(getIntent().getStringExtra("commentBody") != null) {
+		replyButton = findViewById(R.id.replyButton);
 
-            addComment.setText(getIntent().getStringExtra("commentBody"));
+		if(getIntent().getStringExtra("commentBody") != null) {
 
-            if(getIntent().getBooleanExtra("cursorToEnd", false)) {
-                addComment.setSelection(addComment.length());
-            }
+			addComment.setText(getIntent().getStringExtra("commentBody"));
 
-        }
+			if(getIntent().getBooleanExtra("cursorToEnd", false)) {
+				addComment.setSelection(addComment.length());
+			}
 
-        if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
+		}
 
-            final String commentId = getIntent().getStringExtra("commentId");
+		if(getIntent().getStringExtra("commentAction") != null && getIntent().getStringExtra("commentAction").equals("edit")) {
 
-            toolbar_title.setText(getResources().getString(R.string.editCommentTitle));
-            replyButton.setText(getResources().getString(R.string.editCommentButtonText));
+			final String commentId = getIntent().getStringExtra("commentId");
 
-            replyButton.setOnClickListener(v -> {
-                disableProcessButton();
-                IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
-            });
+			toolbar_title.setText(getResources().getString(R.string.editCommentTitle));
+			replyButton.setText(getResources().getString(R.string.editCommentButtonText));
 
-            return;
+			replyButton.setOnClickListener(v -> {
+				disableProcessButton();
+				IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
+			});
 
-        }
+			return;
 
-        if(!connToInternet) {
+		}
 
-            disableProcessButton();
+		if(!connToInternet) {
 
-        } else {
+			disableProcessButton();
 
-            replyButton.setOnClickListener(replyToIssue);
+		}
+		else {
 
-        }
+			replyButton.setOnClickListener(replyToIssue);
 
-    }
+		}
 
-    public void loadCollaboratorsList() {
+	}
 
-        final TinyDB tinyDb = new TinyDB(appCtx);
+	public void loadCollaboratorsList() {
 
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-        Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
 
-        call.enqueue(new Callback<List<Collaborators>>() {
+		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
-            @Override
-            public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
+		call.enqueue(new Callback<List<Collaborators>>() {
 
-                if (response.isSuccessful()) {
+			@Override
+			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
 
-                    assert response.body() != null;
-                    String fullName = "";
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
-                            fullName = response.body().get(i).getFull_name();
-                        }
-                        defaultMentionAdapter.add(
-                                new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
-                    }
+				if(response.isSuccessful()) {
 
-                } else {
+					assert response.body() != null;
+					String fullName = "";
+					for(int i = 0; i < response.body().size(); i++) {
+						if(!response.body().get(i).getFull_name().equals("")) {
+							fullName = response.body().get(i).getFull_name();
+						}
+						defaultMentionAdapter.add(new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
+					}
 
-                    Log.i("onResponse", String.valueOf(response.code()));
+				}
+				else {
 
-                }
+					Log.i("onResponse", String.valueOf(response.code()));
 
-            }
+				}
 
-            @Override
-            public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.getMessage());
-            }
+			}
 
-        });
-    }
+			@Override
+			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+				Log.i("onFailure", t.getMessage());
+			}
 
-    private View.OnClickListener replyToIssue = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewCommentReply();
-        }
-    };
+		});
+	}
 
-    private void processNewCommentReply() {
+	private void initCloseListener() {
 
-        String newReplyDT = addComment.getText().toString();
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		onClickListener = new View.OnClickListener() {
 
-        if(!connToInternet) {
+			@Override
+			public void onClick(View view) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
-            return;
+				finish();
+			}
+		};
+	}
 
-        }
+	private View.OnClickListener replyToIssue = new View.OnClickListener() {
 
-        if(newReplyDT.equals("")) {
+		public void onClick(View v) {
 
-            Toasty.info(ctx, getString(R.string.commentEmptyError));
+			processNewCommentReply();
+		}
+	};
 
-        }
-        else {
+	private void processNewCommentReply() {
 
-            disableProcessButton();
-            replyComment(newReplyDT);
+		String newReplyDT = addComment.getText().toString();
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
-        }
+		if(!connToInternet) {
 
-    }
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			return;
 
-    private void replyComment(String newReplyDT) {
+		}
 
-        final TinyDB tinyDb = new TinyDB(appCtx);
+		if(newReplyDT.equals("")) {
 
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+			Toasty.info(ctx, getString(R.string.commentEmptyError));
 
-        Issues issueComment = new Issues(newReplyDT);
+		}
+		else {
 
-        Call<Issues> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .replyCommentToIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueComment);
+			disableProcessButton();
+			replyComment(newReplyDT);
 
-        call.enqueue(new Callback<Issues>() {
+		}
 
-            @Override
-            public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
+	}
 
-                if(response.code() == 201) {
+	private void replyComment(String newReplyDT) {
 
-                    Toasty.info(ctx, getString(R.string.commentSuccess));
-                    tinyDb.putBoolean("commentPosted", true);
-                    tinyDb.putBoolean("resumeIssues", true);
-                    tinyDb.putBoolean("resumePullRequests", true);
-                    finish();
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-                }
-                else if(response.code() == 401) {
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-                    enableProcessButton();
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+		Issues issueComment = new Issues(newReplyDT);
 
-                }
-                else {
+		Call<Issues> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().replyCommentToIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueComment);
 
-                    enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.commentError));
+		call.enqueue(new Callback<Issues>() {
 
-                }
+			@Override
+			public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
 
-            }
+				if(response.code() == 201) {
 
-            @Override
-            public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
-        });
+					Toasty.info(ctx, getString(R.string.commentSuccess));
+					tinyDb.putBoolean("commentPosted", true);
+					tinyDb.putBoolean("resumeIssues", true);
+					tinyDb.putBoolean("resumePullRequests", true);
+					finish();
 
-    }
+				}
+				else if(response.code() == 401) {
 
-    private void disableProcessButton() {
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-        replyButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        replyButton.setBackground(shape);
+				}
+				else {
 
-    }
+					enableProcessButton();
+					Toasty.info(ctx, getString(R.string.commentError));
 
-    private void enableProcessButton() {
+				}
 
-        replyButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        replyButton.setBackground(shape);
+			}
 
-    }
+			@Override
+			public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
+		});
+
+	}
+
+	private void disableProcessButton() {
+
+		replyButton.setEnabled(false);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.hintColor));
+		replyButton.setBackground(shape);
+
+	}
+
+	private void enableProcessButton() {
+
+		replyButton.setEnabled(true);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.btnBackground));
+		replyButton.setBackground(shape);
+
+	}
 
 }
