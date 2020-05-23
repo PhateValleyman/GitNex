@@ -1,8 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
@@ -17,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import androidx.annotation.NonNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -28,6 +26,8 @@ import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -35,288 +35,284 @@ import java.util.List;
 
 public class CreateReleaseActivity extends BaseActivity {
 
-    private View.OnClickListener onClickListener;
-    public ImageView closeActivity;
-    private EditText releaseTagName;
-    private Spinner releaseBranch;
-    private EditText releaseTitle;
-    private EditText releaseContent;
-    private CheckBox releaseType;
-    private CheckBox releaseDraft;
-    private Button createNewRelease;
-    final Context ctx = this;
-    private Context appCtx;
-
-    List<Branches> branchesList = new ArrayList<>();
-
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_create_release;
-    }
+	private View.OnClickListener onClickListener;
+	public ImageView closeActivity;
+	private EditText releaseTagName;
+	private Spinner releaseBranch;
+	private EditText releaseTitle;
+	private EditText releaseContent;
+	private CheckBox releaseType;
+	private CheckBox releaseDraft;
+	private Button createNewRelease;
+	final Context ctx = this;
+	private Context appCtx;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+	List<Branches> branchesList = new ArrayList<>();
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	protected int getLayoutResourceId() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		return R.layout.activity_create_release;
+	}
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        closeActivity = findViewById(R.id.close);
-        releaseTagName = findViewById(R.id.releaseTagName);
-        releaseTitle = findViewById(R.id.releaseTitle);
-        releaseContent = findViewById(R.id.releaseContent);
-        releaseType = findViewById(R.id.releaseType);
-        releaseDraft = findViewById(R.id.releaseDraft);
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
-        releaseTagName.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(releaseTagName, InputMethodManager.SHOW_IMPLICIT);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
 
-        releaseBranch = findViewById(R.id.releaseBranch);
-        releaseBranch.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-        getBranches(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
-        releaseBranch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Branches branch = (Branches) parent.getSelectedItem();
-            }
+		closeActivity = findViewById(R.id.close);
+		releaseTagName = findViewById(R.id.releaseTagName);
+		releaseTitle = findViewById(R.id.releaseTitle);
+		releaseContent = findViewById(R.id.releaseContent);
+		releaseType = findViewById(R.id.releaseType);
+		releaseDraft = findViewById(R.id.releaseDraft);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+		releaseTagName.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(releaseTagName, InputMethodManager.SHOW_IMPLICIT);
 
-            }
-        });
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        createNewRelease = findViewById(R.id.createNewRelease);
-        disableProcessButton();
+		releaseBranch = findViewById(R.id.releaseBranch);
+		releaseBranch.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+		getBranches(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+		releaseBranch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-        if(!connToInternet) {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-            disableProcessButton();
+				Branches branch = (Branches) parent.getSelectedItem();
+			}
 
-        } else {
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
 
-            createNewRelease.setOnClickListener(createReleaseListener);
+			}
+		});
 
-        }
+		createNewRelease = findViewById(R.id.createNewRelease);
+		disableProcessButton();
 
-    }
+		if(!connToInternet) {
 
-    private View.OnClickListener createReleaseListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewRelease();
-        }
-    };
+			disableProcessButton();
 
-    private void processNewRelease() {
+		}
+		else {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+			createNewRelease.setOnClickListener(createReleaseListener);
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+		}
 
-        String newReleaseTagName = releaseTagName.getText().toString();
-        String newReleaseTitle = releaseTitle.getText().toString();
-        String newReleaseContent = releaseContent.getText().toString();
-        String newReleaseBranch = releaseBranch.getSelectedItem().toString();
-        boolean newReleaseType = releaseType.isChecked();
-        boolean newReleaseDraft = releaseDraft.isChecked();
+	}
 
-        if(!connToInternet) {
+	private View.OnClickListener createReleaseListener = new View.OnClickListener() {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
-            return;
+		public void onClick(View v) {
 
-        }
+			processNewRelease();
+		}
+	};
 
-        if(newReleaseTagName.equals("")) {
+	private void processNewRelease() {
 
-            Toasty.info(ctx, getString(R.string.tagNameErrorEmpty));
-            return;
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
-        }
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
 
-        if(newReleaseTitle.equals("")) {
+		String newReleaseTagName = releaseTagName.getText().toString();
+		String newReleaseTitle = releaseTitle.getText().toString();
+		String newReleaseContent = releaseContent.getText().toString();
+		String newReleaseBranch = releaseBranch.getSelectedItem().toString();
+		boolean newReleaseType = releaseType.isChecked();
+		boolean newReleaseDraft = releaseDraft.isChecked();
 
-            Toasty.info(ctx, getString(R.string.titleErrorEmpty));
-            return;
+		if(!connToInternet) {
 
-        }
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			return;
 
-        disableProcessButton();
-        createNewReleaseFunc(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newReleaseTagName, newReleaseTitle, newReleaseContent, newReleaseBranch, newReleaseType, newReleaseDraft);
+		}
 
-    }
+		if(newReleaseTagName.equals("")) {
 
-    private void createNewReleaseFunc(final String instanceUrl, final String token, String repoOwner, String repoName, String newReleaseTagName, String newReleaseTitle, String newReleaseContent, String newReleaseBranch, boolean newReleaseType, boolean newReleaseDraft) {
+			Toasty.info(ctx, getString(R.string.tagNameErrorEmpty));
+			return;
 
-        Releases createReleaseJson = new Releases(newReleaseContent, newReleaseDraft, newReleaseTitle, newReleaseType, newReleaseTagName, newReleaseBranch);
+		}
 
-        Call<Releases> call;
+		if(newReleaseTitle.equals("")) {
 
-        call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .createNewRelease(token, repoOwner, repoName, createReleaseJson);
+			Toasty.info(ctx, getString(R.string.titleErrorEmpty));
+			return;
 
-        call.enqueue(new Callback<Releases>() {
+		}
 
-            @Override
-            public void onResponse(@NonNull Call<Releases> call, @NonNull retrofit2.Response<Releases> response) {
+		disableProcessButton();
+		createNewReleaseFunc(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newReleaseTagName, newReleaseTitle, newReleaseContent, newReleaseBranch, newReleaseType, newReleaseDraft);
 
-                if (response.code() == 201) {
+	}
 
-                    TinyDB tinyDb = new TinyDB(appCtx);
-                    tinyDb.putBoolean("updateReleases", true);
-                    Toasty.info(ctx, getString(R.string.releaseCreatedText));
-                    enableProcessButton();
-                    finish();
+	private void createNewReleaseFunc(final String instanceUrl, final String token, String repoOwner, String repoName, String newReleaseTagName, String newReleaseTitle, String newReleaseContent, String newReleaseBranch, boolean newReleaseType, boolean newReleaseDraft) {
 
-                }
-                else if(response.code() == 401) {
+		Releases createReleaseJson = new Releases(newReleaseContent, newReleaseDraft, newReleaseTitle, newReleaseType, newReleaseTagName, newReleaseBranch);
 
-                    enableProcessButton();
-                     AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                             ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                             ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                             ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+		Call<Releases> call;
 
-                }
-                else if(response.code() == 403) {
+		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().createNewRelease(token, repoOwner, repoName, createReleaseJson);
 
-                    enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+		call.enqueue(new Callback<Releases>() {
 
-                }
-                else if(response.code() == 404) {
+			@Override
+			public void onResponse(@NonNull Call<Releases> call, @NonNull retrofit2.Response<Releases> response) {
 
-                    enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+				if(response.code() == 201) {
 
-                }
-                else {
+					TinyDB tinyDb = new TinyDB(appCtx);
+					tinyDb.putBoolean("updateReleases", true);
+					Toasty.info(ctx, getString(R.string.releaseCreatedText));
+					enableProcessButton();
+					finish();
 
-                    enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.genericError));
+				}
+				else if(response.code() == 401) {
 
-                }
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-            }
+				}
+				else if(response.code() == 403) {
 
-            @Override
-            public void onFailure(@NonNull Call<Releases> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
-        });
+					enableProcessButton();
+					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-    }
+				}
+				else if(response.code() == 404) {
 
-    private void getBranches(String instanceUrl, String instanceToken, final String repoOwner, final String repoName) {
+					enableProcessButton();
+					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-        Call<List<Branches>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getBranches(instanceToken, repoOwner, repoName);
+				}
+				else {
 
-        call.enqueue(new Callback<List<Branches>>() {
+					enableProcessButton();
+					Toasty.info(ctx, ctx.getString(R.string.genericError));
 
-            @Override
-            public void onResponse(@NonNull Call<List<Branches>> call, @NonNull retrofit2.Response<List<Branches>> response) {
+				}
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+			}
 
-                        List<Branches> branchesList_ = response.body();
+			@Override
+			public void onFailure(@NonNull Call<Releases> call, @NonNull Throwable t) {
 
-                        assert branchesList_ != null;
-                        if(branchesList_.size() > 0) {
-                            for (int i = 0; i < branchesList_.size(); i++) {
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
+		});
 
-                                Branches data = new Branches(
-                                        branchesList_.get(i).getName()
-                                );
-                                branchesList.add(data);
+	}
 
-                            }
-                        }
+	private void getBranches(String instanceUrl, String instanceToken, final String repoOwner, final String repoName) {
 
-                        ArrayAdapter<Branches> adapter = new ArrayAdapter<>(CreateReleaseActivity.this,
-                                R.layout.spinner_item, branchesList);
+		Call<List<Branches>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getBranches(instanceToken, repoOwner, repoName);
 
-                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                        releaseBranch.setAdapter(adapter);
-                        enableProcessButton();
+		call.enqueue(new Callback<List<Branches>>() {
 
-                    }
-                }
-                else if(response.code() == 401) {
+			@Override
+			public void onResponse(@NonNull Call<List<Branches>> call, @NonNull retrofit2.Response<List<Branches>> response) {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+				if(response.isSuccessful()) {
+					if(response.code() == 200) {
 
-                }
+						List<Branches> branchesList_ = response.body();
 
-            }
+						assert branchesList_ != null;
+						if(branchesList_.size() > 0) {
+							for(int i = 0; i < branchesList_.size(); i++) {
 
-            @Override
-            public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+								Branches data = new Branches(branchesList_.get(i).getName());
+								branchesList.add(data);
 
-    }
+							}
+						}
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+						ArrayAdapter<Branches> adapter = new ArrayAdapter<>(CreateReleaseActivity.this, R.layout.spinner_item, branchesList);
 
-    private void disableProcessButton() {
+						adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+						releaseBranch.setAdapter(adapter);
+						enableProcessButton();
 
-        createNewRelease.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createNewRelease.setBackground(shape);
+					}
+				}
+				else if(response.code() == 401) {
 
-    }
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-    private void enableProcessButton() {
+				}
 
-        createNewRelease.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createNewRelease.setBackground(shape);
+			}
 
-    }
+			@Override
+			public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
+	private void initCloseListener() {
+
+		onClickListener = new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+
+				finish();
+			}
+		};
+	}
+
+	private void disableProcessButton() {
+
+		createNewRelease.setEnabled(false);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.hintColor));
+		createNewRelease.setBackground(shape);
+
+	}
+
+	private void enableProcessButton() {
+
+		createNewRelease.setEnabled(true);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.btnBackground));
+		createNewRelease.setBackground(shape);
+
+	}
 
 }
