@@ -1,13 +1,11 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -20,6 +18,8 @@ import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -27,282 +27,260 @@ import java.util.List;
 
 public class AddRemoveLabelsActivity extends BaseActivity {
 
-    private ArrayList<MultiSelectModel> listOfLabels = new ArrayList<>();
-    private ArrayList<Integer> issueLabelIds = new ArrayList<>();
-    private Boolean labelsFlag = false;
-    private MultiSelectDialog multiSelectDialogLabels;
-    final Context ctx = this;
-    private Context appCtx;
+	private ArrayList<MultiSelectModel> listOfLabels = new ArrayList<>();
+	private ArrayList<Integer> issueLabelIds = new ArrayList<>();
+	private Boolean labelsFlag = false;
+	private MultiSelectDialog multiSelectDialogLabels;
+	final Context ctx = this;
+	private Context appCtx;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_add_remove_labels;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_add_remove_labels;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-        //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        getWindow().getDecorView().setBackground(new ColorDrawable(Color.TRANSPARENT));
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
+		//supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+		getWindow().getDecorView().setBackground(new ColorDrawable(Color.TRANSPARENT));
 
-        getLabels(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-    }
+		getLabels(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
 
-    private void getLabels(final String instanceUrl, final String instanceToken, final String repoOwner, final String repoName, final int issueIndex, final String loginUid) {
+	}
 
-        final TinyDB tinyDb = new TinyDB(appCtx);
-
-        Call<List<Labels>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getlabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
-
-        call.enqueue(new Callback<List<Labels>>() {
-
-            @Override
-            public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
-
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
-
-                        List<Labels> labelsList_ = response.body();
-
-                        assert labelsList_ != null;
-                        if(labelsList_.size() > 0) {
-                            for (int i = 0; i < labelsList_.size(); i++) {
-
-                                listOfLabels.add(new MultiSelectModel(labelsList_.get(i).getId(), labelsList_.get(i).getName().trim()));
-
-                            }
-                        }
-
-                        // get current issue labels
-                        Call<List<Labels>> callSingleIssueLabels = RetrofitClient
-                                .getInstance(instanceUrl, ctx)
-                                .getApiInterface()
-                                .getIssueLabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
-
-                        callSingleIssueLabels.enqueue(new Callback<List<Labels>>() {
-
-                            @Override
-                            public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
-
-                                if(response.code() == 200) {
-
-                                    List<Labels> issueLabelsList = response.body();
-
-                                    assert issueLabelsList != null;
-                                    if(issueLabelsList.size() > 0) {
-                                        for (int i = 0; i < issueLabelsList.size(); i++) {
-
-                                            issueLabelIds.add(issueLabelsList.get(i).getId());
-
-                                        }
-                                        labelsFlag = true;
-                                    }
-
-                                    if(labelsFlag) {
-
-                                        multiSelectDialogLabels = new MultiSelectDialog()
-                                                .title(getResources().getString(R.string.newIssueSelectLabelsListTitle))
-                                                .titleSize(25)
-                                                .positiveText(getResources().getString(R.string.saveButton))
-                                                .negativeText(getResources().getString(R.string.cancelButton))
-                                                .setMinSelectionLimit(0)
-                                                .preSelectIDsList(issueLabelIds)
-                                                .setMaxSelectionLimit(listOfLabels.size())
-                                                .multiSelectList(listOfLabels)
-                                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                                    @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-
-                                                        String labelIds = selectedIds.toString();
-                                                        int[] integers;
-                                                        if (selectedIds.size() > 0) {
-
-                                                            String[] items = labelIds.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
-                                                            integers = new int[items.length];
-                                                            for (int i = 0; i < integers.length; i++) {
-                                                                integers[i] = Integer.parseInt(items[i]);
-                                                            }
+	private void getLabels(final String instanceUrl, final String instanceToken, final String repoOwner, final String repoName, final int issueIndex, final String loginUid) {
 
-                                                        }
-                                                        else {
-                                                            integers = new int[0];
-                                                        }
-
-                                                        updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
-                                                        tinyDb.putBoolean("singleIssueUpdate", true);
-                                                        CloseActivity();
-                                                    }
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-                                                    @Override
-                                                    public void onCancel() {
-                                                        CloseActivity();
-                                                    }
-                                                });
+		Call<List<Labels>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getlabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
-                                    }
-                                    else {
+		call.enqueue(new Callback<List<Labels>>() {
 
-                                        multiSelectDialogLabels = new MultiSelectDialog()
-                                                .title(getResources().getString(R.string.newIssueSelectLabelsListTitle))
-                                                .titleSize(25)
-                                                .positiveText(getResources().getString(R.string.saveButton))
-                                                .negativeText(getResources().getString(R.string.cancelButton))
-                                                .setMinSelectionLimit(0)
-                                                .setMaxSelectionLimit(listOfLabels.size())
-                                                .multiSelectList(listOfLabels)
-                                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                                    @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+			@Override
+			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
-                                                        String labelIds = selectedIds.toString();
-                                                        int[] integers;
-                                                        if (selectedIds.size() > 0) {
+				if(response.isSuccessful()) {
+					if(response.code() == 200) {
 
-                                                            String[] items = labelIds.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
-                                                            integers = new int[items.length];
-                                                            for (int i = 0; i < integers.length; i++) {
-                                                                integers[i] = Integer.parseInt(items[i]);
-                                                            }
+						List<Labels> labelsList_ = response.body();
 
-                                                        }
-                                                        else {
-                                                            integers = new int[0];
-                                                        }
+						assert labelsList_ != null;
+						if(labelsList_.size() > 0) {
+							for(int i = 0; i < labelsList_.size(); i++) {
 
-                                                        updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
-                                                        tinyDb.putBoolean("singleIssueUpdate", true);
-                                                        CloseActivity();
+								listOfLabels.add(new MultiSelectModel(labelsList_.get(i).getId(), labelsList_.get(i).getName().trim()));
 
-                                                    }
+							}
+						}
 
-                                                    @Override
-                                                    public void onCancel() {
-                                                        CloseActivity();
-                                                    }
-                                                });
+						// get current issue labels
+						Call<List<Labels>> callSingleIssueLabels = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getIssueLabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
 
-                                    }
+						callSingleIssueLabels.enqueue(new Callback<List<Labels>>() {
 
-                                    multiSelectDialogLabels.show(getSupportFragmentManager(), "issueMultiSelectDialog");
+							@Override
+							public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
-                                }
-                            }
+								if(response.code() == 200) {
 
-                            @Override
-                            public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
-                                Log.e("onFailure", t.toString());
-                            }
+									List<Labels> issueLabelsList = response.body();
 
-                        });
-                        // get current issue labels
+									assert issueLabelsList != null;
+									if(issueLabelsList.size() > 0) {
+										for(int i = 0; i < issueLabelsList.size(); i++) {
 
-                    }
-                    else if(response.code() == 401) {
+											issueLabelIds.add(issueLabelsList.get(i).getId());
 
-                        AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                                getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                                getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                                getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+										}
+										labelsFlag = true;
+									}
 
-                    }
-                    else if(response.code() == 403) {
+									if(labelsFlag) {
 
-                        Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+										multiSelectDialogLabels = new MultiSelectDialog().title(getResources().getString(R.string.newIssueSelectLabelsListTitle)).titleSize(25).positiveText(getResources().getString(R.string.saveButton)).negativeText(getResources().getString(R.string.cancelButton)).setMinSelectionLimit(0).preSelectIDsList(issueLabelIds).setMaxSelectionLimit(listOfLabels.size()).multiSelectList(listOfLabels).onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
 
-                    }
-                    else if(response.code() == 404) {
+											@Override
+											public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
 
-                        Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+												String labelIds = selectedIds.toString();
+												int[] integers;
+												if(selectedIds.size() > 0) {
 
-                    }
-                    else {
+													String[] items = labelIds.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+													integers = new int[items.length];
+													for(int i = 0; i < integers.length; i++) {
+														integers[i] = Integer.parseInt(items[i]);
+													}
 
-                        Toasty.info(ctx, getString(R.string.genericError));
+												}
+												else {
+													integers = new int[0];
+												}
 
-                    }
-                }
+												updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
+												tinyDb.putBoolean("singleIssueUpdate", true);
+												CloseActivity();
+											}
 
-            }
+											@Override
+											public void onCancel() {
 
-            @Override
-            public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+												CloseActivity();
+											}
+										});
 
-    }
+									}
+									else {
 
-    private void updateIssueLabels(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, int issueIndex, int[] issueLabels, String loginUid) {
+										multiSelectDialogLabels = new MultiSelectDialog().title(getResources().getString(R.string.newIssueSelectLabelsListTitle)).titleSize(25).positiveText(getResources().getString(R.string.saveButton)).negativeText(getResources().getString(R.string.cancelButton)).setMinSelectionLimit(0).setMaxSelectionLimit(listOfLabels.size()).multiSelectList(listOfLabels).onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
 
-        Labels patchIssueLabels = new Labels(issueLabels);
+											@Override
+											public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
 
-        Call<JsonElement> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .updateIssueLabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, patchIssueLabels);
+												String labelIds = selectedIds.toString();
+												int[] integers;
+												if(selectedIds.size() > 0) {
 
-        call.enqueue(new Callback<JsonElement>() {
+													String[] items = labelIds.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+													integers = new int[items.length];
+													for(int i = 0; i < integers.length; i++) {
+														integers[i] = Integer.parseInt(items[i]);
+													}
 
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+												}
+												else {
+													integers = new int[0];
+												}
 
-                if(response.code() == 200) {
+												updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
+												tinyDb.putBoolean("singleIssueUpdate", true);
+												CloseActivity();
 
-                    Toasty.info(ctx, ctx.getString(R.string.labelsUpdated));
+											}
 
-                }
-                else if(response.code() == 401) {
+											@Override
+											public void onCancel() {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+												CloseActivity();
+											}
+										});
 
-                }
-                else if(response.code() == 403) {
+									}
 
-                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+									multiSelectDialogLabels.show(getSupportFragmentManager(), "issueMultiSelectDialog");
 
-                }
-                else if(response.code() == 404) {
+								}
+							}
 
-                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+							@Override
+							public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
 
-                }
-                else {
+								Log.e("onFailure", t.toString());
+							}
 
-                    Toasty.info(ctx, getString(R.string.genericError));
+						});
+						// get current issue labels
 
-                }
+					}
+					else if(response.code() == 401) {
 
-            }
+						AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+					}
+					else if(response.code() == 403) {
 
-    }
+						Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-    private void CloseActivity() {
-        this.finish();
-    }
+					}
+					else if(response.code() == 404) {
+
+						Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+
+					}
+					else {
+
+						Toasty.info(ctx, getString(R.string.genericError));
+
+					}
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
+	private void updateIssueLabels(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, int issueIndex, int[] issueLabels, String loginUid) {
+
+		Labels patchIssueLabels = new Labels(issueLabels);
+
+		Call<JsonElement> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().updateIssueLabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, patchIssueLabels);
+
+		call.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+				if(response.code() == 200) {
+
+					Toasty.info(ctx, ctx.getString(R.string.labelsUpdated));
+
+				}
+				else if(response.code() == 401) {
+
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+				}
+				else if(response.code() == 403) {
+
+					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+
+				}
+				else if(response.code() == 404) {
+
+					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+
+				}
+				else {
+
+					Toasty.info(ctx, getString(R.string.genericError));
+
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
+	private void CloseActivity() {
+
+		this.finish();
+	}
+
 }
