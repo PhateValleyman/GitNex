@@ -229,30 +229,26 @@ public class CreateFileActivity extends BaseActivity {
 			@Override
 			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-				if(response.code() == 201) {
+				switch(response.code()) {
+					case 201:
+						enableProcessButton();
+						Toasty.info(ctx, getString(R.string.newFileSuccessMessage));
+						finish();
+						break;
 
-					enableProcessButton();
-					Toasty.info(ctx, getString(R.string.newFileSuccessMessage));
-					finish();
+					case 401:
+						enableProcessButton();
+						AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						break;
 
-				}
-				else if(response.code() == 401) {
-
-					enableProcessButton();
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
-				}
-				else {
-
-					if(response.code() == 404) {
+					case 404:
 						enableProcessButton();
 						Toasty.info(ctx, getString(R.string.apiNotFound));
-					}
-					else {
+						break;
+
+					default:
 						enableProcessButton();
 						Toasty.info(ctx, getString(R.string.orgCreatedError));
-					}
-
 				}
 
 			}

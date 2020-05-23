@@ -137,32 +137,37 @@ public class CommitsActivity extends BaseActivity {
 			@Override
 			public void onResponse(@NonNull Call<List<Commits>> call, @NonNull Response<List<Commits>> response) {
 
-				if(response.isSuccessful()) {
+				switch(response.code()) {
+					case 200:
+						assert response.body() != null;
+						if(response.body().size() > 0) {
 
-					assert response.body() != null;
-					if(response.body().size() > 0) {
+							commitsList.clear();
+							commitsList.addAll(response.body());
+							adapter.notifyDataChanged();
+							noData.setVisibility(View.GONE);
 
-						commitsList.clear();
-						commitsList.addAll(response.body());
-						adapter.notifyDataChanged();
-						noData.setVisibility(View.GONE);
+						}
+						else {
+							commitsList.clear();
+							adapter.notifyDataChanged();
+							noData.setVisibility(View.VISIBLE);
+						}
 
-					}
-					else {
+						progressBar.setVisibility(View.GONE);
+						break;
+
+					case 404:
+					case 409:
 						commitsList.clear();
 						adapter.notifyDataChanged();
 						noData.setVisibility(View.VISIBLE);
-					}
+						break;
 
-					progressBar.setVisibility(View.GONE);
-
-				}
-				else {
-
-					Log.e(TAG, String.valueOf(response.code()));
+					default:
+						Log.e(TAG, String.valueOf(response.code()));
 
 				}
-
 			}
 
 			@Override

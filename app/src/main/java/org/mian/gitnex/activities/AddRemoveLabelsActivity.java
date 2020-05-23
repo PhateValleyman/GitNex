@@ -74,8 +74,8 @@ public class AddRemoveLabelsActivity extends BaseActivity {
 			@Override
 			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
-				if(response.isSuccessful()) {
-					if(response.code() == 200) {
+				switch(response.code()) {
+					case 200:
 
 						List<Labels> labelsList_ = response.body();
 
@@ -194,29 +194,22 @@ public class AddRemoveLabelsActivity extends BaseActivity {
 							}
 
 						});
-						// get current issue labels
+						break;
 
-					}
-					else if(response.code() == 401) {
-
+					case 401:
 						AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						break;
 
-					}
-					else if(response.code() == 403) {
-
+					case 403:
 						Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+						break;
 
-					}
-					else if(response.code() == 404) {
-
+					case 404:
 						Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+						break;
 
-					}
-					else {
-
+					default:
 						Toasty.info(ctx, getString(R.string.genericError));
-
-					}
 				}
 
 			}
@@ -241,29 +234,25 @@ public class AddRemoveLabelsActivity extends BaseActivity {
 			@Override
 			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-				if(response.code() == 200) {
+				switch(response.code()) {
+					case 200:
+						Toasty.info(ctx, ctx.getString(R.string.labelsUpdated));
+						break;
 
-					Toasty.info(ctx, ctx.getString(R.string.labelsUpdated));
+					case 401:
+						AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						break;
 
-				}
-				else if(response.code() == 401) {
+					case 403:
+						Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+						break;
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					case 404:
+						Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+						break;
 
-				}
-				else if(response.code() == 403) {
-
-					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
-
-				}
-				else if(response.code() == 404) {
-
-					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
-
-				}
-				else {
-
-					Toasty.info(ctx, getString(R.string.genericError));
+					default:
+						Toasty.info(ctx, getString(R.string.genericError));
 
 				}
 

@@ -163,28 +163,23 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 			@Override
 			public void onResponse(@NonNull Call<Milestones> call, @NonNull retrofit2.Response<Milestones> response) {
 
-				if(response.isSuccessful()) {
-					if(response.code() == 201) {
-
+				switch(response.code()) {
+					case 201:
 						TinyDB tinyDb = new TinyDB(appCtx);
 						tinyDb.putBoolean("milestoneCreated", true);
 						Toasty.info(ctx, getString(R.string.milestoneCreated));
 						enableProcessButton();
 						finish();
+						break;
 
-					}
-				}
-				else if(response.code() == 401) {
+					case 401:
+						enableProcessButton();
+						AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						break;
 
-					enableProcessButton();
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
-				}
-				else {
-
-					enableProcessButton();
-					Toasty.info(ctx, getString(R.string.milestoneCreatedError));
-
+					default:
+						enableProcessButton();
+						Toasty.info(ctx, getString(R.string.milestoneCreatedError));
 				}
 
 			}

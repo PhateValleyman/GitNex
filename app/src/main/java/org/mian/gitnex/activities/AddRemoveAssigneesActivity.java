@@ -76,9 +76,8 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
 			@Override
 			public void onResponse(@NonNull final Call<List<Collaborators>> call, @NonNull final retrofit2.Response<List<Collaborators>> response) {
 
-				if(response.isSuccessful()) {
-					if(response.code() == 200) {
-
+				switch(response.code()) {
+					case 200:
 						final List<Collaborators> collaboratorsList_ = response.body();
 
 						assert collaboratorsList_ != null;
@@ -177,31 +176,24 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
 							}
 
 						});
-						// get current issue assignees
+						break;
 
-					}
-					else if(response.code() == 401) {
-
+					case 401:
 						AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						break;
 
-					}
-					else if(response.code() == 403) {
-
+					case 403:
 						Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+						break;
 
-					}
-					else if(response.code() == 404) {
-
+					case 404:
 						Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+						break;
 
-					}
-					else {
-
+					default:
 						Toasty.info(ctx, getString(R.string.genericError));
 
-					}
 				}
-
 			}
 
 			@Override
