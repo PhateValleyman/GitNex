@@ -63,6 +63,7 @@ public class SettingsReportsActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
+
 		onClickListener = view -> {
 			finish();
 		};
