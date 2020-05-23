@@ -340,10 +340,7 @@ public class MergePullRequestActivity extends BaseActivity {
 		String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 		String branchName = tinyDb.getString("prHeadBranch");
 
-		Call<JsonElement> call = RetrofitClient
-				.getInstance(instanceUrl, ctx)
-				.getApiInterface()
-				.deleteBranch(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
+		Call<JsonElement> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().deleteBranch(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
 
 		call.enqueue(new Callback<JsonElement>() {
 
