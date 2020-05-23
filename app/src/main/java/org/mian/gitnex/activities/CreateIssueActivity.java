@@ -1,9 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -19,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
@@ -29,6 +26,7 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.MultiSelectDialog;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.CreateIssue;
@@ -37,11 +35,13 @@ import org.mian.gitnex.models.Milestones;
 import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -49,143 +49,145 @@ import java.util.List;
 
 public class CreateIssueActivity extends BaseActivity implements View.OnClickListener {
 
-    private View.OnClickListener onClickListener;
-    MultiSelectDialog multiSelectDialog;
-    MultiSelectDialog multiSelectDialogLabels;
-    private TextView assigneesList;
-    private TextView newIssueLabels;
-    private TextView newIssueDueDate;
-    private Spinner newIssueMilestoneSpinner;
-    private EditText newIssueTitle;
-    private SocialAutoCompleteTextView newIssueDescription;
-    private Button createNewIssueButton;
-    private TextView labelsIdHolder;
-    private boolean assigneesFlag;
-    private boolean labelsFlag;
-    final Context ctx = this;
-    private Context appCtx;
-    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+	private View.OnClickListener onClickListener;
+	MultiSelectDialog multiSelectDialog;
+	MultiSelectDialog multiSelectDialogLabels;
+	private TextView assigneesList;
+	private TextView newIssueLabels;
+	private TextView newIssueDueDate;
+	private Spinner newIssueMilestoneSpinner;
+	private EditText newIssueTitle;
+	private SocialAutoCompleteTextView newIssueDescription;
+	private Button createNewIssueButton;
+	private TextView labelsIdHolder;
+	private boolean assigneesFlag;
+	private boolean labelsFlag;
+	final Context ctx = this;
+	private Context appCtx;
+	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 
-    List<Milestones> milestonesList = new ArrayList<>();
-    ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
-    ArrayList<MultiSelectModel> listOfLabels= new ArrayList<>();
-    private ArrayAdapter<Mention> defaultMentionAdapter;
+	List<Milestones> milestonesList = new ArrayList<>();
+	ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
+	ArrayList<MultiSelectModel> listOfLabels = new ArrayList<>();
+	private ArrayAdapter<Mention> defaultMentionAdapter;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_create_issue;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_create_issue;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String loginFullName = tinyDb.getString("userFullname");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        // if gitea is 1.12 or higher use the new limit
-        if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
-            resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
-        }
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String loginFullName = tinyDb.getString("userFullname");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        ImageView closeActivity = findViewById(R.id.close);
-        assigneesList = findViewById(R.id.newIssueAssigneesList);
-        newIssueLabels = findViewById(R.id.newIssueLabels);
-        newIssueDueDate = findViewById(R.id.newIssueDueDate);
-        createNewIssueButton = findViewById(R.id.createNewIssueButton);
-        newIssueTitle = findViewById(R.id.newIssueTitle);
-        newIssueDescription = findViewById(R.id.newIssueDescription);
-        labelsIdHolder = findViewById(R.id.labelsIdHolder);
+		// if gitea is 1.12 or higher use the new limit
+		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+		}
 
-        newIssueTitle.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(newIssueTitle, InputMethodManager.SHOW_IMPLICIT);
+		ImageView closeActivity = findViewById(R.id.close);
+		assigneesList = findViewById(R.id.newIssueAssigneesList);
+		newIssueLabels = findViewById(R.id.newIssueLabels);
+		newIssueDueDate = findViewById(R.id.newIssueDueDate);
+		createNewIssueButton = findViewById(R.id.createNewIssueButton);
+		newIssueTitle = findViewById(R.id.newIssueTitle);
+		newIssueDescription = findViewById(R.id.newIssueDescription);
+		labelsIdHolder = findViewById(R.id.labelsIdHolder);
 
-        defaultMentionAdapter = new MentionArrayAdapter<>(this);
-        loadCollaboratorsList();
+		newIssueTitle.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(newIssueTitle, InputMethodManager.SHOW_IMPLICIT);
 
-        newIssueDescription.setMentionAdapter(defaultMentionAdapter);
+		defaultMentionAdapter = new MentionArrayAdapter<>(this);
+		loadCollaboratorsList();
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		newIssueDescription.setMentionAdapter(defaultMentionAdapter);
 
-        assigneesList.setOnClickListener(this);
-        newIssueLabels.setOnClickListener(this);
-        newIssueDueDate.setOnClickListener(this);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        newIssueMilestoneSpinner = findViewById(R.id.newIssueMilestoneSpinner);
-        newIssueMilestoneSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-        getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
+		assigneesList.setOnClickListener(this);
+		newIssueLabels.setOnClickListener(this);
+		newIssueDueDate.setOnClickListener(this);
 
-        getLabels(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
-        getCollaborators(instanceUrl, instanceToken, repoOwner, repoName, loginUid, loginFullName);
+		newIssueMilestoneSpinner = findViewById(R.id.newIssueMilestoneSpinner);
+		newIssueMilestoneSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+		getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
 
-        disableProcessButton();
+		getLabels(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
+		getCollaborators(instanceUrl, instanceToken, repoOwner, repoName, loginUid, loginFullName);
 
-        if(!connToInternet) {
+		disableProcessButton();
 
-            createNewIssueButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            createNewIssueButton.setBackground(shape);
+		if(!connToInternet) {
 
-        } else {
+			createNewIssueButton.setEnabled(false);
+			GradientDrawable shape = new GradientDrawable();
+			shape.setCornerRadius(8);
+			shape.setColor(getResources().getColor(R.color.hintColor));
+			createNewIssueButton.setBackground(shape);
 
-            createNewIssueButton.setOnClickListener(this);
+		}
+		else {
 
-        }
+			createNewIssueButton.setOnClickListener(this);
 
-    }
+		}
 
-    private void processNewIssue() {
+	}
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+	private void processNewIssue() {
 
-        Milestones mModel = (Milestones) newIssueMilestoneSpinner.getSelectedItem();
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        int newIssueMilestoneIdForm = mModel.getId();
-        String newIssueTitleForm = newIssueTitle.getText().toString();
-        String newIssueDescriptionForm = newIssueDescription.getText().toString();
-        String newIssueAssigneesListForm = assigneesList.getText().toString();
-        //String newIssueLabelsForm = newIssueLabels.getText().toString();
-        String newIssueDueDateForm = newIssueDueDate.getText().toString();
-        String newIssueLabelsIdHolderForm = labelsIdHolder.getText().toString();
+		Milestones mModel = (Milestones) newIssueMilestoneSpinner.getSelectedItem();
 
-        if(!connToInternet) {
+		int newIssueMilestoneIdForm = mModel.getId();
+		String newIssueTitleForm = newIssueTitle.getText().toString();
+		String newIssueDescriptionForm = newIssueDescription.getText().toString();
+		String newIssueAssigneesListForm = assigneesList.getText().toString();
+		//String newIssueLabelsForm = newIssueLabels.getText().toString();
+		String newIssueDueDateForm = newIssueDueDate.getText().toString();
+		String newIssueLabelsIdHolderForm = labelsIdHolder.getText().toString();
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
-            return;
+		if(!connToInternet) {
 
-        }
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			return;
 
-        if (newIssueTitleForm.equals("")) {
+		}
 
-            Toasty.info(ctx, getString(R.string.issueTitleEmpty));
-            return;
+		if(newIssueTitleForm.equals("")) {
 
-        }
+			Toasty.info(ctx, getString(R.string.issueTitleEmpty));
+			return;
+
+		}
 
         /*if (newIssueDescriptionForm.equals("")) {
 
@@ -194,232 +196,220 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         }*/
 
-        if (newIssueDueDateForm.equals("")) {
-            newIssueDueDateForm = null;
-        } else {
-            newIssueDueDateForm = (AppUtil.customDateCombine(AppUtil.customDateFormat(newIssueDueDateForm)));
-        }
+		if(newIssueDueDateForm.equals("")) {
+			newIssueDueDateForm = null;
+		}
+		else {
+			newIssueDueDateForm = (AppUtil.customDateCombine(AppUtil.customDateFormat(newIssueDueDateForm)));
+		}
 
-        List<String> newIssueAssigneesListForm_ = new ArrayList<>(Arrays.asList(newIssueAssigneesListForm.split(",")));
+		List<String> newIssueAssigneesListForm_ = new ArrayList<>(Arrays.asList(newIssueAssigneesListForm.split(",")));
 
-        for (int i = 0; i < newIssueAssigneesListForm_.size(); i++) {
-            newIssueAssigneesListForm_.set(i, newIssueAssigneesListForm_.get(i).trim());
-        }
+		for(int i = 0; i < newIssueAssigneesListForm_.size(); i++) {
+			newIssueAssigneesListForm_.set(i, newIssueAssigneesListForm_.get(i).trim());
+		}
 
-        int[] integers;
-        if (!newIssueLabelsIdHolderForm.equals("")) {
+		int[] integers;
+		if(!newIssueLabelsIdHolderForm.equals("")) {
 
-            String[] items = newIssueLabelsIdHolderForm.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
-            integers = new int[items.length];
-            for (int i = 0; i < integers.length; i++) {
-                integers[i] = Integer.parseInt(items[i]);
-            }
+			String[] items = newIssueLabelsIdHolderForm.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+			integers = new int[items.length];
+			for(int i = 0; i < integers.length; i++) {
+				integers[i] = Integer.parseInt(items[i]);
+			}
 
-        }
-        else {
-            integers = new int[0];
-        }
+		}
+		else {
+			integers = new int[0];
+		}
 
-        //Log.i("FormData", String.valueOf(newIssueLabelsForm));
-        disableProcessButton();
-        createNewIssueFunc(instanceUrl, instanceToken, repoOwner, repoName, loginUid, newIssueDescriptionForm, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm_, integers);
+		//Log.i("FormData", String.valueOf(newIssueLabelsForm));
+		disableProcessButton();
+		createNewIssueFunc(instanceUrl, instanceToken, repoOwner, repoName, loginUid, newIssueDescriptionForm, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm_, integers);
 
-    }
+	}
 
-    public void loadCollaboratorsList() {
+	public void loadCollaboratorsList() {
 
-        final TinyDB tinyDb = new TinyDB(appCtx);
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
 
-        Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
-        call.enqueue(new Callback<List<Collaborators>>() {
+		call.enqueue(new Callback<List<Collaborators>>() {
 
-            @Override
-            public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
+			@Override
+			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
 
-                if(response.code() == 200) {
+				if(response.code() == 200) {
 
-                    assert response.body() != null;
-                    String fullName = "";
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
-                            fullName = response.body().get(i).getFull_name();
-                        }
-                        defaultMentionAdapter.add(
-                                new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
-                    }
+					assert response.body() != null;
+					String fullName = "";
+					for(int i = 0; i < response.body().size(); i++) {
+						if(!response.body().get(i).getFull_name().equals("")) {
+							fullName = response.body().get(i).getFull_name();
+						}
+						defaultMentionAdapter.add(new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
+					}
 
-                } else {
+				}
+				else {
 
-                    Log.i("onResponse", String.valueOf(response.code()));
+					Log.i("onResponse", String.valueOf(response.code()));
 
-                }
+				}
 
-            }
+			}
 
-            @Override
-            public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.toString());
-            }
+			@Override
+			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
 
-        });
-    }
+				Log.i("onFailure", t.toString());
+			}
 
-    private void createNewIssueFunc(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, String newIssueDescriptionForm, String newIssueDueDateForm, int newIssueMilestoneIdForm, String newIssueTitleForm, List<String> newIssueAssigneesListForm, int[] newIssueLabelsForm) {
+		});
+	}
 
-        CreateIssue createNewIssueJson = new CreateIssue(loginUid, newIssueDescriptionForm, false, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm, newIssueLabelsForm);
+	private void createNewIssueFunc(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, String newIssueDescriptionForm, String newIssueDueDateForm, int newIssueMilestoneIdForm, String newIssueTitleForm, List<String> newIssueAssigneesListForm, int[] newIssueLabelsForm) {
 
-        Call<JsonElement> call3;
+		CreateIssue createNewIssueJson = new CreateIssue(loginUid, newIssueDescriptionForm, false, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm, newIssueLabelsForm);
 
-        call3 = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .createNewIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, createNewIssueJson);
+		Call<JsonElement> call3;
 
-        call3.enqueue(new Callback<JsonElement>() {
+		call3 = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().createNewIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, createNewIssueJson);
 
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response2) {
+		call3.enqueue(new Callback<JsonElement>() {
 
-                if(response2.isSuccessful()) {
-                    if(response2.code() == 201) {
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response2) {
 
-                        //Log.i("isSuccessful1", String.valueOf(response2.body()));
-                        TinyDB tinyDb = new TinyDB(appCtx);
-                        tinyDb.putBoolean("resumeIssues", true);
+				if(response2.isSuccessful()) {
+					if(response2.code() == 201) {
 
-                        Toasty.info(ctx, getString(R.string.issueCreated));
-                        enableProcessButton();
-                        finish();
+						//Log.i("isSuccessful1", String.valueOf(response2.body()));
+						TinyDB tinyDb = new TinyDB(appCtx);
+						tinyDb.putBoolean("resumeIssues", true);
 
-                    }
+						Toasty.info(ctx, getString(R.string.issueCreated));
+						enableProcessButton();
+						finish();
 
-                }
-                else if(response2.code() == 401) {
+					}
 
-                    enableProcessButton();
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+				}
+				else if(response2.code() == 401) {
 
-                }
-                else {
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                    Toasty.info(ctx, getString(R.string.issueCreatedError));
-                    enableProcessButton();
-                    //Log.i("isSuccessful2", String.valueOf(response2.body()));
+				}
+				else {
 
-                }
+					Toasty.info(ctx, getString(R.string.issueCreatedError));
+					enableProcessButton();
+					//Log.i("isSuccessful2", String.valueOf(response2.body()));
 
-            }
+				}
 
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
-        });
+			}
 
-    }
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
+		});
 
-    private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, int resultLimit) {
+	}
 
-        String msState = "open";
-        Call<List<Milestones>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
+	private void initCloseListener() {
 
-        call.enqueue(new Callback<List<Milestones>>() {
+		onClickListener = new View.OnClickListener() {
 
-            @Override
-            public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull retrofit2.Response<List<Milestones>> response) {
+			@Override
+			public void onClick(View view) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+				finish();
+			}
+		};
+	}
 
-                        List<Milestones> milestonesList_ = response.body();
+	private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, int resultLimit) {
 
-                        milestonesList.add(new Milestones(0,getString(R.string.issueCreatedNoMilestone)));
-                        assert milestonesList_ != null;
-                        if(milestonesList_.size() > 0) {
-                            for (int i = 0; i < milestonesList_.size(); i++) {
+		String msState = "open";
+		Call<List<Milestones>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
 
-                                //Don't translate "open" is a enum
-                                if(milestonesList_.get(i).getState().equals("open")) {
-                                    Milestones data = new Milestones(
-                                            milestonesList_.get(i).getId(),
-                                            milestonesList_.get(i).getTitle()
-                                    );
-                                    milestonesList.add(data);
-                                }
+		call.enqueue(new Callback<List<Milestones>>() {
 
-                            }
-                        }
+			@Override
+			public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull retrofit2.Response<List<Milestones>> response) {
 
-                        ArrayAdapter<Milestones> adapter = new ArrayAdapter<>(CreateIssueActivity.this,
-                                R.layout.spinner_item, milestonesList);
+				if(response.isSuccessful()) {
+					if(response.code() == 200) {
 
-                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                        newIssueMilestoneSpinner.setAdapter(adapter);
-                        enableProcessButton();
+						List<Milestones> milestonesList_ = response.body();
 
-                    }
-                }
+						milestonesList.add(new Milestones(0, getString(R.string.issueCreatedNoMilestone)));
+						assert milestonesList_ != null;
+						if(milestonesList_.size() > 0) {
+							for(int i = 0; i < milestonesList_.size(); i++) {
 
-            }
+								//Don't translate "open" is a enum
+								if(milestonesList_.get(i).getState().equals("open")) {
+									Milestones data = new Milestones(milestonesList_.get(i).getId(), milestonesList_.get(i).getTitle());
+									milestonesList.add(data);
+								}
 
-            @Override
-            public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+							}
+						}
 
-    }
+						ArrayAdapter<Milestones> adapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_item, milestonesList);
 
-    private void getCollaborators(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, String loginFullName) {
+						adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+						newIssueMilestoneSpinner.setAdapter(adapter);
+						enableProcessButton();
 
-        Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+					}
+				}
 
-        listOfAssignees.add(new MultiSelectModel(-1, loginFullName));
+			}
 
-        call.enqueue(new Callback<List<Collaborators>>() {
+			@Override
+			public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
 
-            @Override
-            public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull retrofit2.Response<List<Collaborators>> response) {
+				Log.e("onFailure", t.toString());
+			}
+		});
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+	}
 
-                        List<Collaborators> assigneesList_ = response.body();
+	private void getCollaborators(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, String loginFullName) {
 
-                        assert assigneesList_ != null;
-                        if(assigneesList_.size() > 0) {
-                            for (int i = 0; i < assigneesList_.size(); i++) {
+		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+
+		listOfAssignees.add(new MultiSelectModel(-1, loginFullName));
+
+		call.enqueue(new Callback<List<Collaborators>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull retrofit2.Response<List<Collaborators>> response) {
+
+				if(response.isSuccessful()) {
+					if(response.code() == 200) {
+
+						List<Collaborators> assigneesList_ = response.body();
+
+						assert assigneesList_ != null;
+						if(assigneesList_.size() > 0) {
+							for(int i = 0; i < assigneesList_.size(); i++) {
 
                                 /*String assigneesCopy;
                                 if(!assigneesList_.get(i).getFull_name().equals("")) {
@@ -428,173 +418,158 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                                 else {
                                     assigneesCopy = assigneesList_.get(i).getLogin();
                                 }*/
-                                listOfAssignees.add(new MultiSelectModel(assigneesList_.get(i).getId(), assigneesList_.get(i).getLogin().trim()));
+								listOfAssignees.add(new MultiSelectModel(assigneesList_.get(i).getId(), assigneesList_.get(i).getLogin().trim()));
 
-                            }
-                            assigneesFlag = true;
-                        }
+							}
+							assigneesFlag = true;
+						}
 
-                        multiSelectDialog = new MultiSelectDialog()
-                                .title(getResources().getString(R.string.newIssueSelectAssigneesListTitle))
-                                .titleSize(25)
-                                .positiveText(getResources().getString(R.string.okButton))
-                                .negativeText(getResources().getString(R.string.cancelButton))
-                                .setMinSelectionLimit(0)
-                                .setMaxSelectionLimit(listOfAssignees.size())
-                                .multiSelectList(listOfAssignees)
-                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                    @Override
-                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+						multiSelectDialog = new MultiSelectDialog().title(getResources().getString(R.string.newIssueSelectAssigneesListTitle)).titleSize(25).positiveText(getResources().getString(R.string.okButton)).negativeText(getResources().getString(R.string.cancelButton)).setMinSelectionLimit(0).setMaxSelectionLimit(listOfAssignees.size()).multiSelectList(listOfAssignees).onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
 
-                                        assigneesList.setText(dataString);
+							@Override
+							public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
 
-                                    }
+								assigneesList.setText(dataString);
 
-                                    @Override
-                                    public void onCancel() {
-                                        //Log.d("multiSelect","Dialog cancelled");
+							}
 
-                                    }
-                                });
+							@Override
+							public void onCancel() {
+								//Log.d("multiSelect","Dialog cancelled");
 
-                    }
-                }
+							}
+						});
 
-            }
+					}
+				}
 
-            @Override
-            public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+			}
 
-    }
+			@Override
+			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
 
-    private void getLabels(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
+				Log.e("onFailure", t.toString());
+			}
+		});
 
-        Call<List<Labels>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getlabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+	}
 
-        call.enqueue(new Callback<List<Labels>>() {
+	private void getLabels(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
 
-            @Override
-            public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
+		Call<List<Labels>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getlabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
+		call.enqueue(new Callback<List<Labels>>() {
 
-                        List<Labels> labelsList_ = response.body();
+			@Override
+			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
-                        assert labelsList_ != null;
-                        if(labelsList_.size() > 0) {
-                            for (int i = 0; i < labelsList_.size(); i++) {
+				if(response.isSuccessful()) {
+					if(response.code() == 200) {
 
-                                listOfLabels.add(new MultiSelectModel(labelsList_.get(i).getId(), labelsList_.get(i).getName().trim()));
+						List<Labels> labelsList_ = response.body();
 
-                            }
-                            labelsFlag = true;
-                        }
+						assert labelsList_ != null;
+						if(labelsList_.size() > 0) {
+							for(int i = 0; i < labelsList_.size(); i++) {
 
-                        multiSelectDialogLabels = new MultiSelectDialog()
-                                .title(getResources().getString(R.string.newIssueSelectLabelsListTitle))
-                                .titleSize(25)
-                                .positiveText(getResources().getString(R.string.okButton))
-                                .negativeText(getResources().getString(R.string.cancelButton))
-                                .setMinSelectionLimit(0)
-                                .setMaxSelectionLimit(listOfLabels.size())
-                                .multiSelectList(listOfLabels)
-                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                    @Override
-                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+								listOfLabels.add(new MultiSelectModel(labelsList_.get(i).getId(), labelsList_.get(i).getName().trim()));
 
-                                        newIssueLabels.setText(dataString.trim());
-                                        labelsIdHolder.setText(selectedIds.toString());
+							}
+							labelsFlag = true;
+						}
 
-                                    }
+						multiSelectDialogLabels = new MultiSelectDialog().title(getResources().getString(R.string.newIssueSelectLabelsListTitle)).titleSize(25).positiveText(getResources().getString(R.string.okButton)).negativeText(getResources().getString(R.string.cancelButton)).setMinSelectionLimit(0).setMaxSelectionLimit(listOfLabels.size()).multiSelectList(listOfLabels).onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
 
-                                    @Override
-                                    public void onCancel() {
-                                        //Log.d("multiSelect","Dialog cancelled");
+							@Override
+							public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
 
-                                    }
-                                });
+								newIssueLabels.setText(dataString.trim());
+								labelsIdHolder.setText(selectedIds.toString());
 
-                    }
-                }
+							}
 
-            }
+							@Override
+							public void onCancel() {
+								//Log.d("multiSelect","Dialog cancelled");
 
-            @Override
-            public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+							}
+						});
 
-    }
+					}
+				}
 
-    @Override
-    public void onClick(View v) {
-        if (v == assigneesList) {
-            if(assigneesFlag) {
-                multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
-            }
-            else {
-                Toasty.info(ctx, getResources().getString(R.string.noAssigneesFound));
-            }
-        }
-        else if (v == newIssueLabels) {
-            if(labelsFlag) {
-                multiSelectDialogLabels.show(getSupportFragmentManager(), "multiSelectDialogLabels");
-            }
-            else {
-                Toasty.info(ctx, getResources().getString(R.string.noLabelsFound));
-            }
-        }
-        else if (v == newIssueDueDate) {
+			}
 
-            final Calendar c = Calendar.getInstance();
-            int mYear = c.get(Calendar.YEAR);
-            final int mMonth = c.get(Calendar.MONTH);
-            final int mDay = c.get(Calendar.DAY_OF_MONTH);
+			@Override
+			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
+				Log.e("onFailure", t.toString());
+			}
+		});
 
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
+	}
 
-                            newIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
+	@Override
+	public void onClick(View v) {
 
-                        }
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
-        }
-        else if(v == createNewIssueButton) {
-            processNewIssue();
-        }
+		if(v == assigneesList) {
+			if(assigneesFlag) {
+				multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
+			}
+			else {
+				Toasty.info(ctx, getResources().getString(R.string.noAssigneesFound));
+			}
+		}
+		else if(v == newIssueLabels) {
+			if(labelsFlag) {
+				multiSelectDialogLabels.show(getSupportFragmentManager(), "multiSelectDialogLabels");
+			}
+			else {
+				Toasty.info(ctx, getResources().getString(R.string.noLabelsFound));
+			}
+		}
+		else if(v == newIssueDueDate) {
 
-    }
+			final Calendar c = Calendar.getInstance();
+			int mYear = c.get(Calendar.YEAR);
+			final int mMonth = c.get(Calendar.MONTH);
+			final int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-    private void disableProcessButton() {
+			DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
-        createNewIssueButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createNewIssueButton.setBackground(shape);
+				@Override
+				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-    }
+					newIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
 
-    private void enableProcessButton() {
+				}
+			}, mYear, mMonth, mDay);
+			datePickerDialog.show();
+		}
+		else if(v == createNewIssueButton) {
+			processNewIssue();
+		}
 
-        createNewIssueButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createNewIssueButton.setBackground(shape);
+	}
 
-    }
+	private void disableProcessButton() {
+
+		createNewIssueButton.setEnabled(false);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.hintColor));
+		createNewIssueButton.setBackground(shape);
+
+	}
+
+	private void enableProcessButton() {
+
+		createNewIssueButton.setEnabled(true);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.btnBackground));
+		createNewIssueButton.setBackground(shape);
+
+	}
+
 }
