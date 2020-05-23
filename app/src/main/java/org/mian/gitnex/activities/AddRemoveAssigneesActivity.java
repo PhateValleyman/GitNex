@@ -1,11 +1,11 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -29,266 +29,243 @@ import retrofit2.Callback;
 
 public class AddRemoveAssigneesActivity extends BaseActivity {
 
-    private ArrayList<MultiSelectModel> listOfCollaborators = new ArrayList<>();
-    private ArrayList<Integer> issueAssigneesIds = new ArrayList<>();
-    private Boolean assigneesFlag = false;
-    private MultiSelectDialog multiSelectDialogAssignees;
-    final Context ctx = this;
-    private Context appCtx;
+	private ArrayList<MultiSelectModel> listOfCollaborators = new ArrayList<>();
+	private ArrayList<Integer> issueAssigneesIds = new ArrayList<>();
+	private Boolean assigneesFlag = false;
+	private MultiSelectDialog multiSelectDialogAssignees;
+	final Context ctx = this;
+	private Context appCtx;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_add_remove_assignees;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_add_remove_assignees;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-        //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        getWindow().getDecorView().setBackground(new ColorDrawable(Color.TRANSPARENT));
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
+		//supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+		getWindow().getDecorView().setBackground(new ColorDrawable(Color.TRANSPARENT));
 
-        getAssignees(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-    }
-
-    private void getAssignees(final String instanceUrl, final String instanceToken, final String repoOwner, final String repoName, final int issueIndex, final String loginUid) {
-
-        final TinyDB tinyDb = new TinyDB(appCtx);
-
-        Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
-
-        call.enqueue(new Callback<List<Collaborators>>() {
-
-            @Override
-            public void onResponse(@NonNull final Call<List<Collaborators>> call, @NonNull final retrofit2.Response<List<Collaborators>> response) {
-
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
-
-                        final List<Collaborators> collaboratorsList_ = response.body();
-
-                        assert collaboratorsList_ != null;
-                        if(collaboratorsList_.size() > 0) {
-                            for (int i = 0; i < collaboratorsList_.size(); i++) {
-
-                                listOfCollaborators.add(new MultiSelectModel(collaboratorsList_.get(i).getId(), collaboratorsList_.get(i).getUsername().trim()));
+		getAssignees(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
 
-                            }
-                        }
-
-                        // get current issue assignees
-                        Call<Issues> callSingleIssueAssignees = RetrofitClient
-                                .getInstance(instanceUrl, ctx)
-                                .getApiInterface()
-                                .getIssueByIndex(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
+	}
 
-                        callSingleIssueAssignees.enqueue(new Callback<Issues>() {
+	private void getAssignees(final String instanceUrl, final String instanceToken, final String repoOwner, final String repoName, final int issueIndex, final String loginUid) {
 
-                            @Override
-                            public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
-
-                                if(response.code() == 200) {
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-                                    Issues issueAssigneesList = response.body();
-
-                                    assert issueAssigneesList != null;
-                                    if (issueAssigneesList.getAssignees() != null) {
-                                        if (issueAssigneesList.getAssignees().size() > 0) {
-                                            for (int i = 0; i < issueAssigneesList.getAssignees().size(); i++) {
+		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
-                                                issueAssigneesIds.add(issueAssigneesList.getAssignees().get(i).getId());
+		call.enqueue(new Callback<List<Collaborators>>() {
 
-                                                if(issueAssigneesList.getAssignees().get(i).getUsername().equals(loginUid)) {
-                                                    listOfCollaborators.add(new MultiSelectModel(issueAssigneesList.getAssignees().get(i).getId(), issueAssigneesList.getAssignees().get(i).getUsername().trim()));
-                                                }
+			@Override
+			public void onResponse(@NonNull final Call<List<Collaborators>> call, @NonNull final retrofit2.Response<List<Collaborators>> response) {
 
-                                            }
-                                            assigneesFlag = true;
-                                        }
-                                    }
-                                    else {
-                                        listOfCollaborators.add(new MultiSelectModel(tinyDb.getInt("userId"), loginUid));
-                                    }
+				if(response.isSuccessful()) {
+					if(response.code() == 200) {
 
-                                    if(assigneesFlag) {
+						final List<Collaborators> collaboratorsList_ = response.body();
 
-                                        multiSelectDialogAssignees = new MultiSelectDialog()
-                                                .title(getResources().getString(R.string.newIssueSelectAssigneesListTitle))
-                                                .titleSize(25)
-                                                .positiveText(getResources().getString(R.string.saveButton))
-                                                .negativeText(getResources().getString(R.string.cancelButton))
-                                                .setMinSelectionLimit(0)
-                                                .preSelectIDsList(issueAssigneesIds)
-                                                .setMaxSelectionLimit(listOfCollaborators.size())
-                                                .multiSelectList(listOfCollaborators)
-                                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                                    @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+						assert collaboratorsList_ != null;
+						if(collaboratorsList_.size() > 0) {
+							for(int i = 0; i < collaboratorsList_.size(); i++) {
 
-                                                        Log.i("selectedNames", String.valueOf(selectedNames));
+								listOfCollaborators.add(new MultiSelectModel(collaboratorsList_.get(i).getId(), collaboratorsList_.get(i).getUsername().trim()));
 
-                                                        updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, selectedNames);
-                                                        tinyDb.putBoolean("singleIssueUpdate", true);
-                                                        CloseActivity();
-                                                    }
+							}
+						}
 
-                                                    @Override
-                                                    public void onCancel() {
-                                                        CloseActivity();
-                                                    }
-                                                });
+						// get current issue assignees
+						Call<Issues> callSingleIssueAssignees = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getIssueByIndex(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
 
-                                    }
-                                    else {
+						callSingleIssueAssignees.enqueue(new Callback<Issues>() {
 
-                                        multiSelectDialogAssignees = new MultiSelectDialog()
-                                                .title(getResources().getString(R.string.newIssueSelectAssigneesListTitle))
-                                                .titleSize(25)
-                                                .positiveText(getResources().getString(R.string.saveButton))
-                                                .negativeText(getResources().getString(R.string.cancelButton))
-                                                .setMinSelectionLimit(0)
-                                                .setMaxSelectionLimit(listOfCollaborators.size())
-                                                .multiSelectList(listOfCollaborators)
-                                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                                    @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+							@Override
+							public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
 
-                                                        updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, selectedNames);
-                                                        tinyDb.putBoolean("singleIssueUpdate", true);
-                                                        CloseActivity();
+								if(response.code() == 200) {
 
-                                                    }
+									Issues issueAssigneesList = response.body();
 
-                                                    @Override
-                                                    public void onCancel() {
-                                                        CloseActivity();
-                                                    }
-                                                });
+									assert issueAssigneesList != null;
+									if(issueAssigneesList.getAssignees() != null) {
+										if(issueAssigneesList.getAssignees().size() > 0) {
+											for(int i = 0; i < issueAssigneesList.getAssignees().size(); i++) {
 
-                                    }
+												issueAssigneesIds.add(issueAssigneesList.getAssignees().get(i).getId());
 
-                                    multiSelectDialogAssignees.show(getSupportFragmentManager(), "issueMultiSelectDialog");
+												if(issueAssigneesList.getAssignees().get(i).getUsername().equals(loginUid)) {
+													listOfCollaborators.add(new MultiSelectModel(issueAssigneesList.getAssignees().get(i).getId(), issueAssigneesList.getAssignees().get(i).getUsername().trim()));
+												}
 
-                                }
-                            }
+											}
+											assigneesFlag = true;
+										}
+									}
+									else {
+										listOfCollaborators.add(new MultiSelectModel(tinyDb.getInt("userId"), loginUid));
+									}
 
-                            @Override
-                            public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
-                                Log.e("onFailure", t.toString());
-                            }
+									if(assigneesFlag) {
 
-                        });
-                        // get current issue assignees
+										multiSelectDialogAssignees = new MultiSelectDialog().title(getResources().getString(R.string.newIssueSelectAssigneesListTitle)).titleSize(25).positiveText(getResources().getString(R.string.saveButton)).negativeText(getResources().getString(R.string.cancelButton)).setMinSelectionLimit(0).preSelectIDsList(issueAssigneesIds).setMaxSelectionLimit(listOfCollaborators.size()).multiSelectList(listOfCollaborators).onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
 
-                    }
-                    else if(response.code() == 401) {
+											@Override
+											public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
 
-                        AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                                getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                                getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                                getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+												Log.i("selectedNames", String.valueOf(selectedNames));
 
-                    }
-                    else if(response.code() == 403) {
+												updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, selectedNames);
+												tinyDb.putBoolean("singleIssueUpdate", true);
+												CloseActivity();
+											}
 
-                        Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+											@Override
+											public void onCancel() {
 
-                    }
-                    else if(response.code() == 404) {
+												CloseActivity();
+											}
+										});
 
-                        Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+									}
+									else {
 
-                    }
-                    else {
+										multiSelectDialogAssignees = new MultiSelectDialog().title(getResources().getString(R.string.newIssueSelectAssigneesListTitle)).titleSize(25).positiveText(getResources().getString(R.string.saveButton)).negativeText(getResources().getString(R.string.cancelButton)).setMinSelectionLimit(0).setMaxSelectionLimit(listOfCollaborators.size()).multiSelectList(listOfCollaborators).onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
 
-                        Toasty.info(ctx, getString(R.string.genericError));
+											@Override
+											public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
 
-                    }
-                }
+												updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, selectedNames);
+												tinyDb.putBoolean("singleIssueUpdate", true);
+												CloseActivity();
 
-            }
+											}
 
-            @Override
-            public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+											@Override
+											public void onCancel() {
 
-    }
+												CloseActivity();
+											}
+										});
 
-    private void CloseActivity() {
-        this.finish();
-    }
+									}
 
-    private void updateIssueAssignees(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, int issueIndex, List<String> issueAssigneesList) {
+									multiSelectDialogAssignees.show(getSupportFragmentManager(), "issueMultiSelectDialog");
 
-        UpdateIssueAssignees updateAssigneeJson = new UpdateIssueAssignees(issueAssigneesList);
+								}
+							}
 
-        Call<JsonElement> call3;
+							@Override
+							public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
 
-        call3 = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .patchIssueAssignees(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, updateAssigneeJson);
+								Log.e("onFailure", t.toString());
+							}
 
-        call3.enqueue(new Callback<JsonElement>() {
+						});
+						// get current issue assignees
 
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response2) {
+					}
+					else if(response.code() == 401) {
 
-                if(response2.code() == 201) {
+						AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                    Toasty.info(ctx, ctx.getString(R.string.assigneesUpdated));
+					}
+					else if(response.code() == 403) {
 
-                }
-                else if(response2.code() == 401) {
+						Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					}
+					else if(response.code() == 404) {
 
-                }
-                else if(response2.code() == 403) {
+						Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+					}
+					else {
 
-                }
-                else if(response2.code() == 404) {
+						Toasty.info(ctx, getString(R.string.genericError));
 
-                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+					}
+				}
 
-                }
-                else {
+			}
 
-                    Toasty.info(ctx, getString(R.string.genericError));
+			@Override
+			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
 
-                }
+				Log.e("onFailure", t.toString());
+			}
+		});
 
-            }
+	}
 
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+	private void CloseActivity() {
 
-    }
+		this.finish();
+	}
+
+	private void updateIssueAssignees(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, int issueIndex, List<String> issueAssigneesList) {
+
+		UpdateIssueAssignees updateAssigneeJson = new UpdateIssueAssignees(issueAssigneesList);
+
+		Call<JsonElement> call3;
+
+		call3 = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().patchIssueAssignees(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, updateAssigneeJson);
+
+		call3.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response2) {
+
+				if(response2.code() == 201) {
+
+					Toasty.info(ctx, ctx.getString(R.string.assigneesUpdated));
+
+				}
+				else if(response2.code() == 401) {
+
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+				}
+				else if(response2.code() == 403) {
+
+					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+
+				}
+				else if(response2.code() == 404) {
+
+					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+
+				}
+				else {
+
+					Toasty.info(ctx, getString(R.string.genericError));
+
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
 
 }
