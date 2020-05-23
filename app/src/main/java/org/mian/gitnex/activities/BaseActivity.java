@@ -19,10 +19,7 @@ import org.mian.gitnex.util.TinyDB;
  * Author M M Arif
  */
 
-@AcraNotification(resIcon = R.drawable.gitnex_transparent,
-		resTitle = R.string.crashTitle,
-		resChannelName = R.string.setCrashReports,
-		resText = R.string.crashMessage)
+@AcraNotification(resIcon = R.drawable.gitnex_transparent, resTitle = R.string.crashTitle, resChannelName = R.string.setCrashReports, resText = R.string.crashMessage)
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -103,7 +100,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 			tinyDb.putString("cacheSizeImagesStr", getResources().getString(R.string.cacheSizeImagesSelectionSelectedText));
 		}
 
-		if (tinyDb.getBoolean("crashReportingEnabled")) {
+		if(tinyDb.getBoolean("crashReportingEnabled")) {
 
 			CoreConfigurationBuilder ACRABuilder = new CoreConfigurationBuilder(this);
 			ACRABuilder.setBuildConfigClass(BuildConfig.class).setReportFormat(StringFormat.KEY_VALUE_LIST);
