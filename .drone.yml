@@ -16,6 +16,7 @@ steps:
     depends_on: [ clone ]
     commands:
       - npm install -g eclint
+      - git rev-parse --abbrev-ref HEAD
       - git diff --name-only master
 
   # This may be used in the future, because it makes of intellij's native code inspection/formatting capabilities.
@@ -81,11 +82,11 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: gitnex-ci-analysis
+name: gitnex-ci-master
 
 steps:
 
-  - name: check-formatting
+  - name: check-global-formatting
     image: tarampampam/node:13-alpine
     depends_on: [ clone ]
     commands:
