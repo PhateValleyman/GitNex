@@ -16,7 +16,7 @@ steps:
     depends_on: [ clone ]
     commands:
       - npm install -g eclint
-      - eclint check $(git ls-files)
+      - eclint check $(git diff --name-only master)
 
   # This may be used in the future, because it makes of intellij's native code inspection/formatting capabilities.
   # Additional information: https://www.jetbrains.com/help/idea/command-line-formatter.html
@@ -77,3 +77,20 @@ trigger:
     - push
   branch:
     - master
+
+---
+kind: pipeline
+type: docker
+name: gitnex-ci-static-analysis
+
+steps:
+
+  - name: check-global-formatting
+    image: tarampampam/node:13-alpine
+    depends_on: [ clone ]
+    commands:
+      - npm install -g eclint
+      - eclint check $(git ls-files)
+
+depends_on:
+  - gitnex-ci-build
