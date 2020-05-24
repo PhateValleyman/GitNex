@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: docker
-name: gitnex-ci-test
+name: gitnex-ci-tests
 
 steps:
 
@@ -11,7 +11,7 @@ steps:
     commands:
       - ./gradlew test
 
-  - name: check-local-formatting
+  - name: check-formatting
     image: tarampampam/node:13-alpine
     depends_on: [ clone ]
     commands:
@@ -31,6 +31,26 @@ steps:
 trigger:
   event:
     - pull_request
+
+---
+kind: pipeline
+type: docker
+name: gitnex-ci-analysis
+
+steps:
+
+  - name: check-global-formatting
+    image: tarampampam/node:13-alpine
+    depends_on: [ clone ]
+    commands:
+      - npm install -g eclint
+      - eclint check $(git ls-files)
+
+trigger:
+  event:
+    - push
+  branch:
+    - master
 
 ---
 kind: pipeline
@@ -63,38 +83,21 @@ steps:
 
   - name: publish
     image: vividboarder/drone-webdav
+    username: GitNexBot
+    file: 'signed.apk'
+    destination: 'https://cloud.swatian.com/remote.php/dav/files/GitNexBot/GitNex-Builds/latest.apk'
+    custom_arguments: '--progress-bar'
+    timeout: 180
+    attempts: 5
     environment:
-      WEBDAV_USERNAME: GitNexBot
-      WEBDAV_PASSWORD:
+      PLUGIN_PASSWORD:
         from_secret: NC_TOKEN
-      PLUGIN_FILE: 'signed.apk'
-      PLUGIN_TIMEOUT: 180
-      PLUGIN_ATTEMPTS: 5
-      PLUGIN_DESTINATION: 'https://cloud.swatian.com/remote.php/dav/files/GitNexBot/GitNex-Builds/latest.apk'
-      PLUGIN_CUSTOM_ARGUMENTS: '--progress-bar'
 
 trigger:
   event:
     - cron
-  cron:
-    - nightly
-
----
-kind: pipeline
-type: docker
-name: gitnex-ci-master
-
-steps:
-
-  - name: check-global-formatting
-    image: tarampampam/node:13-alpine
-    depends_on: [ clone ]
-    commands:
-      - npm install -g eclint
-      - eclint check $(git ls-files)
-
-trigger:
-  event:
     - push
   branch:
     - master
+  cron:
+    - nightly
