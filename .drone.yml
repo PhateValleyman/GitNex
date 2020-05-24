@@ -11,12 +11,12 @@ steps:
     commands:
       - ./gradlew test
 
-  - name: check-formatting
+  - name: check-local-formatting
     image: tarampampam/node:13-alpine
     depends_on: [ clone ]
     commands:
-      - git pull origin master
       - npm install -g eclint
+      - git pull origin master
       - eclint check $(git diff --name-only origin/master)
 
   # This may be used in the future, because it makes of intellij's native code inspection/formatting capabilities.
