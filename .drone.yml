@@ -16,7 +16,7 @@ steps:
     depends_on: [ clone ]
     commands:
       - npm install -g eclint
-      - eclint check $(git diff --name-only master)
+      - git diff --name-only master
 
   # This may be used in the future, because it makes of intellij's native code inspection/formatting capabilities.
   # Additional information: https://www.jetbrains.com/help/idea/command-line-formatter.html
