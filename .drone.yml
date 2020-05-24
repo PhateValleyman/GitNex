@@ -12,10 +12,9 @@ steps:
       - ./gradlew test
 
   - name: check-formatting
-    image: tarampampam/node:13-alpine
+    image: odannyc/eclint
     depends_on: [ clone ]
     commands:
-      - npm install -g eclint
       - git pull origin master
       - eclint check $(git diff --name-only origin/master)
 
@@ -40,10 +39,9 @@ name: gitnex-ci-analysis
 steps:
 
   - name: check-global-formatting
-    image: tarampampam/node:13-alpine
+    image: odannyc/eclint
     depends_on: [ clone ]
     commands:
-      - npm install -g eclint
       - eclint check $(git ls-files)
 
 trigger:
