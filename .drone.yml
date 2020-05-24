@@ -15,9 +15,9 @@ steps:
     image: tarampampam/node:13-alpine
     depends_on: [ clone ]
     commands:
+      - git pull origin master
       - npm install -g eclint
-      - git rev-parse --abbrev-ref HEAD
-      - git diff --name-only master
+      - eclint check $(git diff --name-only origin/master)
 
   # This may be used in the future, because it makes of intellij's native code inspection/formatting capabilities.
   # Additional information: https://www.jetbrains.com/help/idea/command-line-formatter.html
