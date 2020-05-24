@@ -34,7 +34,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: gitnex-ci-build
+name: gitnex-ci-nightly-build
 
 steps:
 
@@ -74,23 +74,26 @@ steps:
 
 trigger:
   event:
-    - push
-  branch:
-    - master
+    - cron
+  cron:
+    - nightly
 
 ---
 kind: pipeline
 type: docker
-name: gitnex-ci-static-analysis
+name: gitnex-ci-analysis
 
 steps:
 
-  - name: check-global-formatting
+  - name: check-formatting
     image: tarampampam/node:13-alpine
     depends_on: [ clone ]
     commands:
       - npm install -g eclint
       - eclint check $(git ls-files)
 
-depends_on:
-  - gitnex-ci-build
+trigger:
+  event:
+    - push
+  branch:
+    - master
