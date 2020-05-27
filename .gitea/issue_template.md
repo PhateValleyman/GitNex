@@ -18,11 +18,11 @@ _(This step is optional)_
 ---
 _(This step is optional; an example is shown below)_
 
-* The version of **Gitea** you are using: 
-* The version of **GitNex** you are using: 
-* Phone **OS** version and model: 
-* The type of certificate you are using (self-signed, signed): 
-* How you used to log in (via password or token): 
+* The version of **Gitea** you are using:
+* The version of **GitNex** you are using:
+* Phone **OS** version and model:
+* The type of certificate you are using (self-signed, signed):
+* How you used to log in (via password or token):
 
 
 ##### We would appreciate some screenshots or stacktrace's, but this is also not required.
