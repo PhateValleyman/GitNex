@@ -93,9 +93,6 @@ steps:
 
 trigger:
   event:
-    - cron
     - push
   branch:
     - master
-  cron:
-    - nightly
