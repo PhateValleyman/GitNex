@@ -189,12 +189,12 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
 		}
 
-        /*if (newIssueDescriptionForm.equals("")) {
+		/*if (newIssueDescriptionForm.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.issueDescriptionEmpty));
-            return;
+			Toasty.info(ctx, getString(R.string.issueDescriptionEmpty));
+			return;
 
-        }*/
+		}*/
 
 		if(newIssueDueDateForm.equals("")) {
 			newIssueDueDateForm = null;
@@ -411,13 +411,13 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 						if(assigneesList_.size() > 0) {
 							for(int i = 0; i < assigneesList_.size(); i++) {
 
-                                /*String assigneesCopy;
-                                if(!assigneesList_.get(i).getFull_name().equals("")) {
-                                    assigneesCopy = getString(R.string.dialogAssignessText, assigneesList_.get(i).getFull_name(), assigneesList_.get(i).getLogin());
-                                }
-                                else {
-                                    assigneesCopy = assigneesList_.get(i).getLogin();
-                                }*/
+								/*String assigneesCopy;
+								if(!assigneesList_.get(i).getFull_name().equals("")) {
+									assigneesCopy = getString(R.string.dialogAssignessText, assigneesList_.get(i).getFull_name(), assigneesList_.get(i).getLogin());
+								}
+								else {
+									assigneesCopy = assigneesList_.get(i).getLogin();
+								}*/
 								listOfAssignees.add(new MultiSelectModel(assigneesList_.get(i).getId(), assigneesList_.get(i).getLogin().trim()));
 
 							}

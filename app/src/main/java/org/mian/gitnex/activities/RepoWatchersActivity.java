@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class RepoWatchersActivity extends BaseActivity {
 

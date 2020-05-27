@@ -28,7 +28,7 @@ import java.util.Objects;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class OrganizationDetailActivity extends BaseActivity implements BottomSheetOrganizationFragment.BottomSheetListener {
 

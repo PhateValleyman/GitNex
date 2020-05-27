@@ -25,7 +25,7 @@ import retrofit2.Callback;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class AddRemoveAssigneesActivity extends BaseActivity {
 

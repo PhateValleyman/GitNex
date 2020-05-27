@@ -42,7 +42,7 @@ import retrofit2.Callback;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 

@@ -17,7 +17,7 @@ import org.mian.gitnex.util.TinyDB;
 
 /**
  * Author M M Arif
- */
+ **/
 
 @AcraNotification(resIcon = R.drawable.gitnex_transparent, resTitle = R.string.crashTitle, resChannelName = R.string.setCrashReports, resText = R.string.crashMessage)
 

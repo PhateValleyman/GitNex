@@ -1,9 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -20,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
@@ -42,192 +39,197 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class EditIssueActivity extends BaseActivity implements View.OnClickListener {
 
-    final Context ctx = this;
-    private Context appCtx;
-    private View.OnClickListener onClickListener;
-    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+	final Context ctx = this;
+	private Context appCtx;
+	private View.OnClickListener onClickListener;
+	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 
-    private EditText editIssueTitle;
-    private SocialAutoCompleteTextView editIssueDescription;
-    private TextView editIssueDueDate;
-    private Button editIssueButton;
-    private Spinner editIssueMilestoneSpinner;
+	private EditText editIssueTitle;
+	private SocialAutoCompleteTextView editIssueDescription;
+	private TextView editIssueDueDate;
+	private Button editIssueButton;
+	private Spinner editIssueMilestoneSpinner;
 
-    private String msState = "open";
+	private String msState = "open";
 
-    List<Milestones> milestonesList = new ArrayList<>();
-    private ArrayAdapter<Mention> defaultMentionAdapter;
+	List<Milestones> milestonesList = new ArrayList<>();
+	private ArrayAdapter<Mention> defaultMentionAdapter;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_edit_issue;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_edit_issue;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        final TinyDB tinyDb = new TinyDB(appCtx);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-        ImageView closeActivity = findViewById(R.id.close);
-        editIssueButton = findViewById(R.id.editIssueButton);
-        TextView toolbar_title = findViewById(R.id.toolbar_title);
-        editIssueTitle = findViewById(R.id.editIssueTitle);
-        editIssueDescription = findViewById(R.id.editIssueDescription);
-        editIssueDueDate = findViewById(R.id.editIssueDueDate);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-        // if gitea is 1.12 or higher use the new limit
-        if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
-            resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
-        }
+		ImageView closeActivity = findViewById(R.id.close);
+		editIssueButton = findViewById(R.id.editIssueButton);
+		TextView toolbar_title = findViewById(R.id.toolbar_title);
+		editIssueTitle = findViewById(R.id.editIssueTitle);
+		editIssueDescription = findViewById(R.id.editIssueDescription);
+		editIssueDueDate = findViewById(R.id.editIssueDueDate);
 
-        editIssueTitle.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(editIssueTitle, InputMethodManager.SHOW_IMPLICIT);
+		// if gitea is 1.12 or higher use the new limit
+		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+		}
 
-        defaultMentionAdapter = new MentionArrayAdapter<>(this);
-        loadCollaboratorsList();
+		editIssueTitle.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(editIssueTitle, InputMethodManager.SHOW_IMPLICIT);
 
-        editIssueMilestoneSpinner = findViewById(R.id.editIssueMilestoneSpinner);
-        editIssueMilestoneSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+		defaultMentionAdapter = new MentionArrayAdapter<>(this);
+		loadCollaboratorsList();
 
-        editIssueDescription.setMentionAdapter(defaultMentionAdapter);
+		editIssueMilestoneSpinner = findViewById(R.id.editIssueMilestoneSpinner);
+		editIssueMilestoneSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		editIssueDescription.setMentionAdapter(defaultMentionAdapter);
 
-        editIssueDueDate.setOnClickListener(this);
-        editIssueButton.setOnClickListener(this);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        if(!tinyDb.getString("issueNumber").isEmpty()) {
+		editIssueDueDate.setOnClickListener(this);
+		editIssueButton.setOnClickListener(this);
 
-            if(tinyDb.getString("issueType").equals("pr")) {
-                toolbar_title.setText(getString(R.string.editPrNavHeader, String.valueOf(issueIndex)));
-            }
-            else {
-                toolbar_title.setText(getString(R.string.editIssueNavHeader, String.valueOf(issueIndex)));
-            }
-        }
+		if(!tinyDb.getString("issueNumber").isEmpty()) {
 
-        disableProcessButton();
-        getIssue(instanceUrl, instanceToken, loginUid, repoOwner, repoName, issueIndex, resultLimit);
+			if(tinyDb.getString("issueType").equals("pr")) {
+				toolbar_title.setText(getString(R.string.editPrNavHeader, String.valueOf(issueIndex)));
+			}
+			else {
+				toolbar_title.setText(getString(R.string.editIssueNavHeader, String.valueOf(issueIndex)));
+			}
+		}
+
+		disableProcessButton();
+		getIssue(instanceUrl, instanceToken, loginUid, repoOwner, repoName, issueIndex, resultLimit);
 
 
-    }
+	}
 
-    public void loadCollaboratorsList() {
+	public void loadCollaboratorsList() {
 
-        final TinyDB tinyDb = new TinyDB(appCtx);
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
 
-        Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
-        call.enqueue(new Callback<List<Collaborators>>() {
+		call.enqueue(new Callback<List<Collaborators>>() {
 
-            @Override
-            public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
+			@Override
+			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
 
-                if (response.isSuccessful()) {
+				if(response.isSuccessful()) {
 
-                    assert response.body() != null;
-                    String fullName = "";
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
-                            fullName = response.body().get(i).getFull_name();
-                        }
-                        defaultMentionAdapter.add(
-                                new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
-                    }
+					assert response.body() != null;
+					String fullName = "";
+					for(int i = 0; i < response.body().size(); i++) {
+						if(!response.body().get(i).getFull_name().equals("")) {
+							fullName = response.body().get(i).getFull_name();
+						}
+						defaultMentionAdapter.add(new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
+					}
 
-                } else {
+				}
+				else {
 
-                    Log.i("onResponse", String.valueOf(response.code()));
+					Log.i("onResponse", String.valueOf(response.code()));
 
-                }
+				}
 
-            }
+			}
 
-            @Override
-            public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.toString());
-            }
+			@Override
+			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
 
-        });
-    }
+				Log.i("onFailure", t.toString());
+			}
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
-    }
+		});
+	}
 
-    private void processEditIssue() {
+	private void initCloseListener() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+		onClickListener = new View.OnClickListener() {
 
-        Milestones mModel = (Milestones) editIssueMilestoneSpinner.getSelectedItem();
+			@Override
+			public void onClick(View view) {
 
-        int editIssueMilestoneId = mModel.getId();
+				finish();
+			}
+		};
+	}
 
-        String editIssueTitleForm = editIssueTitle.getText().toString();
-        String editIssueDescriptionForm = editIssueDescription.getText().toString();
-        String editIssueDueDateForm = editIssueDueDate.getText().toString();
+	private void processEditIssue() {
 
-        if(!connToInternet) {
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		TinyDB tinyDb = new TinyDB(appCtx);
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
-            return;
+		Milestones mModel = (Milestones) editIssueMilestoneSpinner.getSelectedItem();
 
-        }
+		int editIssueMilestoneId = mModel.getId();
 
-        if (editIssueTitleForm.equals("")) {
+		String editIssueTitleForm = editIssueTitle.getText().toString();
+		String editIssueDescriptionForm = editIssueDescription.getText().toString();
+		String editIssueDueDateForm = editIssueDueDate.getText().toString();
 
-            Toasty.info(ctx, getString(R.string.issueTitleEmpty));
-            return;
+		if(!connToInternet) {
 
-        }
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			return;
+
+		}
+
+		if(editIssueTitleForm.equals("")) {
+
+			Toasty.info(ctx, getString(R.string.issueTitleEmpty));
+			return;
+
+		}
 
         /*if (editIssueDescriptionForm.equals("")) {
 
@@ -236,244 +238,227 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         }*/
 
-        if (editIssueDueDateForm.equals("")) {
-            editIssueDueDateForm = null;
-        } else {
-            editIssueDueDateForm = (AppUtil.customDateCombine(AppUtil.customDateFormat(editIssueDueDateForm)));
-        }
+		if(editIssueDueDateForm.equals("")) {
+			editIssueDueDateForm = null;
+		}
+		else {
+			editIssueDueDateForm = (AppUtil.customDateCombine(AppUtil.customDateFormat(editIssueDueDateForm)));
+		}
 
-        //Log.i("editIssueDueDateForm", String.valueOf(editIssueDueDateForm));
-        disableProcessButton();
-        editIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid, editIssueTitleForm, editIssueDescriptionForm, editIssueDueDateForm, editIssueMilestoneId);
+		//Log.i("editIssueDueDateForm", String.valueOf(editIssueDueDateForm));
+		disableProcessButton();
+		editIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid, editIssueTitleForm, editIssueDescriptionForm, editIssueDueDateForm, editIssueMilestoneId);
 
-    }
+	}
 
-    private void editIssue(String instanceUrl, String instanceToken, String repoOwner, String repoName, int issueIndex, String loginUid, String title, String description, String dueDate, int editIssueMilestoneId) {
+	private void editIssue(String instanceUrl, String instanceToken, String repoOwner, String repoName, int issueIndex, String loginUid, String title, String description, String dueDate, int editIssueMilestoneId) {
 
-        final TinyDB tinyDb = new TinyDB(appCtx);
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-        CreateIssue issueData = new CreateIssue(title, description, dueDate, editIssueMilestoneId);
+		CreateIssue issueData = new CreateIssue(title, description, dueDate, editIssueMilestoneId);
 
-        Call<JsonElement> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .patchIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueData);
+		Call<JsonElement> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().patchIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueData);
 
-        call.enqueue(new Callback<JsonElement>() {
+		call.enqueue(new Callback<JsonElement>() {
 
-            @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-                if(response.code() == 201) {
+				if(response.code() == 201) {
 
-                    if(tinyDb.getString("issueType").equals("pr")) {
-                        Toasty.info(ctx, getString(R.string.editPrSuccessMessage));
-                    }
-                    else {
-                        Toasty.info(ctx, getString(R.string.editIssueSuccessMessage));
-                    }
+					if(tinyDb.getString("issueType").equals("pr")) {
+						Toasty.info(ctx, getString(R.string.editPrSuccessMessage));
+					}
+					else {
+						Toasty.info(ctx, getString(R.string.editIssueSuccessMessage));
+					}
 
-                    tinyDb.putBoolean("issueEdited", true);
-                    tinyDb.putBoolean("resumeIssues", true);
-                    finish();
+					tinyDb.putBoolean("issueEdited", true);
+					tinyDb.putBoolean("resumeIssues", true);
+					finish();
 
-                }
-                else if(response.code() == 401) {
+				}
+				else if(response.code() == 401) {
 
-                    enableProcessButton();
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
-                else {
+				}
+				else {
 
-                    enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.genericError));
+					enableProcessButton();
+					Toasty.info(ctx, getString(R.string.genericError));
 
-                }
+				}
 
-            }
+			}
 
-            @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
-        });
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
-    }
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
+		});
 
+	}
 
-    @Override
-    public void onClick(View v) {
 
-        if (v == editIssueDueDate) {
+	@Override
+	public void onClick(View v) {
 
-            final Calendar c = Calendar.getInstance();
-            int mYear = c.get(Calendar.YEAR);
-            final int mMonth = c.get(Calendar.MONTH);
-            final int mDay = c.get(Calendar.DAY_OF_MONTH);
+		if(v == editIssueDueDate) {
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
+			final Calendar c = Calendar.getInstance();
+			int mYear = c.get(Calendar.YEAR);
+			final int mMonth = c.get(Calendar.MONTH);
+			final int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
+			DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
-                            editIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
+				@Override
+				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        }
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
+					editIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
 
-        }
-        else if(v == editIssueButton) {
-            processEditIssue();
-        }
+				}
+			}, mYear, mMonth, mDay);
+			datePickerDialog.show();
 
-    }
+		}
+		else if(v == editIssueButton) {
+			processEditIssue();
+		}
 
-    private void getIssue(final String instanceUrl, final String instanceToken, final String loginUid, final String repoOwner, final String repoName, int issueIndex, int resultLimit) {
+	}
 
-        Call<Issues> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getIssueByIndex(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
+	private void getIssue(final String instanceUrl, final String instanceToken, final String loginUid, final String repoOwner, final String repoName, int issueIndex, int resultLimit) {
 
-        call.enqueue(new Callback<Issues>() {
+		Call<Issues> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getIssueByIndex(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
 
-            @Override
-            public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
+		call.enqueue(new Callback<Issues>() {
 
-                if(response.code() == 200) {
+			@Override
+			public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
 
-                    assert response.body() != null;
-                    editIssueTitle.setText(response.body().getTitle());
-                    editIssueDescription.setText(response.body().getBody());
+				if(response.code() == 200) {
 
-                    int msId = 0;
-                    if(response.body().getMilestone() != null) {
-                        msId = response.body().getMilestone().getId();
-                    }
+					assert response.body() != null;
+					editIssueTitle.setText(response.body().getTitle());
+					editIssueDescription.setText(response.body().getBody());
 
-                    // get milestones list
-                    if(response.body().getId() > 0) {
+					int msId = 0;
+					if(response.body().getMilestone() != null) {
+						msId = response.body().getMilestone().getId();
+					}
 
-                        Call<List<Milestones>> call_ = RetrofitClient
-                                .getInstance(instanceUrl, ctx)
-                                .getApiInterface()
-                                .getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
+					// get milestones list
+					if(response.body().getId() > 0) {
 
-                        final int finalMsId = msId;
+						Call<List<Milestones>> call_ = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
 
-                        call_.enqueue(new Callback<List<Milestones>>() {
+						final int finalMsId = msId;
 
-                            @Override
-                            public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull retrofit2.Response<List<Milestones>> response_) {
+						call_.enqueue(new Callback<List<Milestones>>() {
 
-                                int finalMsId1 = 0;
+							@Override
+							public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull retrofit2.Response<List<Milestones>> response_) {
 
-                                if (response_.code() == 200) {
+								int finalMsId1 = 0;
 
-                                    List<Milestones> milestonesList_ = response_.body();
+								if(response_.code() == 200) {
 
-                                    milestonesList.add(new Milestones(0, "No milestone"));
-                                    assert milestonesList_ != null;
-                                    if (milestonesList_.size() > 0) {
-                                        for (int i = 0; i < milestonesList_.size(); i++) {
+									List<Milestones> milestonesList_ = response_.body();
 
-                                            Milestones data = new Milestones(
-                                                    milestonesList_.get(i).getId(),
-                                                    milestonesList_.get(i).getTitle()
-                                            );
-                                            milestonesList.add(data);
+									milestonesList.add(new Milestones(0, "No milestone"));
+									assert milestonesList_ != null;
+									if(milestonesList_.size() > 0) {
+										for(int i = 0; i < milestonesList_.size(); i++) {
 
-                                            if(finalMsId == milestonesList_.get(i).getId()) {
-                                                finalMsId1 = i + 1;
-                                            }
+											Milestones data = new Milestones(milestonesList_.get(i).getId(), milestonesList_.get(i).getTitle());
+											milestonesList.add(data);
 
-                                        }
-                                    }
+											if(finalMsId == milestonesList_.get(i).getId()) {
+												finalMsId1 = i + 1;
+											}
 
-                                    ArrayAdapter<Milestones> adapter_ = new ArrayAdapter<>(EditIssueActivity.this,
-                                            R.layout.spinner_item, milestonesList);
+										}
+									}
 
-                                    adapter_.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                                    editIssueMilestoneSpinner.setAdapter(adapter_);
+									ArrayAdapter<Milestones> adapter_ = new ArrayAdapter<>(EditIssueActivity.this, R.layout.spinner_item, milestonesList);
 
-                                    if(milestonesList_.size() > 0) {
-                                        editIssueMilestoneSpinner.setSelection(finalMsId1);
-                                    }
-                                    enableProcessButton();
+									adapter_.setDropDownViewResource(R.layout.spinner_dropdown_item);
+									editIssueMilestoneSpinner.setAdapter(adapter_);
 
-                                }
+									if(milestonesList_.size() > 0) {
+										editIssueMilestoneSpinner.setSelection(finalMsId1);
+									}
+									enableProcessButton();
 
-                            }
+								}
 
-                            @Override
-                            public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
-                                Log.e("onFailure", t.toString());
-                            }
-                        });
+							}
 
-                    }
-                    // get milestones list
+							@Override
+							public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
 
-                    if(response.body().getDue_date() != null) {
+								Log.e("onFailure", t.toString());
+							}
+						});
 
-                        @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("yyyy-M-dd");
-                        String dueDate = formatter.format(response.body().getDue_date());
-                        editIssueDueDate.setText(dueDate);
+					}
+					// get milestones list
 
-                    }
-                    //enableProcessButton();
+					if(response.body().getDue_date() != null) {
 
-                }
-                else if(response.code() == 401) {
+						@SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("yyyy-M-dd");
+						String dueDate = formatter.format(response.body().getDue_date());
+						editIssueDueDate.setText(dueDate);
 
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					}
+					//enableProcessButton();
 
-                }
-                else {
+				}
+				else if(response.code() == 401) {
 
-                    Toasty.info(ctx, getString(R.string.genericError));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                }
+				}
+				else {
 
-            }
+					Toasty.info(ctx, getString(R.string.genericError));
 
-            @Override
-            public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+				}
 
-    }
+			}
 
-    private void disableProcessButton() {
+			@Override
+			public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
 
-        editIssueButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        editIssueButton.setBackground(shape);
+				Log.e("onFailure", t.toString());
+			}
+		});
 
-    }
+	}
 
-    private void enableProcessButton() {
+	private void disableProcessButton() {
 
-        editIssueButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        editIssueButton.setBackground(shape);
+		editIssueButton.setEnabled(false);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.hintColor));
+		editIssueButton.setBackground(shape);
 
-    }
+	}
+
+	private void enableProcessButton() {
+
+		editIssueButton.setEnabled(true);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.btnBackground));
+		editIssueButton.setBackground(shape);
+
+	}
 
 }

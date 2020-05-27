@@ -11,7 +11,7 @@ import org.mian.gitnex.util.TinyDB;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class SettingsReportsActivity extends BaseActivity {
 

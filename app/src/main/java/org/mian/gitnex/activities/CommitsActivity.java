@@ -36,7 +36,7 @@ import retrofit2.Response;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class CommitsActivity extends BaseActivity {
 

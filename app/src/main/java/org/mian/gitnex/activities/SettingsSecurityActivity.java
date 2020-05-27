@@ -22,7 +22,7 @@ import java.util.HashSet;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class SettingsSecurityActivity extends BaseActivity {
 

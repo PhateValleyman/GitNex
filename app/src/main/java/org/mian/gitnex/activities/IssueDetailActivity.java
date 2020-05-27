@@ -81,7 +81,7 @@ import retrofit2.Response;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class IssueDetailActivity extends BaseActivity {
 

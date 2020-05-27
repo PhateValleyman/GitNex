@@ -24,7 +24,7 @@ import retrofit2.Callback;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class CreateNewUserActivity extends BaseActivity {
 

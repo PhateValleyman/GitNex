@@ -31,7 +31,7 @@ import retrofit2.Callback;
 
 /**
  * Author M M Arif
- */
+ **/
 
 public class CreateReleaseActivity extends BaseActivity {
 
