@@ -1,11 +1,11 @@
 ---
 kind: pipeline
 type: docker
-name: gitnex-ci-tests
+name: tests
 
 steps:
 
-  - name: test
+  - name: unit-tests
     image: nextcloudci/android:android-49
     depends_on: [ clone ]
     commands:
@@ -34,7 +34,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: gitnex-ci-analysis
+name: code-analysis
 
 steps:
 
@@ -53,7 +53,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: gitnex-ci-nightly-build
+name: build
 
 steps:
 
