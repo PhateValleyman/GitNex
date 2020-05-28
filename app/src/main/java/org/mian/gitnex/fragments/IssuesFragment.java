@@ -26,7 +26,7 @@ import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.TinyDB;
@@ -76,7 +76,7 @@ public class IssuesFragment extends Fragment {
 		final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
 
 		// if gitea is 1.12 or higher use the new limit
-		if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) >= 1) {
+		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}
 
@@ -180,7 +180,7 @@ public class IssuesFragment extends Fragment {
 			@Override
 			public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-				if(response.isSuccessful()) {
+				if(response.code() == 200) {
 
 					assert response.body() != null;
 					if(response.body().size() > 0) {
@@ -192,11 +192,21 @@ public class IssuesFragment extends Fragment {
 
 					}
 					else {
+
 						issuesList.clear();
 						adapter.notifyDataChanged();
 						noDataIssues.setVisibility(View.VISIBLE);
+
 					}
+
 					mProgressBar.setVisibility(View.GONE);
+
+				}
+				else if(response.code() == 404) {
+
+					noDataIssues.setVisibility(View.VISIBLE);
+					mProgressBar.setVisibility(View.GONE);
+
 				}
 				else {
 					Log.e(TAG, String.valueOf(response.code()));
@@ -227,7 +237,7 @@ public class IssuesFragment extends Fragment {
 			@Override
 			public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-				if(response.isSuccessful()) {
+				if(response.code() == 200) {
 
 					//remove loading view
 					issuesList.remove(issuesList.size() - 1);

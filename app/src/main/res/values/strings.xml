@@ -181,9 +181,7 @@
     <string name="createdText">Opened\u0020</string>
     <string name="dueDateText">Due Date</string>
     <string name="issueStatusTextOpen">Status: open</string>
-    <string name="issueStatusOpen">open</string>
     <string name="issueStatusTextClosed">Status: closed</string>
-    <string name="issueStatusClosed">closed</string>
     <string name="issueCreator">Creator :\u0020</string>
     <string name="issueAssigneesText">Assignees</string>
     <string name="issueTypeIssue">Type: Issue</string>
@@ -198,6 +196,9 @@
     <string name="commentEmptyError">Please write your comment</string>
     <string name="commentSuccess">Comment posted</string>
     <string name="commentError">Something went wrong, please try again</string>
+
+    <string name="featureDeprecated">This function will be removed in the future.</string>
+    <string name="screamingInFearEmoticon" translatable="false">😱</string>
 
     <string name="generalImgContentText">Avatar</string>
     <string name="generalPageTitle" translatable="false">GitNex</string>
@@ -290,6 +291,16 @@
     <string name="settingsFileviewerSourceCodeHeaderText">Source Code Theme</string>
     <string name="settingsFileviewerSourceCodeSelectedText" translatable="false">Sublime</string>
     <string name="fileviewerSourceCodeThemeSelectorDialogTitle">Select Source Code Theme</string>
+    <string name="cacheSizeDataDialogHeader">Data Cache Size</string>
+    <string name="cacheSizeDataSelectionHeaderText">Data Cache Size</string>
+    <string name="cacheSizeDataSelectionSelectedText" translatable="false">50 MB</string>
+    <string name="cacheSizeImagesDialogHeader">Images Cache Size</string>
+    <string name="cacheSizeImagesSelectionHeaderText">Images Cache Size</string>
+    <string name="cacheSizeImagesSelectionSelectedText" translatable="false">50 MB</string>
+    <string name="clearCacheSelectionHeaderText">Clear Cache</string>
+    <string name="clearCacheSelectionSelectedText" translatable="false">0 B</string>
+    <string name="clearCacheDialogHeader">Clear Cache?</string>
+    <string name="clearCacheDialogMessage">This will delete all the cache data including files and images.\n\nProceed with deletion?</string>
     <!-- settings -->
 
     <string name="noMoreData">No more data available</string>
@@ -337,6 +348,13 @@
     <string name="noDataMembers">No members found</string>
     <string name="orgMember">Org members</string>
     <string name="orgTeamMembers">Organization team members</string>
+    <string name="addNewMember">Add / Remove New Member</string>
+    <string name="removeTeamMemberTitle">Remove\u0020</string>
+    <string name="addTeamMemberTitle">Add\u0020</string>
+    <string name="addTeamMemberMessage">Do you want to add this user to the team?</string>
+    <string name="removeTeamMemberMessage">Do you want to remove this user from the team?</string>
+    <string name="memberAddedMessage">Member added to the team successfully</string>
+    <string name="memberRemovedMessage">Member removed from the team successfully</string>
     <!-- org tabbed layout str -->
 
     <!-- create team -->
@@ -535,6 +553,8 @@
     <string name="strPublic" translatable="false">public</string>
     <string name="defaultCopy" translatable="false">Default</string>
     <string name="viewInBrowser">View in Browser</string>
+    <string name="isOpen">Open</string>
+    <string name="isClosed">Closed</string>
     <string name="genericServerResponseError">We cannot reach the server at the moment, please check your server status and try again</string>
     <!-- generic copy -->
 
@@ -576,7 +596,10 @@
     <string name="openFileDiffText">Files Changed</string>
     <string name="mergePullRequestText">Merge Pull Request</string>
     <string name="mergePullRequestButtonText">Merge</string>
+    <string name="deleteBranchAfterMerge">Delete branch after merge</string>
     <string name="mergeNoteText">Merge may fail if you are not authorized to merge this Pull Request.</string>
+    <string name="mergeInfoDisabledMessage">Disabled Merge button means that there are conflicts OR other things to fix before Merge.</string>
+    <string name="deleteBranchForkInfo">This branch belong to a forked repository</string>
     <string name="mergeCommentText">Merge comment</string>
     <string name="mergePRSuccessMsg">Pull Request was merged successfully</string>
     <string name="mergePR404ErrorMsg">Pull Request is not available for merge</string>
@@ -587,7 +610,7 @@
 
     <string name="downloadFile">Download This File</string>
     <string name="waitLoadingDownloadFile">Please wait for the file to load to memory</string>
-    <string name="downloadFileSaved">File is saved to Download directory</string>
+    <string name="downloadFileSaved">File saved successfully</string>
     <string name="excludeFilesInFileviewer">This file type is not supported in file viewer. Download it instead from the three dotted menu?</string>
 
     <string name="sizeCopy">Size</string>
@@ -614,18 +637,16 @@
     <string name="mtm_decision_once">Once</string>
     <string name="mtm_decision_abort">Abort</string>
 
-
-    <string name="issueSubscribtion">Issue Subscribed</string>
-    <string name="issueSubscribtionError">Issue Subscription failed</string>
-    <string name="issueUnsubscribtion">Issue Unsubscribed</string>
-    <string name="issueUnsubscribtionError">Issue Un-Subscription failed</string>
+    <string name="subscribedSuccessfully">Subscribed successfully</string>
+    <string name="alreadySubscribed">You have already subscribed</string>
+    <string name="subscribtionError">Subscription failed</string>
+    <string name="unsubscribedSuccessfully">Unsubscribed successfully</string>
+    <string name="alreadyUnsubscribed">You have already Unsubscribed</string>
+    <string name="unsubscribtionError">Un-Subscription failed</string>
 
     <string name="closeMilestone">Close Milestone</string>
     <string name="openMilestone">Open Milestone</string>
     <string name="milestoneStatusUpdate">Milestone status updated successfully</string>
-
-    <string name="tabIssueOpen">Open</string>
-    <string name="tabIssueClosed">Closed</string>
 
     <string name="errorOnLogin">We cannot reach the server, please check your server status</string>
 
@@ -637,7 +658,7 @@
 
     <string name="appreanceHintText">Themes, fonts, badges, code block theme</string>
     <string name="fileViewerHintText">PDF mode, source code theme</string>
-    <string name="securityHintText">SSL certificates, Polling delay</string>
+    <string name="securityHintText">SSL certificates, cache, polling delay</string>
     <string name="languagesHintText">Languages</string>
     <string name="reportsHintText">Crash reports</string>
 </resources>
