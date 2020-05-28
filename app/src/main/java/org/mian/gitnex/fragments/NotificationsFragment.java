@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,7 +17,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.NotificationsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.NotificationThread;
 import org.mian.gitnex.util.TinyDB;
 import java.text.SimpleDateFormat;
@@ -71,7 +70,7 @@ public class NotificationsFragment extends Fragment {
 			String currentVersion = tinyDB.getString("giteaVersion");
 
 			if(tinyDB.getBoolean("loggedInMode") && !currentVersion.isEmpty()) {
-				notificationsSupported = VersionCheck.compareVersion("1.12.0", currentVersion) >= 1 ? 1 : 0;
+				notificationsSupported = new Version("1.12.0").higherOrEqual(currentVersion) ? 1 : 0;
 			}
 
 		}

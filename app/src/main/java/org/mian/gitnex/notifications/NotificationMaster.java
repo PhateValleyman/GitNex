@@ -5,7 +5,7 @@ import androidx.work.Constraints;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.util.TinyDB;
 
 /**
@@ -25,7 +25,7 @@ public class NotificationMaster {
 		String currentVersion = tinyDB.getString("giteaVersion");
 
 		if(tinyDB.getBoolean("loggedInMode") && !currentVersion.isEmpty()) {
-			notificationsSupported = VersionCheck.compareVersion("1.12.0", currentVersion) >= 1 ? 1 : 0;
+			notificationsSupported = new Version("1.12.0").higherOrEqual(currentVersion) ? 1 : 0;
 		}
 
 	}
