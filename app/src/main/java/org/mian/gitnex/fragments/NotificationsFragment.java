@@ -109,12 +109,9 @@ public class NotificationsFragment extends Fragment {
 
 			Calendar calendar = Calendar.getInstance();
 
-			String before = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", new Locale(locale))
-					.format(calendar.getTime());
+			String before = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", new Locale(locale)).format(calendar.getTime());
 
-			Call<List<NotificationThread>> call = RetrofitClient.getInstance(instanceUrl, getContext())
-					.getApiInterface()
-					.getNotificationThreads(instanceToken, "true", "", before, "1", "50");
+			Call<List<NotificationThread>> call = RetrofitClient.getInstance(instanceUrl, getContext()).getApiInterface().getNotificationThreads(instanceToken, "true", "", before, "1", "50");
 
 			call.enqueue(new Callback<List<NotificationThread>>() {
 
@@ -131,7 +128,8 @@ public class NotificationsFragment extends Fragment {
 
 						}
 
-					} else {
+					}
+					else {
 
 						Log.e("onError", String.valueOf(response.code()));
 
@@ -142,7 +140,8 @@ public class NotificationsFragment extends Fragment {
 					if(notificationThreads.size() > 0) {
 
 						noDataNotifications.setVisibility(View.GONE);
-					} else {
+					}
+					else {
 
 						noDataNotifications.setVisibility(View.VISIBLE);
 					}
@@ -151,12 +150,14 @@ public class NotificationsFragment extends Fragment {
 
 				@Override
 				public void onFailure(@NonNull Call<List<NotificationThread>> call, @NonNull Throwable t) {
+
 					Log.e("onError", t.toString());
 				}
 
 			});
 
-		} else {
+		}
+		else {
 
 			pullToRefresh.setEnabled(false);
 			progressBar.setVisibility(View.GONE);

@@ -23,16 +23,19 @@ import retrofit2.Response;
  */
 
 public class NotificationWorker extends Worker {
-	private static final int NOTIFICATION_ID = "opyale".length() * 4;
+
+	private static final int NOTIFICATION_ID = 1766;
 
 	private Context context;
 	private TinyDB tinyDB;
 
 	public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+
 		super(context, workerParams);
 
 		this.context = context;
 		tinyDB = new TinyDB(context);
+
 	}
 
 	@NonNull
@@ -71,11 +74,13 @@ public class NotificationWorker extends Worker {
 
 						}
 
-					} else if(response.code() == 204) {
+					}
+					else if(response.code() == 204) {
 
 						Log.i("ReceivedNotifications", "0");
 						tinyDB.putInt("previousUnreadNotifications", 0);
-					} else {
+					}
+					else {
 
 						Log.e("NotifierHttpError", String.valueOf(response.code()));
 					}
@@ -85,14 +90,23 @@ public class NotificationWorker extends Worker {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) { t.printStackTrace(); }
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+				t.printStackTrace();
+			}
 
 		});
 
 		new Thread(() -> {
 
-			sleep();
-			NotificationMaster.hireWorker(context);
+			try {
+				sleep();
+				NotificationMaster.hireWorker(context);
+			}
+			catch(InterruptedException e) {
+				Log.e("onFailure", e.toString());
+			}
+
 
 		}).start();
 
@@ -100,14 +114,9 @@ public class NotificationWorker extends Worker {
 
 	}
 
-	private void sleep() {
+	private void sleep() throws InterruptedException {
 
-		try {
-			Thread.sleep(tinyDB.getInt("pollingDelaySeconds") * 1000);
-		}
-		catch(InterruptedException e) {
-			Log.e("onFailure", e.toString());
-		}
+		Thread.sleep(tinyDB.getInt("pollingDelaySeconds") * 1000);
 	}
 
 	private void sendNotification(int notificationsCount) {
@@ -118,12 +127,12 @@ public class NotificationWorker extends Worker {
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "gitnex_notification_channel")
-				.setSmallIcon(R.drawable.app_logo_foreground)
-				.setContentTitle("You've received new notification(s)")
-				.setContentText("You've got " + notificationsCount + " unread notification(s)!")
-				.setPriority(NotificationCompat.PRIORITY_HIGH)
-				.setContentIntent(pendingIntent)
-				.setAutoCancel(true);
+			.setSmallIcon(R.drawable.app_logo_foreground)
+			.setContentTitle("You've received new notification(s)")
+			.setContentText("You've got " + notificationsCount + " unread notification(s)!")
+			.setPriority(NotificationCompat.PRIORITY_HIGH)
+			.setContentIntent(pendingIntent)
+			.setAutoCancel(true);
 
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 

@@ -13,6 +13,7 @@ import org.mian.gitnex.util.TinyDB;
  */
 
 public class NotificationMaster {
+
 	private static int notificationsSupported = -1;
 
 	public NotificationMaster() {
@@ -41,17 +42,17 @@ public class NotificationMaster {
 			WorkManager.getInstance(context).cancelAllWorkByTag("gitnex-notifications");
 
 			Constraints constraints = new Constraints.Builder()
-					.setRequiredNetworkType(NetworkType.CONNECTED)
-					.setRequiresBatteryNotLow(false)
-					.setRequiresDeviceIdle(false)
-					.setRequiresStorageNotLow(false)
-					.setRequiresCharging(false)
-					.build();
+				.setRequiredNetworkType(NetworkType.CONNECTED)
+				.setRequiresBatteryNotLow(false)
+				.setRequiresDeviceIdle(false)
+				.setRequiresStorageNotLow(false)
+				.setRequiresCharging(false)
+				.build();
 
 			OneTimeWorkRequest notificationRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
-					.setConstraints(constraints)
-					.addTag("gitnex-notifications")
-					.build();
+				.setConstraints(constraints)
+				.addTag("gitnex-notifications")
+				.build();
 
 			WorkManager.getInstance(context).enqueue(notificationRequest);
 
