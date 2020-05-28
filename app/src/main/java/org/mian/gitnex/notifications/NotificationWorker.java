@@ -127,7 +127,7 @@ public class NotificationWorker extends Worker {
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "gitnex_notification_channel")
-			.setSmallIcon(R.drawable.app_logo_foreground)
+			.setSmallIcon(R.drawable.gitnex_transparent)
 			.setContentTitle("You've received new notification(s)")
 			.setContentText("You've got " + notificationsCount + " unread notification(s)!")
 			.setPriority(NotificationCompat.PRIORITY_HIGH)
