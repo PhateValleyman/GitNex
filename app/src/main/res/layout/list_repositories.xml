@@ -13,10 +13,10 @@
     <RelativeLayout
         android:id="@+id/linearLayoutFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:orientation="vertical"
-        android:layout_margin="15dp">
+        android:layout_margin="15dp"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imageAvatar"
@@ -43,18 +43,18 @@
                     android:id="@+id/repoName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".95"
                     android:layout_marginBottom="5dp"
+                    android:layout_weight=".95"
                     android:text="@string/repoName"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="18sp" />
 
                 <ImageView
-                    android:layout_weight=".05"
                     android:id="@+id/imageRepoType"
                     android:layout_width="10dp"
                     android:layout_height="20dp"
                     android:layout_gravity="end"
+                    android:layout_weight=".05"
                     android:contentDescription="@string/privateAvatar"
                     android:src="@drawable/ic_lock_24dp" />
 
@@ -97,11 +97,11 @@
                     android:id="@+id/repoOpenIssuesCount"
                     android:layout_width="0dp"
                     android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight=".25"
                     android:drawableStart="@drawable/ic_issue_open"
                     android:drawablePadding="6dp"
                     android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"
                     android:text="@string/repoWatchers"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="14sp" />
@@ -110,11 +110,11 @@
                     android:id="@+id/repoStars"
                     android:layout_width="0dp"
                     android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight=".25"
                     android:drawableStart="@drawable/ic_star"
                     android:drawablePadding="6dp"
                     android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"
                     android:text="@string/repoStars"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="14sp" />
@@ -123,11 +123,11 @@
                     android:id="@+id/repoForks"
                     android:layout_width="0dp"
                     android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight=".25"
                     android:drawableStart="@drawable/ic_forks_24"
                     android:drawablePadding="6dp"
                     android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"
                     android:text="@string/repoWatchers"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="14sp" />
@@ -135,12 +135,12 @@
                 <ImageView
                     android:id="@+id/reposDropdownMenu"
                     android:layout_width="0dp"
-                    android:layout_weight=".10"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:layout_weight=".10"
+                    android:contentDescription="@string/menuContentDesc"
                     android:scaleType="fitEnd"
-                    android:src="@drawable/ic_dotted_menu_horizontal"
-                    android:contentDescription="@string/menuContentDesc" />
+                    android:src="@drawable/ic_dotted_menu_horizontal" />
 
             </LinearLayout>
 
