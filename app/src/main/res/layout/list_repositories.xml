@@ -15,9 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
         android:orientation="vertical"
-        android:layout_margin="10dp">
+        android:layout_margin="15dp">
 
         <ImageView
             android:id="@+id/imageAvatar"
@@ -92,7 +91,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
                 <TextView
