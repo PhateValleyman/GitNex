@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_issue_closed" />
+                    app:srcCompat="@drawable/ic_issue_open" />
 
                 <TextView
                     android:id="@+id/milestoneIssuesOpen"
@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_issue_open" />
+                    app:srcCompat="@drawable/ic_issue_closed" />
 
                 <TextView
                     android:id="@+id/milestoneIssuesClosed"
