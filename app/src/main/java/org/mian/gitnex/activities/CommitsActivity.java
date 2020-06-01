@@ -23,7 +23,6 @@ import org.mian.gitnex.adapters.CommitsAdapter;
 import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
-import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.Commits;
@@ -204,7 +203,6 @@ public class CommitsActivity extends BaseActivity {
 					}
 					else {
 
-						Toasty.info(ctx, getString(R.string.noMoreData));
 						adapter.setMoreDataAvailable(false);
 
 					}
