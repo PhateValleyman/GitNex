@@ -102,13 +102,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_issue_open" />
+                    app:srcCompat="@drawable/ic_issue_closed" />
 
                 <TextView
-                    android:id="@+id/milestoneIssuesClosed"
+                    android:id="@+id/milestoneIssuesOpen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/repoWatchers"
+                    android:text="@string/repoStars"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -124,13 +124,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_issue_closed" />
+                    app:srcCompat="@drawable/ic_issue_open" />
 
                 <TextView
-                    android:id="@+id/milestoneIssuesOpen"
+                    android:id="@+id/milestoneIssuesClosed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/repoStars"
+                    android:text="@string/repoWatchers"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="14sp" />
             </LinearLayout>
