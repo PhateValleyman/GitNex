@@ -236,8 +236,6 @@
     <string name="milestoneNoDescription">No description</string>
     <string name="milestoneIssueStatusOpen">%1$d Open</string>
     <string name="milestoneIssueStatusClosed">%1$d Closed</string>
-    <string name="milestoneOpenIssues">Open issues : %1$d</string> <!-- TODO Can be removed -->
-    <string name="milestoneClosedIssues">Closed issues : %1$d</string> <!-- TODO Can be removed -->
 
     <string name="newIssueSelectAssigneesListTitle">Select Assignees</string>
     <string name="newIssueSelectLabelsListTitle">Select Labels</string>
