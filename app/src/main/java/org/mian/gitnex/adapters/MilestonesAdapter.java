@@ -184,58 +184,60 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 			milestoneId.setText(String.valueOf(dataModel.getId()));
 			milestoneStatus.setText(dataModel.getState());
 
-			final Markwon markwon = Markwon.builder(Objects.requireNonNull(context))
-					.usePlugin(CorePlugin.create())
-					.usePlugin(ImagesPlugin.create(plugin -> {
-						plugin.addSchemeHandler(new SchemeHandler() {
-							@NonNull
-							@Override
-							public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
+			Markwon markwon = Markwon.builder(Objects.requireNonNull(context)).usePlugin(CorePlugin.create()).usePlugin(ImagesPlugin.create(plugin -> {
+				plugin.addSchemeHandler(new SchemeHandler() {
 
-								final int resourceId = context.getResources().getIdentifier(
-										raw.substring("drawable://".length()),
-										"drawable",
-										context.getPackageName());
+					@NonNull
+					@Override
+					public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
 
-								final Drawable drawable = context.getDrawable(resourceId);
+							final int resourceId = context.getResources().getIdentifier(
+									raw.substring("drawable://".length()),
+									"drawable",
+									context.getPackageName());
 
-								assert drawable != null;
-								return ImageItem.withResult(drawable);
-							}
+							final Drawable drawable = context.getDrawable(resourceId);
 
-							@NonNull
-							@Override
-							public Collection<String> supportedSchemes() {
-								return Collections.singleton("drawable");
-							}
-						});
-						plugin.placeholderProvider(drawable -> null);
-						plugin.addMediaDecoder(GifMediaDecoder.create(false));
-						plugin.addMediaDecoder(SvgMediaDecoder.create(context.getResources()));
-						plugin.addMediaDecoder(SvgMediaDecoder.create());
-						plugin.defaultMediaDecoder(DefaultMediaDecoder.create(context.getResources()));
-						plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
-					}))
-					.usePlugin(new AbstractMarkwonPlugin() {
-						@Override
-						public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
-							builder
-									.codeTextColor(tinyDb.getInt("codeBlockColor"))
-									.codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
-									.linkColor(context.getResources().getColor(R.color.lightBlue));
+							assert drawable != null;
+							return ImageItem.withResult(drawable);
 						}
-					})
-					.usePlugin(TablePlugin.create(context))
-					.usePlugin(TaskListPlugin.create(context))
-					.usePlugin(HtmlPlugin.create())
-					.usePlugin(StrikethroughPlugin.create())
-					.usePlugin(LinkifyPlugin.create())
-					.build();
+
+						@NonNull
+						@Override
+						public Collection<String> supportedSchemes() {
+							return Collections.singleton("drawable");
+						}
+					});
+
+					plugin.placeholderProvider(drawable -> null);
+					plugin.addMediaDecoder(GifMediaDecoder.create(false));
+					plugin.addMediaDecoder(SvgMediaDecoder.create(context.getResources()));
+					plugin.addMediaDecoder(SvgMediaDecoder.create());
+					plugin.defaultMediaDecoder(DefaultMediaDecoder.create(context.getResources()));
+					plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
+
+				}))
+
+			.usePlugin(new AbstractMarkwonPlugin() {
+				@Override
+				public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
+					builder
+							.codeTextColor(tinyDb.getInt("codeBlockColor"))
+							.codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
+							.linkColor(context.getResources().getColor(R.color.lightBlue));
+				}
+			})
+			.usePlugin(TablePlugin.create(context))
+			.usePlugin(TaskListPlugin.create(context))
+			.usePlugin(HtmlPlugin.create())
+			.usePlugin(StrikethroughPlugin.create())
+			.usePlugin(LinkifyPlugin.create())
+			.build();
 
 			Spanned msTitle_ = markwon.toMarkdown(dataModel.getTitle());
 			markwon.setParsedMarkdown(msTitle, msTitle_);
 
-			if (!dataModel.getDescription().equals("")) {
+			if(!dataModel.getDescription().equals("")) {
 
 				CharSequence bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(dataModel.getDescription()));
 				msDescription.setText(bodyWithMD);
@@ -243,42 +245,50 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 			}
 			else {
 
-				msDescription.setText("No description");
+				msDescription.setText(context.getString(R.string.milestoneNoDescription));
 			}
 
-			msOpenIssues.setText(dataModel.getOpen_issues() + " Open");
-			msClosedIssues.setText(dataModel.getClosed_issues() + " Closed");
+			msOpenIssues.setText(context.getString(R.string.milestoneIssueStatusOpen, dataModel.getOpen_issues()));
+			msClosedIssues.setText(context.getString(R.string.milestoneIssueStatusClosed, dataModel.getClosed_issues()));
 
-			if ((dataModel.getOpen_issues() + dataModel.getClosed_issues()) > 0) {
+			if((dataModel.getOpen_issues() + dataModel.getClosed_issues()) > 0) {
 
-				if (dataModel.getOpen_issues() == 0) {
+				if(dataModel.getOpen_issues() == 0) {
+
 					msProgress.setProgress(100);
 					msProgress.setOnClickListener(new ClickListener(context.getResources().getString(R.string.milestoneCompletion, 100), context));
+
 				}
 				else {
+
 					int msCompletion = 100 * dataModel.getClosed_issues() / (dataModel.getOpen_issues() + dataModel.getClosed_issues());
 					msProgress.setOnClickListener(new ClickListener(context.getResources().getString(R.string.milestoneCompletion, msCompletion), context));
 					msProgress.setProgress(msCompletion);
+
 				}
 
 			}
 			else {
+
 				msProgress.setProgress(0);
 				msProgress.setOnClickListener(new ClickListener(context.getResources().getString(R.string.milestoneCompletion, 0), context));
+
 			}
 
 			if(dataModel.getDue_on() != null) {
 
-				if (timeFormat.equals("normal") || timeFormat.equals("pretty")) {
+				if(timeFormat.equals("normal") || timeFormat.equals("pretty")) {
 
 					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", new Locale(locale));
 					Date date = null;
+
 					try {
 						date = formatter.parse(dataModel.getDue_on());
 					}
-					catch (ParseException e) {
+					catch(ParseException e) {
 						Log.e(TAG, e.toString());
 					}
+
 					assert date != null;
 					String dueDate = formatter.format(date);
 
@@ -290,16 +300,19 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 					msDueDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToast(dataModel.getDue_on()), context));
 
 				}
-				else if (timeFormat.equals("normal1")) {
+				else if(timeFormat.equals("normal1")) {
 
 					SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", new Locale(locale));
+
 					Date date1 = null;
+
 					try {
 						date1 = formatter.parse(dataModel.getDue_on());
 					}
-					catch (ParseException e) {
+					catch(ParseException e) {
 						Log.e(TAG, e.toString());
 					}
+
 					assert date1 != null;
 					String dueDate = formatter.format(date1);
 					msDueDate.setText(dueDate);
@@ -308,7 +321,8 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 			}
 			else {
-				msDueDate.setText("No due date");
+
+				msDueDate.setText(context.getString(R.string.milestoneNoDueDate));
 			}
 
 		}
