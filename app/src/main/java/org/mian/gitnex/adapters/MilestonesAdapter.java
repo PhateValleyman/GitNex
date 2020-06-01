@@ -112,7 +112,6 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private TextView msOpenIssues;
         private TextView msClosedIssues;
         private TextView msDueDate;
-        private TextView msStatus;
         private ProgressBar msProgress;
         private TextView milestoneStatus;
 
@@ -122,7 +121,6 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             milestoneId = itemView.findViewById(R.id.milestoneId);
             msTitle = itemView.findViewById(R.id.milestoneTitle);
-            msStatus = itemView.findViewById(R.id.milestoneState);
             msDescription = itemView.findViewById(R.id.milestoneDescription);
             msOpenIssues = itemView.findViewById(R.id.milestoneIssuesOpen);
             msClosedIssues = itemView.findViewById(R.id.milestoneIssuesClosed);
@@ -238,17 +236,6 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             Spanned msTitle_ = markwon.toMarkdown(dataModel.getTitle());
             markwon.setParsedMarkdown(msTitle, msTitle_);
-
-            if(dataModel.getState().equals("open")) {
-
-	            msStatus.setBackground(context.getResources().getDrawable(R.drawable.shape_milestone_open));
-            }
-            else {
-
-				msStatus.setBackground(context.getResources().getDrawable(R.drawable.shape_milestone_closed));
-            }
-
-	        msStatus.setText(dataModel.getState());
 
             if (!dataModel.getDescription().equals("")) {
 
