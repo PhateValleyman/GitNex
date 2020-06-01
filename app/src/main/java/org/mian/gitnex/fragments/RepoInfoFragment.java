@@ -269,7 +269,7 @@ public class RepoInfoFragment extends Fragment {
                                 repoMetaSize.setText(AppUtil.formatFileSize(repoInfo.getSize()));
                             }
                             else {
-                                repoMetaSize.setText("0");
+                                repoMetaSize.setText("0 B");
                             }
 
                             repoMetaCreatedAt.setText(TimeHelper.formatTime(repoInfo.getCreated_at(), new Locale(locale), timeFormat, ctx));
