@@ -4,10 +4,34 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Spanned;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import org.mian.gitnex.R;
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.ClickListener;
+import org.mian.gitnex.helpers.TimeHelper;
+import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.models.UserRepositories;
+import org.mian.gitnex.util.AppUtil;
+import org.mian.gitnex.util.TinyDB;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Objects;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.core.CorePlugin;
@@ -26,30 +50,6 @@ import io.noties.markwon.image.svg.SvgMediaDecoder;
 import io.noties.markwon.linkify.LinkifyPlugin;
 import retrofit2.Call;
 import retrofit2.Callback;
-import android.text.Spanned;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import org.mian.gitnex.R;
-import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.models.UserRepositories;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Objects;
 
 /**
  * Author M M Arif
@@ -284,27 +284,42 @@ public class RepoInfoFragment extends Fragment {
 
                             repoAdditionalButton.setOnClickListener(v -> {
 
-                                StringBuilder message = new StringBuilder();
+	                            View view = LayoutInflater.from(ctx).inflate(R.layout.layout_repo_more_info, null);
 
-                                message.append(getResources().getString(R.string.infoTabRepoDefaultBranch))
-                                        .append(" :\n").append(repoInfo.getDefault_branch()).append("\n\n");
+	                            TextView defaultBranchHeader = view.findViewById(R.id.defaultBranchHeader);
+	                            TextView defaultBranchContent = view.findViewById(R.id.defaultBranchContent);
 
-                                message.append(getResources().getString(R.string.infoTabRepoUpdatedAt))
-                                        .append(" :\n").append(repoMetaUpdatedAt).append("\n\n");
+	                            TextView lastUpdatedHeader = view.findViewById(R.id.lastUpdatedHeader);
+	                            TextView lastUpdatedContent = view.findViewById(R.id.lastUpdatedContent);
 
-                                message.append(getResources().getString(R.string.infoTabRepoSshUrl))
-                                        .append(" :\n").append(repoInfo.getSsh_url()).append("\n\n");
+	                            TextView sshUrlHeader = view.findViewById(R.id.sshUrlHeader);
+	                            TextView sshUrlContent = view.findViewById(R.id.sshUrlContent);
 
-                                message.append(getResources().getString(R.string.infoTabRepoCloneUrl))
-                                        .append(" :\n").append(repoInfo.getClone_url()).append("\n\n");
+	                            TextView cloneUrlHeader = view.findViewById(R.id.cloneUrlHeader);
+	                            TextView cloneUrlContent = view.findViewById(R.id.cloneUrlContent);
 
-                                message.append(getResources().getString(R.string.infoTabRepoRepoUrl))
-                                        .append(" :\n").append(repoInfo.getHtml_url());
+	                            TextView repoUrlHeader = view.findViewById(R.id.repoUrlHeader);
+	                            TextView repoUrlContent = view.findViewById(R.id.repoUrlContent);
+
+	                            defaultBranchHeader.setText(getString(R.string.infoTabRepoDefaultBranch));
+	                            defaultBranchContent.setText(repoInfo.getDefault_branch());
+
+	                            lastUpdatedHeader.setText(getString(R.string.infoTabRepoUpdatedAt));
+	                            lastUpdatedContent.setText(repoMetaUpdatedAt);
+
+	                            sshUrlHeader.setText(getString(R.string.infoTabRepoSshUrl));
+	                            sshUrlContent.setText(repoInfo.getSsh_url());
+
+	                            cloneUrlHeader.setText(getString(R.string.infoTabRepoCloneUrl));
+	                            cloneUrlContent.setText(repoInfo.getClone_url());
+
+	                            repoUrlHeader.setText(getString(R.string.infoTabRepoRepoUrl));
+	                            repoUrlContent.setText(repoInfo.getHtml_url());
 
                                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ctx);
 
                                 alertDialog.setTitle(getResources().getString(R.string.infoMoreInformation));
-                                alertDialog.setMessage(message);
+                                alertDialog.setView(view);
                                 alertDialog.setPositiveButton(getResources().getString(R.string.close), (dialog, which) -> dialog.dismiss());
                                 alertDialog.create().show();
 
