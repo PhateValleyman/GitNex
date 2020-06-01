@@ -112,7 +112,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         private TextView msOpenIssues;
         private TextView msClosedIssues;
         private TextView msDueDate;
-        private ImageView msStatus;
+        private TextView msStatus;
         private ProgressBar msProgress;
         private TextView milestoneStatus;
 
@@ -241,52 +241,28 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             if(dataModel.getState().equals("open")) {
 
-                @SuppressLint("ResourceType") int color = Color.parseColor(context.getResources().getString(R.color.releaseStable));
-                TextDrawable drawable = TextDrawable.builder()
-                        .beginConfig()
-                        //.useFont(Typeface.DEFAULT)
-                        .textColor(context.getResources().getColor(R.color.white))
-                        .fontSize(30)
-                        .toUpperCase()
-                        .width(120)
-                        .height(60)
-                        .endConfig()
-                        .buildRoundRect("open", color, 8);
-
-                msStatus.setImageDrawable(drawable);
-
-            }
-            else if(dataModel.getState().equals("closed")) {
-
-                @SuppressLint("ResourceType") int color = Color.parseColor(context.getResources().getString(R.color.colorRed));
-                TextDrawable drawable = TextDrawable.builder()
-                        .beginConfig()
-                        //.useFont(Typeface.DEFAULT)
-                        .textColor(context.getResources().getColor(R.color.white))
-                        .fontSize(30)
-                        .toUpperCase()
-                        .width(140)
-                        .height(60)
-                        .endConfig()
-                        .buildRoundRect("closed", color, 8);
-
-                msStatus.setImageDrawable(drawable);
-
-            }
-
-            if (!dataModel.getDescription().equals("")) {
-                final CharSequence bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(dataModel.getDescription()));
-                msDescription.setText(bodyWithMD);
+	            msStatus.setBackground(context.getResources().getDrawable(R.drawable.shape_milestone_open));
             }
             else {
-                msDescription.setText("");
+
+				msStatus.setBackground(context.getResources().getDrawable(R.drawable.shape_milestone_closed));
             }
 
-            msOpenIssues.setText(String.valueOf(dataModel.getOpen_issues()));
-            msOpenIssues.setOnClickListener(new ClickListener(context.getResources().getString(R.string.milestoneOpenIssues, dataModel.getOpen_issues()), context));
+	        msStatus.setText(dataModel.getState());
 
-            msClosedIssues.setText(String.valueOf(dataModel.getClosed_issues()));
-            msClosedIssues.setOnClickListener(new ClickListener(context.getResources().getString(R.string.milestoneClosedIssues, dataModel.getClosed_issues()), context));
+            if (!dataModel.getDescription().equals("")) {
+
+            	CharSequence bodyWithMD = markwon.toMarkdown(EmojiParser.parseToUnicode(dataModel.getDescription()));
+            	msDescription.setText(bodyWithMD);
+
+            }
+            else {
+
+                msDescription.setText("No description");
+            }
+
+            msOpenIssues.setText(dataModel.getOpen_issues() + " Open");
+            msClosedIssues.setText(dataModel.getClosed_issues() + " Closed");
 
             if ((dataModel.getOpen_issues() + dataModel.getClosed_issues()) > 0) {
 
@@ -347,7 +323,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             }
             else {
-                msDueDate.setText("");
+                msDueDate.setText("No due date");
             }
 
         }
