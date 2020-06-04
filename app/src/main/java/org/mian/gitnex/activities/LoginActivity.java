@@ -50,877 +50,836 @@ import retrofit2.Callback;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
-    private Button loginButton;
-    private EditText instanceUrlET, loginUidET, loginPassword, otpCode, loginTokenCode;
-    private Spinner protocolSpinner;
-    private TextView otpInfo;
-    private RadioGroup loginMethod;
-    final Context ctx = this;
-    private String device_id = "token";
-    private ScrollView layoutView;
+	private Button loginButton;
+	private EditText instanceUrlET, loginUidET, loginPassword, otpCode, loginTokenCode;
+	private Spinner protocolSpinner;
+	private TextView otpInfo;
+	private RadioGroup loginMethod;
+	final Context ctx = this;
+	private String device_id = "token";
+	private ScrollView layoutView;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_login;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_login;
+	}
 
-        super.onCreate(savedInstanceState);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
-        NetworkObserver networkMonitor = new NetworkObserver(this);
+		super.onCreate(savedInstanceState);
 
-        loginButton = findViewById(R.id.login_button);
-        instanceUrlET = findViewById(R.id.instance_url);
-        loginUidET = findViewById(R.id.login_uid);
-        loginPassword = findViewById(R.id.login_passwd);
-        otpCode = findViewById(R.id.otpCode);
-        otpInfo = findViewById(R.id.otpInfo);
-        ImageView info_button = findViewById(R.id.info);
-        final TextView viewTextAppVersion = findViewById(R.id.appVersion);
-        protocolSpinner = findViewById(R.id.httpsSpinner);
-        loginMethod = findViewById(R.id.loginMethod);
-        loginTokenCode = findViewById(R.id.loginTokenCode);
-        layoutView = findViewById(R.id.loginForm);
+		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		NetworkObserver networkMonitor = new NetworkObserver(this);
 
-        viewTextAppVersion.setText(AppUtil.getAppVersion(getApplicationContext()));
+		loginButton = findViewById(R.id.login_button);
+		instanceUrlET = findViewById(R.id.instance_url);
+		loginUidET = findViewById(R.id.login_uid);
+		loginPassword = findViewById(R.id.login_passwd);
+		otpCode = findViewById(R.id.otpCode);
+		otpInfo = findViewById(R.id.otpInfo);
+		ImageView info_button = findViewById(R.id.info);
+		final TextView viewTextAppVersion = findViewById(R.id.appVersion);
+		protocolSpinner = findViewById(R.id.httpsSpinner);
+		loginMethod = findViewById(R.id.loginMethod);
+		loginTokenCode = findViewById(R.id.loginTokenCode);
+		layoutView = findViewById(R.id.loginForm);
 
-        Resources res = getResources();
-        String[] allProtocols = res.getStringArray(R.array.protocolValues);
+		viewTextAppVersion.setText(AppUtil.getAppVersion(getApplicationContext()));
 
-        final ArrayAdapter<String> adapterProtocols = new ArrayAdapter<String>(Objects.requireNonNull(getApplicationContext()),
-                R.layout.spinner_item, allProtocols);
+		Resources res = getResources();
+		String[] allProtocols = res.getStringArray(R.array.protocolValues);
 
-        adapterProtocols.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        protocolSpinner.setAdapter(adapterProtocols);
+		final ArrayAdapter<String> adapterProtocols = new ArrayAdapter<String>(Objects.requireNonNull(getApplicationContext()), R.layout.spinner_item, allProtocols);
 
-        protocolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		adapterProtocols.setDropDownViewResource(R.layout.spinner_dropdown_item);
+		protocolSpinner.setAdapter(adapterProtocols);
 
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+		protocolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                String value = getResources().getStringArray(R.array.protocolValues)[pos];
-                if(value.toLowerCase().equals("http")) {
-                    SnackBar.warning(getApplicationContext(), layoutView,getResources().getString(R.string.protocolError));
-                }
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-            }
+				String value = getResources().getStringArray(R.array.protocolValues)[pos];
+				if(value.toLowerCase().equals("http")) {
+					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.protocolError));
+				}
 
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+			}
 
-        });
+			public void onNothingSelected(AdapterView<?> parent) {
 
-        info_button.setOnClickListener(infoListener);
+			}
 
-        if(tinyDb.getString("loginType").equals("basic")) { // username/password
+		});
 
-            loginMethod.check(R.id.loginUsernamePassword);
+		info_button.setOnClickListener(infoListener);
 
-            loginUidET.setVisibility(View.VISIBLE);
-            loginPassword.setVisibility(View.VISIBLE);
-            otpCode.setVisibility(View.VISIBLE);
-            otpInfo.setVisibility(View.VISIBLE);
-            loginTokenCode.setVisibility(View.GONE);
+		if(tinyDb.getString("loginType").equals("basic")) { // username/password
 
-        }
-        else {
+			loginMethod.check(R.id.loginUsernamePassword);
 
-            loginMethod.check(R.id.loginToken);
+			loginUidET.setVisibility(View.VISIBLE);
+			loginPassword.setVisibility(View.VISIBLE);
+			otpCode.setVisibility(View.VISIBLE);
+			otpInfo.setVisibility(View.VISIBLE);
+			loginTokenCode.setVisibility(View.GONE);
 
-            loginUidET.setVisibility(View.GONE);
-            loginPassword.setVisibility(View.GONE);
-            otpCode.setVisibility(View.GONE);
-            otpInfo.setVisibility(View.GONE);
-            loginTokenCode.setVisibility(View.VISIBLE);
+		}
+		else {
 
-        }
+			loginMethod.check(R.id.loginToken);
 
-        loginMethod.setOnCheckedChangeListener((group, checkedId) -> {
+			loginUidET.setVisibility(View.GONE);
+			loginPassword.setVisibility(View.GONE);
+			otpCode.setVisibility(View.GONE);
+			otpInfo.setVisibility(View.GONE);
+			loginTokenCode.setVisibility(View.VISIBLE);
 
-            if(checkedId == R.id.loginToken) {
+		}
 
-                loginUidET.setVisibility(View.GONE);
-                loginPassword.setVisibility(View.GONE);
-                otpCode.setVisibility(View.GONE);
-                otpInfo.setVisibility(View.GONE);
-                loginTokenCode.setVisibility(View.VISIBLE);
+		loginMethod.setOnCheckedChangeListener((group, checkedId) -> {
 
-            }
-            else {
+			if(checkedId == R.id.loginToken) {
 
-                loginUidET.setVisibility(View.VISIBLE);
-                loginPassword.setVisibility(View.VISIBLE);
-                otpCode.setVisibility(View.VISIBLE);
-                otpInfo.setVisibility(View.VISIBLE);
-                loginTokenCode.setVisibility(View.GONE);
+				loginUidET.setVisibility(View.GONE);
+				loginPassword.setVisibility(View.GONE);
+				otpCode.setVisibility(View.GONE);
+				otpInfo.setVisibility(View.GONE);
+				loginTokenCode.setVisibility(View.VISIBLE);
 
-            }
+			}
+			else {
 
-        });
+				loginUidET.setVisibility(View.VISIBLE);
+				loginPassword.setVisibility(View.VISIBLE);
+				otpCode.setVisibility(View.VISIBLE);
+				otpInfo.setVisibility(View.VISIBLE);
+				loginTokenCode.setVisibility(View.GONE);
 
-        networkMonitor.onInternetStateListener(isAvailable -> {
+			}
 
-            if(isAvailable) {
-                enableProcessButton();
-                SnackBar.success(getApplicationContext(), layoutView, getResources().getString(R.string.netConnectionIsBack));
-            }
-            else {
-                disableProcessButton();
-                SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.checkNetConnection));
-            }
+		});
 
-        });
+		networkMonitor.onInternetStateListener(isAvailable -> {
 
-        //login_button.setOnClickListener(this);
-        if(!tinyDb.getString("instanceUrlRaw").isEmpty()) {
-            instanceUrlET.setText(tinyDb.getString("instanceUrlRaw"));
-        }
-        if(!tinyDb.getString("loginUid").isEmpty()) {
-            loginUidET.setText(tinyDb.getString("loginUid"));
-        }
+			if(isAvailable) {
+				enableProcessButton();
+				SnackBar.success(getApplicationContext(), layoutView, getResources().getString(R.string.netConnectionIsBack));
+			}
+			else {
+				disableProcessButton();
+				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.checkNetConnection));
+			}
 
-        if(tinyDb.getBoolean("loggedInMode")) {
+		});
 
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish();
-
-        }
-
-        loginButton.setOnClickListener(loginListener);
-
-        if(!tinyDb.getString("uniqueAppId").isEmpty()) {
-            device_id = tinyDb.getString("uniqueAppId");
-        }
-        else {
-            device_id = UUID.randomUUID().toString();
-            tinyDb.putString("uniqueAppId", device_id);
-        }
+		//login_button.setOnClickListener(this);
+		if(!tinyDb.getString("instanceUrlRaw").isEmpty()) {
+			instanceUrlET.setText(tinyDb.getString("instanceUrlRaw"));
+		}
+		if(!tinyDb.getString("loginUid").isEmpty()) {
+			loginUidET.setText(tinyDb.getString("loginUid"));
+		}
 
-    }
-
-    @Override
-    public void onClick(View v) {
+		if(tinyDb.getBoolean("loggedInMode")) {
 
-        if (v.getId() == R.id.login_button) {
-            login();
-        }
+			startActivity(new Intent(LoginActivity.this, MainActivity.class));
+			finish();
 
-    }
-
-    private View.OnClickListener loginListener = new View.OnClickListener() {
-        public void onClick(View v) {
-
-            disableProcessButton();
-            loginButton.setText(R.string.processingText);
-            login();
-
-        }
-    };
+		}
 
-    private View.OnClickListener infoListener = v -> new Tooltip.Builder(v)
-        .setText(R.string.urlInfoTooltip)
-        .setTextColor(getResources().getColor(R.color.white))
-        .setBackgroundColor(getResources().getColor(R.color.tooltipBackground))
-        .setCancelable(true)
-        .setDismissOnClick(true)
-        .setPadding(30)
-        .setCornerRadius(R.dimen.tooltipCornor)
-        .setGravity(Gravity.BOTTOM)
-        .show();
+		loginButton.setOnClickListener(loginListener);
 
-    @SuppressLint("ResourceAsColor")
-    private void login() {
+		if(!tinyDb.getString("uniqueAppId").isEmpty()) {
+			device_id = tinyDb.getString("uniqueAppId");
+		}
+		else {
+			device_id = UUID.randomUUID().toString();
+			tinyDb.putString("uniqueAppId", device_id);
+		}
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
-        AppUtil appUtil = new AppUtil();
-        boolean connToInternet = AppUtil.haveNetworkConnection(LoginActivity.this);
+	}
 
-        String instanceUrl = instanceUrlET.getText().toString().trim();
-        String loginUid = loginUidET.getText().toString();
-        String loginPass = loginPassword.getText().toString();
-        String protocol = protocolSpinner.getSelectedItem().toString();
-        String loginOTP_ = otpCode.getText().toString().trim();
-        int loginMethodType = loginMethod.getCheckedRadioButtonId();
-        String loginToken_ = loginTokenCode.getText().toString().trim();
+	@Override
+	public void onClick(View v) {
 
-        if(loginMethodType == R.id.loginUsernamePassword) {
+		if(v.getId() == R.id.login_button) {
+			login();
+		}
 
-            tinyDb.putString("loginType", "basic");
+	}
 
-            if(instanceUrl.contains("@")) {
+	private View.OnClickListener loginListener = new View.OnClickListener() {
 
-                String[] urlForHttpAuth = instanceUrl.split("@");
+		public void onClick(View v) {
 
-                tinyDb.putString("basicAuthPassword", loginPass);
-                tinyDb.putBoolean("basicAuthFlag", true);
+			disableProcessButton();
+			loginButton.setText(R.string.processingText);
+			login();
 
-                instanceUrl = urlForHttpAuth[1];
-                loginUid = urlForHttpAuth[0];
+		}
+	};
 
-            }
+	private View.OnClickListener infoListener = v -> new Tooltip.Builder(v).setText(R.string.urlInfoTooltip).setTextColor(getResources().getColor(R.color.white)).setBackgroundColor(getResources().getColor(R.color.tooltipBackground)).setCancelable(true).setDismissOnClick(true).setPadding(30).setCornerRadius(R.dimen.tooltipCornor).setGravity(Gravity.BOTTOM).show();
 
-            String instanceHost;
-            if(AppUtil.httpCheck(instanceUrl)) {
+	@SuppressLint("ResourceAsColor")
+	private void login() {
 
-                URI uri = null;
-                try {
-                    uri = new URI(instanceUrl);
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
-                assert uri != null;
-                instanceHost = uri.getHost();
+		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		AppUtil appUtil = new AppUtil();
+		boolean connToInternet = AppUtil.haveNetworkConnection(LoginActivity.this);
 
-            }
-            else {
-                instanceHost = instanceUrl;
-            }
+		String instanceUrl = instanceUrlET.getText().toString().trim();
+		String loginUid = loginUidET.getText().toString();
+		String loginPass = loginPassword.getText().toString();
+		String protocol = protocolSpinner.getSelectedItem().toString();
+		String loginOTP_ = otpCode.getText().toString().trim();
+		int loginMethodType = loginMethod.getCheckedRadioButtonId();
+		String loginToken_ = loginTokenCode.getText().toString().trim();
 
-            String instanceUrlWithProtocol;
-            if(protocol.toLowerCase().equals("https")) {
-                instanceUrl = "https://" + instanceHost + "/api/v1/";
-                instanceUrlWithProtocol = "https://" + instanceHost;
-            }
-            else {
-                instanceUrl = "http://" + instanceHost + "/api/v1/";
-                instanceUrlWithProtocol = "http://" + instanceHost;
-            }
+		if(loginMethodType == R.id.loginUsernamePassword) {
 
-            tinyDb.putString("instanceUrlRaw", instanceHost);
-            tinyDb.putString("loginUid", loginUid);
-            tinyDb.putString("instanceUrl", instanceUrl);
-            tinyDb.putString("instanceUrlWithProtocol", instanceUrlWithProtocol);
+			tinyDb.putString("loginType", "basic");
 
-            if(connToInternet) {
+			if(instanceUrl.contains("@")) {
 
-                if(instanceUrlET.getText().toString().equals("")) {
+				String[] urlForHttpAuth = instanceUrl.split("@");
 
-                    SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldURL));
-                    enableProcessButton();
-                    loginButton.setText(R.string.btnLogin);
-                    return;
+				tinyDb.putString("basicAuthPassword", loginPass);
+				tinyDb.putBoolean("basicAuthFlag", true);
 
-                }
-                if(loginUid.equals("")) {
+				instanceUrl = urlForHttpAuth[1];
+				loginUid = urlForHttpAuth[0];
 
-                    SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldUsername));
-                    enableProcessButton();
-                    loginButton.setText(R.string.btnLogin);
-                    return;
+			}
 
-                }
-                if(loginPassword.getText().toString().equals("")) {
+			String instanceHost;
+			if(AppUtil.httpCheck(instanceUrl)) {
 
-                    SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldPassword));
-                    enableProcessButton();
-                    loginButton.setText(R.string.btnLogin);
-                    return;
+				URI uri = null;
+				try {
+					uri = new URI(instanceUrl);
+				}
+				catch(URISyntaxException e) {
+					e.printStackTrace();
+				}
+				assert uri != null;
+				instanceHost = uri.getHost();
 
-                }
+			}
+			else {
+				instanceHost = instanceUrl;
+			}
 
-                int loginOTP = 0;
-                if(loginOTP_.length() == 6) {
+			String instanceUrlWithProtocol;
+			if(protocol.toLowerCase().equals("https")) {
+				instanceUrl = "https://" + instanceHost + "/api/v1/";
+				instanceUrlWithProtocol = "https://" + instanceHost;
+			}
+			else {
+				instanceUrl = "http://" + instanceHost + "/api/v1/";
+				instanceUrlWithProtocol = "http://" + instanceHost;
+			}
 
-                    if(appUtil.checkIntegers(loginOTP_)) {
+			tinyDb.putString("instanceUrlRaw", instanceHost);
+			tinyDb.putString("loginUid", loginUid);
+			tinyDb.putString("instanceUrl", instanceUrl);
+			tinyDb.putString("instanceUrlWithProtocol", instanceUrlWithProtocol);
 
-                        loginOTP = Integer.parseInt(loginOTP_);
-                    }
-                    else {
+			if(connToInternet) {
 
-                        SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.loginOTPTypeError));
-                        enableProcessButton();
-                        loginButton.setText(R.string.btnLogin);
-                        return;
+				if(instanceUrlET.getText().toString().equals("")) {
 
-                    }
+					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldURL));
+					enableProcessButton();
+					loginButton.setText(R.string.btnLogin);
+					return;
 
-                }
+				}
+				if(loginUid.equals("")) {
 
-                versionCheck(instanceUrl, loginUid, loginPass, loginOTP, loginToken_, 1);
+					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldUsername));
+					enableProcessButton();
+					loginButton.setText(R.string.btnLogin);
+					return;
 
-            }
-            else {
+				}
+				if(loginPassword.getText().toString().equals("")) {
 
-                SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.checkNetConnection));
+					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldPassword));
+					enableProcessButton();
+					loginButton.setText(R.string.btnLogin);
+					return;
 
-            }
+				}
 
-        }
-        else {
+				int loginOTP = 0;
+				if(loginOTP_.length() == 6) {
 
-            tinyDb.putString("loginType", "token");
+					if(appUtil.checkIntegers(loginOTP_)) {
 
-            String instanceHost;
-            if(AppUtil.httpCheck(instanceUrl)) {
+						loginOTP = Integer.parseInt(loginOTP_);
+					}
+					else {
 
-                URI uri = null;
-                try {
-                    uri = new URI(instanceUrl);
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
-                assert uri != null;
-                instanceHost = uri.getHost();
+						SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.loginOTPTypeError));
+						enableProcessButton();
+						loginButton.setText(R.string.btnLogin);
+						return;
 
-            }
-            else {
-                instanceHost = instanceUrl;
-            }
+					}
 
-            String instanceUrlWithProtocol;
-            if(protocol.toLowerCase().equals("https")) {
-                instanceUrl = "https://" + instanceHost + "/api/v1/";
-                instanceUrlWithProtocol = "https://" + instanceHost;
-            }
-            else {
-                instanceUrl = "http://" + instanceHost + "/api/v1/";
-                instanceUrlWithProtocol = "http://" + instanceHost;
-            }
+				}
 
-            tinyDb.putString("instanceUrlRaw", instanceHost);
-            tinyDb.putString("instanceUrl", instanceUrl);
-            tinyDb.putString("instanceUrlWithProtocol", instanceUrlWithProtocol);
+				versionCheck(instanceUrl, loginUid, loginPass, loginOTP, loginToken_, 1);
 
-            if(connToInternet) {
+			}
+			else {
 
-                if (instanceUrlET.getText().toString().equals("")) {
+				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.checkNetConnection));
 
-                    SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldURL));
-                    enableProcessButton();
-                    loginButton.setText(R.string.btnLogin);
-                    return;
+			}
 
-                }
-                if (loginToken_.equals("")) {
+		}
+		else {
 
-                    SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.loginTokenError));
-                    enableProcessButton();
-                    loginButton.setText(R.string.btnLogin);
-                    return;
+			tinyDb.putString("loginType", "token");
 
-                }
+			String instanceHost;
+			if(AppUtil.httpCheck(instanceUrl)) {
 
-                versionCheck(instanceUrl, loginUid, loginPass, 123, loginToken_, 2);
-            }
-            else {
+				URI uri = null;
+				try {
+					uri = new URI(instanceUrl);
+				}
+				catch(URISyntaxException e) {
+					e.printStackTrace();
+				}
+				assert uri != null;
+				instanceHost = uri.getHost();
 
-                SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.checkNetConnection));
+			}
+			else {
+				instanceHost = instanceUrl;
+			}
 
-            }
+			String instanceUrlWithProtocol;
+			if(protocol.toLowerCase().equals("https")) {
+				instanceUrl = "https://" + instanceHost + "/api/v1/";
+				instanceUrlWithProtocol = "https://" + instanceHost;
+			}
+			else {
+				instanceUrl = "http://" + instanceHost + "/api/v1/";
+				instanceUrlWithProtocol = "http://" + instanceHost;
+			}
 
-        }
+			tinyDb.putString("instanceUrlRaw", instanceHost);
+			tinyDb.putString("instanceUrl", instanceUrl);
+			tinyDb.putString("instanceUrlWithProtocol", instanceUrlWithProtocol);
 
-    }
+			if(connToInternet) {
 
-    private void versionCheck(final String instanceUrl, final String loginUid, final String loginPass, final int loginOTP, final String loginToken_, final int loginType) {
+				if(instanceUrlET.getText().toString().equals("")) {
 
-        Call<GiteaVersion> callVersion;
-        if (!loginToken_.isEmpty()) {
-            callVersion = RetrofitClient
-                    .getInstance(instanceUrl, getApplicationContext())
-                    .getApiInterface()
-                    .getGiteaVersionWithToken(loginToken_);
-        }
-        else {
-            final String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
-            if (loginOTP != 0) {
-                callVersion = RetrofitClient
-                        .getInstance(instanceUrl, getApplicationContext())
-                        .getApiInterface()
-                        .getGiteaVersionWithOTP(credential,loginOTP);
-            }
-            else {
-                callVersion = RetrofitClient
-                        .getInstance(instanceUrl, getApplicationContext())
-                        .getApiInterface()
-                        .getGiteaVersionWithBasic(credential);
-            }
-        }
+					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldURL));
+					enableProcessButton();
+					loginButton.setText(R.string.btnLogin);
+					return;
 
-        callVersion.enqueue(new Callback<GiteaVersion>() {
+				}
+				if(loginToken_.equals("")) {
 
-            @Override
-            public void onResponse(@NonNull final Call<GiteaVersion> callVersion, @NonNull retrofit2.Response<GiteaVersion> responseVersion) {
+					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.loginTokenError));
+					enableProcessButton();
+					loginButton.setText(R.string.btnLogin);
+					return;
 
-                if (responseVersion.code() == 200) {
+				}
 
-                    GiteaVersion version = responseVersion.body();
-                    assert version != null;
+				versionCheck(instanceUrl, loginUid, loginPass, 123, loginToken_, 2);
+			}
+			else {
 
-                    VersionCheck vt = VersionCheck.check(getString(R.string.versionLow), getString(R.string.versionHigh), version.getVersion());
+				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.checkNetConnection));
 
-                    switch (vt) {
-                        case UNSUPPORTED_NEW:
-                            //SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.versionUnsupportedNew));
-                        case SUPPORTED_LATEST:
-                        case SUPPORTED_OLD:
-                        case DEVELOPMENT:
-                            login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
-                            return;
-                        case UNSUPPORTED_OLD:
+			}
 
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
+		}
 
-                            alertDialogBuilder
-                                    .setTitle(getString(R.string.versionAlertDialogHeader))
-                                    .setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion()))
-                                    .setCancelable(true)
-                                    .setIcon(R.drawable.ic_warning)
-                                    .setNegativeButton(getString(R.string.cancelButton), (dialog, which) -> {
+	}
 
-                                        dialog.dismiss();
-                                        enableProcessButton();
+	private void versionCheck(final String instanceUrl, final String loginUid, final String loginPass, final int loginOTP, final String loginToken_, final int loginType) {
 
-                                    })
-                                    .setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
+		Call<GiteaVersion> callVersion;
+		if(!loginToken_.isEmpty()) {
+			callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithToken(loginToken_);
+		}
+		else {
+			final String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
+			if(loginOTP != 0) {
+				callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithOTP(credential, loginOTP);
+			}
+			else {
+				callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithBasic(credential);
+			}
+		}
 
-                                        dialog.dismiss();
-                                        login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
+		callVersion.enqueue(new Callback<GiteaVersion>() {
 
-                                    });
+			@Override
+			public void onResponse(@NonNull final Call<GiteaVersion> callVersion, @NonNull retrofit2.Response<GiteaVersion> responseVersion) {
 
-                            AlertDialog alertDialog = alertDialogBuilder.create();
+				if(responseVersion.code() == 200) {
 
-                            alertDialog.show();
-                            return;
-                        default: // UNKNOWN
-                            SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.versionUnknow));
-                            enableProcessButton();
+					GiteaVersion version = responseVersion.body();
+					assert version != null;
 
-                    }
+					VersionCheck vt = VersionCheck.check(getString(R.string.versionLow), getString(R.string.versionHigh), version.getVersion());
 
-                }
-                else if (responseVersion.code() == 403) {
+					switch(vt) {
+						case UNSUPPORTED_NEW:
+							//SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.versionUnsupportedNew));
+						case SUPPORTED_LATEST:
+						case SUPPORTED_OLD:
+						case DEVELOPMENT:
+							login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
+							return;
+						case UNSUPPORTED_OLD:
 
-                    login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
+							AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
 
-                }
-            }
+							alertDialogBuilder.setTitle(getString(R.string.versionAlertDialogHeader)).setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion())).setCancelable(true).setIcon(R.drawable.ic_warning).setNegativeButton(getString(R.string.cancelButton), (dialog, which) -> {
 
-            private void login(int loginType, String instanceUrl, String loginUid, String loginPass, int loginOTP, String loginToken_) {
+								dialog.dismiss();
+								enableProcessButton();
 
-                if (loginType == 1) {
-                    letTheUserIn(instanceUrl, loginUid, loginPass, loginOTP);
-                }
-                else if (loginType == 2) { // token
-                    letTheUserInViaToken(instanceUrl, loginToken_);
-                }
+							}).setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
 
-            }
+								dialog.dismiss();
+								login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
 
-            @Override
-            public void onFailure(@NonNull Call<GiteaVersion> callVersion, Throwable t) {
+							});
 
-                Log.e("onFailure-version", t.toString());
-                SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.errorOnLogin));
-                enableProcessButton();
-                loginButton.setText(R.string.btnLogin);
+							AlertDialog alertDialog = alertDialogBuilder.create();
 
-            }
+							alertDialog.show();
+							return;
+						default: // UNKNOWN
+							SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.versionUnknow));
+							enableProcessButton();
 
-        });
+					}
 
-    }
+				}
+				else if(responseVersion.code() == 403) {
 
-    private void letTheUserInViaToken(String instanceUrl, final String loginToken_) {
+					login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+				}
+			}
 
-        Call<UserInfo> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
-                .getApiInterface()
-                .getUserInfo("token " + loginToken_);
+			private void login(int loginType, String instanceUrl, String loginUid, String loginPass, int loginOTP, String loginToken_) {
 
-        call.enqueue(new Callback<UserInfo>() {
+				if(loginType == 1) {
+					letTheUserIn(instanceUrl, loginUid, loginPass, loginOTP);
+				}
+				else if(loginType == 2) { // token
+					letTheUserInViaToken(instanceUrl, loginToken_);
+				}
 
-            @Override
-            public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
+			}
 
-                UserInfo userDetails = response.body();
+			@Override
+			public void onFailure(@NonNull Call<GiteaVersion> callVersion, Throwable t) {
 
-                if (response.isSuccessful()) {
+				Log.e("onFailure-version", t.toString());
+				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.errorOnLogin));
+				enableProcessButton();
+				loginButton.setText(R.string.btnLogin);
 
-                    if (response.code() == 200) {
+			}
 
-                        tinyDb.putBoolean("loggedInMode", true);
-                        assert userDetails != null;
-                        tinyDb.putString(userDetails.getLogin() + "-token", loginToken_);
-                        tinyDb.putString("loginUid", userDetails.getLogin());
-                        tinyDb.putString("userLogin", userDetails.getUsername());
+		});
 
-	                    // insert new account to db if does not exist
-	                    String accountName =  userDetails.getUsername() + "@" + instanceUrl;
-	                    UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
+	}
 
-	                    UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
+	private void letTheUserInViaToken(String instanceUrl, final String loginToken_) {
 
-		                    if(count == 0) {
-			                    userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken_,"");
-		                    }
+		final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-	                    });
+		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserInfo("token " + loginToken_);
 
-                        enableProcessButton();
-                        loginButton.setText(R.string.btnLogin);
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+		call.enqueue(new Callback<UserInfo>() {
 
-                    }
+			@Override
+			public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
 
-                }
-                else if(response.code() == 401) {
+				UserInfo userDetails = response.body();
 
-                    SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
-                    enableProcessButton();
-                    loginButton.setText(R.string.btnLogin);
+				if(response.isSuccessful()) {
 
-                }
-                else {
+					if(response.code() == 200) {
 
-                    SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
-                    enableProcessButton();
-                    loginButton.setText(R.string.btnLogin);
+						tinyDb.putBoolean("loggedInMode", true);
+						assert userDetails != null;
+						tinyDb.putString(userDetails.getLogin() + "-token", loginToken_);
+						tinyDb.putString("loginUid", userDetails.getLogin());
+						tinyDb.putString("userLogin", userDetails.getUsername());
 
-                }
+						// insert new account to db if does not exist
+						String accountName = userDetails.getUsername() + "@" + instanceUrl;
+						UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
 
-            }
+						UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
 
-            @Override
-            public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
+							if(count == 0) {
+								userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken_, "");
+							}
 
-                Log.e("onFailure", t.toString());
-                SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
-                enableProcessButton();
-                loginButton.setText(R.string.btnLogin);
+						});
 
-            }
-        });
+						enableProcessButton();
+						loginButton.setText(R.string.btnLogin);
+						startActivity(new Intent(LoginActivity.this, MainActivity.class));
+						finish();
 
-    }
+					}
 
-    private void letTheUserIn(final String instanceUrl, final String loginUid, final String loginPass, final int loginOTP) {
+				}
+				else if(response.code() == 401) {
 
-        final String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
+					SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
+					enableProcessButton();
+					loginButton.setText(R.string.btnLogin);
 
-        Call<List<UserTokens>> call;
-        if(loginOTP != 0) {
+				}
+				else {
 
-            call = RetrofitClient
-                    .getInstance(instanceUrl, getApplicationContext())
-                    .getApiInterface()
-                    .getUserTokensWithOTP(credential, loginOTP, loginUid);
+					SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+					enableProcessButton();
+					loginButton.setText(R.string.btnLogin);
 
-        }
-        else {
+				}
 
-            call = RetrofitClient
-                    .getInstance(instanceUrl, getApplicationContext())
-                    .getApiInterface()
-                    .getUserTokens(credential, loginUid);
+			}
 
-        }
+			@Override
+			public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
 
-        call.enqueue(new Callback<List<UserTokens>>() {
+				Log.e("onFailure", t.toString());
+				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
+				enableProcessButton();
+				loginButton.setText(R.string.btnLogin);
 
-            @Override
-            public void onResponse(@NonNull Call<List<UserTokens>> call, @NonNull retrofit2.Response<List<UserTokens>> response) {
+			}
+		});
 
-                List<UserTokens> userTokens = response.body();
-                final TinyDB tinyDb = new TinyDB(getApplicationContext());
-                final AppUtil appUtil = new AppUtil();
-                //Headers responseHeaders = response.headers();
+	}
 
-                if (response.isSuccessful()) {
+	private void letTheUserIn(final String instanceUrl, final String loginUid, final String loginPass, final int loginOTP) {
 
-                    if (response.code() == 200) {
+		final String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
 
-                        boolean setTokenFlag = false;
+		Call<List<UserTokens>> call;
+		if(loginOTP != 0) {
 
-                        assert userTokens != null;
-                        if (userTokens.size() > 0) {
+			call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserTokensWithOTP(credential, loginOTP, loginUid);
 
-                            if(userTokens.get(0).getToken_last_eight() != null) {
+		}
+		else {
 
-                                for (int i = 0; i < userTokens.size(); i++) {
-                                    if (userTokens.get(i).getToken_last_eight().equals(tinyDb.getString(loginUid + "-token-last-eight"))) {
-                                        setTokenFlag = true;
-                                        break;
-                                    }
-                                    //Log.i("Tokens: ", userTokens.get(i).getToken_last_eight());
-                                }
+			call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserTokens(credential, loginUid);
 
-                            }
-                            else {
+		}
 
-                                for (int i = 0; i < userTokens.size(); i++) {
-                                    if (userTokens.get(i).getSha1().equals(tinyDb.getString(loginUid + "-token"))) {
-                                        setTokenFlag = true;
-                                        break;
-                                    }
-                                    //Log.i("Tokens: ", userTokens.get(i).getSha1());
-                                }
+		call.enqueue(new Callback<List<UserTokens>>() {
 
-                            }
+			@Override
+			public void onResponse(@NonNull Call<List<UserTokens>> call, @NonNull retrofit2.Response<List<UserTokens>> response) {
 
-                        }
+				List<UserTokens> userTokens = response.body();
+				final TinyDB tinyDb = new TinyDB(getApplicationContext());
+				final AppUtil appUtil = new AppUtil();
+				//Headers responseHeaders = response.headers();
 
-                        if(tinyDb.getString(loginUid + "-token").isEmpty() || !setTokenFlag) {
+				if(response.isSuccessful()) {
 
-                            UserTokens createUserToken = new UserTokens("gitnex-app-" + device_id);
+					if(response.code() == 200) {
 
-                            Call<UserTokens> callCreateToken;
-                            if(loginOTP != 0) {
+						boolean setTokenFlag = false;
 
-                                callCreateToken = RetrofitClient
-                                        .getInstance(instanceUrl, getApplicationContext())
-                                        .getApiInterface()
-                                        .createNewTokenWithOTP(credential, loginOTP, loginUid, createUserToken);
+						assert userTokens != null;
+						if(userTokens.size() > 0) {
 
-                            }
-                            else {
+							if(userTokens.get(0).getToken_last_eight() != null) {
 
-                                callCreateToken = RetrofitClient
-                                        .getInstance(instanceUrl, getApplicationContext())
-                                        .getApiInterface()
-                                        .createNewToken(credential, loginUid, createUserToken);
+								for(int i = 0; i < userTokens.size(); i++) {
+									if(userTokens.get(i).getToken_last_eight().equals(tinyDb.getString(loginUid + "-token-last-eight"))) {
+										setTokenFlag = true;
+										break;
+									}
+									//Log.i("Tokens: ", userTokens.get(i).getToken_last_eight());
+								}
 
-                            }
+							}
+							else {
 
-                            callCreateToken.enqueue(new Callback<UserTokens>() {
+								for(int i = 0; i < userTokens.size(); i++) {
+									if(userTokens.get(i).getSha1().equals(tinyDb.getString(loginUid + "-token"))) {
+										setTokenFlag = true;
+										break;
+									}
+									//Log.i("Tokens: ", userTokens.get(i).getSha1());
+								}
 
-                                @Override
-                                public void onResponse(@NonNull Call<UserTokens> callCreateToken, @NonNull retrofit2.Response<UserTokens> responseCreate) {
+							}
 
-                                    if(responseCreate.isSuccessful()) {
+						}
 
-                                        if(responseCreate.code() == 201) {
+						if(tinyDb.getString(loginUid + "-token").isEmpty() || !setTokenFlag) {
 
-                                            UserTokens newToken = responseCreate.body();
-                                            assert newToken != null;
-                                            //Log.i("Tokens-NEW", "new:" + newToken.getSha1());
+							UserTokens createUserToken = new UserTokens("gitnex-app-" + device_id);
 
-                                            if (!newToken.getSha1().equals("")) {
+							Call<UserTokens> callCreateToken;
+							if(loginOTP != 0) {
 
-                                                Call<UserInfo> call = RetrofitClient
-                                                        .getInstance(instanceUrl, getApplicationContext())
-                                                        .getApiInterface()
-                                                        .getUserInfo("token " + newToken.getSha1());
+								callCreateToken = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().createNewTokenWithOTP(credential, loginOTP, loginUid, createUserToken);
 
-                                                call.enqueue(new Callback<UserInfo>() {
+							}
+							else {
 
-                                                    @Override
-                                                    public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
+								callCreateToken = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().createNewToken(credential, loginUid, createUserToken);
 
-                                                        UserInfo userDetails = response.body();
+							}
 
-                                                        if (response.isSuccessful()) {
+							callCreateToken.enqueue(new Callback<UserTokens>() {
 
-                                                            if (response.code() == 200) {
+								@Override
+								public void onResponse(@NonNull Call<UserTokens> callCreateToken, @NonNull retrofit2.Response<UserTokens> responseCreate) {
 
-                                                                tinyDb.remove("loginPass");
-                                                                tinyDb.putBoolean("loggedInMode", true);
-                                                                assert userDetails != null;
-                                                                tinyDb.putString("userLogin", userDetails.getUsername());
-                                                                tinyDb.putString(loginUid + "-token", newToken.getSha1());
-                                                                tinyDb.putString(loginUid + "-token-last-eight", appUtil.getLastCharactersOfWord(newToken.getSha1(), 8));
+									if(responseCreate.isSuccessful()) {
 
-	                                                            // insert new account to db if does not exist
-	                                                            String accountName =  userDetails.getUsername() + "@" + instanceUrl;
-	                                                            UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
+										if(responseCreate.code() == 201) {
 
-	                                                            UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
+											UserTokens newToken = responseCreate.body();
+											assert newToken != null;
+											//Log.i("Tokens-NEW", "new:" + newToken.getSha1());
 
-		                                                            if(count == 0) {
-			                                                            userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(),"");
-		                                                            }
+											if(!newToken.getSha1().equals("")) {
 
-	                                                            });
+												Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserInfo("token " + newToken.getSha1());
 
-                                                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                                                finish();
+												call.enqueue(new Callback<UserInfo>() {
 
-                                                            }
+													@Override
+													public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
 
-                                                        }
-                                                        else if(response.code() == 401) {
+														UserInfo userDetails = response.body();
 
-                                                            SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
-                                                            enableProcessButton();
-                                                            loginButton.setText(R.string.btnLogin);
+														if(response.isSuccessful()) {
 
-                                                        }
-                                                        else {
+															if(response.code() == 200) {
 
-                                                            SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
-                                                            enableProcessButton();
-                                                            loginButton.setText(R.string.btnLogin);
+																tinyDb.remove("loginPass");
+																tinyDb.putBoolean("loggedInMode", true);
+																assert userDetails != null;
+																tinyDb.putString("userLogin", userDetails.getUsername());
+																tinyDb.putString(loginUid + "-token", newToken.getSha1());
+																tinyDb.putString(loginUid + "-token-last-eight", appUtil.getLastCharactersOfWord(newToken.getSha1(), 8));
 
-                                                        }
+																// insert new account to db if does not exist
+																String accountName = userDetails.getUsername() + "@" + instanceUrl;
+																UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
 
-                                                    }
+																UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
 
-                                                    @Override
-                                                    public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
+																	if(count == 0) {
+																		userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
+																	}
 
-                                                        Log.e("onFailure", t.toString());
-                                                        SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
-                                                        enableProcessButton();
-                                                        loginButton.setText(R.string.btnLogin);
+																});
 
-                                                    }
-                                                });
+																startActivity(new Intent(LoginActivity.this, MainActivity.class));
+																finish();
 
-                                            }
+															}
 
-                                        }
+														}
+														else if(response.code() == 401) {
 
-                                    }
-                                    else if(responseCreate.code() == 500) {
+															SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
+															enableProcessButton();
+															loginButton.setText(R.string.btnLogin);
 
-                                        SnackBar.error(getApplicationContext(), layoutView,getResources().getString(R.string.genericApiStatusError) + responseCreate.code());
-                                        enableProcessButton();
-                                        loginButton.setText(R.string.btnLogin);
+														}
+														else {
 
-                                    }
+															SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+															enableProcessButton();
+															loginButton.setText(R.string.btnLogin);
 
-                                }
+														}
 
-                                @Override
-                                public void onFailure(@NonNull Call<UserTokens> createUserToken, @NonNull Throwable t) {
+													}
 
-                                    Log.e("onFailure-token", t.toString());
+													@Override
+													public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
 
-                                }
+														Log.e("onFailure", t.toString());
+														SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
+														enableProcessButton();
+														loginButton.setText(R.string.btnLogin);
 
-                            });
-                        }
-                        else {
+													}
+												});
 
-                        	String token = tinyDb.getString(loginUid + "-token");
-                            String instanceToken = "token " + token;
+											}
 
-                            Call<UserInfo> callGetUsername = RetrofitClient
-                                    .getInstance(instanceUrl, getApplicationContext())
-                                    .getApiInterface()
-                                    .getUserInfo(instanceToken);
+										}
 
-                            callGetUsername.enqueue(new Callback<UserInfo>() {
+									}
+									else if(responseCreate.code() == 500) {
 
-                                @Override
-                                public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
+										SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + responseCreate.code());
+										enableProcessButton();
+										loginButton.setText(R.string.btnLogin);
 
-                                    UserInfo userDetails = response.body();
+									}
 
-                                    if (response.isSuccessful()) {
+								}
 
-                                        if (response.code() == 200) {
+								@Override
+								public void onFailure(@NonNull Call<UserTokens> createUserToken, @NonNull Throwable t) {
 
-                                            assert userDetails != null;
-                                            tinyDb.putString("userLogin", userDetails.getUsername());
+									Log.e("onFailure-token", t.toString());
 
-                                            tinyDb.putBoolean("loggedInMode", true);
+								}
 
-                                            // insert new account to db if does not exist
-                                            String accountName =  userDetails.getUsername() + "@" + instanceUrl;
-                                            UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
+							});
+						}
+						else {
 
-	                                        UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
+							String token = tinyDb.getString(loginUid + "-token");
+							String instanceToken = "token " + token;
 
-		                                        if(count == 0) {
-			                                        userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), token,"");
-		                                        }
+							Call<UserInfo> callGetUsername = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserInfo(instanceToken);
 
-	                                        });
+							callGetUsername.enqueue(new Callback<UserInfo>() {
 
-                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                            finish();
+								@Override
+								public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
 
-                                        }
+									UserInfo userDetails = response.body();
 
-                                    }
-                                    else if(response.code() == 401) {
+									if(response.isSuccessful()) {
 
-                                        SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
-                                        enableProcessButton();
-                                        loginButton.setText(R.string.btnLogin);
+										if(response.code() == 200) {
 
-                                    }
-                                    else {
+											assert userDetails != null;
+											tinyDb.putString("userLogin", userDetails.getUsername());
 
-                                        SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
-                                        enableProcessButton();
-                                        loginButton.setText(R.string.btnLogin);
+											tinyDb.putBoolean("loggedInMode", true);
 
-                                    }
+											// insert new account to db if does not exist
+											String accountName = userDetails.getUsername() + "@" + instanceUrl;
+											UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
 
-                                }
+											UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
 
-                                @Override
-                                public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
+												if(count == 0) {
+													userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), token, "");
+												}
 
-                                    Log.e("onFailure", t.toString());
-                                    SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
-                                    enableProcessButton();
-                                    loginButton.setText(R.string.btnLogin);
+											});
 
-                                }
-                            });
+											startActivity(new Intent(LoginActivity.this, MainActivity.class));
+											finish();
 
-                        }
+										}
 
-                    }
+									}
+									else if(response.code() == 401) {
 
-                }
-                else if(response.code() == 500) {
+										SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
+										enableProcessButton();
+										loginButton.setText(R.string.btnLogin);
 
-                    SnackBar.error(getApplicationContext(), layoutView,getResources().getString(R.string.genericApiStatusError) + response.code());
-                    enableProcessButton();
-                    loginButton.setText(R.string.btnLogin);
+									}
+									else {
 
-                }
-                else {
+										SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+										enableProcessButton();
+										loginButton.setText(R.string.btnLogin);
 
-                    SnackBar.error(getApplicationContext(), layoutView,getResources().getString(R.string.genericApiStatusError) + response.code());
-                    enableProcessButton();
-                    loginButton.setText(R.string.btnLogin);
+									}
 
-                }
+								}
 
-            }
+								@Override
+								public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
 
-            @Override
-            public void onFailure(@NonNull Call<List<UserTokens>> call, @NonNull Throwable t) {
+									Log.e("onFailure", t.toString());
+									SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
+									enableProcessButton();
+									loginButton.setText(R.string.btnLogin);
 
-                Log.e("onFailure-login", t.toString());
-                SnackBar.error(getApplicationContext(), layoutView,getResources().getString(R.string.malformedJson));
-                enableProcessButton();
-                loginButton.setText(R.string.btnLogin);
+								}
+							});
 
-            }
-        });
+						}
 
-    }
+					}
 
-    private void disableProcessButton() {
+				}
+				else if(response.code() == 500) {
 
-        loginButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        loginButton.setBackground(shape);
+					SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+					enableProcessButton();
+					loginButton.setText(R.string.btnLogin);
 
-    }
+				}
+				else {
 
-    private void enableProcessButton() {
+					SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+					enableProcessButton();
+					loginButton.setText(R.string.btnLogin);
 
-        loginButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        loginButton.setBackground(shape);
+				}
 
-    }
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<UserTokens>> call, @NonNull Throwable t) {
+
+				Log.e("onFailure-login", t.toString());
+				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.malformedJson));
+				enableProcessButton();
+				loginButton.setText(R.string.btnLogin);
+
+			}
+		});
+
+	}
+
+	private void disableProcessButton() {
+
+		loginButton.setEnabled(false);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.hintColor));
+		loginButton.setBackground(shape);
+
+	}
+
+	private void enableProcessButton() {
+
+		loginButton.setEnabled(true);
+		GradientDrawable shape = new GradientDrawable();
+		shape.setCornerRadius(8);
+		shape.setColor(getResources().getColor(R.color.btnBackground));
+		loginButton.setBackground(shape);
+
+	}
 
 }
