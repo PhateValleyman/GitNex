@@ -51,23 +51,23 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
     static class ReleasesViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView releaseType;
+       /* private ImageView releaseType;
         private TextView releaseTitle;
         private TextView releaseDescription;
         private TextView releaseDownload;
         private TextView releaseZipDownload;
         private TextView releaseTarDownload;
-        private TextView releaseTag;
+        private TextView releaseTag;*/
 
         private ReleasesViewHolder(View itemView) {
             super(itemView);
 
-            releaseType = itemView.findViewById(R.id.releaseType);
+            /*releaseType = itemView.findViewById(R.id.releaseType);
             releaseTitle = itemView.findViewById(R.id.releaseTitle);
             releaseDescription = itemView.findViewById(R.id.releaseDescription);
             releaseZipDownload = itemView.findViewById(R.id.releaseZipDownload);
             releaseTarDownload = itemView.findViewById(R.id.releaseTarDownload);
-            releaseTag = itemView.findViewById(R.id.releaseTag);
+            releaseTag = itemView.findViewById(R.id.releaseTag);*/
 
         }
     }
@@ -80,7 +80,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
     @NonNull
     @Override
     public ReleasesAdapter.ReleasesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_releases, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_releases_new, parent, false);
         return new ReleasesAdapter.ReleasesViewHolder(v);
     }
 
@@ -91,7 +91,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
         Releases currentItem = releasesList.get(position);
 
-        holder.releaseTitle.setText(currentItem.getName());
+        /*holder.releaseTitle.setText(currentItem.getName());
 
         if(!currentItem.getTag_name().equals("")) {
             holder.releaseTag.setText(mCtx.getResources().getString(R.string.releaseTag, currentItem.getTag_name()));
@@ -197,7 +197,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
         holder.releaseTarDownload.setText(
                 Html.fromHtml("<a href='" + currentItem.getTarball_url() + "'>" + mCtx.getResources().getString(R.string.tarArchiveDownloadReleasesTab) + "</a> "));
-        holder.releaseTarDownload.setMovementMethod(LinkMovementMethod.getInstance());
+        holder.releaseTarDownload.setMovementMethod(LinkMovementMethod.getInstance());*/
 
     }
 
