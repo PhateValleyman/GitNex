@@ -3,12 +3,6 @@ package org.mian.gitnex.fragments;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
@@ -24,6 +24,8 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderScriptBlur;
 
 /**
  * Author M M Arif
@@ -31,26 +33,47 @@ import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
 
-    private Context ctx = getContext();
+    private Context ctx;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+    	ctx = getContext();
 
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         setHasOptionsMenu(true);
 
         TinyDB tinyDb = new TinyDB(getContext());
 
+	    BlurView blurView = v.findViewById(R.id.blurView);
         TextView userFullName = v.findViewById(R.id.userFullName);
+	    ImageView userAvatarBackground = v.findViewById(R.id.userAvatarBackground);
         ImageView userAvatar = v.findViewById(R.id.userAvatar);
         TextView userLogin = v.findViewById(R.id.userLogin);
-        TextView userEmail = v.findViewById(R.id.userEmail);
+        TextView userLanguage = v.findViewById(R.id.userLanguage);
 
-        userFullName.setText(tinyDb.getString("userFullname"));
-        PicassoService.getInstance(ctx).get().load(tinyDb.getString("userAvatar")).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(userAvatar);
-        userLogin.setText(getString(R.string.usernameWithAt, tinyDb.getString("userLogin")));
-        userEmail.setText(tinyDb.getString("userEmail"));
+	    ViewGroup aboutFrame = v.findViewById(R.id.aboutFrame);
+
+	    userFullName.setText(tinyDb.getString("userFullname"));
+	    userLogin.setText(getString(R.string.usernameWithAt, tinyDb.getString("userLogin")));
+	    userLanguage.setText(tinyDb.getString("userLang"));
+
+	    PicassoService.getInstance(ctx).get()
+		    .load(tinyDb.getString("userAvatar"))
+		    .transform(new RoundedTransformation(8, 0))
+		    .placeholder(R.drawable.loader_animated)
+		    .resize(120, 120)
+		    .centerCrop().into(userAvatar);
+
+	    PicassoService.getInstance(ctx).get()
+		    .load(tinyDb.getString("userAvatar"))
+		    .into(userAvatarBackground);
+
+	    blurView.setupWith(aboutFrame)
+		    .setBlurAlgorithm(new RenderScriptBlur(ctx))
+		    .setBlurRadius(3)
+		    .setHasFixedTransformationMatrix(true);
 
         ProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
@@ -79,11 +102,16 @@ public class ProfileFragment extends Fragment {
 
         ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
         int tabsCount = vg.getChildCount();
+
         for (int j = 0; j < tabsCount; j++) {
+
             ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
             int tabChildCount = vgTab.getChildCount();
+
             for (int i = 0; i < tabChildCount; i++) {
+
                 View tabViewChild = vgTab.getChildAt(i);
+
                 if (tabViewChild instanceof TextView) {
                     ((TextView) tabViewChild).setTypeface(myTypeface);
                 }
