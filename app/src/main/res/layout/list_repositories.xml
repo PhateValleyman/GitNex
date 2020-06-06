@@ -11,9 +11,10 @@
         android:layout_height="wrap_content"
         android:background="@color/releasePre"
         android:gravity="center_horizontal"
-        android:padding="5dp"
+        android:padding="3dp"
         android:text="@string/archivedRepository"
         android:textColor="@color/colorWhite"
+        android:textSize="16sp"
         android:visibility="gone"
         tools:visibility="visible" />
 
