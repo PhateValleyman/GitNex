@@ -57,7 +57,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 		private TextView repoForks;
 		private TextView repoOpenIssuesCount;
 		private TextView repoType;
-		private LinearLayout archivedRepository;
+		private LinearLayout archiveRepo;
 
 		private ReposViewHolder(View itemView) {
 
@@ -73,7 +73,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 			repoOpenIssuesCount = itemView.findViewById(R.id.repoOpenIssuesCount);
 			ImageView reposDropdownMenu = itemView.findViewById(R.id.reposDropdownMenu);
 			repoType = itemView.findViewById(R.id.repoType);
-			archivedRepository = itemView.findViewById(R.id.archivedRepository);
+			archiveRepo = itemView.findViewById(R.id.archiveRepoFrame);
 
 			itemView.setOnClickListener(v -> {
 
@@ -253,10 +253,10 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 		holder.isRepoAdmin.setChecked(currentItem.getPermissions().isAdmin());
 
 		if(currentItem.isArchived()) {
-			holder.archivedRepository.setVisibility(View.VISIBLE);
+			holder.archiveRepo.setVisibility(View.VISIBLE);
 		}
 		else {
-			holder.archivedRepository.setVisibility(View.GONE);
+			holder.archiveRepo.setVisibility(View.GONE);
 		}
 
 	}

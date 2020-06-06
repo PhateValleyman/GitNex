@@ -52,7 +52,7 @@
                     android:textSize="18sp" />
 
                 <LinearLayout
-                    android:id="@+id/archivedRepository"
+                    android:id="@+id/archiveRepoFrame"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
