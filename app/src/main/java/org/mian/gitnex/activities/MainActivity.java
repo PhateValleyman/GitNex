@@ -217,17 +217,27 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 					PicassoService.getInstance(ctx).get()
 						.load(userAvatarNav)
-						.into(userAvatarBackground);
+						.into(userAvatarBackground, new com.squareup.picasso.Callback() {
 
-					blurView.setupWith(navHeaderFrame)
-						.setBlurAlgorithm(new RenderScriptBlur(ctx))
-						.setBlurRadius(5)
-						.setHasFixedTransformationMatrix(false);
+							@Override
+							public void onSuccess() {
 
-					int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+								int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
 
-					userFullName.setTextColor(textColor);
-					userEmail.setTextColor(textColor);
+								userFullName.setTextColor(textColor);
+								userEmail.setTextColor(textColor);
+
+								blurView.setupWith(navHeaderFrame)
+									.setBlurAlgorithm(new RenderScriptBlur(ctx))
+									.setBlurRadius(5)
+									.setHasFixedTransformationMatrix(false);
+
+							}
+
+							@Override
+							public void onError(Exception e) {}
+
+						});
 
 				}
 

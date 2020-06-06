@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Callback;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.clients.PicassoService;
@@ -73,18 +74,29 @@ public class ProfileFragment extends Fragment {
 
 	    PicassoService.getInstance(ctx).get()
 		    .load(tinyDb.getString("userAvatar"))
-		    .into(userAvatarBackground);
+		    .into(userAvatarBackground, new Callback() {
 
-	    blurView.setupWith(aboutFrame)
-		    .setBlurAlgorithm(new RenderScriptBlur(ctx))
-		    .setBlurRadius(3)
-		    .setHasFixedTransformationMatrix(true);
+			    @Override
+			    public void onSuccess() {
 
-	    int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+				    int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
 
-	    userFullName.setTextColor(textColor);
-	    userLogin.setTextColor(textColor);
-	    userLanguage.setTextColor(textColor);
+				    userFullName.setTextColor(textColor);
+				    userLogin.setTextColor(textColor);
+				    userLanguage.setTextColor(textColor);
+
+				    blurView.setupWith(aboutFrame)
+					    .setBlurAlgorithm(new RenderScriptBlur(ctx))
+					    .setBlurRadius(3)
+					    .setHasFixedTransformationMatrix(true);
+
+			    }
+
+			    @Override
+			    public void onError(Exception e) {}
+
+		    });
+
 
         ProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 

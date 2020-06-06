@@ -30,8 +30,17 @@ public class ColorInverter {
     @ColorInt
     public int getImageViewContrastColor(ImageView imageView) {
 
-	    Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-	    return getContrastColor(bitmap.getPixel(bitmap.getWidth() / 2, bitmap.getHeight() / 2));
+    	if(imageView != null) {
+
+		    Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+		    return getContrastColor(bitmap.getPixel(bitmap.getWidth() / 2, bitmap.getHeight() / 2));
+
+	    }
+    	else {
+
+    		return Color.rgb(255, 255, 255);
+	    }
+
     }
 
 }
