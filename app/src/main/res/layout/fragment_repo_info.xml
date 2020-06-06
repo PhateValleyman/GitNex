@@ -78,7 +78,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
@@ -86,7 +86,7 @@
                     <LinearLayout
                         android:id="@+id/repoMetaStarsFrame"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical">
@@ -108,7 +108,7 @@
                     <LinearLayout
                         android:id="@+id/repoMetaPullRequestsFrame"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical">
@@ -130,7 +130,7 @@
                     <LinearLayout
                         android:id="@+id/repoMetaForksFrame"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical">
@@ -152,7 +152,7 @@
                     <LinearLayout
                         android:id="@+id/repoMetaWatchersFrame"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical">
@@ -181,7 +181,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:orientation="horizontal"
                     android:paddingLeft="15dp"
@@ -221,7 +221,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:orientation="horizontal"
                     android:paddingLeft="15dp"
@@ -261,7 +261,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:orientation="horizontal"
                     android:paddingLeft="15dp"
