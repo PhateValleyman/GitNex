@@ -38,6 +38,7 @@ import org.mian.gitnex.fragments.StarredRepositoriesFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.ChangeLog;
+import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.GiteaVersion;
@@ -222,6 +223,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						.setBlurAlgorithm(new RenderScriptBlur(ctx))
 						.setBlurRadius(5)
 						.setHasFixedTransformationMatrix(false);
+
+					int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+
+					userFullName.setTextColor(textColor);
+					userEmail.setTextColor(textColor);
 
 				}
 

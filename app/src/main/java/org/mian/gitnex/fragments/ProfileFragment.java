@@ -21,6 +21,7 @@ import com.google.android.material.tabs.TabLayout;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
@@ -74,6 +75,12 @@ public class ProfileFragment extends Fragment {
 		    .setBlurAlgorithm(new RenderScriptBlur(ctx))
 		    .setBlurRadius(3)
 		    .setHasFixedTransformationMatrix(true);
+
+	    int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+
+	    userFullName.setTextColor(textColor);
+	    userLogin.setTextColor(textColor);
+	    userLanguage.setTextColor(textColor);
 
         ProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
@@ -136,15 +143,22 @@ public class ProfileFragment extends Fragment {
         public Fragment getItem(int position) {
 
             Fragment fragment = null;
+
             switch (position) {
+
                 case 0: // followers
                     return ProfileFollowersFragment.newInstance("repoOwner", "repoName");
+
                 case 1: // following
                     return ProfileFollowingFragment.newInstance("repoOwner", "repoName");
+
                 case 2: // emails
                     return ProfileEmailsFragment.newInstance("repoOwner", "repoName");
+
             }
+
             return fragment;
+
         }
 
         @Override
@@ -156,9 +170,11 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
         menu.clear();
         Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.profile_dotted_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     @Override
@@ -167,17 +183,20 @@ public class ProfileFragment extends Fragment {
         int id = item.getItemId();
 
         switch (id) {
+
             case android.R.id.home:
                 ((MainActivity)ctx).finish();
                 return true;
+
             case R.id.profileMenu:
                 BottomSheetProfileFragment bottomSheet = new BottomSheetProfileFragment();
                 bottomSheet.show(getChildFragmentManager(), "profileBottomSheet");
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
-        }
 
+        }
     }
 
 }
