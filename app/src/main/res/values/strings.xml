@@ -278,7 +278,7 @@
     <string name="settingsCodeBlockSelectorDialogTitle">Code Block Color Selector</string>
     <string name="settingsHomeScreenHeaderText">Home Screen</string>
     <string name="settingsHomeScreenSelectedText">My Repositories</string>
-    <string name="settingshomeScreenSelectorDialogTitle">Select Home Screen</string>
+    <string name="settingsHomeScreenSelectorDialogTitle">Select Home Screen</string>
     <string name="settingsCustomFontHeaderText">Font</string>
     <string name="settingsCustomFontSelectorDialogTitle">Choose Font</string>
     <string name="settingsCustomFontDefault" translatable="false">Manrope</string>
@@ -575,7 +575,7 @@
     <string name="versionUnsupportedNew">New Gitea version detected! Please UPDATE GitNex!</string>
     <string name="versionSupportedLatest">Gitea version is up to date</string>
     <string name="versionDevelopment">Gitea development version</string>
-    <string name="versionUnknow">No Gitea detected!</string>
+    <string name="versionUnknown">No Gitea detected!</string>
     <string name="versionAlertTitle">Version Alert</string>
     <string name="versionAlertDialogHeader">Unsupported Version of Gitea</string>
 
