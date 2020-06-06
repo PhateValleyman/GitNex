@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,7 +57,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 		private TextView repoForks;
 		private TextView repoOpenIssuesCount;
 		private TextView repoType;
-		private TextView archivedRepository;
+		private LinearLayout archivedRepository;
 
 		private ReposViewHolder(View itemView) {
 
