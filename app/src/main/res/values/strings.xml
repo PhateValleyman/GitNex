@@ -662,5 +662,5 @@
     <string name="languagesHintText">Languages</string>
     <string name="reportsHintText">Crash reports</string>
 
-    <string name="archivedRepository">Archived Repository</string>
+    <string name="archivedRepository">Archived</string>
 </resources>
