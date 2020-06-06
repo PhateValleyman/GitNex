@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
@@ -53,7 +54,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
     private List<Releases> releasesList;
     private Context mCtx;
 
-    static class ReleasesViewHolder extends RecyclerView.ViewHolder {
+	static class ReleasesViewHolder extends RecyclerView.ViewHolder {
 
         private TextView releaseType;
         private TextView releaseName;
@@ -68,6 +69,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
         private TextView releaseZipDownload;
 	    private TextView releaseTarDownload;
 	    private ImageView downloadDropdownIcon;
+	    private RecyclerView downloadList;
 
         private ReleasesViewHolder(View itemView) {
 
@@ -86,6 +88,10 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 	        releaseZipDownload = itemView.findViewById(R.id.releaseZipDownload);
 	        releaseTarDownload = itemView.findViewById(R.id.releaseTarDownload);
 	        downloadDropdownIcon = itemView.findViewById(R.id.downloadDropdownIcon);
+	        downloadList = itemView.findViewById(R.id.downloadList);
+
+	        downloadList.setHasFixedSize(true);
+	        downloadList.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
 
         }
     }
@@ -224,6 +230,9 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
         holder.releaseTarDownload.setText(
                 Html.fromHtml("<a href='" + currentItem.getTarball_url() + "'>" + mCtx.getResources().getString(R.string.tarArchiveDownloadReleasesTab) + "</a> "));
         holder.releaseTarDownload.setMovementMethod(LinkMovementMethod.getInstance());
+
+	    ReleasesDownloadsAdapter adapter = new ReleasesDownloadsAdapter(currentItem.getAssets());
+	    holder.downloadList.setAdapter(adapter);
 
     }
 

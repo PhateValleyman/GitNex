@@ -226,9 +226,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
                 android:drawableStart="@drawable/ic_file_download_24dp"
-                android:drawablePadding="4dp"
+                android:drawablePadding="8dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="14sp"
                 tools:text="Source code (ZIP)" />
@@ -240,10 +239,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:drawableStart="@drawable/ic_file_download_24dp"
-                android:drawablePadding="4dp"
+                android:drawablePadding="8dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="14sp"
                 tools:text="Source code (TAR)" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/downloadList"
+                android:layout_below="@+id/releaseTarDownload"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/primaryBackgroundColor"
+                android:scrollbars="vertical" />
 
         </RelativeLayout>
 
