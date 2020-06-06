@@ -24,6 +24,7 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.util.TinyDB;
+import java.util.Locale;
 import java.util.Objects;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
@@ -56,9 +57,12 @@ public class ProfileFragment extends Fragment {
 
 	    ViewGroup aboutFrame = v.findViewById(R.id.aboutFrame);
 
+	    String[] userLanguageCodes = tinyDb.getString("userLang").split("-");
+	    Locale locale = new Locale(userLanguageCodes[0], userLanguageCodes[1]);
+
 	    userFullName.setText(tinyDb.getString("userFullname"));
 	    userLogin.setText(getString(R.string.usernameWithAt, tinyDb.getString("userLogin")));
-	    userLanguage.setText(tinyDb.getString("userLang"));
+	    userLanguage.setText(locale.getDisplayCountry());
 
 	    PicassoService.getInstance(ctx).get()
 		    .load(tinyDb.getString("userAvatar"))
