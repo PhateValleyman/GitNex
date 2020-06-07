@@ -112,7 +112,7 @@ public class OrganizationInfoFragment extends Fragment {
 	                    .load(orgInfo.getAvatar_url())
 	                    .placeholder(R.drawable.loader_animated)
 	                    .transform(new RoundedTransformation(8, 0))
-	                    .resize(180, 180)
+	                    .resize(230, 230)
 	                    .centerCrop().into(orgAvatar);
 
 	                if(!orgInfo.getDescription().isEmpty()) {
