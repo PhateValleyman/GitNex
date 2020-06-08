@@ -78,9 +78,16 @@ public class FileDiffActivity extends BaseActivity {
 
 		String pullIndex = tinyDb.getString("issueNumber");
 
-		boolean apiCall = (new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.13.0"));
+		boolean apiCall = true;
+		String instanceUrl = tinyDb.getString("instanceUrl");
 
-		getPullDiffContent(tinyDb.getString("instanceUrlWithProtocol"), repoOwner, repoName, pullIndex, instanceToken, apiCall);
+		// fallback for old gitea instances
+		if(new Version(tinyDb.getString("giteaVersion")).less("1.13.0")) {
+			apiCall = true;
+			instanceUrl = tinyDb.getString("instanceUrlWithProtocol");
+		}
+
+		getPullDiffContent(instanceUrl, repoOwner, repoName, pullIndex, instanceToken, apiCall);
 
 	}
 
@@ -88,7 +95,7 @@ public class FileDiffActivity extends BaseActivity {
 
 		Call<ResponseBody> call;
 		if(apiCall) {
-			call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getPullDiffContent(owner, repo, pullIndex, token);
+			call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getPullDiffContent(token, owner, repo, pullIndex);
 		}
 		else {
 			call = RetrofitClient.getInstance(instanceUrl, ctx).getWebInterface().getPullDiffContent(owner, repo, pullIndex);
