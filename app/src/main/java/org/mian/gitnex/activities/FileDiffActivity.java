@@ -32,191 +32,191 @@ import retrofit2.Callback;
 
 public class FileDiffActivity extends BaseActivity {
 
-    private View.OnClickListener onClickListener;
-    private TextView toolbar_title;
-    private ListView mListView;
-    private ProgressBar mProgressBar;
-    final Context ctx = this;
-    private Context appCtx;
+	private View.OnClickListener onClickListener;
+	private TextView toolbar_title;
+	private ListView mListView;
+	private ProgressBar mProgressBar;
+	final Context ctx = this;
+	private Context appCtx;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_file_diff;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_file_diff;
+	}
 
-        super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        final TinyDB tinyDb = new TinyDB(appCtx);
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 
-        ImageView closeActivity = findViewById(R.id.close);
-        toolbar_title = findViewById(R.id.toolbar_title);
-        mListView = findViewById(R.id.listView);
-        mProgressBar = findViewById(R.id.progress_bar);
+		final TinyDB tinyDb = new TinyDB(appCtx);
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final String instanceUrl = tinyDb.getString("instanceUrl");
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        mListView.setDivider(null);
+		ImageView closeActivity = findViewById(R.id.close);
+		toolbar_title = findViewById(R.id.toolbar_title);
+		mListView = findViewById(R.id.listView);
+		mProgressBar = findViewById(R.id.progress_bar);
 
-        toolbar_title.setText(R.string.processingText);
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		mListView.setDivider(null);
 
-        mProgressBar.setVisibility(View.VISIBLE);
+		toolbar_title.setText(R.string.processingText);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        String pullIndex = tinyDb.getString("issueNumber");
+		mProgressBar.setVisibility(View.VISIBLE);
 
-        getPullDiffContent(tinyDb.getString("instanceUrlWithProtocol"), repoOwner, repoName, pullIndex);
+		String pullIndex = tinyDb.getString("issueNumber");
 
-    }
+		getPullDiffContent(tinyDb.getString("instanceUrlWithProtocol"), repoOwner, repoName, pullIndex);
 
-    private void getPullDiffContent(String instanceUrl, String owner, String repo, String filename) {
+	}
 
-        Call<ResponseBody> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getWebInterface()
-                .getPullDiffContent(owner, repo, filename);
+	private void getPullDiffContent(String instanceUrl, String owner, String repo, String filename) {
 
-        call.enqueue(new Callback<ResponseBody>() {
+		Call<ResponseBody> call = RetrofitClient.getInstance(instanceUrl, ctx).getWebInterface().getPullDiffContent(owner, repo, filename);
 
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
+		call.enqueue(new Callback<ResponseBody>() {
 
-                if (response.code() == 200) {
+			@Override
+			public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
 
-                    try {
-                        assert response.body() != null;
+				if(response.code() == 200) {
 
-                        AppUtil appUtil = new AppUtil();
-                        List<FileDiffView> fileContentsArray = new ArrayList<>();
+					try {
+						assert response.body() != null;
 
-                        String[] lines = response.body().string().split("diff");
+						AppUtil appUtil = new AppUtil();
+						List<FileDiffView> fileContentsArray = new ArrayList<>();
 
-                        if(lines.length > 0) {
+						String[] lines = response.body().string().split("diff");
 
-                            for (int i = 1; i < lines.length; i++) {
+						if(lines.length > 0) {
 
-                                if(lines[i].contains("@@ -")) {
+							for(int i = 1; i < lines.length; i++) {
 
-                                    String[] level2nd = lines[i].split("@@ -"); // main content part of single diff view
+								if(lines[i].contains("@@ -")) {
 
-                                    String[] fileName_ = level2nd[0].split("\\+\\+\\+ b/"); // filename part
-                                    String fileNameFinal = fileName_[1];
+									String[] level2nd = lines[i].split("@@ -"); // main content part of single diff view
 
-                                    String[] fileContents_ = level2nd[1].split("@@"); // file info / content part
-                                    String fileInfoFinal = fileContents_[0];
-                                    StringBuilder fileContentsFinal = new StringBuilder(fileContents_[1]);
+									String[] fileName_ = level2nd[0].split("\\+\\+\\+ b/"); // filename part
+									String fileNameFinal = fileName_[1];
 
-                                    if(level2nd.length > 2) {
-                                        for (int j = 2; j < level2nd.length; j++) {
-                                            fileContentsFinal.append(level2nd[j]);
-                                        }
-                                    }
+									String[] fileContents_ = level2nd[1].split("@@"); // file info / content part
+									String fileInfoFinal = fileContents_[0];
+									StringBuilder fileContentsFinal = new StringBuilder(fileContents_[1]);
 
-                                    String fileExtension = FileUtils.getExtension(fileNameFinal);
+									if(level2nd.length > 2) {
+										for(int j = 2; j < level2nd.length; j++) {
+											fileContentsFinal.append(level2nd[j]);
+										}
+									}
 
-                                    String fileContentsFinalWithBlankLines = fileContentsFinal.toString().replaceAll( ".*@@.*", "" );
-                                    String fileContentsFinalWithoutBlankLines = fileContentsFinal.toString().replaceAll( ".*@@.*(\r?\n|\r)?", "" );
-                                    fileContentsFinalWithoutBlankLines = fileContentsFinalWithoutBlankLines.replaceAll( ".*\\ No newline at end of file.*(\r?\n|\r)?", "" );
+									String fileExtension = FileUtils.getExtension(fileNameFinal);
 
-                                    fileContentsArray.add(new FileDiffView(fileNameFinal, appUtil.imageExtension(fileExtension), fileInfoFinal, fileContentsFinalWithoutBlankLines));
-                                }
-                                else {
+									String fileContentsFinalWithBlankLines = fileContentsFinal.toString().replaceAll(".*@@.*", "");
+									String fileContentsFinalWithoutBlankLines = fileContentsFinal.toString().replaceAll(".*@@.*(\r?\n|\r)?", "");
+									fileContentsFinalWithoutBlankLines = fileContentsFinalWithoutBlankLines.replaceAll(".*\\ No newline at end of file.*(\r?\n|\r)?", "");
 
-                                    String[] getFileName = lines[i].split("--git a/");
+									fileContentsArray.add(new FileDiffView(fileNameFinal, appUtil.imageExtension(fileExtension), fileInfoFinal, fileContentsFinalWithoutBlankLines));
+								}
+								else {
 
-                                    String[] getFileName_ = getFileName[1].split("b/");
-                                    String getFileNameFinal = getFileName_[0].trim();
+									String[] getFileName = lines[i].split("--git a/");
 
-                                    String[] binaryFile = getFileName_[1].split("GIT binary patch");
-                                    String binaryFileRaw = binaryFile[1].substring(binaryFile[1].indexOf('\n')+1);
-                                    String binaryFileFinal = binaryFile[1].substring(binaryFileRaw.indexOf('\n')+1);
+									String[] getFileName_ = getFileName[1].split("b/");
+									String getFileNameFinal = getFileName_[0].trim();
 
-                                    String fileExtension = FileUtils.getExtension(getFileNameFinal);
+									String[] binaryFile = getFileName_[1].split("GIT binary patch");
+									String binaryFileRaw = binaryFile[1].substring(binaryFile[1].indexOf('\n') + 1);
+									String binaryFileFinal = binaryFile[1].substring(binaryFileRaw.indexOf('\n') + 1);
 
-                                    if(appUtil.imageExtension(FileUtils.getExtension(getFileNameFinal))) {
+									String fileExtension = FileUtils.getExtension(getFileNameFinal);
 
-                                        fileContentsArray.add(new FileDiffView(getFileNameFinal, appUtil.imageExtension(fileExtension), "", binaryFileFinal));
-                                    }
+									if(appUtil.imageExtension(FileUtils.getExtension(getFileNameFinal))) {
 
-                                }
+										fileContentsArray.add(new FileDiffView(getFileNameFinal, appUtil.imageExtension(fileExtension), "", binaryFileFinal));
+									}
 
-                            }
+								}
 
-                        }
+							}
 
-                        int filesCount = fileContentsArray.size();
-                        if(filesCount > 1) {
-                            toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)));
-                        }
-                        else {
-                            toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
-                        }
+						}
 
-                        FilesDiffAdapter adapter = new FilesDiffAdapter(ctx, fileContentsArray);
-                        mListView.setAdapter(adapter);
+						int filesCount = fileContentsArray.size();
+						if(filesCount > 1) {
+							toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)));
+						}
+						else {
+							toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
+						}
 
-                        mProgressBar.setVisibility(View.GONE);
+						FilesDiffAdapter adapter = new FilesDiffAdapter(ctx, fileContentsArray);
+						mListView.setAdapter(adapter);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+						mProgressBar.setVisibility(View.GONE);
 
-                }
-                else if(response.code() == 401) {
+					}
+					catch(IOException e) {
+						e.printStackTrace();
+					}
 
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+				}
+				else if(response.code() == 401) {
 
-                }
-                else if(response.code() == 403) {
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+				}
+				else if(response.code() == 403) {
 
-                }
-                else if(response.code() == 404) {
+					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+				}
+				else if(response.code() == 404) {
 
-                }
-                else {
+					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                    Toasty.info(ctx, getString(R.string.labelGeneralError));
+				}
+				else {
 
-                }
+					Toasty.info(ctx, getString(R.string.labelGeneralError));
 
-            }
+				}
 
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
+			}
 
-    }
+			@Override
+			public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
 
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getIntent().removeExtra("singleFileName");
-                finish();
-            }
-        };
-    }
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
+	private void initCloseListener() {
+
+		onClickListener = new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+
+				getIntent().removeExtra("singleFileName");
+				finish();
+			}
+		};
+	}
 
 
 }
