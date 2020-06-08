@@ -16,6 +16,7 @@ import org.mian.gitnex.adapters.FilesDiffAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.FileDiffView;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
@@ -59,7 +60,6 @@ public class FileDiffActivity extends BaseActivity {
 		String[] parts = repoFullName.split("/");
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
-		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
@@ -78,13 +78,21 @@ public class FileDiffActivity extends BaseActivity {
 
 		String pullIndex = tinyDb.getString("issueNumber");
 
-		getPullDiffContent(tinyDb.getString("instanceUrlWithProtocol"), repoOwner, repoName, pullIndex);
+		boolean apiCall = (new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.13.0"));
+
+		getPullDiffContent(tinyDb.getString("instanceUrlWithProtocol"), repoOwner, repoName, pullIndex, instanceToken, apiCall);
 
 	}
 
-	private void getPullDiffContent(String instanceUrl, String owner, String repo, String pullIndex) {
+	private void getPullDiffContent(String instanceUrl, String owner, String repo, String pullIndex, String token, boolean apiCall) {
 
-		Call<ResponseBody> call = RetrofitClient.getInstance(instanceUrl, ctx).getWebInterface().getPullDiffContent(owner, repo, pullIndex);
+		Call<ResponseBody> call;
+		if(apiCall) {
+			call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getPullDiffContent(owner, repo, pullIndex, token);
+		}
+		else {
+			call = RetrofitClient.getInstance(instanceUrl, ctx).getWebInterface().getPullDiffContent(owner, repo, pullIndex);
+		}
 
 		call.enqueue(new Callback<ResponseBody>() {
 
