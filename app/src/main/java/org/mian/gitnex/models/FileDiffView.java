@@ -41,7 +41,7 @@ public class FileDiffView {
 		@NotNull
 		public String toString() {
 
-			return "-" + this.lineRemoved + ", +" + this.lineAdded;
+			return "+" + this.lineAdded + ", -" + this.lineRemoved;
 		}
 
 	}
