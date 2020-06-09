@@ -34,7 +34,7 @@ import retrofit2.Callback;
 public class FileDiffActivity extends BaseActivity {
 
 	private View.OnClickListener onClickListener;
-	private TextView toolbar_title;
+	private TextView toolbarTitle;
 	private ListView mListView;
 	private ProgressBar mProgressBar;
 	final Context ctx = this;
@@ -64,13 +64,13 @@ public class FileDiffActivity extends BaseActivity {
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		ImageView closeActivity = findViewById(R.id.close);
-		toolbar_title = findViewById(R.id.toolbar_title);
+		toolbarTitle = findViewById(R.id.toolbar_title);
 		mListView = findViewById(R.id.listView);
 		mProgressBar = findViewById(R.id.progress_bar);
 
 		mListView.setDivider(null);
 
-		toolbar_title.setText(R.string.processingText);
+		toolbarTitle.setText(R.string.processingText);
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
@@ -171,10 +171,10 @@ public class FileDiffActivity extends BaseActivity {
 
 						int filesCount = fileContentsArray.size();
 						if(filesCount > 1) {
-							toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)));
+							toolbarTitle.setText(getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)));
 						}
 						else {
-							toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
+							toolbarTitle.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
 						}
 
 						FilesDiffAdapter adapter = new FilesDiffAdapter(ctx, fileContentsArray);
