@@ -114,7 +114,7 @@ public class FileDiffActivity extends BaseActivity {
 						AppUtil appUtil = new AppUtil();
 						List<FileDiffView> fileContentsArray = new ArrayList<>();
 
-						String[] lines = response.body().string().split("diff");
+						String[] lines = response.body().string().split("(^|\\n)diff --git a/");
 
 						if(lines.length > 0) {
 
