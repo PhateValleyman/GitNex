@@ -3,7 +3,6 @@ package org.mian.gitnex.helpers;
 import org.mian.gitnex.models.FileDiffView;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Author 6543
@@ -36,7 +35,6 @@ public class ParseDiff {
 	public static List<FileDiffView> getFileDiffViewArray(String raw) {
 
 		List<FileDiffView> fileContentsArray = new ArrayList<>();
-		Pattern diffStatsPattern = Pattern.compile("\\n@@ -\\d+(,\\d+)? \\+\\d+(,\\d+)? @@\\n");
 
 		String[] lines = raw.split("(^|\\n)diff --git a/");
 		if(lines.length > 1) {
