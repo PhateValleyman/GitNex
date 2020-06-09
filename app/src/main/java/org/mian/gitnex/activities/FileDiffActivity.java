@@ -125,6 +125,10 @@ public class FileDiffActivity extends BaseActivity {
 									String[] level2nd = lines[i].split("@@ -"); // main content part of single diff view
 
 									String[] fileName_ = level2nd[0].split("\\+\\+\\+ b/"); // filename part
+
+									if(fileName_.length <= 1) {
+										continue;
+									}
 									String fileNameFinal = fileName_[1];
 
 									String[] fileContents_ = level2nd[1].split("@@"); // file info / content part
@@ -149,6 +153,9 @@ public class FileDiffActivity extends BaseActivity {
 
 									String[] getFileName = lines[i].split("--git a/");
 
+									if(getFileName.length <= 1) {
+										continue;
+									}
 									String[] getFileName_ = getFileName[1].split("b/");
 									String getFileNameFinal = getFileName_[0].trim();
 
