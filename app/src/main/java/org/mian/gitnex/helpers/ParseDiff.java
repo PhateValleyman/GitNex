@@ -3,6 +3,8 @@ package org.mian.gitnex.helpers;
 import org.mian.gitnex.models.FileDiffView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Author 6543
@@ -30,6 +32,23 @@ public class ParseDiff {
 			return "new";
 		}
 		return "change";
+	}
+
+	private static int[] countRemoveAdd(String raw) {
+
+		int rm = 0, add = 0;
+
+		Pattern rmPattern = Pattern.compile("\n-");
+		Pattern addPattern = Pattern.compile("\n\\+");
+		Matcher rmMatcher = rmPattern.matcher(raw);
+		Matcher addMatcher = addPattern.matcher(raw);
+
+		while(rmMatcher.find())
+			rm++;
+		while(addMatcher.find())
+			add++;
+
+		return new int[]{rm, add};
 	}
 
 	public static List<FileDiffView> getFileDiffViewArray(String raw) {
@@ -95,29 +114,19 @@ public class ParseDiff {
 						String statsLine = rawDiffs[j].split("\n")[0].split(" @@")[0];
 
 						// parse "-1,2 +2,3" and "-1 -3" and so on
-						int oldStart = 0, newStart = 0, added = 0, removed = 0;
-						String stats[] = statsLine.split(" \\+");
-						if(stats.length == 2) {
-							String aStats[] = stats[0].split(",");
-							if(aStats.length >= 1) {
-								oldStart = Integer.parseInt(aStats[0]);
-								removed = oldStart;
-							}
-							if(aStats.length == 2) {
-								removed = Integer.parseInt(aStats[1]);
-							}
-							String bStats[] = stats[1].split(",");
-							if(bStats.length >= 1) {
-								newStart = Integer.parseInt(bStats[0]);
-								added = newStart;
-							}
-							if(bStats.length == 2) {
-								added = Integer.parseInt(bStats[1]);
-							}
+						int oldStart = 0, newStart = 0;
+						String diffPos[] = statsLine.split(" \\+");
+						if(diffPos.length == 2) {
+							oldStart = Integer.parseInt(diffPos[0].split(",")[0]);
+							newStart = Integer.parseInt(diffPos[1].split(",")[0]);
+
 						}
 
+						// get stat
+						int[] stats = countRemoveAdd(rawDiff[1]);
 
-						contents.add(new FileDiffView.Content(rawDiff[1], oldStart, newStart, added, removed));
+
+						contents.add(new FileDiffView.Content(rawDiff[1], oldStart, newStart, stats[0], stats[1]));
 					}
 					fileContentsArray.add(new FileDiffView(fileNames[0], fileNames[1], "diff", getFileInfo(lines[i]), contents));
 				}

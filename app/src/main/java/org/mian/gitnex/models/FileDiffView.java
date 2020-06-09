@@ -59,7 +59,7 @@ public class FileDiffView {
 			this.raw = content;
 		}
 
-		public Content(String content, int oldStart, int newStart, int added, int removed) {
+		public Content(String content, int oldStart, int newStart, int removed, int added) {
 
 			this.raw = content;
 			this.lineAdded = added;
