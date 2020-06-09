@@ -6,34 +6,38 @@ package org.mian.gitnex.models;
 
 public class FileDiffView {
 
-    private String fileName;
-    private boolean fileType;
-    private String fileInfo;
-    private String fileContents;
+	private String fileName;
+	private boolean fileType;
+	private String fileInfo;
+	private String fileContents;
 
-    public FileDiffView(String fileName, boolean fileType, String fileInfo, String fileContents)
-    {
+	public FileDiffView(String fileName, boolean fileType, String fileInfo, String fileContents) {
 
-        this.fileName = fileName;
-        this.fileType = fileType;
-        this.fileInfo = fileInfo;
-        this.fileContents = fileContents;
+		this.fileName = fileName;
+		this.fileType = fileType;
+		this.fileInfo = fileInfo;
+		this.fileContents = fileContents;
 
-    }
+	}
 
-    public String getFileName() {
-        return fileName;
-    }
+	public String getFileName() {
 
-    public boolean isFileType() {
-        return fileType;
-    }
+		return fileName;
+	}
 
-    public String getFileInfo() {
-        return fileInfo;
-    }
+	public boolean isFileType() {
 
-    public String getFileContents() {
-        return fileContents;
-    }
+		return fileType;
+	}
+
+	public String getFileInfo() {
+
+		return fileInfo;
+	}
+
+	public String getFileContents() {
+
+		return fileContents;
+	}
+
 }
