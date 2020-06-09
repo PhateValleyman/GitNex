@@ -97,7 +97,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 			diffStats.setVisibility(View.VISIBLE);
 			headerFileInfo.setText(data.getFileInfo());
 
-			String[] codeLines = getLines(data.getFileContents());
+			String[] codeLines = getLines(data.toString());
 
 			if(MAXIMUM_LINES > codeLines.length) {
 

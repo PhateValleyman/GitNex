@@ -118,7 +118,8 @@ public class FileDiffView {
 		return fileInfo;
 	}
 
-	public String getFileContents() {
+	@NotNull
+	public String toString() {
 
 		StringBuilder raw = new StringBuilder();
 		if(this.contents != null) {
@@ -127,6 +128,12 @@ public class FileDiffView {
 			}
 		}
 		return raw.toString();
+	}
+
+	@NotNull
+	public List<Content> getFileContents() {
+
+		return this.contents;
 	}
 
 }
