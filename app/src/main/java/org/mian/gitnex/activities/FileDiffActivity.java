@@ -10,18 +10,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.FilesDiffAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.ParseDiff;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.FileDiffView;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -83,7 +82,7 @@ public class FileDiffActivity extends BaseActivity {
 
 		// fallback for old gitea instances
 		if(new Version(tinyDb.getString("giteaVersion")).less("1.13.0")) {
-			apiCall = true;
+			apiCall = false;
 			instanceUrl = tinyDb.getString("instanceUrlWithProtocol");
 		}
 
@@ -112,69 +111,7 @@ public class FileDiffActivity extends BaseActivity {
 						assert response.body() != null;
 
 						AppUtil appUtil = new AppUtil();
-						List<FileDiffView> fileContentsArray = new ArrayList<>();
-
-						String[] lines = response.body().string().split("(^|\\n)diff --git a/");
-
-						if(lines.length > 0) {
-
-							for(int i = 1; i < lines.length; i++) {
-
-								if(lines[i].contains("@@ -")) {
-
-									String[] level2nd = lines[i].split("@@ -"); // main content part of single diff view
-
-									String[] fileName_ = level2nd[0].split("\\+\\+\\+ b/"); // filename part
-
-									if(fileName_.length <= 1) {
-										continue;
-									}
-									String fileNameFinal = fileName_[1];
-
-									String[] fileContents_ = level2nd[1].split("@@"); // file info / content part
-									String fileInfoFinal = fileContents_[0];
-									StringBuilder fileContentsFinal = new StringBuilder(fileContents_[1]);
-
-									if(level2nd.length > 2) {
-										for(int j = 2; j < level2nd.length; j++) {
-											fileContentsFinal.append(level2nd[j]);
-										}
-									}
-
-									String fileExtension = FileUtils.getExtension(fileNameFinal);
-
-									String fileContentsFinalWithBlankLines = fileContentsFinal.toString().replaceAll(".*@@.*", "");
-									String fileContentsFinalWithoutBlankLines = fileContentsFinal.toString().replaceAll(".*@@.*(\r?\n|\r)?", "");
-									fileContentsFinalWithoutBlankLines = fileContentsFinalWithoutBlankLines.replaceAll(".*\\ No newline at end of file.*(\r?\n|\r)?", "");
-
-									fileContentsArray.add(new FileDiffView(fileNameFinal, appUtil.imageExtension(fileExtension), fileInfoFinal, fileContentsFinalWithoutBlankLines));
-								}
-								else {
-
-									String[] getFileName = lines[i].split("--git a/");
-
-									if(getFileName.length <= 1) {
-										continue;
-									}
-									String[] getFileName_ = getFileName[1].split("b/");
-									String getFileNameFinal = getFileName_[0].trim();
-
-									String[] binaryFile = getFileName_[1].split("GIT binary patch");
-									String binaryFileRaw = binaryFile[1].substring(binaryFile[1].indexOf('\n') + 1);
-									String binaryFileFinal = binaryFile[1].substring(binaryFileRaw.indexOf('\n') + 1);
-
-									String fileExtension = FileUtils.getExtension(getFileNameFinal);
-
-									if(appUtil.imageExtension(FileUtils.getExtension(getFileNameFinal))) {
-
-										fileContentsArray.add(new FileDiffView(getFileNameFinal, appUtil.imageExtension(fileExtension), "", binaryFileFinal));
-									}
-
-								}
-
-							}
-
-						}
+						List<FileDiffView> fileContentsArray = ParseDiff.getFileDiffViewArray(response.body().string());
 
 						int filesCount = fileContentsArray.size();
 						if(filesCount > 1) {
