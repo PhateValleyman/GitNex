@@ -82,14 +82,21 @@ public class ParseDiff {
 						continue;
 					}
 					List<FileDiffView.Content> contents = new ArrayList<>();
+					// parse each section starting with "@@" at line beginning
 					for(int j = 1; j < rawDiffs.length; j++) {
-						String[] rawDiff = rawDiffs[j].split(" @@\n");
+						// remove stats info (ending with @@)
+						// raw diff is the whole raw diff without any diff meta info's
+						String[] rawDiff = rawDiffs[j].split("^\\d+(,\\d+)? \\+\\d+(,\\d+)? @@");
 						if(rawDiff.length <= 1) {
 							continue;
 						}
 
+						// extract the diff stats info of the first line
+						String statsLine = rawDiffs[j].split("\n")[0].split(" @@")[0];
+
+						// parse "-1,2 +2,3" and "-1 -3" and so on
 						int oldStart = 0, newStart = 0, added = 0, removed = 0;
-						String stats[] = rawDiff[0].split(" \\+");
+						String stats[] = statsLine.split(" \\+");
 						if(stats.length == 2) {
 							String aStats[] = stats[0].split(",");
 							if(aStats.length >= 1) {
