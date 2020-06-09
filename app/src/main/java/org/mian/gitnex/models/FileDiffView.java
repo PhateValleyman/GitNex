@@ -73,6 +73,26 @@ public class FileDiffView {
 			return raw;
 		}
 
+		public int getLineAdded() {
+
+			return this.lineAdded;
+		}
+
+		public int getLineRemoved() {
+
+			return this.lineRemoved;
+		}
+
+		public int getOldLineStart() {
+
+			return this.oldLineStart;
+		}
+
+		public int getNewLineStart() {
+
+			return this.newLineStart;
+		}
+
 	}
 
 	public FileDiffView(String oldName, String newName, String diffType, String fileInfo, List<Content> fileContents) {
