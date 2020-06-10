@@ -70,7 +70,6 @@ public class ParseDiff {
 					fileContentsArray.add(new FileDiffView(fileNames[0], fileNames[1], "binary", "", null));
 				}
 
-
 				// check if it is a binary patch
 				else if(lines[i].contains("\nGIT binary patch\n")) {
 					String[] fileNames = getFileNames(lines[i]);
@@ -88,7 +87,6 @@ public class ParseDiff {
 					contents.add(new FileDiffView.Content(rawContent));
 					fileContentsArray.add(new FileDiffView(fileNames[0], fileNames[1], "binary", getFileInfo(lines[i]), contents));
 				}
-
 
 				// check if it is normal diff
 				else if(lines[i].contains("\n@@ -")) {
@@ -125,12 +123,10 @@ public class ParseDiff {
 						// get stat
 						int[] stats = countRemoveAdd(rawDiff[1]);
 
-
 						contents.add(new FileDiffView.Content(rawDiff[1], oldStart, newStart, stats[0], stats[1]));
 					}
 					fileContentsArray.add(new FileDiffView(fileNames[0], fileNames[1], "diff", getFileInfo(lines[i]), contents));
 				}
-
 
 				// a rename
 				else if(lines[i].contains("\nrename from")) {
@@ -144,7 +140,6 @@ public class ParseDiff {
 		}
 
 		return fileContentsArray;
-
 	}
 
 }
