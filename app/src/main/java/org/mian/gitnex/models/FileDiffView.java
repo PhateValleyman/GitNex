@@ -1,6 +1,6 @@
 package org.mian.gitnex.models;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 import java.util.List;
 
 /**
@@ -38,7 +38,7 @@ public class FileDiffView {
 			return lineRemoved;
 		}
 
-		@NotNull
+		@NonNull
 		public String toString() {
 
 			return "+" + this.lineAdded + ", -" + this.lineRemoved;
@@ -138,7 +138,7 @@ public class FileDiffView {
 		return fileInfo;
 	}
 
-	@NotNull
+	@NonNull
 	public String toString() {
 
 		StringBuilder raw = new StringBuilder();
@@ -150,7 +150,7 @@ public class FileDiffView {
 		return raw.toString();
 	}
 
-	@NotNull
+	@NonNull
 	public List<Content> getFileContents() {
 
 		return this.contents;
