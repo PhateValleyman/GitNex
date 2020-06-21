@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +31,7 @@ import org.mian.gitnex.database.repository.RepositoriesRepository;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserRepositories;
-import org.mian.gitnex.models.WatchRepository;
+import org.mian.gitnex.models.WatchInfo;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 		private TextView repoForks;
 		private TextView repoOpenIssuesCount;
 		private TextView repoType;
+		private LinearLayout archiveRepo;
 
 		private ReposViewHolder(View itemView) {
 
@@ -75,6 +77,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 			repoOpenIssuesCount = itemView.findViewById(R.id.repoOpenIssuesCount);
 			ImageView reposDropdownMenu = itemView.findViewById(R.id.reposDropdownMenu);
 			repoType = itemView.findViewById(R.id.repoType);
+			archiveRepo = itemView.findViewById(R.id.archiveRepoFrame);
 
 			itemView.setOnClickListener(v -> {
 
@@ -127,16 +130,16 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 					final String instanceUrl = tinyDb.getString("instanceUrl");
 					final String token = "token " + tinyDb.getString(tinyDb.getString("loginUid") + "-token");
 
-					WatchRepository watch = new WatchRepository();
+					WatchInfo watch = new WatchInfo();
 
-					Call<WatchRepository> call;
+					Call<WatchInfo> call;
 
 					call = RetrofitClient.getInstance(instanceUrl, context).getApiInterface().checkRepoWatchStatus(token, repoOwner, repoName);
 
-					call.enqueue(new Callback<WatchRepository>() {
+					call.enqueue(new Callback<WatchInfo>() {
 
 						@Override
-						public void onResponse(@NonNull Call<WatchRepository> call, @NonNull retrofit2.Response<WatchRepository> response) {
+						public void onResponse(@NonNull Call<WatchInfo> call, @NonNull retrofit2.Response<WatchInfo> response) {
 
 							if(response.isSuccessful()) {
 
@@ -158,7 +161,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 						}
 
 						@Override
-						public void onFailure(@NonNull Call<WatchRepository> call, @NonNull Throwable t) {
+						public void onFailure(@NonNull Call<WatchInfo> call, @NonNull Throwable t) {
 
 							tinyDb.putBoolean("repoWatch", false);
 							Toasty.info(context, context.getString(R.string.genericApiStatusError));
@@ -232,7 +235,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 	@Override
 	public ReposViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_repos, parent, false);
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_repositories, parent, false);
 		return new ReposViewHolder(v);
 	}
 
@@ -281,6 +284,13 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 			holder.isRepoAdmin = new CheckBox(mCtx);
 		}
 		holder.isRepoAdmin.setChecked(currentItem.getPermissions().isAdmin());
+
+		if(currentItem.isArchived()) {
+			holder.archiveRepo.setVisibility(View.VISIBLE);
+		}
+		else {
+			holder.archiveRepo.setVisibility(View.GONE);
+		}
 
 	}
 

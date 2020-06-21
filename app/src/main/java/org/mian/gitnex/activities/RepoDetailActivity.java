@@ -1,6 +1,7 @@
 package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
@@ -25,6 +26,7 @@ import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetIssuesFilterFragment;
+import org.mian.gitnex.fragments.BottomSheetMilestonesFilterFragment;
 import org.mian.gitnex.fragments.BottomSheetPullRequestFilterFragment;
 import org.mian.gitnex.fragments.BottomSheetRepoFragment;
 import org.mian.gitnex.fragments.BranchesFragment;
@@ -37,9 +39,9 @@ import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.fragments.ReleasesFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.UserRepositories;
-import org.mian.gitnex.models.WatchRepository;
+import org.mian.gitnex.models.WatchInfo;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
@@ -50,7 +52,8 @@ import retrofit2.Callback;
  * Author M M Arif
  */
 
-public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoFragment.BottomSheetListener, BottomSheetIssuesFilterFragment.BottomSheetListener, BottomSheetPullRequestFilterFragment.BottomSheetListener {
+public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoFragment.BottomSheetListener, BottomSheetIssuesFilterFragment.BottomSheetListener,
+		BottomSheetPullRequestFilterFragment.BottomSheetListener, BottomSheetMilestonesFilterFragment.BottomSheetListener {
 
 	private TextView textViewBadgeIssue;
 	private TextView textViewBadgePull;
@@ -58,6 +61,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 	private FragmentRefreshListener fragmentRefreshListener;
 	private FragmentRefreshListenerPr fragmentRefreshListenerPr;
+	private FragmentRefreshListenerMilestone fragmentRefreshListenerMilestone;
+
+	final Context ctx = this;
+	private Context appCtx;
 
 	// issues interface
 	public FragmentRefreshListener getFragmentRefreshListener() {
@@ -93,6 +100,23 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 	}
 
+	// milestones interface
+	public FragmentRefreshListenerMilestone getFragmentRefreshListenerMilestone() {
+
+		return fragmentRefreshListenerMilestone;
+	}
+
+	public void setFragmentRefreshListenerMilestone(FragmentRefreshListenerMilestone fragmentRefreshListenerMilestone) {
+
+		this.fragmentRefreshListenerMilestone = fragmentRefreshListenerMilestone;
+	}
+
+	public interface FragmentRefreshListenerMilestone {
+
+		void onRefresh(String text);
+
+	}
+
 	@Override
 	protected int getLayoutResourceId() {
 
@@ -103,8 +127,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		TinyDB tinyDb = new TinyDB(appCtx);
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 		String repoName1 = parts[1];
@@ -116,6 +141,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 		tinyDb.putString("repoIssuesState", "open");
 		tinyDb.putString("repoPrState", "open");
+		tinyDb.putString("milestoneState", "open");
 
 		String appLocale = tinyDb.getString("locale");
 		AppUtil.setAppLocale(getResources(), appLocale);
@@ -139,15 +165,15 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		switch(tinyDb.getInt("customFontId", -1)) {
 
 			case 0:
-				myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/roboto.ttf");
+				myTypeface = Typeface.createFromAsset(ctx.getAssets(), "fonts/roboto.ttf");
 				break;
 
 			case 2:
-				myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/sourcecodeproregular.ttf");
+				myTypeface = Typeface.createFromAsset(ctx.getAssets(), "fonts/sourcecodeproregular.ttf");
 				break;
 
 			default:
-				myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/manroperegular.ttf");
+				myTypeface = Typeface.createFromAsset(ctx.getAssets(), "fonts/manroperegular.ttf");
 				break;
 
 		}
@@ -195,7 +221,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			textViewBadgePull.setVisibility(View.GONE);
 			textViewBadgeRelease.setVisibility(View.GONE);
 
-			getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
+			getRepoInfo(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName1);
 			ColorStateList textColor = tabLayout.getTabTextColors();
 
 			// issue count
@@ -217,7 +243,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			}
 
 			// release count
-			if(VersionCheck.compareVersion("1.11.5", tinyDb.getString("giteaVersion")) < 1) {
+			if(new Version("1.11.4").less(tinyDb.getString("giteaVersion"))) {
 				if(textViewBadgeRelease.getText() != "") { // only show if API returned a number
 					Objects.requireNonNull(tabLayout.getTabAt(5)).setCustomView(tabHeader6);
 					TabLayout.Tab tabOpenRelease = tabLayout.getTabAt(5);
@@ -228,8 +254,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			}
 		}
 
-		checkRepositoryStarStatus(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
-		checkRepositoryWatchStatus(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName1);
+		checkRepositoryStarStatus(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName1);
+		checkRepositoryWatchStatus(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName1);
 
 	}
 
@@ -237,7 +263,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	public void onResume() {
 
 		super.onResume();
-		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		TinyDB tinyDb = new TinyDB(appCtx);
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		String repoFullName = tinyDb.getString("repoFullName");
@@ -247,7 +273,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		if(tinyDb.getBoolean("enableCounterIssueBadge")) {
-			getRepoInfo(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+			getRepoInfo(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 		}
 
 	}
@@ -282,6 +308,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 				BottomSheetPullRequestFilterFragment filterPrBottomSheet = new BottomSheetPullRequestFilterFragment();
 				filterPrBottomSheet.show(getSupportFragmentManager(), "repoFilterMenuPrBottomSheet");
 				return true;
+			case R.id.filterMilestone:
+				BottomSheetMilestonesFilterFragment filterMilestoneBottomSheet = new BottomSheetMilestonesFilterFragment();
+				filterMilestoneBottomSheet.show(getSupportFragmentManager(), "repoFilterMenuMilestoneBottomSheet");
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -291,7 +321,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	@Override
 	public void onButtonClicked(String text) {
 
-		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		TinyDB tinyDb = new TinyDB(appCtx);
 
 		switch(text) {
 			case "label":
@@ -343,6 +373,16 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 					getFragmentRefreshListenerPr().onRefresh("closed");
 				}
 				break;
+			case "openMilestone":
+				if(getFragmentRefreshListenerMilestone() != null) {
+					getFragmentRefreshListenerMilestone().onRefresh("open");
+				}
+				break;
+			case "closedMilestone":
+				if(getFragmentRefreshListenerMilestone() != null) {
+					getFragmentRefreshListenerMilestone().onRefresh("closed");
+				}
+				break;
 		}
 
 	}
@@ -358,7 +398,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		@Override
 		public Fragment getItem(int position) {
 
-			TinyDB tinyDb = new TinyDB(getApplicationContext());
+			TinyDB tinyDb = new TinyDB(appCtx);
 			String repoFullName = tinyDb.getString("repoFullName");
 			String[] parts = repoFullName.split("/");
 			String repoOwner = parts[0];
@@ -381,7 +421,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 				case 5: // releases
 					return ReleasesFragment.newInstance(repoOwner, repoName);
 				case 6: // milestones
-					return MilestonesFragment.newInstance(repoOwner, repoName);
+					fragment = new MilestonesFragment();
+					break;
 				case 7: // labels
 					return LabelsFragment.newInstance(repoOwner, repoName);
 				case 8: // collaborators
@@ -401,9 +442,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 	private void getRepoInfo(String instanceUrl, String token, final String owner, String repo) {
 
-		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		TinyDB tinyDb = new TinyDB(appCtx);
 
-		Call<UserRepositories> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserRepository(token, owner, repo);
+		Call<UserRepositories> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserRepository(token, owner, repo);
 
 		call.enqueue(new Callback<UserRepositories>() {
 
@@ -458,14 +499,14 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 		Call<JsonElement> call;
 
-		call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().checkRepoStarStatus(instanceToken, owner, repo);
+		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().checkRepoStarStatus(instanceToken, owner, repo);
 
 		call.enqueue(new Callback<JsonElement>() {
 
 			@Override
 			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-				TinyDB tinyDb = new TinyDB(getApplicationContext());
+				TinyDB tinyDb = new TinyDB(appCtx);
 				tinyDb.putInt("repositoryStarStatus", response.code());
 
 			}
@@ -481,16 +522,16 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 	private void checkRepositoryWatchStatus(String instanceUrl, String instanceToken, final String owner, String repo) {
 
-		Call<WatchRepository> call;
+		Call<WatchInfo> call;
 
-		call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().checkRepoWatchStatus(instanceToken, owner, repo);
+		call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().checkRepoWatchStatus(instanceToken, owner, repo);
 
-		call.enqueue(new Callback<WatchRepository>() {
+		call.enqueue(new Callback<WatchInfo>() {
 
 			@Override
-			public void onResponse(@NonNull Call<WatchRepository> call, @NonNull retrofit2.Response<WatchRepository> response) {
+			public void onResponse(@NonNull Call<WatchInfo> call, @NonNull retrofit2.Response<WatchInfo> response) {
 
-				TinyDB tinyDb = new TinyDB(getApplicationContext());
+				TinyDB tinyDb = new TinyDB(appCtx);
 
 				if(response.code() == 200) {
 					assert response.body() != null;
@@ -505,7 +546,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<WatchRepository> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<WatchInfo> call, @NonNull Throwable t) {
 
 				Log.e("onFailure", t.toString());
 			}

@@ -31,23 +31,25 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 		final TinyDB tinyDb = new TinyDB(getApplicationContext());
 
-		if(tinyDb.getInt("themeId") == 1) {
-			setTheme(R.style.AppThemeLight);
-		}
-		else if(tinyDb.getInt("themeId") == 2) {
+		switch(tinyDb.getInt("themeId")) {
 
-			boolean timeSetterFlag = TimeHelper.timeBetweenHours(18, 6); // 6pm to 6am
-
-			if(timeSetterFlag) {
-				setTheme(R.style.AppTheme);
-			}
-			else {
+			case 1:
 				setTheme(R.style.AppThemeLight);
-			}
+				break;
 
-		}
-		else {
-			setTheme(R.style.AppTheme);
+			case 2:
+				if(TimeHelper.timeBetweenHours(18, 6)) { // 6pm to 6am
+					setTheme(R.style.AppTheme);
+				}
+				else {
+					setTheme(R.style.AppThemeLight);
+				}
+				break;
+
+			default:
+				setTheme(R.style.AppTheme);
+				break;
+
 		}
 
 		String appLocale = tinyDb.getString("locale");
@@ -91,6 +93,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 		if(tinyDb.getString("crashReportingEnabledInit").isEmpty()) {
 			tinyDb.putBoolean("crashReportingEnabled", true);
 			tinyDb.putString("crashReportingEnabledInit", "yes");
+		}
+
+		// default cache setter
+		if(tinyDb.getString("cacheSizeStr").isEmpty()) {
+			tinyDb.putString("cacheSizeStr", getResources().getString(R.string.cacheSizeDataSelectionSelectedText));
+		}
+		if(tinyDb.getString("cacheSizeImagesStr").isEmpty()) {
+			tinyDb.putString("cacheSizeImagesStr", getResources().getString(R.string.cacheSizeImagesSelectionSelectedText));
 		}
 
 		if (tinyDb.getBoolean("crashReportingEnabled")) {

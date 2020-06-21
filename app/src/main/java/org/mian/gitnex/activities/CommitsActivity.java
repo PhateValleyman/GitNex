@@ -23,8 +23,7 @@ import org.mian.gitnex.adapters.CommitsAdapter;
 import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
-import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.Commits;
 import org.mian.gitnex.util.TinyDB;
@@ -40,7 +39,8 @@ import retrofit2.Response;
 
 public class CommitsActivity extends BaseActivity {
 
-	private Context ctx;
+	final Context ctx = this;
+	private Context appCtx;
 	private View.OnClickListener onClickListener;
 	private TextView noData;
 	private ProgressBar progressBar;
@@ -63,11 +63,11 @@ public class CommitsActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		ctx = this;
 
-		TinyDB tinyDb = new TinyDB(ctx);
+		TinyDB tinyDb = new TinyDB(appCtx);
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
@@ -91,7 +91,7 @@ public class CommitsActivity extends BaseActivity {
 		closeActivity.setOnClickListener(onClickListener);
 
 		// if gitea is 1.12 or higher use the new limit (resultLimitNewGiteaInstances)
-		if(VersionCheck.compareVersion("1.12.0", tinyDb.getString("giteaVersion")) >= 1) {
+		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12")) {
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}
 
@@ -101,7 +101,7 @@ public class CommitsActivity extends BaseActivity {
 		swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
 
 			swipeRefresh.setRefreshing(false);
-			loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
+			loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName, resultLimit);
 			adapter.notifyDataChanged();
 
 		}, 200));
@@ -112,7 +112,7 @@ public class CommitsActivity extends BaseActivity {
 			if(commitsList.size() == resultLimit || pageSize == resultLimit) {
 
 				int page = (commitsList.size() + resultLimit) / resultLimit;
-				loadMore(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, page, branchName);
+				loadMore(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, page, branchName, resultLimit);
 
 			}
 
@@ -123,13 +123,13 @@ public class CommitsActivity extends BaseActivity {
 		recyclerView.setAdapter(adapter);
 
 		api = AppApiService.createService(ApiInterface.class, instanceUrl, ctx);
-		loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
+		loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName, resultLimit);
 
 	}
 
-	private void loadInitial(String token, String repoOwner, String repoName, String branchName) {
+	private void loadInitial(String token, String repoOwner, String repoName, String branchName, int resultLimit) {
 
-		Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName, 1, branchName);
+		Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName, 1, branchName, resultLimit);
 
 		call.enqueue(new Callback<List<Commits>>() {
 
@@ -174,13 +174,13 @@ public class CommitsActivity extends BaseActivity {
 
 	}
 
-	private void loadMore(String token, String repoOwner, String repoName, final int page, String branchName) {
+	private void loadMore(String token, String repoOwner, String repoName, final int page, String branchName, int resultLimit) {
 
 		//add loading progress view
 		commitsList.add(new Commits("load"));
 		adapter.notifyItemInserted((commitsList.size() - 1));
 
-		Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName, page, branchName);
+		Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName, page, branchName, resultLimit);
 
 		call.enqueue(new Callback<List<Commits>>() {
 
@@ -203,7 +203,6 @@ public class CommitsActivity extends BaseActivity {
 					}
 					else {
 
-						Toasty.info(ctx, getString(R.string.noMoreData));
 						adapter.setMoreDataAvailable(false);
 
 					}

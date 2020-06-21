@@ -1,26 +1,26 @@
 package org.mian.gitnex.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.FilesDiffAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.ParseDiff;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.FileDiffView;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -32,188 +32,150 @@ import retrofit2.Callback;
 
 public class FileDiffActivity extends BaseActivity {
 
-    private View.OnClickListener onClickListener;
-    private TextView toolbar_title;
-    private RecyclerView mRecyclerView;
-    private ProgressBar mProgressBar;
+	private View.OnClickListener onClickListener;
+	private TextView toolbarTitle;
+	private ListView mListView;
+	private ProgressBar mProgressBar;
+	final Context ctx = this;
+	private Context appCtx;
 
-    @Override
-    protected int getLayoutResourceId(){
-        return R.layout.activity_file_diff;
-    }
+	@Override
+	protected int getLayoutResourceId() {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+		return R.layout.activity_file_diff;
+	}
 
-        super.onCreate(savedInstanceState);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-        ImageView closeActivity = findViewById(R.id.close);
-        toolbar_title = findViewById(R.id.toolbar_title);
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mProgressBar = findViewById(R.id.progress_bar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+		final TinyDB tinyDb = new TinyDB(appCtx);
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		final String repoOwner = parts[0];
+		final String repoName = parts[1];
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        toolbar_title.setText(R.string.processingText);
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		ImageView closeActivity = findViewById(R.id.close);
+		toolbarTitle = findViewById(R.id.toolbar_title);
+		mListView = findViewById(R.id.listView);
+		mProgressBar = findViewById(R.id.progress_bar);
 
-        mProgressBar.setVisibility(View.VISIBLE);
+		mListView.setDivider(null);
 
-        String pullIndex = tinyDb.getString("issueNumber");
+		toolbarTitle.setText(R.string.processingText);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        getPullDiffContent(tinyDb.getString("instanceUrlWithProtocol"), repoOwner, repoName, pullIndex);
+		mProgressBar.setVisibility(View.VISIBLE);
 
-    }
+		String pullIndex = tinyDb.getString("issueNumber");
 
-    private void getPullDiffContent(String instanceUrl, String owner, String repo, String filename) {
+		boolean apiCall = true;
+		String instanceUrl = tinyDb.getString("instanceUrl");
 
-        Call<ResponseBody> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
-                .getWebInterface()
-                .getPullDiffContent(owner, repo, filename);
+		// fallback for old gitea instances
+		if(new Version(tinyDb.getString("giteaVersion")).less("1.13.0")) {
+			apiCall = false;
+			instanceUrl = tinyDb.getString("instanceUrlWithProtocol");
+		}
 
-        call.enqueue(new Callback<ResponseBody>() {
+		getPullDiffContent(instanceUrl, repoOwner, repoName, pullIndex, instanceToken, apiCall);
 
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
+	}
 
-                if (response.code() == 200) {
+	private void getPullDiffContent(String instanceUrl, String owner, String repo, String pullIndex, String token, boolean apiCall) {
 
-                    try {
-                        assert response.body() != null;
+		Call<ResponseBody> call;
+		if(apiCall) {
+			call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getPullDiffContent(token, owner, repo, pullIndex);
+		}
+		else {
+			call = RetrofitClient.getInstance(instanceUrl, ctx).getWebInterface().getPullDiffContent(owner, repo, pullIndex);
+		}
 
-                        AppUtil appUtil = new AppUtil();
-                        List<FileDiffView> fileContentsArray = new ArrayList<>();
+		call.enqueue(new Callback<ResponseBody>() {
 
-                        String[] lines = response.body().string().split("diff");
+			@Override
+			public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
 
-                        if(lines.length > 0) {
+				if(response.code() == 200) {
 
-                            for (int i = 1; i < lines.length; i++) {
+					try {
+						assert response.body() != null;
 
-                                if(lines[i].contains("@@ -")) {
+						AppUtil appUtil = new AppUtil();
+						List<FileDiffView> fileContentsArray = ParseDiff.getFileDiffViewArray(response.body().string());
 
-                                    String[] level2nd = lines[i].split("@@ -"); // main content part of single diff view
+						int filesCount = fileContentsArray.size();
+						if(filesCount > 1) {
+							toolbarTitle.setText(getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)));
+						}
+						else {
+							toolbarTitle.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
+						}
 
-                                    String[] fileName_ = level2nd[0].split("\\+\\+\\+ b/"); // filename part
-                                    String fileNameFinal = fileName_[1];
+						FilesDiffAdapter adapter = new FilesDiffAdapter(ctx, fileContentsArray);
+						mListView.setAdapter(adapter);
 
-                                    String[] fileContents_ = level2nd[1].split("@@"); // file info / content part
-                                    String fileInfoFinal = fileContents_[0];
-                                    String fileContentsFinal = (fileContents_[1]);
+						mProgressBar.setVisibility(View.GONE);
 
-                                    if(level2nd.length > 2) {
-                                        for (int j = 2; j < level2nd.length; j++) {
-                                            fileContentsFinal += (level2nd[j]);
-                                        }
-                                    }
+					}
+					catch(IOException e) {
+						e.printStackTrace();
+					}
 
-                                    String fileExtension = FileUtils.getExtension(fileNameFinal);
+				}
+				else if(response.code() == 401) {
 
-                                    String fileContentsFinalWithBlankLines = fileContentsFinal.replaceAll( ".*@@.*", "" );
-                                    String fileContentsFinalWithoutBlankLines = fileContentsFinal.replaceAll( ".*@@.*(\r?\n|\r)?", "" );
-                                    fileContentsFinalWithoutBlankLines = fileContentsFinalWithoutBlankLines.replaceAll( ".*\\ No newline at end of file.*(\r?\n|\r)?", "" );
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
-                                    fileContentsArray.add(new FileDiffView(fileNameFinal, appUtil.imageExtension(fileExtension), fileInfoFinal, fileContentsFinalWithoutBlankLines));
-                                }
-                                else {
+				}
+				else if(response.code() == 403) {
 
-                                    String[] getFileName = lines[i].split("--git a/");
+					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
 
-                                    String[] getFileName_ = getFileName[1].split("b/");
-                                    String getFileNameFinal = getFileName_[0].trim();
+				}
+				else if(response.code() == 404) {
 
-                                    String[] binaryFile = getFileName_[1].split("GIT binary patch");
-                                    String binaryFileRaw = binaryFile[1].substring(binaryFile[1].indexOf('\n')+1);
-                                    String binaryFileFinal = binaryFile[1].substring(binaryFileRaw.indexOf('\n')+1);
+					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
 
-                                    String fileExtension = FileUtils.getExtension(getFileNameFinal);
+				}
+				else {
 
-                                    if(appUtil.imageExtension(FileUtils.getExtension(getFileNameFinal))) {
+					Toasty.info(ctx, getString(R.string.labelGeneralError));
 
-                                        fileContentsArray.add(new FileDiffView(getFileNameFinal, appUtil.imageExtension(fileExtension), "", binaryFileFinal));
-                                    }
+				}
 
-                                }
+			}
 
-                            }
+			@Override
+			public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
 
-                        }
+				Log.e("onFailure", t.toString());
+			}
+		});
 
-                        int filesCount = fileContentsArray.size();
-                        if(filesCount > 1) {
-                            toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)));
-                        }
-                        else {
-                            toolbar_title.setText(getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount)));
-                        }
+	}
 
-                        FilesDiffAdapter adapter = new FilesDiffAdapter(fileContentsArray, getApplicationContext());
-                        mRecyclerView.setAdapter(adapter);
+	private void initCloseListener() {
 
-                        mProgressBar.setVisibility(View.GONE);
+		onClickListener = new View.OnClickListener() {
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+			@Override
+			public void onClick(View view) {
 
-                }
-                else if(response.code() == 401) {
-
-                    AlertDialogs.authorizationTokenRevokedDialog(getApplicationContext(), getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-                            getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
-                }
-                else if(response.code() == 403) {
-
-                    Toasty.info(getApplicationContext(), getApplicationContext().getString(R.string.authorizeError));
-
-                }
-                else if(response.code() == 404) {
-
-                    Toasty.info(getApplicationContext(), getApplicationContext().getString(R.string.apiNotFound));
-
-                }
-                else {
-
-                    Toasty.info(getApplicationContext(), getString(R.string.labelGeneralError));
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
-
-    }
-
-    private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getIntent().removeExtra("singleFileName");
-                finish();
-            }
-        };
-    }
+				getIntent().removeExtra("singleFileName");
+				finish();
+			}
+		};
+	}
 
 
 }

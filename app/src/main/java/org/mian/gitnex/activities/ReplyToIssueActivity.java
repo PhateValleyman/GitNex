@@ -1,5 +1,9 @@
 package org.mian.gitnex.activities;
 
+import androidx.annotation.NonNull;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -12,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
@@ -30,9 +33,6 @@ import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -44,6 +44,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 	private View.OnClickListener onClickListener;
 
 	final Context ctx = this;
+	private Context appCtx;
 
 	private SocialAutoCompleteTextView addComment;
 	private ArrayAdapter<Mention> defaultMentionAdapter;
@@ -51,8 +52,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 	private String TAG = StaticGlobalVariables.replyToIssueActivity;
 
 	@Override
-	protected int getLayoutResourceId() {
-
+	protected int getLayoutResourceId(){
 		return R.layout.activity_reply_to_issue;
 	}
 
@@ -60,11 +60,12 @@ public class ReplyToIssueActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-		boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
-		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		TinyDB tinyDb = new TinyDB(appCtx);
 
 		addComment = findViewById(R.id.addComment);
 		addComment.setShowSoftInputOnFocus(true);
@@ -93,6 +94,10 @@ public class ReplyToIssueActivity extends BaseActivity {
 		if(getIntent().getStringExtra("commentBody") != null) {
 
 			addComment.setText(getIntent().getStringExtra("commentBody"));
+
+			if(getIntent().getBooleanExtra("cursorToEnd", false)) {
+				addComment.setSelection(addComment.length());
+			}
 
 		}
 
@@ -199,7 +204,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
 	public void loadCollaboratorsList() {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
@@ -209,14 +214,17 @@ public class ReplyToIssueActivity extends BaseActivity {
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
 
-		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+		Call<List<Collaborators>> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
 		call.enqueue(new Callback<List<Collaborators>>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
 
-				if(response.isSuccessful()) {
+				if (response.isSuccessful()) {
 
 					assert response.body() != null;
 					String fullName = "";
@@ -247,41 +255,26 @@ public class ReplyToIssueActivity extends BaseActivity {
 
 	private void initCloseListener() {
 
-		onClickListener = new View.OnClickListener() {
-
-			@Override
-			public void onClick(View view) {
-
-				finish();
-			}
-		};
+		onClickListener = view -> finish();
 	}
 
-	private View.OnClickListener replyToIssue = new View.OnClickListener() {
-
-		public void onClick(View v) {
-
-			processNewCommentReply();
-		}
-	};
+	private View.OnClickListener replyToIssue = v -> processNewCommentReply();
 
 	private void processNewCommentReply() {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
-
 		String newReplyDT = addComment.getText().toString();
-		boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
 		if(!connToInternet) {
 
-			Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
 			return;
 
 		}
 
 		if(newReplyDT.equals("")) {
 
-			Toasty.info(getApplicationContext(), getString(R.string.commentEmptyError));
+			Toasty.info(ctx, getString(R.string.commentEmptyError));
 
 		}
 		else {
@@ -295,7 +288,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
 	private void replyComment(String newReplyDT) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
@@ -308,7 +301,10 @@ public class ReplyToIssueActivity extends BaseActivity {
 
 		Issues issueComment = new Issues(newReplyDT);
 
-		Call<Issues> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().replyCommentToIssue(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, issueComment);
+		Call<Issues> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.replyCommentToIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueComment);
 
 		call.enqueue(new Callback<Issues>() {
 
@@ -317,7 +313,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 
 				if(response.code() == 201) {
 
-					Toasty.info(getApplicationContext(), getString(R.string.commentSuccess));
+					Toasty.info(ctx, getString(R.string.commentSuccess));
 					tinyDb.putBoolean("commentPosted", true);
 					tinyDb.putBoolean("resumeIssues", true);
 					tinyDb.putBoolean("resumePullRequests", true);
@@ -327,13 +323,16 @@ public class ReplyToIssueActivity extends BaseActivity {
 				else if(response.code() == 401) {
 
 					enableProcessButton();
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
+						getResources().getString(R.string.alertDialogTokenRevokedMessage),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
 				}
 				else {
 
 					enableProcessButton();
-					Toasty.info(getApplicationContext(), getString(R.string.commentError));
+					Toasty.info(ctx, getString(R.string.commentError));
 
 				}
 

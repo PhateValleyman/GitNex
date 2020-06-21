@@ -27,7 +27,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.repository.UserAccountsRepository;
 import org.mian.gitnex.helpers.NetworkObserver;
 import org.mian.gitnex.helpers.SnackBar;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.GiteaVersion;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.models.UserTokens;
@@ -38,7 +38,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import okhttp3.Credentials;
 import retrofit2.Call;
@@ -56,6 +55,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 	private TextView otpInfo;
 	private RadioGroup loginMethod;
 	final Context ctx = this;
+	private Context appCtx;
 	private String device_id = "token";
 	private ScrollView layoutView;
 
@@ -69,8 +69,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
 
-		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		TinyDB tinyDb = new TinyDB(appCtx);
 		NetworkObserver networkMonitor = new NetworkObserver(this);
 
 		loginButton = findViewById(R.id.login_button);
@@ -86,12 +87,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 		loginTokenCode = findViewById(R.id.loginTokenCode);
 		layoutView = findViewById(R.id.loginForm);
 
-		viewTextAppVersion.setText(AppUtil.getAppVersion(getApplicationContext()));
+		viewTextAppVersion.setText(AppUtil.getAppVersion(appCtx));
 
 		Resources res = getResources();
 		String[] allProtocols = res.getStringArray(R.array.protocolValues);
 
-		final ArrayAdapter<String> adapterProtocols = new ArrayAdapter<String>(Objects.requireNonNull(getApplicationContext()), R.layout.spinner_item, allProtocols);
+		final ArrayAdapter<String> adapterProtocols = new ArrayAdapter<String>(LoginActivity.this, R.layout.spinner_item, allProtocols);
 
 		adapterProtocols.setDropDownViewResource(R.layout.spinner_dropdown_item);
 		protocolSpinner.setAdapter(adapterProtocols);
@@ -102,7 +103,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 				String value = getResources().getStringArray(R.array.protocolValues)[pos];
 				if(value.toLowerCase().equals("http")) {
-					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.protocolError));
+					SnackBar.warning(ctx, layoutView, getResources().getString(R.string.protocolError));
 				}
 
 			}
@@ -165,11 +166,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 			if(isAvailable) {
 				enableProcessButton();
-				SnackBar.success(getApplicationContext(), layoutView, getResources().getString(R.string.netConnectionIsBack));
+				SnackBar.success(ctx, layoutView, getResources().getString(R.string.netConnectionIsBack));
 			}
 			else {
 				disableProcessButton();
-				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.checkNetConnection));
+				SnackBar.error(ctx, layoutView, getResources().getString(R.string.checkNetConnection));
 			}
 
 		});
@@ -226,7 +227,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 	@SuppressLint("ResourceAsColor")
 	private void login() {
 
-		TinyDB tinyDb = new TinyDB(getApplicationContext());
+		TinyDB tinyDb = new TinyDB(appCtx);
 		AppUtil appUtil = new AppUtil();
 		boolean connToInternet = AppUtil.haveNetworkConnection(LoginActivity.this);
 
@@ -291,7 +292,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 				if(instanceUrlET.getText().toString().equals("")) {
 
-					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldURL));
+					SnackBar.warning(ctx, layoutView, getResources().getString(R.string.emptyFieldURL));
 					enableProcessButton();
 					loginButton.setText(R.string.btnLogin);
 					return;
@@ -299,7 +300,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 				}
 				if(loginUid.equals("")) {
 
-					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldUsername));
+					SnackBar.warning(ctx, layoutView, getResources().getString(R.string.emptyFieldUsername));
 					enableProcessButton();
 					loginButton.setText(R.string.btnLogin);
 					return;
@@ -307,7 +308,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 				}
 				if(loginPassword.getText().toString().equals("")) {
 
-					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldPassword));
+					SnackBar.warning(ctx, layoutView, getResources().getString(R.string.emptyFieldPassword));
 					enableProcessButton();
 					loginButton.setText(R.string.btnLogin);
 					return;
@@ -323,7 +324,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 					}
 					else {
 
-						SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.loginOTPTypeError));
+						SnackBar.warning(ctx, layoutView, getResources().getString(R.string.loginOTPTypeError));
 						enableProcessButton();
 						loginButton.setText(R.string.btnLogin);
 						return;
@@ -337,7 +338,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 			}
 			else {
 
-				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.checkNetConnection));
+				SnackBar.error(ctx, layoutView, getResources().getString(R.string.checkNetConnection));
 
 			}
 
@@ -382,7 +383,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 				if(instanceUrlET.getText().toString().equals("")) {
 
-					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.emptyFieldURL));
+					SnackBar.warning(ctx, layoutView, getResources().getString(R.string.emptyFieldURL));
 					enableProcessButton();
 					loginButton.setText(R.string.btnLogin);
 					return;
@@ -390,7 +391,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 				}
 				if(loginToken_.equals("")) {
 
-					SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.loginTokenError));
+					SnackBar.warning(ctx, layoutView, getResources().getString(R.string.loginTokenError));
 					enableProcessButton();
 					loginButton.setText(R.string.btnLogin);
 					return;
@@ -401,7 +402,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 			}
 			else {
 
-				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.checkNetConnection));
+				SnackBar.error(ctx, layoutView, getResources().getString(R.string.checkNetConnection));
 
 			}
 
@@ -413,15 +414,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 		Call<GiteaVersion> callVersion;
 		if(!loginToken_.isEmpty()) {
-			callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithToken(loginToken_);
+			callVersion = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithToken(loginToken_);
 		}
 		else {
 			final String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
 			if(loginOTP != 0) {
-				callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithOTP(credential, loginOTP);
+				callVersion = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithOTP(credential, loginOTP);
 			}
 			else {
-				callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithBasic(credential);
+				callVersion = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithBasic(credential);
 			}
 		}
 
@@ -435,40 +436,49 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 					GiteaVersion version = responseVersion.body();
 					assert version != null;
 
-					VersionCheck vt = VersionCheck.check(getString(R.string.versionLow), getString(R.string.versionHigh), version.getVersion());
+					// init
+					Version gitea_version = new Version(getString(R.string.versionLow));
+					try {
+						gitea_version = new Version(version.getVersion());
+					}
+					catch(Error e) {
+						SnackBar.error(ctx, layoutView, getResources().getString(R.string.versionUnknown));
+						enableProcessButton();
+					}
 
-					switch(vt) {
-						case UNSUPPORTED_NEW:
-							//SnackBar.warning(getApplicationContext(), layoutView, getResources().getString(R.string.versionUnsupportedNew));
-						case SUPPORTED_LATEST:
-						case SUPPORTED_OLD:
-						case DEVELOPMENT:
-							login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
-							return;
-						case UNSUPPORTED_OLD:
+					// UNSUPPORTED_OLD
+					if(gitea_version.less(getString(R.string.versionLow))) {
 
-							AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
+						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
 
-							alertDialogBuilder.setTitle(getString(R.string.versionAlertDialogHeader)).setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion())).setCancelable(true).setIcon(R.drawable.ic_warning).setNegativeButton(getString(R.string.cancelButton), (dialog, which) -> {
+						alertDialogBuilder.setTitle(getString(R.string.versionAlertDialogHeader)).setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion())).setCancelable(true).setIcon(R.drawable.ic_warning).setNegativeButton(getString(R.string.cancelButton), (dialog, which) -> {
 
-								dialog.dismiss();
-								enableProcessButton();
-
-							}).setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
-
-								dialog.dismiss();
-								login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
-
-							});
-
-							AlertDialog alertDialog = alertDialogBuilder.create();
-
-							alertDialog.show();
-							return;
-						default: // UNKNOWN
-							SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.versionUnknow));
+							dialog.dismiss();
 							enableProcessButton();
 
+						}).setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
+
+							dialog.dismiss();
+							login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
+
+						});
+
+						AlertDialog alertDialog = alertDialogBuilder.create();
+
+						alertDialog.show();
+						return;
+
+					}
+					// SUPPORTED
+					else if(gitea_version.lessOrEqual(getString(R.string.versionHigh))) {
+						login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
+						return;
+					}
+					// UNSUPPORTED_NEW
+					else {
+						SnackBar.info(ctx, layoutView, getResources().getString(R.string.versionUnsupportedNew));
+						login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken_);
+						return;
 					}
 
 				}
@@ -494,7 +504,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 			public void onFailure(@NonNull Call<GiteaVersion> callVersion, Throwable t) {
 
 				Log.e("onFailure-version", t.toString());
-				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.errorOnLogin));
+				SnackBar.error(ctx, layoutView, getResources().getString(R.string.errorOnLogin));
 				enableProcessButton();
 				loginButton.setText(R.string.btnLogin);
 
@@ -506,9 +516,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 	private void letTheUserInViaToken(String instanceUrl, final String loginToken_) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserInfo("token " + loginToken_);
+		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserInfo("token " + loginToken_);
 
 		call.enqueue(new Callback<UserInfo>() {
 
@@ -549,14 +559,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 				}
 				else if(response.code() == 401) {
 
-					SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
+					SnackBar.error(ctx, layoutView, getResources().getString(R.string.unauthorizedApiError));
 					enableProcessButton();
 					loginButton.setText(R.string.btnLogin);
 
 				}
 				else {
 
-					SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+					SnackBar.error(ctx, layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
 					enableProcessButton();
 					loginButton.setText(R.string.btnLogin);
 
@@ -568,7 +578,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 			public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
 
 				Log.e("onFailure", t.toString());
-				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
+				SnackBar.error(ctx, layoutView, getResources().getString(R.string.genericError));
 				enableProcessButton();
 				loginButton.setText(R.string.btnLogin);
 
@@ -584,12 +594,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 		Call<List<UserTokens>> call;
 		if(loginOTP != 0) {
 
-			call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserTokensWithOTP(credential, loginOTP, loginUid);
+			call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserTokensWithOTP(credential, loginOTP, loginUid);
 
 		}
 		else {
 
-			call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserTokens(credential, loginUid);
+			call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserTokens(credential, loginUid);
 
 		}
 
@@ -599,7 +609,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 			public void onResponse(@NonNull Call<List<UserTokens>> call, @NonNull retrofit2.Response<List<UserTokens>> response) {
 
 				List<UserTokens> userTokens = response.body();
-				final TinyDB tinyDb = new TinyDB(getApplicationContext());
+				final TinyDB tinyDb = new TinyDB(appCtx);
 				final AppUtil appUtil = new AppUtil();
 				//Headers responseHeaders = response.headers();
 
@@ -644,12 +654,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 							Call<UserTokens> callCreateToken;
 							if(loginOTP != 0) {
 
-								callCreateToken = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().createNewTokenWithOTP(credential, loginOTP, loginUid, createUserToken);
+								callCreateToken = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().createNewTokenWithOTP(credential, loginOTP, loginUid, createUserToken);
 
 							}
 							else {
 
-								callCreateToken = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().createNewToken(credential, loginUid, createUserToken);
+								callCreateToken = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().createNewToken(credential, loginUid, createUserToken);
 
 							}
 
@@ -668,7 +678,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
 											if(!newToken.getSha1().equals("")) {
 
-												Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserInfo("token " + newToken.getSha1());
+												Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserInfo("token " + newToken.getSha1());
 
 												call.enqueue(new Callback<UserInfo>() {
 
@@ -708,14 +718,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 														}
 														else if(response.code() == 401) {
 
-															SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
+															SnackBar.error(ctx, layoutView, getResources().getString(R.string.unauthorizedApiError));
 															enableProcessButton();
 															loginButton.setText(R.string.btnLogin);
 
 														}
 														else {
 
-															SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+															SnackBar.error(ctx, layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
 															enableProcessButton();
 															loginButton.setText(R.string.btnLogin);
 
@@ -727,7 +737,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 													public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
 
 														Log.e("onFailure", t.toString());
-														SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
+														SnackBar.error(ctx, layoutView, getResources().getString(R.string.genericError));
 														enableProcessButton();
 														loginButton.setText(R.string.btnLogin);
 
@@ -741,7 +751,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 									}
 									else if(responseCreate.code() == 500) {
 
-										SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + responseCreate.code());
+										SnackBar.error(ctx, layoutView, getResources().getString(R.string.genericApiStatusError) + responseCreate.code());
 										enableProcessButton();
 										loginButton.setText(R.string.btnLogin);
 
@@ -760,10 +770,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 						}
 						else {
 
-							String token = tinyDb.getString(loginUid + "-token");
-							String instanceToken = "token " + token;
+							String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-							Call<UserInfo> callGetUsername = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserInfo(instanceToken);
+							Call<UserInfo> callGetUsername = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserInfo(instanceToken);
 
 							callGetUsername.enqueue(new Callback<UserInfo>() {
 
@@ -788,7 +797,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 											UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
 
 												if(count == 0) {
-													userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), token, "");
+													userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), instanceToken, "");
 												}
 
 											});
@@ -801,14 +810,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 									}
 									else if(response.code() == 401) {
 
-										SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.unauthorizedApiError));
+										SnackBar.error(ctx, layoutView, getResources().getString(R.string.unauthorizedApiError));
 										enableProcessButton();
 										loginButton.setText(R.string.btnLogin);
 
 									}
 									else {
 
-										SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+										SnackBar.error(ctx, layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
 										enableProcessButton();
 										loginButton.setText(R.string.btnLogin);
 
@@ -820,7 +829,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 								public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
 
 									Log.e("onFailure", t.toString());
-									SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericError));
+									SnackBar.error(ctx, layoutView, getResources().getString(R.string.genericError));
 									enableProcessButton();
 									loginButton.setText(R.string.btnLogin);
 
@@ -834,14 +843,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 				}
 				else if(response.code() == 500) {
 
-					SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+					SnackBar.error(ctx, layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
 					enableProcessButton();
 					loginButton.setText(R.string.btnLogin);
 
 				}
 				else {
 
-					SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
+					SnackBar.error(ctx, layoutView, getResources().getString(R.string.genericApiStatusError) + response.code());
 					enableProcessButton();
 					loginButton.setText(R.string.btnLogin);
 
@@ -853,7 +862,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 			public void onFailure(@NonNull Call<List<UserTokens>> call, @NonNull Throwable t) {
 
 				Log.e("onFailure-login", t.toString());
-				SnackBar.error(getApplicationContext(), layoutView, getResources().getString(R.string.malformedJson));
+				SnackBar.error(ctx, layoutView, getResources().getString(R.string.malformedJson));
 				enableProcessButton();
 				loginButton.setText(R.string.btnLogin);
 

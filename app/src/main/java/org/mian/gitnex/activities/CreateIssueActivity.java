@@ -28,6 +28,8 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.MultiSelectDialog;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.CreateIssue;
 import org.mian.gitnex.models.Labels;
@@ -61,6 +63,8 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private boolean assigneesFlag;
     private boolean labelsFlag;
     final Context ctx = this;
+    private Context appCtx;
+    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 
     List<Milestones> milestonesList = new ArrayList<>();
     ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
@@ -74,13 +78,15 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
+
+        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String loginFullName = tinyDb.getString("userFullname");
@@ -89,6 +95,11 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         final String repoOwner = parts[0];
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+
+        // if gitea is 1.12 or higher use the new limit
+        if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+            resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+        }
 
         ImageView closeActivity = findViewById(R.id.close);
         assigneesList = findViewById(R.id.newIssueAssigneesList);
@@ -117,7 +128,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         newIssueMilestoneSpinner = findViewById(R.id.newIssueMilestoneSpinner);
         newIssueMilestoneSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-        getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
+        getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
 
         getLabels(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
         getCollaborators(instanceUrl, instanceToken, repoOwner, repoName, loginUid, loginFullName);
@@ -142,8 +153,8 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
     private void processNewIssue() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         String repoFullName = tinyDb.getString("repoFullName");
@@ -164,21 +175,21 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         if(!connToInternet) {
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if (newIssueTitleForm.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.issueTitleEmpty));
+            Toasty.info(ctx, getString(R.string.issueTitleEmpty));
             return;
 
         }
 
         /*if (newIssueDescriptionForm.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.issueDescriptionEmpty));
+            Toasty.info(ctx, getString(R.string.issueDescriptionEmpty));
             return;
 
         }*/
@@ -217,7 +228,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
     public void loadCollaboratorsList() {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
 
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
@@ -228,9 +239,9 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         final String repoName = parts[1];
 
         Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
         call.enqueue(new Callback<List<Collaborators>>() {
 
@@ -272,9 +283,9 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         Call<JsonElement> call3;
 
         call3 = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .createNewIssue(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, createNewIssueJson);
+                .createNewIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, createNewIssueJson);
 
         call3.enqueue(new Callback<JsonElement>() {
 
@@ -285,10 +296,10 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                     if(response2.code() == 201) {
 
                         //Log.i("isSuccessful1", String.valueOf(response2.body()));
-                        TinyDB tinyDb = new TinyDB(getApplicationContext());
+                        TinyDB tinyDb = new TinyDB(appCtx);
                         tinyDb.putBoolean("resumeIssues", true);
 
-                        Toasty.info(getApplicationContext(), getString(R.string.issueCreated));
+                        Toasty.info(ctx, getString(R.string.issueCreated));
                         enableProcessButton();
                         finish();
 
@@ -306,7 +317,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 }
                 else {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.issueCreatedError));
+                    Toasty.info(ctx, getString(R.string.issueCreatedError));
                     enableProcessButton();
                     //Log.i("isSuccessful2", String.valueOf(response2.body()));
 
@@ -332,13 +343,13 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         };
     }
 
-    private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
+    private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, int resultLimit) {
 
         String msState = "open";
         Call<List<Milestones>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getMilestones(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, msState);
+                .getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
 
         call.enqueue(new Callback<List<Milestones>>() {
 
@@ -367,7 +378,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                             }
                         }
 
-                        ArrayAdapter<Milestones> adapter = new ArrayAdapter<>(getApplicationContext(),
+                        ArrayAdapter<Milestones> adapter = new ArrayAdapter<>(CreateIssueActivity.this,
                                 R.layout.spinner_item, milestonesList);
 
                         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
@@ -390,9 +401,9 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private void getCollaborators(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, String loginFullName) {
 
         Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
         listOfAssignees.add(new MultiSelectModel(-1, loginFullName));
 
@@ -462,9 +473,9 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private void getLabels(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
 
         Call<List<Labels>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getlabels(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+                .getlabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
         call.enqueue(new Callback<List<Labels>>() {
 
@@ -530,7 +541,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
             }
             else {
-                Toasty.info(getApplicationContext(), getResources().getString(R.string.noAssigneesFound));
+                Toasty.info(ctx, getResources().getString(R.string.noAssigneesFound));
             }
         }
         else if (v == newIssueLabels) {
@@ -538,7 +549,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 multiSelectDialogLabels.show(getSupportFragmentManager(), "multiSelectDialogLabels");
             }
             else {
-                Toasty.info(getApplicationContext(), getResources().getString(R.string.noLabelsFound));
+                Toasty.info(ctx, getResources().getString(R.string.noLabelsFound));
             }
         }
         else if (v == newIssueDueDate) {

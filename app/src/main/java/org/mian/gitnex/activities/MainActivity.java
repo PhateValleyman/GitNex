@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -23,7 +24,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import com.google.android.material.navigation.NavigationView;
-import com.squareup.picasso.NetworkPolicy;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -43,6 +43,7 @@ import org.mian.gitnex.fragments.StarredRepositoriesFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.ChangeLog;
+import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.GiteaVersion;
@@ -51,6 +52,8 @@ import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderScriptBlur;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -61,11 +64,15 @@ import retrofit2.Callback;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomSheetDraftsFragment.BottomSheetListener {
 
 	private DrawerLayout drawer;
+	private BlurView blurView;
 	private TextView userFullName;
 	private TextView userEmail;
 	private ImageView userAvatar;
+	private ImageView userAvatarBackground;
+	private ViewGroup navHeaderFrame;
 	private TextView toolbarTitle;
 	final Context ctx = this;
+	private Context appCtx;
 	private Typeface myTypeface;
 
 	@Override
@@ -78,8 +85,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		appCtx = getApplicationContext();
+
+		final TinyDB tinyDb = new TinyDB(appCtx);
 		tinyDb.putBoolean("noConnection", false);
+		//userAvatar = findViewById(R.id.userAvatar);
 
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
@@ -102,7 +112,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			tinyDb.putInt("homeScreenId", 0);
 		}
 
-		boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
 
 		if(!tinyDb.getBoolean("loggedInMode")) {
 			logout(this, ctx);
@@ -111,10 +121,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		String accountName = loginUid + "@" + instanceUrl;
 		try {
-			getAcountData(accountName);
+			getAccountData(accountName);
 		}
 		catch(ExecutionException | InterruptedException e) {
-			Log.e("getAcountData", e.toString());
+			Log.e("getAccountData", e.toString());
 		}
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
@@ -141,6 +151,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment fragmentById = fm.findFragmentById(R.id.fragment_container);
+
 		if(fragmentById instanceof SettingsFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
 		}
@@ -176,20 +187,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 		toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.darkGreen));
+
 		drawer.addDrawerListener(toggle);
-
 		drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
-
-			@Override
-			public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
-			}
 
 			@Override
 			public void onDrawerOpened(@NonNull View drawerView) {
 
 				if(tinyDb.getBoolean("noConnection")) {
-					Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+					Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
 					tinyDb.putBoolean("noConnection", false);
 				}
 
@@ -197,82 +203,124 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				String userFullNameNav = tinyDb.getString("userFullname");
 				String userAvatarNav = tinyDb.getString("userAvatar");
 
+				blurView = hView.findViewById(R.id.blurView);
 				userEmail = hView.findViewById(R.id.userEmail);
+				userFullName = hView.findViewById(R.id.userFullname);
+				userAvatar = hView.findViewById(R.id.userAvatar);
+				userAvatarBackground = hView.findViewById(R.id.userAvatarBackground);
+				navHeaderFrame = hView.findViewById(R.id.navHeaderFrame);
+
+				userEmail.setTypeface(myTypeface);
+				userFullName.setTypeface(myTypeface);
+
+				navigationView.getMenu().findItem(R.id.nav_administration).setVisible(tinyDb.getBoolean("userIsAdmin"));
+
 				if(!userEmailNav.equals("")) {
 					userEmail.setText(userEmailNav);
-					userEmail.setTypeface(myTypeface);
 				}
 
-				userFullName = hView.findViewById(R.id.userFullname);
 				if(!userFullNameNav.equals("")) {
 					userFullName.setText(userFullNameNav);
-					userFullName.setTypeface(myTypeface);
 				}
 
-				userAvatar = hView.findViewById(R.id.userAvatar);
 				if(!userAvatarNav.equals("")) {
-					PicassoService.getInstance(ctx).get().load(userAvatarNav).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(160, 160).centerCrop().into(userAvatar);
+
+					PicassoService.getInstance(ctx).get()
+						.load(userAvatarNav)
+						.placeholder(R.drawable.loader_animated)
+						.transform(new RoundedTransformation(8, 0))
+						.resize(160, 160)
+						.centerCrop().into(userAvatar);
+
+					PicassoService.getInstance(ctx).get()
+						.load(userAvatarNav)
+						.into(userAvatarBackground, new com.squareup.picasso.Callback() {
+
+							@Override
+							public void onSuccess() {
+
+								int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+
+								userFullName.setTextColor(textColor);
+								userEmail.setTextColor(textColor);
+
+								blurView.setupWith(navHeaderFrame)
+									.setBlurAlgorithm(new RenderScriptBlur(ctx))
+									.setBlurRadius(5)
+									.setHasFixedTransformationMatrix(false);
+
+							}
+
+							@Override
+							public void onError(Exception e) {}
+
+						});
+
 				}
 
 				userAvatar.setOnClickListener(v -> {
 
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
 					drawer.closeDrawers();
-
 				});
 
 			}
 
 			@Override
-			public void onDrawerClosed(@NonNull View drawerView) {
-				// Called when a drawer has settled in a completely closed state.
-			}
+			public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {}
 
 			@Override
-			public void onDrawerStateChanged(int newState) {
-				// Called when the drawer motion state changes. The new state will be one of STATE_IDLE, STATE_DRAGGING or STATE_SETTLING.
-			}
+			public void onDrawerClosed(@NonNull View drawerView) {}
+
+			@Override
+			public void onDrawerStateChanged(int newState) {}
+
 		});
 
 		toggle.syncState();
 
 		if(savedInstanceState == null) {
-			if(tinyDb.getInt("homeScreenId") == 0) {
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
-				navigationView.setCheckedItem(R.id.nav_home);
+
+			switch(tinyDb.getInt("homeScreenId")) {
+
+				case 1:
+					toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StarredRepositoriesFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_starred_repos);
+					break;
+
+				case 2:
+					toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_organizations);
+					break;
+
+				case 3:
+					toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_repositories);
+					break;
+
+				case 4:
+					toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_profile);
+					break;
+
+				default:
+					toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_home);
+					break;
+
 			}
-			else if(tinyDb.getInt("homeScreenId") == 1) {
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StarredRepositoriesFragment()).commit();
-				navigationView.setCheckedItem(R.id.nav_starred_repos);
-			}
-			else if(tinyDb.getInt("homeScreenId") == 2) {
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
-				navigationView.setCheckedItem(R.id.nav_organizations);
-			}
-			else if(tinyDb.getInt("homeScreenId") == 3) {
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
-				navigationView.setCheckedItem(R.id.nav_repositories);
-			}
-			else if(tinyDb.getInt("homeScreenId") == 4) {
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
-				navigationView.setCheckedItem(R.id.nav_profile);
-			}
-			else {
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
-				navigationView.setCheckedItem(R.id.nav_home);
-			}
+
 		}
 
 		if(!connToInternet) {
 
 			if(!tinyDb.getBoolean("noConnection")) {
-				Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+				Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
 			}
 
 			tinyDb.putBoolean("noConnection", true);
@@ -280,7 +328,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else {
 
-			displayUserInfo(instanceUrl, instanceToken, loginUid);
+			loadUserInfo(instanceUrl, instanceToken, loginUid);
 			giteaVersion(instanceUrl);
 			tinyDb.putBoolean("noConnection", false);
 
@@ -289,7 +337,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		// Changelog popup
 		int versionCode = 0;
 		try {
-			PackageInfo packageInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
+			PackageInfo packageInfo = appCtx.getPackageManager().getPackageInfo(appCtx.getPackageName(), 0);
 			versionCode = packageInfo.versionCode;
 		}
 		catch(PackageManager.NameNotFoundException e) {
@@ -340,7 +388,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	}
 
-	public void getAcountData(String accountName) throws ExecutionException, InterruptedException {
+	public void getAccountData(String accountName) throws ExecutionException, InterruptedException {
 
 		UserAccountsRepository accountData = new UserAccountsRepository(ctx);
 		UserAccounts data = accountData.getAccountData(accountName);
@@ -371,42 +419,51 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
 		switch(menuItem.getItemId()) {
+
 			case R.id.nav_home:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
 				break;
+
 			case R.id.nav_organizations:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
 				break;
+
 			case R.id.nav_profile:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
 				break;
+
 			case R.id.nav_repositories:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
-
 				break;
+
 			case R.id.nav_settings:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
 				break;
+
 			case R.id.nav_logout:
 				logout(this, ctx);
 				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 				break;
+
 			case R.id.nav_about:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleAbout));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit();
 				break;
+
 			case R.id.nav_rate_app:
 				rateThisApp();
 				break;
+
 			case R.id.nav_starred_repos:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StarredRepositoriesFragment()).commit();
 				break;
+
 			case R.id.nav_explore:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreRepositoriesFragment()).commit();
@@ -465,11 +522,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	private void giteaVersion(final String instanceUrl) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		final String token = "token " + tinyDb.getString(tinyDb.getString("loginUid") + "-token");
 
-		Call<GiteaVersion> callVersion = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getGiteaVersionWithToken(token);
+		Call<GiteaVersion> callVersion = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithToken(token);
 
 		callVersion.enqueue(new Callback<GiteaVersion>() {
 
@@ -498,14 +555,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	}
 
-	private void displayUserInfo(String instanceUrl, String token, String loginUid) {
+	private void loadUserInfo(String instanceUrl, String token, String loginUid) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
-		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getUserInfo(Authorization.returnAuthentication(getApplicationContext(), loginUid, token));
-
-		NavigationView navigationView = findViewById(R.id.nav_view);
-		final View hView = navigationView.getHeaderView(0);
+		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserInfo(Authorization.returnAuthentication(ctx, loginUid, token));
 
 		call.enqueue(new Callback<UserInfo>() {
 
@@ -519,12 +573,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					if(response.code() == 200) {
 
 						assert userDetails != null;
+
 						if(userDetails.getIs_admin() != null) {
 							tinyDb.putBoolean("userIsAdmin", userDetails.getIs_admin());
-							navigationView.getMenu().findItem(R.id.nav_administration).setVisible(userDetails.getIs_admin());
 						}
+
 						tinyDb.putString("userLogin", userDetails.getLogin());
 						tinyDb.putInt("userId", userDetails.getId());
+
 						if(!userDetails.getFullname().equals("")) {
 							tinyDb.putString("userFullname", userDetails.getFullname());
 						}
@@ -534,49 +590,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 						tinyDb.putString("userEmail", userDetails.getEmail());
 						tinyDb.putString("userAvatar", userDetails.getAvatar());
+
 						if(userDetails.getLang() != null) {
 							tinyDb.putString("userLang", userDetails.getLang());
 						}
 						else {
 							tinyDb.putString("userLang", "...");
 						}
-
-						userAvatar = hView.findViewById(R.id.userAvatar);
-						if(!Objects.requireNonNull(userDetails).getAvatar().equals("")) {
-							PicassoService.getInstance(ctx).get().load(userDetails.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(160, 160).centerCrop().into(userAvatar);
-						}
-						else {
-							userAvatar.setImageResource(R.mipmap.app_logo_round);
-						}
-
-						userFullName = hView.findViewById(R.id.userFullname);
-						if(!userDetails.getFullname().equals("")) {
-							userFullName.setText(userDetails.getFullname());
-						}
-						else if(!userDetails.getLogin().equals("")) {
-							userFullName.setText(userDetails.getLogin());
-						}
-						else {
-							userFullName.setText("...");
-						}
-
-						userEmail = hView.findViewById(R.id.userEmail);
-						if(!userDetails.getEmail().equals("")) {
-							userEmail.setText(userDetails.getEmail());
-						}
-						else {
-							userEmail.setText("...");
-						}
-
-						userAvatar.setOnClickListener(v -> {
-
-							getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
-							drawer.closeDrawers();
-
-						});
-
 					}
-
 				}
 				else if(response.code() == 401) {
 
@@ -585,8 +606,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				}
 				else {
 
-					String toastError = getResources().getString(R.string.genericApiStatusError) + response.code();
-					Toasty.info(getApplicationContext(), toastError);
+					String toastError = getResources().getString(R.string.genericApiStatusError) + String.valueOf(response.code());
+					Toasty.info(ctx, toastError);
 
 				}
 
