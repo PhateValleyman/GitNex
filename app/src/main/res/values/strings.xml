@@ -4,9 +4,9 @@
     <string name="appAuthor" translatable="false">Developer : M M Arif</string>
     <string name="appEmail" translatable="false">gitnex@swatian.com</string>
     <string name="appRepo" translatable="false">Source code</string>
-    <string name="appRepoLink" translatable="false">https://gitea.com/gitnex/GitNex</string>
-    <string name="appRepoIssuesLink" translatable="false">https://gitea.com/gitnex/GitNex/issues</string>
-    <string name="appRepoContributingLink" translatable="false">https://gitea.com/gitnex/GitNex/src/branch/master/CONTRIBUTING.md</string>
+    <string name="appRepoLink" translatable="false">https://codeberg.org/gitnex/GitNex</string>
+    <string name="appRepoIssuesLink" translatable="false">https://codeberg.org/gitnex/GitNex/issues</string>
+    <string name="appRepoContributingLink" translatable="false">https://codeberg.org/gitnex/GitNex/src/branch/master/CONTRIBUTING.md</string>
     <string name="appWebsite" translatable="false">Website</string>
     <string name="appWebsiteLink" translatable="false">https://gitnex.com/</string>
     <string name="commitPage" translatable="false">Your Gitea version\n</string>
@@ -216,6 +216,7 @@
     <string name="releaseTypeStable" translatable="false">Stable</string>
     <string name="noDataReleasesTab">No releases found</string>
     <string name="releaseTag">Tag: %1$s</string>
+    <string name="releasePublishedBy">Published by @%1$s</string>
 
     <string name="collaboratorsNameToast">Collaborator : %1$s</string>
     <string name="noDataCollaboratorTab">No collaborators found</string>
@@ -232,8 +233,10 @@
     <string name="milestoneCreated">Milestone created successfully</string>
     <string name="milestoneCreatedError">Something went wrong, please try again</string>
     <string name="milestoneDateEmpty">Please choose due date</string>
-    <string name="milestoneOpenIssues">Open issues : %1$d</string>
-    <string name="milestoneClosedIssues">Closed issues : %1$d</string>
+    <string name="milestoneNoDueDate">No due date</string>
+    <string name="milestoneNoDescription">No description</string>
+    <string name="milestoneIssueStatusOpen">%1$d Open</string>
+    <string name="milestoneIssueStatusClosed">%1$d Closed</string>
 
     <string name="newIssueSelectAssigneesListTitle">Select Assignees</string>
     <string name="newIssueSelectLabelsListTitle">Select Labels</string>
@@ -276,7 +279,7 @@
     <string name="settingsCodeBlockSelectorDialogTitle">Code Block Color Selector</string>
     <string name="settingsHomeScreenHeaderText">Home Screen</string>
     <string name="settingsHomeScreenSelectedText">My Repositories</string>
-    <string name="settingshomeScreenSelectorDialogTitle">Select Home Screen</string>
+    <string name="settingsHomeScreenSelectorDialogTitle">Select Home Screen</string>
     <string name="settingsCustomFontHeaderText">Font</string>
     <string name="settingsCustomFontSelectorDialogTitle">Choose Font</string>
     <string name="settingsCustomFontDefault" translatable="false">Manrope</string>
@@ -404,7 +407,7 @@
     <string name="emailErrorInUse">Email address is already in use</string>
     <string name="emailTypeText">Primary</string>
     <string name="profileTabEmails">Emails</string>
-    <string name="usernameWithAt" translatable="false">\u0040\u0020%1$s</string>
+    <string name="usernameWithAt" translatable="false">\u0040%1$s</string>
     <!-- profile section -->
 
     <!-- single issue section -->
@@ -484,12 +487,14 @@
     <string name="noDataStargazers">No stars found</string>
     <string name="noDataWatchers">No watchers found</string>
     <string name="noDataWebsite">No website found</string>
+    <string name="noDataDescription">No description found</string>
+    <string name="noDataLocation">No location found</string>
     <string name="starMember">Star</string>
     <string name="watcherMember">Watcher</string>
 
     <string name="commitLinkBranchesTab">Commit</string>
-    <string name="zipArchiveDownloadReleasesTab">Zip Archive</string>
-    <string name="tarArchiveDownloadReleasesTab">Tar Archive</string>
+    <string name="zipArchiveDownloadReleasesTab">Source code (ZIP)</string>
+    <string name="tarArchiveDownloadReleasesTab">Source code (TAR.GZ)</string>
 
     <!-- new file -->
     <string name="newFileNameTintCopy">File Name</string>
@@ -573,7 +578,7 @@
     <string name="versionUnsupportedNew">New Gitea version detected! Please UPDATE GitNex!</string>
     <string name="versionSupportedLatest">Gitea version is up to date</string>
     <string name="versionDevelopment">Gitea development version</string>
-    <string name="versionUnknow">No Gitea detected!</string>
+    <string name="versionUnknown">No Gitea detected!</string>
     <string name="versionAlertTitle">Version Alert</string>
     <string name="versionAlertDialogHeader">Unsupported Version of Gitea</string>
 
@@ -627,7 +632,7 @@
     <string name="mtm_accept_cert">Accept Unknown Certificate?</string>
     <string name="mtm_trust_anchor">The server certificate is not signed by a known Certificate Authority.</string>
     <string name="mtm_cert_expired">The server certificate is expired.</string>
-    <string name="mtm_accept_servername">Accept Mismatching Server Name?</string>
+    <string name="mtm_accept_server_name">Accept Mismatching Server Name?</string>
     <string name="mtm_hostname_mismatch">Server could not authenticate as \&quot;%s\&quot;. The certificate is only valid for:</string>
     <string name="mtm_connect_anyway">Do you want to connect anyway?</string>
     <string name="mtm_cert_details">Certificate details:</string>
@@ -637,10 +642,10 @@
 
     <string name="subscribedSuccessfully">Subscribed successfully</string>
     <string name="alreadySubscribed">You have already subscribed</string>
-    <string name="subscribtionError">Subscription failed</string>
+    <string name="subscriptionError">Subscription failed</string>
     <string name="unsubscribedSuccessfully">Unsubscribed successfully</string>
     <string name="alreadyUnsubscribed">You have already Unsubscribed</string>
-    <string name="unsubscribtionError">Un-Subscription failed</string>
+    <string name="unsubscriptionError">Un-Subscription failed</string>
 
     <string name="closeMilestone">Close Milestone</string>
     <string name="openMilestone">Open Milestone</string>
@@ -654,9 +659,11 @@
     <string name="setCrashReports">Crash reports</string>
     <string name="crashMessage">You can tap the OK button to send the crash report by email. It will help to fix it :)\n\nYou can also add additional content in the email. Thank you!</string>
 
-    <string name="appreanceHintText">Themes, fonts, badges, code block theme</string>
+    <string name="appearanceHintText">Themes, fonts, badges, code block theme</string>
     <string name="fileViewerHintText">PDF mode, source code theme</string>
     <string name="securityHintText">SSL certificates, cache</string>
     <string name="languagesHintText">Languages</string>
     <string name="reportsHintText">Crash reports</string>
+
+    <string name="archivedRepository">Archived</string>
 </resources>
