@@ -154,7 +154,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		// Only show collaborators tab, if you have permission to
 		View collaboratorTab = viewGroup.getChildAt(8);
 
-		if(tinyDB.getBoolean("isRepoAdmin")) {
+		if(tinyDB.getBoolean("isRepoAdmin") || new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 
 			collaboratorTab.setVisibility(View.VISIBLE);
 		}
