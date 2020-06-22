@@ -95,7 +95,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		repositoryName = repoNameParts[1];
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
+
 		TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+		toolbarTitle.setText(repositoryName);
 
 		setSupportActionBar(toolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle(repositoryName);
@@ -108,8 +110,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		tinyDB.putString("repoIssuesState", "open");
 		tinyDB.putString("repoPrState", "open");
 		tinyDB.putString("milestoneState", "open");
-
-		TabLayout tabLayout = findViewById(R.id.tabs);
 
 		Typeface myTypeface;
 
@@ -130,14 +130,15 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		}
 
 		toolbarTitle.setTypeface(myTypeface);
-		toolbarTitle.setText(repositoryName);
 
-		ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
-		tabsCount = vg.getChildCount();
+		TabLayout tabLayout = findViewById(R.id.tabs);
+
+		ViewGroup viewGroup = (ViewGroup) tabLayout.getChildAt(0);
+		tabsCount = viewGroup.getChildCount();
 
 		for(int j = 0; j < tabsCount; j++) {
 
-			ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+			ViewGroup vgTab = (ViewGroup) viewGroup.getChildAt(j);
 			int tabChildCount = vgTab.getChildCount();
 
 			for(int i = 0; i < tabChildCount; i++) {
@@ -151,7 +152,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		}
 
 		// Only show collaborators tab, if you have permission to
-		View collaboratorTab = vg.getChildAt(8);
+		View collaboratorTab = viewGroup.getChildAt(8);
 
 		if(tinyDB.getBoolean("isRepoAdmin")) {
 
@@ -295,6 +296,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	public void onButtonClicked(String text) {
 
 		switch(text) {
+
 			case "label":
 				startActivity(new Intent(RepoDetailActivity.this, CreateLabelActivity.class));
 				break;
