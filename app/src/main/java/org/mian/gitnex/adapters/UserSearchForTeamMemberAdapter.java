@@ -104,12 +104,11 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 
 		if (!currentItem.getFullname().equals("")) {
 			holder.userFullName.setText(currentItem.getFullname());
-			holder.userName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
 		}
 		else {
 			holder.userFullName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
-			holder.userName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
 		}
+		holder.userName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
 
 		if (!currentItem.getAvatar().equals("")) {
 			PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
