@@ -122,7 +122,6 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 			String repoFullName = tinyDb.getString("repoFullName");
 			String[] parts = repoFullName.split("/");
 			final String repoOwner = parts[0];
-			final String repoName = parts[1];
 			final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 			Call<UserInfo> call = RetrofitClient
