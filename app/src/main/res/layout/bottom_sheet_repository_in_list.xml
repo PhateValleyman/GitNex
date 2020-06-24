@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
+    android:paddingBottom="0dp"
     android:background="?attr/primaryBackgroundColor"
-    android:paddingTop="8dp">
+    android:paddingTop="0dp">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -29,6 +29,12 @@
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:id="@+id/divider"
+                android:background="?attr/dividerColor" />
+
             <TextView
                 android:id="@+id/repoOpenInBrowser"
                 android:layout_width="match_parent"
@@ -39,7 +45,10 @@
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="16dp" />
 
             <TextView
                 android:id="@+id/repoStargazers"
@@ -51,7 +60,10 @@
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp" />
 
             <TextView
                 android:id="@+id/repoWatchers"
@@ -63,7 +75,10 @@
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="24dp" />
 
         </LinearLayout>
 
