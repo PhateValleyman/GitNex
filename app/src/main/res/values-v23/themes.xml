@@ -24,7 +24,7 @@
         <item name="hintColor">@color/hintColor</item>
         <item name="colorControlActivated">@color/darkGreen</item>
         <item name="dividerColor">@color/lightThemeDividerColor</item>
-        <item name="bottomSheetStyle">@style/AppBottomSheetDialogTheme</item>
+        <item name="bottomSheetDialogTheme">@style/AppThemeLightBottomSheetDialog</item>
     </style>
 
 </resources>
