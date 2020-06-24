@@ -92,8 +92,6 @@ public class ProfileFragment extends Fragment {
 
 				    ImageViewCompat.setImageTintList(userLanguageIcon, ColorStateList.valueOf(invertedColor));
 
-				    ImageViewCompat.setImageTintList(userLanguageIcon, ColorStateList.valueOf(textColor));
-
 				    blurView.setupWith(aboutFrame)
 					    .setBlurAlgorithm(new RenderScriptBlur(ctx))
 					    .setBlurRadius(3)
