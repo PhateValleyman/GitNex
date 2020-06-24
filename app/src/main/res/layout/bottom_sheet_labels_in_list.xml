@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:background="?attr/primaryBackgroundColor"
-    android:paddingTop="8dp">
+    android:background="?attr/primaryBackgroundColor">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -25,9 +23,15 @@
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
                 android:paddingTop="16dp"
-                android:paddingBottom="16dp"
+                android:paddingBottom="24dp"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:id="@+id/divider"
+                android:background="?attr/dividerColor" />
 
             <TextView
                 android:id="@+id/labelMenuEdit"
@@ -39,7 +43,10 @@
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="16dp" />
 
             <TextView
                 android:id="@+id/labelMenuDelete"
@@ -51,7 +58,10 @@
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="20dp" />
 
         </LinearLayout>
 

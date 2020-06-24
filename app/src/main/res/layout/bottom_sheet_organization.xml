@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:background="?attr/primaryBackgroundColor"
-    android:paddingTop="8dp">
+    android:background="?attr/primaryBackgroundColor">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
