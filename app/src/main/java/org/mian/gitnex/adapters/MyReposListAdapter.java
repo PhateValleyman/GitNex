@@ -178,8 +178,7 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
 
 				final Context context = v.getContext();
 
-				@SuppressLint("InflateParams")
-				View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_repository_in_list, null);
+				@SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_repository_in_list, null);
 
 				TextView repoOpenInBrowser = view.findViewById(R.id.repoOpenInBrowser);
 				TextView repoStargazers = view.findViewById(R.id.repoStargazers);
@@ -234,6 +233,7 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
 	@NonNull
 	@Override
 	public MyReposListAdapter.MyReposViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
 		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_repositories, parent, false);
 		return new MyReposListAdapter.MyReposViewHolder(v);
 	}
@@ -248,20 +248,13 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
 		int color = generator.getColor(currentItem.getName());
 		String firstCharacter = String.valueOf(currentItem.getName().charAt(0));
 
-		TextDrawable drawable = TextDrawable.builder()
-			.beginConfig()
-			.useFont(Typeface.DEFAULT)
-			.fontSize(18)
-			.toUpperCase()
-			.width(28)
-			.height(28)
-			.endConfig()
-			.buildRoundRect(firstCharacter, color, 3);
+		TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
 
-		if (currentItem.getAvatar_url() != null) {
-			if (!currentItem.getAvatar_url().equals("")) {
+		if(currentItem.getAvatar_url() != null) {
+			if(!currentItem.getAvatar_url().equals("")) {
 				PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.imageAvatar);
-			} else {
+			}
+			else {
 				holder.imageAvatar.setImageDrawable(drawable);
 			}
 		}
@@ -270,7 +263,7 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
 		}
 
 		holder.repoName.setText(currentItem.getName());
-		if (!currentItem.getDescription().equals("")) {
+		if(!currentItem.getDescription().equals("")) {
 			holder.repoDescription.setVisibility(View.VISIBLE);
 			holder.repoDescription.setText(currentItem.getDescription());
 		}
@@ -320,13 +313,14 @@ public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.
 
 			List<UserRepositories> filteredList = new ArrayList<>();
 
-			if (constraint == null || constraint.length() == 0) {
+			if(constraint == null || constraint.length() == 0) {
 				filteredList.addAll(reposListFull);
-			} else {
+			}
+			else {
 				String filterPattern = constraint.toString().toLowerCase().trim();
 
-				for (UserRepositories item : reposListFull) {
-					if (item.getFullname().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
+				for(UserRepositories item : reposListFull) {
+					if(item.getFullname().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
 						filteredList.add(item);
 					}
 				}
