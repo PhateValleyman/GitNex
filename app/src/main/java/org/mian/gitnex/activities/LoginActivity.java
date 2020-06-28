@@ -234,7 +234,8 @@ public class LoginActivity extends BaseActivity {
 
 		} catch (Exception e) {
 
-			Log.e("onFailure-login()", e.toString());
+			Log.e("onFailure-login", e.toString());
+			SnackBar.error(ctx, layoutView, getResources().getString(R.string.malformedUrl));
 			enableProcessButton();
 
 		}
