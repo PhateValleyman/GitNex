@@ -19,28 +19,26 @@ public class AlertDialogs {
 
     public static void authorizationTokenRevokedDialog(final Context context, String title, String message, String copyNegativeButton, String copyPositiveButton) {
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
+	        .setTitle(title)
+            .setMessage(message)
+            .setCancelable(true)
+            .setIcon(R.drawable.ic_warning)
+            .setNegativeButton(copyNegativeButton, (dialog, which) -> dialog.dismiss())
+            .setPositiveButton(copyPositiveButton, (dialog, which) -> {
 
-        alertDialogBuilder
-                .setTitle(title)
-                .setMessage(message)
-                .setCancelable(true)
-                .setIcon(R.drawable.ic_warning)
-                .setNegativeButton(copyNegativeButton, (dialog, which) -> dialog.dismiss())
-                .setPositiveButton(copyPositiveButton, (dialog, which) -> {
+                final TinyDB tinyDb = new TinyDB(context);
+                tinyDb.putBoolean("loggedInMode", false);
+                tinyDb.remove("basicAuthPassword");
+                tinyDb.putBoolean("basicAuthFlag", false);
+                Intent intent = new Intent(context, LoginActivity.class);
+                context.startActivity(intent);
+                dialog.dismiss();
 
-                    final TinyDB tinyDb = new TinyDB(context);
-                    tinyDb.putBoolean("loggedInMode", false);
-                    tinyDb.remove("basicAuthPassword");
-                    tinyDb.putBoolean("basicAuthFlag", false);
-                    Intent intent = new Intent(context, LoginActivity.class);
-                    context.startActivity(intent);
-                    dialog.dismiss();
+            });
 
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialogBuilder.create().show();
 
-        alertDialog.show();
     }
 
     public static void forceLogoutDialog(final Context context, String title, String message, String copyPositiveButton) {

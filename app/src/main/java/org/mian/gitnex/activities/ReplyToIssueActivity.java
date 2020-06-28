@@ -64,8 +64,8 @@ public class ReplyToIssueActivity extends BaseActivity {
 
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
-		TinyDB tinyDb = new TinyDB(appCtx);
+        boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
+        TinyDB tinyDb = new TinyDB(appCtx);
 
 		addComment = findViewById(R.id.addComment);
 		addComment.setShowSoftInputOnFocus(true);
@@ -263,7 +263,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 	private void processNewCommentReply() {
 
 		String newReplyDT = addComment.getText().toString();
-		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
 		if(!connToInternet) {
 
