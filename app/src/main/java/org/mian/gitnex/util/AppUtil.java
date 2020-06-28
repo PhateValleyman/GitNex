@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.view.View;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +29,7 @@ public class AppUtil {
 		return str.replace(original, replace);
 	}
 
-	public static boolean haveNetworkConnection(Context context) {
+	public static boolean hasNetworkConnection(Context context) {
 
 		boolean haveConnectedWifi = false;
 		boolean haveConnectedMobile = false;
@@ -116,16 +117,9 @@ public class AppUtil {
 
 	}
 
-	public static boolean httpCheck(String url) {
-
-		String pattern = "^(http|https)://.*$";
-		return url.matches(pattern);
-
-	}
-
 	public static String formatFileSize(long size) {
 
-		String repoSize = null;
+		String repoSize = size + " B";
 
 		double m = size / 1024.0;
 		double g = ((size / 1024.0) / 1024.0);
@@ -261,7 +255,7 @@ public class AppUtil {
 
 	public Boolean sourceCodeExtension(String ext) {
 
-		String[] extValues = new String[]{"md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv", "python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs", "lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl", "wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf", "gitignore", "gradle", "txt", "properties", "bat", "twig"};
+		String[] extValues = new String[]{"md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv", "python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs", "lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl", "wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf", "gitignore", "gradle", "txt", "properties", "bat", "twig", "cvs", "cmake", "in", "info", "spec", "m4", "am", "dist", "pam"};
 
 		return Arrays.asList(extValues).contains(ext);
 
@@ -295,6 +289,14 @@ public class AppUtil {
 
 		return str.substring(str.length() - count);
 
+	}
+
+	public static void setMultiVisibility(int visibility, View... views) {
+
+		for(View view : views) {
+
+			view.setVisibility(visibility);
+		}
 	}
 
 }
