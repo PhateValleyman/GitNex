@@ -106,7 +106,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 				TextView commentMenuEdit = view.findViewById(R.id.commentMenuEdit);
 				TextView commentShare = view.findViewById(R.id.issueCommentShare);
-				TextView commentMenuCite = view.findViewById(R.id.commentMenuCite);
+				TextView commentMenuQuote = view.findViewById(R.id.commentMenuQuote);
 				TextView commentMenuCopy = view.findViewById(R.id.commentMenuCopy);
 				TextView commentMenuDelete = view.findViewById(R.id.commentMenuDelete);
 
@@ -151,7 +151,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 				});
 
-				commentMenuCite.setOnClickListener(v1 -> {
+				commentMenuQuote.setOnClickListener(v1 -> {
 
 					StringBuilder stringBuilder = new StringBuilder();
 					stringBuilder.append("@").append(commenterUsername.getText().toString()).append("\n\n");

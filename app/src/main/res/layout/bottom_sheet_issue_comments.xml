@@ -42,11 +42,11 @@
                 android:padding="12dp" />
 
             <TextView
-                android:id="@+id/commentMenuCite"
+                android:id="@+id/commentMenuQuote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/menuCiteText"
+                android:text="@string/menuQuoteText"
                 android:drawableStart="@drawable/ic_comment"
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
