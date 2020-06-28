@@ -1,6 +1,7 @@
 package org.mian.gitnex.fragments;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.ImageViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -54,7 +56,9 @@ public class ProfileFragment extends Fragment {
 	    ImageView userAvatarBackground = v.findViewById(R.id.userAvatarBackground);
         ImageView userAvatar = v.findViewById(R.id.userAvatar);
         TextView userLogin = v.findViewById(R.id.userLogin);
+        View divider = v.findViewById(R.id.divider);
         TextView userLanguage = v.findViewById(R.id.userLanguage);
+        ImageView userLanguageIcon = v.findViewById(R.id.userLanguageIcon);
 
 	    ViewGroup aboutFrame = v.findViewById(R.id.aboutFrame);
 
@@ -79,11 +83,14 @@ public class ProfileFragment extends Fragment {
 			    @Override
 			    public void onSuccess() {
 
-				    int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+				    int invertedColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
 
-				    userFullName.setTextColor(textColor);
-				    userLogin.setTextColor(textColor);
-				    userLanguage.setTextColor(textColor);
+				    userFullName.setTextColor(invertedColor);
+				    divider.setBackgroundColor(invertedColor);
+				    userLogin.setTextColor(invertedColor);
+				    userLanguage.setTextColor(invertedColor);
+
+				    ImageViewCompat.setImageTintList(userLanguageIcon, ColorStateList.valueOf(invertedColor));
 
 				    blurView.setupWith(aboutFrame)
 					    .setBlurAlgorithm(new RenderScriptBlur(ctx))
