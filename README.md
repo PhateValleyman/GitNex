@@ -66,7 +66,7 @@ We use [Crowdin](https://crowdin.com/project/gitnex) for translation. If your la
 ## Thanks
 Thanks to all the open source libraries, contributors and donators.
 
-Open source libraries
+#### Open source libraries
 - Retrofit
 - Gson
 - Okhttp
@@ -88,5 +88,7 @@ Open source libraries
 - Barteksc/AndroidPdfViewer
 - Ge0rg/MemorizingTrustManager
 - Dimezis/BlurView
+- mikaelhg/urlbuilder
+- shekhargulati/urlcleaner
 
 [Follow me on Fediverse - mastodon.social/@mmarif](https://mastodon.social/@mmarif)
