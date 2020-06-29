@@ -18,13 +18,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import com.shekhargulati.urlcleaner.UrlCleaner;
 import com.tooltip.Tooltip;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.NetworkObserver;
 import org.mian.gitnex.helpers.PathsHelper;
 import org.mian.gitnex.helpers.SnackBar;
+import org.mian.gitnex.helpers.UrlHelper;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.GiteaVersion;
 import org.mian.gitnex.models.UserInfo;
@@ -32,7 +32,6 @@ import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
@@ -171,9 +170,10 @@ public class LoginActivity extends BaseActivity {
 			Protocol protocol = (Protocol) protocolSpinner.getSelectedItem();
 			LoginType loginType = (loginMethod.getCheckedRadioButtonId() == R.id.loginUsernamePassword) ? LoginType.BASIC : LoginType.TOKEN;
 
-			URL rawInstanceUrl = new URL(UrlCleaner.normalizeUrl(instanceUrlET.getText().toString()));
+			URI rawInstanceUrl = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET.getText().toString(), "http"))
+				.toUri();
 
-			URI instanceUrlWithProtocol = UrlBuilder.fromUrl(rawInstanceUrl)
+			URI instanceUrlWithProtocol = UrlBuilder.fromUri(rawInstanceUrl)
 				.withScheme(protocol.name().toLowerCase())
 				.toUri();
 

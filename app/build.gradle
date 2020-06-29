@@ -88,6 +88,5 @@ dependencies {
     implementation "ch.acra:acra-notification:$acra"
     implementation "com.eightbitlab:blurview:1.6.3"
     implementation "io.mikael:urlbuilder:2.0.9"
-    implementation "com.shekhargulati.urlcleaner:urlcleaner:0.4.0"
 
 }
