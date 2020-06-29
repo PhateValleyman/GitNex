@@ -11,7 +11,7 @@ public class PathsHelper {
 
 		for(String path : paths) {
 
-			if(!path.trim().isEmpty()) {
+			if(path != null && !path.trim().isEmpty()) {
 
 				if(path.endsWith("/")) {
 
