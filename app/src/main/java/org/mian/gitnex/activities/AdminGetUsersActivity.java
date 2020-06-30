@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -124,7 +125,7 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAd
                 inflater.inflate(R.menu.search_menu, menu);
 
                 MenuItem searchItem = menu.findItem(R.id.action_search);
-                androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+                SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
                 searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
                 if(!connToInternet) {
@@ -132,16 +133,16 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAd
                 }
 
                 searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+
                     @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        return true;
-                    }
+                    public boolean onQueryTextSubmit(String query) { return true; }
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
                         adapter.getFilter().filter(newText);
                         return false;
                     }
+
                 });
             }
 
