@@ -68,7 +68,8 @@ public class ProfileFragment extends Fragment {
 
 		    Locale locale = new Locale(userLanguageCodes[0], userLanguageCodes[1]);
 		    userLanguage.setText(locale.getDisplayCountry());
-	    } else {
+	    }
+	    else {
 
 	    	userLanguage.setText(R.string.notSupported);
 	    }
