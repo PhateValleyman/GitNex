@@ -24,6 +24,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.repository.UserAccountsRepository;
 import org.mian.gitnex.helpers.NetworkObserver;
+import org.mian.gitnex.helpers.PathsHelper;
 import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.helpers.UrlHelper;
 import org.mian.gitnex.helpers.Version;
@@ -33,10 +34,11 @@ import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.UserAccountsDatabaseViewModel;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
+import io.mikael.urlbuilder.UrlBuilder;
 import okhttp3.Credentials;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -169,17 +171,24 @@ public class LoginActivity extends BaseActivity {
 			String loginToken = loginTokenCode.getText().toString().trim();
 
 			Protocol protocol = (Protocol) protocolSpinner.getSelectedItem();
-			URL rawInstanceUrl = new URL(UrlHelper.fixScheme(instanceUrlET.getText().toString(), protocol.name().toLowerCase()));
 			LoginType loginType = (loginMethod.getCheckedRadioButtonId() == R.id.loginUsernamePassword) ? LoginType.BASIC : LoginType.TOKEN;
 
-			String portAppendix = (rawInstanceUrl.getPort() > 0) ? ":" + rawInstanceUrl.getPort() : "";
-			String instanceUrlWithProtocol = protocol.name().toLowerCase() + "://" + rawInstanceUrl.getHost() + portAppendix;
-			String instanceUrl = instanceUrlWithProtocol + "/api/v1/";
+			URI rawInstanceUrl = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET.getText().toString(), "http"))
+				.toUri();
+
+			URI instanceUrlWithProtocol = UrlBuilder.fromUri(rawInstanceUrl)
+				.withPath(PathsHelper.join(rawInstanceUrl.getPath()))
+				.withScheme(protocol.name().toLowerCase())
+				.toUri();
+
+			URI instanceUrl = UrlBuilder.fromUri(instanceUrlWithProtocol)
+				.withPath(PathsHelper.join(instanceUrlWithProtocol.getPath(), "/api/v1/"))
+				.toUri();
 
 			tinyDB.putString("loginType", loginType.name().toLowerCase());
-			tinyDB.putString("instanceUrlRaw", rawInstanceUrl.getHost());
-			tinyDB.putString("instanceUrl", instanceUrl);
-			tinyDB.putString("instanceUrlWithProtocol", instanceUrlWithProtocol);
+			tinyDB.putString("instanceUrlRaw", instanceUrlET.getText().toString());
+			tinyDB.putString("instanceUrl", instanceUrl.toString());
+			tinyDB.putString("instanceUrlWithProtocol", instanceUrlWithProtocol.toString());
 
 			if(instanceUrlET.getText().toString().equals("")) {
 
@@ -191,7 +200,13 @@ public class LoginActivity extends BaseActivity {
 
 			if(loginType == LoginType.BASIC) {
 
-				int loginOTP = (otpCode.getText().toString().length() == 6) ? Integer.parseInt(otpCode.getText().toString().trim()) : 0;
+				if(otpCode.length() != 0 && otpCode.length() != 6) {
+
+					SnackBar.warning(ctx, layoutView, getResources().getString(R.string.loginOTPTypeError));
+					enableProcessButton();
+					return;
+
+				}
 
 				if(rawInstanceUrl.getUserInfo() != null) {
 
@@ -199,8 +214,6 @@ public class LoginActivity extends BaseActivity {
 					tinyDB.putBoolean("basicAuthFlag", true);
 
 				}
-
-				tinyDB.putString("loginUid", loginUid);
 
 				if(loginUid.equals("")) {
 
@@ -218,7 +231,10 @@ public class LoginActivity extends BaseActivity {
 
 				}
 
-				versionCheck(instanceUrl, loginUid, loginPass, loginOTP, loginToken, 1);
+				int loginOTP = (otpCode.length() > 0) ? Integer.parseInt(otpCode.getText().toString().trim()) : 0;
+				tinyDB.putString("loginUid", loginUid);
+
+				versionCheck(instanceUrl.toString(), loginUid, loginPass, loginOTP, loginToken, 1);
 
 			}
 			else {
@@ -231,7 +247,7 @@ public class LoginActivity extends BaseActivity {
 
 				}
 
-				versionCheck(instanceUrl, loginUid, loginPass, 123, loginToken, 2);
+				versionCheck(instanceUrl.toString(), loginUid, loginPass, 123, loginToken, 2);
 
 			}
 
@@ -361,8 +377,8 @@ public class LoginActivity extends BaseActivity {
 				switch(response.code()) {
 
 					case 200:
-						tinyDB.putBoolean("loggedInMode", true);
 						assert userDetails != null;
+						tinyDB.putBoolean("loggedInMode", true);
 						tinyDB.putString(userDetails.getLogin() + "-token", loginToken);
 						tinyDB.putString("loginUid", userDetails.getLogin());
 						tinyDB.putString("userLogin", userDetails.getUsername());
@@ -438,8 +454,8 @@ public class LoginActivity extends BaseActivity {
 
 				if(response.code() == 200) {
 
-					boolean setTokenFlag = false;
 					assert userTokens != null;
+					boolean setTokenFlag = false;
 
 					if(userTokens.size() > 0) { // FIXME This is in need of a refactor, but i don't understand what the code is used for.
 
@@ -509,9 +525,9 @@ public class LoginActivity extends BaseActivity {
 												switch(response.code()) {
 
 													case 200:
+														assert userDetails != null;
 														tinyDB.remove("loginPass");
 														tinyDB.putBoolean("loggedInMode", true);
-														assert userDetails != null;
 														tinyDB.putString("userLogin", userDetails.getUsername());
 														tinyDB.putString(loginUid + "-token", newToken.getSha1());
 														tinyDB.putString(loginUid + "-token-last-eight", appUtil.getLastCharactersOfWord(newToken.getSha1(), 8));

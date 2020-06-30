@@ -596,7 +596,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 							tinyDb.putString("userLang", userDetails.getLang());
 						}
 						else {
-							tinyDb.putString("userLang", "...");
+							tinyDb.putString("userLang", "");
 						}
 					}
 				}
@@ -607,7 +607,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				}
 				else {
 
-					String toastError = getResources().getString(R.string.genericApiStatusError) + String.valueOf(response.code());
+					String toastError = getResources().getString(R.string.genericApiStatusError) + response.code();
 					Toasty.info(ctx, toastError);
 
 				}
