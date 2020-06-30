@@ -125,7 +125,7 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAd
                 inflater.inflate(R.menu.search_menu, menu);
 
                 MenuItem searchItem = menu.findItem(R.id.action_search);
-                SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+                SearchView searchView = (SearchView) searchItem.getActionView();
                 searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
                 if(!connToInternet) {
