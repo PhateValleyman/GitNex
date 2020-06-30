@@ -3,6 +3,7 @@ package org.mian.gitnex.helpers;
 /**
  * Author opyale
  */
+
 public class PathsHelper {
 
 	public static String join(String... paths) {
@@ -11,16 +12,16 @@ public class PathsHelper {
 
 		for(String path : paths) {
 
-			if(path != null && !path.trim().isEmpty()) {
-
-				if(path.endsWith("/")) {
-
-					path = path.substring(0, path.lastIndexOf("/"));
-				}
+			if(path != null && !path.isEmpty()) {
 
 				if(!path.startsWith("/")) {
 
 					stringBuilder.append("/");
+				}
+
+				if(path.endsWith("/")) {
+
+					path = path.substring(0, path.lastIndexOf("/"));
 				}
 
 				stringBuilder.append(path);

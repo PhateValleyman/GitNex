@@ -162,7 +162,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			}
 			catch(URISyntaxException e) {
 				Toasty.error(ctx, getString(R.string.genericError));
-			} finally {
+			}
+			finally {
 				dismiss();
 			}
 
@@ -191,7 +192,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			}
 			catch(URISyntaxException e) {
 				Toasty.error(ctx, getString(R.string.genericError));
-			} finally {
+			}
+			finally {
 				dismiss();
 			}
 
