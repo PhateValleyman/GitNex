@@ -259,6 +259,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
 		inflater.inflate(R.menu.search_menu, menu);
+		inflater.inflate(R.menu.files_switch_branches_menu, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 
 		MenuItem searchItem = menu.findItem(R.id.action_search);

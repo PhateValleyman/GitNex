@@ -68,6 +68,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	private FragmentRefreshListener fragmentRefreshListener;
 	private FragmentRefreshListenerPr fragmentRefreshListenerPr;
 	private FragmentRefreshListenerMilestone fragmentRefreshListenerMilestone;
+	private FragmentRefreshListenerFiles fragmentRefreshListenerFiles;
 
 	private final Context ctx = this;
 	private Context appCtx;
@@ -290,6 +291,11 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			case R.id.filterMilestone:
 				BottomSheetMilestonesFilterFragment filterMilestoneBottomSheet = new BottomSheetMilestonesFilterFragment();
 				filterMilestoneBottomSheet.show(getSupportFragmentManager(), "repoFilterMenuMilestoneBottomSheet");
+				return true;
+
+			case R.id.switchBranches:
+				// show the branches popup here and pass it's selected value to the interface listener
+
 				return true;
 
 			default:
@@ -643,5 +649,12 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	public void setFragmentRefreshListenerMilestone(FragmentRefreshListenerMilestone fragmentRefreshListenerMilestone) { this.fragmentRefreshListenerMilestone = fragmentRefreshListenerMilestone; }
 
 	public interface FragmentRefreshListenerMilestone { void onRefresh(String text); }
+
+	// Files interface
+	public FragmentRefreshListenerFiles getFragmentRefreshListenerFiles() { return fragmentRefreshListenerFiles; }
+
+	public void setFragmentRefreshListenerFiles(FragmentRefreshListenerFiles fragmentRefreshListenerFiles) { this.fragmentRefreshListenerFiles = fragmentRefreshListenerFiles; }
+
+	public interface FragmentRefreshListenerFiles { void onRefresh(String text); }
 
 }

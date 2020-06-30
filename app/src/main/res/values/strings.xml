@@ -515,6 +515,7 @@
     <string name="newFileRequiredFieldNewBranchName">New branch name cannot be empty if current branch is not selected</string>
 
     <string name="strFilter">Filter</string>
+    <string name="strSwitchBranches">Branches</string>
 
     <string name="copyIssueUrl">Copy Issue URL</string>
     <string name="copyIssueUrlToastMsg">URL copied to clipboard</string>
