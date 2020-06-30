@@ -1,13 +1,11 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -20,6 +18,8 @@ import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -128,7 +128,7 @@ public class AddRemoveLabelsActivity extends BaseActivity {
                                                 .multiSelectList(listOfLabels)
                                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                                     @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                                         String labelIds = selectedIds.toString();
                                                         int[] integers;
@@ -169,7 +169,7 @@ public class AddRemoveLabelsActivity extends BaseActivity {
                                                 .multiSelectList(listOfLabels)
                                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                                     @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                                         String labelIds = selectedIds.toString();
                                                         int[] integers;

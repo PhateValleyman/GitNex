@@ -1,11 +1,11 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -139,7 +139,7 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
                                                 .multiSelectList(listOfCollaborators)
                                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                                     @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                                         Log.i("selectedNames", String.valueOf(selectedNames));
 
@@ -167,7 +167,7 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
                                                 .multiSelectList(listOfCollaborators)
                                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                                     @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                                         updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, selectedNames);
                                                         tinyDb.putBoolean("singleIssueUpdate", true);

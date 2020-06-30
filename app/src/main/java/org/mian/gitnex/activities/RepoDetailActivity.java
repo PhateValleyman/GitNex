@@ -39,13 +39,20 @@ import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.fragments.ReleasesFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.MultiSelectDialog;
 import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.models.Branches;
+import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.models.WatchInfo;
 import org.mian.gitnex.util.TinyDB;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -313,6 +320,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 				startActivity(new Intent(RepoDetailActivity.this, AddCollaboratorToRepositoryActivity.class));
 				break;
 
+			case "chooseBranch":
+				chooseBranch();
+				break;
+
 			case "createRelease":
 				startActivity(new Intent(RepoDetailActivity.this, CreateReleaseActivity.class));
 				break;
@@ -374,6 +385,76 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 	}
 
+	private void chooseBranch() {
+
+		Call<List<Branches>> call = RetrofitClient.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getBranches(instanceToken, repositoryOwner, repositoryName);
+
+		call.enqueue(new Callback<List<Branches>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Branches>> call, @NonNull Response<List<Branches>> response) {
+
+				if(response.code() == 200) {
+
+					assert response.body() != null;
+
+					List<MultiSelectModel> multiSelectModels = new ArrayList<>();
+					int preSelectId = 0;
+
+					for(int i=0; i<response.body().size(); i++) {
+
+						Branches branches = response.body().get(i);
+						multiSelectModels.add(new MultiSelectModel(i, branches.getName()));
+
+						if(tinyDB.getString("repoBranch").equals(branches.getName())) {
+
+							preSelectId = i;
+						}
+					}
+
+					MultiSelectDialog multiSelectDialog = new MultiSelectDialog()
+						.title(getString(R.string.pageTitleChooseBranch))
+						.titleSize(25)
+						.positiveText(getString(R.string.okButton))
+						.negativeText(getString(R.string.cancelButton))
+						.preSelectIDsList(new ArrayList<>(Collections.singletonList(preSelectId)))
+						.setMinSelectionLimit(1)
+						.setMaxSelectionLimit(1)
+						.multiSelectList(multiSelectModels);
+
+					multiSelectDialog.onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+
+							@Override
+							public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String commonSeperatedData) {
+
+								tinyDB.putString("repoBranch", selectedNames.get(0));
+								multiSelectDialog.dismiss();
+								recreate();
+							}
+
+							@Override
+							public void onCancel() {
+								multiSelectDialog.dismiss();
+							}
+						});
+
+					multiSelectDialog.show(getSupportFragmentManager(), "branchMultiSelectDialog");
+
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
 	public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
 		SectionsPagerAdapter(FragmentManager fm) {
@@ -393,7 +474,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 					return RepoInfoFragment.newInstance(repositoryOwner, repositoryName);
 
 				case 1: // Files
-					return FilesFragment.newInstance(repositoryOwner, repositoryName);
+					return FilesFragment.newInstance(repositoryOwner, repositoryName, tinyDB.getString("repoBranch", null));
 
 				case 2: // Issues
 					fragment = new IssuesFragment();
@@ -444,32 +525,28 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 				UserRepositories repoInfo = response.body();
 
-				if(response.isSuccessful()) {
+				if(response.code() == 200) {
 
-					if(response.code() == 200) {
+					if(tinyDB.getBoolean("enableCounterBadges")) {
+						assert repoInfo != null;
 
-						if(tinyDB.getBoolean("enableCounterBadges")) {
-							assert repoInfo != null;
+						if(repoInfo.getOpen_issues_count() != null) {
 
-							if(repoInfo.getOpen_issues_count() != null) {
-
-								textViewBadgeIssue.setVisibility(View.VISIBLE);
-								textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
-							}
-
-							if(repoInfo.getOpen_pull_count() != null) {
-
-								textViewBadgePull.setVisibility(View.VISIBLE);
-								textViewBadgePull.setText(repoInfo.getOpen_pull_count());
-							}
-
-							if(repoInfo.getRelease_count() != null) {
-
-								textViewBadgeRelease.setVisibility(View.VISIBLE);
-								textViewBadgeRelease.setText(repoInfo.getRelease_count());
-							}
+							textViewBadgeIssue.setVisibility(View.VISIBLE);
+							textViewBadgeIssue.setText(repoInfo.getOpen_issues_count());
 						}
 
+						if(repoInfo.getOpen_pull_count() != null) {
+
+							textViewBadgePull.setVisibility(View.VISIBLE);
+							textViewBadgePull.setText(repoInfo.getOpen_pull_count());
+						}
+
+						if(repoInfo.getRelease_count() != null) {
+
+							textViewBadgeRelease.setVisibility(View.VISIBLE);
+							textViewBadgeRelease.setText(repoInfo.getRelease_count());
+						}
 					}
 
 				}

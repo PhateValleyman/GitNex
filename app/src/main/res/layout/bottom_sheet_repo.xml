@@ -22,24 +22,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/pageTitleNewFile"
                 android:drawableStart="@drawable/ic_file"
                 android:drawablePadding="24dp"
+                android:padding="12dp"
+                android:text="@string/pageTitleNewFile"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:padding="12dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/createNewIssue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/pageTitleCreateNewIssue"
                 android:drawableStart="@drawable/ic_issue_open_white"
                 android:drawablePadding="24dp"
+                android:padding="12dp"
+                android:text="@string/pageTitleCreateNewIssue"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:padding="12dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/createNewMilestone"
@@ -72,6 +72,27 @@
                 android:layout_gravity="center_vertical"
                 android:text="@string/createRelease"
                 android:drawableStart="@drawable/ic_new_releases"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="?attr/dividerColor" />
+
+            <TextView
+                android:id="@+id/chooseBranch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/pageTitleChooseBranch"
+                android:drawableStart="@drawable/ic_repos"
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
