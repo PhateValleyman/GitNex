@@ -192,7 +192,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 				long draftId = draftsRepository.insertDraft(repositoryId, currentActiveAccountId, issueNumber, draftText, StaticGlobalVariables.draftTypeComment);
 			}
 			else {
-				DraftsRepository.updateDraftByIssueIdAsycTask(draftText, issueNumber, repositoryId);
+				DraftsRepository.updateDraftByIssueIdAsyncTask(draftText, issueNumber, repositoryId);
 			}
 
 		}
