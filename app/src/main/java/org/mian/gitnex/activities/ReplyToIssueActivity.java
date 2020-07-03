@@ -1,9 +1,5 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -16,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
@@ -32,7 +29,9 @@ import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -184,20 +183,13 @@ public class ReplyToIssueActivity extends BaseActivity {
 
 		DraftsRepository draftsRepository = new DraftsRepository(getApplicationContext());
 
-		try {
+		int countDraft = draftsRepository.checkDraft(issueNumber, repositoryId);
 
-			int countDraft = draftsRepository.checkDraft(issueNumber, repositoryId);
-
-			if(countDraft == 0) {
-				long draftId = draftsRepository.insertDraft(repositoryId, currentActiveAccountId, issueNumber, draftText, StaticGlobalVariables.draftTypeComment);
-			}
-			else {
-				DraftsRepository.updateDraftByIssueIdAsyncTask(draftText, issueNumber, repositoryId);
-			}
-
+		if(countDraft == 0) {
+			long draftId = draftsRepository.insertDraft(repositoryId, currentActiveAccountId, issueNumber, draftText, StaticGlobalVariables.draftTypeComment);
 		}
-		catch(ExecutionException | InterruptedException e) {
-			Log.e(TAG, e.toString());
+		else {
+			DraftsRepository.updateDraftByIssueIdAsyncTask(draftText, issueNumber, repositoryId);
 		}
 
 	}

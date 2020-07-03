@@ -1,14 +1,14 @@
 package org.mian.gitnex.database.repository;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import org.mian.gitnex.database.dao.DraftsDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
 import org.mian.gitnex.database.models.Drafts;
 import org.mian.gitnex.database.models.DraftsWithRepositories;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Author M M Arif
@@ -18,13 +18,13 @@ public class DraftsRepository {
 
 	private static DraftsDao draftsDao;
 	private static long draftId;
+	private static Integer checkDraftFlag;
 
 	public DraftsRepository(Context context) {
 
 		GitnexDatabase db;
 		db = GitnexDatabase.getDatabaseInstance(context);
 		draftsDao = db.draftsDao();
-
 	}
 
 	public long insertDraft(int repositoryId, int draftAccountId, int issueId, String draftText, String draftType) {
@@ -37,37 +37,38 @@ public class DraftsRepository {
 		drafts.setDraftType(draftType);
 
 		return insertDraftAsyncTask(drafts);
-
 	}
 
 	private static long insertDraftAsyncTask(final Drafts drafts) {
 
-		new Thread(() -> draftId = draftsDao.insertDraft(drafts)).start();
+		try {
+
+			Thread thread = new Thread(() -> draftId = draftsDao.insertDraft(drafts));
+			thread.start();
+			thread.join();
+		}
+		catch(InterruptedException e) {
+
+			Log.e(StaticGlobalVariables.draftsRepository, e.toString());
+		}
+
 		return draftId;
 	}
 
-	public Integer checkDraft(int issueId, int draftRepositoryId) throws ExecutionException, InterruptedException {
+	public Integer checkDraft(int issueId, int draftRepositoryId) {
 
-		return new DraftsRepository.checkDraftAsyncTask(issueId, draftRepositoryId).execute().get();
-	}
+		try {
 
-	private static class checkDraftAsyncTask extends AsyncTask<Void, Void, Integer> {
+			Thread thread = new Thread(() -> checkDraftFlag = draftsDao.checkDraftDao(issueId, draftRepositoryId));
+			thread.start();
+			thread.join();
+		}
+		catch(InterruptedException e) {
 
-		int issueId;
-		int draftRepositoryId;
-
-		checkDraftAsyncTask(int issueId, int draftRepositoryId) {
-
-			this.issueId = issueId;
-			this.draftRepositoryId = draftRepositoryId;
+			Log.e(StaticGlobalVariables.draftsRepository, e.toString());
 		}
 
-		@Override
-		protected Integer doInBackground(Void... params) {
-
-			return draftsDao.checkDraftDao(issueId, draftRepositoryId);
-		}
-
+		return checkDraftFlag;
 	}
 
 	public LiveData<List<DraftsWithRepositories>> getDrafts(int accountId) {
