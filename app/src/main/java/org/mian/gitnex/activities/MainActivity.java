@@ -177,7 +177,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleAbout));
 		}
 		else if(fragmentById instanceof DraftsFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleDrafts));
+			toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
 		}
 		else if(fragmentById instanceof AdministrationFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
@@ -288,7 +288,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			if(launchFragment.equals("drafts")) {
 
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DraftsFragment()).commit();
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleDrafts));
+				toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
 				navigationView.setCheckedItem(R.id.nav_comments_draft);
 				mainIntent.removeExtra("launchFragment");
 				return;
@@ -486,7 +486,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				break;
 
 			case R.id.nav_comments_draft:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleDrafts));
+				toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DraftsFragment()).commit();
 				break;
 

@@ -577,8 +577,7 @@
     <string name="unWatchRepository">Unwatch Repository</string>
     <string name="watchRepositorySuccess">Repository added to watch list</string>
     <string name="unWatchRepositorySuccess">Repository removed from watch list</string>
-    <string name="navDrafts">Drafts</string>
-    <string name="pageTitleDrafts">Drafts</string>
+    <string name="titleDrafts">Drafts</string>
     <string name="filesBreadcrumbRoot" translatable="false">Root</string>
 
     <string name="versionUnsupportedOld">Unsupported old version(%1$s) of Gitea detected. Please update to latest stable version. If you continue, the app may not function properly.</string>
@@ -668,8 +667,8 @@
     <string name="setCrashReports">Crash reports</string>
     <string name="crashMessage">You can tap the OK button to send the crash report by email. It will help to fix it :)\n\nYou can also add additional content in the email. Thank you!</string>
 
-    <string name="forceLogoutDialogHeader">Re-login is Required</string>
-    <string name="forceLogoutDialogDescription">There are new updates introduced in the recent version, for compatibility the app will log you out to re-initiate the process. Sorry for the inconvenience.\n\nPlease click the Logout button to continue.</string>
+    <string name="forceLogoutDialogHeader">Please sign in again</string>
+    <string name="forceLogoutDialogDescription">Due to some major changes regarding the internal functioning of the app, we require you to login again. These changes allow us to make the app more flexible in the future.\n\nThank you for your patience and sorry for the inconvenience.</string>
 
     <string name="deleteAllDrafts">Delete All Drafts</string>
     <string name="draftsListEmptyError">No drafts found</string>
