@@ -24,7 +24,6 @@ public class UserAccountsRepository {
 		GitnexDatabase db;
 		db = GitnexDatabase.getDatabaseInstance(context);
 		userAccountsDao = db.userAccountsDao();
-
 	}
 
 	public void insertNewAccount(String accountName, String instanceUrl, String userName, String token, String serverVersion) {

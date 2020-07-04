@@ -1,7 +1,6 @@
 package org.mian.gitnex.database.repository;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 import androidx.lifecycle.LiveData;
 import org.mian.gitnex.database.dao.RepositoriesDao;
@@ -9,7 +8,6 @@ import org.mian.gitnex.database.db.GitnexDatabase;
 import org.mian.gitnex.database.models.Repositories;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Author M M Arif
@@ -19,13 +17,14 @@ public class RepositoriesRepository {
 
 	private static RepositoriesDao repositoriesDao;
 	private static long repositoryId;
+	private static Repositories repositories;
+	private static Integer checkRepository;
 
 	public RepositoriesRepository(Context context) {
 
 		GitnexDatabase db;
 		db = GitnexDatabase.getDatabaseInstance(context);
 		repositoriesDao = db.repositoriesDao();
-
 	}
 
 	public long insertRepository(int repoAccountId, String repositoryOwner, String repositoryName) {
@@ -36,60 +35,38 @@ public class RepositoriesRepository {
 		repositories.setRepositoryName(repositoryName);
 
 		return insertRepositoryAsyncTask(repositories);
-
 	}
 
-	private static long insertRepositoryAsyncTask(final Repositories repositories) {
+	public long insertRepositoryAsyncTask(Repositories repositories) {
 
 		try {
-			new AsyncTask<Void, Void, Long>() {
 
-				@Override
-				protected Long doInBackground(Void... voids) {
-
-					repositoryId = repositoriesDao.newRepository(repositories);
-					return repositoryId;
-				}
-
-				@Override
-				protected void onPostExecute(Long repositoryId) {
-
-					super.onPostExecute(repositoryId);
-				}
-
-			}.execute().get();
+			Thread thread = new Thread(() -> repositoryId = repositoriesDao.newRepository(repositories));
+			thread.start();
+			thread.join();
 		}
-		catch(ExecutionException | InterruptedException e) {
+		catch(InterruptedException e) {
+
 			Log.e(StaticGlobalVariables.repositoriesRepository, e.toString());
 		}
 
 		return repositoryId;
 	}
 
-	public Repositories getRepository(int repoAccountId, String repositoryOwner, String repositoryName) throws ExecutionException, InterruptedException {
+	public Repositories getRepository(int repoAccountId, String repositoryOwner, String repositoryName) {
 
-		return new RepositoriesRepository.getRepositoryAsyncTask(repoAccountId, repositoryOwner, repositoryName).execute().get();
-	}
+		try {
 
-	private static class getRepositoryAsyncTask extends AsyncTask<Void, Void, Repositories> {
+			Thread thread = new Thread(() -> repositories = repositoriesDao.getSingleRepositoryDao(repoAccountId, repositoryOwner, repositoryName));
+			thread.start();
+			thread.join();
+		}
+		catch(InterruptedException e) {
 
-		int repoAccountId;
-		String repositoryOwner;
-		String repositoryName;
-
-		getRepositoryAsyncTask(int repoAccountId, String repositoryOwner, String repositoryName) {
-
-			this.repoAccountId = repoAccountId;
-			this.repositoryOwner = repositoryOwner;
-			this.repositoryName = repositoryName;
+			Log.e(StaticGlobalVariables.repositoriesRepository, e.toString());
 		}
 
-		@Override
-		protected Repositories doInBackground(Void... params) {
-
-			return repositoriesDao.getSingleRepositoryDao(repoAccountId, repositoryOwner, repositoryName);
-		}
-
+		return repositories;
 	}
 
 	public LiveData<List<Repositories>> getAllRepositories() {
@@ -102,88 +79,62 @@ public class RepositoriesRepository {
 		return repositoriesDao.getAllRepositoriesByAccountDao(repoAccountId);
 	}
 
-	public Integer checkRepository(int repoAccountId, String repositoryOwner, String repositoryName) throws ExecutionException, InterruptedException {
+	public Integer checkRepository(int repoAccountId, String repositoryOwner, String repositoryName) {
 
-		return new RepositoriesRepository.checkRepositoryAsyncTask(repoAccountId, repositoryOwner, repositoryName).execute().get();
-	}
+		try {
 
-	private static class checkRepositoryAsyncTask extends AsyncTask<Void, Void, Integer> {
+			Thread thread = new Thread(() -> checkRepository = repositoriesDao.checkRepositoryDao(repoAccountId, repositoryOwner, repositoryName));
+			thread.start();
+			thread.join();
+		}
+		catch(InterruptedException e) {
 
-		int repoAccountId;
-		String repositoryOwner;
-		String repositoryName;
-
-		checkRepositoryAsyncTask(int repoAccountId, String repositoryOwner, String repositoryName) {
-
-			this.repoAccountId = repoAccountId;
-			this.repositoryOwner = repositoryOwner;
-			this.repositoryName = repositoryName;
+			Log.e(StaticGlobalVariables.repositoriesRepository, e.toString());
 		}
 
-		@Override
-		protected Integer doInBackground(Void... params) {
+		return checkRepository;
+	}
 
-			return repositoriesDao.checkRepositoryDao(repoAccountId, repositoryOwner, repositoryName);
+	public Repositories fetchRepositoryById(int repositoryId) {
+
+		try {
+
+			Thread thread = new Thread(() -> repositories = repositoriesDao.fetchRepositoryByIdDao(repositoryId));
+			thread.start();
+			thread.join();
+		}
+		catch(InterruptedException e) {
+
+			Log.e(StaticGlobalVariables.repositoriesRepository, e.toString());
 		}
 
+		return repositories;
 	}
 
-	public Repositories fetchRepositoryById(int repositoryId) throws ExecutionException, InterruptedException {
+	public Repositories fetchRepositoryByAccountIdByRepositoryId(int repositoryId, int repoAccountId) {
 
-		return new RepositoriesRepository.getRepositoryByIdAsyncTask().execute(repositoryId).get();
-	}
+		try {
 
-	private static class getRepositoryByIdAsyncTask extends AsyncTask<Integer, Void, Repositories> {
+			Thread thread = new Thread(() -> repositories = repositoriesDao.fetchRepositoryByAccountIdByRepositoryIdDao(repositoryId, repoAccountId));
+			thread.start();
+			thread.join();
+		}
+		catch(InterruptedException e) {
 
-		@Override
-		protected Repositories doInBackground(Integer... params) {
-
-			return repositoriesDao.fetchRepositoryByIdDao(params[0]);
+			Log.e(StaticGlobalVariables.repositoriesRepository, e.toString());
 		}
 
-	}
-
-	public Repositories fetchRepositoryByAccountIdByRepositoryId(int repositoryId, int repoAccountId) throws ExecutionException, InterruptedException {
-
-		return new RepositoriesRepository.getRepositoryByAccountIdByRepositoryIdAsyncTask().execute(repositoryId, repoAccountId).get();
-	}
-
-	private static class getRepositoryByAccountIdByRepositoryIdAsyncTask extends AsyncTask<Integer, Void, Repositories> {
-
-		@Override
-		protected Repositories doInBackground(Integer... params) {
-
-			return repositoriesDao.fetchRepositoryByAccountIdByRepositoryIdDao(params[0], params[1]);
-		}
-
+		return repositories;
 	}
 
 	public static void deleteRepositoriesByAccount(final int repoAccountId) {
 
-		new AsyncTask<Void, Void, Void>() {
-
-			@Override
-			protected Void doInBackground(Void... voids) {
-
-				repositoriesDao.deleteRepositoriesByAccount(repoAccountId);
-				return null;
-			}
-		}.execute();
-
+		new Thread(() -> repositoriesDao.deleteRepositoriesByAccount(repoAccountId)).start();
 	}
 
 	public static void deleteRepository(final int repositoryId) {
 
-		new AsyncTask<Void, Void, Void>() {
-
-			@Override
-			protected Void doInBackground(Void... voids) {
-
-				repositoriesDao.deleteRepository(repositoryId);
-				return null;
-			}
-		}.execute();
-
+		new Thread(() -> repositoriesDao.deleteRepository(repositoryId)).start();
 	}
 
 }

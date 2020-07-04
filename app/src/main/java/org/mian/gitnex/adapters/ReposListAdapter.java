@@ -101,27 +101,20 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 				int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
 				RepositoriesRepository repositoryData = new RepositoriesRepository(context);
 
-				try {
+				//RepositoriesRepository.deleteRepositoriesByAccount(currentActiveAccountId);
+				Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
-					//RepositoriesRepository.deleteRepositoriesByAccount(currentActiveAccountId);
-					Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
+				if(count == 0) {
 
-					if(count == 0) {
-
-						long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
-						tinyDb.putLong("repositoryId", id);
-
-					}
-					else {
-
-						Repositories data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
-						tinyDb.putLong("repositoryId", data.getRepositoryId());
-
-					}
+					long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
+					tinyDb.putLong("repositoryId", id);
 
 				}
-				catch(ExecutionException | InterruptedException e) {
-					Log.e("checkRepository", e.toString());
+				else {
+
+					Repositories data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
+					tinyDb.putLong("repositoryId", data.getRepositoryId());
+
 				}
 
 				//store if user is watching this repo
