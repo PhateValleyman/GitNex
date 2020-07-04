@@ -23,7 +23,7 @@ import org.mian.gitnex.activities.RepoStargazersActivity;
 import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.database.models.Repositories;
+import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.Toasty;
@@ -107,7 +107,7 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
                 }
                 else {
 
-                    Repositories data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
+                    Repository data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
                     tinyDb.putLong("repositoryId", data.getRepositoryId());
 
                 }

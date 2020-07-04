@@ -27,7 +27,7 @@ import com.google.android.material.navigation.NavigationView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.database.models.UserAccounts;
+import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.fragments.AboutFragment;
 import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
@@ -407,7 +407,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	public void getAccountData(String accountName) throws ExecutionException, InterruptedException {
 
 		UserAccountsApi accountData = new UserAccountsApi(ctx);
-		UserAccounts data = accountData.getAccountData(accountName);
+		UserAccount data = accountData.getAccountData(accountName);
 
 		if(data != null) {
 			TinyDB tinyDb = new TinyDB(ctx.getApplicationContext());

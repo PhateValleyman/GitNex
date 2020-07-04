@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.DraftsAdapter;
-import org.mian.gitnex.database.models.DraftsWithRepositories;
+import org.mian.gitnex.database.models.DraftWithRepository;
 import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.util.TinyDB;
@@ -35,7 +35,7 @@ public class DraftsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private DraftsApi draftsApi;
     private TextView noData;
-	private List<DraftsWithRepositories> draftsList_;
+	private List<DraftWithRepository> draftsList_;
 	private int currentActiveAccountId;
 
     @Override

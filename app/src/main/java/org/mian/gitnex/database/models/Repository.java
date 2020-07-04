@@ -11,12 +11,12 @@ import static androidx.room.ForeignKey.CASCADE;
  * Author M M Arif
  */
 
-@Entity(tableName = "repositories", foreignKeys = @ForeignKey(entity = UserAccounts.class,
+@Entity(tableName = "Repositories", foreignKeys = @ForeignKey(entity = UserAccount.class,
         parentColumns = "accountId",
         childColumns = "repoAccountId",
         onDelete = CASCADE),
         indices = {@Index("repoAccountId")})
-public class Repositories implements Serializable {
+public class Repository implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int repositoryId;

@@ -5,7 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import org.mian.gitnex.database.dao.RepositoriesDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
-import org.mian.gitnex.database.models.Repositories;
+import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class RepositoriesApi {
 
 	private static RepositoriesDao repositoriesDao;
 	private static long repositoryId;
-	private static Repositories repositories;
+	private static Repository repository;
 	private static Integer checkRepository;
 
 	public RepositoriesApi(Context context) {
@@ -29,19 +29,19 @@ public class RepositoriesApi {
 
 	public long insertRepository(int repoAccountId, String repositoryOwner, String repositoryName) {
 
-		Repositories repositories = new Repositories();
-		repositories.setRepoAccountId(repoAccountId);
-		repositories.setRepositoryOwner(repositoryOwner);
-		repositories.setRepositoryName(repositoryName);
+		Repository repository = new Repository();
+		repository.setRepoAccountId(repoAccountId);
+		repository.setRepositoryOwner(repositoryOwner);
+		repository.setRepositoryName(repositoryName);
 
-		return insertRepositoryAsyncTask(repositories);
+		return insertRepositoryAsyncTask(repository);
 	}
 
-	public long insertRepositoryAsyncTask(Repositories repositories) {
+	public long insertRepositoryAsyncTask(Repository repository) {
 
 		try {
 
-			Thread thread = new Thread(() -> repositoryId = repositoriesDao.newRepository(repositories));
+			Thread thread = new Thread(() -> repositoryId = repositoriesDao.newRepository(repository));
 			thread.start();
 			thread.join();
 		}
@@ -53,11 +53,11 @@ public class RepositoriesApi {
 		return repositoryId;
 	}
 
-	public Repositories getRepository(int repoAccountId, String repositoryOwner, String repositoryName) {
+	public Repository getRepository(int repoAccountId, String repositoryOwner, String repositoryName) {
 
 		try {
 
-			Thread thread = new Thread(() -> repositories = repositoriesDao.getSingleRepositoryDao(repoAccountId, repositoryOwner, repositoryName));
+			Thread thread = new Thread(() -> repository = repositoriesDao.getSingleRepositoryDao(repoAccountId, repositoryOwner, repositoryName));
 			thread.start();
 			thread.join();
 		}
@@ -66,15 +66,15 @@ public class RepositoriesApi {
 			Log.e(StaticGlobalVariables.repositoriesRepository, e.toString());
 		}
 
-		return repositories;
+		return repository;
 	}
 
-	public LiveData<List<Repositories>> getAllRepositories() {
+	public LiveData<List<Repository>> getAllRepositories() {
 
 		return repositoriesDao.fetchAllRepositories();
 	}
 
-	public LiveData<List<Repositories>> getAllRepositoriesByAccount(int repoAccountId) {
+	public LiveData<List<Repository>> getAllRepositoriesByAccount(int repoAccountId) {
 
 		return repositoriesDao.getAllRepositoriesByAccountDao(repoAccountId);
 	}
@@ -95,11 +95,11 @@ public class RepositoriesApi {
 		return checkRepository;
 	}
 
-	public Repositories fetchRepositoryById(int repositoryId) {
+	public Repository fetchRepositoryById(int repositoryId) {
 
 		try {
 
-			Thread thread = new Thread(() -> repositories = repositoriesDao.fetchRepositoryByIdDao(repositoryId));
+			Thread thread = new Thread(() -> repository = repositoriesDao.fetchRepositoryByIdDao(repositoryId));
 			thread.start();
 			thread.join();
 		}
@@ -108,14 +108,14 @@ public class RepositoriesApi {
 			Log.e(StaticGlobalVariables.repositoriesRepository, e.toString());
 		}
 
-		return repositories;
+		return repository;
 	}
 
-	public Repositories fetchRepositoryByAccountIdByRepositoryId(int repositoryId, int repoAccountId) {
+	public Repository fetchRepositoryByAccountIdByRepositoryId(int repositoryId, int repoAccountId) {
 
 		try {
 
-			Thread thread = new Thread(() -> repositories = repositoriesDao.fetchRepositoryByAccountIdByRepositoryIdDao(repositoryId, repoAccountId));
+			Thread thread = new Thread(() -> repository = repositoriesDao.fetchRepositoryByAccountIdByRepositoryIdDao(repositoryId, repoAccountId));
 			thread.start();
 			thread.join();
 		}
@@ -124,7 +124,7 @@ public class RepositoriesApi {
 			Log.e(StaticGlobalVariables.repositoriesRepository, e.toString());
 		}
 
-		return repositories;
+		return repository;
 	}
 
 	public static void deleteRepositoriesByAccount(final int repoAccountId) {

@@ -8,7 +8,7 @@
 - New: List organization teams
 - New: List team members in organization by tapping on the team name
 - New: Repository list for the organization. Tap on organization.
-- New: Show the repositories list starred by the logged in user
+- New: Show the repository list starred by the logged in user
 - Enhancement: Login api calls for http status code 500
 - Enhancement: Font sizes, color schemes
 - Enhancement: Labels, user avatars, menus

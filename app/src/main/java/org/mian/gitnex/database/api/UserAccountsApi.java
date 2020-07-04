@@ -5,7 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import org.mian.gitnex.database.dao.UserAccountsDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
-import org.mian.gitnex.database.models.UserAccounts;
+import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class UserAccountsApi {
 
 	private static UserAccountsDao userAccountsDao;
-	private static UserAccounts userAccounts;
+	private static UserAccount userAccount;
 	private static Integer checkAccount;
 
 	public UserAccountsApi(Context context) {
@@ -28,19 +28,19 @@ public class UserAccountsApi {
 
 	public void insertNewAccount(String accountName, String instanceUrl, String userName, String token, String serverVersion) {
 
-		UserAccounts userAccounts = new UserAccounts();
-		userAccounts.setAccountName(accountName);
-		userAccounts.setInstanceUrl(instanceUrl);
-		userAccounts.setUserName(userName);
-		userAccounts.setToken(token);
-		userAccounts.setServerVersion(serverVersion);
+		UserAccount userAccount = new UserAccount();
+		userAccount.setAccountName(accountName);
+		userAccount.setInstanceUrl(instanceUrl);
+		userAccount.setUserName(userName);
+		userAccount.setToken(token);
+		userAccount.setServerVersion(serverVersion);
 
-		insertNewAccountAsync(userAccounts);
+		insertNewAccountAsync(userAccount);
 	}
 
-	private static void insertNewAccountAsync(final UserAccounts userAccounts) {
+	private static void insertNewAccountAsync(final UserAccount userAccount) {
 
-		new Thread(() -> userAccountsDao.newAccount(userAccounts)).start();
+		new Thread(() -> userAccountsDao.newAccount(userAccount)).start();
 	}
 
 	public static void updateServerVersion(final String serverVersion, final int accountId) {
@@ -53,11 +53,11 @@ public class UserAccountsApi {
 		new Thread(() -> userAccountsDao.updateAccountToken(accountId, token)).start();
 	}
 
-	public UserAccounts getAccountData(String accountName) {
+	public UserAccount getAccountData(String accountName) {
 
 		try {
 
-			Thread thread = new Thread(() -> userAccounts = userAccountsDao.fetchRowByAccount_(accountName));
+			Thread thread = new Thread(() -> userAccount = userAccountsDao.fetchRowByAccount_(accountName));
 			thread.start();
 			thread.join();
 		}
@@ -66,7 +66,7 @@ public class UserAccountsApi {
 			Log.e(StaticGlobalVariables.userAccountsRepository, e.toString());
 		}
 
-		return userAccounts;
+		return userAccount;
 	}
 
 	public Integer getCount(String accountName) {
@@ -85,7 +85,7 @@ public class UserAccountsApi {
 		return checkAccount;
 	}
 
-	public LiveData<List<UserAccounts>> getAllAccounts() {
+	public LiveData<List<UserAccount>> getAllAccounts() {
 
 		return userAccountsDao.fetchAllAccounts();
 	}

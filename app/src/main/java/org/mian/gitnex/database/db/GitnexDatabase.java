@@ -10,15 +10,15 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import org.mian.gitnex.database.dao.DraftsDao;
 import org.mian.gitnex.database.dao.RepositoriesDao;
 import org.mian.gitnex.database.dao.UserAccountsDao;
-import org.mian.gitnex.database.models.Drafts;
-import org.mian.gitnex.database.models.Repositories;
-import org.mian.gitnex.database.models.UserAccounts;
+import org.mian.gitnex.database.models.Draft;
+import org.mian.gitnex.database.models.Repository;
+import org.mian.gitnex.database.models.UserAccount;
 
 /**
  * Author M M Arif
  */
 
-@Database(entities = {Drafts.class, Repositories.class, UserAccounts.class},
+@Database(entities = {Draft.class, Repository.class, UserAccount.class},
         version = 1, exportSchema = false)
 public abstract class GitnexDatabase extends RoomDatabase {
 

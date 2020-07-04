@@ -5,8 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import org.mian.gitnex.database.dao.DraftsDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
-import org.mian.gitnex.database.models.Drafts;
-import org.mian.gitnex.database.models.DraftsWithRepositories;
+import org.mian.gitnex.database.models.Draft;
+import org.mian.gitnex.database.models.DraftWithRepository;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import java.util.List;
 
@@ -29,21 +29,21 @@ public class DraftsApi {
 
 	public long insertDraft(int repositoryId, int draftAccountId, int issueId, String draftText, String draftType) {
 
-		Drafts drafts = new Drafts();
-		drafts.setDraftRepositoryId(repositoryId);
-		drafts.setDraftAccountId(draftAccountId);
-		drafts.setIssueId(issueId);
-		drafts.setDraftText(draftText);
-		drafts.setDraftType(draftType);
+		Draft draft = new Draft();
+		draft.setDraftRepositoryId(repositoryId);
+		draft.setDraftAccountId(draftAccountId);
+		draft.setIssueId(issueId);
+		draft.setDraftText(draftText);
+		draft.setDraftType(draftType);
 
-		return insertDraftAsyncTask(drafts);
+		return insertDraftAsyncTask(draft);
 	}
 
-	private static long insertDraftAsyncTask(final Drafts drafts) {
+	private static long insertDraftAsyncTask(final Draft draft) {
 
 		try {
 
-			Thread thread = new Thread(() -> draftId = draftsDao.insertDraft(drafts));
+			Thread thread = new Thread(() -> draftId = draftsDao.insertDraft(draft));
 			thread.start();
 			thread.join();
 		}
@@ -71,19 +71,19 @@ public class DraftsApi {
 		return checkDraftFlag;
 	}
 
-	public LiveData<List<DraftsWithRepositories>> getDrafts(int accountId) {
+	public LiveData<List<DraftWithRepository>> getDrafts(int accountId) {
 
 		return draftsDao.fetchAllDrafts(accountId);
 	}
 
-	public LiveData<Drafts> getDraftByIssueId(int issueId) {
+	public LiveData<Draft> getDraftByIssueId(int issueId) {
 
 		return draftsDao.fetchDraftByIssueId(issueId);
 	}
 
 	public static void deleteSingleDraft(final int draftId) {
 
-		final LiveData<Drafts> draft = draftsDao.fetchDraftById(draftId);
+		final LiveData<Draft> draft = draftsDao.fetchDraftById(draftId);
 
 		if(draft != null) {
 

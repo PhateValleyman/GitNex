@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 
 @Entity(tableName = "userAccounts")
-public class UserAccounts implements Serializable {
+public class UserAccount implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int accountId;

@@ -1,33 +1,29 @@
 package org.mian.gitnex.database.models;
 
+import androidx.annotation.Nullable;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+import java.io.Serializable;
+import static androidx.room.ForeignKey.CASCADE;
+
 /**
  * Author M M Arif
  */
 
-public class DraftsWithRepositories {
+@Entity(tableName = "Drafts", foreignKeys = @ForeignKey(entity = Repository.class, parentColumns = "repositoryId", childColumns = "draftRepositoryId", onDelete = CASCADE), indices = {@Index("draftRepositoryId")})
+public class Draft implements Serializable {
 
-	private int repositoryId;
+	@PrimaryKey(autoGenerate = true)
 	private int draftId;
-
-	private int repoAccountId;
-	private String repositoryOwner;
-	private String repositoryName;
 
 	private int draftRepositoryId;
 	private int draftAccountId;
 	private int issueId;
 	private String draftText;
+	@Nullable
 	private String draftType;
-
-	public int getRepositoryId() {
-
-		return repositoryId;
-	}
-
-	public void setRepositoryId(int repositoryId) {
-
-		this.repositoryId = repositoryId;
-	}
 
 	public int getDraftId() {
 
@@ -37,36 +33,6 @@ public class DraftsWithRepositories {
 	public void setDraftId(int draftId) {
 
 		this.draftId = draftId;
-	}
-
-	public int getRepoAccountId() {
-
-		return repoAccountId;
-	}
-
-	public void setRepoAccountId(int repoAccountId) {
-
-		this.repoAccountId = repoAccountId;
-	}
-
-	public String getRepositoryOwner() {
-
-		return repositoryOwner;
-	}
-
-	public void setRepositoryOwner(String repositoryOwner) {
-
-		this.repositoryOwner = repositoryOwner;
-	}
-
-	public String getRepositoryName() {
-
-		return repositoryName;
-	}
-
-	public void setRepositoryName(String repositoryName) {
-
-		this.repositoryName = repositoryName;
 	}
 
 	public int getDraftRepositoryId() {
@@ -109,12 +75,13 @@ public class DraftsWithRepositories {
 		this.draftText = draftText;
 	}
 
+	@Nullable
 	public String getDraftType() {
 
 		return draftType;
 	}
 
-	public void setDraftType(String draftType) {
+	public void setDraftType(@Nullable String draftType) {
 
 		this.draftType = draftType;
 	}

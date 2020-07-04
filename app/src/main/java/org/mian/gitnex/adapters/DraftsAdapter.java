@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
-import org.mian.gitnex.database.models.DraftsWithRepositories;
+import org.mian.gitnex.database.models.DraftWithRepository;
 import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.util.TinyDB;
@@ -24,7 +24,7 @@ import java.util.List;
 
 public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsViewHolder> {
 
-    private List<DraftsWithRepositories> draftsList;
+    private List<DraftWithRepository> draftsList;
     private Context mCtx;
 
     class DraftsViewHolder extends RecyclerView.ViewHolder {
@@ -81,7 +81,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
     }
 
-    public DraftsAdapter(Context mCtx, List<DraftsWithRepositories> draftsListMain) {
+    public DraftsAdapter(Context mCtx, List<DraftWithRepository> draftsListMain) {
         this.mCtx = mCtx;
         this.draftsList = draftsListMain;
     }
@@ -106,7 +106,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
     @Override
     public void onBindViewHolder(@NonNull DraftsAdapter.DraftsViewHolder holder, int position) {
 
-        DraftsWithRepositories currentItem = draftsList.get(position);
+        DraftWithRepository currentItem = draftsList.get(position);
 
         holder.repoId.setText(String.valueOf(currentItem.getRepositoryId()));
         holder.draftId.setText(String.valueOf(currentItem.getDraftId()));
