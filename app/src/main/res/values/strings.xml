@@ -671,7 +671,7 @@
     <string name="forceLogoutDialogDescription">Due to some major changes regarding the internal functioning of the app, we require you to login again. These changes allow us to make the app more flexible in the future.\n\nThank you for your patience and sorry for the inconvenience.</string>
 
     <string name="deleteAllDrafts">Delete All Drafts</string>
-    <string name="draftsListEmptyError">No drafts found</string>
+    <string name="draftsListEmpty">No drafts found</string>
     <string name="draftsDeleteSuccess">Drafts deleted successfully</string>
     <string name="draftsSingleDeleteSuccess">Draft deleted successfully</string>
     <string name="deleteAllDraftsDialogMessage">This will delete all the drafts for this account. \n\nProceed with deletion?</string>

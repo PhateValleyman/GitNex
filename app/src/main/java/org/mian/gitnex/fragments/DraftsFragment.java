@@ -122,7 +122,7 @@ public class DraftsFragment extends Fragment {
 
 	    }
     	else {
-		    Toasty.error(ctx, getResources().getString(R.string.draftsListEmptyError));
+		    Toasty.error(ctx, getResources().getString(R.string.draftsListEmpty));
 	    }
 
 	}
