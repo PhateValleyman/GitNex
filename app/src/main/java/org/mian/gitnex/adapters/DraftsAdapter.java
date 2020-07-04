@@ -115,7 +115,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
         holder.repoOwner.setText(currentItem.getRepositoryOwner());
         holder.repoName.setText(currentItem.getRepositoryName());
         holder.draftText.setText(currentItem.getDraftText());
-        holder.repoInfo.setText(String.format("%s/%s %s%d", currentItem.getRepositoryOwner(), currentItem.getRepositoryName(), mCtx.getResources().getString(R.string.hash), currentItem.getIssueId()));
+	    holder.repoInfo.setText(String.format("%s%d %s / %s", mCtx.getResources().getString(R.string.hash), currentItem.getIssueId(), currentItem.getRepositoryOwner(), currentItem.getRepositoryName()));
 
     }
 
