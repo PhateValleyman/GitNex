@@ -28,7 +28,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.models.UserAccounts;
-import org.mian.gitnex.database.repository.UserAccountsRepository;
+import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.fragments.AboutFragment;
 import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
 import org.mian.gitnex.fragments.DraftsFragment;
@@ -406,7 +406,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	public void getAccountData(String accountName) throws ExecutionException, InterruptedException {
 
-		UserAccountsRepository accountData = new UserAccountsRepository(ctx);
+		UserAccountsApi accountData = new UserAccountsApi(ctx);
 		UserAccounts data = accountData.getAccountData(accountName);
 
 		if(data != null) {

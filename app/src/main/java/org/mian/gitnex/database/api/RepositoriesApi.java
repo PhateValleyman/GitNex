@@ -1,4 +1,4 @@
-package org.mian.gitnex.database.repository;
+package org.mian.gitnex.database.api;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,14 +13,14 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class RepositoriesRepository {
+public class RepositoriesApi {
 
 	private static RepositoriesDao repositoriesDao;
 	private static long repositoryId;
 	private static Repositories repositories;
 	private static Integer checkRepository;
 
-	public RepositoriesRepository(Context context) {
+	public RepositoriesApi(Context context) {
 
 		GitnexDatabase db;
 		db = GitnexDatabase.getDatabaseInstance(context);

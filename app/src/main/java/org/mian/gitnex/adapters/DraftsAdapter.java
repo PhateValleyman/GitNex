@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ReplyToIssueActivity;
 import org.mian.gitnex.database.models.DraftsWithRepositories;
-import org.mian.gitnex.database.repository.DraftsRepository;
+import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.util.TinyDB;
 import java.util.List;
@@ -56,7 +56,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
                 int getDraftId = Integer.parseInt(draftId.getText().toString());
                 deleteDraft(getAdapterPosition());
-                DraftsRepository.deleteSingleDraft(getDraftId);
+                DraftsApi.deleteSingleDraft(getDraftId);
 
             });
 

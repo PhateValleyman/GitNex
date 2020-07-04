@@ -18,7 +18,7 @@ import android.widget.TextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.DraftsAdapter;
 import org.mian.gitnex.database.models.DraftsWithRepositories;
-import org.mian.gitnex.database.repository.DraftsRepository;
+import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class DraftsFragment extends Fragment {
 	private Context ctx;
     private DraftsAdapter adapter;
     private RecyclerView mRecyclerView;
-    private DraftsRepository draftsRepository;
+    private DraftsApi draftsApi;
     private TextView noData;
 	private List<DraftsWithRepositories> draftsList_;
 	private int currentActiveAccountId;
@@ -49,7 +49,7 @@ public class DraftsFragment extends Fragment {
         TinyDB tinyDb = new TinyDB(ctx);
 
 	    draftsList_ = new ArrayList<>();
-        draftsRepository = new DraftsRepository(ctx);
+        draftsApi = new DraftsApi(ctx);
 
         noData = v.findViewById(R.id.noData);
         mRecyclerView = v.findViewById(R.id.recyclerView);
@@ -82,7 +82,7 @@ public class DraftsFragment extends Fragment {
 
     private void fetchDataAsync(int accountId) {
 
-        draftsRepository.getDrafts(accountId).observe(getViewLifecycleOwner(), drafts -> {
+        draftsApi.getDrafts(accountId).observe(getViewLifecycleOwner(), drafts -> {
 
             assert drafts != null;
             if(drafts.size() > 0) {
@@ -115,7 +115,7 @@ public class DraftsFragment extends Fragment {
 
     	if(draftsList_.size() > 0) {
 
-		    DraftsRepository.deleteAllDrafts(accountId);
+		    DraftsApi.deleteAllDrafts(accountId);
 		    draftsList_.clear();
 		    adapter.notifyDataSetChanged();
 		    Toasty.info(ctx, getResources().getString(R.string.draftsDeleteSuccess));

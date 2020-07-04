@@ -24,7 +24,7 @@ import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.database.repository.DraftsRepository;
+import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
@@ -193,15 +193,15 @@ public class ReplyToIssueActivity extends BaseActivity {
 		int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
 		int issueNumber = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-		DraftsRepository draftsRepository = new DraftsRepository(getApplicationContext());
+		DraftsApi draftsApi = new DraftsApi(getApplicationContext());
 
-		int countDraft = draftsRepository.checkDraft(issueNumber, repositoryId);
+		int countDraft = draftsApi.checkDraft(issueNumber, repositoryId);
 
 		if(countDraft == 0) {
-			long draftId = draftsRepository.insertDraft(repositoryId, currentActiveAccountId, issueNumber, draftText, StaticGlobalVariables.draftTypeComment);
+			long draftId = draftsApi.insertDraft(repositoryId, currentActiveAccountId, issueNumber, draftText, StaticGlobalVariables.draftTypeComment);
 		}
 		else {
-			DraftsRepository.updateDraftByIssueIdAsyncTask(draftText, issueNumber, repositoryId);
+			DraftsApi.updateDraftByIssueIdAsyncTask(draftText, issueNumber, repositoryId);
 		}
 
 	}

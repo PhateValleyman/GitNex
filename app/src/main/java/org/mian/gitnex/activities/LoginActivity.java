@@ -21,7 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.tooltip.Tooltip;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.database.repository.UserAccountsRepository;
+import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.helpers.NetworkObserver;
 import org.mian.gitnex.helpers.PathsHelper;
 import org.mian.gitnex.helpers.SnackBar;
@@ -383,11 +383,11 @@ public class LoginActivity extends BaseActivity {
 
 						// insert new account to db if does not exist
 						String accountName = userDetails.getUsername() + "@" + instanceUrl;
-						UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
-						int checkAccount = userAccountsRepository.getCount(accountName);
+						UserAccountsApi userAccountsApi = new UserAccountsApi(ctx);
+						int checkAccount = userAccountsApi.getCount(accountName);
 
 						if(checkAccount == 0) {
-							userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
+							userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
 						}
 
 						enableProcessButton();
@@ -529,11 +529,11 @@ public class LoginActivity extends BaseActivity {
 
 														// insert new account to db if does not exist
 														String accountName = userDetails.getUsername() + "@" + instanceUrl;
-														UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
-														int checkAccount = userAccountsRepository.getCount(accountName);
+														UserAccountsApi userAccountsApi = new UserAccountsApi(ctx);
+														int checkAccount = userAccountsApi.getCount(accountName);
 
 														if(checkAccount == 0) {
-															userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
+															userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
 														}
 
 														startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -603,11 +603,11 @@ public class LoginActivity extends BaseActivity {
 
 										// insert new account to db if does not exist
 										String accountName = userDetails.getUsername() + "@" + instanceUrl;
-										UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
-										int checkAccount = userAccountsRepository.getCount(accountName);
+										UserAccountsApi userAccountsApi = new UserAccountsApi(ctx);
+										int checkAccount = userAccountsApi.getCount(accountName);
 
 										if(checkAccount == 0) {
-											userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), instanceToken, "");
+											userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), instanceToken, "");
 										}
 
 										startActivity(new Intent(LoginActivity.this, MainActivity.class));

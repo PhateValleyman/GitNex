@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.models.Repositories;
-import org.mian.gitnex.database.repository.RepositoriesRepository;
+import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserRepositories;
@@ -35,7 +34,6 @@ import org.mian.gitnex.models.WatchInfo;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -99,7 +97,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 				final String repoName = parts[1];
 
 				int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
-				RepositoriesRepository repositoryData = new RepositoriesRepository(context);
+				RepositoriesApi repositoryData = new RepositoriesApi(context);
 
 				//RepositoriesRepository.deleteRepositoriesByAccount(currentActiveAccountId);
 				Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
