@@ -45,6 +45,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 	final Context ctx = this;
 	private Context appCtx;
 
+	private TextView draftSaved;
 	private SocialAutoCompleteTextView addComment;
 	private ArrayAdapter<Mention> defaultMentionAdapter;
 	private Button replyButton;
@@ -66,6 +67,7 @@ public class ReplyToIssueActivity extends BaseActivity {
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
         TinyDB tinyDb = new TinyDB(appCtx);
 
+		draftSaved = findViewById(R.id.draftSaved);
 		addComment = findViewById(R.id.addComment);
 		addComment.setShowSoftInputOnFocus(true);
 
@@ -126,6 +128,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 				public void onTextChanged(CharSequence s, int start, int before, int count) {
 
 					saveDraft(addComment.getText().toString());
+					draftSaved.setVisibility(View.VISIBLE);
 
 				}
 
@@ -134,6 +137,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 			replyButton.setOnClickListener(v -> {
 
 				disableProcessButton();
+				assert commentId != null;
 				IssueActions.editIssueComment(ctx, Integer.parseInt(commentId), addComment.getText().toString());
 
 			});
@@ -155,6 +159,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 
 				saveDraft(addComment.getText().toString());
+				draftSaved.setVisibility(View.VISIBLE);
 
 			}
 
