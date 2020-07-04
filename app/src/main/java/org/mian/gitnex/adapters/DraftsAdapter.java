@@ -60,7 +60,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
             });
 
-            draftText.setOnClickListener(itemEdit -> {
+	        itemView.setOnClickListener(itemEdit -> {
 
                 Intent intent = new Intent(mCtx, ReplyToIssueActivity.class);
                 intent.putExtra("commentBody", draftText.getText());
