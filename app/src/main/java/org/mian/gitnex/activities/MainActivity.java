@@ -91,6 +91,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		tinyDb.putBoolean("noConnection", false);
 		//userAvatar = findViewById(R.id.userAvatar);
 
+		Intent mainIntent = getIntent();
+		String launchFragment = mainIntent.getStringExtra("launchFragment");
+
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
@@ -279,6 +282,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		});
 
 		toggle.syncState();
+
+		if(launchFragment != null) {
+
+			if(launchFragment.equals("drafts")) {
+
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DraftsFragment()).commit();
+				toolbarTitle.setText(getResources().getString(R.string.pageTitleDrafts));
+				navigationView.setCheckedItem(R.id.nav_comments_draft);
+				mainIntent.removeExtra("launchFragment");
+				return;
+			}
+		}
 
 		if(savedInstanceState == null) {
 
@@ -469,10 +484,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreRepositoriesFragment()).commit();
 				break;
+
 			case R.id.nav_comments_draft:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleDrafts));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DraftsFragment()).commit();
 				break;
+
 			case R.id.nav_administration:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdministrationFragment()).commit();
