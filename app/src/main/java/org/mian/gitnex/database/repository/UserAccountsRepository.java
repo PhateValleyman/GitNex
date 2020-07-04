@@ -1,13 +1,13 @@
 package org.mian.gitnex.database.repository;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import org.mian.gitnex.database.dao.UserAccountsDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
 import org.mian.gitnex.database.models.UserAccounts;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Author M M Arif
@@ -16,6 +16,8 @@ import java.util.concurrent.ExecutionException;
 public class UserAccountsRepository {
 
 	private static UserAccountsDao userAccountsDao;
+	private static UserAccounts userAccounts;
+	private static Integer checkAccount;
 
 	public UserAccountsRepository(Context context) {
 
@@ -39,72 +41,59 @@ public class UserAccountsRepository {
 
 	private static void insertNewAccountAsync(final UserAccounts userAccounts) {
 
-		new AsyncTask<Void, Void, Void>() {
-			@Override
-			protected Void doInBackground(Void... voids) {
-				userAccountsDao.newAccount(userAccounts);
-				return null;
-			}
-		}.execute();
-
+		new Thread(() -> userAccountsDao.newAccount(userAccounts)).start();
 	}
 
 	public static void updateServerVersion(final String serverVersion, final int accountId) {
 
-		new AsyncTask<Void, Void, Void>() {
-			@Override
-			protected Void doInBackground(Void... voids) {
-				userAccountsDao.updateServerVersion(serverVersion, accountId);
-				return null;
-			}
-		}.execute();
-
+		new Thread(() -> userAccountsDao.updateServerVersion(serverVersion, accountId)).start();
 	}
 
 	public static void updateToken(final int accountId, final String token) {
 
-		new AsyncTask<Void, Void, Void>() {
-			@Override
-			protected Void doInBackground(Void... voids) {
-				userAccountsDao.updateAccountToken(accountId, token);
-				return null;
-			}
-		}.execute();
-
+		new Thread(() -> userAccountsDao.updateAccountToken(accountId, token)).start();
 	}
 
-	public UserAccounts getAccountData(String accountName) throws ExecutionException, InterruptedException {
-		return new GetAccountByNameAsyncTask().execute(accountName).get();
-	}
+	public UserAccounts getAccountData(String accountName) {
 
-	private static class GetAccountByNameAsyncTask extends AsyncTask<String, Void, UserAccounts>
-	{
+		try {
 
-		@Override
-		protected UserAccounts doInBackground(String... params) {
-			return userAccountsDao.fetchRowByAccount_(params[0]);
+			Thread thread = new Thread(() -> userAccounts = userAccountsDao.fetchRowByAccount_(accountName));
+			thread.start();
+			thread.join();
+		}
+		catch(InterruptedException e) {
+
+			Log.e(StaticGlobalVariables.userAccountsRepository, e.toString());
 		}
 
+		return userAccounts;
 	}
 
-	public static LiveData<Integer> getCount(String accountName) {
-		return userAccountsDao.getCount(accountName);
+	public Integer getCount(String accountName) {
+
+		try {
+
+			Thread thread = new Thread(() -> checkAccount = userAccountsDao.getCount(accountName));
+			thread.start();
+			thread.join();
+		}
+		catch(InterruptedException e) {
+
+			Log.e(StaticGlobalVariables.userAccountsRepository, e.toString());
+		}
+
+		return checkAccount;
 	}
 
 	public LiveData<List<UserAccounts>> getAllAccounts() {
+
 		return userAccountsDao.fetchAllAccounts();
 	}
 
 	public static void deleteAccount(final int accountId) {
 
-		new AsyncTask<Void, Void, Void>() {
-			@Override
-			protected Void doInBackground(Void... voids) {
-				userAccountsDao.deleteAccount(accountId);
-				return null;
-			}
-		}.execute();
-
+		new Thread(() -> userAccountsDao.deleteAccount(accountId)).start();
 	}
 
 }

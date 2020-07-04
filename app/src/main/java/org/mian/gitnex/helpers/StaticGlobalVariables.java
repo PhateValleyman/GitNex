@@ -19,6 +19,7 @@ public interface StaticGlobalVariables {
 	String repositoriesRepository = "RepositoriesRepository";
 	String replyToIssueActivity = "ReplyToIssueActivity";
 	String tagDraftsBottomSheet = "BottomSheetDraftsFragment";
+	String userAccountsRepository = "UserAccountsRepository";
 
 	// issues variables
 	int issuesPageInit = 1;

@@ -18,7 +18,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.LifecycleOwner;
 import com.tooltip.Tooltip;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -33,7 +32,6 @@ import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.models.UserTokens;
 import org.mian.gitnex.util.AppUtil;
 import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.viewmodels.UserAccountsDatabaseViewModel;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -386,14 +384,11 @@ public class LoginActivity extends BaseActivity {
 						// insert new account to db if does not exist
 						String accountName = userDetails.getUsername() + "@" + instanceUrl;
 						UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
+						int checkAccount = userAccountsRepository.getCount(accountName);
 
-						UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
-
-							if(count == 0) {
-								userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
-							}
-
-						});
+						if(checkAccount == 0) {
+							userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
+						}
 
 						enableProcessButton();
 						startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -532,16 +527,14 @@ public class LoginActivity extends BaseActivity {
 														tinyDB.putString(loginUid + "-token", newToken.getSha1());
 														tinyDB.putString(loginUid + "-token-last-eight", appUtil.getLastCharactersOfWord(newToken.getSha1(), 8));
 
+														// insert new account to db if does not exist
 														String accountName = userDetails.getUsername() + "@" + instanceUrl;
 														UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
+														int checkAccount = userAccountsRepository.getCount(accountName);
 
-														UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
-
-															if(count == 0) {
-																userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
-															}
-
-														});
+														if(checkAccount == 0) {
+															userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
+														}
 
 														startActivity(new Intent(LoginActivity.this, MainActivity.class));
 														finish();
@@ -611,14 +604,11 @@ public class LoginActivity extends BaseActivity {
 										// insert new account to db if does not exist
 										String accountName = userDetails.getUsername() + "@" + instanceUrl;
 										UserAccountsRepository userAccountsRepository = new UserAccountsRepository(ctx);
+										int checkAccount = userAccountsRepository.getCount(accountName);
 
-										UserAccountsDatabaseViewModel.getCount(accountName).observe((LifecycleOwner) ctx, count -> {
-
-											if(count == 0) {
-												userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), instanceToken, "");
-											}
-
-										});
+										if(checkAccount == 0) {
+											userAccountsRepository.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), instanceToken, "");
+										}
 
 										startActivity(new Intent(LoginActivity.this, MainActivity.class));
 										finish();

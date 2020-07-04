@@ -21,7 +21,7 @@ public interface UserAccountsDao {
     LiveData<List<UserAccounts>> fetchAllAccounts();
 
     @Query("SELECT COUNT(accountId) FROM userAccounts WHERE accountName = :accountName")
-    LiveData<Integer> getCount(String accountName);
+    Integer getCount(String accountName);
 
     @Query("SELECT * FROM userAccounts WHERE accountName = :accountName")
     UserAccounts fetchRowByAccount_(String accountName);
