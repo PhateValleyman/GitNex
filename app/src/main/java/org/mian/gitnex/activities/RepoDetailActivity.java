@@ -2,6 +2,7 @@ package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -39,15 +41,12 @@ import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.fragments.ReleasesFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.MultiSelectDialog;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Branches;
-import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.models.WatchInfo;
 import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import retrofit2.Call;
@@ -118,6 +117,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		tinyDB.putString("repoIssuesState", "open");
 		tinyDB.putString("repoPrState", "open");
 		tinyDB.putString("milestoneState", "open");
+		tinyDB.putString("repoBranch", "master");
 
 		Typeface myTypeface;
 
@@ -294,8 +294,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 				return true;
 
 			case R.id.switchBranches:
-				// show the branches popup here and pass it's selected value to the interface listener
-
+				chooseBranch();
 				return true;
 
 			default:
@@ -404,49 +403,38 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 				if(response.code() == 200) {
 
+					List<String> branchesList = new ArrayList<>();
+					int selectedBranch = 0;
 					assert response.body() != null;
 
-					List<MultiSelectModel> multiSelectModels = new ArrayList<>();
-					int preSelectId = 0;
-
-					for(int i=0; i<response.body().size(); i++) {
+					for(int i = 0; i < response.body().size(); i++) {
 
 						Branches branches = response.body().get(i);
-						multiSelectModels.add(new MultiSelectModel(i, branches.getName()));
+						branchesList.add(branches.getName());
 
 						if(tinyDB.getString("repoBranch").equals(branches.getName())) {
 
-							preSelectId = i;
+							selectedBranch = i;
 						}
 					}
 
-					MultiSelectDialog multiSelectDialog = new MultiSelectDialog()
-						.title(getString(R.string.pageTitleChooseBranch))
-						.titleSize(25)
-						.positiveText(getString(R.string.okButton))
-						.negativeText(getString(R.string.cancelButton))
-						.preSelectIDsList(new ArrayList<>(Collections.singletonList(preSelectId)))
-						.setMinSelectionLimit(1)
-						.setMaxSelectionLimit(1)
-						.multiSelectList(multiSelectModels);
+					AlertDialog.Builder pBuilder = new AlertDialog.Builder(ctx);
+					pBuilder.setTitle(R.string.pageTitleChooseBranch);
 
-					multiSelectDialog.onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+					pBuilder.setSingleChoiceItems(branchesList.toArray(new String[0]), selectedBranch, new  DialogInterface.OnClickListener() {
 
-							@Override
-							public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String commonSeperatedData) {
+						@Override
+						public void onClick(DialogInterface dialogInterface, int i) {
 
-								tinyDB.putString("repoBranch", selectedNames.get(0));
-								multiSelectDialog.dismiss();
-								recreate();
+							tinyDB.putString("repoBranch", branchesList.get(i));
+							if(getFragmentRefreshListenerFiles() != null) {
+								getFragmentRefreshListenerFiles().onRefresh(branchesList.get(i));
 							}
+							dialogInterface.dismiss();
+						}
+					});
 
-							@Override
-							public void onCancel() {
-								multiSelectDialog.dismiss();
-							}
-						});
-
-					multiSelectDialog.show(getSupportFragmentManager(), "branchMultiSelectDialog");
+					pBuilder.create().show();
 
 				}
 

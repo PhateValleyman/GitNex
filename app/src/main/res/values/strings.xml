@@ -50,6 +50,7 @@
     <string name="pageTitleCreateNewIssue">New Issue</string>
     <string name="pageTitleCreateLabel">New Label</string>
     <string name="pageTitleCredits">Credits</string>
+    <string name="pageTitleChooseBranch">Select Branch</string>
     <string name="pageTitleLabelUpdate">Update Label</string>
     <string name="pageTitleSponsors">Donators</string>
     <string name="pageTitleStarredRepos">Starred Repositories</string>

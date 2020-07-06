@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.FileViewActivity;
+import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.FilesAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.util.TinyDB;
@@ -108,6 +110,12 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 		mBreadcrumbsView = v.findViewById(R.id.breadcrumbs_view);
 		mBreadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot)))));
+
+		((RepoDetailActivity) Objects.requireNonNull(getActivity())).setFragmentRefreshListenerFiles(repoBranch -> {
+
+			fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, repoBranch);
+
+		});
 
 		fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, ref);
 
