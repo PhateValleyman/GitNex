@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -109,10 +108,13 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		mProgressBar = v.findViewById(R.id.progress_bar);
 
 		mBreadcrumbsView = v.findViewById(R.id.breadcrumbs_view);
-		mBreadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot)))));
+		mBreadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + " : " + ref))));
 
 		((RepoDetailActivity) Objects.requireNonNull(getActivity())).setFragmentRefreshListenerFiles(repoBranch -> {
 
+			fileStructure.setText("");
+			ref = repoBranch;
+			mBreadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + " : " + ref))));
 			fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, repoBranch);
 
 		});
