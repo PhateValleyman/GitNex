@@ -46,7 +46,6 @@
     <string name="pageTitleIssues">Issues</string>
     <string name="pageTitleSettings">Settings</string>
     <string name="pageTitleCreateOrganization">New Organization</string>
-    <string name="pageTitleChooseBranch">Choose Branch</string>
     <string name="pageTitleCreateMilestone">New Milestone</string>
     <string name="pageTitleCreateNewIssue">New Issue</string>
     <string name="pageTitleCreateLabel">New Label</string>

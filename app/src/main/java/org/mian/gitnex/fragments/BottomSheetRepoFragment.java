@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.RepositoryActions;
-import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.util.TinyDB;
 
 /**
@@ -34,7 +33,6 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
         TextView createMilestone = v.findViewById(R.id.createNewMilestone);
         TextView addCollaborator = v.findViewById(R.id.addCollaborator);
         TextView createRelease = v.findViewById(R.id.createRelease);
-	    TextView chooseBranch = v.findViewById(R.id.chooseBranch);
         TextView openWebRepo = v.findViewById(R.id.openWebRepo);
         TextView newFile = v.findViewById(R.id.newFile);
         TextView starRepository = v.findViewById(R.id.starRepository);
@@ -76,16 +74,6 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
 		} else {
 			addCollaborator.setVisibility(View.GONE);
 		}
-
-	    if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.10.0")) {
-	    	chooseBranch.setOnClickListener(v113 -> {
-
-			    bmListener.onButtonClicked("chooseBranch");
-			    dismiss();
-		    });
-	    } else {
-	    	chooseBranch.setVisibility(View.GONE);
-	    }
 
         createRelease.setOnClickListener(v14 -> {
 

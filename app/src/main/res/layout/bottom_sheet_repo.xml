@@ -78,27 +78,6 @@
                 android:padding="12dp" />
 
             <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="64dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:background="?attr/dividerColor" />
-
-            <TextView
-                android:id="@+id/chooseBranch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/pageTitleChooseBranch"
-                android:drawableStart="@drawable/ic_repos"
-                android:drawablePadding="24dp"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:padding="12dp" />
-
-            <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="12dp"
