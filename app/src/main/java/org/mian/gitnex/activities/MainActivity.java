@@ -27,12 +27,12 @@ import com.google.android.material.navigation.NavigationView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.database.api.UserAccountsApi;
+import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.fragments.AboutFragment;
+import org.mian.gitnex.fragments.AdministrationFragment;
 import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
 import org.mian.gitnex.fragments.DraftsFragment;
-import org.mian.gitnex.fragments.AdministrationFragment;
 import org.mian.gitnex.fragments.ExploreRepositoriesFragment;
 import org.mian.gitnex.fragments.MyRepositoriesFragment;
 import org.mian.gitnex.fragments.OrganizationsFragment;
@@ -40,16 +40,17 @@ import org.mian.gitnex.fragments.ProfileFragment;
 import org.mian.gitnex.fragments.RepositoriesFragment;
 import org.mian.gitnex.fragments.SettingsFragment;
 import org.mian.gitnex.fragments.StarredRepositoriesFragment;
+import org.mian.gitnex.fragments.UserAccountsFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.ChangeLog;
 import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.GiteaVersion;
 import org.mian.gitnex.models.UserInfo;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import eightbitlab.com.blurview.BlurView;
@@ -182,6 +183,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		else if(fragmentById instanceof AdministrationFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
 		}
+		else if(fragmentById instanceof UserAccountsFragment) {
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleUserAccounts));
+		}
 
 		drawer = findViewById(R.id.drawer_layout);
 		NavigationView navigationView = findViewById(R.id.nav_view);
@@ -279,6 +283,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			@Override
 			public void onDrawerStateChanged(int newState) {}
 
+		});
+
+		ImageView userAccounts = hView.findViewById(R.id.userAccounts);
+		userAccounts.setOnClickListener(v -> {
+
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleUserAccounts));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserAccountsFragment()).commit();
+			drawer.closeDrawers();
 		});
 
 		toggle.syncState();
