@@ -13,7 +13,6 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.util.TinyDB;
-import java.net.URI;
 import java.util.List;
 import io.mikael.urlbuilder.UrlBuilder;
 
@@ -87,13 +86,12 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		UserAccount currentItem = userAccountsList.get(position);
 		tinyDB = new TinyDB(mCtx);
 
-		URI instanceUrl = UrlBuilder.fromString(currentItem.getInstanceUrl()).toUri();
-		String protocol = instanceUrl.getScheme();
-		String host = instanceUrl.getHost();
-		int port = instanceUrl.getPort();
+		String url = UrlBuilder.fromString(currentItem.getInstanceUrl())
+			.withPath("/")
+			.toString();
 
 		holder.userId.setText(String.format("@%s", currentItem.getUserName()));
-		holder.accountUrl.setText(String.format("%s://%s:%d", protocol, host, port));
+		holder.accountUrl.setText(url);
 
 		if(tinyDB.getInt("currentActiveAccountId") == currentItem.getAccountId()) {
 			holder.activeAccount.setVisibility(View.VISIBLE);
