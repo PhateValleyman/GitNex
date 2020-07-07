@@ -104,8 +104,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 		}
 
 		// enable comment drafts by default
-		if(tinyDb.getString("draftsCommentsDeletionEnabled").isEmpty()) {
+		if(tinyDb.getString("draftsCommentsDeletionEnabledInit").isEmpty()) {
 			tinyDb.putBoolean("draftsCommentsDeletionEnabled", true);
+			tinyDb.putString("draftsCommentsDeletionEnabledInit", "yes");
 		}
 
 		if(!tinyDb.getString("instanceUrlWithProtocol").endsWith("/")) {
