@@ -38,8 +38,8 @@ sign:
       - signed.apk
     expire_in: 30 minutes
 
-publish:
-  image: nextcloudci/android:android-49
+latest:
+  image: tutum/curl
   stage: publish
   only:
     - master
@@ -49,3 +49,14 @@ publish:
     PLUGIN_DESTINATION: "https://cloud.swatian.com/remote.php/dav/files/GitNexBot/GitNex-Builds/latest.apk"
   script:
     - curl -T "$PLUGIN_FILE" -u "$WEBDAV_USERNAME":"$WEBDAV_PASSWORD" "$PLUGIN_DESTINATION"
+
+release:
+  image: tutum/curl
+  stage: publish
+  only:
+    - tags
+  variables:
+    WEBDAV_USERNAME: "GitNexBot"
+    PLUGIN_FILE: "signed.apk"
+  script:
+    - curl -T "$PLUGIN_FILE" -u "$WEBDAV_USERNAME":"$WEBDAV_PASSWORD" 'https://cloud.swatian.com/remote.php/dav/files/GitNexBot/GitNex-Builds/releases/'"$CI_COMMIT_REF_NAME"'.apk'
