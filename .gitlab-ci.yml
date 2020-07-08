@@ -17,6 +17,10 @@ build:
     - master
   script:
     - ./gradlew build
+  artifacts:
+    paths:
+      - app/build/outputs/
+    expire_in: 15 minutes
 
 sign:
   image: nextcloudci/android:android-49
@@ -29,9 +33,13 @@ sign:
     KS_FILE: "ci_keystore.jks"
   script:
     - ./scripts/sign-build.sh
+  artifacts:
+    paths:
+      - signed.apk
+    expire_in: 30 minutes
 
 publish:
-  image: byrnedo/alpine-curl
+  image: nextcloudci/android:android-49
   stage: publish
   only:
     - master
@@ -40,4 +48,4 @@ publish:
     PLUGIN_FILE: "signed.apk"
     PLUGIN_DESTINATION: "https://cloud.swatian.com/remote.php/dav/files/GitNexBot/GitNex-Builds/latest.apk"
   script:
-    - curl -T $PLUGIN_FILE -u $WEBDAV_USERNAME:$WEBDAV_PASSWORD $PLUGIN_DESTINATION
+    - curl -T "$PLUGIN_FILE" -u "$WEBDAV_USERNAME":"$WEBDAV_PASSWORD" "$PLUGIN_DESTINATION"
