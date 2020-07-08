@@ -1,0 +1,43 @@
+stages:
+  - test
+  - build
+  - sign
+  - publish
+
+test:
+  image: nextcloudci/android:android-49
+  stage: test
+  script:
+    - ./gradlew test
+
+check-formatting:
+  image: zosiab/eclint:latest
+  stage: test
+  script:
+    - eclint check $(git ls-files)
+
+build:
+  image: nextcloudci/android:android-49
+  stage: build
+  script:
+    - ./gradlew build
+
+sign:
+  image: nextcloudci/android:android-49
+  stage: sign
+  variables:
+    OUTPUT: "signed.apk"
+    GITEA: "https://gitea.com"
+    KS_FILE: "ci_keystore.jks"
+  script:
+    - ./scripts/sign-build.sh
+
+publish:
+  image: byrnedo/alpine-curl
+  stage: publish
+  variables:
+    WEBDAV_USERNAME: "GitNexBot"
+    PLUGIN_FILE: "signed.apk"
+    PLUGIN_DESTINATION: "https://cloud.swatian.com/remote.php/dav/files/GitNexBot/GitNex-Builds/latest.apk"
+  script:
+    - curl -T $PLUGIN_FILE -u $WEBDAV_USERNAME:$WEBDAV_PASSWORD $PLUGIN_DESTINATION
