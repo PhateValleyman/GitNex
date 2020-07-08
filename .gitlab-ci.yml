@@ -19,12 +19,16 @@ check-formatting:
 build:
   image: nextcloudci/android:android-49
   stage: build
+  only:
+    - master
   script:
     - ./gradlew build
 
 sign:
   image: nextcloudci/android:android-49
   stage: sign
+  only:
+    - master
   variables:
     OUTPUT: "signed.apk"
     GITEA: "https://gitea.com"
@@ -35,6 +39,8 @@ sign:
 publish:
   image: byrnedo/alpine-curl
   stage: publish
+  only:
+    - master
   variables:
     WEBDAV_USERNAME: "GitNexBot"
     PLUGIN_FILE: "signed.apk"
