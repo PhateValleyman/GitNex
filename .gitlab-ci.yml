@@ -10,12 +10,6 @@ test:
   script:
     - ./gradlew test
 
-check-formatting:
-  image: zosiab/eclint:latest
-  stage: test
-  script:
-    - eclint check $(git ls-files)
-
 build:
   image: nextcloudci/android:android-49
   stage: build
