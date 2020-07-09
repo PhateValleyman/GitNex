@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.util.TinyDB;
+import org.mian.gitnex.helpers.TinyDB;
 
 /**
  * Author M M Arif
