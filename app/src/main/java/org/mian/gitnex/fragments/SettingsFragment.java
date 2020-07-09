@@ -16,7 +16,7 @@ import org.mian.gitnex.activities.SettingsFileViewerActivity;
 import org.mian.gitnex.activities.SettingsReportsActivity;
 import org.mian.gitnex.activities.SettingsSecurityActivity;
 import org.mian.gitnex.activities.SettingsTranslationActivity;
-import org.mian.gitnex.util.TinyDB;
+import org.mian.gitnex.helpers.TinyDB;
 import java.util.Objects;
 
 /**
