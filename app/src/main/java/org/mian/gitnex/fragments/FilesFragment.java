@@ -215,7 +215,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 			if(adapter.getItemCount() > 0) {
 				mRecyclerView.setAdapter(adapter);
-				AppUtil.setMultiVisibility(View.VISIBLE, mRecyclerView, filesFrame, noDataFiles);
+				AppUtil.setMultiVisibility(View.VISIBLE, mRecyclerView, filesFrame);
 				noDataFiles.setVisibility(View.GONE);
 			}
 			else {
@@ -243,17 +243,14 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 			adapter = new FilesAdapter(getContext(), filesListMain2, FilesFragment.this);
 
 			if(adapter.getItemCount() > 0) {
-				mRecyclerView.setVisibility(View.VISIBLE);
 				mRecyclerView.setAdapter(adapter);
-				filesFrame.setVisibility(View.VISIBLE);
+				AppUtil.setMultiVisibility(View.VISIBLE, mRecyclerView, filesFrame);
 				noDataFiles.setVisibility(View.GONE);
 			}
 			else {
-				mRecyclerView.setVisibility(View.VISIBLE);
 				adapter.notifyDataSetChanged();
 				mRecyclerView.setAdapter(adapter);
-				filesFrame.setVisibility(View.VISIBLE);
-				noDataFiles.setVisibility(View.VISIBLE);
+				AppUtil.setMultiVisibility(View.VISIBLE, mRecyclerView, filesFrame, noDataFiles);
 			}
 
 			filesFrame.setVisibility(View.VISIBLE);
