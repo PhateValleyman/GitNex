@@ -24,6 +24,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.FileViewActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.FilesAdapter;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.FilesViewModel;
@@ -108,13 +109,13 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		mProgressBar = v.findViewById(R.id.progress_bar);
 
 		mBreadcrumbsView = v.findViewById(R.id.breadcrumbs_view);
-		mBreadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + " : " + ref))));
+		mBreadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + ref))));
 
 		((RepoDetailActivity) Objects.requireNonNull(getActivity())).setFragmentRefreshListenerFiles(repoBranch -> {
 
 			fileStructure.setText("");
 			ref = repoBranch;
-			mBreadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + " : " + ref))));
+			mBreadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + ref))));
 			fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, repoBranch);
 
 		});
@@ -213,17 +214,14 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 			mBreadcrumbsView.removeItemAfter(1);
 
 			if(adapter.getItemCount() > 0) {
-				mRecyclerView.setVisibility(View.VISIBLE);
 				mRecyclerView.setAdapter(adapter);
-				filesFrame.setVisibility(View.VISIBLE);
+				AppUtil.setMultiVisibility(View.VISIBLE, mRecyclerView, filesFrame, noDataFiles);
 				noDataFiles.setVisibility(View.GONE);
 			}
 			else {
-				mRecyclerView.setVisibility(View.VISIBLE);
 				adapter.notifyDataSetChanged();
 				mRecyclerView.setAdapter(adapter);
-				filesFrame.setVisibility(View.VISIBLE);
-				noDataFiles.setVisibility(View.VISIBLE);
+				AppUtil.setMultiVisibility(View.VISIBLE, mRecyclerView, filesFrame, noDataFiles);
 			}
 
 			filesFrame.setVisibility(View.VISIBLE);

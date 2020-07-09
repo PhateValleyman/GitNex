@@ -529,6 +529,7 @@
     <string name="filesDirNotSupportedYet">Directory browsing is not supported yet</string>
     <string name="filesGenericError">Sorry this file cannot be viewed as API returned an error</string>
     <string name="filesBreadcrumb">Root</string>
+    <string name="colonDivider" translatable="false">\u0020:\u0020</string>
 
     <string name="notSupported">Not supported</string>
 
