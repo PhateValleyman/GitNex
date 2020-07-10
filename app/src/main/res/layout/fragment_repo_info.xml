@@ -97,7 +97,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/repoStargazersInMenu"
-                            app:srcCompat="@drawable/ic_star" />
+                            app:srcCompat="@drawable/ic_star_border_24dp" />
 
                         <TextView
                             android:id="@+id/repoMetaStars"
@@ -163,7 +163,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/repoWatchersInMenu"
-                            app:srcCompat="@drawable/ic_watchers" />
+                            app:srcCompat="@drawable/ic_unwatch" />
 
                         <TextView
                             android:id="@+id/repoMetaWatchers"
