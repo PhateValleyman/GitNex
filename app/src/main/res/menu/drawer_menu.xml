@@ -9,7 +9,7 @@
             android:icon="@drawable/ic_repo"
             android:title="@string/navMyRepos" />
         <item android:id="@+id/nav_starred_repos"
-            android:icon="@drawable/ic_star"
+            android:icon="@drawable/ic_star_border_24dp"
             android:title="@string/navStarredRepos" />
         <item android:id="@+id/nav_organizations"
             android:icon="@drawable/ic_organization"
@@ -35,15 +35,15 @@
     <group android:checkableBehavior="single"
         android:id="@+id/nav_menu_settings">
         <item android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_24dp"
+            android:icon="@drawable/ic_settings"
             android:title="@string/navSettings" />
         <item android:id="@+id/nav_about"
-            android:icon="@drawable/ic_info_outline_24dp"
+            android:icon="@drawable/ic_info"
             android:title="@string/navAbout" />
     </group>
 
     <item android:id="@+id/nav_rate_app"
-        android:icon="@drawable/ic_thumb_up_like"
+        android:icon="@drawable/ic_like"
         android:title="@string/navRate" />
 
     <group android:checkableBehavior="single"
