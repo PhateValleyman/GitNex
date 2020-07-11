@@ -21,13 +21,13 @@
             android:icon="@drawable/ic_search"
             android:title="@string/navExplore" />
         <item android:id="@+id/nav_comments_draft"
-            android:icon="@drawable/ic_drafts_24dp"
+            android:icon="@drawable/ic_drafts"
             android:title="@string/titleDrafts" />
         <item android:id="@+id/nav_profile"
             android:icon="@drawable/ic_person"
             android:title="@string/navProfile" />
         <item android:id="@+id/nav_administration"
-            android:icon="@drawable/ic_admin"
+            android:icon="@drawable/ic_tool"
             android:title="@string/navAdministration"
             android:visible="false" />
     </group>

@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/createRelease"
-                android:drawableStart="@drawable/ic_new_releases"
+                android:drawableStart="@drawable/ic_release"
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
