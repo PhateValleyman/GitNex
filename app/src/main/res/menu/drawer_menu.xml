@@ -24,7 +24,7 @@
             android:icon="@drawable/ic_drafts_24dp"
             android:title="@string/titleDrafts" />
         <item android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_person_24dp"
+            android:icon="@drawable/ic_person"
             android:title="@string/navProfile" />
         <item android:id="@+id/nav_administration"
             android:icon="@drawable/ic_admin"
@@ -49,7 +49,7 @@
     <group android:checkableBehavior="single"
         android:id="@+id/nav_extra">
         <item android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_exit_24dp"
+            android:icon="@drawable/ic_logout"
             android:title="@string/navLogout" />
     </group>
 
