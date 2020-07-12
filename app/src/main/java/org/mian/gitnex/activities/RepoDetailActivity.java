@@ -117,7 +117,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		tinyDB.putString("repoIssuesState", "open");
 		tinyDB.putString("repoPrState", "open");
 		tinyDB.putString("milestoneState", "open");
-		tinyDB.putString("repoBranch", "master");
 
 		Typeface myTypeface;
 
@@ -468,7 +467,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 					return RepoInfoFragment.newInstance(repositoryOwner, repositoryName);
 
 				case 1: // Files
-					return FilesFragment.newInstance(repositoryOwner, repositoryName, tinyDB.getString("repoBranch", null));
+					return FilesFragment.newInstance(repositoryOwner, repositoryName, tinyDB.getString("repoBranch"));
 
 				case 2: // Issues
 					fragment = new IssuesFragment();

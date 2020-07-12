@@ -83,7 +83,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		final TinyDB tinyDb = new TinyDB(appCtx);
 		String repoFullName = tinyDb.getString("repoFullName");
-		String repoBranch = tinyDb.getString("repoBranch", null);
+		String repoBranch = tinyDb.getString("repoBranch");
 		String[] parts = repoFullName.split("/");
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
