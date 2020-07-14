@@ -217,9 +217,13 @@ public class Version {
 
 		int rounds = Math.min(this.values.size(), v.values.size());
 		for(int i = 0; i < rounds; i++) {
-			if(this.values.get(i) < v.values.get(i)) {
+			if(this.values.get(i) > v.values.get(i)) {
+				return true;
+			}
+			else if(this.values.get(i) < v.values.get(i)) {
 				return false;
 			}
+
 		}
 		return true;
 
