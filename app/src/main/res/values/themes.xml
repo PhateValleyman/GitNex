@@ -58,10 +58,9 @@
     <!-- Light theme -->
 
     <style name="AppSearchViewStyle" parent="Widget.AppCompat.SearchView">
-        <item name="searchHintIcon">@null</item>
+        <item name="searchHintIcon">@drawable/ic_search</item>
         <item name="searchIcon">@null</item>
         <item name="closeIcon">@drawable/ic_close</item>
-        <item name="queryBackground">@android:color/transparent</item>
     </style>
 
     <style name="AppThemeDarkBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
