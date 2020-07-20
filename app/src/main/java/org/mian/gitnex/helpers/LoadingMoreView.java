@@ -18,9 +18,6 @@ import java.util.Random;
 
 public class LoadingMoreView extends LinearLayout {
 
-	private String[] headers = new String[]{"This may take a while", "Loading stuff"};
-	private String[] tips = new String[]{"You can drink something meanwhile", "I don't know what to write here"};
-
 	public LoadingMoreView(Context context) {
 
 		super(context);
@@ -50,6 +47,9 @@ public class LoadingMoreView extends LinearLayout {
 	}
 
 	private void init() {
+
+		String[] headers = getContext().getResources().getStringArray(R.array.headersLoadingMoreView);
+		String[] tips = getContext().getResources().getStringArray(R.array.tipsLoadingMoreView);
 
 		super.setPadding(20, 20, 20, 20);
 		super.setGravity(Gravity.CENTER);
@@ -87,16 +87,6 @@ public class LoadingMoreView extends LinearLayout {
 		super.addView(linearLayout);
 		super.addView(progressBar, 35, 35);
 
-	}
-
-	public void setHeaders(String[] headers) {
-
-		this.headers = headers;
-	}
-
-	public void setTips(String[] tips) {
-
-		this.tips = tips;
 	}
 
 }

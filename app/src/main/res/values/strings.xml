@@ -643,4 +643,14 @@
     <string name="isRead">Read</string>
     <string name="isUnread">Unread</string>
 
+    <string-array name="headersLoadingMoreView">
+        <item>This may take a while</item>
+        <item>Loading stuff</item>
+    </string-array>
+
+    <string-array name="tipsLoadingMoreView">
+        <item>You can drink something meanwhile</item>
+        <item>I don't know what to write here</item>
+    </string-array>
+
 </resources>
