@@ -5,11 +5,15 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import org.mian.gitnex.R;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -51,7 +55,9 @@ public class LoadingMoreView extends LinearLayout {
 		String[] headers = getContext().getResources().getStringArray(R.array.headersLoadingMoreView);
 		String[] tips = getContext().getResources().getStringArray(R.array.tipsLoadingMoreView);
 
-		super.setPadding(20, 20, 20, 20);
+		int padding = AppUtil.getPixelsFromDensity(getContext(), 20);
+
+		super.setPadding(padding, padding, padding, padding);
 		super.setGravity(Gravity.CENTER);
 		super.setOrientation(HORIZONTAL);
 
@@ -63,13 +69,14 @@ public class LoadingMoreView extends LinearLayout {
 
 		LinearLayout linearLayout = new LinearLayout(getContext());
 		linearLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-		linearLayout.setPadding(0, 0, 30, 0);
+		linearLayout.setPadding(0, 0, AppUtil.getPixelsFromDensity(getContext(), 25), 0);
 		linearLayout.setOrientation(VERTICAL);
 
 		TextView textView = new TextView(getContext());
 		textView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		textView.setTextSize(16);
 		textView.setTextColor(textColorPrimary.data);
+
 		textView.setText(headers[new Random().nextInt(headers.length)]);
 
 		TextView textView2 = new TextView(getContext());
@@ -84,8 +91,40 @@ public class LoadingMoreView extends LinearLayout {
 		ProgressBar progressBar = new ProgressBar(getContext());
 		progressBar.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+		int size = AppUtil.getPixelsFromDensity(getContext(), 30);
+
 		super.addView(linearLayout);
-		super.addView(progressBar, 35, 35);
+		super.addView(progressBar, size, size);
+
+		Thread thread = new Thread(() -> {
+
+			List<Float> alphas = new ArrayList<>();
+			Collections.addAll(alphas, 1.0f, 0.0f);
+
+			while(true) {
+
+				try {
+
+					AlphaAnimation anim = new AlphaAnimation(alphas.get(0), alphas.get(1));
+					anim.setDuration(1000);
+
+					textView.startAnimation(anim);
+					textView2.startAnimation(anim);
+
+					Thread.sleep(1000);
+
+					textView.setText(headers[new Random().nextInt(headers.length)]);
+					textView2.setText(tips[new Random().nextInt(tips.length)]);
+
+					Collections.reverse(alphas);
+
+					Thread.sleep(1000);
+
+				} catch (InterruptedException ignored) {}
+			}
+		});
+
+		thread.start();
 
 	}
 

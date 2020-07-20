@@ -46,13 +46,12 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 		TextView markUnread = v.findViewById(R.id.markUnread);
 		TextView markPinned = v.findViewById(R.id.markPinned);
 
+		NotificationsApi notificationsApi = new NotificationsApi(context);
 		Activity activity = Objects.requireNonNull(getActivity());
-		NotificationsApi notificationsApi = new NotificationsApi(getContext());
 
 		if(notificationThread.isPinned()) {
 
-			AppUtil.setMultiVisibility(View.GONE, markPinned, markUnread);
-
+			AppUtil.setMultiVisibility(View.GONE, markUnread, markPinned);
 		} else if(notificationThread.isUnread()) {
 
 			markUnread.setVisibility(View.GONE);
@@ -68,7 +67,7 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 				try {
 
 					notificationsApi.setNotificationStatus(notificationThread, NotificationsApi.NotificationStatus.PINNED);
-					onOptionSelectedListener.onSelected();
+					activity.runOnUiThread(() -> onOptionSelectedListener.onSelected());
 
 				}
 				catch(Exception e) {
@@ -93,7 +92,7 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 				try {
 
 					notificationsApi.setNotificationStatus(notificationThread, NotificationsApi.NotificationStatus.READ);
-					onOptionSelectedListener.onSelected();
+					activity.runOnUiThread(() -> onOptionSelectedListener.onSelected());
 
 				}
 				catch(Exception e) {
@@ -118,7 +117,7 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 				try {
 
 					notificationsApi.setNotificationStatus(notificationThread, NotificationsApi.NotificationStatus.UNREAD);
-					onOptionSelectedListener.onSelected();
+					activity.runOnUiThread(() -> onOptionSelectedListener.onSelected());
 
 				}
 				catch(Exception e) {

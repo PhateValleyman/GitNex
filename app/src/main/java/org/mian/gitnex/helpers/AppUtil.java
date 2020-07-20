@@ -299,4 +299,14 @@ public class AppUtil {
 		}
 	}
 
+	public static int getPixelsFromDensity(Context context, int dp) {
+
+		return (int) (context.getResources().getDisplayMetrics().density * dp);
+	}
+
+	public static int getPixelsFromScaledDensity(Context context, int sp) {
+
+		return (int) (context.getResources().getDisplayMetrics().scaledDensity * sp);
+	}
+
 }

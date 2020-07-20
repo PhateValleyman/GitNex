@@ -69,8 +69,6 @@
     <string name="newCreateButtonCopy">Create</string>
     <string name="newUpdateButtonCopy">Update</string>
 
-    <string name="noDataNotifications">No notifications found</string>
-
     <string name="newRepoTintCopy">Repository Name</string>
     <string name="newRepoDescTintCopy">Repository Description</string>
     <string name="newRepoPrivateCopy">Private</string>
@@ -629,28 +627,36 @@
     <string name="accountDeletedMessage">Account deleted successfully</string>
 
     <!-- Notifications -->
-    <string name="markAsRead">Mark as Read</string>
-    <string name="pinNotification">Pin Notification</string>
-    <string name="markAsUnread">Mark as Unread</string>
-    <string name="markedNotificationsAsRead">Successfully marked all notifications as read.</string>
     <string name="pageTitleNotifications">Notifications</string>
+    <string name="noDataNotifications">No notifications found</string>
+
     <string name="notificationsTitle">New activities</string>
     <string name="notificationsText">You got %d new notifications.</string>
+
     <string name="notificationsPollingHeaderText">Notifications Polling Delay</string>
     <string name="pollingDelaySelectedText">%d Minutes</string>
     <string name="pollingDelayDialogHeaderText">Select Polling Delay</string>
     <string name="pollingDelayDialogDescriptionText">Choose a minutely delay in which GitNex tries to poll new notifications.</string>
+
+    <string name="markAsRead">Mark as Read</string>
+    <string name="markAsUnread">Mark as Unread</string>
+    <string name="pinNotification">Pin Notification</string>
+    <string name="markedNotificationsAsRead">Successfully marked all notifications as read.</string>
+
     <string name="isRead">Read</string>
     <string name="isUnread">Unread</string>
 
+    <!-- LoadingMoreView (headers and tips have to be improved) -->
     <string-array name="headersLoadingMoreView">
-        <item>This may take a while</item>
-        <item>Loading stuff</item>
+        <item>Unpacking </item>
+        <item>Extracting </item>
+        <item>Loading </item>
+        <item>Building </item>
     </string-array>
 
     <string-array name="tipsLoadingMoreView">
         <item>You can drink something meanwhile</item>
-        <item>I don't know what to write here</item>
+        <item>I don\'t know what to write here</item>
     </string-array>
 
 </resources>

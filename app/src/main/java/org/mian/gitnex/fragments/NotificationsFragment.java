@@ -67,6 +67,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 	private int pageCurrentIndex = 1;
 	private int pageResultLimit;
+	private String currentFilterMode;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,9 +87,9 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		tinyDB = new TinyDB(context);
 
 		pageResultLimit = StaticGlobalVariables.getCurrentResultLimit(context);
+		currentFilterMode = tinyDB.getString(tinyDB.getString("notificationsFilterState", "unread"));
 
 		mainLayout = v.findViewById(R.id.mainLayout);
-		progressBar = v.findViewById(R.id.progressBar);
 		markAllAsRead = v.findViewById(R.id.markAllAsRead);
 		noDataNotifications = v.findViewById(R.id.noDataNotifications);
 		loadingMoreView = v.findViewById(R.id.loadingMoreView);
@@ -120,10 +121,15 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 			@Override
 			public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 
-				if (dy > 0 && markAllAsRead.isShown()) {
-					markAllAsRead.setVisibility(View.GONE);
-				} else if (dy < 0) {
-					markAllAsRead.setVisibility(View.VISIBLE);
+				if(currentFilterMode.equalsIgnoreCase("unread")) {
+
+					if(dy > 0 && markAllAsRead.isShown()) {
+
+						markAllAsRead.setVisibility(View.GONE);
+					} else if(dy < 0) {
+
+						markAllAsRead.setVisibility(View.VISIBLE);
+					}
 				}
 			}
 
@@ -149,7 +155,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 							loadNotifications(true);
 
 						});
-
 					}
 				}
 				catch(IOException e) {
@@ -179,21 +184,27 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 	private void loadNotifications(boolean append) {
 
-		if(!notificationThreads.isEmpty()) {
+		noDataNotifications.setVisibility(View.GONE);
 
-			noDataNotifications.setVisibility(View.GONE);
-			if(append) loadingMoreView.setVisibility(View.VISIBLE);
+		if(pageCurrentIndex == 1 || !append) {
+
+			notificationThreads.clear();
+			notificationsAdapter.notifyDataSetChanged();
+			pullToRefresh.setRefreshing(false);
+			progressBar.setVisibility(View.VISIBLE);
 
 		} else {
 
-			progressBar.setVisibility(View.VISIBLE);
+			loadingMoreView.setVisibility(View.VISIBLE);
 		}
 
 		String instanceUrl = tinyDB.getString("instanceUrl");
 		String loginUid = tinyDB.getString("loginUid");
 		String instanceToken = "token " + tinyDB.getString(loginUid + "-token");
 
-		String[] filter = tinyDB.getString("notificationsFilterState").equals("read") ? new String[]{"read"} : new String[]{"pinned", "unread"};
+		String[] filter = tinyDB.getString("notificationsFilterState").equals("read") ?
+			new String[]{"pinned", "read"} :
+			new String[]{"pinned", "unread"};
 
 		Call<List<NotificationThread>> call = RetrofitClient.getInstance(instanceUrl, context)
 			.getApiInterface()
@@ -218,44 +229,49 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 					notificationThreads.addAll(response.body());
 					notificationsAdapter.notifyDataSetChanged();
 
-				}
-				else {
+				} else {
 
 					Log.e("onError", String.valueOf(response.code()));
 				}
 
-				if(notificationThreads.size() > 0) {
-					noDataNotifications.setVisibility(View.GONE);
-				}
-				else {
-					noDataNotifications.setVisibility(View.VISIBLE);
-				}
+				onCleanup();
+
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<List<NotificationThread>> call, @NonNull Throwable t) {
 
 				Log.e("onError", t.toString());
+				onCleanup();
+
+			}
+
+			private void onCleanup() {
+
+				AppUtil.setMultiVisibility(View.GONE, loadingMoreView, progressBar);
+				pullToRefresh.setRefreshing(false);
+
+				if(notificationThreads.isEmpty()) {
+
+					noDataNotifications.setVisibility(View.VISIBLE);
+				}
 			}
 		});
-
-		AppUtil.setMultiVisibility(View.GONE, loadingMoreView, progressBar);
-		pullToRefresh.setRefreshing(false);
-
-		if(notificationThreads.isEmpty()) {
-
-			noDataNotifications.setVisibility(View.VISIBLE);
-		}
 	}
 
-	private void changeFilterMode(String mode) {
+	private void changeFilterMode() {
 
-		int filterIcon = mode.equalsIgnoreCase("read") ? R.drawable.ic_filter_closed : R.drawable.ic_filter;
+		int filterIcon = currentFilterMode.equalsIgnoreCase("read") ?
+			R.drawable.ic_filter_closed :
+			R.drawable.ic_filter;
+
 		menu.getItem(0).setIcon(filterIcon);
 
-		if(mode.equalsIgnoreCase("read")) {
+		if(currentFilterMode.equalsIgnoreCase("read")) {
+
 			markAllAsRead.setVisibility(View.GONE);
 		} else {
+
 			markAllAsRead.setVisibility(View.VISIBLE);
 		}
 	}
@@ -266,7 +282,9 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		this.menu = menu;
 
 		inflater.inflate(R.menu.filter_menu_notifications, menu);
-		changeFilterMode(tinyDB.getString("notificationsFilterState"));
+
+		currentFilterMode = tinyDB.getString("notificationsFilterState");
+		changeFilterMode();
 
 		super.onCreateOptionsMenu(menu, inflater);
 
@@ -281,8 +299,10 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 			bottomSheetNotificationsFilterFragment.show(getChildFragmentManager(), "notificationsFilterBottomSheet");
 			bottomSheetNotificationsFilterFragment.setOnDismissedListener(() -> {
 
-				changeFilterMode(tinyDB.getString("notificationsFilterState"));
 				pageCurrentIndex = 1;
+				currentFilterMode = tinyDB.getString("notificationsFilterState");
+
+				changeFilterMode();
 				loadNotifications(false);
 
 			});
@@ -298,20 +318,21 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 	@Override
 	public void onNotificationClicked(NotificationThread notificationThread) {
 
-		new Thread(() -> {
+		Thread thread = new Thread(() -> {
 
 			try {
 
 				if(notificationThread.isUnread()) {
 
 					notificationsApi.setNotificationStatus(notificationThread, NotificationsApi.NotificationStatus.READ);
-				}
-			}
-			catch(IOException e) {
-				Log.e("onError", e.toString());
-			}
+					activity.runOnUiThread(() -> loadNotifications(false));
 
-		}).start();
+				}
+			} catch(IOException ignored) {}
+
+		});
+
+		thread.start();
 
 		if(StringUtils.containsAny(notificationThread.getSubject().getType().toLowerCase(), "pull", "issue")) {
 
