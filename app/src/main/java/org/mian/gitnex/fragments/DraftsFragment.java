@@ -6,10 +6,13 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,6 +40,7 @@ public class DraftsFragment extends Fragment {
     private TextView noData;
 	private List<DraftWithRepository> draftsList_;
 	private int currentActiveAccountId;
+	private SwipeRefreshLayout swipeRefresh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +57,7 @@ public class DraftsFragment extends Fragment {
 
         noData = v.findViewById(R.id.noData);
         mRecyclerView = v.findViewById(R.id.recyclerView);
-        final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
+        swipeRefresh = v.findViewById(R.id.pullToRefresh);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
@@ -64,15 +68,14 @@ public class DraftsFragment extends Fragment {
 
 	    adapter = new DraftsAdapter(getContext(), draftsList_);
 
+	    currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
+
         swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
 
 	        draftsList_.clear();
-            swipeRefresh.setRefreshing(false);
-            fetchDataAsync(1);
+            fetchDataAsync(currentActiveAccountId);
 
         }, 250));
-
-        currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
 
         fetchDataAsync(currentActiveAccountId);
 
@@ -84,6 +87,7 @@ public class DraftsFragment extends Fragment {
 
         draftsApi.getDrafts(accountId).observe(getViewLifecycleOwner(), drafts -> {
 
+	        swipeRefresh.setRefreshing(false);
             assert drafts != null;
             if(drafts.size() > 0) {
 
@@ -127,12 +131,53 @@ public class DraftsFragment extends Fragment {
 
 	}
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+	@Override
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
+		inflater.inflate(R.menu.search_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 
-    }
+		MenuItem searchItem = menu.findItem(R.id.action_search);
+		SearchView searchView = (SearchView) searchItem.getActionView();
+		searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+
+				filter(newText);
+				return false;
+
+			}
+		});
+
+	}
+
+	private void filter(String text) {
+
+		List<DraftWithRepository> arr = new ArrayList<>();
+
+		for(DraftWithRepository d : draftsList_) {
+
+			if(d == null || d.getRepositoryOwner() == null || d.getRepositoryName() == null || d.getDraftText() == null) {
+				continue;
+			}
+
+			if(d.getRepositoryOwner().toLowerCase().contains(text) || d.getRepositoryName().toLowerCase().contains(text)
+				|| d.getDraftText().toLowerCase().contains(text) || String.valueOf(d.getIssueId()).contains(text)) {
+				arr.add(d);
+			}
+		}
+
+		adapter.updateList(arr);
+	}
 
 }
