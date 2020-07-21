@@ -646,17 +646,4 @@
     <string name="isRead">Read</string>
     <string name="isUnread">Unread</string>
 
-    <!-- LoadingMoreView (headers and tips have to be improved) -->
-    <string-array name="headersLoadingMoreView">
-        <item>Unpacking </item>
-        <item>Extracting </item>
-        <item>Loading </item>
-        <item>Building </item>
-    </string-array>
-
-    <string-array name="tipsLoadingMoreView">
-        <item>You can drink something meanwhile</item>
-        <item>I don\'t know what to write here</item>
-    </string-array>
-
 </resources>

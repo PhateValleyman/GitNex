@@ -28,7 +28,6 @@ import org.mian.gitnex.adapters.NotificationsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.InfiniteScrollListener;
-import org.mian.gitnex.helpers.LoadingMoreView;
 import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
@@ -56,8 +55,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 	private ImageView markAllAsRead;
 	private ProgressBar progressBar;
 	private RelativeLayout mainLayout;
+	private ProgressBar loadingMoreView;
 	private TextView noDataNotifications;
-	private LoadingMoreView loadingMoreView;
 	private SwipeRefreshLayout pullToRefresh;
 
 	private Activity activity;

@@ -12,12 +12,13 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <org.mian.gitnex.helpers.LoadingMoreView
+    <ProgressBar
         android:id="@+id/loadingMoreView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:padding="5dp" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/pullToRefresh"
