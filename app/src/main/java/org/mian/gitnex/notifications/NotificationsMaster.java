@@ -60,7 +60,7 @@ public class NotificationsMaster {
 				.addTag(context.getPackageName())
 				.build();
 
-			WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getPackageName(), ExistingPeriodicWorkPolicy.REPLACE, periodicWorkRequest);
+			WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getPackageName(), ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
 
 		}
 	}

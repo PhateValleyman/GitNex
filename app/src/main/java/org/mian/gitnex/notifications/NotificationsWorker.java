@@ -52,8 +52,7 @@ public class NotificationsWorker extends Worker {
 		String instanceUrl = tinyDB.getString("instanceUrl");
 		String token = "token " + tinyDB.getString(tinyDB.getString("loginUid") + "-token");
 
-		int notificationLoops = tinyDB.getInt("pollingDelayMinutes") >= 15 ? 1 :
-			Math.min(15 - tinyDB.getInt("pollingDelayMinutes"), 10);
+		int notificationLoops = tinyDB.getInt("pollingDelayMinutes") >= 15 ? 1 : Math.min(15 - tinyDB.getInt("pollingDelayMinutes"), 10);
 
 		for(int i=0; i<notificationLoops; i++) {
 
@@ -61,8 +60,7 @@ public class NotificationsWorker extends Worker {
 
 			try {
 
-				String previousRefreshTimestamp = tinyDB.getString("previousRefreshTimestamp",
-					AppUtil.getTimestampFromDate(context, new Date()));
+				String previousRefreshTimestamp = tinyDB.getString("previousRefreshTimestamp", AppUtil.getTimestampFromDate(context, new Date()));
 
 				Call<List<NotificationThread>> call = RetrofitClient.getInstance(instanceUrl, context)
 					.getApiInterface()
@@ -138,8 +136,9 @@ public class NotificationsWorker extends Worker {
 			String subjectUrl = notificationThread.getSubject().getUrl();
 			String issueId = context.getResources().getString(R.string.hash) + subjectUrl.substring(subjectUrl.lastIndexOf("/") + 1);
 
-			String notificationHeader = issueId + " " +notificationThread.getSubject().getTitle();
-			String notificationBody = notificationThread.getSubject().getLatest_comment_url();
+			String notificationHeader = issueId + " " + notificationThread.getSubject().getTitle();
+			String notificationBody = String.format(context.getResources().getString(R.string.notificationBody),
+				notificationThread.getSubject().getType());
 
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getPackageName())
 				.setSmallIcon(R.drawable.gitnex_transparent).setContentTitle(notificationHeader)
