@@ -55,7 +55,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 			more = itemView.findViewById(R.id.more);
 
 		}
-
 	}
 
 	@NonNull
@@ -89,7 +88,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 		switch(notificationThread.getSubject().getType()) {
 
 			case "Pull":
-				holder.type.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_merge, null));
+				holder.type.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pull_request, null));
 				break;
 
 			case "Issue":
