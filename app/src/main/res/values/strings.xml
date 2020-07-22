@@ -630,9 +630,6 @@
     <string name="pageTitleNotifications">Notifications</string>
     <string name="noDataNotifications">No notifications found</string>
 
-    <string name="notificationsTitle">New activities</string>
-    <string name="notificationsText">You got %d new notifications.</string>
-
     <string name="notificationsPollingHeaderText">Notifications Polling Delay</string>
     <string name="pollingDelaySelectedText">%d Minutes</string>
     <string name="pollingDelayDialogHeaderText">Select Polling Delay</string>

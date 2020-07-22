@@ -13,11 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.models.NotificationThread;
+import java.util.Date;
+import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -27,8 +30,8 @@ import retrofit2.Response;
 
 public class NotificationsWorker extends Worker {
 
-	private static final int NOTIFICATION_ID = 71951418;
-	private static final long[] VIBRATION_PATTERN = new long[]{1000, 1000};
+	private static final int MAXIMUM_NOTIFICATIONS = 100;
+	private static final long[] VIBRATION_PATTERN = new long[]{ 1000, 1000 };
 
 	private Context context;
 	private TinyDB tinyDB;
@@ -49,8 +52,8 @@ public class NotificationsWorker extends Worker {
 		String instanceUrl = tinyDB.getString("instanceUrl");
 		String token = "token " + tinyDB.getString(tinyDB.getString("loginUid") + "-token");
 
-		int notificationLoops = tinyDB.getInt("pollingDelayMinutes") >= 15 ?
-			1 : Math.min(15 - tinyDB.getInt("pollingDelayMinutes"), 10);
+		int notificationLoops = tinyDB.getInt("pollingDelayMinutes") >= 15 ? 1 :
+			Math.min(15 - tinyDB.getInt("pollingDelayMinutes"), 10);
 
 		for(int i=0; i<notificationLoops; i++) {
 
@@ -58,35 +61,37 @@ public class NotificationsWorker extends Worker {
 
 			try {
 
-				Call<JsonElement> call = RetrofitClient.getInstance(instanceUrl, context)
-					.getApiInterface()
-					.checkUnreadNotifications(token);
+				String previousRefreshTimestamp = tinyDB.getString("previousRefreshTimestamp",
+					AppUtil.getTimestampFromDate(context, new Date()));
 
-				Response<JsonElement> response = call.execute();
+				Call<List<NotificationThread>> call = RetrofitClient.getInstance(instanceUrl, context)
+					.getApiInterface()
+					.getNotificationThreads(token, false, new String[]{"unread"}, previousRefreshTimestamp,
+						null, 1, MAXIMUM_NOTIFICATIONS);
+
+				Response<List<NotificationThread>> response = call.execute();
 
 				if(response.code() == 200) {
 
 					assert response.body() != null;
 
-					int previousUnreadNotifications = tinyDB.getInt("previousUnreadNotifications");
-					int unreadNotifications = response.body().getAsJsonObject().get("new").getAsInt();
+					List<NotificationThread> notificationThreads = response.body();
+					Log.i("ReceivedNotifications", String.valueOf(notificationThreads.size()));
 
-					Log.i("ReceivedNotifications", String.valueOf(unreadNotifications));
+					if(!notificationThreads.isEmpty()) {
 
-					if(previousUnreadNotifications != unreadNotifications) {
+						for(NotificationThread notificationThread : notificationThreads) {
 
-						if(unreadNotifications > previousUnreadNotifications) {
-							sendNotification(unreadNotifications);
+							sendNotification(notificationThread);
 						}
-
-						tinyDB.putInt("previousUnreadNotifications", unreadNotifications);
 					}
-				}
-				else {
+
+					tinyDB.putString("previousRefreshTimestamp", AppUtil.getTimestampFromDate(context, new Date()));
+
+				} else {
 
 					Log.e("onError", String.valueOf(response.code()));
 				}
-
 			} catch(Exception e) {
 
 				Log.e("onError", e.toString());
@@ -98,14 +103,14 @@ public class NotificationsWorker extends Worker {
 
 					Thread.sleep(60000 - (System.currentTimeMillis() - startPollingTime));
 				}
-			} catch(InterruptedException ignored) {}
+			} catch (InterruptedException ignored) {}
 		}
 
 		return Result.success();
 
 	}
 
-	private void sendNotification(int notificationsCount) {
+	private void sendNotification(NotificationThread notificationThread) {
 
 		Intent intent = new Intent(context, MainActivity.class);
 		intent.putExtra("launchFragment", "notifications");
@@ -127,18 +132,28 @@ public class NotificationsWorker extends Worker {
 				notificationChannel.setVibrationPattern(VIBRATION_PATTERN);
 
 				notificationManager.createNotificationChannel(notificationChannel);
+
 			}
 
-			String notificationsTitle = context.getString(R.string.notificationsTitle);
-			String notificationsText = context.getString(R.string.notificationsText);
+			String subjectUrl = notificationThread.getSubject().getUrl();
+			String issueId = context.getResources().getString(R.string.hash) + subjectUrl.substring(subjectUrl.lastIndexOf("/") + 1);
+
+			String notificationHeader = issueId + " " +notificationThread.getSubject().getTitle();
+			String notificationBody = notificationThread.getSubject().getLatest_comment_url();
 
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context, context.getPackageName())
-				.setSmallIcon(R.drawable.gitnex_transparent).setContentTitle(notificationsTitle)
-				.setContentText(String.format(notificationsText, notificationsCount))
-				.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setSmallIcon(R.drawable.gitnex_transparent).setContentTitle(notificationHeader)
+				.setContentText(notificationBody)
+				.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+				.setPriority(NotificationCompat.PRIORITY_HIGH)
 				.setContentIntent(pendingIntent).setVibrate(VIBRATION_PATTERN).setAutoCancel(true);
 
-			notificationManager.notify(NOTIFICATION_ID, builder.build());
+			int previousNotificationId = tinyDB.getInt("previousNotificationId", 0);
+			int newPreviousNotificationId = previousNotificationId > 71951418 ? 0 : previousNotificationId + 1;
+
+			tinyDB.putInt("previousNotificationId", newPreviousNotificationId);
+
+			notificationManager.notify(previousNotificationId, builder.build());
 
 		}
 	}
