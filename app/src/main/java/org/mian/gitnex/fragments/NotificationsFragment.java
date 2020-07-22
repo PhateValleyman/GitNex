@@ -66,7 +66,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 	private int pageCurrentIndex = 1;
 	private int pageResultLimit;
-	private String currentFilterMode;
+	private String currentFilterMode = "unread";
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		tinyDB = new TinyDB(context);
 
 		pageResultLimit = StaticGlobalVariables.getCurrentResultLimit(context);
-		currentFilterMode = tinyDB.getString(tinyDB.getString("notificationsFilterState", "unread"));
+		tinyDB.putString("notificationsFilterState", currentFilterMode);
 
 		mainLayout = v.findViewById(R.id.mainLayout);
 		markAllAsRead = v.findViewById(R.id.markAllAsRead);
