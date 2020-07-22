@@ -19,14 +19,13 @@ import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.TinyDB;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
  * Author opyale
  */
 
-public class NotificationWorker extends Worker {
+public class NotificationsWorker extends Worker {
 
 	private static final int NOTIFICATION_ID = 71951418;
 	private static final long[] VIBRATION_PATTERN = new long[]{1000, 1000};
@@ -34,7 +33,7 @@ public class NotificationWorker extends Worker {
 	private Context context;
 	private TinyDB tinyDB;
 
-	public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+	public NotificationsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
 
 		super(context, workerParams);
 
@@ -50,12 +49,20 @@ public class NotificationWorker extends Worker {
 		String instanceUrl = tinyDB.getString("instanceUrl");
 		String token = "token " + tinyDB.getString(tinyDB.getString("loginUid") + "-token");
 
-		Call<JsonElement> call = RetrofitClient.getInstance(instanceUrl, context).getApiInterface().checkUnreadNotifications(token);
+		int notificationLoops = tinyDB.getInt("pollingDelayMinutes") >= 15 ?
+			1 : Math.min(15 - tinyDB.getInt("pollingDelayMinutes"), 10);
 
-		call.enqueue(new Callback<JsonElement>() {
+		for(int i=0; i<notificationLoops; i++) {
 
-			@Override
-			public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+			long startPollingTime = System.currentTimeMillis();
+
+			try {
+
+				Call<JsonElement> call = RetrofitClient.getInstance(instanceUrl, context)
+					.getApiInterface()
+					.checkUnreadNotifications(token);
+
+				Response<JsonElement> response = call.execute();
 
 				if(response.code() == 200) {
 
@@ -74,21 +81,25 @@ public class NotificationWorker extends Worker {
 
 						tinyDB.putInt("previousUnreadNotifications", unreadNotifications);
 					}
-
 				}
 				else {
 
 					Log.e("onError", String.valueOf(response.code()));
 				}
+
+			} catch(Exception e) {
+
+				Log.e("onError", e.toString());
 			}
 
-			@Override
-			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+			try {
 
-				Log.e("onError", t.toString());
-			}
+				if(notificationLoops > 1 && i < (notificationLoops - 1)) {
 
-		});
+					Thread.sleep(60000 - (System.currentTimeMillis() - startPollingTime));
+				}
+			} catch(InterruptedException ignored) {}
+		}
 
 		return Result.success();
 

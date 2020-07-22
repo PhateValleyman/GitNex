@@ -18,6 +18,7 @@ import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.helpers.ssl.MemorizingTrustManager;
+import org.mian.gitnex.notifications.NotificationsMaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -39,7 +40,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 	private static String[] cacheSizeImagesList = {"50 MB", "100 MB", "250 MB", "500 MB", "1 GB"};
 	private static int cacheSizeImagesSelectedChoice = 0;
 
-	private static int MINIMUM_POLLING_DELAY = 15;
+	private static int MINIMUM_POLLING_DELAY = 1;
 	private static int DEFAULT_POLLING_DELAY = 20;
 	private static int MAXIMUM_POLLING_DELAY = 720;
 
@@ -236,6 +237,10 @@ public class SettingsSecurityActivity extends BaseActivity {
 			builder.setPositiveButton(getString(R.string.okButton), (dialog, which) -> {
 
 				tinyDb.putInt("pollingDelayMinutes", numberPicker.getValue());
+
+				NotificationsMaster.fireWorker(ctx);
+				NotificationsMaster.hireWorker(ctx);
+
 				pollingDelaySelected.setText(String.format(getString(R.string.pollingDelaySelectedText), numberPicker.getValue()));
 				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
 
@@ -250,9 +255,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
-		onClickListener = view -> {
-			finish();
-		};
-	}
 
+		onClickListener = view -> finish();
+	}
 }

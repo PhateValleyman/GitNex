@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.apache.commons.lang3.StringUtils;
 import org.mian.gitnex.R;
+import org.mian.gitnex.actions.NotificationsActions;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.adapters.NotificationsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -32,7 +33,6 @@ import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.NotificationThread;
-import org.mian.gitnex.notifications.NotificationsApi;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +50,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 	private List<NotificationThread> notificationThreads;
 	private NotificationsAdapter notificationsAdapter;
-	private NotificationsApi notificationsApi;
+	private NotificationsActions notificationsActions;
 
 	private ImageView markAllAsRead;
 	private ProgressBar progressBar;
@@ -95,7 +95,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		progressBar = v.findViewById(R.id.progressBar);
 
 		notificationThreads = new ArrayList<>();
-		notificationsApi = new NotificationsApi(context);
+		notificationsActions = new NotificationsActions(context);
 		notificationsAdapter = new NotificationsAdapter(context, notificationThreads, this, this);
 
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
@@ -146,7 +146,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 				try {
 
-					if(notificationsApi.setAllNotificationsRead(new Date())) {
+					if(notificationsActions.setAllNotificationsRead(new Date())) {
 
 						activity.runOnUiThread(() -> {
 
@@ -323,7 +323,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 				if(notificationThread.isUnread()) {
 
-					notificationsApi.setNotificationStatus(notificationThread, NotificationsApi.NotificationStatus.READ);
+					notificationsActions.setNotificationStatus(notificationThread, NotificationsActions.NotificationStatus.READ);
 					activity.runOnUiThread(() -> loadNotifications(false));
 
 				}

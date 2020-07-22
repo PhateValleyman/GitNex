@@ -15,7 +15,7 @@ import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.notifications.NotificationMaster;
+import org.mian.gitnex.notifications.NotificationsMaster;
 
 /**
  * Author M M Arif
@@ -92,7 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             tinyDb.putInt("pollingDelayMinutes", 15);
         }
 
-        NotificationMaster.hireWorker(appCtx);
+        NotificationsMaster.hireWorker(appCtx);
 
         // enabling counter badges by default
         if(tinyDb.getString("enableCounterBadgesInit").isEmpty()) {

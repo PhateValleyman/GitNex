@@ -1,4 +1,4 @@
-package org.mian.gitnex.notifications;
+package org.mian.gitnex.actions;
 
 import android.content.Context;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -15,7 +15,7 @@ import retrofit2.Call;
  * Author opyale
  */
 
-public class NotificationsApi {
+public class NotificationsActions {
 
 	public enum NotificationStatus {READ, UNREAD, PINNED}
 
@@ -24,7 +24,7 @@ public class NotificationsApi {
 	private String instanceUrl;
 	private String instanceToken;
 
-	public NotificationsApi(Context context) {
+	public NotificationsActions(Context context) {
 
 		this.context = context;
 		this.tinyDB = new TinyDB(context);

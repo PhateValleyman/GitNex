@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * Author opyale
  */
 
-public class NotificationMaster {
+public class NotificationsMaster {
 
 	private static int notificationsSupported = -1;
 
@@ -27,6 +27,11 @@ public class NotificationMaster {
 
 			notificationsSupported = new Version(currentVersion).higherOrEqual("1.12.3") ? 1 : 0;
 		}
+	}
+
+	public static void fireWorker(Context context) {
+
+		WorkManager.getInstance(context).cancelAllWorkByTag(context.getPackageName());
 	}
 
 	public static void hireWorker(Context context) {
@@ -50,12 +55,12 @@ public class NotificationMaster {
 				constraints.setRequiresDeviceIdle(false);
 			}
 
-			PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, tinyDB.getInt("pollingDelayMinutes"), TimeUnit.MINUTES)
+			PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, tinyDB.getInt("pollingDelayMinutes"), TimeUnit.MINUTES)
 				.setConstraints(constraints.build())
 				.addTag(context.getPackageName())
 				.build();
 
-			WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getPackageName(), ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
+			WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getPackageName(), ExistingPeriodicWorkPolicy.REPLACE, periodicWorkRequest);
 
 		}
 	}

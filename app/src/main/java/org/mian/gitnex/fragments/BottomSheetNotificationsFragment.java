@@ -12,10 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.R;
+import org.mian.gitnex.actions.NotificationsActions;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.NotificationThread;
-import org.mian.gitnex.notifications.NotificationsApi;
 import java.util.Objects;
 
 /**
@@ -46,7 +46,7 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 		TextView markUnread = v.findViewById(R.id.markUnread);
 		TextView markPinned = v.findViewById(R.id.markPinned);
 
-		NotificationsApi notificationsApi = new NotificationsApi(context);
+		NotificationsActions notificationsActions = new NotificationsActions(context);
 		Activity activity = Objects.requireNonNull(getActivity());
 
 		if(notificationThread.isPinned()) {
@@ -66,7 +66,7 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 
 				try {
 
-					notificationsApi.setNotificationStatus(notificationThread, NotificationsApi.NotificationStatus.PINNED);
+					notificationsActions.setNotificationStatus(notificationThread, NotificationsActions.NotificationStatus.PINNED);
 					activity.runOnUiThread(() -> onOptionSelectedListener.onSelected());
 
 				}
@@ -91,7 +91,7 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 
 				try {
 
-					notificationsApi.setNotificationStatus(notificationThread, NotificationsApi.NotificationStatus.READ);
+					notificationsActions.setNotificationStatus(notificationThread, NotificationsActions.NotificationStatus.READ);
 					activity.runOnUiThread(() -> onOptionSelectedListener.onSelected());
 
 				}
@@ -116,7 +116,7 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 
 				try {
 
-					notificationsApi.setNotificationStatus(notificationThread, NotificationsApi.NotificationStatus.UNREAD);
+					notificationsActions.setNotificationStatus(notificationThread, NotificationsActions.NotificationStatus.UNREAD);
 					activity.runOnUiThread(() -> onOptionSelectedListener.onSelected());
 
 				}
