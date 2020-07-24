@@ -1,5 +1,6 @@
 package org.mian.gitnex.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import org.mian.gitnex.activities.SettingsReportsActivity;
 import org.mian.gitnex.activities.SettingsSecurityActivity;
 import org.mian.gitnex.activities.SettingsTranslationActivity;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Version;
 import java.util.Objects;
 
 /**
@@ -25,6 +27,9 @@ import java.util.Objects;
  */
 
 public class SettingsFragment extends Fragment {
+
+	private Context ctx;
+	private TinyDB tinyDB;
 
 	@Nullable
 	@Override
@@ -40,19 +45,27 @@ public class SettingsFragment extends Fragment {
 		LinearLayout languagesFrame = v.findViewById(R.id.languagesFrame);
 		LinearLayout reportsFrame = v.findViewById(R.id.reportsFrame);
 
-		appearanceFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsAppearanceActivity.class)));
+		ctx = getContext();
+		tinyDB = new TinyDB(ctx);
 
-		fileViewerFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsFileViewerActivity.class)));
+		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
 
-		draftsFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsDraftsActivity.class)));
+			notificationsFrame.setVisibility(View.VISIBLE);
+		}
 
-		securityFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsSecurityActivity.class)));
+		appearanceFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsAppearanceActivity.class)));
 
-		notificationsFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsNotificationsActivity.class)));
+		fileViewerFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsFileViewerActivity.class)));
 
-		languagesFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsTranslationActivity.class)));
+		draftsFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsDraftsActivity.class)));
 
-		reportsFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsReportsActivity.class)));
+		securityFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsSecurityActivity.class)));
+
+		notificationsFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsNotificationsActivity.class)));
+
+		languagesFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsTranslationActivity.class)));
+
+		reportsFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsReportsActivity.class)));
 
 		return v;
 
@@ -63,14 +76,13 @@ public class SettingsFragment extends Fragment {
 
 		super.onResume();
 
-		TinyDB tinyDb = new TinyDB(getContext());
+		if(tinyDB.getBoolean("refreshParent")) {
 
-		if(tinyDb.getBoolean("refreshParent")) {
 			Objects.requireNonNull(getActivity()).recreate();
 			getActivity().overridePendingTransition(0, 0);
-			tinyDb.putBoolean("refreshParent", false);
-		}
+			tinyDB.putBoolean("refreshParent", false);
 
+		}
 	}
 
 }
