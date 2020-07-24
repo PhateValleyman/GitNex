@@ -24,7 +24,7 @@ import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.IssuesAdapter;
 import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.GlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
@@ -49,12 +49,12 @@ public class IssuesFragment extends Fragment {
 	private IssuesAdapter adapter;
 	private ApiInterface api;
 	private Context context;
-	private int pageSize = StaticGlobalVariables.issuesPageInit;
+	private int pageSize = GlobalVariables.issuesPageInit;
 	private ProgressBar mProgressBar;
-	private String TAG = StaticGlobalVariables.tagIssuesList;
+	private String TAG = GlobalVariables.tagIssuesList;
 	private TextView noDataIssues;
-	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
-	private String requestType = StaticGlobalVariables.issuesRequestType;
+	private int resultLimit = GlobalVariables.resultLimitOldGiteaInstances;
+	private String requestType = GlobalVariables.issuesRequestType;
 
 	@Nullable
 	@Override
@@ -77,7 +77,7 @@ public class IssuesFragment extends Fragment {
 
 		// if gitea is 1.12 or higher use the new limit
 		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
-			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+			resultLimit = GlobalVariables.resultLimitNewGiteaInstances;
 		}
 
 		recyclerView = v.findViewById(R.id.recyclerView);

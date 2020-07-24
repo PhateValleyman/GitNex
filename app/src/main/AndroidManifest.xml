@@ -79,6 +79,7 @@
         <activity android:name=".activities.SettingsAppearanceActivity" />
         <activity android:name=".activities.SettingsFileViewerActivity" />
         <activity android:name=".activities.SettingsSecurityActivity" />
+        <activity android:name=".activities.SettingsNotificationsActivity" />
         <activity android:name=".activities.SettingsTranslationActivity" />
         <activity android:name=".activities.SettingsReportsActivity" />
         <activity android:name=".activities.AddNewTeamMemberActivity" />

@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.R;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.GlobalVariables;
 
 /**
  * Author M M Arif
@@ -19,7 +19,7 @@ import org.mian.gitnex.helpers.StaticGlobalVariables;
 
 public class BottomSheetDraftsFragment extends BottomSheetDialogFragment {
 
-	private String TAG = StaticGlobalVariables.tagDraftsBottomSheet;
+	private String TAG = GlobalVariables.tagDraftsBottomSheet;
 	private BottomSheetDraftsFragment.BottomSheetListener bmListener;
 
 	@Nullable

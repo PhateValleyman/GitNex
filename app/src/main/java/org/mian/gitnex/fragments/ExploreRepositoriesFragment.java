@@ -30,9 +30,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * + * Template Author M M Arif
- * + * Author 6543
- * +
+ * Template Author M M Arif
+ * Author 6543
  */
 
 public class ExploreRepositoriesFragment extends Fragment {

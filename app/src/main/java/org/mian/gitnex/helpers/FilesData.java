@@ -64,7 +64,7 @@ public class FilesData {
 				}
 				else {
 
-					if (! alreadySeen.contains(filItem.getName())) {
+					if (!alreadySeen.contains(filItem.getName())) {
 
 						alreadySeen.add(new File(filItem.getName()));
 						fileSize += filItem.length();

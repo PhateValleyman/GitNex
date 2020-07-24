@@ -22,7 +22,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.CommitsAdapter;
 import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.GlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.interfaces.ApiInterface;
@@ -45,7 +45,7 @@ public class CommitsActivity extends BaseActivity {
 	private TextView noData;
 	private ProgressBar progressBar;
 	private String TAG = "CommitsActivity";
-	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+	private int resultLimit = GlobalVariables.resultLimitOldGiteaInstances;
 	private int pageSize = 1;
 
 	private RecyclerView recyclerView;
@@ -92,7 +92,7 @@ public class CommitsActivity extends BaseActivity {
 
 		// if gitea is 1.12 or higher use the new limit (resultLimitNewGiteaInstances)
 		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12")) {
-			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+			resultLimit = GlobalVariables.resultLimitNewGiteaInstances;
 		}
 
 		recyclerView = findViewById(R.id.recyclerView);

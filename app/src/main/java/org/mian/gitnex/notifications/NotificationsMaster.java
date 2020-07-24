@@ -2,11 +2,13 @@ package org.mian.gitnex.notifications;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+import org.mian.gitnex.helpers.GlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Version;
 import java.util.concurrent.TimeUnit;
@@ -55,12 +57,15 @@ public class NotificationsMaster {
 				constraints.setRequiresDeviceIdle(false);
 			}
 
-			PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, tinyDB.getInt("pollingDelayMinutes"), TimeUnit.MINUTES)
+			int pollingDelayMinutes = Math.max(tinyDB.getInt("pollingDelayMinutes", GlobalVariables.defaultPollingDelay), 15);
+
+			PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, pollingDelayMinutes, TimeUnit.MINUTES)
 				.setConstraints(constraints.build())
 				.addTag(context.getPackageName())
 				.build();
 
 			WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getPackageName(), ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
+			Log.i("NotHiredWorker", context.getPackageName());
 
 		}
 	}

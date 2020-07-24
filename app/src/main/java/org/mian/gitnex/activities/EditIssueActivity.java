@@ -26,7 +26,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.GlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
@@ -52,7 +52,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
     final Context ctx = this;
     private Context appCtx;
     private View.OnClickListener onClickListener;
-    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+    private int resultLimit = GlobalVariables.resultLimitOldGiteaInstances;
 
     private EditText editIssueTitle;
     private SocialAutoCompleteTextView editIssueDescription;
@@ -98,7 +98,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         // if gitea is 1.12 or higher use the new limit
         if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
-            resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+            resultLimit = GlobalVariables.resultLimitNewGiteaInstances;
         }
 
         editIssueTitle.requestFocus();

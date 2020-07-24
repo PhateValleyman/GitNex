@@ -618,7 +618,7 @@
 
     <string name="appearanceHintText">Themes, fonts, badges, code block theme</string>
     <string name="fileViewerHintText">PDF mode, source code theme</string>
-    <string name="securityHintText">SSL certificates, cache, polling delay</string>
+    <string name="securityHintText">SSL certificates, cache</string>
     <string name="languagesHintText">Languages</string>
     <string name="reportsHintText">Crash reports</string>
 
@@ -644,5 +644,13 @@
 
     <string name="isRead">Read</string>
     <string name="isUnread">Unread</string>
+
+    <string name="notificationsHintText">Polling delay, lights, vibrations</string>
+    <string name="enableLightsHeaderText">Enable Lights</string>
+    <string name="enableVibrationHeaderText">Enable Vibrations</string>
+    <string name="chooseColorSelectorHeader">Choose Color</string>
+    <string name="newMessages">New messages</string>
+    <string name="youveGotNewNotifications">You\'ve got %d new notifications.</string>
+    <string name="notificationChannelDescription">This is the main notification channel of GitNex.</string>
 
 </resources>

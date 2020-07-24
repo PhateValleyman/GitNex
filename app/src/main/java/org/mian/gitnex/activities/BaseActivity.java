@@ -13,6 +13,7 @@ import org.acra.data.StringFormat;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.FontsOverride;
+import org.mian.gitnex.helpers.GlobalVariables;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.notifications.NotificationsMaster;
@@ -88,8 +89,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 		}
 
-        if(tinyDb.getInt("pollingDelayMinutes") == 0) {
-            tinyDb.putInt("pollingDelayMinutes", 15);
+        if(tinyDb.getInt("pollingDelayMinutes", 0) <= 0) {
+
+            tinyDb.putInt("pollingDelayMinutes", GlobalVariables.defaultPollingDelay);
         }
 
         NotificationsMaster.hireWorker(appCtx);
@@ -120,6 +122,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 			tinyDb.putString("draftsCommentsDeletionEnabledInit", "yes");
 		}
 
+		// TODO Remove on 3.1.0 and later
 		if(!tinyDb.getString("instanceUrlWithProtocol").endsWith("/")) {
 
 			tinyDb.putString("instanceUrlWithProtocol", tinyDb.getString("instanceUrlWithProtocol") + "/");

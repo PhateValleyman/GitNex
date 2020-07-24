@@ -28,7 +28,7 @@ import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.GlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
@@ -54,7 +54,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 	private SocialAutoCompleteTextView addComment;
 	private ArrayAdapter<Mention> defaultMentionAdapter;
 	private Button replyButton;
-	private String TAG = StaticGlobalVariables.replyToIssueActivity;
+	private String TAG = GlobalVariables.replyToIssueActivity;
 	private long draftId;
 
 	@Override
@@ -199,7 +199,7 @@ public class ReplyToIssueActivity extends BaseActivity {
 		int countDraft = draftsApi.checkDraft(issueNumber, repositoryId);
 
 		if(countDraft == 0) {
-			draftId = draftsApi.insertDraft(repositoryId, currentActiveAccountId, issueNumber, draftText, StaticGlobalVariables.draftTypeComment);
+			draftId = draftsApi.insertDraft(repositoryId, currentActiveAccountId, issueNumber, draftText, GlobalVariables.draftTypeComment);
 		}
 		else {
 			DraftsApi.updateDraftByIssueIdAsyncTask(draftText, issueNumber, repositoryId);

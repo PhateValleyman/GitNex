@@ -20,7 +20,7 @@ import org.mian.gitnex.adapters.MilestonesAdapter;
 import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.databinding.FragmentMilestonesBinding;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.GlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.interfaces.ApiInterface;
@@ -45,9 +45,9 @@ public class MilestonesFragment extends Fragment {
     private MilestonesAdapter adapter;
     private ApiInterface api;
     private Context ctx;
-    private int pageSize = StaticGlobalVariables.milestonesPageInit;
-    private String TAG = StaticGlobalVariables.tagMilestonesFragment;
-    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+    private int pageSize = GlobalVariables.milestonesPageInit;
+    private String TAG = GlobalVariables.tagMilestonesFragment;
+    private int resultLimit = GlobalVariables.resultLimitOldGiteaInstances;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public class MilestonesFragment extends Fragment {
 
         // if gitea is 1.12 or higher use the new limit
         if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
-            resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+            resultLimit = GlobalVariables.resultLimitNewGiteaInstances;
         }
 
         dataList = new ArrayList<>();

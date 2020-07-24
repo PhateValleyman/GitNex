@@ -6,7 +6,7 @@ import android.content.Context;
  * Author M M Arif
  */
 
-public abstract class StaticGlobalVariables {
+public abstract class GlobalVariables {
 
 	// generic values
 	public static int resultLimitNewGiteaInstances = 25; // Gitea 1.12 and above
@@ -19,6 +19,11 @@ public abstract class StaticGlobalVariables {
 		return version.higherOrEqual("1.12") ? resultLimitNewGiteaInstances : resultLimitOldGiteaInstances;
 
 	}
+
+	// notifications
+	public static int minimumPollingDelay = 1;
+	public static int defaultPollingDelay = 5;
+	public static int maximumPollingDelay = 720;
 
 	// tags
 	public static String tagMilestonesFragment = "MilestonesFragment";

@@ -25,8 +25,8 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.GlobalVariables;
 import org.mian.gitnex.helpers.MultiSelectDialog;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
@@ -64,7 +64,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private boolean labelsFlag;
     final Context ctx = this;
     private Context appCtx;
-    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+    private int resultLimit = GlobalVariables.resultLimitOldGiteaInstances;
 
     List<Milestones> milestonesList = new ArrayList<>();
     ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
@@ -98,7 +98,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         // if gitea is 1.12 or higher use the new limit
         if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
-            resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+            resultLimit = GlobalVariables.resultLimitNewGiteaInstances;
         }
 
         ImageView closeActivity = findViewById(R.id.close);

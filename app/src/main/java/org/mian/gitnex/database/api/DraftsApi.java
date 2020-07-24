@@ -7,7 +7,7 @@ import org.mian.gitnex.database.dao.DraftsDao;
 import org.mian.gitnex.database.db.GitnexDatabase;
 import org.mian.gitnex.database.models.Draft;
 import org.mian.gitnex.database.models.DraftWithRepository;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.GlobalVariables;
 import java.util.List;
 
 /**
@@ -49,7 +49,7 @@ public class DraftsApi {
 		}
 		catch(InterruptedException e) {
 
-			Log.e(StaticGlobalVariables.draftsRepository, e.toString());
+			Log.e(GlobalVariables.draftsRepository, e.toString());
 		}
 
 		return draftId;
@@ -65,7 +65,7 @@ public class DraftsApi {
 		}
 		catch(InterruptedException e) {
 
-			Log.e(StaticGlobalVariables.draftsRepository, e.toString());
+			Log.e(GlobalVariables.draftsRepository, e.toString());
 		}
 
 		return draftId;
@@ -81,7 +81,7 @@ public class DraftsApi {
 		}
 		catch(InterruptedException e) {
 
-			Log.e(StaticGlobalVariables.draftsRepository, e.toString());
+			Log.e(GlobalVariables.draftsRepository, e.toString());
 		}
 
 		return checkDraftFlag;

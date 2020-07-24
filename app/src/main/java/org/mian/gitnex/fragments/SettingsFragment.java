@@ -13,6 +13,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.SettingsAppearanceActivity;
 import org.mian.gitnex.activities.SettingsDraftsActivity;
 import org.mian.gitnex.activities.SettingsFileViewerActivity;
+import org.mian.gitnex.activities.SettingsNotificationsActivity;
 import org.mian.gitnex.activities.SettingsReportsActivity;
 import org.mian.gitnex.activities.SettingsSecurityActivity;
 import org.mian.gitnex.activities.SettingsTranslationActivity;
@@ -35,6 +36,7 @@ public class SettingsFragment extends Fragment {
 		LinearLayout fileViewerFrame = v.findViewById(R.id.fileViewerFrame);
 		LinearLayout draftsFrame = v.findViewById(R.id.draftsFrame);
 		LinearLayout securityFrame = v.findViewById(R.id.securityFrame);
+		LinearLayout notificationsFrame = v.findViewById(R.id.notificationsFrame);
 		LinearLayout languagesFrame = v.findViewById(R.id.languagesFrame);
 		LinearLayout reportsFrame = v.findViewById(R.id.reportsFrame);
 
@@ -45,6 +47,8 @@ public class SettingsFragment extends Fragment {
 		draftsFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsDraftsActivity.class)));
 
 		securityFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsSecurityActivity.class)));
+
+		notificationsFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsNotificationsActivity.class)));
 
 		languagesFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), SettingsTranslationActivity.class)));
 
