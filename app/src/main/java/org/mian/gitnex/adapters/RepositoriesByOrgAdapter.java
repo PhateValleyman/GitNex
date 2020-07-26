@@ -191,7 +191,7 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
 
                 });
 
-                repoStargazers.setOnClickListener(openInBrowser -> {
+                repoStargazers.setOnClickListener(stargazers -> {
 
                     Intent intent = new Intent(context, RepoStargazersActivity.class);
                     intent.putExtra("repoFullNameForStars", fullName.getText());
@@ -200,7 +200,7 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
 
                 });
 
-                repoWatchers.setOnClickListener(openInBrowser -> {
+                repoWatchers.setOnClickListener(watchers -> {
 
                     Intent intentW = new Intent(context, RepoWatchersActivity.class);
                     intentW.putExtra("repoFullNameForWatchers", fullName.getText());
@@ -209,7 +209,7 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
 
                 });
 
-	            repoForks_.setOnClickListener(watchers -> {
+	            repoForks_.setOnClickListener(forks -> {
 
 		            Intent intentW = new Intent(context, RepoForksActivity.class);
 		            intentW.putExtra("repoFullNameForForks", fullName.getText());

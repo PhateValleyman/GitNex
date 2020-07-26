@@ -216,7 +216,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<ExploreRepo
 
 				});
 
-				repoForks_.setOnClickListener(watchers -> {
+				repoForks_.setOnClickListener(forks -> {
 
 					Intent intentW = new Intent(context, RepoForksActivity.class);
 					intentW.putExtra("repoFullNameForForks", fullName.getText());

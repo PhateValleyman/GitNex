@@ -212,7 +212,7 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
 
                 });
 
-	            repoForks_.setOnClickListener(watchers -> {
+	            repoForks_.setOnClickListener(forks -> {
 
 		            Intent intentW = new Intent(context, RepoForksActivity.class);
 		            intentW.putExtra("repoFullNameForForks", fullName.getText());
