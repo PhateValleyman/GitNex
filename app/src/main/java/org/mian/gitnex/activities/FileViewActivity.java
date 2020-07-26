@@ -65,6 +65,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private LinearLayout pdfViewFrame;
 	private byte[] decodedPdf;
 	private Boolean pdfNightMode;
+	private String singleFileName;
 
 	@Override
 	protected int getLayoutResourceId() {
@@ -100,7 +101,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		pdfViewFrame = findViewById(R.id.pdfViewFrame);
 		singleFileContentsFrame = findViewById(R.id.singleFileContentsFrame);
 
-		String singleFileName = getIntent().getStringExtra("singleFileName");
+		singleFileName = getIntent().getStringExtra("singleFileName");
 
 		TextView toolbar_title = findViewById(R.id.toolbar_title);
 		toolbar_title.setMovementMethod(new ScrollingMovementMethod());
@@ -119,7 +120,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		}
 		catch(UnsupportedEncodingException e) {
 
-			assert singleFileName != null;
 			Log.i("singleFileName", singleFileName);
 
 		}
@@ -278,6 +278,12 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
 		inflater.inflate(R.menu.files_view_menu, menu);
+
+		String fileExtension = FileUtils.getExtension(singleFileName);
+		if(!fileExtension.equalsIgnoreCase("md")) {
+			menu.getItem(0).setVisible(false);
+		}
+
 		return true;
 	}
 
