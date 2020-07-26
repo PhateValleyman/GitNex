@@ -277,6 +277,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
+		inflater.inflate(R.menu.files_view_menu, menu);
 		return true;
 	}
 
