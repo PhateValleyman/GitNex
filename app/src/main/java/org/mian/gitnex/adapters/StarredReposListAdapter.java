@@ -283,7 +283,7 @@ public class StarredReposListAdapter extends RecyclerView.Adapter<StarredReposLi
             holder.repoType.setText(R.string.strPrivate);
         }
         else {
-            holder.repoPrivatePublic.setImageResource(R.drawable.ic_unlock);
+	        holder.repoPrivatePublic.setVisibility(View.GONE);
             holder.repoType.setText(R.string.strPublic);
         }
         holder.repoStars.setText(currentItem.getStars_count());
