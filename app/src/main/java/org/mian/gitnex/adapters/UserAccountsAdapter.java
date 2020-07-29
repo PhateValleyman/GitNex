@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TinyDB;
@@ -28,13 +30,14 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 	private Context mCtx;
 	private TinyDB tinyDB;
 
-	static class UserAccountsViewHolder extends RecyclerView.ViewHolder {
+	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
 
 		private TextView accountUrl;
 		private TextView userId;
 		private ImageView activeAccount;
 		private ImageView deleteAccount;
 		private ImageView repoAvatar;
+		private TextView accountId;
 
 		private UserAccountsViewHolder(View itemView) {
 
@@ -45,9 +48,21 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 			activeAccount = itemView.findViewById(R.id.activeAccount);
 			deleteAccount = itemView.findViewById(R.id.deleteAccount);
 			repoAvatar = itemView.findViewById(R.id.repoAvatar);
+			accountId = itemView.findViewById(R.id.accountId);
 
 			deleteAccount.setOnClickListener(itemDelete -> {
-				// use later to delete an account
+
+				new AlertDialog.Builder(mCtx)
+					.setIcon(mCtx.getDrawable(R.drawable.ic_delete))
+					.setTitle(mCtx.getResources().getString(R.string.removeAccountPopupTitle))
+					.setMessage(mCtx.getResources().getString(R.string.removeAccountPopupMessage))
+					.setPositiveButton(mCtx.getResources().getString(R.string.removeButton), (dialog, which) -> {
+
+						updateLayoutByPosition(getAdapterPosition());
+						UserAccountsApi userAccountsApi = new UserAccountsApi(mCtx);
+						userAccountsApi.deleteAccount(Integer.parseInt(accountId.getText().toString()));
+					}).setNeutralButton(mCtx.getResources().getString(R.string.cancelButton), null)
+					.show();
 
 			});
 
@@ -66,7 +81,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		this.userAccountsList = userAccountsListMain;
 	}
 
-	private void deleteAccount(int position) {
+	private void updateLayoutByPosition(int position) {
 
 		userAccountsList.remove(position);
 		notifyItemRemoved(position);
@@ -94,6 +109,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 			.withPath("/")
 			.toString();
 
+		holder.accountId.setText(String.valueOf(currentItem.getAccountId()));
 		holder.userId.setText(String.format("@%s", currentItem.getUserName()));
 		holder.accountUrl.setText(url);
 
@@ -103,7 +119,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 			holder.activeAccount.setVisibility(View.VISIBLE);
 		}
 		else {
-			holder.deleteAccount.setVisibility(View.GONE);
+			holder.deleteAccount.setVisibility(View.VISIBLE);
 		}
 
 	}

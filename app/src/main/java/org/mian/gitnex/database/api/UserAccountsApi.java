@@ -90,7 +90,7 @@ public class UserAccountsApi {
 		return userAccountsDao.fetchAllAccounts();
 	}
 
-	public static void deleteAccount(final int accountId) {
+	public void deleteAccount(final int accountId) {
 
 		new Thread(() -> userAccountsDao.deleteAccount(accountId)).start();
 	}
