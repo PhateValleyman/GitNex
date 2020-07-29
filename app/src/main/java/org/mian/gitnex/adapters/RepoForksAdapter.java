@@ -19,9 +19,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.OpenRepoInBrowserActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
+import org.mian.gitnex.activities.RepoForksActivity;
 import org.mian.gitnex.activities.RepoStargazersActivity;
 import org.mian.gitnex.activities.RepoWatchersActivity;
-import org.mian.gitnex.activities.RepoForksActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.RepositoriesApi;
@@ -39,7 +39,7 @@ import retrofit2.Callback;
  * Author M M Arif
  */
 
-public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 	private Context ctx;
 	private final int TYPE_LOAD = 0;
@@ -153,12 +153,13 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			int color = generator.getColor(forksModel.getName());
 			String firstCharacter = String.valueOf(forksModel.getName().charAt(0));
 
-			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
+			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28)
+				.endConfig().buildRoundRect(firstCharacter, color, 3);
 
 			if(forksModel.getAvatar_url() != null) {
 				if(!forksModel.getAvatar_url().equals("")) {
-					PicassoService
-						.getInstance(ctx).get().load(forksModel.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(image);
+					PicassoService.getInstance(ctx).get().load(forksModel.getAvatar_url()).placeholder(R.drawable.loader_animated)
+						.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(image);
 				}
 				else {
 					image.setImageDrawable(drawable);
@@ -262,7 +263,8 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 								assert response.body() != null;
 								tinyDb.putBoolean("repoWatch", response.body().getSubscribed());
 
-							} else {
+							}
+							else {
 
 								tinyDb.putBoolean("repoWatch", false);
 
@@ -300,10 +302,11 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 				TextView repoOpenInBrowser = view.findViewById(R.id.repoOpenInBrowser);
 				TextView repoStargazers = view.findViewById(R.id.repoStargazers);
 				TextView repoWatchers = view.findViewById(R.id.repoWatchers);
-				TextView repoForks_ = view.findViewById(R.id.repoForks_);
+				TextView repoForksList = view.findViewById(R.id.repoForksList);
 				TextView bottomSheetHeader = view.findViewById(R.id.bottomSheetHeader);
 
-				bottomSheetHeader.setText(String.format("%s / %s", fullName.getText().toString().split("/")[0], fullName.getText().toString().split("/")[1]));
+				bottomSheetHeader
+					.setText(String.format("%s / %s", fullName.getText().toString().split("/")[0], fullName.getText().toString().split("/")[1]));
 				BottomSheetDialog dialog = new BottomSheetDialog(context);
 				dialog.setContentView(view);
 				dialog.show();
@@ -335,7 +338,7 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 				});
 
-				repoForks_.setOnClickListener(watchers -> {
+				repoForksList.setOnClickListener(watchers -> {
 
 					Intent intentW = new Intent(context, RepoForksActivity.class);
 					intentW.putExtra("repoFullNameForForks", fullName.getText());
