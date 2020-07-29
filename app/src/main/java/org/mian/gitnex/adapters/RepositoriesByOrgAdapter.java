@@ -191,7 +191,7 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
 
                 });
 
-                repoStargazers.setOnClickListener(openInBrowser -> {
+                repoStargazers.setOnClickListener(stargazers -> {
 
                     Intent intent = new Intent(context, RepoStargazersActivity.class);
                     intent.putExtra("repoFullNameForStars", fullName.getText());
