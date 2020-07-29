@@ -179,7 +179,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 				TextView repoOpenInBrowser = view.findViewById(R.id.repoOpenInBrowser);
 				TextView repoStargazers = view.findViewById(R.id.repoStargazers);
 				TextView repoWatchers = view.findViewById(R.id.repoWatchers);
-				TextView repoForks_ = view.findViewById(R.id.repoForks_);
+				TextView repoForksList = view.findViewById(R.id.repoForksList);
 				TextView bottomSheetHeader = view.findViewById(R.id.bottomSheetHeader);
 
 				bottomSheetHeader.setText(String.format("%s / %s", fullName.getText().toString().split("/")[0], fullName.getText().toString().split("/")[1]));
@@ -214,7 +214,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 
 				});
 
-				repoForks_.setOnClickListener(watchers -> {
+				repoForksList.setOnClickListener(forks -> {
 
 					Intent intentW = new Intent(context, RepoForksActivity.class);
 					intentW.putExtra("repoFullNameForForks", fullName.getText());
