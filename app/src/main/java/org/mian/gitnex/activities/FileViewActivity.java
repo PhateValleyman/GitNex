@@ -324,12 +324,10 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				return true;
 			case R.id.markdown:
 
-
-
-				final Markwon markwon = Markwon.builder(Objects.requireNonNull(ctx))
-					.usePlugin(CorePlugin.create())
+				final Markwon markwon = Markwon.builder(Objects.requireNonNull(ctx)).usePlugin(CorePlugin.create())
 					.usePlugin(ImagesPlugin.create(plugin -> {
 						plugin.addSchemeHandler(new SchemeHandler() {
+
 							@NonNull
 							@Override
 							public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
@@ -348,6 +346,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							@NonNull
 							@Override
 							public Collection<String> supportedSchemes() {
+
 								return Collections.singleton("drawable");
 							}
 						});
@@ -361,9 +360,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 					.usePlugin(new AbstractMarkwonPlugin() {
 						@Override
 						public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
-							builder
-								.codeTextColor(tinyDb.getInt("codeBlockColor"))
-								.codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
+
+							builder.codeTextColor(tinyDb.getInt("codeBlockColor")).codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
 								.linkColor(getResources().getColor(R.color.lightBlue));
 						}
 					})
@@ -438,7 +436,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (requestCode == 40 && resultCode == RESULT_OK) {
+		if(requestCode == 40 && resultCode == RESULT_OK) {
 
 			try {
 
@@ -457,7 +455,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				Toasty.info(ctx, getString(R.string.downloadFileSaved));
 
 			}
-			catch (IOException e) {
+			catch(IOException e) {
 				Log.e("errorFileDownloading", Objects.requireNonNull(e.getMessage()));
 			}
 
