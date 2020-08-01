@@ -54,7 +54,7 @@
     <string name="pageTitleNewFile">New File</string>
     <string name="pageTitleExplore">Explore</string>
     <string name="pageTitleAdministration">Gitea Administration</string>
-    <string name="pageTitleUserAccounts">Manage Accounts (beta)</string>
+    <string name="pageTitleUserAccounts">Manage Accounts</string>
     <!-- page titles -->
 
     <string name="repoName">Demo repo</string>
