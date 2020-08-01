@@ -112,7 +112,7 @@ public class LoginActivity extends BaseActivity {
 		});
 
 		info_button.setOnClickListener(
-			view -> new Tooltip.Builder(view).setText(R.string.urlInfoTooltip).setTextColor(getResources().getColor(R.color.white))
+			view -> new Tooltip.Builder(view).setText(R.string.urlInfoTooltip).setTextColor(getResources().getColor(R.color.colorWhite))
 				.setBackgroundColor(getResources().getColor(R.color.tooltipBackground)).setCancelable(true).setDismissOnClick(true).setPadding(30)
 				.setCornerRadius(R.dimen.tooltipCornor).setGravity(Gravity.BOTTOM).show());
 
