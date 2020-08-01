@@ -1,7 +1,9 @@
 package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		private ImageView deleteAccount;
 		private ImageView repoAvatar;
 		private TextView accountId;
+		private TextView accountName;
 
 		private UserAccountsViewHolder(View itemView) {
 
@@ -49,6 +52,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 			deleteAccount = itemView.findViewById(R.id.deleteAccount);
 			repoAvatar = itemView.findViewById(R.id.repoAvatar);
 			accountId = itemView.findViewById(R.id.accountId);
+			accountName = itemView.findViewById(R.id.accountName);
 
 			deleteAccount.setOnClickListener(itemDelete -> {
 
@@ -67,7 +71,28 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 			});
 
 			itemView.setOnClickListener(itemEdit -> {
-				// use later to switch account
+
+				String accountNameSwitch = accountName.getText().toString();
+				UserAccountsApi userAccountsApi = new UserAccountsApi(mCtx);
+				UserAccount userAccount = userAccountsApi.getAccountData(accountNameSwitch);
+
+				Log.e("userAccount", userAccount.getInstanceUrl());
+
+				if(tinyDB.getInt("currentActiveAccountId") != userAccount.getAccountId()) {
+
+					String url = UrlBuilder.fromString(userAccount.getInstanceUrl())
+						.withPath("/")
+						.toString();
+
+					tinyDB.putString("loginUid", userAccount.getUserName());
+					tinyDB.putString("userLogin", userAccount.getUserName());
+					tinyDB.putString(userAccount.getUserName() + "-token", userAccount.getToken());
+					tinyDB.putString("instanceUrl", userAccount.getInstanceUrl());
+					tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
+
+					Toasty.success(mCtx,  mCtx.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
+					((Activity) mCtx).recreate();
+				}
 
 			});
 
@@ -110,6 +135,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 			.toString();
 
 		holder.accountId.setText(String.valueOf(currentItem.getAccountId()));
+		holder.accountName.setText(currentItem.getAccountName());
 		holder.userId.setText(String.format("@%s", currentItem.getUserName()));
 		holder.accountUrl.setText(url);
 

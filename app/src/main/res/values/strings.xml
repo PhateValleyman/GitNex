@@ -632,6 +632,7 @@
     <string name="addNewAccountText">Add New Account</string>
     <string name="accountAlreadyExistsError">Account already exists in the app</string>
     <string name="accountAddedMessage">Account added successfully</string>
+    <string name="switchAccountSuccess">Switched to account : %1$s@%2$s</string>
 
     <!-- Notifications -->
     <string name="pageTitleNotifications">Notifications</string>

@@ -48,9 +48,14 @@ public class UserAccountsApi {
 		new Thread(() -> userAccountsDao.updateServerVersion(serverVersion, accountId)).start();
 	}
 
-	public static void updateToken(final int accountId, final String token) {
+	public void updateToken(final int accountId, final String token) {
 
 		new Thread(() -> userAccountsDao.updateAccountToken(accountId, token)).start();
+	}
+
+	public void updateTokenByAccountName(final String accountName, final String token) {
+
+		new Thread(() -> userAccountsDao.updateAccountTokenByAccountName(accountName, token)).start();
 	}
 
 	public UserAccount getAccountData(String accountName) {
