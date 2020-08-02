@@ -265,6 +265,9 @@ public interface ApiInterface {
     @GET("repos/{owner}/{repo}/contents/{fileDir}") // get all the sub files and dirs of a repository
     Call<List<Files>> getDirFiles(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("fileDir") String fileDir, @Query("ref") String ref);
 
+	@GET("repos/{owner}/{repo}/contents/{filepath}") // delete a file
+	Call<JsonElement> deleteFile(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("filepath") String filepath, @Body NewFile jsonStr);
+
     @GET("user/starred/{owner}/{repo}") // check star status of a repository
     Call<JsonElement> checkRepoStarStatus(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
 
