@@ -84,6 +84,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private byte[] decodedPdf;
 	private Boolean pdfNightMode;
 	private String singleFileName;
+	private String fileSha;
 	private AppUtil appUtil;
 	private TinyDB tinyDb;
 
@@ -170,6 +171,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 						String fileExtension = FileUtils.getExtension(filename);
 						mProgressBar.setVisibility(View.GONE);
+
+						fileSha = response.body().getSha();
 
 						// download file meta
 						tinyDb.putString("downloadFileName", filename);
@@ -403,7 +406,42 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		if("downloadFile".equals(text)) {
 
 			requestFileDownload();
+		}
 
+		if("deleteFile".equals(text)) {
+
+			String fileExtension = FileUtils.getExtension(singleFileName);
+			String data = appUtil.decodeBase64(tinyDb.getString("downloadFileContents"));
+			Intent intent = new Intent(ctx, CreateFileActivity.class);
+			intent.putExtra("fileAction", 1);
+			intent.putExtra("filePath", singleFileName);
+			intent.putExtra("fileSha", fileSha);
+			if(!appUtil.imageExtension(fileExtension)) {
+				intent.putExtra("fileContents", data);
+			}
+			else {
+				intent.putExtra("fileContents", "");
+			}
+
+			ctx.startActivity(intent);
+		}
+
+		if("editFile".equals(text)) {
+
+			String fileExtension = FileUtils.getExtension(singleFileName);
+			String data = appUtil.decodeBase64(tinyDb.getString("downloadFileContents"));
+			Intent intent = new Intent(ctx, CreateFileActivity.class);
+			intent.putExtra("fileAction", 2);
+			intent.putExtra("filePath", singleFileName);
+			intent.putExtra("fileSha", fileSha);
+			if(!appUtil.imageExtension(fileExtension)) {
+				intent.putExtra("fileContents", data);
+			}
+			else {
+				intent.putExtra("fileContents", "");
+			}
+
+			ctx.startActivity(intent);
 		}
 
 	}
@@ -426,6 +464,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		}
 		else {
+
 			Toasty.error(ctx, getString(R.string.waitLoadingDownloadFile));
 		}
 
@@ -456,6 +495,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 			}
 			catch(IOException e) {
+
 				Log.e("errorFileDownloading", Objects.requireNonNull(e.getMessage()));
 			}
 
@@ -469,7 +509,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 			getIntent().removeExtra("singleFileName");
 			finish();
-
 		};
 	}
 

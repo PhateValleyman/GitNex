@@ -24,6 +24,7 @@ import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Branches;
+import org.mian.gitnex.models.DeleteFile;
 import org.mian.gitnex.models.NewFile;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,9 @@ public class CreateFileActivity extends BaseActivity {
     private EditText newFileBranchName;
     private EditText newFileCommitMessage;
     private Spinner newFileBranchesSpinner;
+	private String filePath;
+	private String fileSha;
+	private int fileAction = 0; // 0 = create, 1 = delete, 2 = edit
     final Context ctx = this;
     private Context appCtx;
 
@@ -81,6 +85,8 @@ public class CreateFileActivity extends BaseActivity {
         newFileCommitMessage = findViewById(R.id.newFileCommitMessage);
         TextView branchNameId = findViewById(R.id.branchNameId);
         TextView branchNameHintText = findViewById(R.id.branchNameHintText);
+	    TextView toolbarTitle = findViewById(R.id.toolbarTitle);
+	    TextView fileNameHint = findViewById(R.id.fileNameHint);
 
         newFileName.requestFocus();
         assert imm != null;
@@ -90,6 +96,27 @@ public class CreateFileActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         newFileCreate = findViewById(R.id.newFileCreate);
+
+	    if(getIntent().getStringExtra("filePath") != null && getIntent().getIntExtra("fileAction", 1) == 1) {
+
+		    fileNameHint.setVisibility(View.GONE);
+		    fileAction = getIntent().getIntExtra("fileAction", 1);
+
+		    filePath = getIntent().getStringExtra("filePath");
+		    String fileContents = getIntent().getStringExtra("fileContents");
+		    fileSha = getIntent().getStringExtra("fileSha");
+
+		    toolbarTitle.setText(getString(R.string.deleteFileText, filePath));
+
+		    newFileCreate.setText(R.string.deleteFile);
+		    newFileName.setText(filePath);
+		    newFileName.setEnabled(false);
+		    newFileName.setFocusable(false);
+
+		    newFileContent.setText(fileContents);
+		    newFileContent.setEnabled(false);
+		    newFileContent.setFocusable(false);
+	    }
 
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
@@ -203,7 +230,22 @@ public class CreateFileActivity extends BaseActivity {
         else {
 
             disableProcessButton();
-            createNewFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newFileName_, appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString());
+
+            if(fileAction == 1) {
+
+	            deleteFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, filePath,
+		            newFileBranchName_, newFileCommitMessage_, currentBranch.toString(), fileSha);
+            }
+            else if(fileAction == 2) {
+
+	            //editFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newFileName_,
+		         //   appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString());
+            }
+            else {
+
+	            createNewFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newFileName_,
+		            appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString());
+            }
 
         }
 
@@ -253,7 +295,7 @@ public class CreateFileActivity extends BaseActivity {
                     }
                     else {
                         enableProcessButton();
-                        Toasty.info(ctx, getString(R.string.orgCreatedError));
+                        Toasty.info(ctx, getString(R.string.genericError));
                     }
 
                 }
@@ -262,12 +304,84 @@ public class CreateFileActivity extends BaseActivity {
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
                 Log.e("onFailure", t.toString());
                 enableProcessButton();
             }
         });
 
     }
+
+	private void deleteFile(final String instanceUrl, final String token, String repoOwner, String repoName, String fileName, String fileBranchName, String fileCommitMessage, String currentBranch, String fileSha) {
+
+    	String branchName;
+		DeleteFile deleteFileJsonStr;
+		if(currentBranch.equals("No branch")) {
+
+			branchName = fileBranchName;
+			deleteFileJsonStr = new DeleteFile("", fileCommitMessage, fileBranchName, fileSha);
+		}
+		else {
+
+			branchName = currentBranch;
+			deleteFileJsonStr = new DeleteFile(currentBranch, fileCommitMessage, "", fileSha);
+		}
+
+		Call<JsonElement> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.deleteFile(token, repoOwner, repoName, fileName, deleteFileJsonStr);
+
+		call.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+				if(response.code() == 200) {
+
+					enableProcessButton();
+					Toasty.info(ctx, getString(R.string.deleteFileMessage, branchName));
+					getIntent().removeExtra("filePath");
+					getIntent().removeExtra("fileSha");
+					getIntent().removeExtra("fileContents");
+					finish();
+
+				}
+				else if(response.code() == 401) {
+
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
+						getResources().getString(R.string.alertDialogTokenRevokedMessage),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+				}
+				else {
+
+					if(response.code() == 404) {
+
+						enableProcessButton();
+						Toasty.info(ctx, getString(R.string.apiNotFound));
+					}
+					else {
+
+						enableProcessButton();
+						Toasty.info(ctx, getString(R.string.genericError));
+					}
+
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
+		});
+
+	}
 
     private void getBranches(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
 
