@@ -51,11 +51,11 @@ public class SettingsReportsActivity extends BaseActivity {
 
 			if(isChecked) {
 				tinyDb.putBoolean("crashReportingEnabled", true);
-				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 			}
 			else {
 				tinyDb.putBoolean("crashReportingEnabled", false);
-				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 			}
 
 		});

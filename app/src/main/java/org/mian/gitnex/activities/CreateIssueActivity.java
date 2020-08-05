@@ -175,21 +175,21 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if (newIssueTitleForm.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.issueTitleEmpty));
+            Toasty.error(ctx, getString(R.string.issueTitleEmpty));
             return;
 
         }
 
         /*if (newIssueDescriptionForm.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.issueDescriptionEmpty));
+            Toasty.error(ctx, getString(R.string.issueDescriptionEmpty));
             return;
 
         }*/
@@ -299,7 +299,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                         TinyDB tinyDb = new TinyDB(appCtx);
                         tinyDb.putBoolean("resumeIssues", true);
 
-                        Toasty.info(ctx, getString(R.string.issueCreated));
+                        Toasty.success(ctx, getString(R.string.issueCreated));
                         enableProcessButton();
                         finish();
 
@@ -317,7 +317,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 }
                 else {
 
-                    Toasty.info(ctx, getString(R.string.issueCreatedError));
+                    Toasty.error(ctx, getString(R.string.issueCreatedError));
                     enableProcessButton();
                     //Log.i("isSuccessful2", String.valueOf(response2.body()));
 
@@ -335,12 +335,8 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+
+        onClickListener = view -> finish();
     }
 
     private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, int resultLimit) {
@@ -541,7 +537,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
             }
             else {
-                Toasty.info(ctx, getResources().getString(R.string.noAssigneesFound));
+                Toasty.warning(ctx, getResources().getString(R.string.noAssigneesFound));
             }
         }
         else if (v == newIssueLabels) {
@@ -549,7 +545,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 multiSelectDialogLabels.show(getSupportFragmentManager(), "multiSelectDialogLabels");
             }
             else {
-                Toasty.info(ctx, getResources().getString(R.string.noLabelsFound));
+                Toasty.warning(ctx, getResources().getString(R.string.noLabelsFound));
             }
         }
         else if (v == newIssueDueDate) {

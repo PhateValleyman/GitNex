@@ -110,14 +110,14 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 
         if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if(newMilestoneTitle.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.milestoneNameErrorEmpty));
+            Toasty.error(ctx, getString(R.string.milestoneNameErrorEmpty));
             return;
 
         }
@@ -125,7 +125,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         if(!newMilestoneDescription.equals("")) {
             if (appUtil.charactersLength(newMilestoneDescription) > 255) {
 
-                Toasty.info(ctx, getString(R.string.milestoneDescError));
+                Toasty.warning(ctx, getString(R.string.milestoneDescError));
                 return;
 
             }
@@ -133,10 +133,13 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 
         String finalMilestoneDueDate = null;
         if(!newMilestoneDueDate.isEmpty()) {
+
             finalMilestoneDueDate = (AppUtil.customDateCombine(AppUtil.customDateFormat(newMilestoneDueDate)));
-        } else if (new Version(tinyDb.getString("giteaVersion")).less("1.10.0")) {
+        }
+        else if (new Version(tinyDb.getString("giteaVersion")).less("1.10.0")) {
+
             // if Gitea version is less than 1.10.0 DueDate is required
-            Toasty.info(ctx, getString(R.string.milestoneDateEmpty));
+            Toasty.warning(ctx, getString(R.string.milestoneDateEmpty));
             return;
         }
 
@@ -166,7 +169,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 
                         TinyDB tinyDb = new TinyDB(appCtx);
                         tinyDb.putBoolean("milestoneCreated", true);
-                        Toasty.info(ctx, getString(R.string.milestoneCreated));
+                        Toasty.success(ctx, getString(R.string.milestoneCreated));
                         enableProcessButton();
                         finish();
 
@@ -184,7 +187,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
                 else {
 
                     enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.milestoneCreatedError));
+                    Toasty.error(ctx, getString(R.string.milestoneCreatedError));
 
                 }
 
@@ -226,12 +229,8 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+
+        onClickListener = view -> finish();
     }
 
     private void disableProcessButton() {

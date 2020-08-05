@@ -217,14 +217,14 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if (editIssueTitleForm.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.issueTitleEmpty));
+            Toasty.error(ctx, getString(R.string.issueTitleEmpty));
             return;
 
         }
@@ -267,10 +267,10 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                 if(response.code() == 201) {
 
                     if(tinyDb.getString("issueType").equalsIgnoreCase("Pull")) {
-                        Toasty.info(ctx, getString(R.string.editPrSuccessMessage));
+                        Toasty.success(ctx, getString(R.string.editPrSuccessMessage));
                     }
                     else {
-                        Toasty.info(ctx, getString(R.string.editIssueSuccessMessage));
+                        Toasty.success(ctx, getString(R.string.editIssueSuccessMessage));
                     }
 
                     tinyDb.putBoolean("issueEdited", true);
@@ -290,7 +290,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                 else {
 
                     enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.genericError));
+                    Toasty.error(ctx, getString(R.string.genericError));
 
                 }
 
@@ -442,7 +442,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                 }
                 else {
 
-                    Toasty.info(ctx, getString(R.string.genericError));
+                    Toasty.error(ctx, getString(R.string.genericError));
 
                 }
 

@@ -221,7 +221,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		if(!connToInternet) {
 
-			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 			return;
 
 		}
@@ -266,7 +266,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 							deleteBranchFunction(repoOwner, repoName);
 
-							Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
+							Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
 							tinyDb.putBoolean("prMerged", true);
 							tinyDb.putBoolean("resumePullRequests", true);
 							finish();
@@ -281,7 +281,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 							deleteBranchFunction(repoOwner, repoName);
 
-							Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
+							Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
 							tinyDb.putBoolean("prMerged", true);
 							tinyDb.putBoolean("resumePullRequests", true);
 							finish();
@@ -291,7 +291,7 @@ public class MergePullRequestActivity extends BaseActivity {
 					}
 					else {
 
-						Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
+						Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
 						tinyDb.putBoolean("prMerged", true);
 						tinyDb.putBoolean("resumePullRequests", true);
 						finish();
@@ -308,13 +308,13 @@ public class MergePullRequestActivity extends BaseActivity {
 				else if(response.code() == 404) {
 
 					enableProcessButton();
-					Toasty.info(ctx, getString(R.string.mergePR404ErrorMsg));
+					Toasty.warning(ctx, getString(R.string.mergePR404ErrorMsg));
 
 				}
 				else {
 
 					enableProcessButton();
-					Toasty.info(ctx, getString(R.string.genericError));
+					Toasty.error(ctx, getString(R.string.genericError));
 
 				}
 

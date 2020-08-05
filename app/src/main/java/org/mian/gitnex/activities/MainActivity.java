@@ -199,7 +199,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			public void onDrawerOpened(@NonNull View drawerView) {
 
 				if(tinyDb.getBoolean("noConnection")) {
-					Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+					Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 					tinyDb.putBoolean("noConnection", false);
 				}
 
@@ -369,7 +369,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		if(!connToInternet) {
 
 			if(!tinyDb.getBoolean("noConnection")) {
-				Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 			}
 
 			tinyDb.putBoolean("noConnection", true);
@@ -671,7 +671,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				else {
 
 					String toastError = getResources().getString(R.string.genericApiStatusError) + response.code();
-					Toasty.info(ctx, toastError);
+					Toasty.error(ctx, toastError);
 
 				}
 

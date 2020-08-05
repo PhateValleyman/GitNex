@@ -109,7 +109,7 @@ public class CreateOrganizationActivity extends BaseActivity {
 
         if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
@@ -117,7 +117,7 @@ public class CreateOrganizationActivity extends BaseActivity {
         if(!newOrgDesc.equals("")) {
             if (appUtil.charactersLength(newOrgDesc) > 255) {
 
-                Toasty.info(ctx, getString(R.string.orgDescError));
+                Toasty.warning(ctx, getString(R.string.orgDescError));
                 return;
 
             }
@@ -125,12 +125,12 @@ public class CreateOrganizationActivity extends BaseActivity {
 
         if(newOrgName.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.orgNameErrorEmpty));
+            Toasty.error(ctx, getString(R.string.orgNameErrorEmpty));
 
         }
         else if(!appUtil.checkStrings(newOrgName)) {
 
-            Toasty.info(ctx, getString(R.string.orgNameErrorInvalid));
+            Toasty.warning(ctx, getString(R.string.orgNameErrorInvalid));
 
         }
         else {
@@ -161,7 +161,7 @@ public class CreateOrganizationActivity extends BaseActivity {
                     TinyDB tinyDb = new TinyDB(appCtx);
                     tinyDb.putBoolean("orgCreated", true);
                     enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.orgCreated));
+                    Toasty.success(ctx, getString(R.string.orgCreated));
                     finish();
 
                 }
@@ -177,24 +177,24 @@ public class CreateOrganizationActivity extends BaseActivity {
                 else if(response.code() == 409) {
 
                     enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.orgExistsError));
+                    Toasty.warning(ctx, getString(R.string.orgExistsError));
 
                 }
                 else if(response.code() == 422) {
 
                     enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.orgExistsError));
+                    Toasty.warning(ctx, getString(R.string.orgExistsError));
 
                 }
                 else {
 
                     if(response.code() == 404) {
                         enableProcessButton();
-                        Toasty.info(ctx, getString(R.string.apiNotFound));
+                        Toasty.warning(ctx, getString(R.string.apiNotFound));
                     }
                     else {
                         enableProcessButton();
-                        Toasty.info(ctx, getString(R.string.orgCreatedError));
+                        Toasty.error(ctx, getString(R.string.orgCreatedError));
                     }
 
                 }

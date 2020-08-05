@@ -264,21 +264,21 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 
         if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if (newTeamName.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.teamNameEmpty));
+            Toasty.error(ctx, getString(R.string.teamNameEmpty));
             return;
 
         }
 
         if(!appUtil.checkStringsWithAlphaNumericDashDotUnderscore(newTeamName)) {
 
-            Toasty.info(ctx, getString(R.string.teamNameError));
+            Toasty.warning(ctx, getString(R.string.teamNameError));
             return;
 
         }
@@ -286,12 +286,12 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
         if(!newTeamDesc.equals("")) {
 
             if(!appUtil.checkStrings(newTeamDesc)) {
-                Toasty.info(ctx, getString(R.string.teamDescError));
+                Toasty.warning(ctx, getString(R.string.teamDescError));
                 return;
             }
 
             if(newTeamDesc.length() > 100) {
-                Toasty.info(ctx, getString(R.string.teamDescLimit));
+                Toasty.warning(ctx, getString(R.string.teamDescLimit));
                 return;
             }
 
@@ -299,7 +299,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 
         if (newTeamPermission.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.teamPermissionEmpty));
+            Toasty.error(ctx, getString(R.string.teamPermissionEmpty));
             return;
 
         }
@@ -336,7 +336,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
                         TinyDB tinyDb = new TinyDB(appCtx);
                         tinyDb.putBoolean("resumeTeams", true);
 
-                        Toasty.info(ctx, getString(R.string.teamCreated));
+                        Toasty.success(ctx, getString(R.string.teamCreated));
                         finish();
 
                     }
@@ -344,7 +344,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
                 }
                 else if(response2.code() == 404) {
 
-                    Toasty.info(ctx, getString(R.string.apiNotFound));
+                    Toasty.warning(ctx, getString(R.string.apiNotFound));
 
                 }
                 else if(response2.code() == 401) {
@@ -357,7 +357,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
                 }
                 else {
 
-                    Toasty.info(ctx, getString(R.string.teamCreatedError));
+                    Toasty.error(ctx, getString(R.string.teamCreatedError));
 
                 }
 
@@ -380,12 +380,8 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+
+        onClickListener = view -> finish();
     }
 
 }

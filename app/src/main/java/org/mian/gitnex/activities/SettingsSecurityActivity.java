@@ -155,7 +155,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 				tinyDb.putInt("cacheSizeImagesId", i);
 
 				dialogInterfaceTheme.dismiss();
-				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 
 			});
 
@@ -185,7 +185,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 				tinyDb.putInt("cacheSizeId", i);
 
 				dialogInterfaceTheme.dismiss();
-				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 
 			});
 
@@ -242,7 +242,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 				NotificationsMaster.hireWorker(ctx);
 
 				pollingDelaySelected.setText(String.format(getString(R.string.pollingDelaySelectedText), numberPicker.getValue()));
-				Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 
 			});
 

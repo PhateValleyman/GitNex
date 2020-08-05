@@ -180,7 +180,7 @@ public class LoginActivity extends BaseActivity {
 
 			if(instanceUrlET.getText().toString().equals("")) {
 
-				Toasty.warning(ctx, getResources().getString(R.string.emptyFieldURL));
+				Toasty.error(ctx, getResources().getString(R.string.emptyFieldURL));
 				enableProcessButton();
 				return;
 
@@ -205,7 +205,7 @@ public class LoginActivity extends BaseActivity {
 
 				if(loginUid.equals("")) {
 
-					Toasty.warning(ctx, getResources().getString(R.string.emptyFieldUsername));
+					Toasty.error(ctx, getResources().getString(R.string.emptyFieldUsername));
 					enableProcessButton();
 					return;
 
@@ -221,7 +221,7 @@ public class LoginActivity extends BaseActivity {
 
 				if(loginPass.equals("")) {
 
-					Toasty.warning(ctx, getResources().getString(R.string.emptyFieldPassword));
+					Toasty.error(ctx, getResources().getString(R.string.emptyFieldPassword));
 					enableProcessButton();
 					return;
 
@@ -237,7 +237,7 @@ public class LoginActivity extends BaseActivity {
 
 				if(loginToken.equals("")) {
 
-					Toasty.warning(ctx, getResources().getString(R.string.loginTokenError));
+					Toasty.error(ctx, getResources().getString(R.string.loginTokenError));
 					enableProcessButton();
 					return;
 
@@ -325,7 +325,7 @@ public class LoginActivity extends BaseActivity {
 					}
 					else {
 
-						Toasty.info(ctx, getResources().getString(R.string.versionUnsupportedNew));
+						Toasty.warning(ctx, getResources().getString(R.string.versionUnsupportedNew));
 						login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken);
 
 					}

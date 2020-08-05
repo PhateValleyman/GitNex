@@ -166,14 +166,14 @@ public class CreateFileActivity extends BaseActivity {
 
         if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if(newFileName_.equals("") || newFileContent_.equals("") || newFileCommitMessage_.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.newFileRequiredFields));
+            Toasty.error(ctx, getString(R.string.newFileRequiredFields));
             return;
 
         }
@@ -181,13 +181,13 @@ public class CreateFileActivity extends BaseActivity {
         if(currentBranch.toString().equals("No branch")) {
 
             if(newFileBranchName_.equals("")) {
-                Toasty.info(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
+                Toasty.error(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
                 return;
             }
             else {
                 if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
 
-                    Toasty.info(ctx, getString(R.string.newFileInvalidBranchName));
+                    Toasty.error(ctx, getString(R.string.newFileInvalidBranchName));
                     return;
 
                 }
@@ -197,7 +197,7 @@ public class CreateFileActivity extends BaseActivity {
 
         if(appUtil.charactersLength(newFileCommitMessage_) > 255) {
 
-            Toasty.info(ctx, getString(R.string.newFileCommitMessageError));
+            Toasty.warning(ctx, getString(R.string.newFileCommitMessageError));
 
         }
         else {
@@ -232,7 +232,7 @@ public class CreateFileActivity extends BaseActivity {
                 if(response.code() == 201) {
 
                     enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.newFileSuccessMessage));
+                    Toasty.success(ctx, getString(R.string.newFileSuccessMessage));
                     finish();
 
                 }
@@ -249,11 +249,11 @@ public class CreateFileActivity extends BaseActivity {
 
                     if(response.code() == 404) {
                         enableProcessButton();
-                        Toasty.info(ctx, getString(R.string.apiNotFound));
+                        Toasty.warning(ctx, getString(R.string.apiNotFound));
                     }
                     else {
                         enableProcessButton();
-                        Toasty.info(ctx, getString(R.string.orgCreatedError));
+                        Toasty.error(ctx, getString(R.string.orgCreatedError));
                     }
 
                 }

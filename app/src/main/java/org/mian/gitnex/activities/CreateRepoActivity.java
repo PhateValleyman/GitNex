@@ -138,7 +138,7 @@ public class CreateRepoActivity extends BaseActivity {
 
         if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
@@ -146,7 +146,7 @@ public class CreateRepoActivity extends BaseActivity {
         if(!newRepoDesc.equals("")) {
             if (appUtil.charactersLength(newRepoDesc) > 255) {
 
-                Toasty.info(ctx, getString(R.string.repoDescError));
+                Toasty.warning(ctx, getString(R.string.repoDescError));
                 return;
 
             }
@@ -154,22 +154,22 @@ public class CreateRepoActivity extends BaseActivity {
 
         if(newRepoName.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.repoNameErrorEmpty));
+            Toasty.error(ctx, getString(R.string.repoNameErrorEmpty));
 
         }
         else if(!appUtil.checkStrings(newRepoName)) {
 
-            Toasty.info(ctx, getString(R.string.repoNameErrorInvalid));
+            Toasty.warning(ctx, getString(R.string.repoNameErrorInvalid));
 
         }
         else if (reservedRepoNames.contains(newRepoName)) {
 
-            Toasty.info(ctx, getString(R.string.repoNameErrorReservedName));
+            Toasty.warning(ctx, getString(R.string.repoNameErrorReservedName));
 
         }
         else if (reservedRepoPatterns.matcher(newRepoName).find()) {
 
-            Toasty.info(ctx, getString(R.string.repoNameErrorReservedPatterns));
+            Toasty.warning(ctx, getString(R.string.repoNameErrorReservedPatterns));
 
         }
         else {
@@ -211,7 +211,7 @@ public class CreateRepoActivity extends BaseActivity {
 
                     TinyDB tinyDb = new TinyDB(appCtx);
                     tinyDb.putBoolean("repoCreated", true);
-                    Toasty.info(ctx, getString(R.string.repoCreated));
+                    Toasty.success(ctx, getString(R.string.repoCreated));
                     enableProcessButton();
                     finish();
                 }
@@ -227,13 +227,13 @@ public class CreateRepoActivity extends BaseActivity {
                 else if(response.code() == 409) {
 
                     enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.repoExistsError));
+                    Toasty.warning(ctx, getString(R.string.repoExistsError));
 
                 }
                 else {
 
                     enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.repoCreatedError));
+                    Toasty.error(ctx, getString(R.string.repoCreatedError));
 
                 }
 
@@ -322,12 +322,8 @@ public class CreateRepoActivity extends BaseActivity {
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+
+        onClickListener = view -> finish();
     }
 
     private void disableProcessButton() {
