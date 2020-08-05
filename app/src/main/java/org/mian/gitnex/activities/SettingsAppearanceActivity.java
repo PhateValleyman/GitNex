@@ -320,9 +320,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
-		onClickListener = view -> {
-			finish();
-		};
+		onClickListener = view -> finish();
 	}
 
 }

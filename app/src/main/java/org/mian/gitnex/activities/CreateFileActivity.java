@@ -2,7 +2,6 @@ package org.mian.gitnex.activities;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -129,15 +128,10 @@ public class CreateFileActivity extends BaseActivity {
         if(!connToInternet) {
 
             newFileCreate.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            newFileCreate.setBackground(shape);
-
-        } else {
+        }
+        else {
 
             newFileCreate.setOnClickListener(createFileListener);
-
         }
 
     }
@@ -326,21 +320,11 @@ public class CreateFileActivity extends BaseActivity {
     private void disableProcessButton() {
 
         newFileCreate.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        newFileCreate.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         newFileCreate.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        newFileCreate.setBackground(shape);
-
     }
 
 }

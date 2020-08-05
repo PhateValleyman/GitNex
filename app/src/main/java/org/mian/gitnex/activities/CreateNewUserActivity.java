@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -69,11 +68,10 @@ public class CreateNewUserActivity extends BaseActivity {
         if(!connToInternet) {
 
             disableProcessButton();
-
-        } else {
+        }
+        else {
 
             createUserButton.setOnClickListener(createNewUserListener);
-
         }
 
     }
@@ -211,21 +209,11 @@ public class CreateNewUserActivity extends BaseActivity {
     private void disableProcessButton() {
 
         createUserButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createUserButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         createUserButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createUserButton.setBackground(shape);
-
     }
 
 }

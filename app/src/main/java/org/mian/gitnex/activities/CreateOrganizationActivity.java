@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -67,15 +66,10 @@ public class CreateOrganizationActivity extends BaseActivity {
         if(!connToInternet) {
 
             createOrganizationButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            createOrganizationButton.setBackground(shape);
-
-        } else {
+        }
+        else {
 
             createOrganizationButton.setOnClickListener(createOrgListener);
-
         }
 
     }
@@ -213,21 +207,11 @@ public class CreateOrganizationActivity extends BaseActivity {
     private void disableProcessButton() {
 
         createOrganizationButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createOrganizationButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         createOrganizationButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createOrganizationButton.setBackground(shape);
-
     }
 
 }

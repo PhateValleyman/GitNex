@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -67,11 +66,9 @@ public class ProfileEmailActivity extends BaseActivity {
         if(!connToInternet) {
 
             disableProcessButton();
-
         } else {
 
             addEmailButton.setOnClickListener(addEmailListener);
-
         }
 
     }
@@ -197,21 +194,11 @@ public class ProfileEmailActivity extends BaseActivity {
     private void disableProcessButton() {
 
         addEmailButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        addEmailButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         addEmailButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        addEmailButton.setBackground(shape);
-
     }
 
 }

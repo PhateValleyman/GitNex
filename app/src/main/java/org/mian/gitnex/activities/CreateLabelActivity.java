@@ -2,7 +2,6 @@ package org.mian.gitnex.activities;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -118,38 +117,23 @@ public class CreateLabelActivity extends BaseActivity {
             createLabelButton.setText(getResources().getString(R.string.newUpdateButtonCopy));
 
             createLabelButton.setOnClickListener(updateLabelListener);
-
             return;
-
         }
 
         if(!connToInternet) {
 
             createLabelButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            createLabelButton.setBackground(shape);
-
-        } else {
+        }
+        else {
 
             createLabelButton.setOnClickListener(createLabelListener);
-
         }
 
     }
 
-    private View.OnClickListener createLabelListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processCreateLabel();
-        }
-    };
+    private View.OnClickListener createLabelListener = v -> processCreateLabel();
 
-    private View.OnClickListener updateLabelListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processUpdateLabel();
-        }
-    };
+    private View.OnClickListener updateLabelListener = v -> processUpdateLabel();
 
     private void processUpdateLabel() {
 
@@ -432,21 +416,11 @@ public class CreateLabelActivity extends BaseActivity {
     private void disableProcessButton() {
 
         createLabelButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createLabelButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         createLabelButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createLabelButton.setBackground(shape);
-
     }
 
 }

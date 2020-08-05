@@ -166,14 +166,10 @@ public class FileDiffActivity extends BaseActivity {
 
 	private void initCloseListener() {
 
-		onClickListener = new View.OnClickListener() {
+		onClickListener = view -> {
 
-			@Override
-			public void onClick(View view) {
-
-				getIntent().removeExtra("singleFileName");
-				finish();
-			}
+			getIntent().removeExtra("singleFileName");
+			finish();
 		};
 	}
 

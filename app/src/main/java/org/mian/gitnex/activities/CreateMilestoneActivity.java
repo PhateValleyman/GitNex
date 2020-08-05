@@ -2,7 +2,6 @@ package org.mian.gitnex.activities;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -71,24 +70,15 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         if(!connToInternet) {
 
             createNewMilestoneButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            createNewMilestoneButton.setBackground(shape);
-
-        } else {
+        }
+        else {
 
             createNewMilestoneButton.setOnClickListener(createMilestoneListener);
-
         }
 
     }
 
-    private View.OnClickListener createMilestoneListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewMilestone();
-        }
-    };
+    private View.OnClickListener createMilestoneListener = v -> processNewMilestone();
 
     private void processNewMilestone() {
 
@@ -236,21 +226,11 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
     private void disableProcessButton() {
 
         createNewMilestoneButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createNewMilestoneButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         createNewMilestoneButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createNewMilestoneButton.setBackground(shape);
-
     }
 
 }

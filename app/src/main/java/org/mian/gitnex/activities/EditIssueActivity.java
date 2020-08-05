@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -427,7 +426,6 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                         @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("yyyy-M-dd");
                         String dueDate = formatter.format(response.body().getDue_date());
                         editIssueDueDate.setText(dueDate);
-
                     }
                     //enableProcessButton();
 
@@ -438,12 +436,10 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
                 }
                 else {
 
                     Toasty.error(ctx, getString(R.string.genericError));
-
                 }
 
             }
@@ -459,21 +455,11 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
     private void disableProcessButton() {
 
         editIssueButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        editIssueButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         editIssueButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        editIssueButton.setBackground(shape);
-
     }
 
 }

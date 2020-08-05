@@ -3,7 +3,6 @@ package org.mian.gitnex.activities;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -138,15 +137,10 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         if(!connToInternet) {
 
             createNewIssueButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            createNewIssueButton.setBackground(shape);
-
-        } else {
+        }
+        else {
 
             createNewIssueButton.setOnClickListener(this);
-
         }
 
     }
@@ -577,20 +571,10 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private void disableProcessButton() {
 
         createNewIssueButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createNewIssueButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         createNewIssueButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createNewIssueButton.setBackground(shape);
-
     }
 }

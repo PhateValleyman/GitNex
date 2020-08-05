@@ -2,7 +2,6 @@ package org.mian.gitnex.activities;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -108,20 +107,15 @@ public class CreateReleaseActivity extends BaseActivity {
         if(!connToInternet) {
 
             disableProcessButton();
-
-        } else {
+        }
+        else {
 
             createNewRelease.setOnClickListener(createReleaseListener);
-
         }
 
     }
 
-    private View.OnClickListener createReleaseListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewRelease();
-        }
-    };
+    private View.OnClickListener createReleaseListener = v -> processNewRelease();
 
     private void processNewRelease() {
 
@@ -302,21 +296,11 @@ public class CreateReleaseActivity extends BaseActivity {
     private void disableProcessButton() {
 
         createNewRelease.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createNewRelease.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         createNewRelease.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createNewRelease.setBackground(shape);
-
     }
 
 }

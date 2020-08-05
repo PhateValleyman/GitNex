@@ -2,7 +2,6 @@ package org.mian.gitnex.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -656,26 +655,14 @@ public class LoginActivity extends BaseActivity {
 
 	private void disableProcessButton() {
 
-		GradientDrawable shape = new GradientDrawable();
-		shape.setCornerRadius(8);
-		shape.setColor(getResources().getColor(R.color.hintColor));
-
 		loginButton.setText(R.string.processingText);
-		loginButton.setBackground(shape);
 		loginButton.setEnabled(false);
-
 	}
 
 	private void enableProcessButton() {
 
-		GradientDrawable shape = new GradientDrawable();
-		shape.setCornerRadius(8);
-		shape.setColor(getResources().getColor(R.color.btnBackground));
-
 		loginButton.setText(R.string.btnLogin);
-		loginButton.setBackground(shape);
 		loginButton.setEnabled(true);
-
 	}
 
 }

@@ -126,12 +126,10 @@ public class MergePullRequestActivity extends BaseActivity {
 		if(!connToInternet) {
 
 			disableProcessButton();
-
 		}
 		else {
 
 			viewBinding.mergeButton.setOnClickListener(mergePullRequest);
-
 		}
 
 	}
@@ -373,15 +371,11 @@ public class MergePullRequestActivity extends BaseActivity {
 	private void disableProcessButton() {
 
 		viewBinding.mergeButton.setEnabled(false);
-		viewBinding.mergeButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons_disabled));
-
 	}
 
 	private void enableProcessButton() {
 
 		viewBinding.mergeButton.setEnabled(true);
-		viewBinding.mergeButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons));
-
 	}
 
 }
