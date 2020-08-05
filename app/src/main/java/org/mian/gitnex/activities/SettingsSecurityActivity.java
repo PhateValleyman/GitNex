@@ -246,7 +246,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 
 			});
 
-			builder.setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss());
+			builder.setNeutralButton(R.string.cancelButton, null);
 			builder.setView(numberPicker);
 			builder.create().show();
 

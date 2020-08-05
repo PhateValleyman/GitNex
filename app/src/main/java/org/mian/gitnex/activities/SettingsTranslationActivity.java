@@ -147,7 +147,7 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 			});
 
-			lBuilder.setNegativeButton(getString(R.string.cancelButton), (dialog, which) -> dialog.dismiss());
+			lBuilder.setNeutralButton(getString(R.string.cancelButton), null);
 
 			AlertDialog lDialog = lBuilder.create();
 			lDialog.show();
