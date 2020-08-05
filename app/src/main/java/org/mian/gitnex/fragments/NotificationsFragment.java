@@ -11,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -20,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import org.apache.commons.lang3.StringUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.NotificationsActions;
@@ -51,7 +51,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 	private NotificationsAdapter notificationsAdapter;
 	private NotificationsActions notificationsActions;
 
-	private ImageView markAllAsRead;
+	private ExtendedFloatingActionButton markAllAsRead;
 	private ProgressBar progressBar;
 	private ProgressBar loadingMoreView;
 	private TextView noDataNotifications;
