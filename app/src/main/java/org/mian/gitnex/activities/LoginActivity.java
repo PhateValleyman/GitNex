@@ -22,6 +22,7 @@ import com.tooltip.Tooltip;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.UserAccountsApi;
+import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.NetworkObserver;
 import org.mian.gitnex.helpers.PathsHelper;
@@ -214,13 +215,13 @@ public class LoginActivity extends BaseActivity {
 
 				}
 
-				if(loginUid.contains("@")) {
+				/*if(loginUid.contains("@")) {
 
 					SnackBar.warning(ctx, layoutView, getResources().getString(R.string.userInvalidUserName));
 					enableProcessButton();
 					return;
 
-				}
+				}*/
 
 				if(loginPass.equals("")) {
 
@@ -387,12 +388,18 @@ public class LoginActivity extends BaseActivity {
 						String accountName = userDetails.getUsername() + "@" + instanceUrl;
 						UserAccountsApi userAccountsApi = new UserAccountsApi(ctx);
 						int checkAccount = userAccountsApi.getCount(accountName);
+						long accountId;
 
 						if(checkAccount == 0) {
-							userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
+
+							accountId = userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
+							tinyDB.putInt("currentActiveAccountId", (int) accountId);
 						}
 						else {
+
 							userAccountsApi.updateTokenByAccountName(accountName, loginToken);
+							UserAccount data = userAccountsApi.getAccountData(accountName);
+							tinyDB.putInt("currentActiveAccountId", data.getAccountId());
 						}
 
 						enableProcessButton();
@@ -571,13 +578,18 @@ public class LoginActivity extends BaseActivity {
 										String accountName = userDetails.getUsername() + "@" + instanceUrl;
 										UserAccountsApi userAccountsApi = new UserAccountsApi(ctx);
 										int checkAccount = userAccountsApi.getCount(accountName);
+										long accountId;
 
 										if(checkAccount == 0) {
-											userAccountsApi
-												.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
+
+											accountId = userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
+											tinyDB.putInt("currentActiveAccountId", (int) accountId);
 										}
 										else {
+
 											userAccountsApi.updateTokenByAccountName(accountName, newToken.getSha1());
+											UserAccount data = userAccountsApi.getAccountData(accountName);
+											tinyDB.putInt("currentActiveAccountId", data.getAccountId());
 										}
 
 										startActivity(new Intent(LoginActivity.this, MainActivity.class));
