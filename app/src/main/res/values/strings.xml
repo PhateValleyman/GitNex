@@ -361,7 +361,7 @@
     <string name="profileEmailButton">Save</string>
     <string name="profileEmailTitle">Email Address</string>
     <string name="emailAddedText">New email added successfully.</string>
-    <string name="emailErrorEmpty">Email address is empty.</string>
+    <string name="emailErrorEmpty">Email address is empty</string>
     <string name="emailErrorInvalid">Email address is not valid</string>
     <string name="emailErrorInUse">Email address is already in use</string>
     <string name="emailTypeText">Primary</string>
@@ -627,7 +627,7 @@
 
     <string name="accountDeletedMessage">Account deleted successfully</string>
     <string name="removeAccountPopupTitle">Remove Account</string>
-    <string name="removeAccountPopupMessage">Are you sure you want to remove this account from the app?\nThis will remove all the data related to this account on the app only.</string>
+    <string name="removeAccountPopupMessage">Are you sure you want to remove this account from the app?\n\nThis will remove all the data related to this account on the app only.</string>
     <string name="addNewAccount">New Account</string>
     <string name="addNewAccountText">Add New Account</string>
     <string name="accountAlreadyExistsError">Account already exists in the app</string>

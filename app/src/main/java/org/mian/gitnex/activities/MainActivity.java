@@ -421,12 +421,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				if(frag != null) {
 
-					new AlertDialog.Builder(ctx).setTitle(R.string.deleteAllDrafts).setIcon(R.drawable.ic_delete).setCancelable(false).setMessage(R.string.deleteAllDraftsDialogMessage).setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
+					new AlertDialog.Builder(ctx)
+						.setTitle(R.string.deleteAllDrafts)
+						.setIcon(R.drawable.ic_delete)
+						.setCancelable(false)
+						.setMessage(R.string.deleteAllDraftsDialogMessage)
+						.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
 
-						frag.deleteAllDrafts(currentActiveAccountId);
-						dialog.dismiss();
+							frag.deleteAllDrafts(currentActiveAccountId);
+							dialog.dismiss();
 
-					}).setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss()).show();
+						})
+						.setNeutralButton(R.string.cancelButton, null).show();
 
 				}
 				else {
