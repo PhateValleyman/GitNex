@@ -1,6 +1,8 @@
 package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,6 +44,7 @@ import org.mian.gitnex.fragments.ReleasesFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.UserRepositories;
@@ -81,6 +84,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	private String repositoryOwner;
 	private String repositoryName;
 
+	public static ViewPager mViewPager;
 	private int tabsCount;
 
 	@Override
@@ -172,7 +176,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 		}
 
-		ViewPager mViewPager = findViewById(R.id.container);
+		mViewPager = findViewById(R.id.container);
 
 		mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 		tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -345,6 +349,14 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 				startActivity(Intent.createChooser(sharingIntent, tinyDB.getString("repoHtmlUrl")));
 				break;
 
+			case "copyRepoUrl":
+				ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
+				ClipData clip = ClipData.newPlainText("repoUrl", tinyDB.getString("repoHtmlUrl"));
+				assert clipboard != null;
+				clipboard.setPrimaryClip(clip);
+				Toasty.info(ctx, ctx.getString(R.string.copyIssueUrlToastMsg));
+				break;
+
 			case "newFile":
 				startActivity(new Intent(RepoDetailActivity.this, CreateFileActivity.class));
 				break;
@@ -432,6 +444,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 							dialogInterface.dismiss();
 						}
 					});
+					pBuilder.setNeutralButton(R.string.cancelButton, null);
 
 					pBuilder.create().show();
 
