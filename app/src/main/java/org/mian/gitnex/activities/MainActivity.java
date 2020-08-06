@@ -198,7 +198,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			public void onDrawerOpened(@NonNull View drawerView) {
 
 				if(tinyDb.getBoolean("noConnection")) {
-					Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+					Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 					tinyDb.putBoolean("noConnection", false);
 				}
 
@@ -368,7 +368,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		if(!connToInternet) {
 
 			if(!tinyDb.getBoolean("noConnection")) {
-				Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 			}
 
 			tinyDb.putBoolean("noConnection", true);
@@ -420,12 +420,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				if(frag != null) {
 
-					new AlertDialog.Builder(ctx).setTitle(R.string.deleteAllDrafts).setIcon(R.drawable.ic_delete).setCancelable(false).setMessage(R.string.deleteAllDraftsDialogMessage).setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
+					new AlertDialog.Builder(ctx)
+						.setTitle(R.string.deleteAllDrafts)
+						.setIcon(R.drawable.ic_delete)
+						.setCancelable(false)
+						.setMessage(R.string.deleteAllDraftsDialogMessage)
+						.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
 
-						frag.deleteAllDrafts(currentActiveAccountId);
-						dialog.dismiss();
+							frag.deleteAllDrafts(currentActiveAccountId);
+							dialog.dismiss();
 
-					}).setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss()).show();
+						})
+						.setNeutralButton(R.string.cancelButton, null).show();
 
 				}
 				else {
@@ -650,7 +656,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				else {
 
 					String toastError = getResources().getString(R.string.genericApiStatusError) + response.code();
-					Toasty.info(ctx, toastError);
+					Toasty.error(ctx, toastError);
 
 				}
 
