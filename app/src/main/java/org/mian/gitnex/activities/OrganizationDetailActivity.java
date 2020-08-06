@@ -136,7 +136,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
         switch (text) {
             case "repository":
-                tinyDb.putBoolean("organizationAction", true);
+                //tinyDb.putBoolean("organizationAction", true);
                 startActivity(new Intent(OrganizationDetailActivity.this, CreateRepoActivity.class));
                 break;
             case "team":

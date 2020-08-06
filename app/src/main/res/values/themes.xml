@@ -120,11 +120,11 @@
         <item name="android:layout_marginEnd">3dp</item>
     </style>
 
-    <style name="AppThemeLightCheckBoxStyle" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
+    <style name="AppThemeLightCheckBoxStyle" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
         <item name="buttonTint">@color/colorDarkGreen</item>
     </style>
 
-    <style name="AppThemeCheckBoxStyle" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
+    <style name="AppThemeCheckBoxStyle" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
         <item name="buttonTint">@color/colorWhite</item>
     </style>
 

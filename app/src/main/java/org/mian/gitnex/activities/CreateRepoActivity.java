@@ -1,19 +1,17 @@
 package org.mian.gitnex.activities;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -39,13 +37,14 @@ public class CreateRepoActivity extends BaseActivity {
 
     public ImageView closeActivity;
     private View.OnClickListener onClickListener;
-    private Spinner spinner;
+    private AutoCompleteTextView spinner;
     private Button createRepo;
     private EditText repoName;
     private EditText repoDesc;
     private CheckBox repoAccess;
     final Context ctx = this;
     private Context appCtx;
+	private String spinnerSelectedValue;
 
     List<OrgOwner> organizationsList = new ArrayList<>();
 
@@ -87,19 +86,9 @@ public class CreateRepoActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         spinner = findViewById(R.id.ownerSpinner);
-        spinner.getBackground().setColorFilter(getResources().getColor(R.color.colorWhite), PorterDuff.Mode.SRC_ATOP);
         getOrganizations(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), userLogin);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                OrgOwner user = (OrgOwner) parent.getSelectedItem();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+	    spinner.setOnItemClickListener((parent, view, position, id) -> spinnerSelectedValue = String.valueOf(parent.getItemAtPosition(position)));
 
         createRepo = findViewById(R.id.createNewRepoButton);
         disableProcessButton();
@@ -133,7 +122,7 @@ public class CreateRepoActivity extends BaseActivity {
 
         String newRepoName = repoName.getText().toString();
         String newRepoDesc = repoDesc.getText().toString();
-        String repoOwner = spinner.getSelectedItem().toString();
+        String repoOwner = spinnerSelectedValue;
         boolean newRepoAccess = repoAccess.isChecked();
 
         if(!connToInternet) {
@@ -152,7 +141,11 @@ public class CreateRepoActivity extends BaseActivity {
             }
         }
 
-        if(newRepoName.equals("")) {
+        if(repoOwner == null) {
+
+	        Toasty.error(ctx, getString(R.string.repoOwnerError));
+        }
+        else if(newRepoName.equals("")) {
 
             Toasty.info(ctx, getString(R.string.repoNameErrorEmpty));
 
@@ -287,15 +280,9 @@ public class CreateRepoActivity extends BaseActivity {
                         }
 
                         ArrayAdapter<OrgOwner> adapter = new ArrayAdapter<>(CreateRepoActivity.this,
-                                R.layout.spinner_item, organizationsList);
+                                R.layout.list_item, organizationsList);
 
-                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                        spinner.setAdapter(adapter);
-
-                        if (tinyDb.getBoolean("organizationAction") & organizationId != 0) {
-                            spinner.setSelection(organizationId);
-                            tinyDb.putBoolean("organizationAction", false);
-                        }
+						spinner.setAdapter(adapter);
 
                         enableProcessButton();
 

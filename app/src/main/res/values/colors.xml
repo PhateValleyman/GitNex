@@ -35,7 +35,7 @@
     <color name="lightThemeDiffSelectedColor">#e0e0e0</color>
     <color name="lightThemeTextColor">#646565</color>
     <color name="lightThemeBackground">#f9f9f9</color>
-    <color name="lightThemeInputBackground">#b6bbbf</color>
+    <color name="lightThemeInputBackground">#f2f2f2</color>
     <color name="lightThemeInputTextColor">#212121</color>
     <color name="lightThemeDividerColor">#dbdbdb</color>
 
