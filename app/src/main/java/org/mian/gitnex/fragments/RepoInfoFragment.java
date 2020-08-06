@@ -358,7 +358,7 @@ public class RepoInfoFragment extends Fragment {
 
 								alertDialog.setTitle(getResources().getString(R.string.infoMoreInformation));
 								alertDialog.setView(view);
-								alertDialog.setPositiveButton(getResources().getString(R.string.close), (dialog, which) -> dialog.dismiss());
+								alertDialog.setNeutralButton(getResources().getString(R.string.close), null);
 								alertDialog.create().show();
 
 							});
@@ -487,7 +487,7 @@ public class RepoInfoFragment extends Fragment {
 
 					} else if (response.code() == 403) {
 
-						Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+						Toasty.error(ctx, ctx.getString(R.string.authorizeError));
 
 					} else if (response.code() == 404) {
 
@@ -496,7 +496,7 @@ public class RepoInfoFragment extends Fragment {
 
 					} else {
 
-						Toasty.info(getContext(), getString(R.string.genericError));
+						Toasty.error(getContext(), getString(R.string.genericError));
 
 					}
 				}
