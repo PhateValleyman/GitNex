@@ -27,8 +27,6 @@ import com.google.android.material.navigation.NavigationView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.database.api.UserAccountsApi;
-import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.fragments.AboutFragment;
 import org.mian.gitnex.fragments.AdministrationFragment;
 import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
@@ -123,8 +121,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			return;
 		}
 
-		String accountName = loginUid + "@" + instanceUrl;
-		getAccountData(accountName);
+		if(tinyDb.getInt("currentActiveAccountId") <= 0) {
+			AlertDialogs.forceLogoutDialog(ctx, getResources().getString(R.string.forceLogoutDialogHeader), getResources().getString(R.string.forceLogoutDialogDescription), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+		}
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
@@ -199,7 +198,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			public void onDrawerOpened(@NonNull View drawerView) {
 
 				if(tinyDb.getBoolean("noConnection")) {
-					Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+					Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 					tinyDb.putBoolean("noConnection", false);
 				}
 
@@ -369,7 +368,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		if(!connToInternet) {
 
 			if(!tinyDb.getBoolean("noConnection")) {
-				Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 			}
 
 			tinyDb.putBoolean("noConnection", true);
@@ -421,12 +420,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				if(frag != null) {
 
-					new AlertDialog.Builder(ctx).setTitle(R.string.deleteAllDrafts).setIcon(R.drawable.ic_delete).setCancelable(false).setMessage(R.string.deleteAllDraftsDialogMessage).setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
+					new AlertDialog.Builder(ctx)
+						.setTitle(R.string.deleteAllDrafts)
+						.setIcon(R.drawable.ic_delete)
+						.setCancelable(false)
+						.setMessage(R.string.deleteAllDraftsDialogMessage)
+						.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
 
-						frag.deleteAllDrafts(currentActiveAccountId);
-						dialog.dismiss();
+							frag.deleteAllDrafts(currentActiveAccountId);
+							dialog.dismiss();
 
-					}).setNegativeButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss()).show();
+						})
+						.setNeutralButton(R.string.cancelButton, null).show();
 
 				}
 				else {
@@ -440,20 +445,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		}
 
-	}
-
-	public void getAccountData(String accountName) {
-
-		UserAccountsApi accountData = new UserAccountsApi(ctx);
-		UserAccount data = accountData.getAccountData(accountName);
-
-		if(data != null) {
-			TinyDB tinyDb = new TinyDB(ctx.getApplicationContext());
-			tinyDb.putInt("currentActiveAccountId", data.getAccountId());
-		}
-		else {
-			AlertDialogs.forceLogoutDialog(ctx, getResources().getString(R.string.forceLogoutDialogHeader), getResources().getString(R.string.forceLogoutDialogDescription), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-		}
 	}
 
 	@Override
@@ -665,7 +656,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				else {
 
 					String toastError = getResources().getString(R.string.genericApiStatusError) + response.code();
-					Toasty.info(ctx, toastError);
+					Toasty.error(ctx, toastError);
 
 				}
 

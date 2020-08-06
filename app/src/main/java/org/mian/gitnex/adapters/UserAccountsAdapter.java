@@ -3,7 +3,6 @@ package org.mian.gitnex.adapters;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,8 +75,6 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 				UserAccountsApi userAccountsApi = new UserAccountsApi(mCtx);
 				UserAccount userAccount = userAccountsApi.getAccountData(accountNameSwitch);
 
-				Log.e("userAccount", userAccount.getInstanceUrl());
-
 				if(tinyDB.getInt("currentActiveAccountId") != userAccount.getAccountId()) {
 
 					String url = UrlBuilder.fromString(userAccount.getInstanceUrl())
@@ -111,7 +108,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		userAccountsList.remove(position);
 		notifyItemRemoved(position);
 		notifyItemRangeChanged(position, userAccountsList.size());
-		Toasty.info(mCtx, mCtx.getResources().getString(R.string.accountDeletedMessage));
+		Toasty.success(mCtx, mCtx.getResources().getString(R.string.accountDeletedMessage));
 
 	}
 

@@ -1,8 +1,9 @@
 package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
@@ -42,6 +43,7 @@ import org.mian.gitnex.fragments.ReleasesFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.UserRepositories;
@@ -81,6 +83,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	private String repositoryOwner;
 	private String repositoryName;
 
+	public static ViewPager mViewPager;
 	private int tabsCount;
 
 	@Override
@@ -172,7 +175,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 		}
 
-		ViewPager mViewPager = findViewById(R.id.container);
+		mViewPager = findViewById(R.id.container);
 
 		mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 		tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -345,6 +348,14 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 				startActivity(Intent.createChooser(sharingIntent, tinyDB.getString("repoHtmlUrl")));
 				break;
 
+			case "copyRepoUrl":
+				ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
+				ClipData clip = ClipData.newPlainText("repoUrl", tinyDB.getString("repoHtmlUrl"));
+				assert clipboard != null;
+				clipboard.setPrimaryClip(clip);
+				Toasty.info(ctx, ctx.getString(R.string.copyIssueUrlToastMsg));
+				break;
+
 			case "newFile":
 				startActivity(new Intent(RepoDetailActivity.this, CreateFileActivity.class));
 				break;
@@ -420,18 +431,15 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 					AlertDialog.Builder pBuilder = new AlertDialog.Builder(ctx);
 					pBuilder.setTitle(R.string.pageTitleChooseBranch);
 
-					pBuilder.setSingleChoiceItems(branchesList.toArray(new String[0]), selectedBranch, new  DialogInterface.OnClickListener() {
+					pBuilder.setSingleChoiceItems(branchesList.toArray(new String[0]), selectedBranch, (dialogInterface, i) -> {
 
-						@Override
-						public void onClick(DialogInterface dialogInterface, int i) {
-
-							tinyDB.putString("repoBranch", branchesList.get(i));
-							if(getFragmentRefreshListenerFiles() != null) {
-								getFragmentRefreshListenerFiles().onRefresh(branchesList.get(i));
-							}
-							dialogInterface.dismiss();
+						tinyDB.putString("repoBranch", branchesList.get(i));
+						if(getFragmentRefreshListenerFiles() != null) {
+							getFragmentRefreshListenerFiles().onRefresh(branchesList.get(i));
 						}
+						dialogInterface.dismiss();
 					});
+					pBuilder.setNeutralButton(R.string.cancelButton, null);
 
 					pBuilder.create().show();
 
