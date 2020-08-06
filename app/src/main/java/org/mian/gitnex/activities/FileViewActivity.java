@@ -270,17 +270,17 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				}
 				else if(response.code() == 403) {
 
-					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+					Toasty.error(ctx, ctx.getString(R.string.authorizeError));
 
 				}
 				else if(response.code() == 404) {
 
-					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+					Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
 
 				}
 				else {
 
-					Toasty.info(ctx, getString(R.string.labelGeneralError));
+					Toasty.error(ctx, getString(R.string.labelGeneralError));
 
 				}
 
@@ -465,7 +465,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		}
 		else {
 
-			Toasty.error(ctx, getString(R.string.waitLoadingDownloadFile));
+			Toasty.warning(ctx, getString(R.string.waitLoadingDownloadFile));
 		}
 
 	}
@@ -491,7 +491,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				outputStream.write(dataAsBytes);
 				outputStream.close();
 
-				Toasty.info(ctx, getString(R.string.downloadFileSaved));
+				Toasty.success(ctx, getString(R.string.downloadFileSaved));
 
 			}
 			catch(IOException e) {
