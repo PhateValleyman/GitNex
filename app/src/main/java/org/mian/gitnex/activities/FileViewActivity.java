@@ -154,6 +154,27 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 	}
 
+	@Override
+	public void onResume() {
+
+		super.onResume();
+
+		String repoFullName = tinyDb.getString("repoFullName");
+		String repoBranch = tinyDb.getString("repoBranch");
+		String[] parts = repoFullName.split("/");
+		String repoOwner = parts[0];
+		String repoName = parts[1];
+		String instanceUrl = tinyDb.getString("instanceUrl");
+		String loginUid = tinyDb.getString("loginUid");
+		String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+
+		if(tinyDb.getBoolean("fileModified")) {
+			getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName, repoBranch);
+			tinyDb.putBoolean("fileModified", false);
+		}
+	}
+
+
 	private void getSingleFileContents(String instanceUrl, String token, final String owner, String repo, final String filename, String ref) {
 
 		Call<Files> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getSingleFileContents(token, owner, repo, filename, ref);

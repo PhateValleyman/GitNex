@@ -51,6 +51,7 @@ public class CreateFileActivity extends BaseActivity {
 	private int fileAction = 0; // 0 = create, 1 = delete, 2 = edit
     final Context ctx = this;
     private Context appCtx;
+    private TinyDB tinyDb;
 
     List<Branches> branchesList = new ArrayList<>();
 
@@ -64,12 +65,12 @@ public class CreateFileActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
+	    tinyDb = new TinyDB(appCtx);
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         String repoFullName = tinyDb.getString("repoFullName");
@@ -429,6 +430,7 @@ public class CreateFileActivity extends BaseActivity {
 					getIntent().removeExtra("filePath");
 					getIntent().removeExtra("fileSha");
 					getIntent().removeExtra("fileContents");
+					tinyDb.putBoolean("fileModified", true);
 					finish();
 
 				}
