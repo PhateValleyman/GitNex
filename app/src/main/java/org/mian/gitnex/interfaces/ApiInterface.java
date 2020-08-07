@@ -8,6 +8,7 @@ import org.mian.gitnex.models.Commits;
 import org.mian.gitnex.models.CreateIssue;
 import org.mian.gitnex.models.CreateLabel;
 import org.mian.gitnex.models.DeleteFile;
+import org.mian.gitnex.models.EditFile;
 import org.mian.gitnex.models.Emails;
 import org.mian.gitnex.models.ExploreRepositories;
 import org.mian.gitnex.models.Files;
@@ -269,6 +270,9 @@ public interface ApiInterface {
 
 	@HTTP(method = "DELETE", path = "repos/{owner}/{repo}/contents/{filepath}", hasBody = true) // delete a file
 	Call<JsonElement> deleteFile(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("filepath") String filepath, @Body DeleteFile jsonStr);
+
+	@PUT("repos/{owner}/{repo}/contents/{filepath}") // edit/update a file
+	Call<JsonElement> editFile(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("filepath") String filepath, @Body EditFile jsonStr);
 
     @GET("user/starred/{owner}/{repo}") // check star status of a repository
     Call<JsonElement> checkRepoStarStatus(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);

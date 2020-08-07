@@ -24,6 +24,7 @@ import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.DeleteFile;
+import org.mian.gitnex.models.EditFile;
 import org.mian.gitnex.models.NewFile;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +116,25 @@ public class CreateFileActivity extends BaseActivity {
 		    newFileContent.setText(fileContents);
 		    newFileContent.setEnabled(false);
 		    newFileContent.setFocusable(false);
+	    }
+
+	    if(getIntent().getStringExtra("filePath") != null && getIntent().getIntExtra("fileAction", 2) == 2) {
+
+		    fileNameHint.setVisibility(View.GONE);
+		    fileAction = getIntent().getIntExtra("fileAction", 2);
+
+		    filePath = getIntent().getStringExtra("filePath");
+		    String fileContents = getIntent().getStringExtra("fileContents");
+		    fileSha = getIntent().getStringExtra("fileSha");
+
+		    toolbarTitle.setText(getString(R.string.editFileText, filePath));
+
+		    newFileCreate.setText(R.string.editFile);
+		    newFileName.setText(filePath);
+		    newFileName.setEnabled(false);
+		    newFileName.setFocusable(false);
+
+		    newFileContent.setText(fileContents);
 	    }
 
         initCloseListener();
@@ -232,8 +252,8 @@ public class CreateFileActivity extends BaseActivity {
             }
             else if(fileAction == 2) {
 
-	            //editFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newFileName_,
-		         //   appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString());
+	            editFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, filePath,
+		           appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, currentBranch.toString(), fileSha);
             }
             else {
 
@@ -335,6 +355,77 @@ public class CreateFileActivity extends BaseActivity {
 
 					enableProcessButton();
 					Toasty.info(ctx, getString(R.string.deleteFileMessage, branchName));
+					getIntent().removeExtra("filePath");
+					getIntent().removeExtra("fileSha");
+					getIntent().removeExtra("fileContents");
+					finish();
+
+				}
+				else if(response.code() == 401) {
+
+					enableProcessButton();
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
+						getResources().getString(R.string.alertDialogTokenRevokedMessage),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+
+				}
+				else {
+
+					if(response.code() == 404) {
+
+						enableProcessButton();
+						Toasty.info(ctx, getString(R.string.apiNotFound));
+					}
+					else {
+
+						enableProcessButton();
+						Toasty.info(ctx, getString(R.string.genericError));
+					}
+
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+				enableProcessButton();
+			}
+		});
+
+	}
+
+	private void editFile(final String instanceUrl, final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch, String fileSha) {
+
+		String branchName;
+		EditFile editFileJsonStr;
+		if(currentBranch.equals("No branch")) {
+
+			branchName = fileBranchName;
+			editFileJsonStr = new EditFile("", fileCommitMessage, fileBranchName, fileSha, fileContent);
+		}
+		else {
+
+			branchName = currentBranch;
+			editFileJsonStr = new EditFile(currentBranch, fileCommitMessage, "", fileSha, fileContent);
+		}
+
+		Call<JsonElement> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.editFile(token, repoOwner, repoName, fileName, editFileJsonStr);
+
+		call.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+				if(response.code() == 200) {
+
+					enableProcessButton();
+					Toasty.info(ctx, getString(R.string.editFileMessage, branchName));
 					getIntent().removeExtra("filePath");
 					getIntent().removeExtra("fileSha");
 					getIntent().removeExtra("fileContents");
