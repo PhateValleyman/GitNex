@@ -27,6 +27,7 @@
         <item name="dividerColor">@color/dividerColorDark</item>
         <item name="bottomSheetDialogTheme">@style/AppThemeDarkBottomSheetDialog</item>
         <item name="searchViewStyle">@style/AppSearchViewStyle</item>
+        <item name="progressIndicatorColor">@color/darkGreen</item>
     </style>
     <!-- Dark theme - default -->
 
@@ -56,6 +57,7 @@
         <item name="dividerColor">@color/lightThemeDividerColor</item>
         <item name="bottomSheetDialogTheme">@style/AppThemeLightBottomSheetDialog</item>
         <item name="searchViewStyle">@style/AppSearchViewStyle</item>
+        <item name="progressIndicatorColor">@color/darkGreen</item>
     </style>
     <!-- Light theme -->
 
