@@ -22,6 +22,7 @@ import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.FileDiffView;
 import java.io.IOException;
 import java.util.List;
+import io.mikael.urlbuilder.UrlBuilder;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,8 +83,11 @@ public class FileDiffActivity extends BaseActivity {
 
 		// fallback for old gitea instances
 		if(new Version(tinyDb.getString("giteaVersion")).less("1.13.0")) {
+
 			apiCall = false;
-			instanceUrl = tinyDb.getString("instanceUrlWithProtocol");
+			instanceUrl = UrlBuilder.fromString(tinyDb.getString("instanceUrl"))
+				.withPath("/")
+				.toString();
 		}
 
 		getPullDiffContent(instanceUrl, repoOwner, repoName, pullIndex, instanceToken, apiCall);
