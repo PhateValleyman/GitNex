@@ -18,15 +18,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.adapters.DraftsAdapter;
+import org.mian.gitnex.adapters.UserAccountsNavAdapter;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.database.api.UserAccountsApi;
+import org.mian.gitnex.database.models.DraftWithRepository;
+import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.fragments.AboutFragment;
 import org.mian.gitnex.fragments.AdministrationFragment;
 import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
@@ -51,6 +58,8 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.GiteaVersion;
 import org.mian.gitnex.models.UserInfo;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
@@ -217,6 +226,26 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				userAvatar = hView.findViewById(R.id.userAvatar);
 				userAvatarBackground = hView.findViewById(R.id.userAvatarBackground);
 				navHeaderFrame = hView.findViewById(R.id.navHeaderFrame);
+
+				List<UserAccount> userAccountsList;
+				userAccountsList = new ArrayList<>();
+				UserAccountsApi userAccountsApi;
+				userAccountsApi = new UserAccountsApi(ctx);
+
+				RecyclerView navRecyclerViewUserAccounts = hView.findViewById(R.id.navRecyclerViewUserAccounts);
+				UserAccountsNavAdapter adapterUserAccounts;
+
+				adapterUserAccounts = new UserAccountsNavAdapter(ctx, userAccountsList, drawer);
+
+				userAccountsApi.getAllAccounts().observe((AppCompatActivity) ctx, userAccounts -> {
+
+					if(userAccounts.size() > 0) {
+
+						userAccountsList.addAll(userAccounts);
+						navRecyclerViewUserAccounts.setAdapter(adapterUserAccounts);
+					}
+
+				});
 
 				userEmail.setTypeface(myTypeface);
 				userFullName.setTypeface(myTypeface);
