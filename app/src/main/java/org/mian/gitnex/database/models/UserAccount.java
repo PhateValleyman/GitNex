@@ -18,6 +18,7 @@ public class UserAccount implements Serializable {
     @Nullable
     private String accountName;
     private String instanceUrl;
+    private String instanceUrlWithProtocol;
     private String userName;
     private String token;
     @Nullable
@@ -48,7 +49,15 @@ public class UserAccount implements Serializable {
         this.instanceUrl = instanceUrl;
     }
 
-    public String getUserName() {
+	public String getInstanceUrlWithProtocol() {
+		return instanceUrlWithProtocol;
+	}
+
+	public void setInstanceUrlWithProtocol(String instanceUrlWithProtocol) {
+		this.instanceUrlWithProtocol = instanceUrlWithProtocol;
+	}
+
+	public String getUserName() {
         return userName;
     }
 

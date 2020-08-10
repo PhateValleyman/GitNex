@@ -61,6 +61,9 @@ public class LoginActivity extends BaseActivity {
 	private RadioGroup loginMethod;
 	private String device_id = "token";
 
+	private URI instanceUrlWithProtocol;
+	private URI instanceUrl;
+
 	@Override
 	protected int getLayoutResourceId() {
 
@@ -165,12 +168,14 @@ public class LoginActivity extends BaseActivity {
 			Protocol protocol = (Protocol) protocolSpinner.getSelectedItem();
 			LoginType loginType = (loginMethod.getCheckedRadioButtonId() == R.id.loginUsernamePassword) ? LoginType.BASIC : LoginType.TOKEN;
 
-			URI rawInstanceUrl = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET.getText().toString(), "http")).toUri();
+			URI instanceUrlRaw = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET.getText().toString(), "http")).toUri();
 
-			URI instanceUrlWithProtocol = UrlBuilder.fromUri(rawInstanceUrl).withPath(PathsHelper.join(rawInstanceUrl.getPath()))
+			instanceUrlWithProtocol = UrlBuilder.fromUri(instanceUrl)
+				.withPath(PathsHelper.join(instanceUrlRaw.getPath()))
 				.withScheme(protocol.name().toLowerCase()).toUri();
 
-			URI instanceUrl = UrlBuilder.fromUri(instanceUrlWithProtocol).withPath(PathsHelper.join(instanceUrlWithProtocol.getPath(), "/api/v1/"))
+			instanceUrl = UrlBuilder.fromUri(instanceUrlWithProtocol)
+				.withPath(PathsHelper.join(instanceUrlWithProtocol.getPath(), "/api/v1/"))
 				.toUri();
 
 			tinyDB.putString("loginType", loginType.name().toLowerCase());
@@ -196,7 +201,7 @@ public class LoginActivity extends BaseActivity {
 
 				}
 
-				if(rawInstanceUrl.getUserInfo() != null) {
+				if(instanceUrlRaw.getUserInfo() != null) {
 
 					tinyDB.putString("basicAuthPassword", loginPass);
 					tinyDB.putBoolean("basicAuthFlag", true);
@@ -222,7 +227,7 @@ public class LoginActivity extends BaseActivity {
 				int loginOTP = (otpCode.length() > 0) ? Integer.parseInt(otpCode.getText().toString().trim()) : 0;
 				tinyDB.putString("loginUid", loginUid);
 
-				versionCheck(instanceUrl.toString(), loginUid, loginPass, loginOTP, loginToken, loginType);
+				versionCheck(loginUid, loginPass, loginOTP, loginToken, loginType);
 
 			}
 			else {
@@ -235,7 +240,7 @@ public class LoginActivity extends BaseActivity {
 
 				}
 
-				versionCheck(instanceUrl.toString(), loginUid, loginPass, 123, loginToken, loginType);
+				versionCheck(loginUid, loginPass, 123, loginToken, loginType);
 
 			}
 
@@ -249,22 +254,22 @@ public class LoginActivity extends BaseActivity {
 		}
 	}
 
-	private void versionCheck(final String instanceUrl, final String loginUid, final String loginPass, final int loginOTP, final String loginToken,
+	private void versionCheck(final String loginUid, final String loginPass, final int loginOTP, final String loginToken,
 		final LoginType loginType) {
 
 		Call<GiteaVersion> callVersion;
 
 		if(!loginToken.equals("")) {
 
-			callVersion = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithToken(loginToken);
+			callVersion = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().getGiteaVersionWithToken(loginToken);
 		}
 		else {
 
 			String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
 
 			callVersion =
-				(loginOTP != 0) ? RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithOTP(credential, loginOTP) :
-					RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithBasic(credential);
+				(loginOTP != 0) ? RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().getGiteaVersionWithOTP(credential, loginOTP) :
+					RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().getGiteaVersionWithBasic(credential);
 
 		}
 
@@ -305,7 +310,7 @@ public class LoginActivity extends BaseActivity {
 						alertDialogBuilder.setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
 
 							dialog.dismiss();
-							login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken);
+							login(loginType, loginUid, loginPass, loginOTP, loginToken);
 						});
 
 						alertDialogBuilder.create().show();
@@ -313,32 +318,32 @@ public class LoginActivity extends BaseActivity {
 					}
 					else if(gitea_version.lessOrEqual(getString(R.string.versionHigh))) {
 
-						login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken);
+						login(loginType, loginUid, loginPass, loginOTP, loginToken);
 					}
 					else {
 
 						Toasty.warning(ctx, getResources().getString(R.string.versionUnsupportedNew));
-						login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken);
+						login(loginType, loginUid, loginPass, loginOTP, loginToken);
 
 					}
 
 				}
 				else if(responseVersion.code() == 403) {
 
-					login(loginType, instanceUrl, loginUid, loginPass, loginOTP, loginToken);
+					login(loginType, loginUid, loginPass, loginOTP, loginToken);
 				}
 			}
 
-			private void login(LoginType loginType, String instanceUrl, String loginUid, String loginPass, int loginOTP, String loginToken) {
+			private void login(LoginType loginType, String loginUid, String loginPass, int loginOTP, String loginToken) {
 
 				// ToDo: before store/create token: get UserInfo to check DB/AccountManager if there already exist a token
 				// the setup methods then can better handle all different cases
 
 				if(loginType == LoginType.BASIC) {
-					setup(instanceUrl, loginUid, loginPass, loginOTP);
+					setup(loginUid, loginPass, loginOTP);
 				}
 				else if(loginType == LoginType.TOKEN) { // Token
-					setupUsingExistingToken(instanceUrl, loginToken);
+					setupUsingExistingToken(loginToken);
 				}
 			}
 
@@ -352,9 +357,9 @@ public class LoginActivity extends BaseActivity {
 		});
 	}
 
-	private void setupUsingExistingToken(String instanceUrl, final String loginToken) {
+	private void setupUsingExistingToken(String loginToken) {
 
-		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserInfo("token " + loginToken);
+		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().getUserInfo("token " + loginToken);
 
 		call.enqueue(new Callback<UserInfo>() {
 
@@ -380,7 +385,7 @@ public class LoginActivity extends BaseActivity {
 
 						if(checkAccount == 0) {
 
-							accountId = userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
+							accountId = userAccountsApi.insertNewAccount(accountName, instanceUrl.toString(), instanceUrlWithProtocol.toString(), userDetails.getUsername(), loginToken, "");
 							tinyDB.putInt("currentActiveAccountId", (int) accountId);
 						}
 						else {
@@ -420,7 +425,7 @@ public class LoginActivity extends BaseActivity {
 
 	}
 
-	private void setup(final String instanceUrl, final String loginUid, final String loginPass, final int loginOTP) {
+	private void setup(final String loginUid, final String loginPass, final int loginOTP) {
 
 		final String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
 		final String tokenName = "gitnex-app-" + device_id;
@@ -428,11 +433,11 @@ public class LoginActivity extends BaseActivity {
 		Call<List<UserTokens>> call;
 		if(loginOTP != 0) {
 
-			call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserTokensWithOTP(credential, loginOTP, loginUid);
+			call = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().getUserTokensWithOTP(credential, loginOTP, loginUid);
 		}
 		else {
 
-			call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserTokens(credential, loginUid);
+			call = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().getUserTokens(credential, loginUid);
 		}
 
 		call.enqueue(new Callback<List<UserTokens>>() {
@@ -452,15 +457,17 @@ public class LoginActivity extends BaseActivity {
 							// -> since it looks like GitNex forgot the secret we have to delete it first
 
 							Call<Void> delcall;
+
 							if(loginOTP != 0) {
 
-								delcall = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface()
+								delcall = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface()
 									.deleteTokenWithOTP(credential, loginOTP, loginUid, t.getId());
 							}
 							else {
 
-								delcall = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().deleteToken(credential, loginUid, t.getId());
+								delcall = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().deleteToken(credential, loginUid, t.getId());
 							}
+
 							delcall.enqueue(new Callback<Void>() {
 
 								@Override
@@ -468,7 +475,7 @@ public class LoginActivity extends BaseActivity {
 
 									if(response.code() == 204) {
 
-										setupToken(instanceUrl, loginUid, loginPass, loginOTP, tokenName);
+										setupToken(loginUid, loginPass, loginOTP, tokenName);
 									}
 									else {
 
@@ -491,7 +498,7 @@ public class LoginActivity extends BaseActivity {
 						}
 					}
 
-					setupToken(instanceUrl, loginUid, loginPass, loginOTP, tokenName);
+					setupToken(loginUid, loginPass, loginOTP, tokenName);
 				}
 				else {
 
@@ -513,7 +520,7 @@ public class LoginActivity extends BaseActivity {
 
 	}
 
-	private void setupToken(final String instanceUrl, final String loginUid, final String loginPass, final int loginOTP, final String tokenName) {
+	private void setupToken(final String loginUid, final String loginPass, final int loginOTP, final String tokenName) {
 
 		final String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
 
@@ -522,12 +529,12 @@ public class LoginActivity extends BaseActivity {
 
 		if(loginOTP != 0) {
 
-			callCreateToken = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface()
+			callCreateToken = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface()
 				.createNewTokenWithOTP(credential, loginOTP, loginUid, createUserToken);
 		}
 		else {
 
-			callCreateToken = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().createNewToken(credential, loginUid, createUserToken);
+			callCreateToken = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().createNewToken(credential, loginUid, createUserToken);
 		}
 
 		callCreateToken.enqueue(new Callback<UserTokens>() {
@@ -542,7 +549,7 @@ public class LoginActivity extends BaseActivity {
 
 					if(!newToken.getSha1().equals("")) {
 
-						Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface()
+						Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface()
 							.getUserInfo("token " + newToken.getSha1());
 
 						call.enqueue(new Callback<UserInfo>() {
@@ -570,7 +577,7 @@ public class LoginActivity extends BaseActivity {
 
 										if(checkAccount == 0) {
 
-											accountId = userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
+											accountId = userAccountsApi.insertNewAccount(accountName, instanceUrl.toString(), instanceUrlWithProtocol.toString(), userDetails.getUsername(), newToken.getSha1(), "");
 											tinyDB.putInt("currentActiveAccountId", (int) accountId);
 										}
 										else {

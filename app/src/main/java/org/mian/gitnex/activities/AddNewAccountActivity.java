@@ -32,14 +32,19 @@ import retrofit2.Callback;
 
 public class AddNewAccountActivity extends BaseActivity {
 
-	final Context ctx = this;
-	private Context appCtx;
-	private TinyDB tinyDB;
+	private enum Protocol {HTTPS, HTTP}
 
+	private Context ctx = this;
+	private Context appCtx;
+
+	private TinyDB tinyDB;
 	private View.OnClickListener onClickListener;
+
 	private ActivityAddNewAccountBinding viewBinding;
 
-	private enum Protocol {HTTPS, HTTP}
+	private URI instanceUrlWithProtocol;
+	private URI instanceUrl;
+
 
 	@Override
 	protected int getLayoutResourceId(){
@@ -66,7 +71,6 @@ public class AddNewAccountActivity extends BaseActivity {
 		adapterProtocols.setDropDownViewResource(R.layout.spinner_dropdown_item);
 
 		viewBinding.protocolSpinner.setAdapter(adapterProtocols);
-
 		viewBinding.addNewAccount.setOnClickListener(login  -> {
 
 			boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
@@ -104,15 +108,17 @@ public class AddNewAccountActivity extends BaseActivity {
 				return;
 			}
 
-			URI rawInstanceUrl = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET, "http")).toUri();
+			URI instanceUrlRaw = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET, "http")).toUri();
 
-			URI instanceUrlWithProtocol = UrlBuilder.fromUri(rawInstanceUrl).withPath(PathsHelper.join(rawInstanceUrl.getPath()))
+			instanceUrlWithProtocol = UrlBuilder.fromUri(instanceUrlRaw)
+				.withPath(PathsHelper.join(instanceUrlRaw.getPath()))
 				.withScheme(protocol.name().toLowerCase()).toUri();
 
-			URI instanceUrl = UrlBuilder.fromUri(instanceUrlWithProtocol).withPath(PathsHelper.join(instanceUrlWithProtocol.getPath(), "/api/v1/"))
+			instanceUrl = UrlBuilder.fromUri(instanceUrlWithProtocol)
+				.withPath(PathsHelper.join(instanceUrlWithProtocol.getPath(), "/api/v1/"))
 				.toUri();
 
-			versionCheck(instanceUrl.toString(), loginToken);
+			versionCheck(loginToken);
 
 		}
 		catch(Exception e) {
@@ -120,14 +126,13 @@ public class AddNewAccountActivity extends BaseActivity {
 			Log.e("onFailure-login", e.toString());
 			Toasty.error(ctx, getResources().getString(R.string.malformedUrl));
 		}
-
 	}
 
-	private void versionCheck(final String instanceUrl, final String loginToken) {
+	private void versionCheck(String loginToken) {
 
 		Call<GiteaVersion> callVersion;
 
-		callVersion = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithToken(loginToken);
+		callVersion = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().getGiteaVersionWithToken(loginToken);
 
 		callVersion.enqueue(new Callback<GiteaVersion>() {
 
@@ -159,13 +164,12 @@ public class AddNewAccountActivity extends BaseActivity {
 						alertDialogBuilder.setNegativeButton(getString(R.string.cancelButton), (dialog, which) -> {
 
 							dialog.dismiss();
-							//enableProcessButton();
 						});
 
 						alertDialogBuilder.setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
 
 							dialog.dismiss();
-							login(instanceUrl, loginToken);
+							login(loginToken);
 						});
 
 						alertDialogBuilder.create().show();
@@ -173,26 +177,25 @@ public class AddNewAccountActivity extends BaseActivity {
 					}
 					else if(giteaVersion.lessOrEqual(getString(R.string.versionHigh))) {
 
-						login(instanceUrl, loginToken);
+						login(loginToken);
 					}
 					else {
 
 						Toasty.warning(ctx, getResources().getString(R.string.versionUnsupportedNew));
-						login(instanceUrl, loginToken);
+						login(loginToken);
 
 					}
 
 				}
 				else if(responseVersion.code() == 403) {
 
-					login(instanceUrl, loginToken);
+					login(loginToken);
 				}
 			}
 
-			private void login(String instanceUrl, String loginToken) {
+			private void login(String loginToken) {
 
-				setupNewAccountWithToken(instanceUrl, loginToken);
-
+				setupNewAccountWithToken(loginToken);
 			}
 
 			@Override
@@ -204,9 +207,9 @@ public class AddNewAccountActivity extends BaseActivity {
 		});
 	}
 
-	private void setupNewAccountWithToken(String instanceUrl, final String loginToken) {
+	private void setupNewAccountWithToken(String loginToken) {
 
-		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserInfo("token " + loginToken);
+		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl.toString(), ctx).getApiInterface().getUserInfo("token " + loginToken);
 
 		call.enqueue(new Callback<UserInfo>() {
 
@@ -227,9 +230,10 @@ public class AddNewAccountActivity extends BaseActivity {
 
 						if(checkAccount == 0) {
 
-							userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
+							userAccountsApi.insertNewAccount(accountName, instanceUrl.toString(), instanceUrlWithProtocol.toString(), userDetails.getUsername(), loginToken, "");
 							Toasty.success(ctx, getResources().getString(R.string.accountAddedMessage));
 							finish();
+
 						}
 						else {
 

@@ -27,11 +27,13 @@ public class UserAccountsApi {
 		userAccountsDao = db.userAccountsDao();
 	}
 
-	public long insertNewAccount(String accountName, String instanceUrl, String userName, String token, String serverVersion) {
+	public long insertNewAccount(String accountName, String instanceUrl, String instanceUrlWithProtocol, String userName, String token, String serverVersion) {
 
 		UserAccount userAccount = new UserAccount();
+
 		userAccount.setAccountName(accountName);
 		userAccount.setInstanceUrl(instanceUrl);
+		userAccount.setInstanceUrlWithProtocol(instanceUrlWithProtocol);
 		userAccount.setUserName(userName);
 		userAccount.setToken(token);
 		userAccount.setServerVersion(serverVersion);

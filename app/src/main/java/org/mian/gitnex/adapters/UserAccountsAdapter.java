@@ -85,6 +85,15 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 					tinyDB.putString("userLogin", userAccount.getUserName());
 					tinyDB.putString(userAccount.getUserName() + "-token", userAccount.getToken());
 					tinyDB.putString("instanceUrl", userAccount.getInstanceUrl());
+
+					if(userAccount.getInstanceUrlWithProtocol() != null) {
+
+						tinyDB.putString("instanceUrlWithProtocol", userAccount.getInstanceUrlWithProtocol());
+					} else {
+
+						tinyDB.putString("instanceUrlWithProtocol", userAccount.getInstanceUrl().substring(0, userAccount.getInstanceUrl().indexOf("/api/v1/")));
+					}
+
 					tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
 
 					Toasty.success(mCtx,  mCtx.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
