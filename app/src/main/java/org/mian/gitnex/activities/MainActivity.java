@@ -27,12 +27,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.adapters.DraftsAdapter;
 import org.mian.gitnex.adapters.UserAccountsNavAdapter;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.UserAccountsApi;
-import org.mian.gitnex.database.models.DraftWithRepository;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.fragments.AboutFragment;
 import org.mian.gitnex.fragments.AdministrationFragment;
@@ -235,7 +233,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				RecyclerView navRecyclerViewUserAccounts = hView.findViewById(R.id.navRecyclerViewUserAccounts);
 				UserAccountsNavAdapter adapterUserAccounts;
 
-				adapterUserAccounts = new UserAccountsNavAdapter(ctx, userAccountsList, drawer);
+				adapterUserAccounts = new UserAccountsNavAdapter(ctx, userAccountsList, drawer, toolbarTitle);
 
 				userAccountsApi.getAllAccounts().observe((AppCompatActivity) ctx, userAccounts -> {
 
@@ -312,14 +310,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			@Override
 			public void onDrawerStateChanged(int newState) {}
 
-		});
-
-		ImageView userAccounts = hView.findViewById(R.id.userAccounts);
-		userAccounts.setOnClickListener(v -> {
-
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleUserAccounts));
-			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserAccountsFragment()).commit();
-			drawer.closeDrawers();
 		});
 
 		toggle.syncState();

@@ -1,20 +1,29 @@
 package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.fragments.UserAccountsFragment;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
 import io.mikael.urlbuilder.UrlBuilder;
 
@@ -27,15 +36,17 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 	private static DrawerLayout drawer;
 	private List<UserAccount> userAccountsList;
 	private Context mCtx;
+	private TextView toolbarTitle;
 
-	public UserAccountsNavAdapter(Context mCtx, List<UserAccount> userAccountsListMain, DrawerLayout drawerLayout) {
+	public UserAccountsNavAdapter(Context mCtx, List<UserAccount> userAccountsListMain, DrawerLayout drawerLayout, TextView toolbarTitle) {
 
 		this.mCtx = mCtx;
 		this.userAccountsList = userAccountsListMain;
 		drawer = drawerLayout;
+		this.toolbarTitle = toolbarTitle;
 	}
 
-	static class UserAccountsViewHolder extends RecyclerView.ViewHolder {
+	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
 
 		private ImageView userAccountAvatar;
 
@@ -47,12 +58,8 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 			itemView.setOnClickListener(item -> {
 
-
-				AppCompatActivity activity = (AppCompatActivity) itemView.getContext();
-				activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserAccountsFragment()).commit();
+				customDialogUserAccountsList(userAccountsList);
 				drawer.closeDrawers();
-
-
 			});
 
 		}
@@ -85,6 +92,56 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 	public int getItemCount() {
 
 		return userAccountsList.size();
+	}
+
+	private void customDialogUserAccountsList(List<UserAccount> allAccountsList) {
+
+		TinyDB tinyDB = new TinyDB(mCtx);
+		Dialog dialog = new Dialog(mCtx);
+		dialog.setContentView(R.layout.custom_user_accounts_dialog);
+
+		ListView listView = dialog.findViewById(R.id.accountsList);
+		TextView manageAccounts = dialog.findViewById(R.id.manageAccounts);
+
+		if (dialog.getWindow() != null) {
+			dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		}
+
+		manageAccounts.setOnClickListener(item -> {
+
+			toolbarTitle.setText(mCtx.getResources().getString(R.string.pageTitleUserAccounts));
+			AppCompatActivity activity = (AppCompatActivity) mCtx;
+			activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserAccountsFragment()).commit();
+			dialog.dismiss();
+		});
+
+		UserAccountsListDialogAdapter arrayAdapter = new UserAccountsListDialogAdapter(mCtx, R.layout.custom_user_accounts_list, allAccountsList);
+		listView.setAdapter(arrayAdapter);
+
+		listView.setOnItemClickListener((adapterView, view, which, l) -> {
+
+			String accountNameSwitch = allAccountsList.get(which).getAccountName();
+			UserAccountsApi userAccountsApi = new UserAccountsApi(mCtx);
+			UserAccount userAccount = userAccountsApi.getAccountData(accountNameSwitch);
+
+			if(tinyDB.getInt("currentActiveAccountId") != userAccount.getAccountId()) {
+
+				String url = UrlBuilder.fromString(userAccount.getInstanceUrl())
+					.withPath("/")
+					.toString();
+
+				tinyDB.putString("loginUid", userAccount.getUserName());
+				tinyDB.putString("userLogin", userAccount.getUserName());
+				tinyDB.putString(userAccount.getUserName() + "-token", userAccount.getToken());
+				tinyDB.putString("instanceUrl", userAccount.getInstanceUrl());
+				tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
+
+				Toasty.success(mCtx,  mCtx.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
+				((Activity) mCtx).recreate();
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
 	}
 
 }

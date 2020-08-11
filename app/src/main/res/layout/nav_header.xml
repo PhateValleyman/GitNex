@@ -100,23 +100,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".18"
-                    android:orientation="vertical"
-                    android:layout_marginTop="15dp">
-
-                    <ImageView
-                        android:id="@+id/userAccounts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/shape_circle_white"
-                        android:src="@drawable/ic_account_circle"
-                        android:contentDescription="@string/generalImgContentText"/>
-
-                </LinearLayout>
-
             </LinearLayout>
 
             <View
