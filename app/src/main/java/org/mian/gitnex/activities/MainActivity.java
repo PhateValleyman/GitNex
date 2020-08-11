@@ -319,6 +319,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		if(savedInstanceState == null) {
 
+			if(!new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.3")) {
+
+				if(tinyDb.getInt("homeScreenId") == 7) {
+
+					tinyDb.putInt("homeScreenId", 0);
+				}
+			}
+
 			switch(tinyDb.getInt("homeScreenId")) {
 
 				case 1:
