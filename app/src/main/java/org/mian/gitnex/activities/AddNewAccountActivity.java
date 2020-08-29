@@ -137,20 +137,15 @@ public class AddNewAccountActivity extends BaseActivity {
 				if(responseVersion.code() == 200) {
 
 					GiteaVersion version = responseVersion.body();
-					Version giteaVersion;
 
 					assert version != null;
-
-					tinyDB.putString("giteaVersion", version.getVersion());
-
-					try {
-						giteaVersion = new Version(version.getVersion());
-					}
-					catch(Exception e) {
-
+					if(!Version.valid(version.getVersion())) {
 						Toasty.error(ctx, getResources().getString(R.string.versionUnknown));
 						return;
 					}
+
+					tinyDB.putString("giteaVersion", version.getVersion());
+					Version giteaVersion = new Version(version.getVersion());
 
 					if(giteaVersion.less(getString(R.string.versionLow))) {
 
