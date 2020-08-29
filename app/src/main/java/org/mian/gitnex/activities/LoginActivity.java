@@ -567,7 +567,8 @@ public class LoginActivity extends BaseActivity {
 
 										if(checkAccount == 0) {
 
-											accountId = userAccountsApi.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
+											accountId = userAccountsApi
+												.insertNewAccount(accountName, instanceUrl, userDetails.getUsername(), newToken.getSha1(), "");
 											tinyDB.putInt("currentActiveAccountId", (int) accountId);
 										}
 										else {
