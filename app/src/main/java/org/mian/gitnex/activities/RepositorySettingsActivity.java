@@ -1,10 +1,16 @@
 package org.mian.gitnex.activities;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.databinding.ActivityRepositorySettingsBinding;
+import org.mian.gitnex.databinding.CustomRepositoryEditPropertiesDialogBinding;
 import org.mian.gitnex.helpers.TinyDB;
 
 /**
@@ -13,9 +19,18 @@ import org.mian.gitnex.helpers.TinyDB;
 
 public class RepositorySettingsActivity extends BaseActivity {
 
+	private ActivityRepositorySettingsBinding viewBinding;
 	private View.OnClickListener onClickListener;
-	final Context ctx = this;
+	private Context ctx = this;
 	private Context appCtx;
+	private TinyDB tinyDb;
+
+	private String instanceUrl;
+	private String loginUid;
+	private String instanceToken;
+
+	private String repositoryOwner;
+	private String repositoryName;
 
 	@Override
 	protected int getLayoutResourceId(){
@@ -27,18 +42,50 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
+		tinyDb = new TinyDB(appCtx);
 
-		TinyDB tinyDb = new TinyDB(appCtx);
-		final String instanceUrl = tinyDb.getString("instanceUrl");
-		final String loginUid = tinyDb.getString("loginUid");
+		viewBinding = ActivityRepositorySettingsBinding.inflate(getLayoutInflater());
+		View view = viewBinding.getRoot();
+		setContentView(view);
+
+		instanceUrl = tinyDb.getString("instanceUrl");
+		loginUid = tinyDb.getString("loginUid");
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
-		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		repositoryOwner = parts[0];
+		repositoryName = parts[1];
+		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		ImageView closeActivity = findViewById(R.id.close);
 
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
+
+		viewBinding.editProperties.setOnClickListener(editProperties -> {
+			showRepositoryProperties();
+		});
+
+	}
+
+	private void showRepositoryProperties() {
+
+		Dialog dialog = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+
+		if (dialog.getWindow() != null) {
+			dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		}
+
+		CustomRepositoryEditPropertiesDialogBinding propBinding = CustomRepositoryEditPropertiesDialogBinding
+			.inflate(LayoutInflater.from(ctx));
+
+		View view = propBinding.getRoot();
+		dialog.setContentView(view);
+
+		propBinding.cancel.setOnClickListener(editProperties -> {
+			dialog.dismiss();
+		});
+
+		dialog.show();
 
 	}
 
