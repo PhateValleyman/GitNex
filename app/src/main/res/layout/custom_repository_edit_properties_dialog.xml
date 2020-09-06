@@ -7,9 +7,18 @@
     android:background="@drawable/shape_custom_dialog"
     android:orientation="vertical">
 
-    <androidx.core.widget.NestedScrollView
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progressBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        app:indicatorColor="?attr/progressIndicatorColor" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/mainView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"

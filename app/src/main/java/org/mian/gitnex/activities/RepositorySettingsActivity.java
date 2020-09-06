@@ -103,6 +103,9 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 				UserRepositories repoInfo = response.body();
 
+				propBinding.progressBar.setVisibility(View.GONE);
+				propBinding.mainView.setVisibility(View.VISIBLE);
+
 				if (response.code() == 200) {
 
 					assert repoInfo != null;
@@ -116,11 +119,29 @@ public class RepositorySettingsActivity extends BaseActivity {
 					if(repoInfo.getHas_issues()) {
 						propBinding.repoExternalIssueTrackerLayout.setVisibility(View.GONE);
 					}
+					propBinding.repoEnableIssues.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+						if (isChecked) {
+							propBinding.repoExternalIssueTrackerLayout.setVisibility(View.GONE);
+						}
+						else {
+							propBinding.repoExternalIssueTrackerLayout.setVisibility(View.VISIBLE);
+						}
+					});
 
 					propBinding.repoEnableWiki.setChecked(repoInfo.isHas_wiki());
 					if(repoInfo.isHas_wiki()) {
 						propBinding.repoExternalWikiLayout.setVisibility(View.GONE);
 					}
+					propBinding.repoEnableWiki.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+						if (isChecked) {
+							propBinding.repoExternalWikiLayout.setVisibility(View.GONE);
+						}
+						else {
+							propBinding.repoExternalWikiLayout.setVisibility(View.VISIBLE);
+						}
+					});
 
 					propBinding.repoEnablePr.setChecked(repoInfo.isHas_pull_requests());
 					propBinding.repoEnableTimer.setChecked(repoInfo.getInternal_tracker().isEnable_time_tracker());
@@ -144,7 +165,26 @@ public class RepositorySettingsActivity extends BaseActivity {
 			}
 		});
 
+		propBinding.save.setOnClickListener(saveProperties -> saveRepositoryProperties(String.valueOf(propBinding.repoName.getText()),
+			String.valueOf(propBinding.repoWebsite.getText()),
+			String.valueOf(propBinding.repoDescription.getText()),
+			String.valueOf(propBinding.repoExternalIssueTracker.getText()),
+			String.valueOf(propBinding.repoExternalWiki.getText()),
+			propBinding.repoPrivate.isChecked(), propBinding.repoAsTemplate.isChecked(),
+			propBinding.repoEnableIssues.isChecked(), propBinding.repoEnableWiki.isChecked(),
+			propBinding.repoEnablePr.isChecked(), propBinding.repoEnableTimer.isChecked(),
+			propBinding.repoEnableMerge.isChecked(), propBinding.repoEnableRebase.isChecked(),
+			propBinding.repoEnableSquash.isChecked(), propBinding.repoEnableForceMerge.isChecked()));
+
 		dialog.show();
+
+	}
+
+	private void saveRepositoryProperties(String repoName, String repoWebsite, String repoDescription, String repoIssueUrl, String repoWikiUrl,
+		boolean repoPrivate, boolean repoAsTemplate, boolean repoEnableIssues, boolean repoEnableWiki,
+		boolean repoEnablePr, boolean repoEnableTimer, boolean repoEnableMerge, boolean repoEnableRebase,
+		boolean repoEnableSquash, boolean repoEnableForceMerge) {
+
 
 	}
 
