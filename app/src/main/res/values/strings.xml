@@ -663,7 +663,6 @@
 
     <string name="repoSettingsTitle">Repository Settings</string>
     <string name="repoSettingsEditProperties">Edit Properties</string>
-    <string name="repoSettingsMigrate">Migrate Repository</string>
     <string name="repoSettingsDelete">Delete Repository</string>
     <string name="repoSettingsDeleteHint">Be careful, this operation CANNOT be undone!</string>
     <string name="repoPropertiesTemplate">Set as Template</string>

@@ -68,23 +68,6 @@
                 android:layout_height="1dp"
                 android:background="?attr/dividerColor" />
 
-            <TextView
-                android:id="@+id/migrateRepository"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/repoSettingsMigrate"
-                android:drawableStart="@drawable/ic_migrate"
-                android:drawablePadding="32dp"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:padding="16dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?attr/dividerColor" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="vertical"
