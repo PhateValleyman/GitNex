@@ -139,8 +139,8 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 					finish();
 					RepositoriesApi.deleteRepository((int) tinyDb.getLong("repositoryId", 0));
-					Intent myIntent = new Intent(RepositorySettingsActivity.this, MainActivity.class);
-					RepositorySettingsActivity.this.startActivity(myIntent);
+					Intent intent = new Intent(RepositorySettingsActivity.this, MainActivity.class);
+					RepositorySettingsActivity.this.startActivity(intent);
 				}
 				else {
 
@@ -290,8 +290,8 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 						finish();
 						RepositoriesApi.updateRepositoryOwnerAndName(repositoryOwner, repoName, (int) tinyDb.getLong("repositoryId", 0));
-						Intent myIntent = new Intent(RepositorySettingsActivity.this, MainActivity.class);
-						RepositorySettingsActivity.this.startActivity(myIntent);
+						Intent intent = new Intent(RepositorySettingsActivity.this, MainActivity.class);
+						RepositorySettingsActivity.this.startActivity(intent);
 
 					}
 				}
