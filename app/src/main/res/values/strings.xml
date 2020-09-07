@@ -665,7 +665,7 @@
     <string name="repoSettingsEditProperties">Edit Properties</string>
     <string name="repoSettingsMigrate">Migrate Repository</string>
     <string name="repoSettingsDelete">Delete Repository</string>
-    <string name="repoSettingsDeleteHint">Be careful, this action cannot be undone!</string>
+    <string name="repoSettingsDeleteHint">Be careful, this operation CANNOT be undone!</string>
     <string name="repoPropertiesTemplate">Set as Template</string>
     <string name="repoPropertiesEnableIssues">Enable Issues</string>
     <string name="repoPropertiesExternalIssuesUrl">External Issue Tracker Url</string>
@@ -678,5 +678,8 @@
     <string name="repoPropertiesEnableSquash">Enable Squash and Merge</string>
     <string name="repoPropertiesEnableForceMerge">Enable Rebase with Merge Commits (&#8212;&#8212;no-ff)</string>
     <string name="repoPropertiesSaveSuccess">Repository properties updated successfully</string>
+    <string name="repoSettingsDeleteDescription">Things to know before deletion:\n\n- This operation CANNOT be undone.\n- This operation will permanently delete the repository including code, issues, comments, wiki data and collaborator settings.\n\nEnter the repository name as confirmation</string>
+    <string name="repoSettingsDeleteError">Repository name does not match</string>
+    <string name="repoDeletionSuccess">Repository deleted successfully</string>
 
 </resources>

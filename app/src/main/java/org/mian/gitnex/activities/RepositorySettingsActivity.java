@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
+import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.databinding.ActivityRepositorySettingsBinding;
+import org.mian.gitnex.databinding.CustomRepositoryDeleteDialogBinding;
 import org.mian.gitnex.databinding.CustomRepositoryEditPropertiesDialogBinding;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -29,7 +31,9 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 	private ActivityRepositorySettingsBinding viewBinding;
 	private CustomRepositoryEditPropertiesDialogBinding propBinding;
+	private CustomRepositoryDeleteDialogBinding deleteRepoBinding;
 	private Dialog dialogProp;
+	private Dialog dialogDeleteRepository;
 	private View.OnClickListener onClickListener;
 	private Context ctx = this;
 	private Context appCtx;
@@ -75,6 +79,82 @@ public class RepositorySettingsActivity extends BaseActivity {
 			showRepositoryProperties();
 		});
 
+		viewBinding.deleteRepository.setOnClickListener(editProperties -> {
+			showDeleteRepository();
+		});
+
+	}
+
+	private void showDeleteRepository() {
+
+		dialogDeleteRepository = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+
+		if (dialogDeleteRepository.getWindow() != null) {
+			dialogDeleteRepository.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		}
+
+		deleteRepoBinding = CustomRepositoryDeleteDialogBinding.inflate(LayoutInflater.from(ctx));
+
+		View view = deleteRepoBinding.getRoot();
+		dialogDeleteRepository.setContentView(view);
+
+		deleteRepoBinding.cancel.setOnClickListener(editProperties -> {
+			dialogDeleteRepository.dismiss();
+		});
+
+		deleteRepoBinding.delete.setOnClickListener(deleteRepo -> {
+
+			if(!repositoryName.equals(String.valueOf(deleteRepoBinding.repoNameForDeletion.getText()))) {
+
+				Toasty.error(ctx, getString(R.string.repoSettingsDeleteError));
+			}
+			else {
+
+				deleteRepository();
+			}
+		});
+
+		dialogDeleteRepository.show();
+	}
+
+	private void deleteRepository() {
+
+		Call<JsonElement> deleteCall = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.deleteRepository(instanceToken, repositoryOwner, repositoryName);
+
+		deleteCall.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+				deleteRepoBinding.delete.setVisibility(View.GONE);
+				deleteRepoBinding.processingRequest.setVisibility(View.VISIBLE);
+
+				if (response.code() == 204) {
+
+					dialogDeleteRepository.dismiss();
+					Toasty.success(ctx, getString(R.string.repoDeletionSuccess));
+
+					finish();
+					RepositoriesApi.deleteRepository((int) tinyDb.getLong("repositoryId", 0));
+					Intent myIntent = new Intent(RepositorySettingsActivity.this, MainActivity.class);
+					RepositorySettingsActivity.this.startActivity(myIntent);
+				}
+				else {
+
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
+			}
+		});
 	}
 
 	private void showRepositoryProperties() {
