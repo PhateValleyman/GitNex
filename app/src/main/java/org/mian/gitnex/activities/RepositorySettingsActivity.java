@@ -2,6 +2,7 @@ package org.mian.gitnex.activities;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.databinding.ActivityRepositorySettingsBinding;
 import org.mian.gitnex.databinding.CustomRepositoryEditPropertiesDialogBinding;
 import org.mian.gitnex.helpers.TinyDB;
@@ -26,6 +28,8 @@ import retrofit2.Callback;
 public class RepositorySettingsActivity extends BaseActivity {
 
 	private ActivityRepositorySettingsBinding viewBinding;
+	private CustomRepositoryEditPropertiesDialogBinding propBinding;
+	private Dialog dialogProp;
 	private View.OnClickListener onClickListener;
 	private Context ctx = this;
 	private Context appCtx;
@@ -75,20 +79,19 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 	private void showRepositoryProperties() {
 
-		Dialog dialog = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+		dialogProp = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
-		if (dialog.getWindow() != null) {
-			dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		if (dialogProp.getWindow() != null) {
+			dialogProp.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
 
-		CustomRepositoryEditPropertiesDialogBinding propBinding = CustomRepositoryEditPropertiesDialogBinding
-			.inflate(LayoutInflater.from(ctx));
+		propBinding = CustomRepositoryEditPropertiesDialogBinding.inflate(LayoutInflater.from(ctx));
 
 		View view = propBinding.getRoot();
-		dialog.setContentView(view);
+		dialogProp.setContentView(view);
 
 		propBinding.cancel.setOnClickListener(editProperties -> {
-			dialog.dismiss();
+			dialogProp.dismiss();
 		});
 
 		Call<UserRepositories> call = RetrofitClient
@@ -116,35 +119,25 @@ public class RepositorySettingsActivity extends BaseActivity {
 					propBinding.repoAsTemplate.setChecked(repoInfo.isTemplate());
 
 					propBinding.repoEnableIssues.setChecked(repoInfo.getHas_issues());
-					if(repoInfo.getHas_issues()) {
-						propBinding.repoExternalIssueTrackerLayout.setVisibility(View.GONE);
-					}
+
 					propBinding.repoEnableIssues.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
 						if (isChecked) {
-							propBinding.repoExternalIssueTrackerLayout.setVisibility(View.GONE);
+							propBinding.repoEnableTimer.setVisibility(View.VISIBLE);
 						}
 						else {
-							propBinding.repoExternalIssueTrackerLayout.setVisibility(View.VISIBLE);
+							propBinding.repoEnableTimer.setVisibility(View.GONE);
 						}
 					});
 
-					propBinding.repoEnableWiki.setChecked(repoInfo.isHas_wiki());
-					if(repoInfo.isHas_wiki()) {
-						propBinding.repoExternalWikiLayout.setVisibility(View.GONE);
+					if(repoInfo.getInternal_tracker() != null) {
+						propBinding.repoEnableTimer.setChecked(repoInfo.getInternal_tracker().isEnable_time_tracker());
 					}
-					propBinding.repoEnableWiki.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
-						if (isChecked) {
-							propBinding.repoExternalWikiLayout.setVisibility(View.GONE);
-						}
-						else {
-							propBinding.repoExternalWikiLayout.setVisibility(View.VISIBLE);
-						}
-					});
-
+					else {
+						propBinding.repoEnableTimer.setVisibility(View.GONE);
+					}
+					propBinding.repoEnableWiki.setChecked(repoInfo.isHas_wiki());
 					propBinding.repoEnablePr.setChecked(repoInfo.isHas_pull_requests());
-					propBinding.repoEnableTimer.setChecked(repoInfo.getInternal_tracker().isEnable_time_tracker());
 					propBinding.repoEnableMerge.setChecked(repoInfo.isAllow_merge_commits());
 					propBinding.repoEnableRebase.setChecked(repoInfo.isAllow_rebase());
 					propBinding.repoEnableSquash.setChecked(repoInfo.isAllow_squash_merge());
@@ -168,24 +161,73 @@ public class RepositorySettingsActivity extends BaseActivity {
 		propBinding.save.setOnClickListener(saveProperties -> saveRepositoryProperties(String.valueOf(propBinding.repoName.getText()),
 			String.valueOf(propBinding.repoWebsite.getText()),
 			String.valueOf(propBinding.repoDescription.getText()),
-			String.valueOf(propBinding.repoExternalIssueTracker.getText()),
-			String.valueOf(propBinding.repoExternalWiki.getText()),
 			propBinding.repoPrivate.isChecked(), propBinding.repoAsTemplate.isChecked(),
 			propBinding.repoEnableIssues.isChecked(), propBinding.repoEnableWiki.isChecked(),
 			propBinding.repoEnablePr.isChecked(), propBinding.repoEnableTimer.isChecked(),
 			propBinding.repoEnableMerge.isChecked(), propBinding.repoEnableRebase.isChecked(),
 			propBinding.repoEnableSquash.isChecked(), propBinding.repoEnableForceMerge.isChecked()));
 
-		dialog.show();
+		dialogProp.show();
 
 	}
 
-	private void saveRepositoryProperties(String repoName, String repoWebsite, String repoDescription, String repoIssueUrl, String repoWikiUrl,
+	private void saveRepositoryProperties(String repoName, String repoWebsite, String repoDescription,
 		boolean repoPrivate, boolean repoAsTemplate, boolean repoEnableIssues, boolean repoEnableWiki,
 		boolean repoEnablePr, boolean repoEnableTimer, boolean repoEnableMerge, boolean repoEnableRebase,
 		boolean repoEnableSquash, boolean repoEnableForceMerge) {
 
+		UserRepositories.internalTimeTrackerObject repoPropsTimeTracker = new UserRepositories.internalTimeTrackerObject(repoEnableTimer);
 
+		UserRepositories repoProps;
+		if(!repoEnableIssues) {
+			repoProps = new UserRepositories(repoName, repoWebsite, repoDescription, repoPrivate, repoAsTemplate, repoEnableIssues, repoEnableWiki, repoEnablePr, repoEnableMerge,
+				repoEnableRebase, repoEnableSquash, repoEnableForceMerge);
+		}
+		else {
+			repoProps = new UserRepositories(repoName, repoWebsite, repoDescription, repoPrivate, repoAsTemplate, repoEnableIssues, repoEnableWiki, repoEnablePr, repoPropsTimeTracker, repoEnableMerge,
+				repoEnableRebase, repoEnableSquash, repoEnableForceMerge);
+		}
+
+		Call<UserRepositories> propsCall = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.updateRepositoryProperties(instanceToken, repositoryOwner, repositoryName, repoProps);
+
+		propsCall.enqueue(new Callback<UserRepositories>() {
+
+			@Override
+			public void onResponse(@NonNull Call<UserRepositories> call, @NonNull retrofit2.Response<UserRepositories> response) {
+
+				propBinding.save.setVisibility(View.GONE);
+				propBinding.processingRequest.setVisibility(View.VISIBLE);
+
+				if (response.code() == 200) {
+
+					dialogProp.dismiss();
+					Toasty.success(ctx, getString(R.string.repoPropertiesSaveSuccess));
+
+					if(!repositoryName.equals(repoName)) {
+
+						finish();
+						RepositoriesApi.updateRepositoryOwnerAndName(repositoryOwner, repoName, (int) tinyDb.getLong("repositoryId", 0));
+						Intent myIntent = new Intent(RepositorySettingsActivity.this, MainActivity.class);
+						RepositorySettingsActivity.this.startActivity(myIntent);
+
+					}
+				}
+				else {
+
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<UserRepositories> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
+			}
+		});
 	}
 
 	private void initCloseListener() {

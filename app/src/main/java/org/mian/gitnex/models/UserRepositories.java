@@ -41,20 +41,64 @@ public class UserRepositories {
 	private boolean ignore_whitespace_conflicts;
 	private boolean template;
 
-	public UserRepositories(String body) {
-		this.name = name;
-	}
-
 	private permissionsObject permissions;
 	private externalIssueTrackerObject external_tracker;
 	private externalWikiObject external_wiki;
 	private internalTimeTrackerObject internal_tracker;
+
+	public UserRepositories(String body) {
+		this.name = name;
+	}
+
+	public UserRepositories(String name, String website, String description,
+		boolean repoPrivate, boolean repoAsTemplate, boolean repoEnableIssues,
+		boolean repoEnableWiki, boolean repoEnablePr,
+		boolean repoEnableMerge, boolean repoEnableRebase, boolean repoEnableSquash, boolean repoEnableForceMerge) {
+
+		this.name = name;
+		this.website = website;
+		this.description = description;
+		this.privateFlag = repoPrivate;
+		this.template = repoAsTemplate;
+		this.has_issues = repoEnableIssues;
+		this.has_wiki = repoEnableWiki;
+		this.has_pull_requests = repoEnablePr;
+		this.allow_merge_commits = repoEnableMerge;
+		this.allow_rebase = repoEnableRebase;
+		this.allow_squash_merge = repoEnableSquash;
+		this.allow_rebase_explicit = repoEnableForceMerge;
+	}
+
+	public UserRepositories(String name, String website, String description,
+		boolean repoPrivate, boolean repoAsTemplate, boolean repoEnableIssues,
+		boolean repoEnableWiki, boolean repoEnablePr, internalTimeTrackerObject repoEnableTimer,
+		boolean repoEnableMerge, boolean repoEnableRebase, boolean repoEnableSquash, boolean repoEnableForceMerge) {
+
+		this.name = name;
+		this.website = website;
+		this.description = description;
+		this.privateFlag = repoPrivate;
+		this.template = repoAsTemplate;
+		this.has_issues = repoEnableIssues;
+		this.has_wiki = repoEnableWiki;
+		this.has_pull_requests = repoEnablePr;
+		this.internal_tracker = repoEnableTimer;
+		this.allow_merge_commits = repoEnableMerge;
+		this.allow_rebase = repoEnableRebase;
+		this.allow_squash_merge = repoEnableSquash;
+		this.allow_rebase_explicit = repoEnableForceMerge;
+	}
 
 	public static class internalTimeTrackerObject {
 
 		private boolean allow_only_contributors_to_track_time;
 		private boolean enable_issue_dependencies;
 		private boolean enable_time_tracker;
+
+		public internalTimeTrackerObject(boolean enable_time_tracker) {
+
+			this.enable_time_tracker = enable_time_tracker;
+		}
 
 		public boolean isAllow_only_contributors_to_track_time() {
 
@@ -77,6 +121,11 @@ public class UserRepositories {
 
 		private String external_wiki_url;
 
+		public externalWikiObject(String external_wiki_url) {
+
+			this.external_wiki_url = external_wiki_url;
+		}
+
 		public String getExternal_wiki_url() {
 
 			return external_wiki_url;
@@ -89,6 +138,11 @@ public class UserRepositories {
 		private String external_tracker_format;
 		private String external_tracker_style;
 		private String external_tracker_url;
+
+		public externalIssueTrackerObject(String external_tracker_url) {
+
+			this.external_tracker_url = external_tracker_url;
+		}
 
 		public String getExternal_tracker_format() {
 

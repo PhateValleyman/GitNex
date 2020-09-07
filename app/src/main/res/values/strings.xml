@@ -677,5 +677,6 @@
     <string name="repoPropertiesEnableRebase">Enable Rebase</string>
     <string name="repoPropertiesEnableSquash">Enable Squash and Merge</string>
     <string name="repoPropertiesEnableForceMerge">Enable Rebase with Merge Commits (&#8212;&#8212;no-ff)</string>
+    <string name="repoPropertiesSaveSuccess">Repository properties updated successfully</string>
 
 </resources>

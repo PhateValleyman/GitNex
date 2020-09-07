@@ -120,28 +120,6 @@
                     android:textColor="?attr/primaryTextColor"
                     android:text="@string/repoPropertiesEnableIssues" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/repoExternalIssueTrackerLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:boxBackgroundColor="?attr/inputBackgroundColor"
-                    android:textColorHint="?attr/hintColor"
-                    app:hintTextColor="?attr/hintColor"
-                    app:boxStrokeErrorColor="@color/darkRed"
-                    android:layout_marginBottom="8dp"
-                    android:hint="@string/repoPropertiesExternalIssuesUrl">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/repoExternalIssueTracker"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="?attr/inputTextColor"
-                        android:textColorHighlight="?attr/hintColor"
-                        android:textColorHint="?attr/hintColor"
-                        android:textSize="16sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/repoEnableWiki"
                     android:layout_width="match_parent"
@@ -149,28 +127,6 @@
                     android:checked="true"
                     android:textColor="?attr/primaryTextColor"
                     android:text="@string/repoPropertiesEnableWiki" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/repoExternalWikiLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:boxBackgroundColor="?attr/inputBackgroundColor"
-                    android:textColorHint="?attr/hintColor"
-                    app:hintTextColor="?attr/hintColor"
-                    app:boxStrokeErrorColor="@color/darkRed"
-                    android:layout_marginBottom="8dp"
-                    android:hint="@string/repoPropertiesExternalWikiUrl">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/repoExternalWiki"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="?attr/inputTextColor"
-                        android:textColorHighlight="?attr/hintColor"
-                        android:textColorHint="?attr/hintColor"
-                        android:textSize="16sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/repoEnablePr"
@@ -227,6 +183,14 @@
                 android:layout_height="1dp"
                 android:id="@+id/divider"
                 android:background="?attr/dividerColor" />
+
+            <com.google.android.material.progressindicator.ProgressIndicator
+                android:id="@+id/processingRequest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+                app:indicatorColor="?attr/progressIndicatorColor" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
