@@ -55,6 +55,7 @@
     <string name="pageTitleExplore">Explore</string>
     <string name="pageTitleAdministration">Gitea Administration</string>
     <string name="pageTitleUserAccounts">Manage Accounts</string>
+    <string name="pageTitleNewPullRequest">New Pull Request</string>
     <!-- page titles -->
 
     <string name="repoName">Demo repo</string>
