@@ -25,8 +25,6 @@ import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.models.Milestones;
-import org.mian.gitnex.models.MultiSelectModel;
-import org.mian.gitnex.models.UserRepositories;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -139,14 +137,14 @@ public class CreatePullRequestActivity extends BaseActivity {
 			@Override
 			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
+				listOfLabels.clear();
 				List<Labels> labelsList_ = response.body();
 
 				labelsBinding.progressBar.setVisibility(View.GONE);
+				labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
 
 				if (response.code() == 200) {
 
-					assert response.body() != null;
-					//listOfLabels.addAll(response.body());
 					assert labelsList_ != null;
 					if(labelsList_.size() > 0) {
 						for (int i = 0; i < labelsList_.size(); i++) {
@@ -154,7 +152,6 @@ public class CreatePullRequestActivity extends BaseActivity {
 							listOfLabels.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName()));
 
 						}
-						//labelsFlag = true;
 					}
 
 					labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
