@@ -1,12 +1,27 @@
 package org.mian.gitnex.activities;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import androidx.annotation.NonNull;
 import org.mian.gitnex.R;
+import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreatePrBinding;
+import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.models.Branches;
+import org.mian.gitnex.models.Milestones;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -19,6 +34,10 @@ public class CreatePullRequestActivity extends BaseActivity {
 	private Context appCtx;
 	private TinyDB tinyDb;
 	private ActivityCreatePrBinding viewBinding;
+	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+
+	List<Milestones> milestonesList = new ArrayList<>();
+	List<Branches> branchesList = new ArrayList<>();
 
 	@Override
 	protected int getLayoutResourceId(){
@@ -32,6 +51,10 @@ public class CreatePullRequestActivity extends BaseActivity {
 		appCtx = getApplicationContext();
 		tinyDb = new TinyDB(appCtx);
 
+		viewBinding = ActivityCreatePrBinding.inflate(getLayoutInflater());
+		View view = viewBinding.getRoot();
+		setContentView(view);
+
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		final String loginFullName = tinyDb.getString("userFullname");
@@ -41,11 +64,138 @@ public class CreatePullRequestActivity extends BaseActivity {
 		final String repoName = parts[1];
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
+		// if gitea is 1.12 or higher use the new limit
+		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+		}
+
 		ImageView closeActivity = findViewById(R.id.close);
 
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
+		viewBinding.prDueDate.setOnClickListener(dueDate ->
+			setDueDate()
+		);
+
+		disableProcessButton();
+
+		getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
+		getBranches(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
+
+	}
+
+	private void getBranches(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
+
+		Call<List<Branches>> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getBranches(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+
+		call.enqueue(new Callback<List<Branches>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Branches>> call, @NonNull retrofit2.Response<List<Branches>> response) {
+
+				if(response.isSuccessful()) {
+					if(response.code() == 200) {
+
+						List<Branches> branchesList_ = response.body();
+
+						assert branchesList_ != null;
+						if(branchesList_.size() > 0) {
+							for (int i = 0; i < branchesList_.size(); i++) {
+
+								Branches data = new Branches(
+									branchesList_.get(i).getName()
+								);
+								branchesList.add(data);
+
+							}
+						}
+
+						ArrayAdapter<Branches> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this,
+							R.layout.list_spinner_items, branchesList);
+
+						viewBinding.mergeIntoBranchSpinner.setAdapter(adapter);
+						viewBinding.pullFromBranchSpinner.setAdapter(adapter);
+						enableProcessButton();
+
+					}
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
+	private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, int resultLimit) {
+
+		String msState = "open";
+		Call<List<Milestones>> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
+
+		call.enqueue(new Callback<List<Milestones>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull retrofit2.Response<List<Milestones>> response) {
+
+				if(response.code() == 200) {
+
+					List<Milestones> milestonesList_ = response.body();
+
+					milestonesList.add(new Milestones(0,getString(R.string.issueCreatedNoMilestone)));
+					assert milestonesList_ != null;
+					if(milestonesList_.size() > 0) {
+						for (int i = 0; i < milestonesList_.size(); i++) {
+
+							//Don't translate "open" is a enum
+							if(milestonesList_.get(i).getState().equals("open")) {
+								Milestones data = new Milestones(
+									milestonesList_.get(i).getId(),
+									milestonesList_.get(i).getTitle()
+								);
+								milestonesList.add(data);
+							}
+
+						}
+					}
+
+					ArrayAdapter<Milestones> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this,
+						R.layout.list_spinner_items, milestonesList);
+
+					viewBinding.milestonesSpinner.setAdapter(adapter);
+					enableProcessButton();
+
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
+	private void setDueDate() {
+
+		final Calendar c = Calendar.getInstance();
+		int mYear = c.get(Calendar.YEAR);
+		final int mMonth = c.get(Calendar.MONTH);
+		final int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+		DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+			(view, year, monthOfYear, dayOfMonth) -> viewBinding.prDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth)), mYear, mMonth, mDay);
+		datePickerDialog.show();
 	}
 
 	private void initCloseListener() {

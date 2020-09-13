@@ -684,4 +684,8 @@
     <string name="repoSettingsDeleteError">Repository name does not match</string>
     <string name="repoDeletionSuccess">Repository deleted successfully</string>
 
+    <string name="mergeIntoBranch">Merge into</string>
+    <string name="pullFromBranch">Pull from</string>
+    <string name="sameBranchesError">These branches are equal. There is no need to create a pull request.</string>
+
 </resources>
