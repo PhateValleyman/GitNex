@@ -87,6 +87,7 @@
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
     <string name="logo">Login to Gitea</string>
+    <string name="protocol">Protocol</string>
     <string name="urlInfoTooltip">1- Choose the correct protocol(https or http). \n2- Enter Gitea url e.g: try.gitea.io. \n3- If you have enabled 2FA for your account, enter the code in the OTP Code field. \n4- For HTTP basic auth use USERNAME@DOMAIN.COM in the URL field.</string>
     <string name="malformedUrl">Couldn\'t connect to host. Please check your URL or port for any errors</string>
     <string name="protocolError">It is not recommended to use HTTP protocol unless you are testing on local network</string>
@@ -94,6 +95,7 @@
     <string name="emptyFieldURL">Instance URL is required</string>
     <string name="emptyFieldUsername">Username is required</string>
     <string name="emptyFieldPassword">Password is required</string>
+    <string name="protocolEmptyError">Protocol is required</string>
 
     <string name="checkNetConnection">Cannot access network, please check your Internet connection</string>
     <string name="netConnectionIsBack">Yay, We have Internet connection!</string>
@@ -661,5 +663,25 @@
 
     <string name="isRead">Read</string>
     <string name="isUnread">Unread</string>
+
+    <string name="repoSettingsTitle">Repository Settings</string>
+    <string name="repoSettingsEditProperties">Edit Properties</string>
+    <string name="repoSettingsDelete">Delete Repository</string>
+    <string name="repoSettingsDeleteHint">Be careful, this operation CANNOT be undone!</string>
+    <string name="repoPropertiesTemplate">Set as Template</string>
+    <string name="repoPropertiesEnableIssues">Enable Issues</string>
+    <string name="repoPropertiesExternalIssuesUrl">External Issue Tracker Url</string>
+    <string name="repoPropertiesEnableWiki">Enable Wiki</string>
+    <string name="repoPropertiesExternalWikiUrl">External Wiki Url</string>
+    <string name="repoPropertiesEnablePr">Enable Pull Requests</string>
+    <string name="repoPropertiesEnableTimeTracker">Enable Time Tracker</string>
+    <string name="repoPropertiesEnableMergeCommits">Enable Merge Commits</string>
+    <string name="repoPropertiesEnableRebase">Enable Rebase</string>
+    <string name="repoPropertiesEnableSquash">Enable Squash and Merge</string>
+    <string name="repoPropertiesEnableForceMerge">Enable Rebase with Merge Commits (&#8212;&#8212;no-ff)</string>
+    <string name="repoPropertiesSaveSuccess">Repository properties updated successfully</string>
+    <string name="repoSettingsDeleteDescription">Things to know before deletion:\n\n- This operation CANNOT be undone.\n- This operation will permanently delete the repository including code, issues, comments, wiki data and collaborator settings.\n\nEnter the repository name as confirmation</string>
+    <string name="repoSettingsDeleteError">Repository name does not match</string>
+    <string name="repoDeletionSuccess">Repository deleted successfully</string>
 
 </resources>
