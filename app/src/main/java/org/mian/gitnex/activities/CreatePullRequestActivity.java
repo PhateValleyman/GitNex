@@ -1,22 +1,32 @@
 package org.mian.gitnex.activities;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import org.mian.gitnex.R;
+import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreatePrBinding;
+import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Branches;
+import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.models.Milestones;
+import org.mian.gitnex.models.MultiSelectModel;
+import org.mian.gitnex.models.UserRepositories;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,10 +44,21 @@ public class CreatePullRequestActivity extends BaseActivity {
 	private Context appCtx;
 	private TinyDB tinyDb;
 	private ActivityCreatePrBinding viewBinding;
+	private CustomLabelsSelectionDialogBinding labelsBinding;
 	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+	private Dialog dialogLabels;
+
+	private String instanceUrl;
+	private String loginUid;
+	private String instanceToken;
+	private String repoOwner;
+	private String repoName;
+
+	private LabelsListAdapter labelsAdapter;
 
 	List<Milestones> milestonesList = new ArrayList<>();
 	List<Branches> branchesList = new ArrayList<>();
+	List<Labels> listOfLabels = new ArrayList<>();
 
 	@Override
 	protected int getLayoutResourceId(){
@@ -55,19 +76,21 @@ public class CreatePullRequestActivity extends BaseActivity {
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
-		final String instanceUrl = tinyDb.getString("instanceUrl");
-		final String loginUid = tinyDb.getString("loginUid");
-		final String loginFullName = tinyDb.getString("userFullname");
+		instanceUrl = tinyDb.getString("instanceUrl");
+		loginUid = tinyDb.getString("loginUid");
+		String loginFullName = tinyDb.getString("userFullname");
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
-		final String repoOwner = parts[0];
-		final String repoName = parts[1];
-		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		repoOwner = parts[0];
+		repoName = parts[1];
+		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		// if gitea is 1.12 or higher use the new limit
 		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}
+
+		labelsAdapter =  new LabelsListAdapter(listOfLabels);
 
 		ImageView closeActivity = findViewById(R.id.close);
 
@@ -82,6 +105,78 @@ public class CreatePullRequestActivity extends BaseActivity {
 
 		getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
 		getBranches(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
+
+		viewBinding.prLabels.setOnClickListener(prLabels -> {
+			showLabels();
+		});
+
+	}
+
+	private void showLabels() {
+
+		dialogLabels = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+
+		if (dialogLabels.getWindow() != null) {
+			dialogLabels.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		}
+
+		labelsBinding = CustomLabelsSelectionDialogBinding.inflate(LayoutInflater.from(ctx));
+
+		View view = labelsBinding.getRoot();
+		dialogLabels.setContentView(view);
+
+		labelsBinding.cancel.setOnClickListener(editProperties -> {
+			dialogLabels.dismiss();
+		});
+
+		Call<List<Labels>> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getlabels(instanceToken, repoOwner, repoName);
+
+		call.enqueue(new Callback<List<Labels>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
+
+				List<Labels> labelsList_ = response.body();
+
+				labelsBinding.progressBar.setVisibility(View.GONE);
+
+				if (response.code() == 200) {
+
+					assert response.body() != null;
+					//listOfLabels.addAll(response.body());
+					assert labelsList_ != null;
+					if(labelsList_.size() > 0) {
+						for (int i = 0; i < labelsList_.size(); i++) {
+
+							listOfLabels.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName()));
+
+						}
+						//labelsFlag = true;
+					}
+
+					labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
+
+				}
+				else {
+
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
+			}
+		});
+
+		//labelsBinding.save.setOnClickListener(saveProperties -> );
+
+		dialogLabels.show();
 
 	}
 

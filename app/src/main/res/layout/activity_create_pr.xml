@@ -65,6 +65,9 @@
                 android:layout_marginBottom="8dp"
                 app:endIconMode="clear_text"
                 app:endIconTint="?attr/iconsColor"
+                app:counterEnabled="true"
+                app:counterMaxLength="255"
+                app:counterTextColor="?attr/inputTextColor"
                 android:hint="@string/newIssueTitle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -89,8 +92,6 @@
                 app:boxStrokeErrorColor="@color/darkRed"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:counterEnabled="true"
-                app:counterMaxLength="255"
                 app:endIconMode="clear_text"
                 app:endIconTint="?attr/iconsColor"
                 android:hint="@string/newIssueDescriptionTitle">
