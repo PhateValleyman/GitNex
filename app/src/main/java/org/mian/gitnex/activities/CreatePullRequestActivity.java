@@ -35,7 +35,7 @@ import retrofit2.Callback;
  * Author M M Arif
  */
 
-public class CreatePullRequestActivity extends BaseActivity {
+public class CreatePullRequestActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener {
 
 	private View.OnClickListener onClickListener;
 	private Context ctx = this;
@@ -45,6 +45,8 @@ public class CreatePullRequestActivity extends BaseActivity {
 	private CustomLabelsSelectionDialogBinding labelsBinding;
 	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 	private Dialog dialogLabels;
+	private String labelsSetter;
+	private ArrayList<Integer> labelsIds;
 
 	private String instanceUrl;
 	private String loginUid;
@@ -57,6 +59,9 @@ public class CreatePullRequestActivity extends BaseActivity {
 	List<Milestones> milestonesList = new ArrayList<>();
 	List<Branches> branchesList = new ArrayList<>();
 	List<Labels> listOfLabels = new ArrayList<>();
+
+	public CreatePullRequestActivity() {
+	}
 
 	@Override
 	protected int getLayoutResourceId(){
@@ -88,7 +93,7 @@ public class CreatePullRequestActivity extends BaseActivity {
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}
 
-		labelsAdapter =  new LabelsListAdapter(listOfLabels);
+		labelsAdapter =  new LabelsListAdapter(listOfLabels, CreatePullRequestActivity.this);
 
 		ImageView closeActivity = findViewById(R.id.close);
 
@@ -108,6 +113,18 @@ public class CreatePullRequestActivity extends BaseActivity {
 			showLabels();
 		});
 
+	}
+
+	@Override
+	public void labelsStringData(ArrayList<String> data) {
+
+		labelsSetter = String.valueOf(data);
+	}
+
+	@Override
+	public void labelsIdsData(ArrayList<Integer> data) {
+
+		labelsIds = data;
 	}
 
 	private void showLabels() {
@@ -171,7 +188,12 @@ public class CreatePullRequestActivity extends BaseActivity {
 			}
 		});
 
-		//labelsBinding.save.setOnClickListener(saveProperties -> );
+		labelsBinding.save.setOnClickListener(saveLabels -> {
+
+			viewBinding.prLabels.setText(labelsSetter.replace("]", "").replace("[", ""));
+			dialogLabels.dismiss();
+			Log.e("labels", String.valueOf(labelsIds));
+		});
 
 		dialogLabels.show();
 
@@ -220,7 +242,8 @@ public class CreatePullRequestActivity extends BaseActivity {
 
 			@Override
 			public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
-				Log.e("onFailure", t.toString());
+				
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
 			}
 		});
 
@@ -272,7 +295,7 @@ public class CreatePullRequestActivity extends BaseActivity {
 			@Override
 			public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
 			}
 		});
 

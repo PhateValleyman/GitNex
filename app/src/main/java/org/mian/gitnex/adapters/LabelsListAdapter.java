@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.models.Labels;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,22 @@ import java.util.List;
 public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.LabelsViewHolder> {
 
 	private List<Labels> labels;
+	private ArrayList<String> labelsStrings = new ArrayList<>();
+	private ArrayList<Integer> labelsIds = new ArrayList<>();
+
+	private LabelsListAdapterListener labelsListener;
+
+	public interface LabelsListAdapterListener {
+
+		void labelsStringData(ArrayList<String> data);
+		void labelsIdsData(ArrayList<Integer> data);
+	}
+
+	public LabelsListAdapter(List<Labels> labelsMain, LabelsListAdapterListener labelsListener) {
+
+		this.labels = labelsMain;
+		this.labelsListener = labelsListener;
+	}
 
 	static class LabelsViewHolder extends RecyclerView.ViewHolder {
 
@@ -28,10 +45,6 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 			labelSelection = itemView.findViewById(R.id.labelSelection);
 
 		}
-	}
-
-	public LabelsListAdapter(List<Labels> labelsMain) {
-		this.labels = labelsMain;
 	}
 
 	@NonNull
@@ -49,6 +62,30 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 
 		holder.labelSelection.setText(currentItem.getName());
 
+		for(int i = 0; i < labelsIds.size(); i++) {
+
+			if(labelsStrings.contains(currentItem.getName())) {
+
+				holder.labelSelection.setChecked(true);
+			}
+		}
+
+		holder.labelSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+			if(isChecked) {
+
+				labelsStrings.add(currentItem.getName());
+				labelsIds.add(currentItem.getId());
+			}
+			else {
+
+				labelsStrings.remove(currentItem.getName());
+				labelsIds.remove(Integer.valueOf(currentItem.getId()));
+			}
+
+			labelsListener.labelsStringData(labelsStrings);
+			labelsListener.labelsIdsData(labelsIds);
+		});
 	}
 
 	@Override

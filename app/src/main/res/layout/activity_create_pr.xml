@@ -186,11 +186,8 @@
                 app:boxBackgroundColor="?attr/inputBackgroundColor"
                 android:textColorHint="?attr/hintColor"
                 app:hintTextColor="?attr/hintColor"
-                app:boxStrokeErrorColor="@color/darkRed"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:endIconMode="clear_text"
-                app:endIconTint="?attr/iconsColor"
                 android:hint="@string/newIssueLabelsTitle">
 
                 <com.google.android.material.textfield.TextInputEditText
