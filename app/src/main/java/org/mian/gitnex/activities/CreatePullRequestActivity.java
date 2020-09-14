@@ -242,7 +242,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 			@Override
 			public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
-				
+
 				Toasty.error(ctx, getString(R.string.genericServerResponseError));
 			}
 		});
