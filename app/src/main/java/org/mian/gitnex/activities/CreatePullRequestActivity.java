@@ -170,6 +170,11 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 						}
 					}
+					else {
+
+						dialogLabels.dismiss();
+						Toasty.warning(ctx, getString(R.string.noLabelsFound));
+					}
 
 					labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
 
