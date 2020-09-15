@@ -80,8 +80,9 @@ public class RepositorySettingsActivity extends BaseActivity {
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		// if gitea is 1.12 or higher then only show transfer ownership
+		// require gitea 1.12 or higher
 		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+			
 			viewBinding.transferOwnerFrame.setVisibility(View.VISIBLE);
 		}
 
