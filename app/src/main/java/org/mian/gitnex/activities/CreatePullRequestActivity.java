@@ -58,7 +58,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 	List<Milestones> milestonesList = new ArrayList<>();
 	List<Branches> branchesList = new ArrayList<>();
-	List<Labels> listOfLabels = new ArrayList<>();
+	List<Labels> labelsList = new ArrayList<>();
 
 	public CreatePullRequestActivity() {
 	}
@@ -88,12 +88,12 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		repoName = parts[1];
 		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-		// if gitea is 1.12 or higher use the new limit
+		// require gitea 1.12 or higher
 		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}
 
-		labelsAdapter =  new LabelsListAdapter(listOfLabels, CreatePullRequestActivity.this);
+		labelsAdapter =  new LabelsListAdapter(labelsList, CreatePullRequestActivity.this);
 
 		ImageView closeActivity = findViewById(R.id.close);
 
@@ -119,6 +119,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 	public void labelsStringData(ArrayList<String> data) {
 
 		labelsSetter = String.valueOf(data);
+		viewBinding.prLabels.setText(labelsSetter.replace("]", "").replace("[", ""));
 	}
 
 	@Override
@@ -154,7 +155,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 			@Override
 			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
-				listOfLabels.clear();
+				labelsList.clear();
 				List<Labels> labelsList_ = response.body();
 
 				labelsBinding.progressBar.setVisibility(View.GONE);
@@ -166,7 +167,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 					if(labelsList_.size() > 0) {
 						for (int i = 0; i < labelsList_.size(); i++) {
 
-							listOfLabels.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName()));
+							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName()));
 
 						}
 					}
@@ -191,13 +192,6 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 				Toasty.error(ctx, getString(R.string.genericServerResponseError));
 			}
-		});
-
-		labelsBinding.save.setOnClickListener(saveLabels -> {
-
-			viewBinding.prLabels.setText(labelsSetter.replace("]", "").replace("[", ""));
-			dialogLabels.dismiss();
-			Log.e("labels", String.valueOf(labelsIds));
 		});
 
 		dialogLabels.show();
