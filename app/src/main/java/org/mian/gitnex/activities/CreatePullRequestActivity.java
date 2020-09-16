@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,17 +16,20 @@ import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreatePrBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Branches;
+import org.mian.gitnex.models.CreatePullRequest;
 import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.models.Milestones;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -46,7 +48,9 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 	private Dialog dialogLabels;
 	private String labelsSetter;
-	private ArrayList<Integer> labelsIds;
+	private ArrayList<Integer> labelsIds = new ArrayList<>();
+	private ArrayList<String> assignees = new ArrayList<>();
+	private int milestoneId;
 
 	private String instanceUrl;
 	private String loginUid;
@@ -81,7 +85,6 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 		instanceUrl = tinyDb.getString("instanceUrl");
 		loginUid = tinyDb.getString("loginUid");
-		String loginFullName = tinyDb.getString("userFullname");
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 		repoOwner = parts[0];
@@ -109,10 +112,104 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
 		getBranches(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
 
-		viewBinding.prLabels.setOnClickListener(prLabels -> {
-			showLabels();
-		});
+		viewBinding.prLabels.setOnClickListener(prLabels ->
+			showLabels()
+		);
 
+		viewBinding.createPr.setOnClickListener(createPr ->
+			processPullRequest()
+		);
+	}
+
+	private void processPullRequest() {
+
+		String prTitle = String.valueOf(viewBinding.prTitle.getText());
+		String prDescription = String.valueOf(viewBinding.prBody.getText());
+		String mergeInto = viewBinding.mergeIntoBranchSpinner.getText().toString();
+		String pullFrom = viewBinding.pullFromBranchSpinner.getText().toString();
+		String dueDate = String.valueOf(viewBinding.prDueDate.getText());
+
+		assignees.add("");
+
+		if (labelsIds.size() == 0) {
+			labelsIds.add(0);
+		}
+
+		if (dueDate.matches("")) {
+			dueDate = null;
+		}
+		else {
+			dueDate = AppUtil.customDateCombine(AppUtil.customDateFormat(dueDate));
+		}
+
+		if(prTitle.matches("")) {
+
+			Toasty.error(ctx, getString(R.string.titleError));
+		}
+		else if(mergeInto.matches("")) {
+
+			Toasty.error(ctx, getString(R.string.mergeIntoError));
+		}
+		else if(pullFrom.matches("")) {
+
+			Toasty.error(ctx, getString(R.string.pullFromError));
+		}
+		else if(pullFrom.equals(mergeInto)) {
+
+			Toasty.error(ctx, getString(R.string.sameBranchesError));
+		}
+		else {
+			createPullRequest(prTitle, prDescription, mergeInto, pullFrom, milestoneId, dueDate, assignees);
+		}
+		//Log.e("processPullRequest", String.valueOf(milestoneId));
+	}
+
+	private void createPullRequest(String prTitle, String prDescription, String mergeInto, String pullFrom, int milestoneId, String dueDate, ArrayList<String> assignees) {
+
+		CreatePullRequest createPullRequest = new CreatePullRequest(prTitle, prDescription, loginUid, mergeInto, pullFrom, milestoneId, dueDate, assignees, labelsIds);
+
+		Call<ResponseBody> transferCall = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.createPullRequest(instanceToken, repoOwner, repoName, createPullRequest);
+
+		transferCall.enqueue(new Callback<ResponseBody>() {
+
+			@Override
+			public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
+
+				disableProcessButton();
+
+				if (response.code() == 201) {
+
+					Toasty.success(ctx, getString(R.string.prCreateSuccess));
+					finish();
+				}
+				else if (response.code() == 409 && response.message().equals("Conflict")) {
+
+					enableProcessButton();
+					Toasty.error(ctx, getString(R.string.prAlreadyExists));
+				}
+				else if (response.code() == 404) {
+
+					enableProcessButton();
+					Toasty.error(ctx, getString(R.string.apiNotFound));
+				}
+				else {
+
+					enableProcessButton();
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+
+				enableProcessButton();
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
+			}
+		});
 	}
 
 	@Override
@@ -141,9 +238,9 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		View view = labelsBinding.getRoot();
 		dialogLabels.setContentView(view);
 
-		labelsBinding.cancel.setOnClickListener(editProperties -> {
-			dialogLabels.dismiss();
-		});
+		labelsBinding.cancel.setOnClickListener(editProperties ->
+			dialogLabels.dismiss()
+		);
 
 		Call<List<Labels>> call = RetrofitClient
 			.getInstance(instanceUrl, ctx)
@@ -287,6 +384,11 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 					viewBinding.milestonesSpinner.setAdapter(adapter);
 					enableProcessButton();
+
+					viewBinding.milestonesSpinner.setOnItemClickListener ((parent, view, position, id) ->
+
+						milestoneId = milestonesList.get(position).getId()
+					);
 
 				}
 			}
