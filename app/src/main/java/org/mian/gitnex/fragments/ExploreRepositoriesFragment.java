@@ -1,10 +1,16 @@
 package org.mian.gitnex.fragments;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -18,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.ExploreRepositoriesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.databinding.CustomExploreRepositoriesDialogBinding;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.ExploreRepositories;
@@ -29,12 +36,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Template Author Author M M Arif
+ * Template Author M M Arif
  * Author 6543
  */
 
 public class ExploreRepositoriesFragment extends Fragment {
 
+	private Context ctx;
 	private static String repoNameF = "param2";
 	private static String repoOwnerF = "param1";
 	private ProgressBar mProgressBar;
@@ -47,6 +55,9 @@ public class ExploreRepositoriesFragment extends Fragment {
 	private int limit = 50;
 
 	private OnFragmentInteractionListener mListener;
+
+	private Dialog dialogFilterOptions;
+	private CustomExploreRepositoriesDialogBinding filterBinding;
 
 	public ExploreRepositoriesFragment() {
 
@@ -76,7 +87,8 @@ public class ExploreRepositoriesFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		final View v = inflater.inflate(R.layout.fragment_explore_repo, container, false);
-		//setHasOptionsMenu(true);
+		setHasOptionsMenu(true);
+		ctx = getContext();
 
 		TinyDB tinyDb = new TinyDB(getContext());
 		final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -192,6 +204,44 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 		}
 
+	}
+
+	@Override
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+		menu.clear();
+		inflater.inflate(R.menu.filter_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+
+		MenuItem filter = menu.findItem(R.id.filter);
+
+		filter.setOnMenuItemClickListener(filter_ -> {
+
+			showFilterOptions();
+			return false;
+		});
+
+	}
+
+	private void showFilterOptions() {
+
+		dialogFilterOptions = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+
+		if (dialogFilterOptions.getWindow() != null) {
+
+			dialogFilterOptions.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		}
+
+		filterBinding = CustomExploreRepositoriesDialogBinding.inflate(LayoutInflater.from(ctx));
+
+		View view = filterBinding.getRoot();
+		dialogFilterOptions.setContentView(view);
+
+		filterBinding.cancel.setOnClickListener(editProperties -> {
+			dialogFilterOptions.dismiss();
+		});
+
+		dialogFilterOptions.show();
 	}
 
 	public void onButtonPressed(Uri uri) {
