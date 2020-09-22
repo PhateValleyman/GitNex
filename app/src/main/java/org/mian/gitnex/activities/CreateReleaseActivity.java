@@ -1,11 +1,6 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,17 +12,20 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import androidx.annotation.NonNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.Releases;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -45,6 +43,7 @@ public class CreateReleaseActivity extends BaseActivity {
     private CheckBox releaseDraft;
     private Button createNewRelease;
     final Context ctx = this;
+    private Context appCtx;
 
     List<Branches> branchesList = new ArrayList<>();
 
@@ -57,12 +56,13 @@ public class CreateReleaseActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
@@ -86,8 +86,7 @@ public class CreateReleaseActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         releaseBranch = findViewById(R.id.releaseBranch);
-        releaseBranch.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-        getBranches(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+        getBranches(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
         releaseBranch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -106,26 +105,21 @@ public class CreateReleaseActivity extends BaseActivity {
         if(!connToInternet) {
 
             disableProcessButton();
-
-        } else {
+        }
+        else {
 
             createNewRelease.setOnClickListener(createReleaseListener);
-
         }
 
     }
 
-    private View.OnClickListener createReleaseListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewRelease();
-        }
-    };
+    private View.OnClickListener createReleaseListener = v -> processNewRelease();
 
     private void processNewRelease() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
@@ -143,27 +137,27 @@ public class CreateReleaseActivity extends BaseActivity {
 
         if(!connToInternet) {
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if(newReleaseTagName.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.tagNameErrorEmpty));
+            Toasty.error(ctx, getString(R.string.tagNameErrorEmpty));
             return;
 
         }
 
         if(newReleaseTitle.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.titleErrorEmpty));
+            Toasty.error(ctx, getString(R.string.titleErrorEmpty));
             return;
 
         }
 
         disableProcessButton();
-        createNewReleaseFunc(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, newReleaseTagName, newReleaseTitle, newReleaseContent, newReleaseBranch, newReleaseType, newReleaseDraft);
+        createNewReleaseFunc(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newReleaseTagName, newReleaseTitle, newReleaseContent, newReleaseBranch, newReleaseType, newReleaseDraft);
 
     }
 
@@ -174,7 +168,7 @@ public class CreateReleaseActivity extends BaseActivity {
         Call<Releases> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
                 .createNewRelease(token, repoOwner, repoName, createReleaseJson);
 
@@ -185,9 +179,9 @@ public class CreateReleaseActivity extends BaseActivity {
 
                 if (response.code() == 201) {
 
-                    TinyDB tinyDb = new TinyDB(getApplicationContext());
+                    TinyDB tinyDb = new TinyDB(appCtx);
                     tinyDb.putBoolean("updateReleases", true);
-                    Toasty.info(getApplicationContext(), getString(R.string.releaseCreatedText));
+                    Toasty.success(ctx, getString(R.string.releaseCreatedText));
                     enableProcessButton();
                     finish();
 
@@ -204,19 +198,19 @@ public class CreateReleaseActivity extends BaseActivity {
                 else if(response.code() == 403) {
 
                     enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+                    Toasty.error(ctx, ctx.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
                     enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+                    Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
 
                 }
                 else {
 
                     enableProcessButton();
-                    Toasty.info(ctx, ctx.getString(R.string.genericError));
+                    Toasty.error(ctx, ctx.getString(R.string.genericError));
 
                 }
 
@@ -234,7 +228,7 @@ public class CreateReleaseActivity extends BaseActivity {
     private void getBranches(String instanceUrl, String instanceToken, final String repoOwner, final String repoName) {
 
         Call<List<Branches>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
                 .getBranches(instanceToken, repoOwner, repoName);
 
@@ -260,7 +254,7 @@ public class CreateReleaseActivity extends BaseActivity {
                             }
                         }
 
-                        ArrayAdapter<Branches> adapter = new ArrayAdapter<>(getApplicationContext(),
+                        ArrayAdapter<Branches> adapter = new ArrayAdapter<>(CreateReleaseActivity.this,
                                 R.layout.spinner_item, branchesList);
 
                         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
@@ -300,21 +294,11 @@ public class CreateReleaseActivity extends BaseActivity {
     private void disableProcessButton() {
 
         createNewRelease.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createNewRelease.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         createNewRelease.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createNewRelease.setBackground(shape);
-
     }
 
 }

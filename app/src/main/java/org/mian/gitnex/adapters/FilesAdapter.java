@@ -11,9 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Files;
-import org.mian.gitnex.util.AppUtil;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +37,8 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
     class FilesViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView fileTypeImage;
+	    private ImageView dirTypeImage;
+	    private ImageView unknownTypeImage;
         private TextView fileName;
         private TextView fileType;
         private TextView fileInfo;
@@ -46,28 +48,27 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
             super(itemView);
             fileName = itemView.findViewById(R.id.fileName);
             fileTypeImage = itemView.findViewById(R.id.fileImage);
+	        dirTypeImage = itemView.findViewById(R.id.dirImage);
+	        unknownTypeImage = itemView.findViewById(R.id.unknownImage);
             fileType = itemView.findViewById(R.id.fileType);
             fileInfo = itemView.findViewById(R.id.fileInfo);
 
             //ImageView filesDropdownMenu = itemView.findViewById(R.id.filesDropdownMenu);
 
-            fileName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            fileName.setOnClickListener(v -> {
 
-                    Context context = v.getContext();
+                Context context = v.getContext();
 
-                    if(fileType.getText().toString().equals("file")) {
-                        filesListener.onClickFile(fileName.getText().toString());
-                    }
-                    else if(fileType.getText().toString().equals("dir")) {
-                        filesListener.onClickDir(fileName.getText().toString());
-                    }
-                    else {
-                        Toasty.info(context, context.getString(R.string.filesGenericError));
-                    }
-
+                if(fileType.getText().toString().equals("file")) {
+                    filesListener.onClickFile(fileName.getText().toString());
                 }
+                else if(fileType.getText().toString().equals("dir")) {
+                    filesListener.onClickDir(fileName.getText().toString());
+                }
+                else {
+                    Toasty.warning(context, context.getString(R.string.filesGenericError));
+                }
+
             });
 
 
@@ -160,15 +161,22 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
         holder.fileName.setText(currentItem.getName());
 
         if(currentItem.getType().equals("file")) {
-            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_file_new));
+            holder.fileTypeImage.setVisibility(View.VISIBLE);
+	        holder.dirTypeImage.setVisibility(View.GONE);
+	        holder.unknownTypeImage.setVisibility(View.GONE);
             holder.fileInfo.setVisibility(View.VISIBLE);
             holder.fileInfo.setText(AppUtil.formatFileSizeInDetail(currentItem.getSize()));
         }
         else if(currentItem.getType().equals("dir")) {
-            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_folder_24));
+	        holder.dirTypeImage.setVisibility(View.VISIBLE);
+	        holder.unknownTypeImage.setVisibility(View.GONE);
+	        holder.fileTypeImage.setVisibility(View.GONE);
+	        holder.fileInfo.setVisibility(View.GONE);
         }
         else {
-            holder.fileTypeImage.setImageDrawable(mCtx.getResources().getDrawable(R.drawable.ic_question_mark_24));
+	        holder.unknownTypeImage.setVisibility(View.VISIBLE);
+	        holder.dirTypeImage.setVisibility(View.GONE);
+	        holder.fileTypeImage.setVisibility(View.GONE);
         }
 
     }

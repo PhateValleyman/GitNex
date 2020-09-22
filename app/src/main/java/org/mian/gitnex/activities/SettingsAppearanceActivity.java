@@ -9,8 +9,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.util.TinyDB;
+import org.mian.gitnex.helpers.Version;
 
 /**
  * Author M M Arif
@@ -18,7 +19,7 @@ import org.mian.gitnex.util.TinyDB;
 
 public class SettingsAppearanceActivity extends BaseActivity {
 
-	private Context ctx;
+	private Context appCtx;
 	private View.OnClickListener onClickListener;
 
 	private static String[] timeList = {"Pretty", "Normal"};
@@ -27,13 +28,14 @@ public class SettingsAppearanceActivity extends BaseActivity {
 	private static String[] codeBlockList = {"Green - Black", "White - Black", "Grey - Black", "White - Grey", "Dark - White"};
 	private static int codeBlockSelectedChoice = 0;
 
-	private static String[] homeScreenList = {"My Repositories", "Starred Repositories", "Organizations", "Repositories", "Profile"};
+	private static String[] homeScreenList = {"My Repositories", "Starred Repositories", "Organizations", "Repositories", "Profile", "Explore", "Drafts"};
+	private static String[] homeScreenListNew = {"My Repositories", "Starred Repositories", "Organizations", "Repositories", "Profile", "Explore", "Drafts",  "Notifications"};
 	private static int homeScreenSelectedChoice = 0;
 
 	private static String[] customFontList = {"Roboto", "Manrope", "Source Code Pro"};
 	private static int customFontSelectedChoice = 0;
 
-	private static String[] themeList = {"Dark", "Light", "Auto (Day/Night)"};
+	private static String[] themeList = {"Dark", "Light", "Auto (Light / Dark)", "Retro", "Auto (Retro / Dark)"};
 	private static int themeSelectedChoice = 0;
 
 	@Override
@@ -46,8 +48,9 @@ public class SettingsAppearanceActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		this.ctx = getApplicationContext();
-		final TinyDB tinyDb = new TinyDB(ctx);
+		appCtx = getApplicationContext();
+
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		ImageView closeActivity = findViewById(R.id.close);
 
@@ -67,6 +70,11 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
+
+		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.3")) {
+
+			homeScreenList = homeScreenListNew;
+		}
 
 		if(!tinyDb.getString("timeStr").isEmpty()) {
 			tvDateTimeSelected.setText(tinyDb.getString("timeStr"));
@@ -120,11 +128,11 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 			if (isChecked) {
 				tinyDb.putBoolean("enableCounterBadges", true);
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 			}
 			else {
 				tinyDb.putBoolean("enableCounterBadges", false);
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 			}
 
 		});
@@ -153,7 +161,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				this.recreate();
 				this.overridePendingTransition(0, 0);
 				dialogInterfaceTheme.dismiss();
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 
 			});
 
@@ -186,7 +194,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				this.recreate();
 				this.overridePendingTransition(0, 0);
 				dialogInterfaceCustomFont.dismiss();
-				Toasty.info(ctx, ctx.getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, appCtx.getResources().getString(R.string.settingsSave));
 
 			});
 
@@ -200,7 +208,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 			AlertDialog.Builder hsBuilder = new AlertDialog.Builder(SettingsAppearanceActivity.this);
 
-			hsBuilder.setTitle(R.string.settingshomeScreenSelectorDialogTitle);
+			hsBuilder.setTitle(R.string.settingsHomeScreenSelectorDialogTitle);
 			if(homeScreenSelectedChoice != -1) {
 				hsBuilder.setCancelable(true);
 			}
@@ -216,7 +224,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				tinyDb.putInt("homeScreenId", i);
 
 				dialogInterfaceHomeScreen.dismiss();
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 
 			});
 
@@ -247,7 +255,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 				switch(codeBlockList[i]) {
 					case "White - Black":
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.white));
+						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
 						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
 						break;
 					case "Grey - Black":
@@ -255,12 +263,12 @@ public class SettingsAppearanceActivity extends BaseActivity {
 						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
 						break;
 					case "White - Grey":
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.white));
+						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
 						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorAccent));
 						break;
 					case "Dark - White":
 						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorPrimary));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.white));
+						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorWhite));
 						break;
 					default:
 						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorLightGreen));
@@ -269,7 +277,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				}
 
 				dialogInterfaceCodeBlock.dismiss();
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 
 			});
 
@@ -306,7 +314,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				}
 
 				dialogInterfaceTime.dismiss();
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 
 			});
 
@@ -319,9 +327,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 	}
 
 	private void initCloseListener() {
-		onClickListener = view -> {
-			finish();
-		};
+		onClickListener = view -> finish();
 	}
 
 }

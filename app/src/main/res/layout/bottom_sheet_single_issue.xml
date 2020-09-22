@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="6dp"
+    android:paddingBottom="12dp"
+    android:background="?attr/primaryBackgroundColor">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/openFilesDiff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/openFileDiffText"
+                android:drawableStart="@drawable/ic_file"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:visibility="gone"
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/mergePullRequest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/mergePullRequestText"
+                android:drawableStart="@drawable/ic_pull_request"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/editIssue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/editIssue"
+                android:drawableStart="@drawable/ic_edit"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/addRemoveAssignees"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/addRemoveAssignees"
+                android:drawableStart="@drawable/ic_person_add"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/editLabels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/singleIssueEditLabels"
+                android:drawableStart="@drawable/ic_label"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/subscribeIssue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/singleIssueSubscribe"
+                android:drawableStart="@drawable/ic_unwatch"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/unsubscribeIssue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@drawable/ic_watchers"
+                android:drawablePadding="24dp"
+                android:text="@string/singleIssueUnSubscribe"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:visibility="gone"
+                android:padding="12dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginStart="64dp"
+                android:background="?attr/dividerColor" />
+
+            <TextView
+                android:id="@+id/shareIssue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@drawable/ic_share"
+                android:drawablePadding="24dp"
+                android:text="@string/shareIssue"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/copyIssueUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@drawable/ic_copy"
+                android:drawablePadding="24dp"
+                android:text="@string/copyIssueUrl"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginStart="64dp"
+                android:background="?attr/dividerColor" />
+
+            <TextView
+                android:id="@+id/closeIssue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/closeIssue"
+                android:drawableStart="@drawable/ic_issue_closed"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/reOpenIssue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/reOpenIssue"
+                android:drawableStart="@drawable/ic_reopen"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:visibility="gone"
+                android:padding="12dp" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

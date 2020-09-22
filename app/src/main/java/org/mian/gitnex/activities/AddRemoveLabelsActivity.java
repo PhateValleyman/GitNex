@@ -1,25 +1,25 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.MultiSelectDialog;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.models.MultiSelectModel;
-import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -32,6 +32,7 @@ public class AddRemoveLabelsActivity extends BaseActivity {
     private Boolean labelsFlag = false;
     private MultiSelectDialog multiSelectDialogLabels;
     final Context ctx = this;
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -40,12 +41,14 @@ public class AddRemoveLabelsActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
         getWindow().getDecorView().setBackground(new ColorDrawable(Color.TRANSPARENT));
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         String repoFullName = tinyDb.getString("repoFullName");
@@ -61,12 +64,12 @@ public class AddRemoveLabelsActivity extends BaseActivity {
 
     private void getLabels(final String instanceUrl, final String instanceToken, final String repoOwner, final String repoName, final int issueIndex, final String loginUid) {
 
-        final TinyDB tinyDb = new TinyDB(getApplicationContext());
+        final TinyDB tinyDb = new TinyDB(appCtx);
 
         Call<List<Labels>> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getlabels(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+                .getlabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
         call.enqueue(new Callback<List<Labels>>() {
 
@@ -89,9 +92,9 @@ public class AddRemoveLabelsActivity extends BaseActivity {
 
                         // get current issue labels
                         Call<List<Labels>> callSingleIssueLabels = RetrofitClient
-                                .getInstance(instanceUrl, getApplicationContext())
+                                .getInstance(instanceUrl, ctx)
                                 .getApiInterface()
-                                .getIssueLabels(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex);
+                                .getIssueLabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
 
                         callSingleIssueLabels.enqueue(new Callback<List<Labels>>() {
 
@@ -125,7 +128,7 @@ public class AddRemoveLabelsActivity extends BaseActivity {
                                                 .multiSelectList(listOfLabels)
                                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                                     @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                                         String labelIds = selectedIds.toString();
                                                         int[] integers;
@@ -142,7 +145,7 @@ public class AddRemoveLabelsActivity extends BaseActivity {
                                                             integers = new int[0];
                                                         }
 
-                                                        updateIssueLabels(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
+                                                        updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
                                                         tinyDb.putBoolean("singleIssueUpdate", true);
                                                         CloseActivity();
                                                     }
@@ -166,7 +169,7 @@ public class AddRemoveLabelsActivity extends BaseActivity {
                                                 .multiSelectList(listOfLabels)
                                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                                     @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                                         String labelIds = selectedIds.toString();
                                                         int[] integers;
@@ -183,7 +186,7 @@ public class AddRemoveLabelsActivity extends BaseActivity {
                                                             integers = new int[0];
                                                         }
 
-                                                        updateIssueLabels(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
+                                                        updateIssueLabels(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, integers, loginUid);
                                                         tinyDb.putBoolean("singleIssueUpdate", true);
                                                         CloseActivity();
 
@@ -221,17 +224,17 @@ public class AddRemoveLabelsActivity extends BaseActivity {
                     }
                     else if(response.code() == 403) {
 
-                        Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+                        Toasty.error(ctx, ctx.getString(R.string.authorizeError));
 
                     }
                     else if(response.code() == 404) {
 
-                        Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+                        Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
 
                     }
                     else {
 
-                        Toasty.info(getApplicationContext(), getString(R.string.genericError));
+                        Toasty.error(ctx, getString(R.string.genericError));
 
                     }
                 }
@@ -251,9 +254,9 @@ public class AddRemoveLabelsActivity extends BaseActivity {
         Labels patchIssueLabels = new Labels(issueLabels);
 
         Call<JsonElement> call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .updateIssueLabels(Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, issueIndex, patchIssueLabels);
+                .updateIssueLabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, patchIssueLabels);
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -262,7 +265,7 @@ public class AddRemoveLabelsActivity extends BaseActivity {
 
                 if(response.code() == 200) {
 
-                    Toasty.info(ctx, ctx.getString(R.string.labelsUpdated));
+                    Toasty.success(ctx, ctx.getString(R.string.labelsUpdated));
 
                 }
                 else if(response.code() == 401) {
@@ -275,17 +278,17 @@ public class AddRemoveLabelsActivity extends BaseActivity {
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+                    Toasty.error(ctx, ctx.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+                    Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(getApplicationContext(), getString(R.string.genericError));
+                    Toasty.error(ctx, getString(R.string.genericError));
 
                 }
 

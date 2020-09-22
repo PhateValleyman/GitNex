@@ -1,5 +1,6 @@
 package org.mian.gitnex.helpers;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -15,26 +16,31 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Author anonTree1417
+ * Author opyale
  */
 
 public class PicassoCache implements Cache {
 
+	private Context ctx;
 	private String TAG = "PicassoCache";
 
 	private static final Bitmap.CompressFormat COMPRESS_FORMAT = Bitmap.CompressFormat.PNG;
-	private static final int COMPRESSION_QUALITY = 0; // 0 = high compression (low file size) | 100 = no compression
+	private static final int COMPRESSION_QUALITY = 50; // 0 = high compression (low file size) | 100 = no compression
+	private final int CACHE_SIZE;
 
 	private static final String CACHE_MAP_FILE = "cacheMap";
-	private static final int CACHE_SIZE = 25 * 1024 * 1024; // Cache can hold twenty-five megabytes
 
 	private File cachePath;
 	private HashMap<String, String> cacheMap;
 
-	public PicassoCache(File cachePath) throws IOException, ClassNotFoundException {
+	public PicassoCache(File cachePath, Context ctx) throws IOException, ClassNotFoundException {
 
+		TinyDB tinyDb = new TinyDB(ctx);
+
+		CACHE_SIZE = FilesData.returnOnlyNumber(tinyDb.getString("cacheSizeImagesStr")) * 1024 * 1024;
 		this.cachePath = cachePath;
 		cacheMap = new HashMap<>();
+		this.ctx = ctx;
 
 		if(cacheMapExists(cachePath)) {
 

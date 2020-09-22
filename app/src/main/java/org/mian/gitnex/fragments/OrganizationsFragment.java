@@ -2,6 +2,16 @@ package org.mian.gitnex.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -11,25 +21,15 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.CreateOrganizationActivity;
 import org.mian.gitnex.adapters.OrganizationsListAdapter;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.viewmodels.OrganizationListViewModel;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.UserOrganizations;
-import org.mian.gitnex.util.TinyDB;
+import org.mian.gitnex.viewmodels.OrganizationListViewModel;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,7 +42,7 @@ public class OrganizationsFragment extends Fragment {
     private ProgressBar mProgressBar;
     private OrganizationsListAdapter adapter;
     private RecyclerView mRecyclerView;
-    private ImageView createNewOrganization;
+    private ExtendedFloatingActionButton createNewOrganization;
     private TextView noDataOrg;
 
     @Nullable
@@ -52,7 +52,7 @@ public class OrganizationsFragment extends Fragment {
         final View v = inflater.inflate(R.layout.fragment_organizations, container, false);
         setHasOptionsMenu(true);
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
+        boolean connToInternet = AppUtil.hasNetworkConnection(Objects.requireNonNull(getContext()));
 
         TinyDB tinyDb = new TinyDB(getContext());
         final String instanceUrl = tinyDb.getString("instanceUrl");
@@ -158,7 +158,7 @@ public class OrganizationsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
+        boolean connToInternet = AppUtil.hasNetworkConnection(Objects.requireNonNull(getContext()));
 
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);

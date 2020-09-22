@@ -1,13 +1,37 @@
 ---
 kind: pipeline
-name: gitnex-ci-test
+type: docker
+name: tests
 
 steps:
 
-  - name: test
+  - name: unit-tests
     image: nextcloudci/android:android-49
+    depends_on: [ clone ]
     commands:
       - ./gradlew test
+
+  - name: check-formatting
+    image: zosiab/eclint:latest
+    depends_on: [ clone ]
+    commands:
+      - git pull origin master
+      - eclint check $(git diff --name-only origin/master)
+
+  # This may be used in the future, because it makes of intellij's native code inspection/formatting capabilities.
+  # Additional information: https://www.jetbrains.com/help/idea/command-line-formatter.html
+  #
+  #  - name: do-or-check-formatting
+  #    image: dlsniper/docker-intellij
+  #    depends_on: [ clone ]
+  #    commands:
+  #      - /opt/intellij/bin/idea.sh inspect/format ...
+  #
+  #  - name: do-or-check-formatting
+  #    image: dlsniper/docker-intellij
+  #    depends_on: [ clone ]
+  #    commands:
+  #      - /opt/intellij/bin/idea.sh format -s .idea/codeStyles/Project.xml -m *.java app/src/main/java
 
 trigger:
   event:
@@ -15,7 +39,27 @@ trigger:
 
 ---
 kind: pipeline
-name: gitnex-ci-build
+type: docker
+name: code-analysis
+
+steps:
+
+  - name: check-global-formatting
+    image: zosiab/eclint:latest
+    depends_on: [ clone ]
+    commands:
+      - eclint check $(git ls-files)
+
+trigger:
+  event:
+    - push
+  branch:
+    - master
+
+---
+kind: pipeline
+type: docker
+name: build
 
 steps:
 
@@ -27,7 +71,7 @@ steps:
   - name: sign
     image: nextcloudci/android:android-49
     environment:
-      TOKEN:
+      BOT_TOKEN:
         from_secret: BOT_TOKEN
       KS_PASS:
         from_secret: KS_PASS
@@ -47,8 +91,11 @@ steps:
       WEBDAV_USERNAME: GitNexBot
       WEBDAV_PASSWORD:
         from_secret: NC_TOKEN
-      PLUGIN_FILE: signed.apk
-      PLUGIN_DESTINATION: https://cloud.swatian.com/remote.php/dav/files/GitNexBot/GitNex-Builds/latest.apk
+      PLUGIN_FILE: 'signed.apk'
+      PLUGIN_TIMEOUT: 180
+      PLUGIN_ATTEMPTS: 5
+      PLUGIN_DESTINATION: 'https://cloud.swatian.com/remote.php/dav/files/GitNexBot/gitnex/builds/latest.apk'
+      PLUGIN_CUSTOM_ARGUMENTS: '--progress-bar'
 
 trigger:
   event:

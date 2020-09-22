@@ -2,11 +2,6 @@ package org.mian.gitnex.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,13 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.MembersByOrgAdapter;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.UserInfo;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.MembersByOrgViewModel;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +40,7 @@ public class MembersByOrgFragment extends Fragment {
     private String orgName;
     private MembersByOrgAdapter adapter;
     private GridView mGridView;
+    private ProgressBar progressBar;
 
     public MembersByOrgFragment() {
     }
@@ -72,6 +74,7 @@ public class MembersByOrgFragment extends Fragment {
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         noDataMembers = v.findViewById(R.id.noDataMembers);
 
+	    progressBar = v.findViewById(R.id.progressBar);
         mGridView = v.findViewById(R.id.gridView);
 
         fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName);
@@ -96,6 +99,8 @@ public class MembersByOrgFragment extends Fragment {
                     mGridView.setAdapter(adapter);
                     noDataMembers.setVisibility(View.VISIBLE);
                 }
+
+	            progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -104,7 +109,7 @@ public class MembersByOrgFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
+        boolean connToInternet = AppUtil.hasNetworkConnection(Objects.requireNonNull(getContext()));
 
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);

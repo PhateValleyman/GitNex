@@ -19,8 +19,9 @@ import org.mian.gitnex.activities.AddRemoveLabelsActivity;
 import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.util.TinyDB;
+import org.mian.gitnex.helpers.Version;
 import java.util.Objects;
 
 /**
@@ -33,7 +34,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		View v = inflater.inflate(R.layout.bottom_sheet_single_issue_layout, container, false);
+		View v = inflater.inflate(R.layout.bottom_sheet_single_issue, container, false);
 
 		final Context ctx = getContext();
 		final TinyDB tinyDB = new TinyDB(ctx);
@@ -50,7 +51,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		TextView subscribeIssue = v.findViewById(R.id.subscribeIssue);
 		TextView unsubscribeIssue = v.findViewById(R.id.unsubscribeIssue);
 
-		if(tinyDB.getString("issueType").equals("pr")) {
+		if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
 
 			editIssue.setText(R.string.editPrText);
 			copyIssueUrl.setText(R.string.copyPrUrlText);
@@ -63,7 +64,10 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 				mergePullRequest.setVisibility(View.VISIBLE);
 			}
 
-			if(tinyDB.getString("repoType").equals("public")) {
+			if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.13.0")) {
+				openFilesDiff.setVisibility(View.VISIBLE);
+			}
+			else if(tinyDB.getString("repoType").equals("public")) {
 				openFilesDiff.setVisibility(View.VISIBLE);
 			}
 			else {
@@ -77,113 +81,68 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		}
 
-		mergePullRequest.setOnClickListener(new View.OnClickListener() {
+		mergePullRequest.setOnClickListener(v13 -> {
 
-			@Override
-			public void onClick(View v) {
+			startActivity(new Intent(ctx, MergePullRequestActivity.class));
+			dismiss();
 
-				startActivity(new Intent(ctx, MergePullRequestActivity.class));
-				dismiss();
-
-			}
 		});
 
-		openFilesDiff.setOnClickListener(new View.OnClickListener() {
+		openFilesDiff.setOnClickListener(v14 -> {
 
-			@Override
-			public void onClick(View v) {
+			startActivity(new Intent(ctx, FileDiffActivity.class));
+			dismiss();
 
-				startActivity(new Intent(ctx, FileDiffActivity.class));
-				dismiss();
-
-			}
 		});
 
-		editIssue.setOnClickListener(new View.OnClickListener() {
+		editIssue.setOnClickListener(v15 -> {
 
-			@Override
-			public void onClick(View v) {
+			startActivity(new Intent(ctx, EditIssueActivity.class));
+			dismiss();
 
-				startActivity(new Intent(ctx, EditIssueActivity.class));
-				dismiss();
-
-			}
 		});
 
-		editLabels.setOnClickListener(new View.OnClickListener() {
+		editLabels.setOnClickListener(v16 -> {
 
-			@Override
-			public void onClick(View v) {
+			startActivity(new Intent(ctx, AddRemoveLabelsActivity.class));
+			dismiss();
 
-				startActivity(new Intent(ctx, AddRemoveLabelsActivity.class));
-				dismiss();
-
-			}
 		});
 
-		addRemoveAssignees.setOnClickListener(new View.OnClickListener() {
+		addRemoveAssignees.setOnClickListener(v17 -> {
 
-			@Override
-			public void onClick(View v) {
+			startActivity(new Intent(ctx, AddRemoveAssigneesActivity.class));
+			dismiss();
 
-				startActivity(new Intent(ctx, AddRemoveAssigneesActivity.class));
-				dismiss();
-
-			}
 		});
 
 		shareIssue.setOnClickListener(v1 -> {
 
-			// get url of repo
-			String repoFullName = tinyDB.getString("repoFullName");
-			String instanceUrlWithProtocol = "https://" + tinyDB.getString("instanceUrlRaw");
-			if(!tinyDB.getString("instanceUrlWithProtocol").isEmpty()) {
-				instanceUrlWithProtocol = tinyDB.getString("instanceUrlWithProtocol");
-			}
-
-			// get issue Url
-			String issueUrl = instanceUrlWithProtocol + "/" + repoFullName + "/issues/" + tinyDB.getString("issueNumber");
-
-			// share issue
 			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 			sharingIntent.setType("text/plain");
 			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.hash) + tinyDB.getString("issueNumber") + " " + tinyDB.getString("issueTitle"));
-			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, issueUrl);
+			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, tinyDB.getString("singleIssueHtmlUrl"));
 			startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.hash) + tinyDB.getString("issueNumber") + " " + tinyDB.getString("issueTitle")));
 
 			dismiss();
 
 		});
 
-		copyIssueUrl.setOnClickListener(new View.OnClickListener() {
+		copyIssueUrl.setOnClickListener(v12 -> {
 
-			@Override
-			public void onClick(View v) {
+			// copy to clipboard
+			ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
+			ClipData clip = ClipData.newPlainText("issueUrl", tinyDB.getString("singleIssueHtmlUrl"));
+			assert clipboard != null;
+			clipboard.setPrimaryClip(clip);
 
-				// get url of repo
-				String repoFullName = tinyDB.getString("repoFullName");
-				String instanceUrlWithProtocol = "https://" + tinyDB.getString("instanceUrlRaw");
-				if(!tinyDB.getString("instanceUrlWithProtocol").isEmpty()) {
-					instanceUrlWithProtocol = tinyDB.getString("instanceUrlWithProtocol");
-				}
+			Toasty.info(ctx, ctx.getString(R.string.copyIssueUrlToastMsg));
 
-				// get issue Url
-				String issueUrl = instanceUrlWithProtocol + "/" + repoFullName + "/issues/" + tinyDB.getString("issueNumber");
+			dismiss();
 
-				// copy to clipboard
-				ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(android.content.Context.CLIPBOARD_SERVICE);
-				ClipData clip = ClipData.newPlainText("issueUrl", issueUrl);
-				assert clipboard != null;
-				clipboard.setPrimaryClip(clip);
-
-				dismiss();
-
-				Toasty.info(ctx, ctx.getString(R.string.copyIssueUrlToastMsg));
-
-			}
 		});
 
-		if(tinyDB.getString("issueType").equals("issue")) {
+		if(tinyDB.getString("issueType").equalsIgnoreCase("Issue")) {
 
 			if(tinyDB.getString("issueState").equals("open")) { // close issue
 
@@ -222,23 +181,29 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		subscribeIssue.setOnClickListener(subscribeToIssue -> {
 
-			IssueActions.subscribe(ctx, subscribeIssue, unsubscribeIssue);
-			//dismiss();
+			IssueActions.subscribe(ctx);
+			dismiss();
 
 		});
 
 		unsubscribeIssue.setOnClickListener(unsubscribeToIssue -> {
 
-			IssueActions.unsubscribe(ctx, subscribeIssue, unsubscribeIssue);
-			//dismiss();
+			IssueActions.unsubscribe(ctx);
+			dismiss();
 
 		});
 
-		//if RepoWatch True Provide Unsubscribe first
-		// ToDo: API to check if user is subscribed to an issue (do not exist can be guessed by many api endpoints :/)
-		if(tinyDB.getBoolean("repoWatch")) {
+		if(new Version(tinyDB.getString("giteaVersion")).less("1.12.0")) {
+			subscribeIssue.setVisibility(View.GONE);
+			unsubscribeIssue.setVisibility(View.GONE);
+		}
+		else if(tinyDB.getBoolean("issueSubscribed")) {
 			subscribeIssue.setVisibility(View.GONE);
 			unsubscribeIssue.setVisibility(View.VISIBLE);
+		}
+		else {
+			subscribeIssue.setVisibility(View.VISIBLE);
+			unsubscribeIssue.setVisibility(View.GONE);
 		}
 
 		return v;

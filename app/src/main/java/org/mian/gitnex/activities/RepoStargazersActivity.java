@@ -1,19 +1,20 @@
 package org.mian.gitnex.activities;
 
+import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.RepoStargazersAdapter;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.UserInfo;
-import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.RepoStargazersViewModel;
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class RepoStargazersActivity extends BaseActivity {
     private GridView mGridView;
     private ProgressBar mProgressBar;
 
+    final Context ctx = this;
+    private Context appCtx;
+
     @Override
     protected int getLayoutResourceId(){
         return R.layout.activity_repo_stargazers;
@@ -36,9 +40,11 @@ public class RepoStargazersActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
+
+        TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
@@ -59,7 +65,7 @@ public class RepoStargazersActivity extends BaseActivity {
 
         toolbarTitle.setText(R.string.repoStargazersInMenu);
 
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName);
+        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
 
     }
 
@@ -67,10 +73,10 @@ public class RepoStargazersActivity extends BaseActivity {
 
         RepoStargazersViewModel repoStargazersModel = new ViewModelProvider(this).get(RepoStargazersViewModel.class);
 
-        repoStargazersModel.getRepoStargazers(instanceUrl, instanceToken, repoOwner, repoName, getApplicationContext()).observe(this, new Observer<List<UserInfo>>() {
+        repoStargazersModel.getRepoStargazers(instanceUrl, instanceToken, repoOwner, repoName, ctx).observe(this, new Observer<List<UserInfo>>() {
             @Override
             public void onChanged(@Nullable List<UserInfo> stargazersListMain) {
-                adapter = new RepoStargazersAdapter(getApplicationContext(), stargazersListMain);
+                adapter = new RepoStargazersAdapter(ctx, stargazersListMain);
                 if(adapter.getCount() > 0) {
                     mGridView.setAdapter(adapter);
                     noDataStargazers.setVisibility(View.GONE);
@@ -87,12 +93,8 @@ public class RepoStargazersActivity extends BaseActivity {
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+
+        onClickListener = view -> finish();
     }
 
 }

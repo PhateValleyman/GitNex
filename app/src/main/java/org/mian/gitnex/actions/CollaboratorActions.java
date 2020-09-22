@@ -2,16 +2,16 @@ package org.mian.gitnex.actions;
 
 import android.content.Context;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.AddCollaboratorToRepositoryActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Permission;
-import org.mian.gitnex.util.TinyDB;
-import androidx.annotation.NonNull;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -47,7 +47,7 @@ public class CollaboratorActions {
                 if(response.isSuccessful()) {
                     if(response.code() == 204) {
 
-                        Toasty.info(context, context.getString(R.string.removeCollaboratorToastText));
+                        Toasty.success(context, context.getString(R.string.removeCollaboratorToastText));
                         ((AddCollaboratorToRepositoryActivity)context).finish();
                         //Log.i("addCollaboratorSearch", addCollaboratorSearch.getText().toString());
                         //tinyDb.putBoolean("updateDataSet", true);
@@ -66,17 +66,17 @@ public class CollaboratorActions {
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(context, context.getString(R.string.authorizeError));
+                    Toasty.error(context, context.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(context, context.getString(R.string.apiNotFound));
+                    Toasty.warning(context, context.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(context, context.getString(R.string.genericError));
+                    Toasty.error(context, context.getString(R.string.genericError));
 
                 }
 
@@ -117,7 +117,7 @@ public class CollaboratorActions {
                 if(response.isSuccessful()) {
                     if(response.code() == 204) {
 
-                        Toasty.info(context, context.getString(R.string.addCollaboratorToastText));
+                        Toasty.success(context, context.getString(R.string.addCollaboratorToastText));
                         ((AddCollaboratorToRepositoryActivity)context).finish();
                         //AddCollaboratorToRepositoryActivity usersSearchData = new AddCollaboratorToRepositoryActivity();
                         //usersSearchData.loadUserSearchList(instanceUrl, instanceToken, searchKeyword, context);
@@ -134,17 +134,17 @@ public class CollaboratorActions {
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(context, context.getString(R.string.authorizeError));
+                    Toasty.error(context, context.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(context, context.getString(R.string.apiNotFound));
+                    Toasty.warning(context, context.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(context, context.getString(R.string.genericError));
+                    Toasty.error(context, context.getString(R.string.genericError));
 
                 }
 

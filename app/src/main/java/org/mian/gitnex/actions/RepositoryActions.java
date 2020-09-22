@@ -8,8 +8,8 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.util.TinyDB;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -46,7 +46,7 @@ public class RepositoryActions {
                     if(response.code() == 204) {
 
                         tinyDb.putBoolean("repoCreated", true);
-                        Toasty.info(context, context.getString(R.string.starRepositorySuccess));
+                        Toasty.success(context, context.getString(R.string.starRepositorySuccess));
 
                     }
                 }
@@ -60,17 +60,17 @@ public class RepositoryActions {
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(context, context.getString(R.string.authorizeError));
+                    Toasty.error(context, context.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(context, context.getString(R.string.apiNotFound));
+                    Toasty.warning(context, context.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(context, context.getString(R.string.genericError));
+                    Toasty.error(context, context.getString(R.string.genericError));
 
                 }
 
@@ -111,7 +111,7 @@ public class RepositoryActions {
                     if(response.code() == 204) {
 
                         tinyDb.putBoolean("repoCreated", true);
-                        Toasty.info(context, context.getString(R.string.unStarRepositorySuccess));
+                        Toasty.success(context, context.getString(R.string.unStarRepositorySuccess));
 
                     }
                 }
@@ -125,17 +125,17 @@ public class RepositoryActions {
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(context, context.getString(R.string.authorizeError));
+                    Toasty.error(context, context.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(context, context.getString(R.string.apiNotFound));
+                    Toasty.warning(context, context.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(context, context.getString(R.string.genericError));
+                    Toasty.error(context, context.getString(R.string.genericError));
 
                 }
 
@@ -176,7 +176,7 @@ public class RepositoryActions {
                     if(response.code() == 200) {
 
                         tinyDb.putBoolean("repoCreated", true);
-                        Toasty.info(context, context.getString(R.string.watchRepositorySuccess));
+                        Toasty.success(context, context.getString(R.string.watchRepositorySuccess));
 
                     }
                 }
@@ -190,17 +190,17 @@ public class RepositoryActions {
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(context, context.getString(R.string.authorizeError));
+                    Toasty.error(context, context.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(context, context.getString(R.string.apiNotFound));
+                    Toasty.warning(context, context.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(context, context.getString(R.string.genericError));
+                    Toasty.error(context, context.getString(R.string.genericError));
 
                 }
 
@@ -240,7 +240,7 @@ public class RepositoryActions {
                 if(response.code() == 204) {
 
                     tinyDb.putBoolean("repoCreated", true);
-                    Toasty.info(context, context.getString(R.string.unWatchRepositorySuccess));
+                    Toasty.success(context, context.getString(R.string.unWatchRepositorySuccess));
 
                 }
                 else if(response.code() == 401) {
@@ -253,17 +253,17 @@ public class RepositoryActions {
                 }
                 else if(response.code() == 403) {
 
-                    Toasty.info(context, context.getString(R.string.authorizeError));
+                    Toasty.error(context, context.getString(R.string.authorizeError));
 
                 }
                 else if(response.code() == 404) {
 
-                    Toasty.info(context, context.getString(R.string.apiNotFound));
+                    Toasty.warning(context, context.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(context, context.getString(R.string.genericError));
+                    Toasty.error(context, context.getString(R.string.genericError));
 
                 }
 

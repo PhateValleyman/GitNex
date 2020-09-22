@@ -1,12 +1,8 @@
 package org.mian.gitnex.activities;
 
-import com.google.android.material.tabs.TabLayout;
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -16,20 +12,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import com.google.android.material.tabs.TabLayout;
 import org.mian.gitnex.R;
-import org.mian.gitnex.fragments.MembersByOrgFragment;
 import org.mian.gitnex.fragments.BottomSheetOrganizationFragment;
+import org.mian.gitnex.fragments.MembersByOrgFragment;
 import org.mian.gitnex.fragments.OrganizationInfoFragment;
 import org.mian.gitnex.fragments.RepositoriesByOrgFragment;
 import org.mian.gitnex.fragments.TeamsByOrgFragment;
-import org.mian.gitnex.util.TinyDB;
+import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
 import java.util.Objects;
+import io.mikael.urlbuilder.UrlBuilder;
 
 /**
  * Author M M Arif
  */
 
 public class OrganizationDetailActivity extends BaseActivity implements BottomSheetOrganizationFragment.BottomSheetListener {
+
+    final Context ctx = this;
+    private Context appCtx;
+	private TinyDB tinyDb;
 
     @Override
     protected int getLayoutResourceId(){
@@ -38,9 +47,12 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
+	    tinyDb = new TinyDB(appCtx);
+
+        TinyDB tinyDb = new TinyDB(appCtx);
         String orgName = tinyDb.getString("orgName");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -62,15 +74,15 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
         switch(tinyDb.getInt("customFontId", -1)) {
 
             case 0:
-                myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/roboto.ttf");
+                myTypeface = Typeface.createFromAsset(ctx.getAssets(), "fonts/roboto.ttf");
                 break;
 
             case 2:
-                myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/sourcecodeproregular.ttf");
+                myTypeface = Typeface.createFromAsset(ctx.getAssets(), "fonts/sourcecodeproregular.ttf");
                 break;
 
             default:
-                myTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/manroperegular.ttf");
+                myTypeface = Typeface.createFromAsset(ctx.getAssets(), "fonts/manroperegular.ttf");
                 break;
 
         }
@@ -99,6 +111,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.repo_dotted_menu, menu);
         return true;
@@ -126,19 +139,28 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
     @Override
     public void onButtonClicked(String text) {
 
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
-
         switch (text) {
             case "repository":
+
                 tinyDb.putBoolean("organizationAction", true);
                 startActivity(new Intent(OrganizationDetailActivity.this, CreateRepoActivity.class));
                 break;
             case "team":
+
                 startActivity(new Intent(OrganizationDetailActivity.this, CreateTeamByOrgActivity.class));
                 break;
-        }
-        //Log.i("clicked", text);
+	        case "copyOrgUrl":
 
+		        String url = UrlBuilder.fromString(tinyDb.getString("instanceUrl"))
+			        .withPath("/")
+			        .toString();
+		        ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
+		        ClipData clip = ClipData.newPlainText("orgUrl", url + tinyDb.getString("orgName"));
+		        assert clipboard != null;
+		        clipboard.setPrimaryClip(clip);
+		        Toasty.info(ctx, ctx.getString(R.string.copyIssueUrlToastMsg));
+		        break;
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -151,7 +173,6 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
         @Override
         public Fragment getItem(int position) {
 
-            TinyDB tinyDb = new TinyDB(getApplicationContext());
             String orgName;
             if(getIntent().getStringExtra("orgName") != null || !Objects.equals(getIntent().getStringExtra("orgName"), "")) {
                 orgName = getIntent().getStringExtra("orgName");

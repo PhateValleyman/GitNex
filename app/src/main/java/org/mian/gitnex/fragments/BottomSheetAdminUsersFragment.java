@@ -22,16 +22,14 @@ public class BottomSheetAdminUsersFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.bottom_sheet_admin_users_layout, container, false);
+        View v = inflater.inflate(R.layout.bottom_sheet_admin_users, container, false);
 
         TextView createNewUser = v.findViewById(R.id.createNewUser);
 
-        createNewUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bmListener.onButtonClicked("newUser");
-                dismiss();
-            }
+        createNewUser.setOnClickListener(v1 -> {
+
+            bmListener.onButtonClicked("newUser");
+            dismiss();
         });
 
         return v;
@@ -47,9 +45,9 @@ public class BottomSheetAdminUsersFragment extends BottomSheetDialogFragment {
 
         try {
             bmListener = (BottomSheetAdminUsersFragment.BottomSheetListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement BottomSheetListener");
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement BottomSheetListener");
         }
     }
 

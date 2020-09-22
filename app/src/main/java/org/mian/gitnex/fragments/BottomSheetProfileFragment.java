@@ -21,16 +21,14 @@ public class BottomSheetProfileFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.bottom_sheet_profile_layout, container, false);
+        View v = inflater.inflate(R.layout.bottom_sheet_profile, container, false);
 
         TextView addNewEmailAddress = v.findViewById(R.id.addNewEmailAddress);
 
-        addNewEmailAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), ProfileEmailActivity.class));
-                dismiss();
-            }
+        addNewEmailAddress.setOnClickListener(v1 -> {
+
+            startActivity(new Intent(getContext(), ProfileEmailActivity.class));
+            dismiss();
         });
 
         return v;

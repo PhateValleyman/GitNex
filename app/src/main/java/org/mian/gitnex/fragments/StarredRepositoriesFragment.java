@@ -3,6 +3,16 @@ package org.mian.gitnex.fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -12,24 +22,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.CreateRepoActivity;
 import org.mian.gitnex.adapters.StarredReposListAdapter;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.UserRepositories;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.StarredRepositoriesViewModel;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +45,7 @@ public class StarredRepositoriesFragment extends Fragment {
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
     private StarredReposListAdapter adapter;
-    private ImageView createNewRepo;
+    private ExtendedFloatingActionButton createNewRepo;
     private TextView noData;
     private int pageSize = 1;
     private int resultLimit = 50;
@@ -78,7 +78,7 @@ public class StarredRepositoriesFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_starred_repositories, container, false);
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
+        boolean connToInternet = AppUtil.hasNetworkConnection(Objects.requireNonNull(getContext()));
         setHasOptionsMenu(true);
 
         TinyDB tinyDb = new TinyDB(getContext());
@@ -186,7 +186,7 @@ public class StarredRepositoriesFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
+        boolean connToInternet = AppUtil.hasNetworkConnection(Objects.requireNonNull(getContext()));
 
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);

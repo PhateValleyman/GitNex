@@ -1,14 +1,14 @@
 package org.mian.gitnex.activities;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
+import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.util.Log;
@@ -22,29 +22,45 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.pddstudio.highlightjs.HighlightJsView;
-import com.pddstudio.highlightjs.models.Theme;
 import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetFileViewerFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.highlightjs.HighlightJsView;
+import org.mian.gitnex.helpers.highlightjs.models.Theme;
 import org.mian.gitnex.models.Files;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
+import io.noties.markwon.AbstractMarkwonPlugin;
+import io.noties.markwon.Markwon;
+import io.noties.markwon.core.CorePlugin;
+import io.noties.markwon.core.MarkwonTheme;
+import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
+import io.noties.markwon.ext.tables.TablePlugin;
+import io.noties.markwon.ext.tasklist.TaskListPlugin;
+import io.noties.markwon.html.HtmlPlugin;
+import io.noties.markwon.image.DefaultMediaDecoder;
+import io.noties.markwon.image.ImageItem;
+import io.noties.markwon.image.ImagesPlugin;
+import io.noties.markwon.image.SchemeHandler;
+import io.noties.markwon.image.gif.GifMediaDecoder;
+import io.noties.markwon.image.svg.SvgMediaDecoder;
+import io.noties.markwon.linkify.LinkifyPlugin;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -60,13 +76,17 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private HighlightJsView singleCodeContents;
 	private PhotoView imageView;
 	final Context ctx = this;
+	private Context appCtx;
 	private ProgressBar mProgressBar;
 	private byte[] imageData;
 	private PDFView pdfView;
 	private LinearLayout pdfViewFrame;
 	private byte[] decodedPdf;
 	private Boolean pdfNightMode;
-	private static final int PERMISSION_REQUEST_CODE = 1;
+	private String singleFileName;
+	private String fileSha;
+	private AppUtil appUtil;
+	private TinyDB tinyDb;
 
 	@Override
 	protected int getLayoutResourceId() {
@@ -78,17 +98,23 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		appCtx = getApplicationContext();
+		appUtil = new AppUtil();
+		tinyDb = new TinyDB(appCtx);
+
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
 		String repoFullName = tinyDb.getString("repoFullName");
+		String repoBranch = tinyDb.getString("repoBranch");
 		String[] parts = repoFullName.split("/");
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+
+		tinyDb.putBoolean("enableMarkdownInFileView", false);
 
 		ImageView closeActivity = findViewById(R.id.close);
 		singleFileContents = findViewById(R.id.singleFileContents);
@@ -99,7 +125,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		pdfViewFrame = findViewById(R.id.pdfViewFrame);
 		singleFileContentsFrame = findViewById(R.id.singleFileContentsFrame);
 
-		String singleFileName = getIntent().getStringExtra("singleFileName");
+		singleFileName = getIntent().getStringExtra("singleFileName");
 
 		TextView toolbar_title = findViewById(R.id.toolbar_title);
 		toolbar_title.setMovementMethod(new ScrollingMovementMethod());
@@ -118,22 +144,40 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		}
 		catch(UnsupportedEncodingException e) {
 
-			assert singleFileName != null;
 			Log.i("singleFileName", singleFileName);
 
 		}
 
 		toolbar_title.setText(singleFileName);
 
-		getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName);
+		getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName, repoBranch);
 
 	}
 
-	private void getSingleFileContents(String instanceUrl, String token, final String owner, String repo, final String filename) {
+	@Override
+	public void onResume() {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		super.onResume();
 
-		Call<Files> call = RetrofitClient.getInstance(instanceUrl, getApplicationContext()).getApiInterface().getSingleFileContents(token, owner, repo, filename);
+		String repoFullName = tinyDb.getString("repoFullName");
+		String repoBranch = tinyDb.getString("repoBranch");
+		String[] parts = repoFullName.split("/");
+		String repoOwner = parts[0];
+		String repoName = parts[1];
+		String instanceUrl = tinyDb.getString("instanceUrl");
+		String loginUid = tinyDb.getString("loginUid");
+		String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+
+		if(tinyDb.getBoolean("fileModified")) {
+			getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName, repoBranch);
+			tinyDb.putBoolean("fileModified", false);
+		}
+	}
+
+
+	private void getSingleFileContents(String instanceUrl, String token, final String owner, String repo, final String filename, String ref) {
+
+		Call<Files> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getSingleFileContents(token, owner, repo, filename, ref);
 
 		call.enqueue(new Callback<Files>() {
 
@@ -142,13 +186,14 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 				if(response.code() == 200) {
 
-					AppUtil appUtil = new AppUtil();
 					assert response.body() != null;
 
 					if(!response.body().getContent().equals("")) {
 
 						String fileExtension = FileUtils.getExtension(filename);
 						mProgressBar.setVisibility(View.GONE);
+
+						fileSha = response.body().getSha();
 
 						// download file meta
 						tinyDb.putString("downloadFileName", filename);
@@ -193,7 +238,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 									singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
 							}
 
-							singleCodeContents.setShowLineNumbers(true);
 							singleCodeContents.setSource(appUtil.decodeBase64(response.body().getContent()));
 
 						}
@@ -247,17 +291,17 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				}
 				else if(response.code() == 403) {
 
-					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+					Toasty.error(ctx, ctx.getString(R.string.authorizeError));
 
 				}
 				else if(response.code() == 404) {
 
-					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+					Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
 
 				}
 				else {
 
-					Toasty.info(getApplicationContext(), getString(R.string.labelGeneralError));
+					Toasty.error(ctx, getString(R.string.labelGeneralError));
 
 				}
 
@@ -277,6 +321,13 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
+		inflater.inflate(R.menu.files_view_menu, menu);
+
+		String fileExtension = FileUtils.getExtension(singleFileName);
+		if(!fileExtension.equalsIgnoreCase("md")) {
+			menu.getItem(0).setVisible(false);
+		}
+
 		return true;
 	}
 
@@ -287,11 +338,82 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		switch(id) {
 			case android.R.id.home:
+
 				finish();
 				return true;
 			case R.id.genericMenu:
+
 				BottomSheetFileViewerFragment bottomSheet = new BottomSheetFileViewerFragment();
 				bottomSheet.show(getSupportFragmentManager(), "fileViewerBottomSheet");
+				return true;
+			case R.id.markdown:
+
+				final Markwon markwon = Markwon.builder(Objects.requireNonNull(ctx)).usePlugin(CorePlugin.create())
+					.usePlugin(ImagesPlugin.create(plugin -> {
+						plugin.addSchemeHandler(new SchemeHandler() {
+
+							@NonNull
+							@Override
+							public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
+
+								final int resourceId = ctx.getResources().getIdentifier(
+									raw.substring("drawable://".length()),
+									"drawable",
+									ctx.getPackageName());
+
+								final Drawable drawable = ctx.getDrawable(resourceId);
+
+								assert drawable != null;
+								return ImageItem.withResult(drawable);
+							}
+
+							@NonNull
+							@Override
+							public Collection<String> supportedSchemes() {
+
+								return Collections.singleton("drawable");
+							}
+						});
+						plugin.placeholderProvider(drawable -> null);
+						plugin.addMediaDecoder(GifMediaDecoder.create(false));
+						plugin.addMediaDecoder(SvgMediaDecoder.create(ctx.getResources()));
+						plugin.addMediaDecoder(SvgMediaDecoder.create());
+						plugin.defaultMediaDecoder(DefaultMediaDecoder.create(ctx.getResources()));
+						plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
+					}))
+					.usePlugin(new AbstractMarkwonPlugin() {
+						@Override
+						public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
+
+							builder.codeTextColor(tinyDb.getInt("codeBlockColor")).codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
+								.linkColor(getResources().getColor(R.color.lightBlue));
+						}
+					})
+					.usePlugin(TablePlugin.create(ctx))
+					.usePlugin(TaskListPlugin.create(ctx))
+					.usePlugin(HtmlPlugin.create())
+					.usePlugin(StrikethroughPlugin.create())
+					.usePlugin(LinkifyPlugin.create())
+					.build();
+
+				if(!tinyDb.getBoolean("enableMarkdownInFileView")) {
+
+					singleCodeContents.setVisibility(View.GONE);
+					singleFileContentsFrame.setVisibility(View.VISIBLE);
+					singleFileContents.setVisibility(View.VISIBLE);
+					Spanned bodyWithMD = markwon.toMarkdown(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
+					markwon.setParsedMarkdown(singleFileContents, bodyWithMD);
+					tinyDb.putBoolean("enableMarkdownInFileView", true);
+				}
+				else {
+
+					singleCodeContents.setVisibility(View.VISIBLE);
+					singleFileContentsFrame.setVisibility(View.GONE);
+					singleFileContents.setVisibility(View.GONE);
+					singleCodeContents.setSource(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
+					tinyDb.putBoolean("enableMarkdownInFileView", false);
+				}
+
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -302,94 +424,112 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	@Override
 	public void onButtonClicked(String text) {
 
-		switch(text) {
-			case "downloadFile":
+		if("downloadFile".equals(text)) {
 
-				if(Build.VERSION.SDK_INT >= 23) {
-					if(checkPermission()) {
-						requestFileDownload();
-					}
-					else {
-						requestPermission();
-					}
-				}
-				else {
-					requestFileDownload();
-				}
-				break;
+			requestFileDownload();
+		}
 
+		if("deleteFile".equals(text)) {
+
+			String fileExtension = FileUtils.getExtension(singleFileName);
+			String data = appUtil.decodeBase64(tinyDb.getString("downloadFileContents"));
+			Intent intent = new Intent(ctx, CreateFileActivity.class);
+			intent.putExtra("fileAction", 1);
+			intent.putExtra("filePath", singleFileName);
+			intent.putExtra("fileSha", fileSha);
+			if(!appUtil.imageExtension(fileExtension)) {
+				intent.putExtra("fileContents", data);
+			}
+			else {
+				intent.putExtra("fileContents", "");
+			}
+
+			ctx.startActivity(intent);
+		}
+
+		if("editFile".equals(text)) {
+
+			String fileExtension = FileUtils.getExtension(singleFileName);
+			String data = appUtil.decodeBase64(tinyDb.getString("downloadFileContents"));
+			Intent intent = new Intent(ctx, CreateFileActivity.class);
+			intent.putExtra("fileAction", 2);
+			intent.putExtra("filePath", singleFileName);
+			intent.putExtra("fileSha", fileSha);
+			if(!appUtil.imageExtension(fileExtension)) {
+				intent.putExtra("fileContents", data);
+			}
+			else {
+				intent.putExtra("fileContents", "");
+			}
+
+			ctx.startActivity(intent);
 		}
 
 	}
 
 	private void requestFileDownload() {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
-
 		if(!tinyDb.getString("downloadFileContents").isEmpty()) {
 
-			File outputFileName = new File(tinyDb.getString("downloadFileName"));
-			final File downloadFilePath = new File(Environment.getExternalStorageDirectory().getPath() + "/Download/" + outputFileName.getName());
+			int CREATE_REQUEST_CODE = 40;
 
-			byte[] pdfAsBytes = Base64.decode(tinyDb.getString("downloadFileContents"), 0);
-			FileOutputStream fileOutputStream = null;
+			File outputFileName = new File(tinyDb.getString("downloadFileName"));
+
+			Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.setType("*/*");
+			intent.putExtra(Intent.EXTRA_TITLE, outputFileName.getName());
+
+			startActivityForResult(intent, CREATE_REQUEST_CODE);
+
+		}
+		else {
+
+			Toasty.warning(ctx, getString(R.string.waitLoadingDownloadFile));
+		}
+
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if(requestCode == 40 && resultCode == RESULT_OK) {
 
 			try {
 
-				fileOutputStream = new FileOutputStream(downloadFilePath, false);
-				Objects.requireNonNull(fileOutputStream).write(pdfAsBytes);
-				fileOutputStream.flush();
-				fileOutputStream.close();
-				Toasty.info(getApplicationContext(), getString(R.string.downloadFileSaved));
+				assert data != null;
+				Uri uri = data.getData();
+
+				assert uri != null;
+				OutputStream outputStream = getContentResolver().openOutputStream(uri);
+
+				byte[] dataAsBytes = Base64.decode(tinyDb.getString("downloadFileContents"), 0);
+
+				assert outputStream != null;
+				outputStream.write(dataAsBytes);
+				outputStream.close();
+
+				Toasty.success(ctx, getString(R.string.downloadFileSaved));
 
 			}
 			catch(IOException e) {
+
 				Log.e("errorFileDownloading", Objects.requireNonNull(e.getMessage()));
 			}
 
 		}
-		else {
-			Toasty.error(getApplicationContext(), getString(R.string.waitLoadingDownloadFile));
-		}
 
-	}
-
-	private boolean checkPermission() {
-
-		int result = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-		return result == PackageManager.PERMISSION_GRANTED;
-	}
-
-	private void requestPermission() {
-
-		ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-	}
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-		switch(requestCode) {
-			case PERMISSION_REQUEST_CODE:
-				if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-					Log.i("PermissionsCheck", "Permission Granted");
-				}
-				else {
-					Log.e("PermissionsCheck", "Permission Denied");
-				}
-				break;
-		}
 	}
 
 	private void initCloseListener() {
 
-		onClickListener = new View.OnClickListener() {
+		onClickListener = view -> {
 
-			@Override
-			public void onClick(View view) {
-
-				getIntent().removeExtra("singleFileName");
-				finish();
-			}
+			getIntent().removeExtra("singleFileName");
+			finish();
 		};
 	}
 

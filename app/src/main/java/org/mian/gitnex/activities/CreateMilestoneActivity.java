@@ -1,11 +1,7 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,16 +10,19 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import androidx.annotation.NonNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.VersionCheck;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Milestones;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import java.util.Calendar;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -37,6 +36,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
     private EditText milestoneDescription;
     private Button createNewMilestoneButton;
     final Context ctx = this;
+    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -45,9 +45,11 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        super.onCreate(savedInstanceState);
+        appCtx = getApplicationContext();
+
+        boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -68,30 +70,21 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         if(!connToInternet) {
 
             createNewMilestoneButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            createNewMilestoneButton.setBackground(shape);
-
-        } else {
+        }
+        else {
 
             createNewMilestoneButton.setOnClickListener(createMilestoneListener);
-
         }
 
     }
 
-    private View.OnClickListener createMilestoneListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            processNewMilestone();
-        }
-    };
+    private View.OnClickListener createMilestoneListener = v -> processNewMilestone();
 
     private void processNewMilestone() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(getApplicationContext());
+        boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
         AppUtil appUtil = new AppUtil();
-        TinyDB tinyDb = new TinyDB(getApplicationContext());
+        TinyDB tinyDb = new TinyDB(appCtx);
         String repoFullName = tinyDb.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         final String repoOwner = parts[0];
@@ -107,14 +100,14 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 
         if(!connToInternet) {
 
-            Toasty.info(getApplicationContext(), getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if(newMilestoneTitle.equals("")) {
 
-            Toasty.info(getApplicationContext(), getString(R.string.milestoneNameErrorEmpty));
+            Toasty.error(ctx, getString(R.string.milestoneNameErrorEmpty));
             return;
 
         }
@@ -122,7 +115,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         if(!newMilestoneDescription.equals("")) {
             if (appUtil.charactersLength(newMilestoneDescription) > 255) {
 
-                Toasty.info(getApplicationContext(), getString(R.string.milestoneDescError));
+                Toasty.warning(ctx, getString(R.string.milestoneDescError));
                 return;
 
             }
@@ -130,15 +123,18 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 
         String finalMilestoneDueDate = null;
         if(!newMilestoneDueDate.isEmpty()) {
+
             finalMilestoneDueDate = (AppUtil.customDateCombine(AppUtil.customDateFormat(newMilestoneDueDate)));
-        } else if (VersionCheck.compareVersion("1.10.0", tinyDb.getString("giteaVersion")) > 1) {
+        }
+        else if (new Version(tinyDb.getString("giteaVersion")).less("1.10.0")) {
+
             // if Gitea version is less than 1.10.0 DueDate is required
-            Toasty.info(getApplicationContext(), getString(R.string.milestoneDateEmpty));
+            Toasty.warning(ctx, getString(R.string.milestoneDateEmpty));
             return;
         }
 
         disableProcessButton();
-        createNewMilestone(instanceUrl, Authorization.returnAuthentication(getApplicationContext(), loginUid, instanceToken), repoOwner, repoName, newMilestoneTitle, newMilestoneDescription, finalMilestoneDueDate);
+        createNewMilestone(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newMilestoneTitle, newMilestoneDescription, finalMilestoneDueDate);
 
     }
 
@@ -149,7 +145,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         Call<Milestones> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl, getApplicationContext())
+                .getInstance(instanceUrl, ctx)
                 .getApiInterface()
                 .createMilestone(token, repoOwner, repoName, createMilestone);
 
@@ -161,9 +157,9 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
                 if(response.isSuccessful()) {
                     if(response.code() == 201) {
 
-                        TinyDB tinyDb = new TinyDB(getApplicationContext());
+                        TinyDB tinyDb = new TinyDB(appCtx);
                         tinyDb.putBoolean("milestoneCreated", true);
-                        Toasty.info(getApplicationContext(), getString(R.string.milestoneCreated));
+                        Toasty.success(ctx, getString(R.string.milestoneCreated));
                         enableProcessButton();
                         finish();
 
@@ -181,7 +177,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
                 else {
 
                     enableProcessButton();
-                    Toasty.info(getApplicationContext(), getString(R.string.milestoneCreatedError));
+                    Toasty.error(ctx, getString(R.string.milestoneCreatedError));
 
                 }
 
@@ -223,32 +219,18 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+
+        onClickListener = view -> finish();
     }
 
     private void disableProcessButton() {
 
         createNewMilestoneButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createNewMilestoneButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         createNewMilestoneButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createNewMilestoneButton.setBackground(shape);
-
     }
 
 }

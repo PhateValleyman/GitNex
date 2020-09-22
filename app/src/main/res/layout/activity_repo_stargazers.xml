@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/primaryBackgroundColor"
     android:orientation="vertical">
 
@@ -12,17 +13,16 @@
         android:layout_height="wrap_content"
         android:theme="@style/Widget.AppCompat.SearchView">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/primaryBackgroundColor"
-            tools:ignore="UnusedAttribute">
+            android:background="?attr/primaryBackgroundColor">
 
             <ImageView
                 android:id="@+id/close"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/close_button_size"
+                android:layout_height="@dimen/close_button_size"
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
                 android:gravity="center_vertical"
@@ -38,7 +38,7 @@
                 android:maxLines="1"
                 android:textSize="20sp" />
 
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -46,7 +46,6 @@
         android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:horizontalSpacing="10dp"
         android:numColumns="4"
         android:columnWidth="80dp"
@@ -54,23 +53,21 @@
         android:background="?attr/primaryBackgroundColor"
         android:gravity="center"/>
 
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        app:indicatorColor="?attr/progressIndicatorColor" />
+
     <TextView
         android:id="@+id/noDataStargazers"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="15dp"
         android:gravity="center"
         android:text="@string/noDataFound"
         android:textColor="?attr/primaryTextColor"
         android:textSize="20sp"
         android:visibility="gone" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="@style/Base.Widget.AppCompat.ProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="visible" />
 
 </LinearLayout>

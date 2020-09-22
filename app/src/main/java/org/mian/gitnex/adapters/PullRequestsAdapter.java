@@ -18,8 +18,8 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.PullRequests;
-import org.mian.gitnex.util.TinyDB;
 import java.util.List;
 import java.util.Locale;
 
@@ -97,6 +97,10 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 	class PullRequestsHolder extends RecyclerView.ViewHolder {
 
 		private TextView prNumber;
+		private TextView prMergeable;
+		private TextView prHeadBranch;
+		private TextView prIsFork;
+		private TextView prForkFullName;
 		private ImageView assigneeAvatar;
 		private TextView prTitle;
 		private TextView prCreatedTime;
@@ -107,6 +111,10 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			super(itemView);
 
 			prNumber = itemView.findViewById(R.id.prNumber);
+			prMergeable = itemView.findViewById(R.id.prMergeable);
+			prHeadBranch = itemView.findViewById(R.id.prHeadBranch);
+			prIsFork = itemView.findViewById(R.id.prIsFork);
+			prForkFullName = itemView.findViewById(R.id.prForkFullName);
 			assigneeAvatar = itemView.findViewById(R.id.assigneeAvatar);
 			prTitle = itemView.findViewById(R.id.prTitle);
 			prCommentsCount = itemView.findViewById(R.id.prCommentsCount);
@@ -119,10 +127,16 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 				Intent intent = new Intent(context, IssueDetailActivity.class);
 				intent.putExtra("issueNumber", prNumber.getText());
+				intent.putExtra("prMergeable", prMergeable.getText());
+				intent.putExtra("prHeadBranch", prHeadBranch.getText());
 
 				TinyDB tinyDb = new TinyDB(context);
 				tinyDb.putString("issueNumber", prNumber.getText().toString());
-				tinyDb.putString("issueType", "pr");
+				tinyDb.putString("prMergeable", prMergeable.getText().toString());
+				tinyDb.putString("prHeadBranch", prHeadBranch.getText().toString());
+				tinyDb.putString("prIsFork", prIsFork.getText().toString());
+				tinyDb.putString("prForkFullName", prForkFullName.getText().toString());
+				tinyDb.putString("issueType", "Pull");
 				context.startActivity(intent);
 
 			});
@@ -132,10 +146,16 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 				Intent intent = new Intent(context, IssueDetailActivity.class);
 				intent.putExtra("issueNumber", prNumber.getText());
+				intent.putExtra("prMergeable", prMergeable.getText());
+				intent.putExtra("prHeadBranch", prHeadBranch.getText());
 
 				TinyDB tinyDb = new TinyDB(context);
 				tinyDb.putString("issueNumber", prNumber.getText().toString());
-				tinyDb.putString("issueType", "pr");
+				tinyDb.putString("prMergeable", prMergeable.getText().toString());
+				tinyDb.putString("prHeadBranch", prHeadBranch.getText().toString());
+				tinyDb.putString("prIsFork", prIsFork.getText().toString());
+				tinyDb.putString("prForkFullName", prForkFullName.getText().toString());
+				tinyDb.putString("issueType", "Pull");
 				context.startActivity(intent);
 
 			});
@@ -167,6 +187,19 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			prTitle.setText(Html.fromHtml(prNumber_ + " " + prModel.getTitle()));
 
 			prNumber.setText(String.valueOf(prModel.getNumber()));
+			prMergeable.setText(String.valueOf(prModel.isMergeable()));
+			if(prModel.getHead() != null) {
+				prHeadBranch.setText(prModel.getHead().getRef());
+				if(prModel.getHead().getRepo() != null) {
+					prIsFork.setText(String.valueOf(prModel.getHead().getRepo().isFork()));
+					prForkFullName.setText(prModel.getHead().getRepo().getFull_name());
+				}
+				else {
+					// pull was done from a deleted fork
+					prIsFork.setText("true");
+					prForkFullName.setText(context.getString(R.string.prDeletedFrok));
+				}
+			}
 			prCommentsCount.setText(String.valueOf(prModel.getComments()));
 
 			prCreatedTime.setText(TimeHelper.formatTime(prModel.getCreated_at(), new Locale(locale), timeFormat, context));
