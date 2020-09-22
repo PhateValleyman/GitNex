@@ -21,7 +21,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_weight="1"
             android:background="@drawable/circle_reactions"
             android:padding="10dp"
             android:text="👍"

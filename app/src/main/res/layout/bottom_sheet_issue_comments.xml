@@ -5,8 +5,7 @@
     android:background="?attr/primaryBackgroundColor"
     android:orientation="vertical"
     android:paddingTop="6dp"
-    android:paddingBottom="12dp"
-    android:background="?attr/primaryBackgroundColor">
+    android:paddingBottom="12dp">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -26,7 +25,6 @@
                 android:layout_gravity="center_vertical"
                 android:drawableStart="@drawable/ic_edit"
                 android:drawablePadding="24dp"
-                android:padding="16dp"
                 android:text="@string/menuEditText"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
@@ -39,7 +37,6 @@
                 android:layout_gravity="center_vertical"
                 android:drawableStart="@drawable/ic_delete"
                 android:drawablePadding="24dp"
-                android:padding="16dp"
                 android:text="@string/menuDeleteText"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
@@ -89,8 +86,6 @@
                 android:text="@string/genericCopyUrl"
                 android:drawableStart="@drawable/ic_link"
                 android:drawablePadding="24dp"
-                android:padding="16dp"
-                android:text="@string/issueCommentShare"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
                 android:padding="12dp" />
