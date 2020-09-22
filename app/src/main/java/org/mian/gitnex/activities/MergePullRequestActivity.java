@@ -16,14 +16,14 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityMergePullRequestBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.MergePullRequest;
 import org.mian.gitnex.models.MergePullRequestSpinner;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 import okhttp3.ResponseBody;
@@ -62,7 +62,7 @@ public class MergePullRequestActivity extends BaseActivity {
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
-		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 		TinyDB tinyDb = new TinyDB(appCtx);
 
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -126,12 +126,10 @@ public class MergePullRequestActivity extends BaseActivity {
 		if(!connToInternet) {
 
 			disableProcessButton();
-
 		}
 		else {
 
 			viewBinding.mergeButton.setOnClickListener(mergePullRequest);
-
 		}
 
 	}
@@ -217,11 +215,11 @@ public class MergePullRequestActivity extends BaseActivity {
 		String mergePRTitle = viewBinding.mergeTitle.getText().toString();
 		boolean deleteBranch = viewBinding.deleteBranch.isChecked();
 
-		boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
 		if(!connToInternet) {
 
-			Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+			Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 			return;
 
 		}
@@ -266,7 +264,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 							deleteBranchFunction(repoOwner, repoName);
 
-							Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
+							Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
 							tinyDb.putBoolean("prMerged", true);
 							tinyDb.putBoolean("resumePullRequests", true);
 							finish();
@@ -281,7 +279,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 							deleteBranchFunction(repoOwner, repoName);
 
-							Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
+							Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
 							tinyDb.putBoolean("prMerged", true);
 							tinyDb.putBoolean("resumePullRequests", true);
 							finish();
@@ -291,7 +289,7 @@ public class MergePullRequestActivity extends BaseActivity {
 					}
 					else {
 
-						Toasty.info(ctx, getString(R.string.mergePRSuccessMsg));
+						Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
 						tinyDb.putBoolean("prMerged", true);
 						tinyDb.putBoolean("resumePullRequests", true);
 						finish();
@@ -308,13 +306,13 @@ public class MergePullRequestActivity extends BaseActivity {
 				else if(response.code() == 404) {
 
 					enableProcessButton();
-					Toasty.info(ctx, getString(R.string.mergePR404ErrorMsg));
+					Toasty.warning(ctx, getString(R.string.mergePR404ErrorMsg));
 
 				}
 				else {
 
 					enableProcessButton();
-					Toasty.info(ctx, getString(R.string.genericError));
+					Toasty.error(ctx, getString(R.string.genericError));
 
 				}
 
@@ -373,15 +371,11 @@ public class MergePullRequestActivity extends BaseActivity {
 	private void disableProcessButton() {
 
 		viewBinding.mergeButton.setEnabled(false);
-		viewBinding.mergeButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons_disabled));
-
 	}
 
 	private void enableProcessButton() {
 
 		viewBinding.mergeButton.setEnabled(true);
-		viewBinding.mergeButton.setBackground(getResources().getDrawable(R.drawable.shape_buttons));
-
 	}
 
 }

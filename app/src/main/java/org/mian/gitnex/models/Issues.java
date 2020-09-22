@@ -11,6 +11,7 @@ public class Issues {
 
     private int id;
     private String url;
+    private String html_url;
     private int number;
     private String title;
     private String body;
@@ -31,7 +32,7 @@ public class Issues {
         this.body = body;
     }
 
-    public class userObject {
+    public static class userObject {
 
         private int id;
         private String login;
@@ -71,7 +72,7 @@ public class Issues {
 
     }
 
-    public class labelsObject {
+    public static class labelsObject {
 
         private int id;
         private String name;
@@ -95,7 +96,7 @@ public class Issues {
         }
     }
 
-    public class pullRequestObject {
+    public static class pullRequestObject {
 
         private boolean merged;
         private String merged_at;
@@ -109,7 +110,7 @@ public class Issues {
         }
     }
 
-    public class milestoneObject {
+    public static class milestoneObject {
 
         private int id;
         private String title;
@@ -153,7 +154,7 @@ public class Issues {
         }
     }
 
-    public class assigneesObject {
+    public static class assigneesObject {
 
         private int id;
         private String login;
@@ -254,6 +255,16 @@ public class Issues {
 
     public List<assigneesObject> getAssignees() {
         return assignees;
+    }
+
+    public String getHtml_url() {
+
+        return html_url;
+    }
+
+    public void setHtml_url(String html_url) {
+
+        this.html_url = html_url;
     }
 
 }

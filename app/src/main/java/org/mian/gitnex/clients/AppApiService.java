@@ -2,10 +2,10 @@ package org.mian.gitnex.clients;
 
 import android.content.Context;
 import android.util.Log;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.FilesData;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.ssl.MemorizingTrustManager;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import java.io.File;
 import java.security.SecureRandom;
 import javax.net.ssl.HttpsURLConnection;
@@ -27,7 +27,7 @@ public class AppApiService {
 	public static <S> S createService(Class<S> serviceClass, String instanceURL, Context ctx) {
 
 		TinyDB tinyDb = new TinyDB(ctx);
-		final boolean connToInternet = AppUtil.haveNetworkConnection(ctx);
+		final boolean connToInternet = AppUtil.hasNetworkConnection(ctx);
 		File httpCacheDirectory = new File(ctx.getCacheDir(), "responses");
 		int cacheSize = FilesData.returnOnlyNumber(tinyDb.getString("cacheSizeStr")) * 1024 * 1024;
 		Cache cache = new Cache(httpCacheDirectory, cacheSize);

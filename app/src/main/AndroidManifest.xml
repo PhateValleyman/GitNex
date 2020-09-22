@@ -4,6 +4,7 @@
     package="org.mian.gitnex">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -11,9 +12,11 @@
         android:icon="@mipmap/app_logo"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:resizeableActivity="true"
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         tools:targetApi="n">
+
         <activity android:name=".activities.MergePullRequestActivity" />
         <activity
             android:name=".activities.FileViewActivity"
@@ -45,8 +48,6 @@
             android:name=".activities.OrganizationDetailActivity"
             android:label="@string/title_activity_org_detail"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.SponsorsActivity" />
-        <activity android:name=".activities.CreditsActivity" />
         <activity android:name=".activities.CreateLabelActivity" />
         <activity android:name=".activities.CreateIssueActivity" />
         <activity android:name=".activities.CreateMilestoneActivity" />
@@ -58,7 +59,7 @@
             android:name=".activities.RepoDetailActivity"
             android:label="@string/title_activity_repo_detail"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.MainActivity" android:theme="@android:style/Theme.NoTitleBar">
+        <activity android:name=".activities.MainActivity" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -80,6 +81,16 @@
         <activity android:name=".activities.SettingsTranslationActivity" />
         <activity android:name=".activities.SettingsReportsActivity" />
         <activity android:name=".activities.AddNewTeamMemberActivity" />
+        <activity android:name=".activities.SettingsDraftsActivity" />
+        <activity android:name=".activities.RepoForksActivity" />
+        <activity android:name=".activities.AddNewAccountActivity" />
+        <activity android:name=".activities.RepositorySettingsActivity" />
+
+        <!-- Version < 3.0. DeX Mode and Screen Mirroring support -->
+        <meta-data android:name="com.samsung.android.keepalive.density" android:value="true"/>
+        <!-- Version >= 3.0. DeX Dual Mode support -->
+        <meta-data android:name="com.samsung.android.multidisplay.keep_process_alive" android:value="true"/>
+
     </application>
 
 </manifest>

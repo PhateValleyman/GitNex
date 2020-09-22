@@ -2,14 +2,6 @@ package org.mian.gitnex.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,20 +10,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.CreateRepoActivity;
 import org.mian.gitnex.adapters.ReposListAdapter;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.UserRepositories;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import org.mian.gitnex.viewmodels.RepositoriesListViewModel;
 import java.util.List;
 import java.util.Objects;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * Author M M Arif
@@ -42,7 +42,7 @@ public class RepositoriesFragment extends Fragment {
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
     private ReposListAdapter adapter;
-    private ImageView createNewRepo;
+    private ExtendedFloatingActionButton createNewRepo;
     private TextView noDataRepo;
     private int pageSize = 1;
     private int resultLimit = 50;
@@ -51,7 +51,7 @@ public class RepositoriesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
+        boolean connToInternet = AppUtil.hasNetworkConnection(Objects.requireNonNull(getContext()));
 
         final View v = inflater.inflate(R.layout.fragment_repositories, container, false);
         setHasOptionsMenu(true);
@@ -75,14 +75,10 @@ public class RepositoriesFragment extends Fragment {
 
         createNewRepo = v.findViewById(R.id.addNewRepo);
 
-        createNewRepo.setOnClickListener(new View.OnClickListener() {
+        createNewRepo.setOnClickListener(view -> {
 
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), CreateRepoActivity.class);
-                startActivity(intent);
-            }
-
+            Intent intent = new Intent(view.getContext(), CreateRepoActivity.class);
+            startActivity(intent);
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -102,18 +98,11 @@ public class RepositoriesFragment extends Fragment {
             }
         });
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        RepositoriesListViewModel.loadReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext(), pageSize, resultLimit);
-                    }
-                }, 50);
-            }
-        });
+        swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
+
+            swipeRefresh.setRefreshing(false);
+            RepositoriesListViewModel.loadReposList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext(), pageSize, resultLimit);
+        }, 50));
 
         fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), pageSize, resultLimit);
 
@@ -161,7 +150,7 @@ public class RepositoriesFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(Objects.requireNonNull(getContext()));
+        boolean connToInternet = AppUtil.hasNetworkConnection(Objects.requireNonNull(getContext()));
 
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);

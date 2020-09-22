@@ -1,23 +1,23 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.MultiSelectDialog;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.MultiSelectModel;
 import org.mian.gitnex.models.UpdateIssueAssignees;
-import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -139,7 +139,7 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
                                                 .multiSelectList(listOfCollaborators)
                                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                                     @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                                         Log.i("selectedNames", String.valueOf(selectedNames));
 
@@ -167,7 +167,7 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
                                                 .multiSelectList(listOfCollaborators)
                                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                                     @Override
-                                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                                         updateIssueAssignees(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, loginUid, issueIndex, selectedNames);
                                                         tinyDb.putBoolean("singleIssueUpdate", true);
@@ -207,17 +207,17 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
                     }
                     else if(response.code() == 403) {
 
-                        Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+                        Toasty.error(ctx, ctx.getString(R.string.authorizeError));
 
                     }
                     else if(response.code() == 404) {
 
-                        Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+                        Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
 
                     }
                     else {
 
-                        Toasty.info(ctx, getString(R.string.genericError));
+                        Toasty.error(ctx, getString(R.string.genericError));
 
                     }
                 }
@@ -254,7 +254,7 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
 
                 if(response2.code() == 201) {
 
-                    Toasty.info(ctx, ctx.getString(R.string.assigneesUpdated));
+                    Toasty.success(ctx, ctx.getString(R.string.assigneesUpdated));
 
                 }
                 else if(response2.code() == 401) {
@@ -267,17 +267,17 @@ public class AddRemoveAssigneesActivity extends BaseActivity {
                 }
                 else if(response2.code() == 403) {
 
-                    Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+                    Toasty.error(ctx, ctx.getString(R.string.authorizeError));
 
                 }
                 else if(response2.code() == 404) {
 
-                    Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+                    Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
 
                 }
                 else {
 
-                    Toasty.info(ctx, getString(R.string.genericError));
+                    Toasty.error(ctx, getString(R.string.genericError));
 
                 }
 

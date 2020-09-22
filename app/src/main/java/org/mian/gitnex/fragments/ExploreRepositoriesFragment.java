@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,9 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.ExploreRepositoriesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.ExploreRepositories;
 import org.mian.gitnex.models.UserRepositories;
-import org.mian.gitnex.util.TinyDB;
 import java.util.List;
 import java.util.Objects;
 import retrofit2.Call;
@@ -30,9 +29,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * + * Template Author M M Arif
- * + * Author 6543
- * +
+ * Template Author Author M M Arif
+ * Author 6543
  */
 
 public class ExploreRepositoriesFragment extends Fragment {
@@ -92,23 +90,19 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 		mProgressBar.setVisibility(View.VISIBLE);
 
-		searchKeyword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+		searchKeyword.setOnEditorActionListener((v1, actionId, event) -> {
 
-			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-				if(actionId == EditorInfo.IME_ACTION_SEND) {
-					if(!searchKeyword.getText().toString().equals("")) {
-						mProgressBar.setVisibility(View.VISIBLE);
-						mRecyclerView.setVisibility(View.GONE);
-						loadSearchReposList(instanceUrl, instanceToken, loginUid, searchKeyword.getText().toString(), repoTypeInclude, sort, order, getContext(), limit);
-					}
+			if(actionId == EditorInfo.IME_ACTION_SEND) {
+				if(!searchKeyword.getText().toString().equals("")) {
+					mProgressBar.setVisibility(View.VISIBLE);
+					mRecyclerView.setVisibility(View.GONE);
+					loadSearchReposList(instanceUrl, instanceToken, loginUid, searchKeyword.getText().toString(), repoTypeInclude, sort, order, getContext(), limit);
 				}
-				return false;
 			}
+			return false;
 		});
 
-		int limitDefault = 10;
+		int limitDefault = 25;
 		loadDefaultList(instanceUrl, instanceToken, loginUid, repoTypeInclude, sort, order, getContext(), limitDefault);
 
 		return v;

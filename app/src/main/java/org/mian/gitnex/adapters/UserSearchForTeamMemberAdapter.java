@@ -14,9 +14,9 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserInfo;
-import org.mian.gitnex.util.TinyDB;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -104,12 +104,11 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 
 		if (!currentItem.getFullname().equals("")) {
 			holder.userFullName.setText(currentItem.getFullname());
-			holder.userName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
 		}
 		else {
 			holder.userFullName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
-			holder.userName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
 		}
+		holder.userName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
 
 		if (!currentItem.getAvatar().equals("")) {
 			PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
@@ -123,7 +122,6 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 			String repoFullName = tinyDb.getString("repoFullName");
 			String[] parts = repoFullName.split("/");
 			final String repoOwner = parts[0];
-			final String repoName = parts[1];
 			final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 			Call<UserInfo> call = RetrofitClient

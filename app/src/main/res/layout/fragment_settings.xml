@@ -27,7 +27,7 @@
                     android:id="@+id/tvAppearance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_color"
+                    android:drawableStart="@drawable/ic_appearance"
                     android:drawablePadding="24dp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -42,7 +42,7 @@
                     android:layout_gravity="center_vertical"
                     android:paddingStart="60dp"
                     android:paddingEnd="12dp"
-                    android:text="@string/appreanceHintText"
+                    android:text="@string/appearanceHintText"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="12sp" />
 
@@ -81,6 +81,38 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/draftsFrame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="25dp">
+
+                <TextView
+                    android:id="@+id/draftsHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_drafts"
+                    android:drawablePadding="24dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/draftsHeader"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/draftsHintText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="60dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/draftsHintText"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/securityFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -91,7 +123,7 @@
                     android:id="@+id/tvSecurity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_security_24dp"
+                    android:drawableStart="@drawable/ic_security"
                     android:drawablePadding="24dp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -123,7 +155,7 @@
                     android:id="@+id/tvLanguages"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_flag_country"
+                    android:drawableStart="@drawable/ic_flag"
                     android:drawablePadding="24dp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"

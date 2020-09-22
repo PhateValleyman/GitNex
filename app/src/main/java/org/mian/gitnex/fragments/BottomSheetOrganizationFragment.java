@@ -22,43 +22,49 @@ public class BottomSheetOrganizationFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.bottom_sheet_organization, container, false);
+
+    	View v = inflater.inflate(R.layout.bottom_sheet_organization, container, false);
 
         TextView createTeam = v.findViewById(R.id.createTeam);
         TextView createRepository = v.findViewById(R.id.createRepository);
+        TextView copyOrgUrl = v.findViewById(R.id.copyOrgUrl);
 
-        createTeam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bmListener.onButtonClicked("team");
-                dismiss();
-            }
+        createTeam.setOnClickListener(v1 -> {
+
+            bmListener.onButtonClicked("team");
+            dismiss();
         });
 
-        createRepository.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bmListener.onButtonClicked("repository");
-                dismiss();
-            }
+        createRepository.setOnClickListener(v12 -> {
+
+            bmListener.onButtonClicked("repository");
+            dismiss();
         });
+
+	    copyOrgUrl.setOnClickListener(v1 -> {
+
+		    bmListener.onButtonClicked("copyOrgUrl");
+		    dismiss();
+	    });
 
         return v;
     }
 
     public interface BottomSheetListener {
+
         void onButtonClicked(String text);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
+
         super.onAttach(context);
 
         try {
             bmListener = (BottomSheetOrganizationFragment.BottomSheetListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement BottomSheetListener");
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement BottomSheetListener");
         }
     }
 

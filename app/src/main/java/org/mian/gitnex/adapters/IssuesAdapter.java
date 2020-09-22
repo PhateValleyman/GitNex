@@ -18,8 +18,8 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.Issues;
-import org.mian.gitnex.util.TinyDB;
 import org.ocpsoft.prettytime.PrettyTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -125,7 +125,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 				TinyDB tinyDb = new TinyDB(context);
 				tinyDb.putString("issueNumber", issueNumber.getText().toString());
-				tinyDb.putString("issueType", "issue");
+				tinyDb.putString("issueType", "Issue");
 				context.startActivity(intent);
 
 			});
@@ -138,7 +138,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 				TinyDB tinyDb = new TinyDB(context);
 				tinyDb.putString("issueNumber", issueNumber.getText().toString());
-				tinyDb.putString("issueType", "issue");
+				tinyDb.putString("issueType", "Issue");
 				context.startActivity(intent);
 
 			});

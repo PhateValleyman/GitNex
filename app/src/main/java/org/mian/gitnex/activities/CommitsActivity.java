@@ -23,11 +23,10 @@ import org.mian.gitnex.adapters.CommitsAdapter;
 import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
-import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.Commits;
-import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -53,6 +52,7 @@ public class CommitsActivity extends BaseActivity {
 	private List<Commits> commitsList;
 	private CommitsAdapter adapter;
 	private ApiInterface api;
+	private ProgressBar progressLoadMore;
 
 	@Override
 	protected int getLayoutResourceId() {
@@ -85,6 +85,7 @@ public class CommitsActivity extends BaseActivity {
 
 		ImageView closeActivity = findViewById(R.id.close);
 		noData = findViewById(R.id.noDataCommits);
+		progressLoadMore = findViewById(R.id.progressLoadMore);
 		progressBar = findViewById(R.id.progress_bar);
 		SwipeRefreshLayout swipeRefresh = findViewById(R.id.pullToRefresh);
 
@@ -102,7 +103,7 @@ public class CommitsActivity extends BaseActivity {
 		swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
 
 			swipeRefresh.setRefreshing(false);
-			loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
+			loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName, resultLimit);
 			adapter.notifyDataChanged();
 
 		}, 200));
@@ -113,7 +114,7 @@ public class CommitsActivity extends BaseActivity {
 			if(commitsList.size() == resultLimit || pageSize == resultLimit) {
 
 				int page = (commitsList.size() + resultLimit) / resultLimit;
-				loadMore(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, page, branchName);
+				loadMore(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, page, branchName, resultLimit);
 
 			}
 
@@ -124,13 +125,13 @@ public class CommitsActivity extends BaseActivity {
 		recyclerView.setAdapter(adapter);
 
 		api = AppApiService.createService(ApiInterface.class, instanceUrl, ctx);
-		loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
+		loadInitial(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName, resultLimit);
 
 	}
 
-	private void loadInitial(String token, String repoOwner, String repoName, String branchName) {
+	private void loadInitial(String token, String repoOwner, String repoName, String branchName, int resultLimit) {
 
-		Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName, 1, branchName);
+		Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName, 1, branchName, resultLimit);
 
 		call.enqueue(new Callback<List<Commits>>() {
 
@@ -175,13 +176,11 @@ public class CommitsActivity extends BaseActivity {
 
 	}
 
-	private void loadMore(String token, String repoOwner, String repoName, final int page, String branchName) {
+	private void loadMore(String token, String repoOwner, String repoName, final int page, String branchName, int resultLimit) {
 
-		//add loading progress view
-		commitsList.add(new Commits("load"));
-		adapter.notifyItemInserted((commitsList.size() - 1));
+		progressLoadMore.setVisibility(View.VISIBLE);
 
-		Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName, page, branchName);
+		Call<List<Commits>> call = api.getRepositoryCommits(token, repoOwner, repoName, page, branchName, resultLimit);
 
 		call.enqueue(new Callback<List<Commits>>() {
 
@@ -189,9 +188,6 @@ public class CommitsActivity extends BaseActivity {
 			public void onResponse(@NonNull Call<List<Commits>> call, @NonNull Response<List<Commits>> response) {
 
 				if(response.isSuccessful()) {
-
-					//remove loading view
-					commitsList.remove(commitsList.size() - 1);
 
 					List<Commits> result = response.body();
 
@@ -204,12 +200,12 @@ public class CommitsActivity extends BaseActivity {
 					}
 					else {
 
-						Toasty.info(ctx, getString(R.string.noMoreData));
 						adapter.setMoreDataAvailable(false);
 
 					}
 
 					adapter.notifyDataChanged();
+					progressLoadMore.setVisibility(View.GONE);
 
 				}
 				else {

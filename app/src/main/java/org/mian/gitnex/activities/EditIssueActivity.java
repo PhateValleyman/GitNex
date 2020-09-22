@@ -1,14 +1,8 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
@@ -27,19 +22,24 @@ import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.CreateIssue;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.Milestones;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -50,6 +50,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
     final Context ctx = this;
     private Context appCtx;
     private View.OnClickListener onClickListener;
+    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 
     private EditText editIssueTitle;
     private SocialAutoCompleteTextView editIssueDescription;
@@ -93,6 +94,11 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         editIssueDescription = findViewById(R.id.editIssueDescription);
         editIssueDueDate = findViewById(R.id.editIssueDueDate);
 
+        // if gitea is 1.12 or higher use the new limit
+        if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+            resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+        }
+
         editIssueTitle.requestFocus();
         assert imm != null;
         imm.showSoftInput(editIssueTitle, InputMethodManager.SHOW_IMPLICIT);
@@ -101,7 +107,6 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         loadCollaboratorsList();
 
         editIssueMilestoneSpinner = findViewById(R.id.editIssueMilestoneSpinner);
-        editIssueMilestoneSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
 
         editIssueDescription.setMentionAdapter(defaultMentionAdapter);
 
@@ -113,7 +118,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         if(!tinyDb.getString("issueNumber").isEmpty()) {
 
-            if(tinyDb.getString("issueType").equals("pr")) {
+            if(tinyDb.getString("issueType").equalsIgnoreCase("Pull")) {
                 toolbar_title.setText(getString(R.string.editPrNavHeader, String.valueOf(issueIndex)));
             }
             else {
@@ -122,7 +127,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         }
 
         disableProcessButton();
-        getIssue(instanceUrl, instanceToken, loginUid, repoOwner, repoName, issueIndex);
+        getIssue(instanceUrl, instanceToken, loginUid, repoOwner, repoName, issueIndex, resultLimit);
 
 
     }
@@ -188,7 +193,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
     private void processEditIssue() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+        boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
         TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
@@ -209,14 +214,14 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if (editIssueTitleForm.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.issueTitleEmpty));
+            Toasty.error(ctx, getString(R.string.issueTitleEmpty));
             return;
 
         }
@@ -258,11 +263,11 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
                 if(response.code() == 201) {
 
-                    if(tinyDb.getString("issueType").equals("pr")) {
-                        Toasty.info(ctx, getString(R.string.editPrSuccessMessage));
+                    if(tinyDb.getString("issueType").equalsIgnoreCase("Pull")) {
+                        Toasty.success(ctx, getString(R.string.editPrSuccessMessage));
                     }
                     else {
-                        Toasty.info(ctx, getString(R.string.editIssueSuccessMessage));
+                        Toasty.success(ctx, getString(R.string.editIssueSuccessMessage));
                     }
 
                     tinyDb.putBoolean("issueEdited", true);
@@ -282,7 +287,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                 else {
 
                     enableProcessButton();
-                    Toasty.info(ctx, getString(R.string.genericError));
+                    Toasty.error(ctx, getString(R.string.genericError));
 
                 }
 
@@ -328,7 +333,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    private void getIssue(final String instanceUrl, final String instanceToken, final String loginUid, final String repoOwner, final String repoName, int issueIndex) {
+    private void getIssue(final String instanceUrl, final String instanceToken, final String loginUid, final String repoOwner, final String repoName, int issueIndex, int resultLimit) {
 
         Call<Issues> call = RetrofitClient
                 .getInstance(instanceUrl, ctx)
@@ -357,7 +362,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                         Call<List<Milestones>> call_ = RetrofitClient
                                 .getInstance(instanceUrl, ctx)
                                 .getApiInterface()
-                                .getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, msState);
+                                .getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
 
                         final int finalMsId = msId;
 
@@ -419,7 +424,6 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                         @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("yyyy-M-dd");
                         String dueDate = formatter.format(response.body().getDue_date());
                         editIssueDueDate.setText(dueDate);
-
                     }
                     //enableProcessButton();
 
@@ -430,12 +434,10 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
                 }
                 else {
 
-                    Toasty.info(ctx, getString(R.string.genericError));
-
+                    Toasty.error(ctx, getString(R.string.genericError));
                 }
 
             }
@@ -451,21 +453,11 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
     private void disableProcessButton() {
 
         editIssueButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        editIssueButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         editIssueButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        editIssueButton.setBackground(shape);
-
     }
 
 }

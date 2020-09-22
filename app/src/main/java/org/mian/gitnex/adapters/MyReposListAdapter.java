@@ -1,35 +1,43 @@
 package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.OpenRepoInBrowserActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
+import org.mian.gitnex.activities.RepoForksActivity;
 import org.mian.gitnex.activities.RepoStargazersActivity;
 import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.database.api.RepositoriesApi;
+import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.models.WatchInfo;
-import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -39,250 +47,322 @@ import retrofit2.Callback;
 
 public class MyReposListAdapter extends RecyclerView.Adapter<MyReposListAdapter.MyReposViewHolder> implements Filterable {
 
-    private List<UserRepositories> reposList;
-    private Context mCtx;
-    private List<UserRepositories> reposListFull;
+	private List<UserRepositories> reposList;
+	private Context mCtx;
+	private List<UserRepositories> reposListFull;
 
-    static class MyReposViewHolder extends RecyclerView.ViewHolder {
+	static class MyReposViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView imageMy;
-        private TextView mTextView1My;
-        private TextView mTextView2My;
-        private TextView fullNameMy;
-        private ImageView repoPrivatePublicMy;
-        private TextView repoStarsMy;
-        private TextView repoForksMy;
-        private TextView repoOpenIssuesCountMy;
-        private TextView repoType;
+		private ImageView imageAvatar;
+		private TextView repoName;
+		private TextView repoDescription;
+		private TextView repoFullName;
+		private ImageView repoPrivatePublic;
+		private TextView repoStars;
+		private TextView repoForks;
+		private TextView repoOpenIssuesCount;
+		private TextView repoType;
+		private CheckBox isRepoAdmin;
+		private LinearLayout archiveRepo;
+		private TextView repoBranch;
+		private TextView htmlUrl;
 
-        private MyReposViewHolder(View itemView) {
-            super(itemView);
-            mTextView1My = itemView.findViewById(R.id.repoNameMy);
-            mTextView2My = itemView.findViewById(R.id.repoDescriptionMy);
-            imageMy = itemView.findViewById(R.id.imageAvatarMy);
-            fullNameMy = itemView.findViewById(R.id.repoFullNameMy);
-            repoPrivatePublicMy = itemView.findViewById(R.id.imageRepoTypeMy);
-            repoStarsMy = itemView.findViewById(R.id.repoStarsMy);
-            repoForksMy = itemView.findViewById(R.id.repoForksMy);
-            repoOpenIssuesCountMy = itemView.findViewById(R.id.repoOpenIssuesCountMy);
-            ImageView reposDropdownMenu = itemView.findViewById(R.id.reposDropdownMenu);
-            repoType = itemView.findViewById(R.id.repoType);
+		private MyReposViewHolder(View itemView) {
 
-            itemView.setOnClickListener(v -> {
+			super(itemView);
+			repoName = itemView.findViewById(R.id.repoName);
+			repoDescription = itemView.findViewById(R.id.repoDescription);
+			imageAvatar = itemView.findViewById(R.id.imageAvatar);
+			repoFullName = itemView.findViewById(R.id.repoFullName);
+			repoPrivatePublic = itemView.findViewById(R.id.imageRepoType);
+			repoStars = itemView.findViewById(R.id.repoStars);
+			repoForks = itemView.findViewById(R.id.repoForks);
+			repoOpenIssuesCount = itemView.findViewById(R.id.repoOpenIssuesCount);
+			ImageView reposDropdownMenu = itemView.findViewById(R.id.reposDropdownMenu);
+			repoType = itemView.findViewById(R.id.repoType);
+			isRepoAdmin = itemView.findViewById(R.id.repoIsAdmin);
+			archiveRepo = itemView.findViewById(R.id.archiveRepoFrame);
+			repoBranch = itemView.findViewById(R.id.repoBranch);
+			htmlUrl = itemView.findViewById(R.id.htmlUrl);
 
-                Context context = v.getContext();
+			itemView.setOnClickListener(v -> {
 
-                Intent intent = new Intent(context, RepoDetailActivity.class);
-                intent.putExtra("repoFullName", fullNameMy.getText().toString());
+				Context context = v.getContext();
 
-                TinyDB tinyDb = new TinyDB(context);
-                tinyDb.putString("repoFullName", fullNameMy.getText().toString());
-                tinyDb.putString("repoType", repoType.getText().toString());
-                //tinyDb.putBoolean("resumeIssues", true);
+				Intent intent = new Intent(context, RepoDetailActivity.class);
+				intent.putExtra("repoFullName", repoFullName.getText().toString());
 
-                //store if user is watching this repo
-                {
-                    final String instanceUrl = tinyDb.getString("instanceUrl");
-                    String[] parts = fullNameMy.getText().toString().split("/");
-                    final String repoOwner = parts[0];
-                    final String repoName = parts[1];
-                    final String token = "token " + tinyDb.getString(tinyDb.getString("loginUid") + "-token");
+				TinyDB tinyDb = new TinyDB(context);
+				tinyDb.putString("repoFullName", repoFullName.getText().toString());
+				tinyDb.putString("repoType", repoType.getText().toString());
+				//tinyDb.putBoolean("resumeIssues", true);
+				tinyDb.putBoolean("isRepoAdmin", isRepoAdmin.isChecked());
+				tinyDb.putString("repoBranch", repoBranch.getText().toString());
 
-                    WatchInfo watch = new WatchInfo();
+				String[] parts = repoFullName.getText().toString().split("/");
+				final String repoOwner = parts[0];
+				final String repoName = parts[1];
 
-                    Call<WatchInfo> call;
+				int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
+				RepositoriesApi repositoryData = new RepositoriesApi(context);
 
-                    call = RetrofitClient.getInstance(instanceUrl, context).getApiInterface().checkRepoWatchStatus(token, repoOwner, repoName);
+				//RepositoriesRepository.deleteRepositoriesByAccount(currentActiveAccountId);
+				Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
-                    call.enqueue(new Callback<WatchInfo>() {
+				if(count == 0) {
 
-                        @Override
-                        public void onResponse(@NonNull Call<WatchInfo> call, @NonNull retrofit2.Response<WatchInfo> response) {
+					long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
+					tinyDb.putLong("repositoryId", id);
 
-                            if(response.isSuccessful()) {
+				}
+				else {
 
-                                assert response.body() != null;
-                                tinyDb.putBoolean("repoWatch", response.body().getSubscribed());
+					Repository data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
+					tinyDb.putLong("repositoryId", data.getRepositoryId());
 
-                            } else {
+				}
 
-                                tinyDb.putBoolean("repoWatch", false);
+				//store if user is watching this repo
+				{
 
-                                if(response.code() != 404) {
+					final String instanceUrl = tinyDb.getString("instanceUrl");
+					final String token = "token " + tinyDb.getString(tinyDb.getString("loginUid") + "-token");
 
-                                    Toasty.info(context, context.getString(R.string.genericApiStatusError));
+					WatchInfo watch = new WatchInfo();
 
-                                }
+					Call<WatchInfo> call;
 
-                            }
+					call = RetrofitClient.getInstance(instanceUrl, context).getApiInterface().checkRepoWatchStatus(token, repoOwner, repoName);
 
-                        }
+					call.enqueue(new Callback<WatchInfo>() {
 
-                        @Override
-                        public void onFailure(@NonNull Call<WatchInfo> call, @NonNull Throwable t) {
+						@Override
+						public void onResponse(@NonNull Call<WatchInfo> call, @NonNull retrofit2.Response<WatchInfo> response) {
 
-                            tinyDb.putBoolean("repoWatch", false);
-                            Toasty.info(context, context.getString(R.string.genericApiStatusError));
+							if(response.isSuccessful()) {
 
-                        }
-                    });
-                }
+								assert response.body() != null;
+								tinyDb.putBoolean("repoWatch", response.body().getSubscribed());
 
-                context.startActivity(intent);
+							}
+							else {
 
-            });
+								tinyDb.putBoolean("repoWatch", false);
 
-            reposDropdownMenu.setOnClickListener(v -> {
+								if(response.code() != 404) {
 
-                final Context context = v.getContext();
+									Toasty.error(context, context.getString(R.string.genericApiStatusError));
 
-                @SuppressLint("InflateParams")
-                View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_repository_in_list, null);
+								}
 
-                TextView repoOpenInBrowser = view.findViewById(R.id.repoOpenInBrowser);
-                TextView repoStargazers = view.findViewById(R.id.repoStargazers);
-                TextView repoWatchers = view.findViewById(R.id.repoWatchers);
-                TextView bottomSheetHeader = view.findViewById(R.id.bottomSheetHeader);
+							}
 
-                bottomSheetHeader.setText(fullNameMy.getText());
-                BottomSheetDialog dialog = new BottomSheetDialog(context);
-                dialog.setContentView(view);
-                dialog.show();
+						}
 
-                repoOpenInBrowser.setOnClickListener(openInBrowser -> {
+						@Override
+						public void onFailure(@NonNull Call<WatchInfo> call, @NonNull Throwable t) {
 
-                    Intent intentOpenInBrowser = new Intent(context, OpenRepoInBrowserActivity.class);
-                    intentOpenInBrowser.putExtra("repoFullNameBrowser", fullNameMy.getText());
-                    context.startActivity(intentOpenInBrowser);
-                    dialog.dismiss();
+							tinyDb.putBoolean("repoWatch", false);
+							Toasty.error(context, context.getString(R.string.genericApiStatusError));
 
-                });
+						}
+					});
 
-                repoStargazers.setOnClickListener(stargazers -> {
+				}
 
-                    Intent intent = new Intent(context, RepoStargazersActivity.class);
-                    intent.putExtra("repoFullNameForStars", fullNameMy.getText());
-                    context.startActivity(intent);
-                    dialog.dismiss();
+				context.startActivity(intent);
 
-                });
+			});
 
-                repoWatchers.setOnClickListener(watchers -> {
+			reposDropdownMenu.setOnClickListener(v -> {
 
-                    Intent intentW = new Intent(context, RepoWatchersActivity.class);
-                    intentW.putExtra("repoFullNameForWatchers", fullNameMy.getText());
-                    context.startActivity(intentW);
-                    dialog.dismiss();
+				final Context context = v.getContext();
 
-                });
+				@SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_repository_in_list, null);
 
-            });
+				TextView repoOpenInBrowser = view.findViewById(R.id.repoOpenInBrowser);
+				TextView repoStargazers = view.findViewById(R.id.repoStargazers);
+				TextView repoWatchers = view.findViewById(R.id.repoWatchers);
+				TextView repoForksList = view.findViewById(R.id.repoForksList);
+				TextView repoCopyUrl = view.findViewById(R.id.repoCopyUrl);
+				TextView bottomSheetHeader = view.findViewById(R.id.bottomSheetHeader);
 
-        }
-    }
+				bottomSheetHeader.setText(String.format("%s / %s", repoFullName.getText().toString().split("/")[0], repoFullName.getText().toString().split("/")[1]));
+				BottomSheetDialog dialog = new BottomSheetDialog(context);
+				dialog.setContentView(view);
+				dialog.show();
 
-    public MyReposListAdapter(Context mCtx, List<UserRepositories> reposListMain) {
-        this.mCtx = mCtx;
-        this.reposList = reposListMain;
-        reposListFull = new ArrayList<>(reposList);
-    }
+				repoCopyUrl.setOnClickListener(openInBrowser -> {
 
-    @NonNull
-    @Override
-    public MyReposListAdapter.MyReposViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_my_repos, parent, false);
-        return new MyReposListAdapter.MyReposViewHolder(v);
-    }
+					ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(context).getSystemService(Context.CLIPBOARD_SERVICE);
+					ClipData clip = ClipData.newPlainText("repoUrl", htmlUrl.getText().toString());
+					assert clipboard != null;
+					clipboard.setPrimaryClip(clip);
 
-    @Override
-    public void onBindViewHolder(@NonNull MyReposListAdapter.MyReposViewHolder holder, int position) {
+					Toasty.info(context, context.getString(R.string.copyIssueUrlToastMsg));
+					dialog.dismiss();
+				});
 
-        UserRepositories currentItem = reposList.get(position);
-        holder.mTextView2My.setVisibility(View.GONE);
+				repoOpenInBrowser.setOnClickListener(openInBrowser -> {
 
-        ColorGenerator generator = ColorGenerator.MATERIAL;
-        int color = generator.getColor(currentItem.getName());
-        String firstCharacter = String.valueOf(currentItem.getName().charAt(0));
+					Intent intentOpenInBrowser = new Intent(context, OpenRepoInBrowserActivity.class);
+					intentOpenInBrowser.putExtra("repoFullNameBrowser", repoFullName.getText());
+					context.startActivity(intentOpenInBrowser);
+					dialog.dismiss();
 
-        TextDrawable drawable = TextDrawable.builder()
-                .beginConfig()
-                .useFont(Typeface.DEFAULT)
-                .fontSize(18)
-                .toUpperCase()
-                .width(28)
-                .height(28)
-                .endConfig()
-                .buildRoundRect(firstCharacter, color, 3);
+				});
 
-        if (currentItem.getAvatar_url() != null) {
-            if (!currentItem.getAvatar_url().equals("")) {
-                PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.imageMy);
-            } else {
-                holder.imageMy.setImageDrawable(drawable);
-            }
-        }
-        else {
-            holder.imageMy.setImageDrawable(drawable);
-        }
+				repoStargazers.setOnClickListener(stargazers -> {
 
-        holder.mTextView1My.setText(currentItem.getName());
-        if (!currentItem.getDescription().equals("")) {
-            holder.mTextView2My.setVisibility(View.VISIBLE);
-            holder.mTextView2My.setText(currentItem.getDescription());
-        }
-        holder.fullNameMy.setText(currentItem.getFullname());
-        if(currentItem.getPrivateFlag()) {
-            holder.repoPrivatePublicMy.setImageResource(R.drawable.ic_lock_bold);
-            holder.repoType.setText(R.string.strPrivate);
-        }
-        else {
-            holder.repoPrivatePublicMy.setImageResource(R.drawable.ic_public);
-            holder.repoType.setText(R.string.strPublic);
-        }
-        holder.repoStarsMy.setText(currentItem.getStars_count());
-        holder.repoForksMy.setText(currentItem.getForks_count());
-        holder.repoOpenIssuesCountMy.setText(currentItem.getOpen_issues_count());
+					Intent intent = new Intent(context, RepoStargazersActivity.class);
+					intent.putExtra("repoFullNameForStars", repoFullName.getText());
+					context.startActivity(intent);
+					dialog.dismiss();
 
-    }
+				});
 
-    @Override
-    public int getItemCount() {
-        return reposList.size();
-    }
+				repoWatchers.setOnClickListener(watchers -> {
 
-    @Override
-    public Filter getFilter() {
-        return myReposFilter;
-    }
+					Intent intentW = new Intent(context, RepoWatchersActivity.class);
+					intentW.putExtra("repoFullNameForWatchers", repoFullName.getText());
+					context.startActivity(intentW);
+					dialog.dismiss();
 
-    private Filter myReposFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<UserRepositories> filteredList = new ArrayList<>();
+				});
 
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(reposListFull);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+				repoForksList.setOnClickListener(forks -> {
 
-                for (UserRepositories item : reposListFull) {
-                    if (item.getFullname().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
+					Intent intentW = new Intent(context, RepoForksActivity.class);
+					intentW.putExtra("repoFullNameForForks", repoFullName.getText());
+					context.startActivity(intentW);
+					dialog.dismiss();
 
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
+				});
 
-            return results;
-        }
+			});
 
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            reposList.clear();
-            reposList.addAll((List) results.values);
-            notifyDataSetChanged();
-        }
-    };
+		}
+
+	}
+
+	public MyReposListAdapter(Context mCtx, List<UserRepositories> reposListMain) {
+
+		this.mCtx = mCtx;
+		this.reposList = reposListMain;
+		reposListFull = new ArrayList<>(reposList);
+	}
+
+	@NonNull
+	@Override
+	public MyReposListAdapter.MyReposViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_repositories, parent, false);
+		return new MyReposListAdapter.MyReposViewHolder(v);
+	}
+
+	@Override
+	public void onBindViewHolder(@NonNull MyReposListAdapter.MyReposViewHolder holder, int position) {
+
+		UserRepositories currentItem = reposList.get(position);
+		holder.repoDescription.setVisibility(View.GONE);
+		holder.repoBranch.setText(currentItem.getDefault_branch());
+		holder.htmlUrl.setText(currentItem.getHtml_url());
+
+		ColorGenerator generator = ColorGenerator.MATERIAL;
+		int color = generator.getColor(currentItem.getName());
+		String firstCharacter = String.valueOf(currentItem.getName().charAt(0));
+
+		TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
+
+		if(currentItem.getAvatar_url() != null) {
+			if(!currentItem.getAvatar_url().equals("")) {
+				PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.imageAvatar);
+			}
+			else {
+				holder.imageAvatar.setImageDrawable(drawable);
+			}
+		}
+		else {
+			holder.imageAvatar.setImageDrawable(drawable);
+		}
+
+		holder.repoName.setText(currentItem.getName());
+		if(!currentItem.getDescription().equals("")) {
+			holder.repoDescription.setVisibility(View.VISIBLE);
+			holder.repoDescription.setText(currentItem.getDescription());
+		}
+		holder.repoFullName.setText(currentItem.getFullName());
+		if(currentItem.getPrivateFlag()) {
+			holder.repoPrivatePublic.setImageResource(R.drawable.ic_lock);
+			holder.repoType.setText(R.string.strPrivate);
+		}
+		else {
+			holder.repoPrivatePublic.setVisibility(View.GONE);
+			holder.repoType.setText(R.string.strPublic);
+		}
+		holder.repoStars.setText(currentItem.getStars_count());
+		holder.repoForks.setText(currentItem.getForks_count());
+		holder.repoOpenIssuesCount.setText(currentItem.getOpen_issues_count());
+
+		if(holder.isRepoAdmin == null) {
+			holder.isRepoAdmin = new CheckBox(mCtx);
+		}
+		holder.isRepoAdmin.setChecked(currentItem.getPermissions().isAdmin());
+
+		if(currentItem.isArchived()) {
+			holder.archiveRepo.setVisibility(View.VISIBLE);
+		}
+		else {
+			holder.archiveRepo.setVisibility(View.GONE);
+		}
+
+	}
+
+	@Override
+	public int getItemCount() {
+
+		return reposList.size();
+	}
+
+	@Override
+	public Filter getFilter() {
+
+		return myReposFilter;
+	}
+
+	private Filter myReposFilter = new Filter() {
+
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+
+			List<UserRepositories> filteredList = new ArrayList<>();
+
+			if(constraint == null || constraint.length() == 0) {
+				filteredList.addAll(reposListFull);
+			}
+			else {
+				String filterPattern = constraint.toString().toLowerCase().trim();
+
+				for(UserRepositories item : reposListFull) {
+					if(item.getFullName().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
+						filteredList.add(item);
+					}
+				}
+			}
+
+			FilterResults results = new FilterResults();
+			results.values = filteredList;
+
+			return results;
+		}
+
+		@Override
+		protected void publishResults(CharSequence constraint, FilterResults results) {
+
+			reposList.clear();
+			reposList.addAll((List) results.values);
+			notifyDataSetChanged();
+		}
+	};
+
 }

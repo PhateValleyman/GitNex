@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import com.squareup.picasso.Cache;
-import org.mian.gitnex.util.TinyDB;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Author anonTree1417
+ * Author opyale
  */
 
 public class PicassoCache implements Cache {

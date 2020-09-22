@@ -1,6 +1,6 @@
 package org.mian.gitnex.helpers;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,6 +25,21 @@ public class Version {
 	}
 
 	/**
+	 * valid return true if string is a valid version
+	 *
+	 * @param value
+	 * @return
+	 */
+	public static boolean valid(String value) {
+
+		if(value == null) {
+			return false;
+		}
+		final Pattern pattern_valid = Pattern.compile("^[v,V]?(\\d+)+(\\.(\\d+))*([_,\\-,+][\\w,\\d,_,\\-,+]*)?$");
+		return pattern_valid.matcher(value).find();
+	}
+
+	/**
 	 * init parse and store values for other functions of an Version instance
 	 * it use the raw variable as base
 	 *
@@ -32,10 +47,9 @@ public class Version {
 	 */
 	private void init() {
 
-		final Pattern pattern_valid = Pattern.compile("^[v,V]?(\\d+)+(\\.(\\d+))*([_,\\-,+][\\w,\\d,_,\\-,+]*)?$");
 		final Pattern pattern_number_dot_number = Pattern.compile("^\\d+(\\.(\\d)+)*");
 
-		if(!pattern_valid.matcher(raw).find()) {
+		if(!valid(raw)) {
 			throw new IllegalArgumentException("Invalid version format");
 		}
 
@@ -70,7 +84,7 @@ public class Version {
 	 * @param v
 	 * @return
 	 */
-	public boolean equal(@NotNull Version v) {
+	public boolean equal(@NonNull Version v) {
 
 		int rounds = Math.min(this.values.size(), v.values.size());
 		for(int i = 0; i < rounds; i++) {
@@ -101,25 +115,9 @@ public class Version {
 	 * @param v
 	 * @return
 	 */
-	public boolean less(@NotNull Version v) {
+	public boolean less(@NonNull Version v) {
 
-		int rounds = Math.min(this.values.size(), v.values.size());
-		for(int i = 0; i < rounds; i++) {
-			if(i + 1 == rounds) {
-				if(this.values.get(i) >= v.values.get(i)) {
-					return false;
-				}
-			}
-			else {
-				if(this.values.get(i) > v.values.get(i)) {
-					return false;
-				}
-				else if(this.values.get(i) < v.values.get(i)) {
-					return true;
-				}
-			}
-		}
-		return true;
+		return v.higher(this);
 
 	}
 
@@ -142,7 +140,7 @@ public class Version {
 	 * @param v
 	 * @return
 	 */
-	public boolean higher(@NotNull Version v) {
+	public boolean higher(@NonNull Version v) {
 
 		int rounds = Math.min(this.values.size(), v.values.size());
 		for(int i = 0; i < rounds; i++) {
@@ -182,15 +180,9 @@ public class Version {
 	 * @param v
 	 * @return
 	 */
-	public boolean lessOrEqual(@NotNull Version v) {
+	public boolean lessOrEqual(@NonNull Version v) {
 
-		int rounds = Math.min(this.values.size(), v.values.size());
-		for(int i = 0; i < rounds; i++) {
-			if(this.values.get(i) > v.values.get(i)) {
-				return false;
-			}
-		}
-		return true;
+		return v.higherOrEqual(this);
 
 	}
 
@@ -213,13 +205,17 @@ public class Version {
 	 * @param v
 	 * @return
 	 */
-	public boolean higherOrEqual(@NotNull Version v) {
+	public boolean higherOrEqual(@NonNull Version v) {
 
 		int rounds = Math.min(this.values.size(), v.values.size());
 		for(int i = 0; i < rounds; i++) {
-			if(this.values.get(i) < v.values.get(i)) {
+			if(this.values.get(i) > v.values.get(i)) {
+				return true;
+			}
+			else if(this.values.get(i) < v.values.get(i)) {
 				return false;
 			}
+
 		}
 		return true;
 

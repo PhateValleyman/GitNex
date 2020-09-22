@@ -2,12 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:padding="15dp"
     android:id="@+id/relativeLayoutMainFrame"
-    tools:context=".activities.RepoDetailActivity"
     android:background="?attr/primaryBackgroundColor">
 
     <TextView
@@ -26,7 +23,7 @@
         android:id="@+id/commendBodyRaw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/commenterUsername"

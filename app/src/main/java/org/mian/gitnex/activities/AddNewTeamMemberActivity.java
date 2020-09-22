@@ -18,15 +18,19 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserSearchForTeamMemberAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.models.UserSearch;
-import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+/**
+ * Author M M Arif
+ */
 
 public class AddNewTeamMemberActivity extends BaseActivity {
 
@@ -64,7 +68,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		ImageView closeActivity = findViewById(R.id.close);
-		addNewTeamMember = findViewById(R.id.addNewTeamMeber);
+		addNewTeamMember = findViewById(R.id.addNewTeamMember);
 		mRecyclerView = findViewById(R.id.recyclerViewUserSearch);
 		mProgressBar = findViewById(R.id.progress_bar);
 		noData = findViewById(R.id.noData);
@@ -96,7 +100,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-				if(!addNewTeamMember.getText().toString().equals("")) {
+				if(!addNewTeamMember.getText().toString().equals("") && addNewTeamMember.getText().toString().length() > 1) {
 
 					adapter = new UserSearchForTeamMemberAdapter(dataList, ctx, Integer.parseInt(teamId));
 					loadUserSearchList(instanceUrl, instanceToken, addNewTeamMember.getText().toString(), loginUid, teamId);
@@ -120,6 +124,8 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	public void loadUserSearchList(String instanceUrl, String token, String searchKeyword, String loginUid, String teamId) {
 
 		Call<UserSearch> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserBySearch(Authorization.returnAuthentication(ctx, loginUid, token), searchKeyword, 10);
+
+		mProgressBar.setVisibility(View.VISIBLE);
 
 		call.enqueue(new Callback<UserSearch>() {
 

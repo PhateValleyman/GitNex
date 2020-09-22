@@ -2,11 +2,14 @@
 <resources>
 
     <!-- Dark theme - default -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:typeface">monospace</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorSecondary">@color/colorWhite</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+        <item name="colorPrimary">@color/darkGreen</item>
+        <item name="colorSecondary">@color/colorWhite</item>
 
         <item name="diffAddedColor">@color/diffAddedColor</item>
         <item name="diffRemovedColor">@color/diffRemovedColor</item>
@@ -19,20 +22,32 @@
         <item name="selectedTextColor">@color/darkGreen</item>
         <item name="alertDialogTheme">@style/AppThemeConfirmDialog</item>
         <item name="popupMenuStyle">@style/AppThemePopupMenuStyle</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_24dp</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
         <item name="autoCompleteTextViewStyle">@style/AppThemeDarkSearchAutoCompleteTextView</item>
         <item name="hintColor">@color/hintColor</item>
         <item name="colorControlActivated">@color/darkGreen</item>
         <item name="dividerColor">@color/dividerColorDark</item>
+        <item name="bottomSheetDialogTheme">@style/AppThemeDarkBottomSheetDialog</item>
+        <item name="searchViewStyle">@style/AppSearchViewStyle</item>
+        <item name="progressIndicatorColor">@color/darkGreen</item>
+        <item name="fabColor">@color/darkGreen</item>
+        <item name="iconsColor">@color/darkGreen</item>
+        <item name="pagerTabIndicatorColor">@color/darkGreen</item>
+        <item name="android:actionOverflowButtonStyle">@style/customOverflowButtonStyle</item>
+        <item name="actionOverflowMenuStyle">@style/customOverflowMenuStyle</item>
+        <item name="colorSurface">@color/inputBackground</item>
     </style>
     <!-- Dark theme - default -->
 
     <!-- Light theme -->
-    <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:statusBarColor">@color/lightThemeBackground</item>
         <item name="android:typeface">monospace</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorSecondary">@color/lightThemeTextColor</item>
+        <item name="android:textColorPrimary">@color/lightThemeTextColor</item>
+        <item name="colorPrimary">@color/darkGreen</item>
+        <item name="colorSecondary">@color/lightThemeTextColor</item>
 
         <item name="diffAddedColor">@color/lightThemeDiffAddedColor</item>
         <item name="diffRemovedColor">@color/lightThemeDiffRemovedColor</item>
@@ -45,13 +60,89 @@
         <item name="selectedTextColor">@color/darkGreen</item>
         <item name="alertDialogTheme">@style/AppThemeLightConfirmDialog</item>
         <item name="popupMenuStyle">@style/AppThemeLightPopupMenuStyle</item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_24dp</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
         <item name="autoCompleteTextViewStyle">@style/AppThemeLightSearchAutoCompleteTextView</item>
         <item name="hintColor">@color/hintColor</item>
         <item name="colorControlActivated">@color/darkGreen</item>
         <item name="dividerColor">@color/lightThemeDividerColor</item>
+        <item name="bottomSheetDialogTheme">@style/AppThemeLightBottomSheetDialog</item>
+        <item name="searchViewStyle">@style/AppSearchViewStyle</item>
+        <item name="progressIndicatorColor">@color/darkGreen</item>
+        <item name="fabColor">@color/darkGreen</item>
+        <item name="iconsColor">@color/darkGreen</item>
+        <item name="pagerTabIndicatorColor">@color/darkGreen</item>
+        <item name="android:actionOverflowButtonStyle">@style/customOverflowButtonStyle</item>
+        <item name="actionOverflowMenuStyle">@style/customOverflowMenuStyle</item>
+        <item name="colorSurface">@color/lightThemeInputBackground</item>
     </style>
     <!-- Light theme -->
+
+    <!-- Retro theme -->
+    <style name="AppThemeRetro" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/retroThemeBackground</item>
+        <item name="android:typeface">monospace</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/retroThemeTextColor</item>
+        <item name="android:textColorPrimary">@color/retroThemeTextColor</item>
+        <item name="colorPrimary">@color/retroThemeColorPrimary</item>
+        <item name="colorSecondary">@color/retroThemeColorSecondary</item>
+
+        <item name="diffAddedColor">@color/retroThemeDiffAddedColor</item>
+        <item name="diffRemovedColor">@color/retroThemeDiffRemovedColor</item>
+        <item name="diffSelectedColor">@color/retroThemeDiffSelectedColor</item>
+        <item name="primaryTextColor">@color/retroThemeTextColor</item>
+        <item name="primaryBackgroundColor">@color/retroThemeBackground</item>
+        <item name="inputBackgroundColor">@color/retroThemeInputBackground</item>
+        <item name="inputTextColor">@color/retroThemeInputTextColor</item>
+        <item name="checkboxStyle">@style/AppThemeRetroCheckBoxStyle</item>
+        <item name="selectedTextColor">@color/retroThemeColorPrimary</item>
+        <item name="alertDialogTheme">@style/AppThemeRetroConfirmDialog</item>
+        <item name="popupMenuStyle">@style/AppThemeRetroPopupMenuStyle</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
+        <item name="autoCompleteTextViewStyle">@style/AppThemeRetroSearchAutoCompleteTextView</item>
+        <item name="hintColor">@color/hintColor</item>
+        <item name="colorControlActivated">@color/retroThemeColorPrimary</item>
+        <item name="dividerColor">@color/retroThemeDividerColor</item>
+        <item name="bottomSheetDialogTheme">@style/AppThemeLightBottomSheetDialog</item>
+        <item name="searchViewStyle">@style/AppSearchViewStyle</item>
+        <item name="progressIndicatorColor">@color/retroThemeColorPrimary</item>
+        <item name="fabColor">@color/retroThemeColorPrimary</item>
+        <item name="iconsColor">@color/retroThemeColorPrimary</item>
+        <item name="pagerTabIndicatorColor">@color/retroThemeColorPrimary</item>
+        <item name="android:actionOverflowButtonStyle">@style/customOverflowButtonStyle</item>
+        <item name="actionOverflowMenuStyle">@style/customOverflowMenuStyle</item>
+        <item name="colorSurface">@color/retroThemeInputBackground</item>
+    </style>
+    <!-- Retro theme -->
+
+    <style name="customOverflowButtonStyle">
+        <item name="android:src">@drawable/ic_dotted_menu</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+    </style>
+
+    <style name="customOverflowMenuStyle" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
+        <item name="android:popupBackground">@drawable/shape_round_corners</item>
+    </style>
+
+    <style name="AppSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="searchHintIcon">@drawable/ic_search</item>
+        <item name="searchIcon">@null</item>
+        <item name="queryBackground">@android:color/transparent</item>
+        <item name="closeIcon">@drawable/ic_close</item>
+    </style>
+
+    <style name="AppThemeDarkBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppBottomSheetModalStyle</item>
+    </style>
+
+    <style name="AppThemeLightBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppBottomSheetModalStyle</item>
+    </style>
+
+    <style name="AppBottomSheetModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/shape_bottom_sheet_top_corners</item>
+    </style>
 
     <style name="AppThemeLightSearchAutoCompleteTextView" parent="Widget.AppCompat.Light.AutoCompleteTextView">
         <item name="android:textColor">@color/lightThemeTextColor</item>
@@ -63,33 +154,51 @@
         <item name="android:textColorHint">@color/colorWhite</item>
     </style>
 
-    <style name="AppThemeConfirmDialog" parent="Theme.AppCompat.Dialog.Alert">
+    <style name="AppThemeConfirmDialog" parent="Theme.MaterialComponents.Dialog.Alert">
         <item name="android:background">@color/colorPrimary</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="colorControlNormal">@color/white</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="colorControlNormal">@color/colorWhite</item>
         <item name="colorControlActivated">@color/darkGreen</item>
-        <item name="android:windowBackground">@drawable/round_corners</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/NeutralButtonStyle</item>
+        <item name="android:windowBackground">@drawable/shape_round_corners</item>
     </style>
 
-    <style name="AppThemeLightConfirmDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/white</item>
+    <style name="AppThemeLightConfirmDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:background">@color/colorWhite</item>
         <item name="android:textColorPrimary">@color/lightThemeTextColor</item>
         <item name="android:textColor">@color/lightThemeTextColor</item>
         <item name="colorControlNormal">@color/lightThemeTextColor</item>
         <item name="colorControlActivated">@color/darkGreen</item>
-        <item name="android:windowBackground">@drawable/round_corners</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/NeutralButtonStyle</item>
+        <item name="android:windowBackground">@drawable/shape_round_corners</item>
     </style>
 
-    <style name="AppThemePopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/darkGreen</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/darkRed</item>
+    </style>
+
+    <style name="NeutralButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/darkGreen</item>
+    </style>
+
+    <style name="AppThemePopupMenuStyle" parent="Widget.MaterialComponents.PopupMenu">
         <item name="android:popupBackground">@color/colorPrimary</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/colorWhite</item>
         <item name="android:layout_marginStart">3dp</item>
         <item name="android:layout_marginEnd">3dp</item>
     </style>
 
-    <style name="AppThemeLightPopupMenuStyle" parent="Widget.AppCompat.Light.PopupMenu">
-        <item name="android:popupBackground">@color/white</item>
+    <style name="AppThemeLightPopupMenuStyle" parent="Widget.MaterialComponents.PopupMenu">
+        <item name="android:popupBackground">@color/colorWhite</item>
         <item name="android:itemBackground">@color/lightThemeBackground</item>
         <item name="android:textColor">@color/lightThemeTextColor</item>
         <item name="android:layout_marginStart">3dp</item>
@@ -103,5 +212,48 @@
     <style name="AppThemeCheckBoxStyle" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
         <item name="buttonTint">@color/colorWhite</item>
     </style>
+
+    <!-- Retro theme styles -->
+    <style name="AppThemeRetroCheckBoxStyle" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="buttonTint">@color/retroThemeColorPrimary</item>
+    </style>
+
+    <style name="AppThemeRetroSearchAutoCompleteTextView" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:textColor">@color/retroThemeColorPrimary</item>
+        <item name="android:textColorHint">@color/retroThemeColorPrimary</item>
+    </style>
+
+    <style name="AppThemeRetroConfirmDialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:textColorPrimary">@color/retroThemeTextColor</item>
+        <item name="android:textColor">@color/retroThemeTextColor</item>
+        <item name="colorControlNormal">@color/retroThemeTextColor</item>
+        <item name="colorControlActivated">@color/retroThemeColorPrimary</item>
+        <item name="buttonBarNegativeButtonStyle">@style/RetroNegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/RetroPositiveButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/RetroNeutralButtonStyle</item>
+        <item name="android:windowBackground">@drawable/shape_round_corners</item>
+    </style>
+
+    <style name="RetroNegativeButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/retroThemeTextColor</item>
+    </style>
+
+    <style name="RetroPositiveButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/darkRed</item>
+    </style>
+
+    <style name="RetroNeutralButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/retroThemeColorPrimary</item>
+    </style>
+
+    <style name="AppThemeRetroPopupMenuStyle" parent="Widget.MaterialComponents.PopupMenu">
+        <item name="android:popupBackground">@color/colorWhite</item>
+        <item name="android:itemBackground">@color/retroThemeBackground</item>
+        <item name="android:textColor">@color/retroThemeTextColor</item>
+        <item name="android:layout_marginStart">3dp</item>
+        <item name="android:layout_marginEnd">3dp</item>
+    </style>
+    <!-- Retro theme styles -->
 
 </resources>

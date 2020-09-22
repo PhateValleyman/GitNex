@@ -1,19 +1,23 @@
 package org.mian.gitnex.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import org.acra.ACRA;
 import org.acra.BuildConfig;
+import org.acra.annotation.AcraCore;
 import org.acra.annotation.AcraNotification;
 import org.acra.config.CoreConfigurationBuilder;
 import org.acra.config.LimiterConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
 import org.acra.data.StringFormat;
 import org.mian.gitnex.R;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
+import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.notifications.NotificationsMaster;
+import static org.acra.ReportField.*;
 
 /**
  * Author M M Arif
@@ -23,13 +27,17 @@ import org.mian.gitnex.util.TinyDB;
 		resTitle = R.string.crashTitle,
 		resChannelName = R.string.setCrashReports,
 		resText = R.string.crashMessage)
+@AcraCore(reportContent = { ANDROID_VERSION, PHONE_MODEL, STACK_TRACE })
 
 public abstract class BaseActivity extends AppCompatActivity {
+
+	private Context appCtx;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
-		final TinyDB tinyDb = new TinyDB(getApplicationContext());
+		appCtx = getApplicationContext();
+		final TinyDB tinyDb = new TinyDB(appCtx);
 
 		switch(tinyDb.getInt("themeId")) {
 
@@ -43,6 +51,19 @@ public abstract class BaseActivity extends AppCompatActivity {
 				}
 				else {
 					setTheme(R.style.AppThemeLight);
+				}
+				break;
+
+			case 3:
+				setTheme(R.style.AppThemeRetro);
+				break;
+
+			case 4:
+				if(TimeHelper.timeBetweenHours(18, 6)) { // 6pm to 6am
+					setTheme(R.style.AppTheme);
+				}
+				else {
+					setTheme(R.style.AppThemeRetro);
 				}
 				break;
 
@@ -83,11 +104,17 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 		}
 
-		// enabling counter badges by default
-		if(tinyDb.getString("enableCounterBadgesInit").isEmpty()) {
-			tinyDb.putBoolean("enableCounterBadges", true);
-			tinyDb.putString("enableCounterBadgesInit", "yes");
-		}
+        if(tinyDb.getInt("pollingDelayMinutes") == 0) {
+            tinyDb.putInt("pollingDelayMinutes", 15);
+        }
+
+        NotificationsMaster.hireWorker(appCtx);
+
+        // enabling counter badges by default
+        if(tinyDb.getString("enableCounterBadgesInit").isEmpty()) {
+            tinyDb.putBoolean("enableCounterBadges", true);
+            tinyDb.putString("enableCounterBadgesInit", "yes");
+        }
 
 		// enable crash reports by default
 		if(tinyDb.getString("crashReportingEnabledInit").isEmpty()) {
@@ -101,6 +128,17 @@ public abstract class BaseActivity extends AppCompatActivity {
 		}
 		if(tinyDb.getString("cacheSizeImagesStr").isEmpty()) {
 			tinyDb.putString("cacheSizeImagesStr", getResources().getString(R.string.cacheSizeImagesSelectionSelectedText));
+		}
+
+		// enable comment drafts by default
+		if(tinyDb.getString("draftsCommentsDeletionEnabledInit").isEmpty()) {
+			tinyDb.putBoolean("draftsCommentsDeletionEnabled", true);
+			tinyDb.putString("draftsCommentsDeletionEnabledInit", "yes");
+		}
+
+		if(!tinyDb.getString("instanceUrlWithProtocol").endsWith("/")) {
+
+			tinyDb.putString("instanceUrlWithProtocol", tinyDb.getString("instanceUrlWithProtocol") + "/");
 		}
 
 		if (tinyDb.getBoolean("crashReportingEnabled")) {

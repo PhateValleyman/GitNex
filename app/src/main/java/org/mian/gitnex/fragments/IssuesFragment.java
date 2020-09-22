@@ -25,11 +25,11 @@ import org.mian.gitnex.adapters.IssuesAdapter;
 import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.Issues;
-import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -55,6 +55,7 @@ public class IssuesFragment extends Fragment {
 	private TextView noDataIssues;
 	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 	private String requestType = StaticGlobalVariables.issuesRequestType;
+	private ProgressBar progressLoadMore;
 
 	@Nullable
 	@Override
@@ -83,6 +84,7 @@ public class IssuesFragment extends Fragment {
 		recyclerView = v.findViewById(R.id.recyclerView);
 		issuesList = new ArrayList<>();
 
+		progressLoadMore = v.findViewById(R.id.progressLoadMore);
 		mProgressBar = v.findViewById(R.id.progress_bar);
 		noDataIssues = v.findViewById(R.id.noDataIssues);
 
@@ -180,7 +182,7 @@ public class IssuesFragment extends Fragment {
 			@Override
 			public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-				if(response.isSuccessful()) {
+				if(response.code() == 200) {
 
 					assert response.body() != null;
 					if(response.body().size() > 0) {
@@ -192,11 +194,21 @@ public class IssuesFragment extends Fragment {
 
 					}
 					else {
+
 						issuesList.clear();
 						adapter.notifyDataChanged();
 						noDataIssues.setVisibility(View.VISIBLE);
+
 					}
+
 					mProgressBar.setVisibility(View.GONE);
+
+				}
+				else if(response.code() == 404) {
+
+					noDataIssues.setVisibility(View.VISIBLE);
+					mProgressBar.setVisibility(View.GONE);
+
 				}
 				else {
 					Log.e(TAG, String.valueOf(response.code()));
@@ -216,9 +228,7 @@ public class IssuesFragment extends Fragment {
 
 	private void loadMore(String token, String repoOwner, String repoName, int page, int resultLimit, String requestType, String issueState) {
 
-		//add loading progress view
-		issuesList.add(new Issues("load"));
-		adapter.notifyItemInserted((issuesList.size() - 1));
+		progressLoadMore.setVisibility(View.VISIBLE);
 
 		Call<List<Issues>> call = api.getIssues(token, repoOwner, repoName, page, resultLimit, requestType, issueState);
 
@@ -227,10 +237,7 @@ public class IssuesFragment extends Fragment {
 			@Override
 			public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
 
-				if(response.isSuccessful()) {
-
-					//remove loading view
-					issuesList.remove(issuesList.size() - 1);
+				if(response.code() == 200) {
 
 					List<Issues> result = response.body();
 
@@ -243,12 +250,13 @@ public class IssuesFragment extends Fragment {
 					}
 					else {
 
-						Toasty.info(context, getString(R.string.noMoreData));
+						Toasty.warning(context, getString(R.string.noMoreData));
 						adapter.setMoreDataAvailable(false);
 
 					}
 
 					adapter.notifyDataChanged();
+					progressLoadMore.setVisibility(View.GONE);
 
 				}
 				else {
@@ -315,6 +323,9 @@ public class IssuesFragment extends Fragment {
 		List<Issues> arr = new ArrayList<>();
 
 		for(Issues d : issuesList) {
+			if(d == null || d.getTitle() == null || d.getBody() == null) {
+				continue;
+			}
 			if(d.getTitle().toLowerCase().contains(text) || d.getBody().toLowerCase().contains(text)) {
 				arr.add(d);
 			}

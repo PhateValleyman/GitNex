@@ -1,6 +1,8 @@
 package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -24,10 +26,10 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.models.IssueComments;
-import org.mian.gitnex.util.TinyDB;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -104,11 +106,18 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 				TextView commentMenuEdit = view.findViewById(R.id.commentMenuEdit);
 				TextView commentShare = view.findViewById(R.id.issueCommentShare);
+				TextView commentMenuQuote = view.findViewById(R.id.commentMenuQuote);
+				TextView commentMenuCopy = view.findViewById(R.id.commentMenuCopy);
 				TextView commentMenuDelete = view.findViewById(R.id.commentMenuDelete);
+				TextView issueCommentCopyUrl = view.findViewById(R.id.issueCommentCopyUrl);
 
 				if(!loginUid.contentEquals(commenterUsername.getText())) {
 					commentMenuEdit.setVisibility(View.GONE);
 					commentMenuDelete.setVisibility(View.GONE);
+				}
+
+				if(issueComment.getText().toString().isEmpty()) {
+					commentMenuCopy.setVisibility(View.GONE);
 				}
 
 				BottomSheetDialog dialog = new BottomSheetDialog(ctx);
@@ -140,6 +149,64 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 					ctx.startActivity(Intent.createChooser(sharingIntent, intentHeader));
 
 					dialog.dismiss();
+
+				});
+
+				issueCommentCopyUrl.setOnClickListener(ediComment -> {
+
+					// comment Url
+					CharSequence commentUrl = htmlUrl.getText();
+
+					ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
+					assert clipboard != null;
+
+					ClipData clip = ClipData.newPlainText(commentUrl, commentUrl);
+					clipboard.setPrimaryClip(clip);
+
+					dialog.dismiss();
+					Toasty.success(ctx, ctx.getString(R.string.copyIssueUrlToastMsg));
+
+				});
+
+				commentMenuQuote.setOnClickListener(v1 -> {
+
+					StringBuilder stringBuilder = new StringBuilder();
+					String commenterName = commenterUsername.getText().toString();
+
+					if(!commenterName.equals(tinyDb.getString("userLogin"))) {
+
+						stringBuilder.append("@").append(commenterName).append("\n\n");
+					}
+
+					String[] lines = commendBodyRaw.getText().toString().split("\\R");
+
+					for(String line : lines) {
+
+						stringBuilder.append(">").append(line).append("\n");
+					}
+
+					stringBuilder.append("\n");
+
+					Intent intent = new Intent(ctx, ReplyToIssueActivity.class);
+					intent.putExtra("commentBody", stringBuilder.toString());
+					intent.putExtra("cursorToEnd", true);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+					dialog.dismiss();
+					ctx.startActivity(intent);
+
+				});
+
+				commentMenuCopy.setOnClickListener(view1 -> {
+
+					ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
+					assert clipboard != null;
+
+					ClipData clip = ClipData.newPlainText("Comment on issue #" + issueNumber.getText().toString(), issueComment.getText().toString());
+					clipboard.setPrimaryClip(clip);
+
+					dialog.dismiss();
+					Toasty.success(ctx, ctx.getString(R.string.copyIssueCommentToastMsg));
 
 				});
 
@@ -192,7 +259,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 				if(response.code() == 204) {
 
 					updateAdapter(position);
-					Toasty.info(ctx, ctx.getResources().getString(R.string.deleteCommentSuccess));
+					Toasty.success(ctx, ctx.getResources().getString(R.string.deleteCommentSuccess));
 
 				}
 				else if(response.code() == 401) {
@@ -205,17 +272,17 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 				}
 				else if(response.code() == 403) {
 
-					Toasty.info(ctx, ctx.getString(R.string.authorizeError));
+					Toasty.error(ctx, ctx.getString(R.string.authorizeError));
 
 				}
 				else if(response.code() == 404) {
 
-					Toasty.info(ctx, ctx.getString(R.string.apiNotFound));
+					Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
 
 				}
 				else {
 
-					Toasty.info(ctx, ctx.getString(R.string.genericError));
+					Toasty.error(ctx, ctx.getString(R.string.genericError));
 
 				}
 

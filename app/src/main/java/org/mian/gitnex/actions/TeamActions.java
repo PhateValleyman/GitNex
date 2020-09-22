@@ -8,8 +8,8 @@ import org.mian.gitnex.activities.AddNewTeamMemberActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.util.TinyDB;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -43,7 +43,7 @@ public class TeamActions {
 					if(response.code() == 204) {
 
 						tinyDb.putBoolean("teamActionFlag", true);
-						Toasty.info(context, context.getString(R.string.memberRemovedMessage));
+						Toasty.success(context, context.getString(R.string.memberRemovedMessage));
 						((AddNewTeamMemberActivity)context).finish();
 
 					}
@@ -59,17 +59,17 @@ public class TeamActions {
 				}
 				else if(response.code() == 403) {
 
-					Toasty.info(context, context.getString(R.string.authorizeError));
+					Toasty.error(context, context.getString(R.string.authorizeError));
 
 				}
 				else if(response.code() == 404) {
 
-					Toasty.info(context, context.getString(R.string.apiNotFound));
+					Toasty.warning(context, context.getString(R.string.apiNotFound));
 
 				}
 				else {
 
-					Toasty.info(context, context.getString(R.string.genericError));
+					Toasty.error(context, context.getString(R.string.genericError));
 
 				}
 
@@ -109,7 +109,7 @@ public class TeamActions {
 					if(response.code() == 204) {
 
 						tinyDb.putBoolean("teamActionFlag", true);
-						Toasty.info(context, context.getString(R.string.memberAddedMessage));
+						Toasty.success(context, context.getString(R.string.memberAddedMessage));
 						((AddNewTeamMemberActivity)context).finish();
 
 					}
@@ -125,17 +125,17 @@ public class TeamActions {
 				}
 				else if(response.code() == 403) {
 
-					Toasty.info(context, context.getString(R.string.authorizeError));
+					Toasty.error(context, context.getString(R.string.authorizeError));
 
 				}
 				else if(response.code() == 404) {
 
-					Toasty.info(context, context.getString(R.string.apiNotFound));
+					Toasty.warning(context, context.getString(R.string.apiNotFound));
 
 				}
 				else {
 
-					Toasty.info(context, context.getString(R.string.genericError));
+					Toasty.error(context, context.getString(R.string.genericError));
 
 				}
 

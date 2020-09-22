@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:background="?attr/primaryBackgroundColor"
-    android:paddingTop="8dp">
+    android:paddingTop="6dp"
+    android:paddingBottom="12dp"
+    android:background="?attr/primaryBackgroundColor">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -23,11 +23,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/createRepository"
-                android:drawableStart="@drawable/ic_repos"
+                android:drawableStart="@drawable/ic_repo"
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/createTeam"
@@ -35,11 +35,23 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/orgCreateTeam"
-                android:drawableStart="@drawable/ic_organizations"
+                android:drawableStart="@drawable/ic_people"
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/copyOrgUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/genericCopyUrl"
+                android:drawableStart="@drawable/ic_copy"
+                android:drawablePadding="24dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="12dp" />
 
         </LinearLayout>
 

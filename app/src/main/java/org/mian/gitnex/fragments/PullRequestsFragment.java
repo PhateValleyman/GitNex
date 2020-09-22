@@ -26,11 +26,11 @@ import org.mian.gitnex.adapters.PullRequestsAdapter;
 import org.mian.gitnex.clients.AppApiService;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.interfaces.ApiInterface;
 import org.mian.gitnex.models.PullRequests;
-import org.mian.gitnex.util.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -55,6 +55,7 @@ public class PullRequestsFragment extends Fragment {
 	private int pageSize = StaticGlobalVariables.prPageInit;
 	private TextView noData;
 	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+	private ProgressBar progressLoadMore;
 
 	@Nullable
 	@Override
@@ -83,6 +84,7 @@ public class PullRequestsFragment extends Fragment {
 		recyclerView = v.findViewById(R.id.recyclerView);
 		prList = new ArrayList<>();
 
+		progressLoadMore = v.findViewById(R.id.progressLoadMore);
 		mProgressBar = v.findViewById(R.id.progress_bar);
 		noData = v.findViewById(R.id.noData);
 
@@ -183,7 +185,7 @@ public class PullRequestsFragment extends Fragment {
 			@Override
 			public void onResponse(@NonNull Call<List<PullRequests>> call, @NonNull Response<List<PullRequests>> response) {
 
-				if(response.isSuccessful()) {
+				if(response.code() == 200) {
 
 					assert response.body() != null;
 					if(response.body().size() > 0) {
@@ -195,14 +197,26 @@ public class PullRequestsFragment extends Fragment {
 
 					}
 					else {
+
 						prList.clear();
 						adapter.notifyDataChanged();
 						noData.setVisibility(View.VISIBLE);
+
 					}
+
 					mProgressBar.setVisibility(View.GONE);
+
+				}
+				else if(response.code() == 404) {
+
+					noData.setVisibility(View.VISIBLE);
+					mProgressBar.setVisibility(View.GONE);
+
 				}
 				else {
+
 					Log.i(TAG, String.valueOf(response.code()));
+
 				}
 
 				Log.i(TAG, String.valueOf(response.code()));
@@ -221,9 +235,7 @@ public class PullRequestsFragment extends Fragment {
 
 	private void loadMore(String token, String repoOwner, String repoName, int page, String prState, int resultLimit) {
 
-		//add loading progress view
-		prList.add(new PullRequests("load"));
-		adapter.notifyItemInserted((prList.size() - 1));
+		progressLoadMore.setVisibility(View.VISIBLE);
 
 		Call<List<PullRequests>> call = apiPR.getPullRequests(token, repoOwner, repoName, page, prState, resultLimit);
 
@@ -232,7 +244,7 @@ public class PullRequestsFragment extends Fragment {
 			@Override
 			public void onResponse(@NonNull Call<List<PullRequests>> call, @NonNull Response<List<PullRequests>> response) {
 
-				if(response.isSuccessful()) {
+				if(response.code() == 200) {
 
 					//remove loading view
 					prList.remove(prList.size() - 1);
@@ -254,6 +266,7 @@ public class PullRequestsFragment extends Fragment {
 					}
 
 					adapter.notifyDataChanged();
+					progressLoadMore.setVisibility(View.GONE);
 
 				}
 				else {
@@ -320,6 +333,9 @@ public class PullRequestsFragment extends Fragment {
 		List<PullRequests> arr = new ArrayList<>();
 
 		for(PullRequests d : prList) {
+			if(d == null || d.getTitle() == null || d.getBody() == null) {
+				continue;
+			}
 			if(d.getTitle().toLowerCase().contains(text) || d.getBody().toLowerCase().contains(text)) {
 				arr.add(d);
 			}

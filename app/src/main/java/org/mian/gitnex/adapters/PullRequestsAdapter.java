@@ -18,8 +18,8 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.PullRequests;
-import org.mian.gitnex.util.TinyDB;
 import java.util.List;
 import java.util.Locale;
 
@@ -136,7 +136,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 				tinyDb.putString("prHeadBranch", prHeadBranch.getText().toString());
 				tinyDb.putString("prIsFork", prIsFork.getText().toString());
 				tinyDb.putString("prForkFullName", prForkFullName.getText().toString());
-				tinyDb.putString("issueType", "pr");
+				tinyDb.putString("issueType", "Pull");
 				context.startActivity(intent);
 
 			});
@@ -155,7 +155,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 				tinyDb.putString("prHeadBranch", prHeadBranch.getText().toString());
 				tinyDb.putString("prIsFork", prIsFork.getText().toString());
 				tinyDb.putString("prForkFullName", prForkFullName.getText().toString());
-				tinyDb.putString("issueType", "pr");
+				tinyDb.putString("issueType", "Pull");
 				context.startActivity(intent);
 
 			});
@@ -188,9 +188,18 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 			prNumber.setText(String.valueOf(prModel.getNumber()));
 			prMergeable.setText(String.valueOf(prModel.isMergeable()));
-			prHeadBranch.setText(prModel.getHead().getRef());
-			prIsFork.setText(String.valueOf(prModel.getHead().getRepo().isFork()));
-			prForkFullName.setText(prModel.getHead().getRepo().getFull_name());
+			if(prModel.getHead() != null) {
+				prHeadBranch.setText(prModel.getHead().getRef());
+				if(prModel.getHead().getRepo() != null) {
+					prIsFork.setText(String.valueOf(prModel.getHead().getRepo().isFork()));
+					prForkFullName.setText(prModel.getHead().getRepo().getFull_name());
+				}
+				else {
+					// pull was done from a deleted fork
+					prIsFork.setText("true");
+					prForkFullName.setText(context.getString(R.string.prDeletedFrok));
+				}
+			}
 			prCommentsCount.setText(String.valueOf(prModel.getComments()));
 
 			prCreatedTime.setText(TimeHelper.formatTime(prModel.getCreated_at(), new Locale(locale), timeFormat, context));

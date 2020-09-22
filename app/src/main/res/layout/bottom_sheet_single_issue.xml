@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:background="?attr/primaryBackgroundColor"
-    android:paddingTop="5dp">
+    android:paddingTop="6dp"
+    android:paddingBottom="12dp"
+    android:background="?attr/primaryBackgroundColor">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
                 android:visibility="gone"
-                android:padding="16dp" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/mergePullRequest"
@@ -38,11 +38,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/mergePullRequestText"
-                android:drawableStart="@drawable/ic_merge"
+                android:drawableStart="@drawable/ic_pull_request"
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/editIssue"
@@ -54,7 +54,7 @@
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/addRemoveAssignees"
@@ -62,11 +62,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/addRemoveAssignees"
-                android:drawableStart="@drawable/ic_person_filled"
+                android:drawableStart="@drawable/ic_person_add"
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/editLabels"
@@ -78,7 +78,7 @@
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/subscribeIssue"
@@ -90,8 +90,7 @@
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp"
-                android:visibility="gone" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/unsubscribeIssue"
@@ -100,17 +99,17 @@
                 android:layout_gravity="center_vertical"
                 android:drawableStart="@drawable/ic_watchers"
                 android:drawablePadding="24dp"
-                android:padding="16dp"
                 android:text="@string/singleIssueUnSubscribe"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:padding="12dp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
                 android:layout_marginStart="64dp"
                 android:background="?attr/dividerColor" />
 
@@ -119,30 +118,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:drawableStart="@drawable/ic_share_24dp"
+                android:drawableStart="@drawable/ic_share"
                 android:drawablePadding="24dp"
-                android:padding="16dp"
                 android:text="@string/shareIssue"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/copyIssueUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:drawableStart="@drawable/ic_content_copy"
+                android:drawableStart="@drawable/ic_copy"
                 android:drawablePadding="24dp"
-                android:padding="16dp"
                 android:text="@string/copyIssueUrl"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:padding="12dp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
                 android:layout_marginStart="64dp"
                 android:background="?attr/dividerColor" />
 
@@ -152,11 +151,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/closeIssue"
-                android:drawableStart="@drawable/ic_done"
+                android:drawableStart="@drawable/ic_issue_closed"
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/reOpenIssue"
@@ -168,8 +167,8 @@
                 android:drawablePadding="24dp"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:padding="16dp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:padding="12dp" />
 
         </LinearLayout>
 

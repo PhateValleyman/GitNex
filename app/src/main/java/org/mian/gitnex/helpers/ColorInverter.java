@@ -1,6 +1,9 @@
 package org.mian.gitnex.helpers;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.widget.ImageView;
 import androidx.annotation.ColorInt;
 
 /**
@@ -16,12 +19,43 @@ public class ColorInverter {
 
         int d;
         if (a < 0.5) {
-            d = 0; // black
+            d = 30; // almost black
         } else {
             d = 255; // white
         }
 
         return Color.rgb(d, d, d);
+    }
+
+    @ColorInt
+    public int getImageViewContrastColor(ImageView imageView) {
+
+    	if(imageView != null) {
+
+		    Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+
+		    int colorSum = 0;
+		    int divisionValue = 0;
+
+		    for(int height=0; height<bitmap.getHeight(); height += 10) {
+
+		    	for(int width=0; width<bitmap.getWidth(); width += 10) {
+
+		    		colorSum += bitmap.getPixel(width, height);
+		    		divisionValue++;
+
+			    }
+		    }
+
+		    // Calculate average color
+		    return getContrastColor(colorSum / divisionValue);
+
+	    }
+    	else {
+
+    		return Color.rgb(255, 255, 255);
+	    }
+
     }
 
 }

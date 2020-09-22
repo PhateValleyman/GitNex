@@ -1,13 +1,7 @@
 package org.mian.gitnex.activities;
 
-import androidx.annotation.NonNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
@@ -26,20 +21,25 @@ import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.MultiSelectDialog;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.CreateIssue;
 import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.models.Milestones;
 import org.mian.gitnex.models.MultiSelectModel;
-import org.mian.gitnex.util.AppUtil;
-import org.mian.gitnex.util.TinyDB;
-import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -62,6 +62,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private boolean labelsFlag;
     final Context ctx = this;
     private Context appCtx;
+    private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 
     List<Milestones> milestonesList = new ArrayList<>();
     ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
@@ -79,7 +80,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+        boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -92,6 +93,12 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         final String repoOwner = parts[0];
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+
+        // require gitea 1.12 or higher
+        if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+
+            resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+        }
 
         ImageView closeActivity = findViewById(R.id.close);
         assigneesList = findViewById(R.id.newIssueAssigneesList);
@@ -119,8 +126,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         newIssueDueDate.setOnClickListener(this);
 
         newIssueMilestoneSpinner = findViewById(R.id.newIssueMilestoneSpinner);
-        newIssueMilestoneSpinner.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-        getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
+        getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
 
         getLabels(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
         getCollaborators(instanceUrl, instanceToken, repoOwner, repoName, loginUid, loginFullName);
@@ -130,22 +136,17 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         if(!connToInternet) {
 
             createNewIssueButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
-            createNewIssueButton.setBackground(shape);
-
-        } else {
+        }
+        else {
 
             createNewIssueButton.setOnClickListener(this);
-
         }
 
     }
 
     private void processNewIssue() {
 
-        boolean connToInternet = AppUtil.haveNetworkConnection(appCtx);
+        boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
         TinyDB tinyDb = new TinyDB(appCtx);
         final String instanceUrl = tinyDb.getString("instanceUrl");
         final String loginUid = tinyDb.getString("loginUid");
@@ -167,21 +168,21 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         if(!connToInternet) {
 
-            Toasty.info(ctx, getResources().getString(R.string.checkNetConnection));
+            Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
 
         }
 
         if (newIssueTitleForm.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.issueTitleEmpty));
+            Toasty.error(ctx, getString(R.string.issueTitleEmpty));
             return;
 
         }
 
         /*if (newIssueDescriptionForm.equals("")) {
 
-            Toasty.info(ctx, getString(R.string.issueDescriptionEmpty));
+            Toasty.error(ctx, getString(R.string.issueDescriptionEmpty));
             return;
 
         }*/
@@ -199,9 +200,9 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         }
 
         int[] integers;
-        if (!newIssueLabelsIdHolderForm.equals("")) {
+        if (!newIssueLabelsIdHolderForm.equals("") && !newIssueLabelsIdHolderForm.equals("[]")) {
 
-            String[] items = newIssueLabelsIdHolderForm.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+            String[] items = newIssueLabelsIdHolderForm.replaceAll("\\[", "").replaceAll("]", "").replaceAll("\\s", "").split(",");
             integers = new int[items.length];
             for (int i = 0; i < integers.length; i++) {
                 integers[i] = Integer.parseInt(items[i]);
@@ -291,7 +292,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                         TinyDB tinyDb = new TinyDB(appCtx);
                         tinyDb.putBoolean("resumeIssues", true);
 
-                        Toasty.info(ctx, getString(R.string.issueCreated));
+                        Toasty.success(ctx, getString(R.string.issueCreated));
                         enableProcessButton();
                         finish();
 
@@ -309,7 +310,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 }
                 else {
 
-                    Toasty.info(ctx, getString(R.string.issueCreatedError));
+                    Toasty.error(ctx, getString(R.string.issueCreatedError));
                     enableProcessButton();
                     //Log.i("isSuccessful2", String.valueOf(response2.body()));
 
@@ -327,21 +328,17 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initCloseListener() {
-        onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        };
+
+        onClickListener = view -> finish();
     }
 
-    private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
+    private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, int resultLimit) {
 
         String msState = "open";
         Call<List<Milestones>> call = RetrofitClient
                 .getInstance(instanceUrl, ctx)
                 .getApiInterface()
-                .getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, msState);
+                .getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
 
         call.enqueue(new Callback<List<Milestones>>() {
 
@@ -436,7 +433,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                                 .multiSelectList(listOfAssignees)
                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                     @Override
-                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                         assigneesList.setText(dataString);
 
@@ -499,7 +496,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                                 .multiSelectList(listOfLabels)
                                 .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
                                     @Override
-                                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
                                         newIssueLabels.setText(dataString.trim());
                                         labelsIdHolder.setText(selectedIds.toString());
@@ -533,7 +530,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
             }
             else {
-                Toasty.info(ctx, getResources().getString(R.string.noAssigneesFound));
+                Toasty.warning(ctx, getResources().getString(R.string.noAssigneesFound));
             }
         }
         else if (v == newIssueLabels) {
@@ -541,7 +538,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 multiSelectDialogLabels.show(getSupportFragmentManager(), "multiSelectDialogLabels");
             }
             else {
-                Toasty.info(ctx, getResources().getString(R.string.noLabelsFound));
+                Toasty.warning(ctx, getResources().getString(R.string.noLabelsFound));
             }
         }
         else if (v == newIssueDueDate) {
@@ -573,20 +570,10 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private void disableProcessButton() {
 
         createNewIssueButton.setEnabled(false);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.hintColor));
-        createNewIssueButton.setBackground(shape);
-
     }
 
     private void enableProcessButton() {
 
         createNewIssueButton.setEnabled(true);
-        GradientDrawable shape =  new GradientDrawable();
-        shape.setCornerRadius( 8 );
-        shape.setColor(getResources().getColor(R.color.btnBackground));
-        createNewIssueButton.setBackground(shape);
-
     }
 }

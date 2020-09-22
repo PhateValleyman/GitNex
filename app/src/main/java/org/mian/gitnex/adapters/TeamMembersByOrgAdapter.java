@@ -11,10 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
-import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.UserInfo;
-import org.mian.gitnex.util.TinyDB;
 import java.util.List;
 
 /**
@@ -109,13 +108,6 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
         else {
             viewHolder.memberName.setText(currentItem.getLogin());
             viewHolder.memberName.setTypeface(myTypeface);
-        }
-
-        if(tinyDb.getInt("themeId") == 1) { //light
-            viewHolder.memberName.setTextColor(mCtx.getResources().getColor(R.color.lightThemeTextColor));
-        }
-        else { // dark
-            viewHolder.memberName.setTextColor(mCtx.getResources().getColor(R.color.white));
         }
 
     }
