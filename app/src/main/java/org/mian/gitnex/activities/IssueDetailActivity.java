@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -38,6 +37,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.IssueCommentsAdapter;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.fragments.BottomSheetReplyFragment;
 import org.mian.gitnex.fragments.BottomSheetSingleIssueFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
@@ -163,7 +163,7 @@ public class IssueDetailActivity extends BaseActivity {
 		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-		createNewComment.setOnClickListener(v -> startActivity(new Intent(ctx, ReplyToIssueActivity.class)));
+		createNewComment.setOnClickListener(v -> new BottomSheetReplyFragment().show(getSupportFragmentManager(), "replyBottomSheet"));
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
