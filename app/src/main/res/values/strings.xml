@@ -517,6 +517,7 @@
     <string name="isClosed">Closed</string>
     <string name="genericServerResponseError">We cannot reach the server at the moment, please check your server status and try again</string>
     <string name="genericCopyUrl">Copy URL</string>
+    <string name="genericCopyAll">All</string>
     <!-- generic copy -->
 
     <string name="translateText">Translate GitNex with Crowdin</string>
@@ -695,8 +696,8 @@
     <string name="exploreFilterDialogTitle">Filter Repositories</string>
     <string name="exploreFilterIncludeTopic">Search in Topic</string>
     <string name="exploreFilterIncludeDesc">Search in Description</string>
-    <string name="exploreFilterIncludeArchive">Include Archived Repositories</string>
-    <string name="exploreFilterIncludePrivate">Include Private Repositories</string>
+    <string name="exploreFilterIncludeArchive">Only Archived Repositories</string>
+    <string name="exploreFilterIncludePrivate">Only Private Repositories</string>
 
     <string name="mergeIntoBranch">Merge Into</string>
     <string name="pullFromBranch">Pull From</string>
