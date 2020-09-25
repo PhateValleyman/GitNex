@@ -43,6 +43,7 @@ import retrofit2.Response;
 public class ExploreRepositoriesFragment extends Fragment {
 
 	private Context ctx;
+	private TinyDB tinyDb;
 	private static String repoNameF = "param2";
 	private static String repoOwnerF = "param1";
 	private ProgressBar mProgressBar;
@@ -90,10 +91,16 @@ public class ExploreRepositoriesFragment extends Fragment {
 		setHasOptionsMenu(true);
 		ctx = getContext();
 
-		TinyDB tinyDb = new TinyDB(getContext());
+		tinyDb = new TinyDB(getContext());
 		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+
+		tinyDb.putBoolean("exploreRepoIncludeTopic", false);
+		tinyDb.putBoolean("exploreRepoIncludeDescription", false);
+		tinyDb.putBoolean("exploreRepoIncludeTemplate", false);
+		tinyDb.putBoolean("exploreRepoOnlyArchived", false);
+		tinyDb.putBoolean("exploreRepoOnlyPrivate", false);
 
 		searchKeyword = v.findViewById(R.id.searchKeyword);
 		noData = v.findViewById(R.id.noData);
@@ -108,7 +115,7 @@ public class ExploreRepositoriesFragment extends Fragment {
 				if(!searchKeyword.getText().toString().equals("")) {
 					mProgressBar.setVisibility(View.VISIBLE);
 					mRecyclerView.setVisibility(View.GONE);
-					loadSearchReposList(instanceUrl, instanceToken, loginUid, searchKeyword.getText().toString(), repoTypeInclude, sort, order, getContext(), limit);
+					loadSearchReposList(instanceUrl, instanceToken, loginUid, searchKeyword.getText().toString(), repoTypeInclude, sort, order, getContext(), tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), tinyDb.getBoolean("exploreRepoOnlyPrivate"), limit);
 				}
 			}
 			return false;
@@ -123,7 +130,7 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 	private void loadDefaultList(String instanceUrl, String instanceToken, String loginUid, Boolean repoTypeInclude, String sort, String order, final Context context, int limit) {
 
-		Call<ExploreRepositories> call = RetrofitClient.getInstance(instanceUrl, getContext()).getApiInterface().queryRepos(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), null, repoTypeInclude, sort, order, limit);
+		Call<ExploreRepositories> call = RetrofitClient.getInstance(instanceUrl, getContext()).getApiInterface().queryRepos(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), null, repoTypeInclude, sort, order, tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), tinyDb.getBoolean("exploreRepoOnlyPrivate"), limit);
 
 		call.enqueue(new Callback<ExploreRepositories>() {
 
@@ -150,9 +157,9 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 	}
 
-	private void loadSearchReposList(String instanceUrl, String instanceToken, String loginUid, String searchKeyword, Boolean repoTypeInclude, String sort, String order, final Context context, int limit) {
+	private void loadSearchReposList(String instanceUrl, String instanceToken, String loginUid, String searchKeyword, Boolean repoTypeInclude, String sort, String order, final Context context, boolean topic, boolean includeDesc, boolean template, boolean onlyArchived, boolean onlyPrivate, int limit) {
 
-		Call<ExploreRepositories> call = RetrofitClient.getInstance(instanceUrl, getContext()).getApiInterface().queryRepos(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), searchKeyword, repoTypeInclude, sort, order, limit);
+		Call<ExploreRepositories> call = RetrofitClient.getInstance(instanceUrl, getContext()).getApiInterface().queryRepos(Authorization.returnAuthentication(getContext(), loginUid, instanceToken), searchKeyword, repoTypeInclude, sort, order, topic, includeDesc, template, onlyArchived, onlyPrivate, limit);
 
 		call.enqueue(new Callback<ExploreRepositories>() {
 
@@ -236,6 +243,72 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 		View view = filterBinding.getRoot();
 		dialogFilterOptions.setContentView(view);
+
+		filterBinding.includeTopic.setOnClickListener(includeTopic -> {
+
+			if(filterBinding.includeTopic.isChecked()) {
+
+				tinyDb.putBoolean("exploreRepoIncludeTopic", true);
+			}
+			else {
+
+				tinyDb.putBoolean("exploreRepoIncludeTopic", false);
+			}
+		});
+
+		filterBinding.includeDesc.setOnClickListener(includeDesc -> {
+
+			if(filterBinding.includeDesc.isChecked()) {
+
+				tinyDb.putBoolean("exploreRepoIncludeDescription", true);
+			}
+			else {
+
+				tinyDb.putBoolean("exploreRepoIncludeDescription", false);
+			}
+		});
+
+		filterBinding.includeTemplate.setOnClickListener(includeTemplate -> {
+
+			if(filterBinding.includeTemplate.isChecked()) {
+
+				tinyDb.putBoolean("exploreRepoIncludeTemplate", true);
+			}
+			else {
+
+				tinyDb.putBoolean("exploreRepoIncludeTemplate", false);
+			}
+		});
+
+		filterBinding.onlyArchived.setOnClickListener(onlyArchived -> {
+
+			if(filterBinding.onlyArchived.isChecked()) {
+
+				tinyDb.putBoolean("exploreRepoOnlyArchived", true);
+			}
+			else {
+
+				tinyDb.putBoolean("exploreRepoOnlyArchived", false);
+			}
+		});
+
+		filterBinding.onlyPrivate.setOnClickListener(onlyPrivate -> {
+
+			if(filterBinding.onlyPrivate.isChecked()) {
+
+				tinyDb.putBoolean("exploreRepoOnlyPrivate", true);
+			}
+			else {
+
+				tinyDb.putBoolean("exploreRepoOnlyPrivate", false);
+			}
+		});
+
+		filterBinding.includeTopic.setChecked(tinyDb.getBoolean("exploreRepoIncludeTopic"));
+		filterBinding.includeDesc.setChecked(tinyDb.getBoolean("exploreRepoIncludeDescription"));
+		filterBinding.includeTemplate.setChecked(tinyDb.getBoolean("exploreRepoIncludeTemplate"));
+		filterBinding.onlyArchived.setChecked(tinyDb.getBoolean("exploreRepoOnlyArchived"));
+		filterBinding.onlyPrivate.setChecked(tinyDb.getBoolean("exploreRepoOnlyPrivate"));
 
 		filterBinding.cancel.setOnClickListener(editProperties -> {
 			dialogFilterOptions.dismiss();

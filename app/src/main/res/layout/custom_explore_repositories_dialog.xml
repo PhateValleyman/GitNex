@@ -63,49 +63,32 @@
                 android:text="@string/exploreFilterIncludeDesc"
                 android:textSize="16sp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:id="@+id/dividerItems"
-                android:background="?attr/dividerColor"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp" />
-
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:checkedButton="@+id/radioButtonAll"
+            <CheckBox
+                android:id="@+id/includeTemplate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:checked="false"
+                android:textColor="?attr/primaryTextColor"
+                android:text="@string/exploreFilterIncludeTemplateRepos"
+                android:textSize="16sp" />
 
-                <RadioButton
-                    android:id="@+id/radioButtonAll"
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:buttonTint="?attr/iconsColor"
-                    android:text="@string/genericCopyAll"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp" />
+            <CheckBox
+                android:id="@+id/onlyArchived"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:textColor="?attr/primaryTextColor"
+                android:text="@string/exploreFilterIncludeArchive"
+                android:textSize="16sp" />
 
-                <RadioButton
-                    android:id="@+id/radioButtonArchived"
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:buttonTint="?attr/iconsColor"
-                    android:text="@string/exploreFilterIncludeArchive"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp" />
-
-                <RadioButton
-                    android:id="@+id/radioButtonPrivate"
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:buttonTint="?attr/iconsColor"
-                    android:text="@string/exploreFilterIncludePrivate"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp" />
-
-            </RadioGroup>
+            <CheckBox
+                android:id="@+id/onlyPrivate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:textColor="?attr/primaryTextColor"
+                android:text="@string/exploreFilterIncludePrivate"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
