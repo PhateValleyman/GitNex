@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "org.mian.gitnex"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 317
         versionName "3.2.0-dev"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
