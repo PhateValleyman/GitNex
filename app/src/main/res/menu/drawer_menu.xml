@@ -23,7 +23,7 @@
             android:icon="@drawable/ic_repo"
             android:title="@string/navRepos" />
 
-        <item android:id="@+id/nav_search_issues_pulls"
+        <item android:id="@+id/nav_search_issues"
             android:icon="@drawable/ic_search"
             android:title="@string/navSearchIssuesPulls" />
 

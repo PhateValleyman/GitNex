@@ -40,6 +40,7 @@ import org.mian.gitnex.fragments.NotificationsFragment;
 import org.mian.gitnex.fragments.OrganizationsFragment;
 import org.mian.gitnex.fragments.ProfileFragment;
 import org.mian.gitnex.fragments.RepositoriesFragment;
+import org.mian.gitnex.fragments.SearchIssuesFragment;
 import org.mian.gitnex.fragments.SettingsFragment;
 import org.mian.gitnex.fragments.StarredRepositoriesFragment;
 import org.mian.gitnex.fragments.UserAccountsFragment;
@@ -566,6 +567,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			case R.id.nav_administration:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdministrationFragment()).commit();
+				break;
+
+			case R.id.nav_search_issues:
+				toolbarTitle.setText(getResources().getString(R.string.navSearchIssuesPulls));
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SearchIssuesFragment()).commit();
 				break;
 
 		}
