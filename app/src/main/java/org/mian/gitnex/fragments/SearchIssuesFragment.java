@@ -10,8 +10,6 @@ import android.view.inputmethod.EditorInfo;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import org.mian.gitnex.R;
-import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.SearchIssuesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentSearchIssuesBinding;
@@ -52,8 +50,6 @@ public class SearchIssuesFragment extends Fragment {
 
 		ctx = getContext();
 		tinyDb = new TinyDB(getContext());
-
-		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navSearchIssuesPulls));
 
 		instanceUrl = tinyDb.getString("instanceUrl");
 		loginUid = tinyDb.getString("loginUid");
