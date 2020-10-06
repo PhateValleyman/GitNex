@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -169,9 +168,9 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 	private void showAssignees() {
 
 		dialogAssignees = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
-		dialogAssignees.setCancelable(false);
 
 		if (dialogAssignees.getWindow() != null) {
+
 			dialogAssignees.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
 
@@ -189,6 +188,11 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 			.getApiInterface()
 			.getCollaborators(instanceToken, repoOwner, repoName);
 
+		Call<List<Collaborators>> callOrgMembers = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getOrgMembers(instanceToken, repoOwner);
+
 		call.enqueue(new Callback<List<Collaborators>>() {
 
 			@Override
@@ -203,21 +207,66 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 				if (response.code() == 200) {
 
 					assert assigneesList_ != null;
-					if(assigneesList_.size() > 0) {
-						for (int i = 0; i < assigneesList_.size(); i++) {
 
-							assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(), assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
+					callOrgMembers.enqueue(new Callback<List<Collaborators>>() {
+
+						@Override
+						public void onResponse(@NonNull Call<List<Collaborators>> callOrgMembers, @NonNull retrofit2.Response<List<Collaborators>> response) {
+
+							List<Collaborators> assigneesList_2 = response.body();
+							assert assigneesList_2 != null;
+
+							if (response.code() == 200) {
+
+								if(assigneesList_2.size() > 0) {
+
+									for (int i = 0; i < assigneesList_2.size(); i++) {
+
+										assigneesList.add(new Collaborators(assigneesList_2.get(i).getId(), assigneesList_2.get(i).getFull_name(), assigneesList_2.get(i).getLogin(), assigneesList_2.get(i).getAvatar_url()));
+									}
+								}
+							}
+
+							int list2 = 0;
+							if(assigneesList_2 != null) {
+
+								list2 = assigneesList_2.size();
+							}
+
+							if((assigneesList_.size() + list2) > 0) {
+
+								dialogAssignees.show();
+								for (int i = 0; i < assigneesList_.size(); i++) {
+
+									if(list2 > 0) {
+
+										if(!assigneesList.get(i).getLogin().equals(assigneesList_.get(i).getLogin())) {
+
+											assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(),
+												assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
+										}
+									}
+									else {
+
+										assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(),
+											assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
+									}
+								}
+							}
+							else {
+
+								dialogAssignees.dismiss();
+								Toasty.warning(ctx, getString(R.string.noAssigneesFound));
+							}
 
 						}
-					}
-					else {
 
-						dialogAssignees.dismiss();
-						Toasty.warning(ctx, getString(R.string.noAssigneesFound));
-					}
+						@Override
+						public void onFailure(@NonNull Call<List<Collaborators>> callOrgMembers, @NonNull Throwable t) {
+						}
+					});
 
 					assigneesBinding.assigneesRecyclerView.setAdapter(assigneesAdapter);
-
 				}
 				else {
 
@@ -233,16 +282,14 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 			}
 		});
 
-		dialogAssignees.show();
-
 	}
 
 	private void showLabels() {
 
 		dialogLabels = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
-		dialogLabels.setCancelable(false);
 
 		if (dialogLabels.getWindow() != null) {
+
 			dialogLabels.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
 
@@ -338,61 +385,10 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             newIssueDueDateForm = (AppUtil.customDateCombine(AppUtil.customDateFormat(newIssueDueDateForm)));
         }
 
-        //Log.i("FormData", String.valueOf(newIssueLabelsForm));
         disableProcessButton();
         createNewIssueFunc(instanceUrl, instanceToken, repoOwner, repoName, loginUid, newIssueDescriptionForm, newIssueDueDateForm, milestoneId, newIssueTitleForm);
 
     }
-
-    /*public void loadCollaboratorsList() {
-
-        final TinyDB tinyDb = new TinyDB(appCtx);
-
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-
-        Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
-
-        call.enqueue(new Callback<List<Collaborators>>() {
-
-            @Override
-            public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
-
-                if (response.isSuccessful()) {
-
-                    assert response.body() != null;
-                    String fullName = "";
-                    for (int i = 0; i < response.body().size(); i++) {
-                        if(!response.body().get(i).getFull_name().equals("")) {
-                            fullName = response.body().get(i).getFull_name();
-                        }
-                        defaultMentionAdapter.add(
-                                new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
-                    }
-
-                } else {
-
-                    Log.i("onResponse", String.valueOf(response.code()));
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.toString());
-            }
-
-        });
-    }*/
 
     private void createNewIssueFunc(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, String newIssueDescriptionForm, String newIssueDueDateForm, int newIssueMilestoneIdForm, String newIssueTitleForm) {
 
@@ -410,19 +406,14 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response2) {
 
-                if(response2.isSuccessful()) {
-                    if(response2.code() == 201) {
+				if(response2.code() == 201) {
 
-                        //Log.i("isSuccessful1", String.valueOf(response2.body()));
-                        TinyDB tinyDb = new TinyDB(appCtx);
-                        tinyDb.putBoolean("resumeIssues", true);
+                    TinyDB tinyDb = new TinyDB(appCtx);
+                    tinyDb.putBoolean("resumeIssues", true);
 
-                        Toasty.success(ctx, getString(R.string.issueCreated));
-                        enableProcessButton();
-                        finish();
-
-                    }
-
+                    Toasty.success(ctx, getString(R.string.issueCreated));
+                    enableProcessButton();
+                    finish();
                 }
                 else if(response2.code() == 401) {
 
@@ -431,21 +422,19 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                             getResources().getString(R.string.alertDialogTokenRevokedMessage),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
                             getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
                 }
                 else {
 
                     Toasty.error(ctx, getString(R.string.issueCreatedError));
                     enableProcessButton();
-                    //Log.i("isSuccessful2", String.valueOf(response2.body()));
-
                 }
 
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
+
+	            Toasty.error(ctx, getString(R.string.genericServerResponseError));
                 enableProcessButton();
             }
         });
@@ -510,86 +499,16 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
+
+	            Toasty.error(ctx, getString(R.string.genericServerResponseError));
             }
         });
 
     }
 
-    /*private void getCollaborators(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, String loginFullName) {
-
-        Call<List<Collaborators>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
-
-        listOfAssignees.add(new MultiSelectModel(-1, loginFullName));
-
-        call.enqueue(new Callback<List<Collaborators>>() {
-
-            @Override
-            public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull retrofit2.Response<List<Collaborators>> response) {
-
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
-
-                        List<Collaborators> assigneesList_ = response.body();
-
-                        assert assigneesList_ != null;
-                        if(assigneesList_.size() > 0) {
-                            for (int i = 0; i < assigneesList_.size(); i++) {
-
-                                //String assigneesCopy;
-                                //if(!assigneesList_.get(i).getFull_name().equals("")) {
-                                //    assigneesCopy = getString(R.string.dialogAssignessText, assigneesList_.get(i).getFull_name(), assigneesList_.get(i).getLogin());
-                                //}
-                                //else {
-                                //    assigneesCopy = assigneesList_.get(i).getLogin();
-                                //}
-                                listOfAssignees.add(new MultiSelectModel(assigneesList_.get(i).getId(), assigneesList_.get(i).getLogin().trim()));
-
-                            }
-                            assigneesFlag = true;
-                        }
-
-                        multiSelectDialog = new MultiSelectDialog()
-                                .title(getResources().getString(R.string.newIssueSelectAssigneesListTitle))
-                                .titleSize(25)
-                                .positiveText(getResources().getString(R.string.okButton))
-                                .negativeText(getResources().getString(R.string.cancelButton))
-                                .setMinSelectionLimit(0)
-                                .setMaxSelectionLimit(listOfAssignees.size())
-                                .multiSelectList(listOfAssignees)
-                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                    @Override
-                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
-
-	                                    viewBinding.newIssueAssigneesList.setText(dataString);
-
-                                    }
-
-                                    @Override
-                                    public void onCancel() {
-                                        //Log.d("multiSelect","Dialog cancelled");
-
-                                    }
-                                });
-
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
-
-    }*/
-
     @Override
     public void onClick(View v) {
+
         if (v == viewBinding.newIssueDueDate) {
 
             final Calendar c = Calendar.getInstance();

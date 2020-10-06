@@ -10,7 +10,7 @@
     <CheckBox
         android:id="@+id/labelSelection"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:checked="false"
         android:textColor="?attr/primaryTextColor"
         android:textSize="16sp" />
@@ -18,7 +18,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="4dp"
         app:cardElevation="0dp"
@@ -36,7 +36,7 @@
         android:id="@+id/labelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="6dp"
+        android:paddingTop="8dp"
         android:paddingStart="64dp"
         android:paddingEnd="4dp"
         android:textColor="?attr/primaryTextColor"
