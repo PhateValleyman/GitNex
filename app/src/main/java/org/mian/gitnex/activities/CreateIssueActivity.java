@@ -1,25 +1,26 @@
 package org.mian.gitnex.activities;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import com.hendraanggrian.appcompat.socialview.Mention;
 import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
-import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.databinding.ActivityCreateIssueBinding;
+import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
@@ -45,28 +46,32 @@ import retrofit2.Response;
  * Author M M Arif
  */
 
-public class CreateIssueActivity extends BaseActivity implements View.OnClickListener {
+public class CreateIssueActivity extends BaseActivity implements View.OnClickListener, LabelsListAdapter.LabelsListAdapterListener {
 
+	private ActivityCreateIssueBinding viewBinding;
+	private CustomLabelsSelectionDialogBinding labelsBinding;
     private View.OnClickListener onClickListener;
     MultiSelectDialog multiSelectDialog;
-    MultiSelectDialog multiSelectDialogLabels;
-    private TextView assigneesList;
-    private TextView newIssueLabels;
-    private TextView newIssueDueDate;
-    private Spinner newIssueMilestoneSpinner;
-    private EditText newIssueTitle;
-    private SocialAutoCompleteTextView newIssueDescription;
-    private Button createNewIssueButton;
-    private TextView labelsIdHolder;
     private boolean assigneesFlag;
-    private boolean labelsFlag;
     final Context ctx = this;
     private Context appCtx;
+    private TinyDB tinyDb;
     private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+	private Dialog dialogLabels;
+	private String labelsSetter;
 
+	private String instanceUrl;
+	private String loginUid;
+	private String instanceToken;
+	private String repoOwner;
+	private String repoName;
+
+	private LabelsListAdapter labelsAdapter;
+
+	private ArrayList<Integer> labelsIds = new ArrayList<>();
+	List<Labels> labelsList = new ArrayList<>();
     List<Milestones> milestonesList = new ArrayList<>();
     ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
-    ArrayList<MultiSelectModel> listOfLabels= new ArrayList<>();
     private ArrayAdapter<Mention> defaultMentionAdapter;
 
     @Override
@@ -79,20 +84,24 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
+	    tinyDb = new TinyDB(appCtx);
+
+	    viewBinding = ActivityCreateIssueBinding.inflate(getLayoutInflater());
+	    View view = viewBinding.getRoot();
+	    setContentView(view);
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
+        instanceUrl = tinyDb.getString("instanceUrl");
+        loginUid = tinyDb.getString("loginUid");
         final String loginFullName = tinyDb.getString("userFullname");
         String repoFullName = tinyDb.getString("repoFullName");
         String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+        repoOwner = parts[0];
+        repoName = parts[1];
+        instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
         // require gitea 1.12 or higher
         if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
@@ -100,49 +109,127 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
         }
 
-        ImageView closeActivity = findViewById(R.id.close);
-        assigneesList = findViewById(R.id.newIssueAssigneesList);
-        newIssueLabels = findViewById(R.id.newIssueLabels);
-        newIssueDueDate = findViewById(R.id.newIssueDueDate);
-        createNewIssueButton = findViewById(R.id.createNewIssueButton);
-        newIssueTitle = findViewById(R.id.newIssueTitle);
-        newIssueDescription = findViewById(R.id.newIssueDescription);
-        labelsIdHolder = findViewById(R.id.labelsIdHolder);
-
-        newIssueTitle.requestFocus();
+	    viewBinding.newIssueTitle.requestFocus();
         assert imm != null;
-        imm.showSoftInput(newIssueTitle, InputMethodManager.SHOW_IMPLICIT);
+        imm.showSoftInput(viewBinding.newIssueTitle, InputMethodManager.SHOW_IMPLICIT);
 
         defaultMentionAdapter = new MentionArrayAdapter<>(this);
         loadCollaboratorsList();
 
-        newIssueDescription.setMentionAdapter(defaultMentionAdapter);
+	    labelsAdapter =  new LabelsListAdapter(labelsList, CreateIssueActivity.this);
+
+	    viewBinding.newIssueDescription.setMentionAdapter(defaultMentionAdapter);
 
         initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+	    viewBinding.close.setOnClickListener(onClickListener);
 
-        assigneesList.setOnClickListener(this);
-        newIssueLabels.setOnClickListener(this);
-        newIssueDueDate.setOnClickListener(this);
+	    viewBinding.newIssueAssigneesList.setOnClickListener(this);
+	    viewBinding.newIssueLabels.setOnClickListener(this);
+	    viewBinding.newIssueDueDate.setOnClickListener(this);
 
-        newIssueMilestoneSpinner = findViewById(R.id.newIssueMilestoneSpinner);
         getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
 
-        getLabels(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
         getCollaborators(instanceUrl, instanceToken, repoOwner, repoName, loginUid, loginFullName);
 
         disableProcessButton();
 
+	    viewBinding.newIssueLabels.setOnClickListener(newIssueLabels ->
+		    showLabels()
+	    );
+
         if(!connToInternet) {
 
-            createNewIssueButton.setEnabled(false);
+	        viewBinding.createNewIssueButton.setEnabled(false);
         }
         else {
 
-            createNewIssueButton.setOnClickListener(this);
+	        viewBinding.createNewIssueButton.setOnClickListener(this);
         }
 
     }
+
+	@Override
+	public void labelsStringData(ArrayList<String> data) {
+
+		labelsSetter = String.valueOf(data);
+		viewBinding.newIssueLabels.setText(labelsSetter.replace("]", "").replace("[", ""));
+	}
+
+	@Override
+	public void labelsIdsData(ArrayList<Integer> data) {
+
+		labelsIds = data;
+	}
+
+	private void showLabels() {
+
+		dialogLabels = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+
+		if (dialogLabels.getWindow() != null) {
+			dialogLabels.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		}
+
+		labelsBinding = CustomLabelsSelectionDialogBinding.inflate(LayoutInflater.from(ctx));
+
+		View view = labelsBinding.getRoot();
+		dialogLabels.setContentView(view);
+
+		labelsBinding.cancel.setOnClickListener(editProperties ->
+			dialogLabels.dismiss()
+		);
+
+		Call<List<Labels>> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getlabels(instanceToken, repoOwner, repoName);
+
+		call.enqueue(new Callback<List<Labels>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
+
+				labelsList.clear();
+				List<Labels> labelsList_ = response.body();
+
+				labelsBinding.progressBar.setVisibility(View.GONE);
+				labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
+
+				if (response.code() == 200) {
+
+					assert labelsList_ != null;
+					if(labelsList_.size() > 0) {
+						for (int i = 0; i < labelsList_.size(); i++) {
+
+							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName()));
+
+						}
+					}
+					else {
+
+						dialogLabels.dismiss();
+						Toasty.warning(ctx, getString(R.string.noLabelsFound));
+					}
+
+					labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
+
+				}
+				else {
+
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
+			}
+		});
+
+		dialogLabels.show();
+
+	}
 
     private void processNewIssue() {
 
@@ -156,15 +243,13 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         final String repoName = parts[1];
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        Milestones mModel = (Milestones) newIssueMilestoneSpinner.getSelectedItem();
+        Milestones mModel = (Milestones) viewBinding.newIssueMilestoneSpinner.getSelectedItem();
 
         int newIssueMilestoneIdForm = mModel.getId();
-        String newIssueTitleForm = newIssueTitle.getText().toString();
-        String newIssueDescriptionForm = newIssueDescription.getText().toString();
-        String newIssueAssigneesListForm = assigneesList.getText().toString();
-        //String newIssueLabelsForm = newIssueLabels.getText().toString();
-        String newIssueDueDateForm = newIssueDueDate.getText().toString();
-        String newIssueLabelsIdHolderForm = labelsIdHolder.getText().toString();
+        String newIssueTitleForm = viewBinding.newIssueTitle.getText().toString();
+        String newIssueDescriptionForm = viewBinding.newIssueDescription.getText().toString();
+        String newIssueAssigneesListForm = viewBinding.newIssueAssigneesList.getText().toString();
+        String newIssueDueDateForm = viewBinding.newIssueDueDate.getText().toString();
 
         if(!connToInternet) {
 
@@ -180,16 +265,10 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         }
 
-        /*if (newIssueDescriptionForm.equals("")) {
-
-            Toasty.error(ctx, getString(R.string.issueDescriptionEmpty));
-            return;
-
-        }*/
-
         if (newIssueDueDateForm.equals("")) {
             newIssueDueDateForm = null;
-        } else {
+        }
+        else {
             newIssueDueDateForm = (AppUtil.customDateCombine(AppUtil.customDateFormat(newIssueDueDateForm)));
         }
 
@@ -199,23 +278,9 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             newIssueAssigneesListForm_.set(i, newIssueAssigneesListForm_.get(i).trim());
         }
 
-        int[] integers;
-        if (!newIssueLabelsIdHolderForm.equals("") && !newIssueLabelsIdHolderForm.equals("[]")) {
-
-            String[] items = newIssueLabelsIdHolderForm.replaceAll("\\[", "").replaceAll("]", "").replaceAll("\\s", "").split(",");
-            integers = new int[items.length];
-            for (int i = 0; i < integers.length; i++) {
-                integers[i] = Integer.parseInt(items[i]);
-            }
-
-        }
-        else {
-            integers = new int[0];
-        }
-
         //Log.i("FormData", String.valueOf(newIssueLabelsForm));
         disableProcessButton();
-        createNewIssueFunc(instanceUrl, instanceToken, repoOwner, repoName, loginUid, newIssueDescriptionForm, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm_, integers);
+        createNewIssueFunc(instanceUrl, instanceToken, repoOwner, repoName, loginUid, newIssueDescriptionForm, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm_);
 
     }
 
@@ -269,9 +334,9 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
-    private void createNewIssueFunc(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, String newIssueDescriptionForm, String newIssueDueDateForm, int newIssueMilestoneIdForm, String newIssueTitleForm, List<String> newIssueAssigneesListForm, int[] newIssueLabelsForm) {
+    private void createNewIssueFunc(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, String newIssueDescriptionForm, String newIssueDueDateForm, int newIssueMilestoneIdForm, String newIssueTitleForm, List<String> newIssueAssigneesListForm) {
 
-        CreateIssue createNewIssueJson = new CreateIssue(loginUid, newIssueDescriptionForm, false, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm, newIssueLabelsForm);
+        CreateIssue createNewIssueJson = new CreateIssue(loginUid, newIssueDescriptionForm, false, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm, labelsIds);
 
         Call<JsonElement> call3;
 
@@ -371,7 +436,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                                 R.layout.spinner_item, milestonesList);
 
                         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                        newIssueMilestoneSpinner.setAdapter(adapter);
+	                    viewBinding.newIssueMilestoneSpinner.setAdapter(adapter);
                         enableProcessButton();
 
                     }
@@ -435,7 +500,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                                     @Override
                                     public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
 
-                                        assigneesList.setText(dataString);
+	                                    viewBinding.newIssueAssigneesList.setText(dataString);
 
                                     }
 
@@ -459,73 +524,9 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-    private void getLabels(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
-
-        Call<List<Labels>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getlabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
-
-        call.enqueue(new Callback<List<Labels>>() {
-
-            @Override
-            public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
-
-                if(response.isSuccessful()) {
-                    if(response.code() == 200) {
-
-                        List<Labels> labelsList_ = response.body();
-
-                        assert labelsList_ != null;
-                        if(labelsList_.size() > 0) {
-                            for (int i = 0; i < labelsList_.size(); i++) {
-
-                                listOfLabels.add(new MultiSelectModel(labelsList_.get(i).getId(), labelsList_.get(i).getName().trim()));
-
-                            }
-                            labelsFlag = true;
-                        }
-
-                        multiSelectDialogLabels = new MultiSelectDialog()
-                                .title(getResources().getString(R.string.newIssueSelectLabelsListTitle))
-                                .titleSize(25)
-                                .positiveText(getResources().getString(R.string.okButton))
-                                .negativeText(getResources().getString(R.string.cancelButton))
-                                .setMinSelectionLimit(0)
-                                .setMaxSelectionLimit(listOfLabels.size())
-                                .multiSelectList(listOfLabels)
-                                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                                    @Override
-                                    public void onSelected(List<Integer> selectedIds, List<String> selectedNames, String dataString) {
-
-                                        newIssueLabels.setText(dataString.trim());
-                                        labelsIdHolder.setText(selectedIds.toString());
-
-                                    }
-
-                                    @Override
-                                    public void onCancel() {
-                                        //Log.d("multiSelect","Dialog cancelled");
-
-                                    }
-                                });
-
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-        });
-
-    }
-
     @Override
     public void onClick(View v) {
-        if (v == assigneesList) {
+        if (v == viewBinding.newIssueAssigneesList) {
             if(assigneesFlag) {
                 multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
             }
@@ -533,15 +534,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 Toasty.warning(ctx, getResources().getString(R.string.noAssigneesFound));
             }
         }
-        else if (v == newIssueLabels) {
-            if(labelsFlag) {
-                multiSelectDialogLabels.show(getSupportFragmentManager(), "multiSelectDialogLabels");
-            }
-            else {
-                Toasty.warning(ctx, getResources().getString(R.string.noLabelsFound));
-            }
-        }
-        else if (v == newIssueDueDate) {
+        else if (v == viewBinding.newIssueDueDate) {
 
             final Calendar c = Calendar.getInstance();
             int mYear = c.get(Calendar.YEAR);
@@ -555,13 +548,13 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
 
-                            newIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
+	                        viewBinding.newIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
 
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
         }
-        else if(v == createNewIssueButton) {
+        else if(v == viewBinding.createNewIssueButton) {
             processNewIssue();
         }
 
@@ -569,11 +562,11 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
     private void disableProcessButton() {
 
-        createNewIssueButton.setEnabled(false);
+	    viewBinding.createNewIssueButton.setEnabled(false);
     }
 
     private void enableProcessButton() {
 
-        createNewIssueButton.setEnabled(true);
+	    viewBinding.createNewIssueButton.setEnabled(true);
     }
 }

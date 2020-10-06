@@ -1,5 +1,6 @@
 package org.mian.gitnex.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,9 +16,9 @@ public class CreateIssue {
     private String title;
 
     private List<String> assignees;
-    private int[] labels;
+	private ArrayList<Integer> labels;
 
-    public CreateIssue(String assignee, String body, boolean closed, String due_date, int milestone, String title, List<String> assignees, int[] labels) {
+    public CreateIssue(String assignee, String body, boolean closed, String due_date, int milestone, String title, List<String> assignees, ArrayList<Integer> labels) {
         this.body = body;
         this.closed = closed;
         this.due_date = due_date;
