@@ -1,13 +1,11 @@
 package org.mian.gitnex.activities;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -33,11 +31,10 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
-import org.mian.gitnex.fragments.AboutFragment;
 import org.mian.gitnex.fragments.AdministrationFragment;
 import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
 import org.mian.gitnex.fragments.DraftsFragment;
-import org.mian.gitnex.fragments.ExploreRepositoriesFragment;
+import org.mian.gitnex.fragments.ExploreFragment;
 import org.mian.gitnex.fragments.MyRepositoriesFragment;
 import org.mian.gitnex.fragments.NotificationsFragment;
 import org.mian.gitnex.fragments.OrganizationsFragment;
@@ -179,7 +176,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		else if(fragmentById instanceof OrganizationsFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
 		}
-		else if(fragmentById instanceof ExploreRepositoriesFragment) {
+		else if(fragmentById instanceof ExploreFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
 		}
 		else if(fragmentById instanceof NotificationsFragment) {
@@ -187,9 +184,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if(fragmentById instanceof ProfileFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
-		}
-		else if(fragmentById instanceof AboutFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleAbout));
 		}
 		else if(fragmentById instanceof DraftsFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
@@ -311,6 +305,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_profile);
 					drawer.closeDrawers();
 				});
 
@@ -390,7 +385,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				case 5:
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
-					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreRepositoriesFragment()).commit();
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_explore);
 					break;
 
@@ -453,6 +448,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			ChangeLog changelogDialog = new ChangeLog(this);
 			changelogDialog.showDialog();
 		}
+	}
+
+	public void setActionBarTitle(String title) {
+
+		toolbarTitle.setText(title);
 	}
 
 	@Override
@@ -544,15 +544,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 				break;
 
-			case R.id.nav_about:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleAbout));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit();
-				break;
-
-			case R.id.nav_rate_app:
-				rateThisApp();
-				break;
-
 			case R.id.nav_starred_repos:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StarredRepositoriesFragment()).commit();
@@ -560,7 +551,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 			case R.id.nav_explore:
 				toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreRepositoriesFragment()).commit();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreFragment()).commit();
 				break;
 
 			case R.id.nav_notifications:
@@ -582,16 +573,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		drawer.closeDrawer(GravityCompat.START);
 		return true;
-	}
-
-	public void rateThisApp() {
-
-		try {
-			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
-		}
-		catch(ActivityNotFoundException e) {
-			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
-		}
 	}
 
 	public static void logout(Activity activity, Context ctx) {

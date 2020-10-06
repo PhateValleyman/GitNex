@@ -43,7 +43,7 @@
             app:startIconTint="?attr/iconsColor"
             app:endIconMode="clear_text"
             app:endIconTint="?attr/iconsColor"
-            android:hint="@string/exploreTextBoxHint">
+            android:hint="@string/navSearchIssuesPulls">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/searchKeyword"
@@ -77,7 +77,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewReposSearch"
+            android:id="@+id/recyclerViewSearchIssues"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/primaryBackgroundColor"
