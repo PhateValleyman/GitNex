@@ -188,11 +188,6 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 			.getApiInterface()
 			.getCollaborators(instanceToken, repoOwner, repoName);
 
-		Call<List<Collaborators>> callOrgMembers = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
-			.getOrgMembers(instanceToken, repoOwner);
-
 		call.enqueue(new Callback<List<Collaborators>>() {
 
 			@Override
@@ -208,65 +203,25 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
 					assert assigneesList_ != null;
 
-					callOrgMembers.enqueue(new Callback<List<Collaborators>>() {
+					if(assigneesList_.size() > 0) {
 
-						@Override
-						public void onResponse(@NonNull Call<List<Collaborators>> callOrgMembers, @NonNull retrofit2.Response<List<Collaborators>> response) {
+						dialogAssignees.show();
 
-							List<Collaborators> assigneesList_2 = response.body();
-							assert assigneesList_2 != null;
+						for (int i = 0; i < assigneesList_.size(); i++) {
 
-							if (response.code() == 200) {
-
-								if(assigneesList_2.size() > 0) {
-
-									for (int i = 0; i < assigneesList_2.size(); i++) {
-
-										assigneesList.add(new Collaborators(assigneesList_2.get(i).getId(), assigneesList_2.get(i).getFull_name(), assigneesList_2.get(i).getLogin(), assigneesList_2.get(i).getAvatar_url()));
-									}
-								}
-							}
-
-							int list2 = 0;
-							if(assigneesList_2 != null) {
-
-								list2 = assigneesList_2.size();
-							}
-
-							if((assigneesList_.size() + list2) > 0) {
-
-								dialogAssignees.show();
-								for (int i = 0; i < assigneesList_.size(); i++) {
-
-									if(list2 > 0) {
-
-										if(!assigneesList.get(i).getLogin().equals(assigneesList_.get(i).getLogin())) {
-
-											assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(),
-												assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
-										}
-									}
-									else {
-
-										assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(),
-											assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
-									}
-								}
-							}
-							else {
-
-								dialogAssignees.dismiss();
-								Toasty.warning(ctx, getString(R.string.noAssigneesFound));
-							}
+							assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(),
+									assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
 
 						}
+					}
+					else {
 
-						@Override
-						public void onFailure(@NonNull Call<List<Collaborators>> callOrgMembers, @NonNull Throwable t) {
-						}
-					});
+						dialogAssignees.dismiss();
+						Toasty.warning(ctx, getString(R.string.noAssigneesFound));
+					}
 
 					assigneesBinding.assigneesRecyclerView.setAdapter(assigneesAdapter);
+
 				}
 				else {
 
@@ -321,11 +276,12 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 				if (response.code() == 200) {
 
 					assert labelsList_ != null;
+
 					if(labelsList_.size() > 0) {
+
 						for (int i = 0; i < labelsList_.size(); i++) {
 
 							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName(), labelsList_.get(i).getColor()));
-
 						}
 					}
 					else {
