@@ -21,9 +21,10 @@ public class Labels {
         this.labels = labels;
     }
 
-	public Labels(int id, String name) {
+	public Labels(int id, String name, String color) {
 		this.id = id;
 		this.name = name;
+		this.color = color;
 	}
 
     public int getId() {

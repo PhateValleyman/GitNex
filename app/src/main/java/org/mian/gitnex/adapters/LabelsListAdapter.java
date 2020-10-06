@@ -1,9 +1,12 @@
 package org.mian.gitnex.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
@@ -38,11 +41,15 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 	static class LabelsViewHolder extends RecyclerView.ViewHolder {
 
 		private CheckBox labelSelection;
+		private TextView labelText;
+		private ImageView labelColor;
 
 		private LabelsViewHolder(View itemView) {
 			super(itemView);
 
 			labelSelection = itemView.findViewById(R.id.labelSelection);
+			labelText = itemView.findViewById(R.id.labelText);
+			labelColor = itemView.findViewById(R.id.labelColor);
 
 		}
 	}
@@ -60,7 +67,11 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 
 		Labels currentItem = labels.get(position);
 
-		holder.labelSelection.setText(currentItem.getName());
+		String labelColor = currentItem.getColor();
+		int color = Color.parseColor("#" + labelColor);
+
+		holder.labelText.setText(currentItem.getName());
+		holder.labelColor.setBackgroundColor(color);
 
 		for(int i = 0; i < labelsIds.size(); i++) {
 

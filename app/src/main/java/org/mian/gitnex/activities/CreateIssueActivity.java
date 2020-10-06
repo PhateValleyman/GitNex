@@ -116,7 +116,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         defaultMentionAdapter = new MentionArrayAdapter<>(this);
         loadCollaboratorsList();
 
-	    labelsAdapter =  new LabelsListAdapter(labelsList, CreateIssueActivity.this);
+	    labelsAdapter = new LabelsListAdapter(labelsList, CreateIssueActivity.this);
 
 	    viewBinding.newIssueDescription.setMentionAdapter(defaultMentionAdapter);
 
@@ -164,6 +164,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 	private void showLabels() {
 
 		dialogLabels = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+		dialogLabels.setCancelable(false);
 
 		if (dialogLabels.getWindow() != null) {
 			dialogLabels.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -200,7 +201,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 					if(labelsList_.size() > 0) {
 						for (int i = 0; i < labelsList_.size(); i++) {
 
-							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName()));
+							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName(), labelsList_.get(i).getColor()));
 
 						}
 					}

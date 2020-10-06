@@ -264,7 +264,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 					if(labelsList_.size() > 0) {
 						for (int i = 0; i < labelsList_.size(); i++) {
 
-							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName()));
+							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName(), labelsList_.get(i).getColor()));
 
 						}
 					}

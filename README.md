@@ -84,7 +84,7 @@ Thanks to all the open source libraries, contributors and donators.
 - Pddstudio/highlightjs-android
 - Apache/commons-io
 - Caverock/androidsvg
-- Droidsonroids.gif/android-gif-drawabl
+- Droidsonroids.gif/android-gif-drawable
 - Barteksc/androidPdfViewer
 - Ge0rg/memorizingTrustManager
 - Dimezis/blurView
