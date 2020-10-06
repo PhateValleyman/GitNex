@@ -11,20 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
-import com.hendraanggrian.appcompat.socialview.Mention;
-import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import org.mian.gitnex.R;
+import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateIssueBinding;
+import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.MultiSelectDialog;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -33,32 +31,32 @@ import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.CreateIssue;
 import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.models.Milestones;
-import org.mian.gitnex.models.MultiSelectModel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Author M M Arif
  */
 
-public class CreateIssueActivity extends BaseActivity implements View.OnClickListener, LabelsListAdapter.LabelsListAdapterListener {
+public class CreateIssueActivity extends BaseActivity implements View.OnClickListener, LabelsListAdapter.LabelsListAdapterListener, AssigneesListAdapter.AssigneesListAdapterListener {
 
 	private ActivityCreateIssueBinding viewBinding;
 	private CustomLabelsSelectionDialogBinding labelsBinding;
+	private CustomAssigneesSelectionDialogBinding assigneesBinding;
     private View.OnClickListener onClickListener;
-    MultiSelectDialog multiSelectDialog;
-    private boolean assigneesFlag;
     final Context ctx = this;
     private Context appCtx;
     private TinyDB tinyDb;
     private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 	private Dialog dialogLabels;
+	private Dialog dialogAssignees;
 	private String labelsSetter;
+	private String assigneesSetter;
+	private int milestoneId;
 
 	private String instanceUrl;
 	private String loginUid;
@@ -67,15 +65,16 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 	private String repoName;
 
 	private LabelsListAdapter labelsAdapter;
+	private AssigneesListAdapter assigneesAdapter;
 
 	private ArrayList<Integer> labelsIds = new ArrayList<>();
-	List<Labels> labelsList = new ArrayList<>();
-    List<Milestones> milestonesList = new ArrayList<>();
-    ArrayList<MultiSelectModel> listOfAssignees = new ArrayList<>();
-    private ArrayAdapter<Mention> defaultMentionAdapter;
+	private List<Labels> labelsList = new ArrayList<>();
+	private List<Milestones> milestonesList = new ArrayList<>();
+	private List<Collaborators> assigneesList = new ArrayList<>();
+	private ArrayList<String> assigneesListData = new ArrayList<>();
 
     @Override
-    protected int getLayoutResourceId(){
+    protected int getLayoutResourceId() {
         return R.layout.activity_create_issue;
     }
 
@@ -113,12 +112,8 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         assert imm != null;
         imm.showSoftInput(viewBinding.newIssueTitle, InputMethodManager.SHOW_IMPLICIT);
 
-        defaultMentionAdapter = new MentionArrayAdapter<>(this);
-        loadCollaboratorsList();
-
 	    labelsAdapter = new LabelsListAdapter(labelsList, CreateIssueActivity.this);
-
-	    viewBinding.newIssueDescription.setMentionAdapter(defaultMentionAdapter);
+	    assigneesAdapter = new AssigneesListAdapter(ctx, assigneesList, CreateIssueActivity.this);
 
         initCloseListener();
 	    viewBinding.close.setOnClickListener(onClickListener);
@@ -129,12 +124,14 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
 
-        getCollaborators(instanceUrl, instanceToken, repoOwner, repoName, loginUid, loginFullName);
-
         disableProcessButton();
 
 	    viewBinding.newIssueLabels.setOnClickListener(newIssueLabels ->
 		    showLabels()
+	    );
+
+	    viewBinding.newIssueAssigneesList.setOnClickListener(newIssueAssigneesList ->
+		    showAssignees()
 	    );
 
         if(!connToInternet) {
@@ -149,6 +146,14 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     }
 
 	@Override
+	public void assigneesStringData(ArrayList<String> data) {
+
+		assigneesSetter = String.valueOf(data);
+		viewBinding.newIssueAssigneesList.setText(assigneesSetter.replace("]", "").replace("[", ""));
+		assigneesListData = data;
+	}
+
+	@Override
 	public void labelsStringData(ArrayList<String> data) {
 
 		labelsSetter = String.valueOf(data);
@@ -159,6 +164,77 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 	public void labelsIdsData(ArrayList<Integer> data) {
 
 		labelsIds = data;
+	}
+
+	private void showAssignees() {
+
+		dialogAssignees = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+		dialogAssignees.setCancelable(false);
+
+		if (dialogAssignees.getWindow() != null) {
+			dialogAssignees.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		}
+
+		assigneesBinding = CustomAssigneesSelectionDialogBinding.inflate(LayoutInflater.from(ctx));
+
+		View view = assigneesBinding.getRoot();
+		dialogAssignees.setContentView(view);
+
+		assigneesBinding.cancel.setOnClickListener(assigneesBinding_ ->
+			dialogAssignees.dismiss()
+		);
+
+		Call<List<Collaborators>> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getCollaborators(instanceToken, repoOwner, repoName);
+
+		call.enqueue(new Callback<List<Collaborators>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull retrofit2.Response<List<Collaborators>> response) {
+
+				assigneesList.clear();
+				List<Collaborators> assigneesList_ = response.body();
+
+				assigneesBinding.progressBar.setVisibility(View.GONE);
+				assigneesBinding.dialogFrame.setVisibility(View.VISIBLE);
+
+				if (response.code() == 200) {
+
+					assert assigneesList_ != null;
+					if(assigneesList_.size() > 0) {
+						for (int i = 0; i < assigneesList_.size(); i++) {
+
+							assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(), assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
+
+						}
+					}
+					else {
+
+						dialogAssignees.dismiss();
+						Toasty.warning(ctx, getString(R.string.noAssigneesFound));
+					}
+
+					assigneesBinding.assigneesRecyclerView.setAdapter(assigneesAdapter);
+
+				}
+				else {
+
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
+			}
+		});
+
+		dialogAssignees.show();
+
 	}
 
 	private void showLabels() {
@@ -175,7 +251,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 		View view = labelsBinding.getRoot();
 		dialogLabels.setContentView(view);
 
-		labelsBinding.cancel.setOnClickListener(editProperties ->
+		labelsBinding.cancel.setOnClickListener(labelsBinding_ ->
 			dialogLabels.dismiss()
 		);
 
@@ -235,22 +311,10 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     private void processNewIssue() {
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        Milestones mModel = (Milestones) viewBinding.newIssueMilestoneSpinner.getSelectedItem();
-
-        int newIssueMilestoneIdForm = mModel.getId();
-        String newIssueTitleForm = viewBinding.newIssueTitle.getText().toString();
-        String newIssueDescriptionForm = viewBinding.newIssueDescription.getText().toString();
-        String newIssueAssigneesListForm = viewBinding.newIssueAssigneesList.getText().toString();
-        String newIssueDueDateForm = viewBinding.newIssueDueDate.getText().toString();
+        String newIssueTitleForm = Objects.requireNonNull(viewBinding.newIssueTitle.getText()).toString();
+        String newIssueDescriptionForm = Objects.requireNonNull(viewBinding.newIssueDescription.getText()).toString();
+        String newIssueDueDateForm = Objects.requireNonNull(viewBinding.newIssueDueDate.getText()).toString();
 
         if(!connToInternet) {
 
@@ -263,29 +327,24 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
             Toasty.error(ctx, getString(R.string.issueTitleEmpty));
             return;
-
         }
 
         if (newIssueDueDateForm.equals("")) {
+
             newIssueDueDateForm = null;
         }
         else {
+
             newIssueDueDateForm = (AppUtil.customDateCombine(AppUtil.customDateFormat(newIssueDueDateForm)));
-        }
-
-        List<String> newIssueAssigneesListForm_ = new ArrayList<>(Arrays.asList(newIssueAssigneesListForm.split(",")));
-
-        for (int i = 0; i < newIssueAssigneesListForm_.size(); i++) {
-            newIssueAssigneesListForm_.set(i, newIssueAssigneesListForm_.get(i).trim());
         }
 
         //Log.i("FormData", String.valueOf(newIssueLabelsForm));
         disableProcessButton();
-        createNewIssueFunc(instanceUrl, instanceToken, repoOwner, repoName, loginUid, newIssueDescriptionForm, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm_);
+        createNewIssueFunc(instanceUrl, instanceToken, repoOwner, repoName, loginUid, newIssueDescriptionForm, newIssueDueDateForm, milestoneId, newIssueTitleForm);
 
     }
 
-    public void loadCollaboratorsList() {
+    /*public void loadCollaboratorsList() {
 
         final TinyDB tinyDb = new TinyDB(appCtx);
 
@@ -333,11 +392,11 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             }
 
         });
-    }
+    }*/
 
-    private void createNewIssueFunc(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, String newIssueDescriptionForm, String newIssueDueDateForm, int newIssueMilestoneIdForm, String newIssueTitleForm, List<String> newIssueAssigneesListForm) {
+    private void createNewIssueFunc(final String instanceUrl, final String instanceToken, String repoOwner, String repoName, String loginUid, String newIssueDescriptionForm, String newIssueDueDateForm, int newIssueMilestoneIdForm, String newIssueTitleForm) {
 
-        CreateIssue createNewIssueJson = new CreateIssue(loginUid, newIssueDescriptionForm, false, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, newIssueAssigneesListForm, labelsIds);
+        CreateIssue createNewIssueJson = new CreateIssue(loginUid, newIssueDescriptionForm, false, newIssueDueDateForm, newIssueMilestoneIdForm, newIssueTitleForm, assigneesListData, labelsIds);
 
         Call<JsonElement> call3;
 
@@ -434,11 +493,15 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                         }
 
                         ArrayAdapter<Milestones> adapter = new ArrayAdapter<>(CreateIssueActivity.this,
-                                R.layout.spinner_item, milestonesList);
+                                R.layout.list_spinner_items, milestonesList);
 
-                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 	                    viewBinding.newIssueMilestoneSpinner.setAdapter(adapter);
                         enableProcessButton();
+
+	                    viewBinding.newIssueMilestoneSpinner.setOnItemClickListener ((parent, view, position, id) ->
+
+		                    milestoneId = milestonesList.get(position).getId()
+	                    );
 
                     }
                 }
@@ -453,7 +516,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-    private void getCollaborators(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, String loginFullName) {
+    /*private void getCollaborators(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, String loginFullName) {
 
         Call<List<Collaborators>> call = RetrofitClient
                 .getInstance(instanceUrl, ctx)
@@ -476,13 +539,13 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                         if(assigneesList_.size() > 0) {
                             for (int i = 0; i < assigneesList_.size(); i++) {
 
-                                /*String assigneesCopy;
-                                if(!assigneesList_.get(i).getFull_name().equals("")) {
-                                    assigneesCopy = getString(R.string.dialogAssignessText, assigneesList_.get(i).getFull_name(), assigneesList_.get(i).getLogin());
-                                }
-                                else {
-                                    assigneesCopy = assigneesList_.get(i).getLogin();
-                                }*/
+                                //String assigneesCopy;
+                                //if(!assigneesList_.get(i).getFull_name().equals("")) {
+                                //    assigneesCopy = getString(R.string.dialogAssignessText, assigneesList_.get(i).getFull_name(), assigneesList_.get(i).getLogin());
+                                //}
+                                //else {
+                                //    assigneesCopy = assigneesList_.get(i).getLogin();
+                                //}
                                 listOfAssignees.add(new MultiSelectModel(assigneesList_.get(i).getId(), assigneesList_.get(i).getLogin().trim()));
 
                             }
@@ -523,19 +586,11 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             }
         });
 
-    }
+    }*/
 
     @Override
     public void onClick(View v) {
-        if (v == viewBinding.newIssueAssigneesList) {
-            if(assigneesFlag) {
-                multiSelectDialog.show(getSupportFragmentManager(), "multiSelectDialog");
-            }
-            else {
-                Toasty.warning(ctx, getResources().getString(R.string.noAssigneesFound));
-            }
-        }
-        else if (v == viewBinding.newIssueDueDate) {
+        if (v == viewBinding.newIssueDueDate) {
 
             final Calendar c = Calendar.getInstance();
             int mYear = c.get(Calendar.YEAR);
@@ -543,16 +598,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
             final int mDay = c.get(Calendar.DAY_OF_MONTH);
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
-
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
-
-	                        viewBinding.newIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
-
-                        }
-                    }, mYear, mMonth, mDay);
+	            (view, year, monthOfYear, dayOfMonth) -> viewBinding.newIssueDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth)), mYear, mMonth, mDay);
             datePickerDialog.show();
         }
         else if(v == viewBinding.createNewIssueButton) {
