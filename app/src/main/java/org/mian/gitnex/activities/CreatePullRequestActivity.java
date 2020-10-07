@@ -96,7 +96,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}
 
-		labelsAdapter =  new LabelsListAdapter(labelsList, CreatePullRequestActivity.this);
+		labelsAdapter =  new LabelsListAdapter(labelsList, CreatePullRequestActivity.this, labelsIds);
 
 		ImageView closeActivity = findViewById(R.id.close);
 

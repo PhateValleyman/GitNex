@@ -111,7 +111,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         assert imm != null;
         imm.showSoftInput(viewBinding.newIssueTitle, InputMethodManager.SHOW_IMPLICIT);
 
-	    labelsAdapter = new LabelsListAdapter(labelsList, CreateIssueActivity.this);
+	    labelsAdapter = new LabelsListAdapter(labelsList, CreateIssueActivity.this, labelsIds);
 	    assigneesAdapter = new AssigneesListAdapter(ctx, assigneesList, CreateIssueActivity.this);
 
         initCloseListener();

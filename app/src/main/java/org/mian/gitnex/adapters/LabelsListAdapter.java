@@ -10,8 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.Labels;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -20,6 +22,7 @@ import java.util.List;
 
 public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.LabelsViewHolder> {
 
+	private ArrayList<Integer> currentLabelsIds;
 	private List<Labels> labels;
 	private ArrayList<String> labelsStrings = new ArrayList<>();
 	private ArrayList<Integer> labelsIds = new ArrayList<>();
@@ -32,10 +35,11 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 		void labelsIdsData(ArrayList<Integer> data);
 	}
 
-	public LabelsListAdapter(List<Labels> labelsMain, LabelsListAdapterListener labelsListener) {
+	public LabelsListAdapter(List<Labels> labelsMain, LabelsListAdapterListener labelsListener, ArrayList<Integer> currentLabelsIds) {
 
 		this.labels = labelsMain;
 		this.labelsListener = labelsListener;
+		this.currentLabelsIds = currentLabelsIds;
 	}
 
 	static class LabelsViewHolder extends RecyclerView.ViewHolder {
@@ -81,6 +85,17 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 			}
 		}
 
+		currentLabelsIds = new ArrayList<>(new LinkedHashSet<>(currentLabelsIds));
+		for(int i = 0; i < currentLabelsIds.size(); i++) {
+
+			if(currentLabelsIds.contains(currentItem.getId())) {
+
+				holder.labelSelection.setChecked(true);
+				labelsIds.add(currentLabelsIds.get(i));
+			}
+		}
+		labelsListener.labelsIdsData(labelsIds);
+
 		holder.labelSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
 			if(isChecked) {
@@ -97,10 +112,18 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 			labelsListener.labelsStringData(labelsStrings);
 			labelsListener.labelsIdsData(labelsIds);
 		});
+
+		labelsIds = new ArrayList<>(new LinkedHashSet<>(labelsIds));
 	}
 
 	@Override
 	public int getItemCount() {
 		return labels.size();
+	}
+
+	public void updateList(ArrayList<Integer> list) {
+
+		currentLabelsIds = list;
+		notifyDataSetChanged();
 	}
 }

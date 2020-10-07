@@ -1,9 +1,11 @@
 package org.mian.gitnex.activities;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -13,6 +15,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,11 +36,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.gson.JsonElement;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.IssueCommentsAdapter;
+import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.fragments.BottomSheetSingleIssueFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
@@ -48,15 +54,20 @@ import org.mian.gitnex.helpers.LabelWidthCalculator;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Issues;
+import org.mian.gitnex.models.Labels;
 import org.mian.gitnex.models.WatchInfo;
 import org.mian.gitnex.viewmodels.IssueCommentsViewModel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import io.noties.markwon.AbstractMarkwonPlugin;
@@ -82,7 +93,7 @@ import retrofit2.Response;
  * Author M M Arif
  */
 
-public class IssueDetailActivity extends BaseActivity {
+public class IssueDetailActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener, BottomSheetSingleIssueFragment.BottomSheetListener {
 
 	public ImageView closeActivity;
 	private IssueCommentsAdapter adapter;
@@ -106,6 +117,23 @@ public class IssueDetailActivity extends BaseActivity {
 	private ProgressBar progressBar;
 	private ImageView issuePrState;
 
+	private String instanceUrl;
+	private String loginUid;
+	private String instanceToken;
+	private String repoOwner;
+	private String repoName;
+	private int issueIndex;
+
+	private LabelsListAdapter labelsAdapter;
+
+	private ArrayList<Integer> currentLabelsIds = new ArrayList<>();
+	private ArrayList<Integer> labelsIds = new ArrayList<>();
+	private List<Labels> labelsList = new ArrayList<>();
+
+	private Dialog dialogLabels;
+
+	private CustomLabelsSelectionDialogBinding labelsBinding;
+
 	@Override
 	protected int getLayoutResourceId() {
 
@@ -118,18 +146,18 @@ public class IssueDetailActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
 
-		final TinyDB tinyDb = new TinyDB(appCtx);
+		TinyDB tinyDb = new TinyDB(appCtx);
 
-		final String instanceUrl = tinyDb.getString("instanceUrl");
-		final String loginUid = tinyDb.getString("loginUid");
-		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		instanceUrl = tinyDb.getString("instanceUrl");
+		loginUid = tinyDb.getString("loginUid");
+		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
-		final String repoOwner = parts[0];
-		final String repoName = parts[1];
-		final int issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+		repoOwner = parts[0];
+		repoName = parts[1];
+		issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
-		final SwipeRefreshLayout swipeRefresh = findViewById(R.id.pullToRefresh);
+		SwipeRefreshLayout swipeRefresh = findViewById(R.id.pullToRefresh);
 
 		assigneeAvatar = findViewById(R.id.assigneeAvatar);
 		issueTitle = findViewById(R.id.issueTitle);
@@ -164,6 +192,9 @@ public class IssueDetailActivity extends BaseActivity {
 		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
 		createNewComment.setOnClickListener(v -> startActivity(new Intent(ctx, ReplyToIssueActivity.class)));
+
+		labelsAdapter = new LabelsListAdapter(labelsList, IssueDetailActivity.this, currentLabelsIds);
+		getCurrentIssueLabels();
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -221,6 +252,214 @@ public class IssueDetailActivity extends BaseActivity {
 		getSingleIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
 		fetchDataAsync(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
 
+	}
+
+	@Override
+	public void onButtonClicked(String text) {
+
+		switch(text) {
+
+			case "showLabels":
+				showLabels();
+				break;
+
+			case "showAssignees":
+				//showAssignees();
+				break;
+		}
+
+	}
+
+	@Override
+	public void labelsStringData(ArrayList<String> data) {
+	}
+
+	@Override
+	public void labelsIdsData(ArrayList<Integer> data) {
+
+		labelsIds = data;
+	}
+
+	public void showLabels() {
+
+		labelsAdapter.updateList(currentLabelsIds);
+		dialogLabels = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+		dialogLabels.setCancelable(false);
+
+		if (dialogLabels.getWindow() != null) {
+
+			dialogLabels.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		}
+
+		labelsBinding = CustomLabelsSelectionDialogBinding.inflate(LayoutInflater.from(ctx));
+
+		View view = labelsBinding.getRoot();
+		dialogLabels.setContentView(view);
+
+		labelsBinding.cancel.setOnClickListener(labelsBinding_ -> {
+
+			currentLabelsIds = new ArrayList<>(new LinkedHashSet<>(currentLabelsIds));
+			Collections.sort(labelsIds);
+			Collections.sort(currentLabelsIds);
+
+			Log.e("issueScreen-1", String.valueOf(labelsIds));
+			Log.e("issueScreen-c", String.valueOf(currentLabelsIds));
+
+			if(!labelsIds.equals(currentLabelsIds)) {
+
+				updateIssueLabels();
+			}
+			else {
+
+				dialogLabels.dismiss();
+			}
+		});
+
+		Call<List<Labels>> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getlabels(instanceToken, repoOwner, repoName);
+
+		call.enqueue(new Callback<List<Labels>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
+
+				labelsList.clear();
+				List<Labels> labelsList_ = response.body();
+
+				labelsBinding.progressBar.setVisibility(View.GONE);
+				labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
+
+				if (response.code() == 200) {
+
+					assert labelsList_ != null;
+
+					if(labelsList_.size() > 0) {
+
+						for (int i = 0; i < labelsList_.size(); i++) {
+
+							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName(), labelsList_.get(i).getColor()));
+						}
+					}
+					else {
+
+						dialogLabels.dismiss();
+						Toasty.warning(ctx, getString(R.string.noLabelsFound));
+					}
+
+					labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
+
+				}
+				else {
+
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
+			}
+		});
+
+		dialogLabels.show();
+
+	}
+
+	private void updateIssueLabels() {
+
+		Labels patchIssueLabels = new Labels(labelsIds);
+
+		Call<JsonElement> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.updateIssueLabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, patchIssueLabels);
+
+		call.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+				if(response.code() == 200) {
+
+					Toasty.success(ctx, ctx.getString(R.string.labelsUpdated));
+					dialogLabels.dismiss();
+
+					labelsLayout.removeAllViews();
+					getSingleIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
+					currentLabelsIds.clear();
+					new Handler().postDelayed(() -> getCurrentIssueLabels(), 1000);
+
+				}
+				else if(response.code() == 401) {
+
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
+						getResources().getString(R.string.alertDialogTokenRevokedMessage),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+				}
+				else if(response.code() == 403) {
+
+					Toasty.error(ctx, ctx.getString(R.string.authorizeError));
+				}
+				else if(response.code() == 404) {
+
+					Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
+				}
+				else {
+
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
+	private void getCurrentIssueLabels() {
+
+		Call<List<Labels>> callSingleIssueLabels = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getIssueLabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
+
+		callSingleIssueLabels.enqueue(new Callback<List<Labels>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
+
+				if(response.code() == 200) {
+
+					List<Labels> issueLabelsList = response.body();
+
+					assert issueLabelsList != null;
+
+					if(issueLabelsList.size() > 0) {
+
+						for (int i = 0; i < issueLabelsList.size(); i++) {
+
+							currentLabelsIds.add(issueLabelsList.get(i).getId());
+						}
+					}
+
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+
+		});
 	}
 
 	@Override

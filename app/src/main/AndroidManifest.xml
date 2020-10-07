@@ -37,9 +37,6 @@
         <activity android:name=".activities.CreateReleaseActivity" />
         <activity android:name=".activities.EditIssueActivity" />
         <activity android:name=".activities.CreateNewUserActivity" />
-        <activity
-            android:name=".activities.AddRemoveLabelsActivity"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity android:name=".activities.ProfileEmailActivity" />
         <activity android:name=".activities.AddCollaboratorToRepositoryActivity" />
         <activity android:name=".activities.CreateTeamByOrgActivity" />
