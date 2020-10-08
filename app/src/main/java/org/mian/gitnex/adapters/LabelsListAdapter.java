@@ -10,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.Labels;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
