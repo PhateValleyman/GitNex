@@ -112,7 +112,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         imm.showSoftInput(viewBinding.newIssueTitle, InputMethodManager.SHOW_IMPLICIT);
 
 	    labelsAdapter = new LabelsListAdapter(labelsList, CreateIssueActivity.this, labelsIds);
-	    assigneesAdapter = new AssigneesListAdapter(ctx, assigneesList, CreateIssueActivity.this);
+	    assigneesAdapter = new AssigneesListAdapter(ctx, assigneesList, CreateIssueActivity.this, assigneesListData);
 
         initCloseListener();
 	    viewBinding.close.setOnClickListener(onClickListener);

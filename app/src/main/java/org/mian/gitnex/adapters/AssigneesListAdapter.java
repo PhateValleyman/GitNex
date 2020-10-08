@@ -14,6 +14,7 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.models.Collaborators;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 	private Context mCtx;
 	private List<Collaborators> assigneesList;
 	private ArrayList<String> assigneesStrings = new ArrayList<>();
+	private ArrayList<String> currentAssignees;
 
 	private AssigneesListAdapterListener assigneesListener;
 
@@ -33,11 +35,12 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 		void assigneesStringData(ArrayList<String> data);
 	}
 
-	public AssigneesListAdapter(Context mCtx, List<Collaborators> dataMain, AssigneesListAdapterListener assigneesListener) {
+	public AssigneesListAdapter(Context mCtx, List<Collaborators> dataMain, AssigneesListAdapterListener assigneesListener, ArrayList<String> currentAssignees) {
 
 		this.mCtx = mCtx;
 		this.assigneesList = dataMain;
 		this.assigneesListener = assigneesListener;
+		this.currentAssignees = currentAssignees;
 	}
 
 	static class AssigneesViewHolder extends RecyclerView.ViewHolder {
@@ -86,6 +89,17 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 			}
 		}
 
+		currentAssignees = new ArrayList<>(new LinkedHashSet<>(currentAssignees));
+		for(int i = 0; i < currentAssignees.size(); i++) {
+
+			if(currentAssignees.contains(currentItem.getLogin())) {
+
+				holder.assigneesSelection.setChecked(true);
+				assigneesStrings.add(currentAssignees.get(i));
+			}
+		}
+		assigneesListener.assigneesStringData(assigneesStrings);
+
 		holder.assigneesSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
 			if(isChecked) {
@@ -99,6 +113,8 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 
 			assigneesListener.assigneesStringData(assigneesStrings);
 		});
+
+		assigneesStrings = new ArrayList<>(new LinkedHashSet<>(assigneesStrings));
 	}
 
 	@Override
@@ -106,4 +122,9 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 		return assigneesList.size();
 	}
 
+	public void updateList(ArrayList<String> list) {
+
+		currentAssignees = list;
+		notifyDataSetChanged();
+	}
 }

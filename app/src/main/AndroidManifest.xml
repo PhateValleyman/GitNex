@@ -31,9 +31,6 @@
             android:name=".activities.RepoStargazersActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.AdminGetUsersActivity" />
-        <activity
-            android:name=".activities.AddRemoveAssigneesActivity"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity android:name=".activities.CreateReleaseActivity" />
         <activity android:name=".activities.EditIssueActivity" />
         <activity android:name=".activities.CreateNewUserActivity" />

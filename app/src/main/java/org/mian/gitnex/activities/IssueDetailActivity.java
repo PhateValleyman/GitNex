@@ -32,11 +32,13 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.JsonElement;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
+import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.adapters.IssueCommentsAdapter;
 import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityIssueDetailBinding;
+import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.fragments.BottomSheetSingleIssueFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -51,8 +53,10 @@ import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.UserMentions;
 import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Issues;
 import org.mian.gitnex.models.Labels;
+import org.mian.gitnex.models.UpdateIssueAssignees;
 import org.mian.gitnex.models.WatchInfo;
 import org.mian.gitnex.viewmodels.IssueCommentsViewModel;
 import java.text.DateFormat;
@@ -87,7 +91,7 @@ import retrofit2.Response;
  * Author M M Arif
  */
 
-public class IssueDetailActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener, BottomSheetSingleIssueFragment.BottomSheetListener {
+public class IssueDetailActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener, AssigneesListAdapter.AssigneesListAdapterListener, BottomSheetSingleIssueFragment.BottomSheetListener {
 
 	private IssueCommentsAdapter adapter;
 	final Context ctx = this;
@@ -102,14 +106,20 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private int issueIndex;
 
 	private LabelsListAdapter labelsAdapter;
+	private AssigneesListAdapter assigneesAdapter;
 
 	private ArrayList<Integer> currentLabelsIds = new ArrayList<>();
 	private ArrayList<Integer> labelsIds = new ArrayList<>();
 	private List<Labels> labelsList = new ArrayList<>();
+	private List<Collaborators> assigneesList = new ArrayList<>();
+	private ArrayList<String> assigneesListData = new ArrayList<>();
+	private ArrayList<String> currentAssignees = new ArrayList<>();
 
 	private Dialog dialogLabels;
+	private Dialog dialogAssignees;
 
 	private CustomLabelsSelectionDialogBinding labelsBinding;
+	private CustomAssigneesSelectionDialogBinding assigneesBinding;
 	private ActivityIssueDetailBinding viewBinding;
 
 	@Override
@@ -152,7 +162,9 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		viewBinding.addNewComment.setOnClickListener(v -> startActivity(new Intent(ctx, ReplyToIssueActivity.class)));
 
 		labelsAdapter = new LabelsListAdapter(labelsList, IssueDetailActivity.this, currentLabelsIds);
+		assigneesAdapter = new AssigneesListAdapter(ctx, assigneesList, IssueDetailActivity.this, currentAssignees);
 		getCurrentIssueLabels();
+		getCurrentIssueAssignees();
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -222,7 +234,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				break;
 
 			case "showAssignees":
-				//showAssignees();
+				showAssignees();
 				break;
 		}
 
@@ -236,6 +248,101 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	public void labelsIdsData(ArrayList<Integer> data) {
 
 		labelsIds = data;
+	}
+
+	@Override
+	public void assigneesStringData(ArrayList<String> data) {
+
+		assigneesListData = data;
+	}
+
+	private void showAssignees() {
+
+		assigneesAdapter.updateList(currentAssignees);
+		dialogAssignees = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+		dialogAssignees.setCancelable(false);
+
+		if (dialogAssignees.getWindow() != null) {
+
+			dialogAssignees.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		}
+
+		assigneesBinding = CustomAssigneesSelectionDialogBinding.inflate(LayoutInflater.from(ctx));
+
+		View view = assigneesBinding.getRoot();
+		dialogAssignees.setContentView(view);
+
+		assigneesBinding.cancel.setOnClickListener(assigneesBinding_ -> {
+
+			currentAssignees = new ArrayList<>(new LinkedHashSet<>(currentAssignees));
+			assigneesListData = new ArrayList<>(new LinkedHashSet<>(assigneesListData));
+			Collections.sort(assigneesListData);
+			Collections.sort(currentAssignees);
+
+			if(!assigneesListData.equals(currentAssignees)) {
+
+				updateIssueAssignees();
+			}
+			else {
+
+				dialogAssignees.dismiss();
+			}
+		});
+
+		Call<List<Collaborators>> call = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getCollaborators(instanceToken, repoOwner, repoName);
+
+		call.enqueue(new Callback<List<Collaborators>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull retrofit2.Response<List<Collaborators>> response) {
+
+				assigneesList.clear();
+				List<Collaborators> assigneesList_ = response.body();
+
+				assigneesBinding.progressBar.setVisibility(View.GONE);
+				assigneesBinding.dialogFrame.setVisibility(View.VISIBLE);
+
+				if (response.code() == 200) {
+
+					assert assigneesList_ != null;
+
+					if(assigneesList_.size() > 0) {
+
+						dialogAssignees.show();
+
+						for (int i = 0; i < assigneesList_.size(); i++) {
+
+							assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(),
+								assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
+
+						}
+					}
+					else {
+
+						dialogAssignees.dismiss();
+						Toasty.warning(ctx, getString(R.string.noAssigneesFound));
+					}
+
+					assigneesBinding.assigneesRecyclerView.setAdapter(assigneesAdapter);
+
+				}
+				else {
+
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, getString(R.string.genericServerResponseError));
+			}
+		});
+
 	}
 
 	public void showLabels() {
@@ -260,9 +367,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			labelsIds = new ArrayList<>(new LinkedHashSet<>(labelsIds));
 			Collections.sort(labelsIds);
 			Collections.sort(currentLabelsIds);
-
-			Log.e("issueScreen-1", String.valueOf(labelsIds));
-			Log.e("issueScreen-c", String.valueOf(currentLabelsIds));
 
 			if(!labelsIds.equals(currentLabelsIds)) {
 
@@ -328,6 +432,64 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 	}
 
+	private void updateIssueAssignees() {
+
+		UpdateIssueAssignees updateAssigneeJson = new UpdateIssueAssignees(assigneesListData);
+
+		Call<JsonElement> call3;
+
+		call3 = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.patchIssueAssignees(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, updateAssigneeJson);
+
+		call3.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response2) {
+
+				if(response2.code() == 201) {
+
+					Toasty.success(ctx, ctx.getString(R.string.assigneesUpdated));
+
+					dialogAssignees.dismiss();
+
+					viewBinding.frameAssignees.removeAllViews();
+					viewBinding.frameLabels.removeAllViews();
+					getSingleIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
+					currentAssignees.clear();
+					new Handler().postDelayed(() -> getCurrentIssueAssignees(), 1000);
+				}
+				else if(response2.code() == 401) {
+
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
+						getResources().getString(R.string.alertDialogTokenRevokedMessage),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+						getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+				}
+				else if(response2.code() == 403) {
+
+					Toasty.error(ctx, ctx.getString(R.string.authorizeError));
+				}
+				else if(response2.code() == 404) {
+
+					Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
+				}
+				else {
+
+					Toasty.error(ctx, getString(R.string.genericError));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+				Log.e("onFailure", t.toString());
+			}
+		});
+
+	}
+
 	private void updateIssueLabels() {
 
 		Labels patchIssueLabels = new Labels(labelsIds);
@@ -381,6 +543,50 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 		});
 
+	}
+
+	private void getCurrentIssueAssignees() {
+
+		Call<Issues> callSingleIssueLabels = RetrofitClient
+			.getInstance(instanceUrl, ctx)
+			.getApiInterface()
+			.getIssueByIndex(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
+
+		callSingleIssueLabels.enqueue(new Callback<Issues>() {
+
+			@Override
+			public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
+
+				if(response.code() == 200) {
+
+					Issues issueAssigneesList = response.body();
+					assert issueAssigneesList != null;
+
+					if (issueAssigneesList.getAssignees() != null) {
+
+						if(issueAssigneesList.getAssignees().size() > 0) {
+
+							for(int i = 0; i < issueAssigneesList.getAssignees().size(); i++) {
+
+								currentAssignees.add(issueAssigneesList.getAssignees().get(i).getLogin());
+
+								/*if(issueAssigneesList.getAssignees().get(i).getUsername().equals(loginUid)) {
+									listOfCollaborators.add(new MultiSelectModel(issueAssigneesList.getAssignees().get(i).getId(),
+										issueAssigneesList.getAssignees().get(i).getUsername().trim()));
+								}*/
+							}
+						}
+					}
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+
+		});
 	}
 
 	private void getCurrentIssueLabels() {
