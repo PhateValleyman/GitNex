@@ -16,9 +16,8 @@ public class Collaborators {
     private String language;
     private String username;
 
-	public Collaborators(int id, String full_name, String login, String avatar_url) {
+	public Collaborators(String full_name, String login, String avatar_url) {
 
-		this.id = id;
 		this.full_name =  full_name;
 		this.login = login;
 		this.avatar_url = avatar_url;

@@ -10,6 +10,7 @@ import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Issues;
@@ -64,6 +65,8 @@ public class AssigneesActions {
 
 	public static void getRepositoryAssignees(Context ctx, String instanceUrl, String instanceToken, String repoOwner, String repoName, List<Collaborators> assigneesList, Dialog dialogAssignees, AssigneesListAdapter assigneesAdapter, CustomAssigneesSelectionDialogBinding assigneesBinding) {
 
+		TinyDB tinyDB = new TinyDB(ctx);
+
 		Call<List<Collaborators>> call = RetrofitClient
 			.getInstance(instanceUrl, ctx)
 			.getApiInterface()
@@ -88,6 +91,7 @@ public class AssigneesActions {
 
 						dialogAssignees.show();
 
+						assigneesList.add(new Collaborators(tinyDB.getString("userFullname"), tinyDB.getString("loginUid"), tinyDB.getString("userAvatar")));
 						assigneesList.addAll(assigneesList_);
 					}
 					else {
