@@ -68,11 +68,11 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 	private LabelsListAdapter labelsAdapter;
 	private AssigneesListAdapter assigneesAdapter;
 
-	private ArrayList<Integer> labelsIds = new ArrayList<>();
+	private List<Integer> labelsIds = new ArrayList<>();
 	private List<Labels> labelsList = new ArrayList<>();
 	private List<Milestones> milestonesList = new ArrayList<>();
 	private List<Collaborators> assigneesList = new ArrayList<>();
-	private ArrayList<String> assigneesListData = new ArrayList<>();
+	private List<String> assigneesListData = new ArrayList<>();
 
     @Override
     protected int getLayoutResourceId() {
@@ -147,7 +147,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     }
 
 	@Override
-	public void assigneesStringData(ArrayList<String> data) {
+	public void assigneesInterface(List<String> data) {
 
 		assigneesSetter = String.valueOf(data);
 		viewBinding.newIssueAssigneesList.setText(assigneesSetter.replace("]", "").replace("[", ""));
@@ -155,14 +155,14 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 	}
 
 	@Override
-	public void labelsStringData(ArrayList<String> data) {
+	public void labelsInterface(List<String> data) {
 
 		labelsSetter = String.valueOf(data);
 		viewBinding.newIssueLabels.setText(labelsSetter.replace("]", "").replace("[", ""));
 	}
 
 	@Override
-	public void labelsIdsData(ArrayList<Integer> data) {
+	public void labelsIdsInterface(List<Integer> data) {
 
 		labelsIds = data;
 	}

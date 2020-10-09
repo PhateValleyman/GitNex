@@ -21,20 +21,20 @@ import java.util.List;
 
 public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.LabelsViewHolder> {
 
-	private ArrayList<Integer> currentLabelsIds;
+	private List<Integer> currentLabelsIds;
 	private List<Labels> labels;
-	private ArrayList<String> labelsStrings = new ArrayList<>();
-	private ArrayList<Integer> labelsIds = new ArrayList<>();
+	private List<String> labelsStrings = new ArrayList<>();
+	private List<Integer> labelsIds = new ArrayList<>();
 
 	private LabelsListAdapterListener labelsListener;
 
 	public interface LabelsListAdapterListener {
 
-		void labelsStringData(ArrayList<String> data);
-		void labelsIdsData(ArrayList<Integer> data);
+		void labelsInterface(List<String> data);
+		void labelsIdsInterface(List<Integer> data);
 	}
 
-	public LabelsListAdapter(List<Labels> labelsMain, LabelsListAdapterListener labelsListener, ArrayList<Integer> currentLabelsIds) {
+	public LabelsListAdapter(List<Labels> labelsMain, LabelsListAdapterListener labelsListener, List<Integer> currentLabelsIds) {
 
 		this.labels = labelsMain;
 		this.labelsListener = labelsListener;
@@ -93,7 +93,7 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 				labelsIds.add(currentLabelsIds.get(i));
 			}
 		}
-		labelsListener.labelsIdsData(labelsIds);
+		labelsListener.labelsIdsInterface(labelsIds);
 
 		holder.labelSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
@@ -108,8 +108,8 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 				labelsIds.remove(Integer.valueOf(currentItem.getId()));
 			}
 
-			labelsListener.labelsStringData(labelsStrings);
-			labelsListener.labelsIdsData(labelsIds);
+			labelsListener.labelsInterface(labelsStrings);
+			labelsListener.labelsIdsInterface(labelsIds);
 		});
 
 		labelsIds = new ArrayList<>(new LinkedHashSet<>(labelsIds));
@@ -120,7 +120,7 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 		return labels.size();
 	}
 
-	public void updateList(ArrayList<Integer> list) {
+	public void updateList(List<Integer> list) {
 
 		currentLabelsIds = list;
 		notifyDataSetChanged();

@@ -25,17 +25,17 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 
 	private Context mCtx;
 	private List<Collaborators> assigneesList;
-	private ArrayList<String> assigneesStrings = new ArrayList<>();
-	private ArrayList<String> currentAssignees;
+	private List<String> assigneesStrings = new ArrayList<>();
+	private List<String> currentAssignees;
 
 	private AssigneesListAdapterListener assigneesListener;
 
 	public interface AssigneesListAdapterListener {
 
-		void assigneesStringData(ArrayList<String> data);
+		void assigneesInterface(List<String> data);
 	}
 
-	public AssigneesListAdapter(Context mCtx, List<Collaborators> dataMain, AssigneesListAdapterListener assigneesListener, ArrayList<String> currentAssignees) {
+	public AssigneesListAdapter(Context mCtx, List<Collaborators> dataMain, AssigneesListAdapterListener assigneesListener, List<String> currentAssignees) {
 
 		this.mCtx = mCtx;
 		this.assigneesList = dataMain;
@@ -98,7 +98,7 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 				assigneesStrings.add(currentAssignees.get(i));
 			}
 		}
-		assigneesListener.assigneesStringData(assigneesStrings);
+		assigneesListener.assigneesInterface(assigneesStrings);
 
 		holder.assigneesSelection.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
@@ -111,7 +111,7 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 				assigneesStrings.remove(currentItem.getLogin());
 			}
 
-			assigneesListener.assigneesStringData(assigneesStrings);
+			assigneesListener.assigneesInterface(assigneesStrings);
 		});
 
 		assigneesStrings = new ArrayList<>(new LinkedHashSet<>(assigneesStrings));
@@ -122,7 +122,7 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 		return assigneesList.size();
 	}
 
-	public void updateList(ArrayList<String> list) {
+	public void updateList(List<String> list) {
 
 		currentAssignees = list;
 		notifyDataSetChanged();

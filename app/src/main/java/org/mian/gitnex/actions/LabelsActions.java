@@ -12,7 +12,6 @@ import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Labels;
-import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,7 +22,7 @@ import retrofit2.Callback;
 
 public class LabelsActions {
 
-	public static void getCurrentIssueLabels(Context ctx, String instanceUrl, String loginUid, String instanceToken, String repoOwner, String repoName, int issueIndex, ArrayList<Integer> currentLabelsIds) {
+	public static void getCurrentIssueLabels(Context ctx, String instanceUrl, String loginUid, String instanceToken, String repoOwner, String repoName, int issueIndex, List<Integer> currentLabelsIds) {
 
 		Call<List<Labels>> callSingleIssueLabels = RetrofitClient
 			.getInstance(instanceUrl, ctx)

@@ -13,7 +13,6 @@ import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Issues;
-import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,7 +23,7 @@ import retrofit2.Callback;
 
 public class AssigneesActions {
 
-	public static void getCurrentIssueAssignees(Context ctx, String instanceUrl, String loginUid, String instanceToken, String repoOwner, String repoName, int issueIndex, ArrayList<String> currentAssignees) {
+	public static void getCurrentIssueAssignees(Context ctx, String instanceUrl, String loginUid, String instanceToken, String repoOwner, String repoName, int issueIndex, List<String> currentAssignees) {
 
 		Call<Issues> callSingleIssueLabels = RetrofitClient
 			.getInstance(instanceUrl, ctx)

@@ -110,12 +110,12 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private LabelsListAdapter labelsAdapter;
 	private AssigneesListAdapter assigneesAdapter;
 
-	private ArrayList<Integer> currentLabelsIds = new ArrayList<>();
-	private ArrayList<Integer> labelsIds = new ArrayList<>();
+	private List<Integer> currentLabelsIds = new ArrayList<>();
+	private List<Integer> labelsIds = new ArrayList<>();
 	private List<Labels> labelsList = new ArrayList<>();
 	private List<Collaborators> assigneesList = new ArrayList<>();
-	private ArrayList<String> assigneesListData = new ArrayList<>();
-	private ArrayList<String> currentAssignees = new ArrayList<>();
+	private List<String> assigneesListData = new ArrayList<>();
+	private List<String> currentAssignees = new ArrayList<>();
 
 	private Dialog dialogLabels;
 	private Dialog dialogAssignees;
@@ -243,17 +243,17 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	}
 
 	@Override
-	public void labelsStringData(ArrayList<String> data) {
+	public void labelsInterface(List<String> data) {
 	}
 
 	@Override
-	public void labelsIdsData(ArrayList<Integer> data) {
+	public void labelsIdsInterface(List<Integer> data) {
 
 		labelsIds = data;
 	}
 
 	@Override
-	public void assigneesStringData(ArrayList<String> data) {
+	public void assigneesInterface(List<String> data) {
 
 		assigneesListData = data;
 	}

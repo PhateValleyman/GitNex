@@ -1,6 +1,6 @@
 package org.mian.gitnex.models;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author M M Arif
@@ -12,14 +12,14 @@ public class Labels {
     private String name;
     private String color;
     private String url;
-    private ArrayList<Integer> labels;
+    private List<Integer> labels;
 
     public Labels(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Labels(ArrayList<Integer> labels) {
+    public Labels(List<Integer> labels) {
         this.labels = labels;
     }
 
