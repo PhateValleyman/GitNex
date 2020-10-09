@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -191,7 +192,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		}
 
-		viewBinding.pullToRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
+		viewBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 			viewBinding.pullToRefresh.setRefreshing(false);
 			IssueCommentsViewModel
@@ -356,7 +357,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					viewBinding.frameLabels.removeAllViews();
 					getSingleIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
 					currentAssignees.clear();
-					new Handler().postDelayed(() -> AssigneesActions.getCurrentIssueAssignees(ctx, instanceUrl, loginUid, instanceToken, repoOwner, repoName, issueIndex, currentAssignees), 1000);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> AssigneesActions.getCurrentIssueAssignees(ctx, instanceUrl, loginUid, instanceToken, repoOwner, repoName, issueIndex, currentAssignees), 1000);
 				}
 				else if(response2.code() == 401) {
 
@@ -411,7 +412,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					viewBinding.frameLabels.removeAllViews();
 					getSingleIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
 					currentLabelsIds.clear();
-					new Handler().postDelayed(() -> LabelsActions.getCurrentIssueLabels(ctx, instanceUrl, loginUid, instanceToken, repoOwner, repoName, issueIndex, currentLabelsIds), 1000);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> LabelsActions.getCurrentIssueLabels(ctx, instanceUrl, loginUid, instanceToken, repoOwner, repoName, issueIndex, currentLabelsIds), 1000);
 				}
 				else if(response.code() == 401) {
 
@@ -482,7 +483,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					.loadIssueComments(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex,
 						ctx);
 
-				new Handler().postDelayed(() -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN), 1000);
+				new Handler(Looper.getMainLooper()).postDelayed(() -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN), 1000);
 
 				tinyDb.putBoolean("commentPosted", false);
 
@@ -502,7 +503,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		if(tinyDb.getBoolean("singleIssueUpdate")) {
 
-			new Handler().postDelayed(() -> {
+			new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 				viewBinding.frameAssignees.removeAllViews();
 				viewBinding.frameLabels.removeAllViews();
@@ -515,7 +516,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		if(tinyDb.getBoolean("issueEdited")) {
 
-			new Handler().postDelayed(() -> {
+			new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 				viewBinding.frameAssignees.removeAllViews();
 				viewBinding.frameLabels.removeAllViews();
