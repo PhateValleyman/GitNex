@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -163,7 +164,7 @@ public class IssueDetailActivity extends BaseActivity {
 		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-		createNewComment.setOnClickListener(v -> new BottomSheetReplyFragment().show(getSupportFragmentManager(), "replyBottomSheet"));
+		createNewComment.setOnClickListener(v -> BottomSheetReplyFragment.newInstance(new Bundle()).show(getSupportFragmentManager(), "replyBottomSheet"));
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -188,7 +189,7 @@ public class IssueDetailActivity extends BaseActivity {
 
 		}
 
-		swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
+		swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 			swipeRefresh.setRefreshing(false);
 			IssueCommentsViewModel
@@ -271,7 +272,7 @@ public class IssueDetailActivity extends BaseActivity {
 					.loadIssueComments(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex,
 						ctx);
 
-				new Handler().postDelayed(() -> scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN), 1000);
+				new Handler(Looper.getMainLooper()).postDelayed(() -> scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN), 1000);
 
 				tinyDb.putBoolean("commentPosted", false);
 
@@ -291,7 +292,7 @@ public class IssueDetailActivity extends BaseActivity {
 
 		if(tinyDb.getBoolean("singleIssueUpdate")) {
 
-			new Handler().postDelayed(() -> {
+			new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 				assigneesLayout.removeAllViews();
 				labelsLayout.removeAllViews();
@@ -304,7 +305,7 @@ public class IssueDetailActivity extends BaseActivity {
 
 		if(tinyDb.getBoolean("issueEdited")) {
 
-			new Handler().postDelayed(() -> {
+			new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 				assigneesLayout.removeAllViews();
 				labelsLayout.removeAllViews();
@@ -330,7 +331,7 @@ public class IssueDetailActivity extends BaseActivity {
 					divider.setVisibility(View.VISIBLE);
 				}
 
-				adapter = new IssueCommentsAdapter(ctx, issueCommentsMain);
+				adapter = new IssueCommentsAdapter(ctx, getSupportFragmentManager(), issueCommentsMain);
 				mRecyclerView.setAdapter(adapter);
 
 			});

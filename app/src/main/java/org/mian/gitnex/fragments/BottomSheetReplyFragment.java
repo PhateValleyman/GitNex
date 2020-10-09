@@ -28,6 +28,7 @@ import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Collaborators;
+import java.util.Objects;
 
 /**
  * @author opyale
@@ -79,15 +80,41 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 		View view = inflater.inflate(R.layout.bottom_sheet_reply_layout, container, false);
+		Bundle arguments = requireArguments();
 
 		draftsHint = view.findViewById(R.id.drafts_hint);
 
 		SocialAutoCompleteTextView socialAutoCompleteTextView = view.findViewById(R.id.comment);
-
 		TextView toolbarTitle = view.findViewById(R.id.toolbar_title);
 		ImageButton close = view.findViewById(R.id.close);
 		ImageButton drafts = view.findViewById(R.id.drafts);
 		ImageButton send = view.findViewById(R.id.send);
+
+		if(Objects.equals(arguments.getString("commentAction"), "edit")) {
+			send.setVisibility(View.GONE);
+		}
+
+		if(arguments.getString("draftId") != null) {
+			draftId = Long.parseLong(arguments.getString("draftId"));
+		}
+
+		if(!tinyDB.getString("issueTitle").isEmpty()) {
+			toolbarTitle.setText(tinyDB.getString("issueTitle"));
+		} else if(arguments.getString("draftTitle") != null) {
+			toolbarTitle.setText(arguments.getString("draftTitle"));
+		}
+
+		if(arguments.getString("commentBody") != null) {
+
+			send.setEnabled(true);
+			send.setAlpha(1f);
+
+			socialAutoCompleteTextView.setText(arguments.getString("commentBody"));
+
+			if(arguments.getBoolean("cursorToEnd", false)) {
+				socialAutoCompleteTextView.setSelection(socialAutoCompleteTextView.length());
+			}
+		}
 
 		socialAutoCompleteTextView.requestFocus();
 		socialAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
@@ -134,9 +161,24 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 			.accept((status, result) -> {
 
 				if(status == ActionResult.Status.SUCCESS) {
+
 					Toasty.success(getContext(), getString(R.string.commentSuccess));
+
+					tinyDB.putBoolean("commentPosted", true);
+					tinyDB.putBoolean("resumeIssues", true);
+					tinyDB.putBoolean("resumePullRequests", true);
+
+					if(draftId != 0 && tinyDB.getBoolean("draftsCommentsDeletionEnabled")) {
+						draftsApi.deleteSingleDraft((int) draftId);
+					}
+
+					dismiss();
+
 				} else {
+
 					Toasty.error(getContext(), getString(R.string.commentError));
+					dismiss();
+
 				}
 			}));
 
@@ -146,7 +188,6 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 	private void saveDraft(String text, boolean remove) {
 
-		// Should probably use View.animate(), but ValueAnimator is cleaner and easier to implement.
 		ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
 		valueAnimator.setDuration(500);
 		valueAnimator.addUpdateListener(animation -> {
@@ -162,13 +203,14 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		});
 
 		if(remove) {
-			// Removing draft, probably because it's empty
+
 			draftsApi.deleteSingleDraft((int) draftId);
 			draftId = 0;
 
 			valueAnimator.reverse();
+
 		} else {
-			// Creating and updating draft
+
 			if(draftId == 0) {
 				draftId = draftsApi.insertDraft(repositoryId, currentActiveAccountId, issueNumber, text, StaticGlobalVariables.draftTypeComment, "TODO");
 			} else {
@@ -177,7 +219,16 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 			draftsHint.setVisibility(View.VISIBLE);
 			valueAnimator.start();
+
 		}
 	}
 
+	public static BottomSheetReplyFragment newInstance(Bundle bundle) {
+
+		BottomSheetReplyFragment fragment = new BottomSheetReplyFragment();
+		fragment.setArguments(bundle);
+
+		return fragment;
+
+	}
 }

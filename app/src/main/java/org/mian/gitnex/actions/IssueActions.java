@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.ReplyToIssueActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -53,8 +52,6 @@ public class IssueActions {
 
 						DraftsApi draftsApi = new DraftsApi(ctx);
 						draftsApi.deleteSingleDraft((int) draftIdOnCreate);
-
-						((ReplyToIssueActivity) ctx).finish();
 
 					}
 				}
