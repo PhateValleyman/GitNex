@@ -86,10 +86,7 @@ public class LabelsActions {
 
 						dialogLabels.show();
 
-						for (int i = 0; i < labelsList_.size(); i++) {
-
-							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName(), labelsList_.get(i).getColor()));
-						}
+						labelsList.addAll(labelsList_);
 					}
 					else {
 

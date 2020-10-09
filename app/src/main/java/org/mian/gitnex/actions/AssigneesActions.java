@@ -88,12 +88,7 @@ public class AssigneesActions {
 
 						dialogAssignees.show();
 
-						for (int i = 0; i < assigneesList_.size(); i++) {
-
-							assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(),
-								assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
-
-						}
+						assigneesList.addAll(assigneesList_);
 					}
 					else {
 
