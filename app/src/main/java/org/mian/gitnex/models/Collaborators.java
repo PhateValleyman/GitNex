@@ -61,13 +61,13 @@ public class Collaborators {
 			return false;
 		}
 		Collaborators that = (Collaborators) o;
-		return id == that.id;
+		return Objects.equals(login, that.login);
 	}
 
 	@Override
 	public int hashCode() {
 
-		return Objects.hash(id);
+		return Objects.hash(login);
 	}
 
 }
