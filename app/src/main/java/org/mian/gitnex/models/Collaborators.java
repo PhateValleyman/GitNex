@@ -1,5 +1,7 @@
 package org.mian.gitnex.models;
 
+import java.util.Objects;
+
 /**
  * Author M M Arif
  */
@@ -48,4 +50,24 @@ public class Collaborators {
     public String getUsername() {
         return username;
     }
+
+	@Override
+	public boolean equals(Object o) {
+
+		if(this == o) {
+			return true;
+		}
+		if(o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Collaborators that = (Collaborators) o;
+		return Objects.equals(login, that.login);
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(login);
+	}
+
 }
