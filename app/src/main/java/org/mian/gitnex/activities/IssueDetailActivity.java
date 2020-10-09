@@ -32,6 +32,8 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.JsonElement;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
+import org.mian.gitnex.actions.AssigneesActions;
+import org.mian.gitnex.actions.LabelsActions;
 import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.adapters.IssueCommentsAdapter;
 import org.mian.gitnex.adapters.LabelsListAdapter;
@@ -163,8 +165,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		labelsAdapter = new LabelsListAdapter(labelsList, IssueDetailActivity.this, currentLabelsIds);
 		assigneesAdapter = new AssigneesListAdapter(ctx, assigneesList, IssueDetailActivity.this, currentAssignees);
-		getCurrentIssueLabels();
-		getCurrentIssueAssignees();
+		LabelsActions.getCurrentIssueLabels(ctx, instanceUrl, loginUid, instanceToken, repoOwner, repoName, issueIndex, currentLabelsIds);
+		AssigneesActions.getCurrentIssueAssignees(ctx, instanceUrl, loginUid, instanceToken, repoOwner, repoName, issueIndex, currentAssignees);
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -289,60 +291,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 		});
 
-		Call<List<Collaborators>> call = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
-			.getCollaborators(instanceToken, repoOwner, repoName);
-
-		call.enqueue(new Callback<List<Collaborators>>() {
-
-			@Override
-			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull retrofit2.Response<List<Collaborators>> response) {
-
-				assigneesList.clear();
-				List<Collaborators> assigneesList_ = response.body();
-
-				assigneesBinding.progressBar.setVisibility(View.GONE);
-				assigneesBinding.dialogFrame.setVisibility(View.VISIBLE);
-
-				if (response.code() == 200) {
-
-					assert assigneesList_ != null;
-
-					if(assigneesList_.size() > 0) {
-
-						dialogAssignees.show();
-
-						for (int i = 0; i < assigneesList_.size(); i++) {
-
-							assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(),
-								assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
-
-						}
-					}
-					else {
-
-						dialogAssignees.dismiss();
-						Toasty.warning(ctx, getString(R.string.noAssigneesFound));
-					}
-
-					assigneesBinding.assigneesRecyclerView.setAdapter(assigneesAdapter);
-
-				}
-				else {
-
-					Toasty.error(ctx, getString(R.string.genericError));
-				}
-
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-
-				Toasty.error(ctx, getString(R.string.genericServerResponseError));
-			}
-		});
-
+		AssigneesActions.getRepositoryAssignees(ctx, instanceUrl, instanceToken, repoOwner, repoName, assigneesList, dialogAssignees, assigneesAdapter, assigneesBinding);
 	}
 
 	public void showLabels() {
@@ -378,58 +327,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 		});
 
-		Call<List<Labels>> call = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
-			.getlabels(instanceToken, repoOwner, repoName);
-
-		call.enqueue(new Callback<List<Labels>>() {
-
-			@Override
-			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
-
-				labelsList.clear();
-				List<Labels> labelsList_ = response.body();
-
-				labelsBinding.progressBar.setVisibility(View.GONE);
-				labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
-
-				if (response.code() == 200) {
-
-					assert labelsList_ != null;
-
-					if(labelsList_.size() > 0) {
-
-						for (int i = 0; i < labelsList_.size(); i++) {
-
-							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName(), labelsList_.get(i).getColor()));
-						}
-					}
-					else {
-
-						dialogLabels.dismiss();
-						Toasty.warning(ctx, getString(R.string.noLabelsFound));
-					}
-
-					labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
-
-				}
-				else {
-
-					Toasty.error(ctx, getString(R.string.genericError));
-				}
-
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
-
-				Toasty.error(ctx, getString(R.string.genericServerResponseError));
-			}
-		});
-
-		dialogLabels.show();
-
+		LabelsActions.getRepositoryLabels(ctx, instanceUrl, instanceToken, repoOwner, repoName, labelsList, dialogLabels, labelsAdapter, labelsBinding);
 	}
 
 	private void updateIssueAssignees() {
@@ -458,7 +356,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					viewBinding.frameLabels.removeAllViews();
 					getSingleIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
 					currentAssignees.clear();
-					new Handler().postDelayed(() -> getCurrentIssueAssignees(), 1000);
+					new Handler().postDelayed(() -> AssigneesActions.getCurrentIssueAssignees(ctx, instanceUrl, loginUid, instanceToken, repoOwner, repoName, issueIndex, currentAssignees), 1000);
 				}
 				else if(response2.code() == 401) {
 
@@ -513,7 +411,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					viewBinding.frameLabels.removeAllViews();
 					getSingleIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid);
 					currentLabelsIds.clear();
-					new Handler().postDelayed(() -> getCurrentIssueLabels(), 1000);
+					new Handler().postDelayed(() -> LabelsActions.getCurrentIssueLabels(ctx, instanceUrl, loginUid, instanceToken, repoOwner, repoName, issueIndex, currentLabelsIds), 1000);
 				}
 				else if(response.code() == 401) {
 
@@ -543,88 +441,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 		});
 
-	}
-
-	private void getCurrentIssueAssignees() {
-
-		Call<Issues> callSingleIssueLabels = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
-			.getIssueByIndex(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
-
-		callSingleIssueLabels.enqueue(new Callback<Issues>() {
-
-			@Override
-			public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
-
-				if(response.code() == 200) {
-
-					Issues issueAssigneesList = response.body();
-					assert issueAssigneesList != null;
-
-					if (issueAssigneesList.getAssignees() != null) {
-
-						if(issueAssigneesList.getAssignees().size() > 0) {
-
-							for(int i = 0; i < issueAssigneesList.getAssignees().size(); i++) {
-
-								currentAssignees.add(issueAssigneesList.getAssignees().get(i).getLogin());
-
-								/*if(issueAssigneesList.getAssignees().get(i).getUsername().equals(loginUid)) {
-									listOfCollaborators.add(new MultiSelectModel(issueAssigneesList.getAssignees().get(i).getId(),
-										issueAssigneesList.getAssignees().get(i).getUsername().trim()));
-								}*/
-							}
-						}
-					}
-				}
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
-
-				Log.e("onFailure", t.toString());
-			}
-
-		});
-	}
-
-	private void getCurrentIssueLabels() {
-
-		Call<List<Labels>> callSingleIssueLabels = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
-			.getIssueLabels(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
-
-		callSingleIssueLabels.enqueue(new Callback<List<Labels>>() {
-
-			@Override
-			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
-
-				if(response.code() == 200) {
-
-					List<Labels> issueLabelsList = response.body();
-
-					assert issueLabelsList != null;
-
-					if(issueLabelsList.size() > 0) {
-
-						for (int i = 0; i < issueLabelsList.size(); i++) {
-
-							currentLabelsIds.add(issueLabelsList.get(i).getId());
-						}
-					}
-
-				}
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
-
-				Log.e("onFailure", t.toString());
-			}
-
-		});
 	}
 
 	@Override

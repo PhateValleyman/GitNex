@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
+import org.mian.gitnex.actions.AssigneesActions;
+import org.mian.gitnex.actions.LabelsActions;
 import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -183,60 +185,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 			dialogAssignees.dismiss()
 		);
 
-		Call<List<Collaborators>> call = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
-			.getCollaborators(instanceToken, repoOwner, repoName);
-
-		call.enqueue(new Callback<List<Collaborators>>() {
-
-			@Override
-			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull retrofit2.Response<List<Collaborators>> response) {
-
-				assigneesList.clear();
-				List<Collaborators> assigneesList_ = response.body();
-
-				assigneesBinding.progressBar.setVisibility(View.GONE);
-				assigneesBinding.dialogFrame.setVisibility(View.VISIBLE);
-
-				if (response.code() == 200) {
-
-					assert assigneesList_ != null;
-
-					if(assigneesList_.size() > 0) {
-
-						dialogAssignees.show();
-
-						for (int i = 0; i < assigneesList_.size(); i++) {
-
-							assigneesList.add(new Collaborators(assigneesList_.get(i).getId(), assigneesList_.get(i).getFull_name(),
-									assigneesList_.get(i).getLogin(), assigneesList_.get(i).getAvatar_url()));
-
-						}
-					}
-					else {
-
-						dialogAssignees.dismiss();
-						Toasty.warning(ctx, getString(R.string.noAssigneesFound));
-					}
-
-					assigneesBinding.assigneesRecyclerView.setAdapter(assigneesAdapter);
-
-				}
-				else {
-
-					Toasty.error(ctx, getString(R.string.genericError));
-				}
-
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-
-				Toasty.error(ctx, getString(R.string.genericServerResponseError));
-			}
-		});
-
+		AssigneesActions.getRepositoryAssignees(ctx, instanceUrl, instanceToken, repoOwner, repoName, assigneesList, dialogAssignees, assigneesAdapter, assigneesBinding);
 	}
 
 	private void showLabels() {
@@ -257,58 +206,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 			dialogLabels.dismiss()
 		);
 
-		Call<List<Labels>> call = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
-			.getlabels(instanceToken, repoOwner, repoName);
-
-		call.enqueue(new Callback<List<Labels>>() {
-
-			@Override
-			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
-
-				labelsList.clear();
-				List<Labels> labelsList_ = response.body();
-
-				labelsBinding.progressBar.setVisibility(View.GONE);
-				labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
-
-				if (response.code() == 200) {
-
-					assert labelsList_ != null;
-
-					if(labelsList_.size() > 0) {
-
-						for (int i = 0; i < labelsList_.size(); i++) {
-
-							labelsList.add(new Labels(labelsList_.get(i).getId(), labelsList_.get(i).getName(), labelsList_.get(i).getColor()));
-						}
-					}
-					else {
-
-						dialogLabels.dismiss();
-						Toasty.warning(ctx, getString(R.string.noLabelsFound));
-					}
-
-					labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
-
-				}
-				else {
-
-					Toasty.error(ctx, getString(R.string.genericError));
-				}
-
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
-
-				Toasty.error(ctx, getString(R.string.genericServerResponseError));
-			}
-		});
-
-		dialogLabels.show();
-
+		LabelsActions.getRepositoryLabels(ctx, instanceUrl, instanceToken, repoOwner, repoName, labelsList, dialogLabels, labelsAdapter, labelsBinding);
 	}
 
     private void processNewIssue() {
