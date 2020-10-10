@@ -92,8 +92,6 @@ dependencies {
     implementation "io.noties.markwon:syntax-highlight:$markwon_version"
     implementation "com.caverock:androidsvg:1.4"
     implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.19"
-    implementation "com.hendraanggrian.appcompat:socialview:0.2"
-    implementation "com.hendraanggrian.appcompat:socialview-commons:0.2"
     implementation "com.github.HamidrezaAmz:BreadcrumbsView:0.2.9"
     implementation "commons-io:commons-io:20030203.000550"
     implementation 'org.apache.commons:commons-lang3:3.11'

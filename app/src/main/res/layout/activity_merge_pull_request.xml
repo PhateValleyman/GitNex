@@ -80,7 +80,7 @@
                 android:textColorHighlight="?attr/primaryTextColor"
                 android:inputType="textCapSentences|text" />
 
-            <com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView
+            <EditText
                 android:id="@+id/mergeDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

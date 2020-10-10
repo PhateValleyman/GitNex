@@ -10,8 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
-import com.hendraanggrian.appcompat.socialview.Mention;
-import com.hendraanggrian.appcompat.widget.MentionArrayAdapter;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityMergePullRequestBinding;
@@ -21,15 +19,12 @@ import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
-import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.MergePullRequest;
 import org.mian.gitnex.models.MergePullRequestSpinner;
 import java.util.ArrayList;
-import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -42,7 +37,6 @@ public class MergePullRequestActivity extends BaseActivity {
 	private Context appCtx;
 	private ActivityMergePullRequestBinding viewBinding;
 
-	private ArrayAdapter<Mention> defaultMentionAdapter;
 	private String Do;
 
 	@Override
@@ -89,11 +83,6 @@ public class MergePullRequestActivity extends BaseActivity {
 			}
 
 		});
-
-		defaultMentionAdapter = new MentionArrayAdapter<>(this);
-		loadCollaboratorsList();
-
-		viewBinding.mergeDescription.setMentionAdapter(defaultMentionAdapter);
 
 		if(!tinyDb.getString("issueTitle").isEmpty()) {
 			viewBinding.toolbarTitle.setText(tinyDb.getString("issueTitle"));
@@ -154,54 +143,6 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	}
 
-	public void loadCollaboratorsList() {
-
-		final TinyDB tinyDb = new TinyDB(appCtx);
-
-		final String instanceUrl = tinyDb.getString("instanceUrl");
-		final String loginUid = tinyDb.getString("loginUid");
-		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-		String repoFullName = tinyDb.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		final String repoOwner = parts[0];
-		final String repoName = parts[1];
-
-		Call<List<Collaborators>> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getCollaborators(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
-
-		call.enqueue(new Callback<List<Collaborators>>() {
-
-			@Override
-			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
-
-				if(response.isSuccessful()) {
-
-					assert response.body() != null;
-					String fullName = "";
-					for(int i = 0; i < response.body().size(); i++) {
-						if(!response.body().get(i).getFull_name().equals("")) {
-							fullName = response.body().get(i).getFull_name();
-						}
-						defaultMentionAdapter.add(new Mention(response.body().get(i).getUsername(), fullName, response.body().get(i).getAvatar_url()));
-					}
-
-				}
-				else {
-
-					Log.i("onResponse", String.valueOf(response.code()));
-
-				}
-
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-
-				Log.i("onFailure", t.toString());
-			}
-
-		});
-	}
-
 	private void initCloseListener() {
 
 		onClickListener = view -> finish();
@@ -211,7 +152,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	private void processMergePullRequest() {
 
-		String mergePRDesc = viewBinding.mergeDescription.getText().toString();
+		//String mergePRDesc = viewBinding.mergeDescription.getText().toString();
 		String mergePRTitle = viewBinding.mergeTitle.getText().toString();
 		boolean deleteBranch = viewBinding.deleteBranch.isChecked();
 
@@ -225,7 +166,7 @@ public class MergePullRequestActivity extends BaseActivity {
 		}
 
 		disableProcessButton();
-		mergeFunction(Do, mergePRDesc, mergePRTitle, deleteBranch);
+		//mergeFunction(Do, mergePRDesc, mergePRTitle, deleteBranch);
 
 	}
 
