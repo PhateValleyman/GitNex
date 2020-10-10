@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
@@ -22,6 +21,7 @@ import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.MergePullRequest;
 import org.mian.gitnex.models.MergePullRequestSpinner;
 import java.util.ArrayList;
+import java.util.Objects;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +35,15 @@ public class MergePullRequestActivity extends BaseActivity {
 	private View.OnClickListener onClickListener;
 	final Context ctx = this;
 	private Context appCtx;
+	private TinyDB tinyDb;
+
+	private String instanceUrl;
+	private String loginUid;
+	private String instanceToken;
+	private String repoOwner;
+	private String repoName;
+	private int prIndex;
+
 	private ActivityMergePullRequestBinding viewBinding;
 
 	private String Do;
@@ -51,13 +60,22 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
+		tinyDb = new TinyDB(appCtx);
 
 		viewBinding = ActivityMergePullRequestBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
+		instanceUrl = tinyDb.getString("instanceUrl");
+		loginUid = tinyDb.getString("loginUid");
+		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String repoFullName = tinyDb.getString("repoFullName");
+		String[] parts = repoFullName.split("/");
+		repoOwner = parts[0];
+		repoName = parts[1];
+		prIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
-		TinyDB tinyDb = new TinyDB(appCtx);
 
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -67,24 +85,8 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		setMergeAdapter();
 
-		viewBinding.mergeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-				MergePullRequestSpinner mergeId = (MergePullRequestSpinner) parent.getSelectedItem();
-				Do = mergeId.getId();
-
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-
-			}
-
-		});
-
 		if(!tinyDb.getString("issueTitle").isEmpty()) {
+
 			viewBinding.toolbarTitle.setText(tinyDb.getString("issueTitle"));
 			viewBinding.mergeTitle.setText(tinyDb.getString("issueTitle") + " (#" + tinyDb.getString("issueNumber") + ")");
 		}
@@ -125,8 +127,6 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	private void setMergeAdapter() {
 
-		TinyDB tinyDb = new TinyDB(appCtx);
-
 		ArrayList<MergePullRequestSpinner> mergeList = new ArrayList<>();
 
 		mergeList.add(new MergePullRequestSpinner("merge", getResources().getString(R.string.mergeOptionMerge)));
@@ -137,9 +137,13 @@ public class MergePullRequestActivity extends BaseActivity {
 			mergeList.add(new MergePullRequestSpinner("squash", getResources().getString(R.string.mergeOptionSquash)));
 		}
 
-		ArrayAdapter<MergePullRequestSpinner> adapter = new ArrayAdapter<>(MergePullRequestActivity.this, R.layout.spinner_item, mergeList);
-		adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+		ArrayAdapter<MergePullRequestSpinner> adapter = new ArrayAdapter<>(MergePullRequestActivity.this, R.layout.list_spinner_items, mergeList);
 		viewBinding.mergeSpinner.setAdapter(adapter);
+
+		viewBinding.mergeSpinner.setOnItemClickListener ((parent, view, position, id) -> {
+
+			Do = mergeList.get(position).getId();
+		});
 
 	}
 
@@ -152,8 +156,8 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	private void processMergePullRequest() {
 
-		//String mergePRDesc = viewBinding.mergeDescription.getText().toString();
-		String mergePRTitle = viewBinding.mergeTitle.getText().toString();
+		String mergePRDesc = Objects.requireNonNull(viewBinding.mergeDescription.getText()).toString();
+		String mergePRTitle = Objects.requireNonNull(viewBinding.mergeTitle.getText()).toString();
 		boolean deleteBranch = viewBinding.deleteBranch.isChecked();
 
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
@@ -162,26 +166,20 @@ public class MergePullRequestActivity extends BaseActivity {
 
 			Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 			return;
-
 		}
 
-		disableProcessButton();
-		//mergeFunction(Do, mergePRDesc, mergePRTitle, deleteBranch);
+		if(Do == null) {
 
+			Toasty.error(ctx, getResources().getString(R.string.selectMergeStrategy));
+		}
+		else {
+
+			disableProcessButton();
+			mergeFunction(Do, mergePRDesc, mergePRTitle, deleteBranch);
+		}
 	}
 
 	private void mergeFunction(String Do, String mergePRDT, String mergeTitle, boolean deleteBranch) {
-
-		final TinyDB tinyDb = new TinyDB(appCtx);
-
-		final String instanceUrl = tinyDb.getString("instanceUrl");
-		final String loginUid = tinyDb.getString("loginUid");
-		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-		String repoFullName = tinyDb.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		final String repoOwner = parts[0];
-		final String repoName = parts[1];
-		final int prIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
 
 		MergePullRequest mergePR = new MergePullRequest(Do, mergePRDT, mergeTitle);
 
@@ -209,7 +207,6 @@ public class MergePullRequestActivity extends BaseActivity {
 							tinyDb.putBoolean("prMerged", true);
 							tinyDb.putBoolean("resumePullRequests", true);
 							finish();
-
 						}
 						else {
 
@@ -224,7 +221,6 @@ public class MergePullRequestActivity extends BaseActivity {
 							tinyDb.putBoolean("prMerged", true);
 							tinyDb.putBoolean("resumePullRequests", true);
 							finish();
-
 						}
 
 					}
@@ -234,7 +230,6 @@ public class MergePullRequestActivity extends BaseActivity {
 						tinyDb.putBoolean("prMerged", true);
 						tinyDb.putBoolean("resumePullRequests", true);
 						finish();
-
 					}
 
 				}
@@ -242,19 +237,16 @@ public class MergePullRequestActivity extends BaseActivity {
 
 					enableProcessButton();
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
 				}
 				else if(response.code() == 404) {
 
 					enableProcessButton();
 					Toasty.warning(ctx, getString(R.string.mergePR404ErrorMsg));
-
 				}
 				else {
 
 					enableProcessButton();
 					Toasty.error(ctx, getString(R.string.genericError));
-
 				}
 
 			}
@@ -272,11 +264,6 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	private void deleteBranchFunction(String repoOwner, String repoName) {
 
-		TinyDB tinyDb = new TinyDB(appCtx);
-
-		String instanceUrl = tinyDb.getString("instanceUrl");
-		String loginUid = tinyDb.getString("loginUid");
-		String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 		String branchName = tinyDb.getString("prHeadBranch");
 
 		Call<JsonElement> call = RetrofitClient
@@ -292,7 +279,6 @@ public class MergePullRequestActivity extends BaseActivity {
 				if(response.code() == 204) {
 
 					Log.i("deleteBranch", "Branch deleted successfully");
-
 				}
 
 			}
@@ -302,7 +288,6 @@ public class MergePullRequestActivity extends BaseActivity {
 
 				Log.e("onFailure", t.toString());
 				enableProcessButton();
-
 			}
 
 		});

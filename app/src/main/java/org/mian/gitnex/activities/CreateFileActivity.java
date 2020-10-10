@@ -499,7 +499,7 @@ public class CreateFileActivity extends BaseActivity {
     }
 
     private void initCloseListener() {
-    	
+
         onClickListener = view -> finish();
     }
 
