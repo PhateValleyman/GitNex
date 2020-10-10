@@ -291,6 +291,7 @@
     <string name="labelDeleteErrorText">Something went wrong, please try again</string>
 
     <string name="noDataBranchesTab">No branches found</string>
+    <string name="selectBranchError">Select a branch for release</string>
 
     <string name="alertDialogTokenRevokedTitle">Authorization Error</string>
     <string name="alertDialogTokenRevokedMessage">It seems that the Access Token is revoked OR your are not allowed to see these contents.\n\nIn case of revoked Token, please logout and login again</string>
