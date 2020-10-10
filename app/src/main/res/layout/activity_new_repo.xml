@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     android:textColor="?attr/inputTextColor"
-                    android:labelFor="@+id/pullFromBranchSpinner"
+                    android:labelFor="@+id/ownerSpinner"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
