@@ -1,7 +1,6 @@
 package org.mian.gitnex.actions;
 
 import android.content.Context;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
@@ -81,7 +80,7 @@ public class IssueActions {
 			@Override
 			public void onFailure(@NonNull Call<IssueComments> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
+				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}
 		});
 
@@ -155,7 +154,7 @@ public class IssueActions {
 			@Override
 			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
+				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}
 		});
 
@@ -215,7 +214,7 @@ public class IssueActions {
 			@Override
 			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
-				Toasty.success(ctx, ctx.getString(R.string.unsubscribedSuccessfully));
+				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}
 		});
 
@@ -275,7 +274,7 @@ public class IssueActions {
 			@Override
 			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
-				Toasty.error(ctx, ctx.getString(R.string.unsubscriptionError));
+				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}
 		});
 	}
@@ -332,7 +331,7 @@ public class IssueActions {
 			@Override
 			public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
 
-				actionResult.finish(ActionResult.Status.FAILED);
+				Toasty.error(context, context.getResources().getString(R.string.genericServerResponseError));
 			}
 		});
 
