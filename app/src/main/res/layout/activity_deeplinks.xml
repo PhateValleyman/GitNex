@@ -52,12 +52,21 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/repository"
+            android:id="@+id/noActionText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/navRepos"
+            android:text="@string/noActionText"
             android:textColor="?attr/primaryTextColor"
             android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/repository"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/navRepos"
+            android:textColor="@color/btnTextColor"
+            android:textSize="16sp"
+            android:layout_marginTop="24dp" />
 
         <Button
             android:id="@+id/organization"
@@ -66,7 +75,7 @@
             android:text="@string/navOrgs"
             android:textColor="@color/btnTextColor"
             android:textSize="16sp"
-            android:layout_marginTop="24dp" />
+            android:layout_marginTop="8dp" />
 
         <Button
             android:id="@+id/notification"
@@ -82,6 +91,15 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="@string/navExplore"
+            android:textColor="@color/btnTextColor"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/launchApp2"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/launchApp"
             android:textColor="@color/btnTextColor"
             android:textSize="16sp"
             android:layout_marginTop="8dp" />

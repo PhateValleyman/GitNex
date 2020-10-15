@@ -348,6 +348,36 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			}
 		}
 
+		String launchFragmentByHandler = mainIntent.getStringExtra("launchFragmentByLinkHandler");
+
+		if(launchFragmentByHandler != null) {
+
+			mainIntent.removeExtra("launchFragmentByLinkHandler");
+
+			switch(launchFragmentByHandler) {
+
+				case "repos":
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_repositories);
+					return;
+
+				case "org":
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_organizations);
+					return;
+
+				case "notification":
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_notifications);
+					return;
+
+				case "explore":
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_explore);
+					return;
+			}
+		}
+
 		if(savedInstanceState == null) {
 
 			if(!new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.3")) {
