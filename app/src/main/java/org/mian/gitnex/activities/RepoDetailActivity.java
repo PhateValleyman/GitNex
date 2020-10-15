@@ -238,6 +238,14 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			}
 		}
 
+		Intent mainIntent = getIntent();
+		String goToIssues = mainIntent.getStringExtra("goToIssues");
+		if(goToIssues != null) {
+
+			mainIntent.removeExtra("goToIssues");
+			RepoDetailActivity.mViewPager.setCurrentItem(2);
+		}
+
 		checkRepositoryStarStatus(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repositoryOwner, repositoryName);
 		checkRepositoryWatchStatus(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repositoryOwner, repositoryName);
 
