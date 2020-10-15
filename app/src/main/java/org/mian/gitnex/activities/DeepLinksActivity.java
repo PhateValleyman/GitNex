@@ -83,6 +83,7 @@ public class DeepLinksActivity extends BaseActivity {
 					if(!hostUri.contains(Objects.requireNonNull(data.getHost()))) {
 
 						viewBinding.addNewAccountFrame.setVisibility(View.VISIBLE);
+						viewBinding.noActionFrame.setVisibility(View.GONE);
 						viewBinding.addAccountText.setText(String.format(getResources().getString(R.string.accountDoesNotExist), data.getHost()));
 
 						viewBinding.addNewAccount.setOnClickListener(addNewAccount -> {
@@ -218,6 +219,7 @@ public class DeepLinksActivity extends BaseActivity {
 				else if(tinyDb.getInt("defaultScreenId") == 0) { // show options
 
 					viewBinding.noActionFrame.setVisibility(View.VISIBLE);
+					viewBinding.addNewAccountFrame.setVisibility(View.GONE);
 
 					viewBinding.repository.setOnClickListener(repository -> {
 
