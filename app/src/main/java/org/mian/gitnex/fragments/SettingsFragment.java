@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.activities.SettingsAppearanceActivity;
 import org.mian.gitnex.activities.SettingsDraftsActivity;
 import org.mian.gitnex.activities.SettingsFileViewerActivity;
@@ -31,6 +32,8 @@ public class SettingsFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 		View v = inflater.inflate(R.layout.fragment_settings, container, false);
+
+		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navSettings));
 
 		LinearLayout appearanceFrame = v.findViewById(R.id.appearanceFrame);
 		LinearLayout fileViewerFrame = v.findViewById(R.id.fileViewerFrame);

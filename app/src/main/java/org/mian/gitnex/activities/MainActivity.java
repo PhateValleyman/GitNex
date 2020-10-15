@@ -79,6 +79,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private TextView toolbarTitle;
 	final Context ctx = this;
 	private Context appCtx;
+	private static TinyDB tinyDb;
 	private Typeface myTypeface;
 
 	private String instanceUrl;
@@ -101,7 +102,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
 
-		final TinyDB tinyDb = new TinyDB(appCtx);
+		tinyDb = new TinyDB(appCtx);
 		tinyDb.putBoolean("noConnection", false);
 
 		Intent mainIntent = getIntent();
@@ -577,7 +578,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	public static void logout(Activity activity, Context ctx) {
 
-		TinyDB tinyDb = new TinyDB(ctx.getApplicationContext());
 		tinyDb.putBoolean("loggedInMode", false);
 		tinyDb.remove("basicAuthPassword");
 		tinyDb.putBoolean("basicAuthFlag", false);

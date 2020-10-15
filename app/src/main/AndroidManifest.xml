@@ -159,6 +159,22 @@
         <!-- Version >= 3.0. DeX Dual Mode support -->
         <meta-data android:name="com.samsung.android.multidisplay.keep_process_alive" android:value="true"/>
 
+        <!-- deep links -->
+        <activity
+            android:name=".activities.DeepLinksActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"
+                    android:host="codeberg.org" />
+            </intent-filter>
+        </activity>
+        <!-- deep links -->
+
     </application>
 
 </manifest>

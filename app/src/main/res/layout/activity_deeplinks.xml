@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/primaryBackgroundColor"
+    android:orientation="vertical"
+    android:padding="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/addNewAccountFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="32dp"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/addAccountText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/accountDoesNotExist"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/addNewAccount"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/addNewAccountText"
+            android:textColor="@color/btnTextColor"
+            android:textSize="16sp"
+            android:layout_marginTop="24dp" />
+
+        <Button
+            android:id="@+id/launchApp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/launchApp"
+            android:textColor="@color/btnTextColor"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
