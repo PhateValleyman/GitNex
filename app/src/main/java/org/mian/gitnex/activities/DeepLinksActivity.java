@@ -52,8 +52,7 @@ public class DeepLinksActivity extends BaseActivity {
 		}
 
 		// check for the links(URI) to be in the db
-		UserAccountsApi userAccountsApi;
-		userAccountsApi = new UserAccountsApi(ctx);
+		UserAccountsApi userAccountsApi = new UserAccountsApi(ctx);
 
 		userAccountsApi.getAllAccounts().observe((AppCompatActivity) ctx, userAccounts -> {
 
