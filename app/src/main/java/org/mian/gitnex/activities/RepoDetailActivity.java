@@ -246,7 +246,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 			mainIntent.removeExtra("goToSection");
 			mainIntent.removeExtra("goToSectionType");
-			assert goToSectionType != null;
 
 			if(goToSectionType.equals("issue")) {
 

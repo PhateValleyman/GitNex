@@ -9,17 +9,18 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import org.apache.commons.lang3.StringUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.Repository;
+import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityDeeplinksBinding;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.PullRequests;
 import org.mian.gitnex.models.UserRepositories;
+import java.util.List;
 import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +37,10 @@ public class DeepLinksActivity extends BaseActivity {
 	private TinyDB tinyDb;
 	private String currentInstance;
 	private String instanceToken;
+
+	private Intent mainIntent;
+	private Intent issueIntent;
+	private Intent repoIntent;
 
 	@Override
 	protected int getLayoutResourceId() {
@@ -54,6 +59,10 @@ public class DeepLinksActivity extends BaseActivity {
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
+		mainIntent = new Intent(ctx, MainActivity.class);
+		issueIntent = new Intent(ctx, IssueDetailActivity.class);
+		repoIntent = new Intent(ctx, RepoDetailActivity.class);
+
 		Intent intent = getIntent();
 		Uri data = intent.getData();
 		assert data != null;
@@ -67,42 +76,42 @@ public class DeepLinksActivity extends BaseActivity {
 
 		// check for the links(URI) to be in the db
 		UserAccountsApi userAccountsApi = new UserAccountsApi(ctx);
+		List<UserAccount> userAccounts = userAccountsApi.usersAccounts();
 
-		userAccountsApi.getAllAccounts().observe((AppCompatActivity) ctx, userAccounts -> {
+		if(userAccounts.size() > 0) {
 
-			if(userAccounts.size() > 0) {
+			String hostUri;
+			for(int i = 0; i < userAccounts.size(); i++) {
 
-				String hostUri;
-				for(int i = 0; i < userAccounts.size(); i++) {
+				hostUri = userAccounts.get(i).getInstanceUrl();
 
-					hostUri = userAccounts.get(i).getInstanceUrl();
+				currentInstance = userAccounts.get(i).getInstanceUrl();
+				instanceToken = userAccounts.get(i).getToken();
 
-					currentInstance = userAccounts.get(i).getInstanceUrl();
-					instanceToken = userAccounts.get(i).getToken();
+				if(!hostUri.contains(Objects.requireNonNull(data.getHost()))) {
 
-					if(!hostUri.contains(Objects.requireNonNull(data.getHost()))) {
+					viewBinding.addNewAccountFrame.setVisibility(View.VISIBLE);
+					viewBinding.noActionFrame.setVisibility(View.GONE);
+					viewBinding.addAccountText.setText(String.format(getResources().getString(R.string.accountDoesNotExist), data.getHost()));
 
-						viewBinding.addNewAccountFrame.setVisibility(View.VISIBLE);
-						viewBinding.noActionFrame.setVisibility(View.GONE);
-						viewBinding.addAccountText.setText(String.format(getResources().getString(R.string.accountDoesNotExist), data.getHost()));
+					viewBinding.addNewAccount.setOnClickListener(addNewAccount -> {
 
-						viewBinding.addNewAccount.setOnClickListener(addNewAccount -> {
+						Intent accountIntent = new Intent(view.getContext(), AddNewAccountActivity.class);
+						startActivity(accountIntent);
+						finish();
+					});
 
-							Intent accountIntent = new Intent(view.getContext(), AddNewAccountActivity.class);
-							startActivity(accountIntent);
-							finish();
-						});
+					viewBinding.launchApp.setOnClickListener(launchApp -> {
 
-						viewBinding.launchApp.setOnClickListener(launchApp -> {
+						Intent accountIntent = new Intent(view.getContext(), MainActivity.class);
+						startActivity(accountIntent);
+						finish();
+					});
 
-							Intent accountIntent = new Intent(view.getContext(), MainActivity.class);
-							startActivity(accountIntent);
-							finish();
-						});
-					}
+					return;
 				}
 			}
-		});
+		}
 
 		// redirect to proper fragment/activity, If no action is there, show options where user to want to go like repos, profile, notifications etc
 		if(data.getPathSegments().size() > 0) {
@@ -113,7 +122,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 				if(!Objects.requireNonNull(data.getLastPathSegment()).contains("issues") & StringUtils.isNumeric(data.getLastPathSegment())) {
 
-					Intent issueIntent = new Intent(ctx, IssueDetailActivity.class);
+
 					issueIntent.putExtra("issueNumber", data.getLastPathSegment());
 
 					tinyDb.putString("issueNumber", data.getLastPathSegment());
@@ -148,12 +157,10 @@ public class DeepLinksActivity extends BaseActivity {
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 3], restOfUrl[restOfUrl.length - 2], "issue");
-						finish();
 					}, 500);
 				}
 				else {
 
-					Intent mainIntent = new Intent(ctx, MainActivity.class);
 					ctx.startActivity(mainIntent);
 					finish();
 				}
@@ -166,7 +173,6 @@ public class DeepLinksActivity extends BaseActivity {
 
 						getPullRequest(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3],
 							Integer.parseInt(data.getLastPathSegment()));
-						finish();
 					}, 500);
 
 				}
@@ -175,22 +181,23 @@ public class DeepLinksActivity extends BaseActivity {
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 3], restOfUrl[restOfUrl.length - 2], "pull");
-						finish();
 					}, 500);
 				}
 				else {
 
-					Intent mainIntent = new Intent(ctx, MainActivity.class);
 					ctx.startActivity(mainIntent);
 					finish();
 				}
 
-				Log.e("DeepLinks-2", Objects.requireNonNull(data.getLastPathSegment()));
+			}
+			else if(!restOfUrl[restOfUrl.length - 2].equals("") & !restOfUrl[restOfUrl.length - 1].equals("")) { // go to repo
+
+				new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+					goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 2], restOfUrl[restOfUrl.length - 1], "repo");
+				}, 500);
 			}
 			else { // no action, show options
-
-				Intent mainIntent = new Intent(ctx, MainActivity.class);
-				Log.e("DeepLinks", String.valueOf(tinyDb.getInt("defaultScreenId")));
 
 				if(tinyDb.getInt("defaultScreenId") == 1) { // repos
 
@@ -267,6 +274,11 @@ public class DeepLinksActivity extends BaseActivity {
 				}
 			}
 		}
+		else {
+
+			ctx.startActivity(mainIntent);
+			finish();
+		}
 	}
 
 	private void getPullRequest(String url, String token, String repoOwner, String repoName, int index) {
@@ -287,13 +299,12 @@ public class DeepLinksActivity extends BaseActivity {
 
 					assert prInfo != null;
 
-					Intent intent = new Intent(ctx, IssueDetailActivity.class);
-					intent.putExtra("issueNumber", index);
-					intent.putExtra("prMergeable", prInfo.isMergeable());
+					issueIntent.putExtra("issueNumber", index);
+					issueIntent.putExtra("prMergeable", prInfo.isMergeable());
 
 					if(prInfo.getHead() != null) {
 
-						intent.putExtra("prHeadBranch", prInfo.getHead().getRef());
+						issueIntent.putExtra("prHeadBranch", prInfo.getHead().getRef());
 						tinyDb.putString("prHeadBranch", prInfo.getHead().getRef());
 
 						if(prInfo.getHead().getRepo() != null) {
@@ -331,7 +342,8 @@ public class DeepLinksActivity extends BaseActivity {
 						tinyDb.putLong("repositoryId", dataRepo.getRepositoryId());
 					}
 
-					ctx.startActivity(intent);
+					ctx.startActivity(issueIntent);
+					finish();
 				}
 
 				else {
@@ -366,7 +378,6 @@ public class DeepLinksActivity extends BaseActivity {
 
 					assert repoInfo != null;
 
-					Intent repoIntent = new Intent(ctx, RepoDetailActivity.class);
 					repoIntent.putExtra("repoFullName", repoInfo.getFullName());
 					repoIntent.putExtra("goToSection", "yes");
 					repoIntent.putExtra("goToSectionType", type);
@@ -400,6 +411,7 @@ public class DeepLinksActivity extends BaseActivity {
 					}
 
 					ctx.startActivity(repoIntent);
+					finish();
 				}
 
 				else {
