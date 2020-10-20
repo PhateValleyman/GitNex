@@ -58,6 +58,9 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
+	@GET("version") // gitea version API without any auth
+	Call<GiteaVersion> getGiteaVersion();
+
     @GET("version") // gitea version API
     Call<GiteaVersion> getGiteaVersionWithBasic(@Header("Authorization") String authorization);
 

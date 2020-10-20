@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/primaryBackgroundColor"
     android:orientation="vertical"
-    android:padding="16dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_centerInParent="true"
+        app:indicatorColor="?attr/progressIndicatorColor" />
 
     <LinearLayout
         android:id="@+id/addNewAccountFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="32dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:visibility="gone"
         android:orientation="vertical">
 
@@ -33,6 +43,15 @@
             android:layout_marginTop="24dp" />
 
         <Button
+            android:id="@+id/openInBrowser"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/openWebRepo"
+            android:textColor="@color/btnTextColor"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp" />
+
+        <Button
             android:id="@+id/launchApp"
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -48,6 +67,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="32dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:visibility="gone"
         android:orientation="vertical">
 
@@ -106,4 +128,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

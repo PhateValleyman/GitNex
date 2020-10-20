@@ -17,11 +17,17 @@ import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityDeeplinksBinding;
+import org.mian.gitnex.helpers.PathsHelper;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.UrlHelper;
+import org.mian.gitnex.models.GiteaVersion;
 import org.mian.gitnex.models.PullRequests;
 import org.mian.gitnex.models.UserRepositories;
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
+import io.mikael.urlbuilder.UrlBuilder;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -90,24 +96,8 @@ public class DeepLinksActivity extends BaseActivity {
 
 				if(!hostUri.contains(Objects.requireNonNull(data.getHost()))) {
 
-					viewBinding.addNewAccountFrame.setVisibility(View.VISIBLE);
-					viewBinding.noActionFrame.setVisibility(View.GONE);
-					viewBinding.addAccountText.setText(String.format(getResources().getString(R.string.accountDoesNotExist), data.getHost()));
-
-					viewBinding.addNewAccount.setOnClickListener(addNewAccount -> {
-
-						Intent accountIntent = new Intent(view.getContext(), AddNewAccountActivity.class);
-						startActivity(accountIntent);
-						finish();
-					});
-
-					viewBinding.launchApp.setOnClickListener(launchApp -> {
-
-						Intent accountIntent = new Intent(view.getContext(), MainActivity.class);
-						startActivity(accountIntent);
-						finish();
-					});
-
+					// check for valid instance
+					checkInstance(data);
 					return;
 				}
 			}
@@ -116,6 +106,7 @@ public class DeepLinksActivity extends BaseActivity {
 		// redirect to proper fragment/activity, If no action is there, show options where user to want to go like repos, profile, notifications etc
 		if(data.getPathSegments().size() > 0) {
 
+			viewBinding.progressBar.setVisibility(View.GONE);
 			String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
 			if(data.getPathSegments().contains("issues")) { // issue
@@ -279,6 +270,70 @@ public class DeepLinksActivity extends BaseActivity {
 			ctx.startActivity(mainIntent);
 			finish();
 		}
+	}
+
+	private void checkInstance(Uri data) {
+
+		URI host;
+		if(data.getPort() > 0) {
+
+			host = UrlBuilder.fromString(UrlHelper.fixScheme(data.getHost(), "https")).withPort(data.getPort()).toUri();
+		}
+		else {
+
+			host = UrlBuilder.fromString(UrlHelper.fixScheme(data.getHost(), "https")).toUri();
+		}
+
+		URI instanceUrl = UrlBuilder.fromUri(host).withScheme(data.getScheme().toLowerCase()).withPath(PathsHelper.join(host.getPath(), "/api/v1/"))
+			.toUri();
+
+		Call<GiteaVersion> callVersion;
+		callVersion = RetrofitClient.getInstance(String.valueOf(instanceUrl), ctx).getApiInterface().getGiteaVersion();
+
+		callVersion.enqueue(new Callback<GiteaVersion>() {
+
+			@Override
+			public void onResponse(@NonNull final Call<GiteaVersion> callVersion, @NonNull retrofit2.Response<GiteaVersion> responseVersion) {
+
+				if(responseVersion.isSuccessful() || responseVersion.code() == 403) {
+
+					viewBinding.progressBar.setVisibility(View.GONE);
+					viewBinding.addNewAccountFrame.setVisibility(View.VISIBLE);
+					viewBinding.noActionFrame.setVisibility(View.GONE);
+					viewBinding.addAccountText.setText(String.format(getResources().getString(R.string.accountDoesNotExist), data.getHost()));
+
+					viewBinding.addNewAccount.setOnClickListener(addNewAccount -> {
+
+						Intent accountIntent = new Intent(ctx, AddNewAccountActivity.class);
+						startActivity(accountIntent);
+						finish();
+					});
+
+					viewBinding.openInBrowser.setOnClickListener(addNewAccount -> {
+
+						Intent intentBrowser = new Intent();
+						intentBrowser.setAction(Intent.ACTION_VIEW);
+						intentBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
+						intentBrowser.setData(Uri.parse(String.valueOf(host)));
+						startActivity(intentBrowser);
+						finish();
+					});
+
+					viewBinding.launchApp.setOnClickListener(launchApp -> {
+
+						startActivity(mainIntent);
+						finish();
+					});
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<GiteaVersion> callVersion, @NonNull Throwable t) {
+
+				Toasty.error(ctx, getResources().getString(R.string.versionUnknown));
+				finish();
+			}
+		});
 	}
 
 	private void getPullRequest(String url, String token, String repoOwner, String repoName, int index) {

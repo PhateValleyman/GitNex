@@ -165,23 +165,14 @@
         <!-- deep links -->
         <activity
             android:name=".activities.DeepLinksActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https"
-                    android:host="codeberg.org" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https"
-                    android:host="gitea.com" />
+                <data android:scheme="https" android:host="*" />
             </intent-filter>
 
         </activity>
