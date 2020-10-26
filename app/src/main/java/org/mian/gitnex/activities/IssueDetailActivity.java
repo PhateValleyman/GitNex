@@ -467,8 +467,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		}
 		else if(id == R.id.genericMenu) {
 
-			BottomSheetFileViewerFragment bottomSheet = new BottomSheetFileViewerFragment();
-			bottomSheet.show(getSupportFragmentManager(), "fileViewerBottomSheet");
+			BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment();
+			bottomSheet.show(getSupportFragmentManager(), "singleIssueBottomSheet");
 			return true;
 		}
 		else {

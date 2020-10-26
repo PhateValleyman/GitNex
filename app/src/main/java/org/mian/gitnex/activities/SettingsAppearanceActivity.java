@@ -99,7 +99,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			codeBlockSelected.setText(getResources().getString(R.string.codeBlockDarkOnWhite));
 		}
 
-		codeBlockFrame.setOnClickListener(view -> {
+		codeBlockFrame.setOnClickListener(codeBlock -> {
 
 			AlertDialog.Builder cBuilder = new AlertDialog.Builder(SettingsAppearanceActivity.this);
 
@@ -114,22 +114,27 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 				switch(i) {
 					case 1: // white on black
+
 						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
 						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
 						break;
 					case 2: // grey on black
+
 						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorAccent));
 						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
 						break;
 					case 3: // white on grey
+
 						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
 						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorAccent));
 						break;
 					case 4: // dark on white
+
 						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorPrimary));
 						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorWhite));
 						break;
 					default: // green on black
+
 						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorLightGreen));
 						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
 						break;
@@ -137,12 +142,10 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 				dialogInterfaceCodeBlock.dismiss();
 				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-
 			});
 
 			AlertDialog cDialog = cBuilder.create();
 			cDialog.show();
-
 		});
 		// code block
 
