@@ -141,18 +141,15 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			singleFileName = URLDecoder.decode(singleFileName, "UTF-8");
 			singleFileName = singleFileName.replaceAll("//", "/");
 			singleFileName = singleFileName.startsWith("/") ? singleFileName.substring(1) : singleFileName;
-
 		}
 		catch(UnsupportedEncodingException e) {
 
 			Log.i("singleFileName", singleFileName);
-
 		}
 
 		toolbar_title.setText(singleFileName);
 
 		getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName, repoBranch);
-
 	}
 
 	@Override
@@ -170,6 +167,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		if(tinyDb.getBoolean("fileModified")) {
+
 			getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName, repoBranch);
 			tinyDb.putBoolean("fileModified", false);
 		}
@@ -210,7 +208,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							imageData = Base64.decode(response.body().getContent(), Base64.DEFAULT);
 							Drawable imageDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(imageData, 0, imageData.length));
 							imageView.setImageDrawable(imageDrawable);
-
 						}
 						else if(appUtil.sourceCodeExtension(fileExtension)) { // file is sourcecode
 
@@ -220,27 +217,33 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							singleCodeContents.setVisibility(View.VISIBLE);
 
 							switch(tinyDb.getInt("fileviewerSourceCodeThemeId")) {
+
 								case 1:
+
 									singleCodeContents.setTheme(Theme.ARDUINO_LIGHT);
 									break;
 								case 2:
+
 									singleCodeContents.setTheme(Theme.GITHUB);
 									break;
 								case 3:
+
 									singleCodeContents.setTheme(Theme.FAR);
 									break;
 								case 4:
+
 									singleCodeContents.setTheme(Theme.IR_BLACK);
 									break;
 								case 5:
+
 									singleCodeContents.setTheme(Theme.ANDROID_STUDIO);
 									break;
 								default:
+
 									singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
 							}
 
 							singleCodeContents.setSource(appUtil.decodeBase64(response.body().getContent()));
-
 						}
 						else if(appUtil.pdfExtension(fileExtension)) { // file is pdf
 
@@ -265,7 +268,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							singleFileContents.setText(getResources().getString(R.string.excludeFilesInFileviewer));
 							singleFileContents.setGravity(Gravity.CENTER);
 							singleFileContents.setTypeface(null, Typeface.BOLD);
-
 						}
 						else { // file type not known - plain text view
 
@@ -275,37 +277,30 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							singleFileContentsFrame.setVisibility(View.VISIBLE);
 
 							singleFileContents.setText(appUtil.decodeBase64(response.body().getContent()));
-
 						}
-
 					}
 					else {
+
 						singleFileContents.setText("");
 						mProgressBar.setVisibility(View.GONE);
 					}
-
 				}
 				else if(response.code() == 401) {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
 				}
 				else if(response.code() == 403) {
 
 					Toasty.error(ctx, ctx.getString(R.string.authorizeError));
-
 				}
 				else if(response.code() == 404) {
 
 					Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
-
 				}
 				else {
 
 					Toasty.error(ctx, getString(R.string.labelGeneralError));
-
 				}
-
 			}
 
 			@Override
@@ -325,7 +320,9 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		inflater.inflate(R.menu.files_view_menu, menu);
 
 		String fileExtension = FileUtils.getExtension(singleFileName);
+
 		if(!fileExtension.equalsIgnoreCase("md")) {
+
 			menu.getItem(0).setVisible(false);
 		}
 
@@ -418,6 +415,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			return true;
 		}
 		else {
+
 			return super.onOptionsItemSelected(item);
 		}
 	}
@@ -438,10 +436,13 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			intent.putExtra("fileAction", 1);
 			intent.putExtra("filePath", singleFileName);
 			intent.putExtra("fileSha", fileSha);
+
 			if(!appUtil.imageExtension(fileExtension)) {
+
 				intent.putExtra("fileContents", data);
 			}
 			else {
+
 				intent.putExtra("fileContents", "");
 			}
 
@@ -456,10 +457,13 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			intent.putExtra("fileAction", 2);
 			intent.putExtra("filePath", singleFileName);
 			intent.putExtra("fileSha", fileSha);
+
 			if(!appUtil.imageExtension(fileExtension)) {
+
 				intent.putExtra("fileContents", data);
 			}
 			else {
+
 				intent.putExtra("fileContents", "");
 			}
 
@@ -489,7 +493,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 			Toasty.warning(ctx, getString(R.string.waitLoadingDownloadFile));
 		}
-
 	}
 
 	@Override
@@ -514,15 +517,12 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				outputStream.close();
 
 				Toasty.success(ctx, getString(R.string.downloadFileSaved));
-
 			}
 			catch(IOException e) {
 
 				Log.e("errorFileDownloading", Objects.requireNonNull(e.getMessage()));
 			}
-
 		}
-
 	}
 
 	private void initCloseListener() {

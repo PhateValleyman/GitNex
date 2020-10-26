@@ -118,12 +118,10 @@ public class SettingsGeneralActivity extends BaseActivity {
 
 				dialogInterfaceHomeScreen.dismiss();
 				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-
 			});
 
 			AlertDialog hsDialog = hsBuilder.create();
 			hsDialog.show();
-
 		});
 		// home screen
 
@@ -176,10 +174,8 @@ public class SettingsGeneralActivity extends BaseActivity {
 
 			AlertDialog dlDialog = dlBuilder.create();
 			dlDialog.show();
-
 		});
 		// link handler
-
 	}
 
 	private void initCloseListener() { onClickListener = view -> finish(); }

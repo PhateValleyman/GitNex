@@ -150,26 +150,32 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		// code block
 
 		if(!tinyDb.getString("timeStr").isEmpty()) {
+
 			tvDateTimeSelected.setText(tinyDb.getString("timeStr"));
 		}
 
 		if(!tinyDb.getString("customFontStr").isEmpty()) {
+
 			customFontSelected.setText(tinyDb.getString("customFontStr"));
 		}
 
 		if(!tinyDb.getString("themeStr").isEmpty()) {
+
 			themeSelected.setText(tinyDb.getString("themeStr"));
 		}
 
 		if(timeSelectedChoice == 0) {
+
 			timeSelectedChoice = tinyDb.getInt("timeId");
 		}
 
 		if(customFontSelectedChoice == 0) {
+
 			customFontSelectedChoice = tinyDb.getInt("customFontId", 1);
 		}
 
 		if(themeSelectedChoice == 0) {
+
 			themeSelectedChoice = tinyDb.getInt("themeId");
 		}
 
@@ -180,7 +186,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 			tinyDb.putBoolean("enableCounterBadges", isChecked);
 			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-
 		});
 
 		// theme selection dialog
@@ -203,12 +208,10 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				this.overridePendingTransition(0, 0);
 				dialogInterfaceTheme.dismiss();
 				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-
 			});
 
 			AlertDialog cfDialog = tsBuilder.create();
 			cfDialog.show();
-
 		});
 
 		// custom font dialog
@@ -231,12 +234,10 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				this.overridePendingTransition(0, 0);
 				dialogInterfaceCustomFont.dismiss();
 				Toasty.success(appCtx, appCtx.getResources().getString(R.string.settingsSave));
-
 			});
 
 			AlertDialog cfDialog = cfBuilder.create();
 			cfDialog.show();
-
 		});
 
 		// time and date dialog
@@ -255,21 +256,20 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				tinyDb.putInt("timeId", i);
 
 				if("Normal".equals(timeList[i])) {
+
 					tinyDb.putString("dateFormat", "normal");
 				}
 				else {
+
 					tinyDb.putString("dateFormat", "pretty");
 				}
 
 				dialogInterfaceTime.dismiss();
 				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-
 			});
 
 			AlertDialog tDialog = tBuilder.create();
 			tDialog.show();
-
-
 		});
 
 	}

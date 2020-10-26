@@ -113,15 +113,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		if(tinyDb.getString("dateFormat").isEmpty()) {
+
 			tinyDb.putString("dateFormat", "pretty");
 		}
 
 		if(tinyDb.getString("codeBlockStr").isEmpty()) {
+
 			tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorLightGreen));
 			tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
 		}
 
 		if(tinyDb.getString("enableCounterIssueBadgeInit").isEmpty()) {
+
 			tinyDb.putBoolean("enableCounterIssueBadge", true);
 		}
 
@@ -134,11 +137,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
 		if(!tinyDb.getBoolean("loggedInMode")) {
+
 			logout(this, ctx);
 			return;
 		}
 
 		if(tinyDb.getInt("currentActiveAccountId") <= 0) {
+
 			AlertDialogs.forceLogoutDialog(ctx, getResources().getString(R.string.forceLogoutDialogHeader), getResources().getString(R.string.forceLogoutDialogDescription), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 		}
 
@@ -148,17 +153,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		switch(tinyDb.getInt("customFontId", -1)) {
 
 			case 0:
+
 				myTypeface = Typeface.createFromAsset(getAssets(), "fonts/roboto.ttf");
 				break;
-
 			case 2:
+
 				myTypeface = Typeface.createFromAsset(getAssets(), "fonts/sourcecodeproregular.ttf");
 				break;
-
 			default:
+
 				myTypeface = Typeface.createFromAsset(getAssets(), "fonts/manroperegular.ttf");
 				break;
-
 		}
 
 		toolbarTitle.setTypeface(myTypeface);
@@ -168,33 +173,43 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		Fragment fragmentById = fm.findFragmentById(R.id.fragment_container);
 
 		if(fragmentById instanceof SettingsFragment) {
+
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
 		}
 		else if(fragmentById instanceof MyRepositoriesFragment) {
+
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
 		}
 		else if(fragmentById instanceof StarredRepositoriesFragment) {
+
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
 		}
 		else if(fragmentById instanceof OrganizationsFragment) {
+
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
 		}
 		else if(fragmentById instanceof ExploreFragment) {
+
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
 		}
 		else if(fragmentById instanceof NotificationsFragment) {
+
 			toolbarTitle.setText(R.string.pageTitleNotifications);
 		}
 		else if(fragmentById instanceof ProfileFragment) {
+
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
 		}
 		else if(fragmentById instanceof DraftsFragment) {
+
 			toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
 		}
 		else if(fragmentById instanceof AdministrationFragment) {
+
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
 		}
 		else if(fragmentById instanceof UserAccountsFragment) {
+
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleUserAccounts));
 		}
 
@@ -223,6 +238,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 
 				if(tinyDb.getBoolean("noConnection")) {
+
 					Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 					tinyDb.putBoolean("noConnection", false);
 				}
@@ -255,17 +271,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						userAccountsList.addAll(userAccounts);
 						navRecyclerViewUserAccounts.setAdapter(adapterUserAccounts);
 					}
-
 				});
 
 				userEmail.setTypeface(myTypeface);
 				userFullName.setTypeface(myTypeface);
 
 				if(!userEmailNav.equals("")) {
+
 					userEmail.setText(userEmailNav);
 				}
 
 				if(!userFullNameNav.equals("")) {
+
 					userFullName.setText(userFullNameNav);
 				}
 
@@ -294,14 +311,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 									.setBlurAlgorithm(new RenderScriptBlur(ctx))
 									.setBlurRadius(5)
 									.setHasFixedTransformationMatrix(false);
-
 							}
 
 							@Override
 							public void onError(Exception e) {}
-
 						});
-
 				}
 
 				userAvatar.setOnClickListener(v -> {
@@ -336,17 +350,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			switch(launchFragment) {
 
 				case "drafts":
+
 					toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DraftsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_comments_draft);
 					return;
-
 				case "notifications":
+
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleNotifications));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_notifications);
 					return;
-
 			}
 		}
 
@@ -359,21 +373,22 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			switch(launchFragmentByHandler) {
 
 				case "repos":
+
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_repositories);
 					return;
-
 				case "org":
+
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_organizations);
 					return;
-
 				case "notification":
+
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_notifications);
 					return;
-
 				case "explore":
+
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_explore);
 					return;
@@ -393,71 +408,70 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			switch(tinyDb.getInt("homeScreenId")) {
 
 				case 1:
+
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StarredRepositoriesFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_starred_repos);
 					break;
-
 				case 2:
+
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_organizations);
 					break;
-
 				case 3:
+
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_repositories);
 					break;
-
 				case 4:
+
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_profile);
 					break;
-
 				case 5:
+
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_explore);
 					break;
-
 				case 6:
+
 					toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DraftsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_comments_draft);
 					break;
-
 				case 7:
+
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleNotifications));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_notifications);
 					break;
-
 				default:
+
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_home);
 					break;
-
 			}
 		}
 
 		if(!connToInternet) {
 
 			if(!tinyDb.getBoolean("noConnection")) {
+
 				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 			}
 
 			tinyDb.putBoolean("noConnection", true);
-
 		}
 		else {
 
 			loadUserInfo(instanceUrl, instanceToken, loginUid);
 			giteaVersion(instanceUrl);
 			tinyDb.putBoolean("noConnection", false);
-
 		}
 
 		// Changelog popup
@@ -515,14 +529,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 						})
 						.setNeutralButton(R.string.cancelButton, null).show();
-
 				}
 				else {
+
 					Toasty.error(ctx, getResources().getString(R.string.genericError));
 				}
 
 			}
 			else {
+
 				Toasty.error(ctx, getResources().getString(R.string.genericError));
 			}
 
@@ -534,12 +549,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	public void onBackPressed() {
 
 		if(drawer.isDrawerOpen(GravityCompat.START)) {
+
 			drawer.closeDrawer(GravityCompat.START);
 		}
 		else {
+
 			super.onBackPressed();
 		}
-
 	}
 
 	@Override
@@ -615,7 +631,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		//tinyDb.clear();
 		activity.finish();
 		ctx.startActivity(new Intent(ctx, LoginActivity.class));
-
 	}
 
 	@Override
@@ -631,7 +646,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 
 		return super.onOptionsItemSelected(item);
-
 	}
 
 	private void giteaVersion(final String instanceUrl) {
@@ -653,7 +667,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					assert version != null;
 
 					tinyDb.putString("giteaVersion", version.getVersion());
-
 				}
 			}
 
@@ -662,9 +675,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				Log.e("onFailure-version", t.toString());
 			}
-
 		});
-
 	}
 
 	private void loadUserInfo(String instanceUrl, String token, String loginUid) {
@@ -687,6 +698,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						assert userDetails != null;
 
 						if(userDetails.getIs_admin() != null) {
+
 							tinyDb.putBoolean("userIsAdmin", userDetails.getIs_admin());
 						}
 
@@ -694,9 +706,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						tinyDb.putInt("userId", userDetails.getId());
 
 						if(!userDetails.getFullname().equals("")) {
+
 							tinyDb.putString("userFullname", userDetails.getFullname());
 						}
 						else {
+
 							tinyDb.putString("userFullname", userDetails.getLogin());
 						}
 
@@ -704,9 +718,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						tinyDb.putString("userAvatar", userDetails.getAvatar());
 
 						if(userDetails.getLang() != null) {
+
 							tinyDb.putString("userLang", userDetails.getLang());
 						}
 						else {
+
 							tinyDb.putString("userLang", "");
 						}
 					}
@@ -714,15 +730,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				else if(response.code() == 401) {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
 				}
 				else {
 
 					String toastError = getResources().getString(R.string.genericApiStatusError) + response.code();
 					Toasty.error(ctx, toastError);
-
 				}
-
 			}
 
 			@Override
