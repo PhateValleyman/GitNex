@@ -126,6 +126,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 
 		if(tinyDb.getString("homeScreenStr").isEmpty()) {
+
+			tinyDb.putString("homeScreenStr", "yes");
 			tinyDb.putInt("homeScreenId", 0);
 		}
 
