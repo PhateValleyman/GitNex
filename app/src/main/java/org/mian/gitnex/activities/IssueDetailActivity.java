@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +44,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityIssueDetailBinding;
 import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
+import org.mian.gitnex.fragments.BottomSheetFileViewerFragment;
 import org.mian.gitnex.fragments.BottomSheetReplyFragment;
 import org.mian.gitnex.fragments.BottomSheetSingleIssueFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -458,18 +460,21 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		int id = item.getItemId();
 
-		switch(id) {
-			case android.R.id.home:
-				finish();
-				return true;
-			case R.id.genericMenu:
-				BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment();
-				bottomSheet.show(getSupportFragmentManager(), "singleIssueBottomSheet");
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
-		}
+		if(id == android.R.id.home) {
 
+			finish();
+			return true;
+		}
+		else if(id == R.id.genericMenu) {
+
+			BottomSheetFileViewerFragment bottomSheet = new BottomSheetFileViewerFragment();
+			bottomSheet.show(getSupportFragmentManager(), "fileViewerBottomSheet");
+			return true;
+		}
+		else {
+
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
@@ -598,7 +603,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 									final int resourceId = ctx.getResources()
 										.getIdentifier(raw.substring("drawable://".length()), "drawable", ctx.getPackageName());
 
-									final Drawable drawable = ctx.getDrawable(resourceId);
+									final Drawable drawable = ContextCompat.getDrawable(ctx, resourceId);
 
 									assert drawable != null;
 									return ImageItem.withResult(drawable);
@@ -840,12 +845,10 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 						assert response.body() != null;
 						tinyDb.putBoolean("issueSubscribed", response.body().getSubscribed());
-
 					}
 					else {
 
 						tinyDb.putBoolean("issueSubscribed", false);
-
 					}
 
 				}
@@ -854,7 +857,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				public void onFailure(@NonNull Call<WatchInfo> call, @NonNull Throwable t) {
 
 					tinyDb.putBoolean("issueSubscribed", false);
-
 				}
 
 			});

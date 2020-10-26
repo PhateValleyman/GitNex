@@ -24,6 +24,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -336,89 +337,89 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		int id = item.getItemId();
 
-		switch(id) {
-			case android.R.id.home:
+		if(id == android.R.id.home) {
 
-				finish();
-				return true;
-			case R.id.genericMenu:
-
-				BottomSheetFileViewerFragment bottomSheet = new BottomSheetFileViewerFragment();
-				bottomSheet.show(getSupportFragmentManager(), "fileViewerBottomSheet");
-				return true;
-			case R.id.markdown:
-
-				final Markwon markwon = Markwon.builder(Objects.requireNonNull(ctx)).usePlugin(CorePlugin.create())
-					.usePlugin(ImagesPlugin.create(plugin -> {
-						plugin.addSchemeHandler(new SchemeHandler() {
-
-							@NonNull
-							@Override
-							public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
-
-								final int resourceId = ctx.getResources().getIdentifier(
-									raw.substring("drawable://".length()),
-									"drawable",
-									ctx.getPackageName());
-
-								final Drawable drawable = ctx.getDrawable(resourceId);
-
-								assert drawable != null;
-								return ImageItem.withResult(drawable);
-							}
-
-							@NonNull
-							@Override
-							public Collection<String> supportedSchemes() {
-
-								return Collections.singleton("drawable");
-							}
-						});
-						plugin.placeholderProvider(drawable -> null);
-						plugin.addMediaDecoder(GifMediaDecoder.create(false));
-						plugin.addMediaDecoder(SvgMediaDecoder.create(ctx.getResources()));
-						plugin.addMediaDecoder(SvgMediaDecoder.create());
-						plugin.defaultMediaDecoder(DefaultMediaDecoder.create(ctx.getResources()));
-						plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
-					}))
-					.usePlugin(new AbstractMarkwonPlugin() {
-						@Override
-						public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
-
-							builder.codeTextColor(tinyDb.getInt("codeBlockColor")).codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
-								.linkColor(getResources().getColor(R.color.lightBlue));
-						}
-					})
-					.usePlugin(TablePlugin.create(ctx))
-					.usePlugin(TaskListPlugin.create(ctx))
-					.usePlugin(HtmlPlugin.create())
-					.usePlugin(StrikethroughPlugin.create())
-					.usePlugin(LinkifyPlugin.create())
-					.build();
-
-				if(!tinyDb.getBoolean("enableMarkdownInFileView")) {
-
-					singleCodeContents.setVisibility(View.GONE);
-					singleFileContentsFrame.setVisibility(View.VISIBLE);
-					singleFileContents.setVisibility(View.VISIBLE);
-					Spanned bodyWithMD = markwon.toMarkdown(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
-					markwon.setParsedMarkdown(singleFileContents, bodyWithMD);
-					tinyDb.putBoolean("enableMarkdownInFileView", true);
-				}
-				else {
-
-					singleCodeContents.setVisibility(View.VISIBLE);
-					singleFileContentsFrame.setVisibility(View.GONE);
-					singleFileContents.setVisibility(View.GONE);
-					singleCodeContents.setSource(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
-					tinyDb.putBoolean("enableMarkdownInFileView", false);
-				}
-
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
+			finish();
+			return true;
 		}
+		else if(id == R.id.genericMenu) {
 
+			BottomSheetFileViewerFragment bottomSheet = new BottomSheetFileViewerFragment();
+			bottomSheet.show(getSupportFragmentManager(), "fileViewerBottomSheet");
+			return true;
+		}
+		else if(id == R.id.markdown) {
+
+			final Markwon markwon = Markwon.builder(Objects.requireNonNull(ctx)).usePlugin(CorePlugin.create())
+				.usePlugin(ImagesPlugin.create(plugin -> {
+					plugin.addSchemeHandler(new SchemeHandler() {
+
+						@NonNull
+						@Override
+						public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
+
+							final int resourceId = ctx.getResources().getIdentifier(
+								raw.substring("drawable://".length()),
+								"drawable",
+								ctx.getPackageName());
+
+							final Drawable drawable = ContextCompat.getDrawable(ctx, resourceId);
+
+							assert drawable != null;
+							return ImageItem.withResult(drawable);
+						}
+
+						@NonNull
+						@Override
+						public Collection<String> supportedSchemes() {
+
+							return Collections.singleton("drawable");
+						}
+					});
+					plugin.placeholderProvider(drawable -> null);
+					plugin.addMediaDecoder(GifMediaDecoder.create(false));
+					plugin.addMediaDecoder(SvgMediaDecoder.create(ctx.getResources()));
+					plugin.addMediaDecoder(SvgMediaDecoder.create());
+					plugin.defaultMediaDecoder(DefaultMediaDecoder.create(ctx.getResources()));
+					plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
+				}))
+				.usePlugin(new AbstractMarkwonPlugin() {
+					@Override
+					public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
+
+						builder.codeTextColor(tinyDb.getInt("codeBlockColor")).codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
+							.linkColor(getResources().getColor(R.color.lightBlue));
+					}
+				})
+				.usePlugin(TablePlugin.create(ctx))
+				.usePlugin(TaskListPlugin.create(ctx))
+				.usePlugin(HtmlPlugin.create())
+				.usePlugin(StrikethroughPlugin.create())
+				.usePlugin(LinkifyPlugin.create())
+				.build();
+
+			if(!tinyDb.getBoolean("enableMarkdownInFileView")) {
+
+				singleCodeContents.setVisibility(View.GONE);
+				singleFileContentsFrame.setVisibility(View.VISIBLE);
+				singleFileContents.setVisibility(View.VISIBLE);
+				Spanned bodyWithMD = markwon.toMarkdown(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
+				markwon.setParsedMarkdown(singleFileContents, bodyWithMD);
+				tinyDb.putBoolean("enableMarkdownInFileView", true);
+			}
+			else {
+
+				singleCodeContents.setVisibility(View.VISIBLE);
+				singleFileContentsFrame.setVisibility(View.GONE);
+				singleFileContents.setVisibility(View.GONE);
+				singleCodeContents.setSource(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
+				tinyDb.putBoolean("enableMarkdownInFileView", false);
+			}
+			return true;
+		}
+		else {
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override

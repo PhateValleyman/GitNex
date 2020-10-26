@@ -726,4 +726,9 @@
     <string name="launchApp">Go to App</string>
     <string name="noActionText">GitNex cannot handle the requested resource, you can open an issue at the project repository as an improvement with providing details of the work. Just launch a default screen for now from the buttons below, it can be changed from settings.</string>
 
+    <string name="codeBlockGreenOnBlack">Green on Black</string>
+    <string name="codeBlockWhiteOnBlack">White on Black</string>
+    <string name="codeBlockGreyOnBlack">Grey on Black</string>
+    <string name="codeBlockWhiteOnGrey">White on Grey</string>
+    <string name="codeBlockDarkOnWhite">Dark on White</string>
 </resources>

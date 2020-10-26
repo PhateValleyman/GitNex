@@ -11,6 +11,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Author M M Arif
@@ -24,7 +27,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 	private static final String[] timeList = {"Pretty", "Normal"};
 	private static int timeSelectedChoice = 0;
 
-	private static final String[] codeBlockList = {"Green - Black", "White - Black", "Grey - Black", "White - Grey", "Dark - White"};
+	private List<String> codeBlockList;
 	private static int codeBlockSelectedChoice = 0;
 
 	private static final String[] customFontList = {"Roboto", "Manrope", "Source Code Pro"};
@@ -64,12 +67,87 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		if(!tinyDb.getString("timeStr").isEmpty()) {
-			tvDateTimeSelected.setText(tinyDb.getString("timeStr"));
+		// code block
+		String[] codeBlockList_ = {getResources().getString(R.string.codeBlockGreenOnBlack), getResources().getString(R.string.codeBlockWhiteOnBlack),
+			getResources().getString(R.string.codeBlockGreyOnBlack), getResources().getString(R.string.codeBlockWhiteOnGrey),
+			getResources().getString(R.string.codeBlockDarkOnWhite)};
+
+		codeBlockList = new ArrayList<>(Arrays.asList(codeBlockList_));
+		String[] codeBlockArray = new String[codeBlockList.size()];
+		codeBlockList.toArray(codeBlockArray);
+
+		if(codeBlockSelectedChoice == 0) {
+
+			codeBlockSelectedChoice = tinyDb.getInt("codeBlockId");
+			codeBlockSelected.setText(getResources().getString(R.string.codeBlockGreenOnBlack));
 		}
 
-		if(!tinyDb.getString("codeBlockStr").isEmpty()) {
-			codeBlockSelected.setText(tinyDb.getString("codeBlockStr"));
+		if(codeBlockSelectedChoice == 1) {
+
+			codeBlockSelected.setText(getResources().getString(R.string.codeBlockWhiteOnBlack));
+		}
+		else if(codeBlockSelectedChoice == 2) {
+
+			codeBlockSelected.setText(getResources().getString(R.string.codeBlockGreyOnBlack));
+		}
+		else if(codeBlockSelectedChoice == 3) {
+
+			codeBlockSelected.setText(getResources().getString(R.string.codeBlockWhiteOnGrey));
+		}
+		else if(codeBlockSelectedChoice == 4) {
+
+			codeBlockSelected.setText(getResources().getString(R.string.codeBlockDarkOnWhite));
+		}
+
+		codeBlockFrame.setOnClickListener(view -> {
+
+			AlertDialog.Builder cBuilder = new AlertDialog.Builder(SettingsAppearanceActivity.this);
+
+			cBuilder.setTitle(R.string.settingsCodeBlockSelectorDialogTitle);
+			cBuilder.setCancelable(codeBlockSelectedChoice != -1);
+
+			cBuilder.setSingleChoiceItems(codeBlockList_, codeBlockSelectedChoice, (dialogInterfaceCodeBlock, i) -> {
+
+				codeBlockSelectedChoice = i;
+				codeBlockSelected.setText(codeBlockList_[i]);
+				tinyDb.putInt("codeBlockId", i);
+
+				switch(i) {
+					case 1: // white on black
+						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
+						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
+						break;
+					case 2: // grey on black
+						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorAccent));
+						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
+						break;
+					case 3: // white on grey
+						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
+						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorAccent));
+						break;
+					case 4: // dark on white
+						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorPrimary));
+						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorWhite));
+						break;
+					default: // green on black
+						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorLightGreen));
+						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
+						break;
+				}
+
+				dialogInterfaceCodeBlock.dismiss();
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
+
+			});
+
+			AlertDialog cDialog = cBuilder.create();
+			cDialog.show();
+
+		});
+		// code block
+
+		if(!tinyDb.getString("timeStr").isEmpty()) {
+			tvDateTimeSelected.setText(tinyDb.getString("timeStr"));
 		}
 
 		if(!tinyDb.getString("customFontStr").isEmpty()) {
@@ -82,10 +160,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 		if(timeSelectedChoice == 0) {
 			timeSelectedChoice = tinyDb.getInt("timeId");
-		}
-
-		if(codeBlockSelectedChoice == 0) {
-			codeBlockSelectedChoice = tinyDb.getInt("codeBlockId");
 		}
 
 		if(customFontSelectedChoice == 0) {
@@ -101,14 +175,8 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		// counter badge switcher
 		counterBadgesSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-			if (isChecked) {
-				tinyDb.putBoolean("enableCounterBadges", true);
-				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-			}
-			else {
-				tinyDb.putBoolean("enableCounterBadges", false);
-				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-			}
+			tinyDb.putBoolean("enableCounterBadges", isChecked);
+			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 
 		});
 
@@ -165,54 +233,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 			AlertDialog cfDialog = cfBuilder.create();
 			cfDialog.show();
-
-		});
-
-		// code block dialog
-		codeBlockFrame.setOnClickListener(view -> {
-
-			AlertDialog.Builder cBuilder = new AlertDialog.Builder(SettingsAppearanceActivity.this);
-
-			cBuilder.setTitle(R.string.settingsCodeBlockSelectorDialogTitle);
-			cBuilder.setCancelable(codeBlockSelectedChoice != -1);
-
-			cBuilder.setSingleChoiceItems(codeBlockList, codeBlockSelectedChoice, (dialogInterfaceCodeBlock, i) -> {
-
-				codeBlockSelectedChoice = i;
-				codeBlockSelected.setText(codeBlockList[i]);
-				tinyDb.putString("codeBlockStr", codeBlockList[i]);
-				tinyDb.putInt("codeBlockId", i);
-
-				switch(codeBlockList[i]) {
-					case "White - Black":
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
-						break;
-					case "Grey - Black":
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorAccent));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
-						break;
-					case "White - Grey":
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorAccent));
-						break;
-					case "Dark - White":
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorPrimary));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorWhite));
-						break;
-					default:
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorLightGreen));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
-						break;
-				}
-
-				dialogInterfaceCodeBlock.dismiss();
-				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-
-			});
-
-			AlertDialog cDialog = cBuilder.create();
-			cDialog.show();
 
 		});
 

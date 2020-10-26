@@ -545,63 +545,62 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	@Override
 	public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-		switch(menuItem.getItemId()) {
+		int id = menuItem.getItemId();
 
-			case R.id.nav_home:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
-				break;
+		if(id == R.id.nav_home) {
 
-			case R.id.nav_organizations:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
-				break;
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
+		}
+		else if(id == R.id.nav_organizations) {
 
-			case R.id.nav_profile:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
-				break;
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
+		}
+		else if(id == R.id.nav_profile) {
 
-			case R.id.nav_repositories:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
-				break;
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+		}
+		else if(id == R.id.nav_repositories) {
 
-			case R.id.nav_settings:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
-				break;
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
+		}
+		else if(id == R.id.nav_settings) {
 
-			case R.id.nav_logout:
-				logout(this, ctx);
-				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-				break;
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
+		}
+		else if(id == R.id.nav_logout) {
 
-			case R.id.nav_starred_repos:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StarredRepositoriesFragment()).commit();
-				break;
+			logout(this, ctx);
+			overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+		}
+		else if(id == R.id.nav_starred_repos) {
 
-			case R.id.nav_explore:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreFragment()).commit();
-				break;
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StarredRepositoriesFragment()).commit();
+		}
+		else if(id == R.id.nav_explore) {
 
-			case R.id.nav_notifications:
-				toolbarTitle.setText(R.string.pageTitleNotifications);
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
-				break;
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreFragment()).commit();
+		}
+		else if(id == R.id.nav_notifications) {
 
-			case R.id.nav_comments_draft:
-				toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DraftsFragment()).commit();
-				break;
+			toolbarTitle.setText(R.string.pageTitleNotifications);
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
+		}
+		else if(id == R.id.nav_comments_draft) {
 
-			case R.id.nav_administration:
-				toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdministrationFragment()).commit();
-				break;
+			toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DraftsFragment()).commit();
+		}
+		else if(id == R.id.nav_administration) {
 
+			toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdministrationFragment()).commit();
 		}
 
 		drawer.closeDrawer(GravityCompat.START);
@@ -625,6 +624,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		int id = item.getItemId();
 
 		if(id == R.id.genericMenu) {
+
 			BottomSheetDraftsFragment bottomSheet = new BottomSheetDraftsFragment();
 			bottomSheet.show(getSupportFragmentManager(), "draftsBottomSheet");
 			return true;
