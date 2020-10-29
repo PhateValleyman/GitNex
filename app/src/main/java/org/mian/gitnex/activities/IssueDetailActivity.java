@@ -294,6 +294,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 		});
 
+		dialogAssignees.show();
 		AssigneesActions.getRepositoryAssignees(ctx, instanceUrl, instanceToken, repoOwner, repoName, assigneesList, dialogAssignees, assigneesAdapter, assigneesBinding);
 	}
 
@@ -330,6 +331,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 		});
 
+		dialogLabels.show();
 		LabelsActions.getRepositoryLabels(ctx, instanceUrl, instanceToken, repoOwner, repoName, labelsList, dialogLabels, labelsAdapter, labelsBinding);
 	}
 

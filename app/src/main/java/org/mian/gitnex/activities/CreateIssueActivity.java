@@ -179,6 +179,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
 		assigneesBinding.cancel.setOnClickListener(assigneesBinding_ -> dialogAssignees.dismiss());
 
+		dialogAssignees.show();
 		AssigneesActions.getRepositoryAssignees(ctx, instanceUrl, instanceToken, repoOwner, repoName, assigneesList, dialogAssignees, assigneesAdapter, assigneesBinding);
 	}
 
@@ -198,6 +199,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
 		labelsBinding.cancel.setOnClickListener(labelsBinding_ -> dialogLabels.dismiss());
 
+		dialogLabels.show();
 		LabelsActions.getRepositoryLabels(ctx, instanceUrl, instanceToken, repoOwner, repoName, labelsList, dialogLabels, labelsAdapter, labelsBinding);
 	}
 
