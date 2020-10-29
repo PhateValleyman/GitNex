@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.util.Log;
@@ -28,7 +27,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -38,6 +36,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetFileViewerFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.Markdown;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.highlightjs.HighlightJsView;
@@ -48,24 +47,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
-import io.noties.markwon.AbstractMarkwonPlugin;
-import io.noties.markwon.Markwon;
-import io.noties.markwon.core.CorePlugin;
-import io.noties.markwon.core.MarkwonTheme;
-import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
-import io.noties.markwon.ext.tables.TablePlugin;
-import io.noties.markwon.ext.tasklist.TaskListPlugin;
-import io.noties.markwon.html.HtmlPlugin;
-import io.noties.markwon.image.DefaultMediaDecoder;
-import io.noties.markwon.image.ImageItem;
-import io.noties.markwon.image.ImagesPlugin;
-import io.noties.markwon.image.SchemeHandler;
-import io.noties.markwon.image.gif.GifMediaDecoder;
-import io.noties.markwon.image.svg.SvgMediaDecoder;
-import io.noties.markwon.linkify.LinkifyPlugin;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -105,7 +87,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
 		appUtil = new AppUtil();
-		tinyDb = new TinyDB(appCtx);
+		tinyDb = TinyDB.getInstance(appCtx);
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -115,7 +97,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		String[] parts = repoFullName.split("/");
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
-		final String instanceUrl = tinyDb.getString("instanceUrl");
 		final String loginUid = tinyDb.getString("loginUid");
 		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
@@ -153,7 +134,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		toolbar_title.setText(singleFileName);
 
-		getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName, repoBranch);
+		getSingleFileContents(instanceToken, repoOwner, repoName, singleFileName, repoBranch);
 	}
 
 	@Override
@@ -166,21 +147,20 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		String[] parts = repoFullName.split("/");
 		String repoOwner = parts[0];
 		String repoName = parts[1];
-		String instanceUrl = tinyDb.getString("instanceUrl");
 		String loginUid = tinyDb.getString("loginUid");
 		String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		if(tinyDb.getBoolean("fileModified")) {
 
-			getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName, repoBranch);
+			getSingleFileContents(instanceToken, repoOwner, repoName, singleFileName, repoBranch);
 			tinyDb.putBoolean("fileModified", false);
 		}
 	}
 
 
-	private void getSingleFileContents(String instanceUrl, String token, final String owner, String repo, final String filename, String ref) {
+	private void getSingleFileContents(String token, final String owner, String repo, final String filename, String ref) {
 
-		Call<Files> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getSingleFileContents(token, owner, repo, filename, ref);
+		Call<Files> call = RetrofitClient.getApiInterface(ctx).getSingleFileContents(token, owner, repo, filename, ref);
 
 		call.enqueue(new Callback<Files>() {
 
@@ -351,61 +331,13 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		}
 		else if(id == R.id.markdown) {
 
-			final Markwon markwon = Markwon.builder(Objects.requireNonNull(ctx)).usePlugin(CorePlugin.create())
-				.usePlugin(ImagesPlugin.create(plugin -> {
-					plugin.addSchemeHandler(new SchemeHandler() {
-
-						@NonNull
-						@Override
-						public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
-
-							final int resourceId = ctx.getResources().getIdentifier(
-								raw.substring("drawable://".length()),
-								"drawable",
-								ctx.getPackageName());
-
-							final Drawable drawable = ContextCompat.getDrawable(ctx, resourceId);
-
-							assert drawable != null;
-							return ImageItem.withResult(drawable);
-						}
-
-						@NonNull
-						@Override
-						public Collection<String> supportedSchemes() {
-
-							return Collections.singleton("drawable");
-						}
-					});
-					plugin.placeholderProvider(drawable -> null);
-					plugin.addMediaDecoder(GifMediaDecoder.create(false));
-					plugin.addMediaDecoder(SvgMediaDecoder.create(ctx.getResources()));
-					plugin.addMediaDecoder(SvgMediaDecoder.create());
-					plugin.defaultMediaDecoder(DefaultMediaDecoder.create(ctx.getResources()));
-					plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
-				}))
-				.usePlugin(new AbstractMarkwonPlugin() {
-					@Override
-					public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
-
-						builder.codeTextColor(tinyDb.getInt("codeBlockColor")).codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
-							.linkColor(getResources().getColor(R.color.lightBlue));
-					}
-				})
-				.usePlugin(TablePlugin.create(ctx))
-				.usePlugin(TaskListPlugin.create(ctx))
-				.usePlugin(HtmlPlugin.create())
-				.usePlugin(StrikethroughPlugin.create())
-				.usePlugin(LinkifyPlugin.create())
-				.build();
+			new Markdown(ctx, appUtil.decodeBase64(tinyDb.getString("downloadFileContents")), singleFileContents);
 
 			if(!tinyDb.getBoolean("enableMarkdownInFileView")) {
 
 				singleCodeContents.setVisibility(View.GONE);
 				singleFileContentsFrame.setVisibility(View.VISIBLE);
 				singleFileContents.setVisibility(View.VISIBLE);
-				Spanned bodyWithMD = markwon.toMarkdown(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
-				markwon.setParsedMarkdown(singleFileContents, bodyWithMD);
 				tinyDb.putBoolean("enableMarkdownInFileView", true);
 			}
 			else {

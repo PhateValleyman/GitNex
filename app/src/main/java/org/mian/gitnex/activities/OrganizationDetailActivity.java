@@ -50,9 +50,9 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
-	    tinyDb = new TinyDB(appCtx);
+	    tinyDb = TinyDB.getInstance(appCtx);
 
-        TinyDB tinyDb = new TinyDB(appCtx);
+        TinyDB tinyDb = TinyDB.getInstance(appCtx);
         String orgName = tinyDb.getString("orgName");
 
         Toolbar toolbar = findViewById(R.id.toolbar);

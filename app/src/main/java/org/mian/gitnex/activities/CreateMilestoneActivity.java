@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
@@ -84,14 +83,11 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
         AppUtil appUtil = new AppUtil();
-        TinyDB tinyDb = new TinyDB(appCtx);
+        TinyDB tinyDb = TinyDB.getInstance(appCtx);
         String repoFullName = tinyDb.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         final String repoOwner = parts[0];
         final String repoName = parts[1];
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
         String newMilestoneTitle = milestoneTitle.getText().toString();
         String newMilestoneDescription = milestoneDescription.getText().toString();
@@ -132,18 +128,17 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         }
 
         disableProcessButton();
-        createNewMilestone(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newMilestoneTitle, newMilestoneDescription, finalMilestoneDueDate);
+        createNewMilestone(Authorization.get(ctx), repoOwner, repoName, newMilestoneTitle, newMilestoneDescription, finalMilestoneDueDate);
     }
 
-    private void createNewMilestone(final String instanceUrl, final String token, String repoOwner, String repoName, String newMilestoneTitle, String newMilestoneDescription, String newMilestoneDueDate) {
+    private void createNewMilestone(final String token, String repoOwner, String repoName, String newMilestoneTitle, String newMilestoneDescription, String newMilestoneDueDate) {
 
         Milestones createMilestone = new Milestones(newMilestoneDescription, newMilestoneTitle, newMilestoneDueDate);
 
         Call<Milestones> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
+                .getApiInterface(appCtx)
                 .createMilestone(token, repoOwner, repoName, createMilestone);
 
         call.enqueue(new Callback<Milestones>() {
@@ -155,7 +150,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 
                     if(response.code() == 201) {
 
-                        TinyDB tinyDb = new TinyDB(appCtx);
+                        TinyDB tinyDb = TinyDB.getInstance(appCtx);
                         tinyDb.putBoolean("milestoneCreated", true);
                         Toasty.success(ctx, getString(R.string.milestoneCreated));
                         enableProcessButton();

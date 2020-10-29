@@ -228,8 +228,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
     private void processCreateTeam() {
 
         AppUtil appUtil = new AppUtil();
-        final TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
+        final TinyDB tinyDb = TinyDB.getInstance(appCtx);
         final String loginUid = tinyDb.getString("loginUid");
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         final String orgName = tinyDb.getString("orgName");;
@@ -286,19 +285,18 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
             newTeamAccessControls_.set(i, newTeamAccessControls_.get(i).trim());
         }
 
-        createNewTeamCall(instanceUrl, instanceToken, orgName, newTeamName, newTeamDesc, newTeamPermission, newTeamAccessControls_, loginUid);
+        createNewTeamCall(instanceToken, orgName, newTeamName, newTeamDesc, newTeamPermission, newTeamAccessControls_, loginUid);
     }
 
-    private void createNewTeamCall(final String instanceUrl, final String instanceToken, String orgName, String newTeamName, String newTeamDesc, String newTeamPermission, List<String> newTeamAccessControls, String loginUid) {
+    private void createNewTeamCall(final String instanceToken, String orgName, String newTeamName, String newTeamDesc, String newTeamPermission, List<String> newTeamAccessControls, String loginUid) {
 
         Teams createNewTeamJson = new Teams(newTeamName, newTeamDesc, newTeamPermission, newTeamAccessControls);
 
         Call<Teams> call3;
 
         call3 = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .createTeamsByOrg(Authorization.returnAuthentication(ctx, loginUid, instanceToken), orgName, createNewTeamJson);
+                .getApiInterface(ctx)
+                .createTeamsByOrg(Authorization.get(ctx), orgName, createNewTeamJson);
 
         call3.enqueue(new Callback<Teams>() {
 
@@ -309,7 +307,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 
                     if(response2.code() == 201) {
 
-                        TinyDB tinyDb = new TinyDB(appCtx);
+                        TinyDB tinyDb = TinyDB.getInstance(appCtx);
                         tinyDb.putBoolean("resumeTeams", true);
 
                         Toasty.success(ctx, getString(R.string.teamCreated));

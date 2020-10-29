@@ -15,7 +15,7 @@ public abstract class StaticGlobalVariables {
 
 	public static int getCurrentResultLimit(Context context) {
 
-		Version version = new Version(new TinyDB(context).getString("giteaVersion"));
+		Version version = new Version(TinyDB.getInstance(context).getString("giteaVersion"));
 		return version.higherOrEqual("1.12") ? resultLimitNewGiteaInstances : resultLimitOldGiteaInstances;
 
 	}

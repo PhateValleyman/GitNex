@@ -15,7 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.TeamMembersByOrgAdapter;
-import org.mian.gitnex.fragments.BottomSheetOrganizationFragment;
 import org.mian.gitnex.fragments.BottomSheetOrganizationTeamsFragment;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
@@ -52,11 +51,6 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-
         ImageView closeActivity = findViewById(R.id.close);
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
         noDataMembers = findViewById(R.id.noDataMembers);
@@ -85,30 +79,27 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
         }
 
         assert teamId != null;
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), Integer.parseInt(teamId));
+        fetchDataAsync(Authorization.get(ctx), Integer.parseInt(teamId));
     }
 
     @Override
     public void onResume() {
 
         super.onResume();
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+        TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
         if(tinyDb.getBoolean("teamActionFlag")) {
 
-            fetchDataAsync(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), Integer.parseInt(teamId));
+            fetchDataAsync(Authorization.get(ctx), Integer.parseInt(teamId));
             tinyDb.putBoolean("teamActionFlag", false);
         }
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken, int teamId) {
+    private void fetchDataAsync(String instanceToken, int teamId) {
 
         TeamMembersByOrgViewModel teamMembersModel = new ViewModelProvider(this).get(TeamMembersByOrgViewModel.class);
 
-        teamMembersModel.getMembersByOrgList(instanceUrl, instanceToken, teamId, ctx).observe(this, teamMembersListMain -> {
+        teamMembersModel.getMembersByOrgList(instanceToken, teamId, ctx).observe(this, teamMembersListMain -> {
 
             adapter = new TeamMembersByOrgAdapter(ctx, teamMembersListMain);
 

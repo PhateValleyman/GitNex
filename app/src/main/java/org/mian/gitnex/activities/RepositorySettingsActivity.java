@@ -44,7 +44,6 @@ public class RepositorySettingsActivity extends BaseActivity {
 	private Context appCtx;
 	private TinyDB tinyDb;
 
-	private String instanceUrl;
 	private String loginUid;
 	private String instanceToken;
 
@@ -61,13 +60,12 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
-		tinyDb = new TinyDB(appCtx);
+		tinyDb = TinyDB.getInstance(appCtx);
 
 		viewBinding = ActivityRepositorySettingsBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
-		instanceUrl = tinyDb.getString("instanceUrl");
 		loginUid = tinyDb.getString("loginUid");
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
@@ -136,8 +134,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 		RepositoryTransfer repositoryTransfer = new RepositoryTransfer(newOwner);
 
 		Call<JsonElement> transferCall = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
+			.getApiInterface(ctx)
 			.transferRepository(instanceToken, repositoryOwner, repositoryName, repositoryTransfer);
 
 		transferCall.enqueue(new Callback<JsonElement>() {
@@ -217,8 +214,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 	private void deleteRepository() {
 
 		Call<JsonElement> deleteCall = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
+			.getApiInterface(ctx)
 			.deleteRepository(instanceToken, repositoryOwner, repositoryName);
 
 		deleteCall.enqueue(new Callback<JsonElement>() {
@@ -275,8 +271,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 		propBinding.cancel.setOnClickListener(editProperties -> dialogProp.dismiss());
 
 		Call<UserRepositories> call = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
+			.getApiInterface(ctx)
 			.getUserRepository(instanceToken, repositoryOwner, repositoryName);
 
 		call.enqueue(new Callback<UserRepositories>() {
@@ -376,8 +371,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 		}
 
 		Call<UserRepositories> propsCall = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
+			.getApiInterface(ctx)
 			.updateRepositoryProperties(instanceToken, repositoryOwner, repositoryName, repoProps);
 
 		propsCall.enqueue(new Callback<UserRepositories>() {

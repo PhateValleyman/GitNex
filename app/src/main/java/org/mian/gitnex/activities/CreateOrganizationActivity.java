@@ -85,10 +85,7 @@ public class CreateOrganizationActivity extends BaseActivity {
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
         AppUtil appUtil = new AppUtil();
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+        TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
         String newOrgName = orgName.getText().toString();
         String newOrgDesc = orgDesc.getText().toString();
@@ -119,18 +116,17 @@ public class CreateOrganizationActivity extends BaseActivity {
         else {
 
             disableProcessButton();
-            createNewOrganization(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), newOrgName, newOrgDesc);
+            createNewOrganization(Authorization.get(ctx), newOrgName, newOrgDesc);
         }
 
     }
 
-    private void createNewOrganization(final String instanceUrl, final String token, String orgName, String orgDesc) {
+    private void createNewOrganization(final String token, String orgName, String orgDesc) {
 
         UserOrganizations createOrganization = new UserOrganizations(orgName, null, orgDesc, null, null);
 
         Call<UserOrganizations> call = RetrofitClient
-            .getInstance(instanceUrl, ctx)
-            .getApiInterface()
+            .getApiInterface(appCtx)
             .createNewOrganization(token, createOrganization);
 
         call.enqueue(new Callback<UserOrganizations>() {
@@ -140,7 +136,7 @@ public class CreateOrganizationActivity extends BaseActivity {
 
                 if(response.code() == 201) {
 
-                    TinyDB tinyDb = new TinyDB(appCtx);
+                    TinyDB tinyDb = TinyDB.getInstance(appCtx);
                     tinyDb.putBoolean("orgCreated", true);
                     enableProcessButton();
                     Toasty.success(ctx, getString(R.string.orgCreated));

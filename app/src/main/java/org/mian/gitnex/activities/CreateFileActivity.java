@@ -53,7 +53,6 @@ public class CreateFileActivity extends BaseActivity {
 
     List<Branches> branchesList = new ArrayList<>();
 
-    private String instanceUrl;
 	private String loginUid;
 	private String repoOwner;
 	private String repoName;
@@ -71,13 +70,12 @@ public class CreateFileActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
-	    tinyDb = new TinyDB(appCtx);
+	    tinyDb = TinyDB.getInstance(appCtx);
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        instanceUrl = tinyDb.getString("instanceUrl");
         loginUid = tinyDb.getString("loginUid");
         String repoFullName = tinyDb.getString("repoFullName");
         String[] parts = repoFullName.split("/");
@@ -143,7 +141,7 @@ public class CreateFileActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         newFileBranchesSpinner = findViewById(R.id.newFileBranchesSpinner);
-        getBranches(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
+        getBranches(instanceToken, repoOwner, repoName, loginUid);
 
         disableProcessButton();
 
@@ -210,17 +208,17 @@ public class CreateFileActivity extends BaseActivity {
 
             if(fileAction == 1) {
 
-	            deleteFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, filePath,
+	            deleteFile(Authorization.get(ctx), repoOwner, repoName, filePath,
 		            newFileBranchName_, newFileCommitMessage_, selectedBranch, fileSha);
             }
             else if(fileAction == 2) {
 
-	            editFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, filePath,
+	            editFile(Authorization.get(ctx), repoOwner, repoName, filePath,
 		           appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, selectedBranch, fileSha);
             }
             else {
 
-	            createNewFile(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, newFileName_,
+	            createNewFile(Authorization.get(ctx), repoOwner, repoName, newFileName_,
 		            appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, selectedBranch);
             }
 
@@ -228,7 +226,7 @@ public class CreateFileActivity extends BaseActivity {
 
     }
 
-    private void createNewFile(final String instanceUrl, final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch) {
+    private void createNewFile(final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch) {
 
         NewFile createNewFileJsonStr;
         if(currentBranch.equals("No branch")) {
@@ -241,8 +239,7 @@ public class CreateFileActivity extends BaseActivity {
         }
 
         Call<JsonElement> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
+                .getApiInterface(ctx)
                 .createNewFile(token, repoOwner, repoName, fileName, createNewFileJsonStr);
 
         call.enqueue(new Callback<JsonElement>() {
@@ -289,7 +286,7 @@ public class CreateFileActivity extends BaseActivity {
 
     }
 
-	private void deleteFile(final String instanceUrl, final String token, String repoOwner, String repoName, String fileName, String fileBranchName, String fileCommitMessage, String currentBranch, String fileSha) {
+	private void deleteFile(final String token, String repoOwner, String repoName, String fileName, String fileBranchName, String fileCommitMessage, String currentBranch, String fileSha) {
 
     	String branchName;
 		DeleteFile deleteFileJsonStr;
@@ -306,8 +303,7 @@ public class CreateFileActivity extends BaseActivity {
 		}
 
 		Call<JsonElement> call = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
+			.getApiInterface(ctx)
 			.deleteFile(token, repoOwner, repoName, fileName, deleteFileJsonStr);
 
 		call.enqueue(new Callback<JsonElement>() {
@@ -357,7 +353,7 @@ public class CreateFileActivity extends BaseActivity {
 
 	}
 
-	private void editFile(final String instanceUrl, final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch, String fileSha) {
+	private void editFile(final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch, String fileSha) {
 
 		String branchName;
 		EditFile editFileJsonStr;
@@ -374,8 +370,7 @@ public class CreateFileActivity extends BaseActivity {
 		}
 
 		Call<JsonElement> call = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
+			.getApiInterface(ctx)
 			.editFile(token, repoOwner, repoName, fileName, editFileJsonStr);
 
 		call.enqueue(new Callback<JsonElement>() {
@@ -426,12 +421,11 @@ public class CreateFileActivity extends BaseActivity {
 
 	}
 
-    private void getBranches(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
+    private void getBranches(String instanceToken, String repoOwner, String repoName, String loginUid) {
 
         Call<List<Branches>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getBranches(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+                .getApiInterface(ctx)
+                .getBranches(Authorization.get(ctx), repoOwner, repoName);
 
         call.enqueue(new Callback<List<Branches>>() {
 

@@ -17,7 +17,6 @@ import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityDeeplinksBinding;
-import org.mian.gitnex.helpers.PathsHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.UrlHelper;
@@ -60,7 +59,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
-		tinyDb = new TinyDB(appCtx);
+		tinyDb = TinyDB.getInstance(appCtx);
 
 		viewBinding = ActivityDeeplinksBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
@@ -169,7 +168,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-						getPullRequest(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3],
+						getPullRequest(instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3],
 							Integer.parseInt(data.getLastPathSegment()));
 					}, 500);
 
@@ -286,11 +285,8 @@ public class DeepLinksActivity extends BaseActivity {
 			host = UrlBuilder.fromString(UrlHelper.fixScheme(data.getHost(), "https")).toUri();
 		}
 
-		URI instanceUrl = UrlBuilder.fromUri(host).withScheme(data.getScheme().toLowerCase()).withPath(PathsHelper.join(host.getPath(), "/api/v1/"))
-			.toUri();
-
 		Call<GiteaVersion> callVersion;
-		callVersion = RetrofitClient.getInstance(String.valueOf(instanceUrl), ctx).getApiInterface().getGiteaVersion();
+		callVersion = RetrofitClient.getApiInterface(ctx).getGiteaVersion();
 
 		callVersion.enqueue(new Callback<GiteaVersion>() {
 
@@ -343,11 +339,10 @@ public class DeepLinksActivity extends BaseActivity {
 		});
 	}
 
-	private void getPullRequest(String url, String token, String repoOwner, String repoName, int index) {
+	private void getPullRequest(String token, String repoOwner, String repoName, int index) {
 
 		Call<PullRequests> call = RetrofitClient
-			.getInstance(url, ctx)
-			.getApiInterface()
+			.getApiInterface(ctx)
 			.getPullRequestByIndex(token, repoOwner, repoName, index);
 
 		call.enqueue(new Callback<PullRequests>() {
@@ -425,8 +420,7 @@ public class DeepLinksActivity extends BaseActivity {
 	private void goToRepoSection(String url, String token, String repoOwner, String repoName, String type) {
 
 		Call<UserRepositories> call = RetrofitClient
-			.getInstance(url, ctx)
-			.getApiInterface()
+			.getApiInterface(ctx)
 			.getUserRepository(token, repoOwner, repoName);
 
 		call.enqueue(new Callback<UserRepositories>() {

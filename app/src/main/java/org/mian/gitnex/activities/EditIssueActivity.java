@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -60,7 +61,6 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
     List<Milestones> milestonesList = new ArrayList<>();
 
-	private String instanceUrl;
 	private String loginUid;
 	private String instanceToken;
 	private String repoOwner;
@@ -72,16 +72,16 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         return R.layout.activity_edit_issue;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
-	    tinyDb = new TinyDB(appCtx);
+	    tinyDb = TinyDB.getInstance(ctx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-	    instanceUrl = tinyDb.getString("instanceUrl");
         loginUid = tinyDb.getString("loginUid");
         instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         String repoFullName = tinyDb.getString("repoFullName");
@@ -107,6 +107,17 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         assert imm != null;
         imm.showSoftInput(editIssueTitle, InputMethodManager.SHOW_IMPLICIT);
 
+	    editIssueDescription.setOnTouchListener((touchView, motionEvent) -> {
+
+		    touchView.getParent().requestDisallowInterceptTouchEvent(true);
+
+		    if ((motionEvent.getAction() & MotionEvent.ACTION_UP) != 0 && (motionEvent.getActionMasked() & MotionEvent.ACTION_UP) != 0) {
+
+			    touchView.getParent().requestDisallowInterceptTouchEvent(false);
+		    }
+		    return false;
+	    });
+
         editIssueMilestoneSpinner = findViewById(R.id.editIssueMilestoneSpinner);
 
         initCloseListener();
@@ -128,7 +139,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         }
 
         disableProcessButton();
-        getIssue(instanceUrl, instanceToken, loginUid, repoOwner, repoName, issueIndex, resultLimit);
+        getIssue(instanceToken, loginUid, repoOwner, repoName, issueIndex, resultLimit);
     }
 
     private void initCloseListener() {
@@ -166,17 +177,16 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         }
 
         disableProcessButton();
-        editIssue(instanceUrl, instanceToken, repoOwner, repoName, issueIndex, loginUid, editIssueTitleForm, editIssueDescriptionForm, editIssueDueDateForm, milestoneId);
+        editIssue(instanceToken, repoOwner, repoName, issueIndex, loginUid, editIssueTitleForm, editIssueDescriptionForm, editIssueDueDateForm, milestoneId);
     }
 
-    private void editIssue(String instanceUrl, String instanceToken, String repoOwner, String repoName, int issueIndex, String loginUid, String title, String description, String dueDate, int milestoneId) {
+    private void editIssue(String instanceToken, String repoOwner, String repoName, int issueIndex, String loginUid, String title, String description, String dueDate, int milestoneId) {
 
         CreateIssue issueData = new CreateIssue(title, description, dueDate, milestoneId);
 
         Call<JsonElement> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .patchIssue(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex, issueData);
+                .getApiInterface(ctx)
+                .patchIssue(Authorization.get(ctx), repoOwner, repoName, issueIndex, issueData);
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -244,12 +254,11 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    private void getIssue(final String instanceUrl, final String instanceToken, final String loginUid, final String repoOwner, final String repoName, int issueIndex, int resultLimit) {
+    private void getIssue(final String instanceToken, final String loginUid, final String repoOwner, final String repoName, int issueIndex, int resultLimit) {
 
         Call<Issues> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
-                .getIssueByIndex(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, issueIndex);
+                .getApiInterface(ctx)
+                .getIssueByIndex(Authorization.get(ctx), repoOwner, repoName, issueIndex);
 
         call.enqueue(new Callback<Issues>() {
 
@@ -272,9 +281,8 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                     if(response.body().getId() > 0) {
 
                         Call<List<Milestones>> call_ = RetrofitClient
-                                .getInstance(instanceUrl, ctx)
-                                .getApiInterface()
-                                .getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
+                                .getApiInterface(ctx)
+                                .getMilestones(Authorization.get(ctx), repoOwner, repoName, 1, resultLimit, msState);
 
 	                    int checkMilestoneId = currentMilestoneId;
 

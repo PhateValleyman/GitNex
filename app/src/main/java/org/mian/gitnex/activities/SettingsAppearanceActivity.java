@@ -11,9 +11,6 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Author M M Arif
@@ -26,9 +23,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 	private static final String[] timeList = {"Pretty", "Normal"};
 	private static int timeSelectedChoice = 0;
-
-	private List<String> codeBlockList;
-	private static int codeBlockSelectedChoice = 0;
 
 	private static final String[] customFontList = {"Roboto", "Manrope", "Source Code Pro"};
 	private static int customFontSelectedChoice = 0;
@@ -48,17 +42,15 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
 
-		final TinyDB tinyDb = new TinyDB(appCtx);
+		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
 		ImageView closeActivity = findViewById(R.id.close);
 
 		final TextView tvDateTimeSelected = findViewById(R.id.tvDateTimeSelected); // setter for time
-		final TextView codeBlockSelected = findViewById(R.id.codeBlockSelected); // setter for code block
 		final TextView customFontSelected = findViewById(R.id.customFontSelected); // setter for custom font
 		final TextView themeSelected = findViewById(R.id.themeSelected); // setter for theme
 
 		LinearLayout timeFrame = findViewById(R.id.timeFrame);
-		LinearLayout codeBlockFrame = findViewById(R.id.codeBlockFrame);
 		LinearLayout customFontFrame = findViewById(R.id.customFontFrame);
 		LinearLayout themeFrame = findViewById(R.id.themeSelectionFrame);
 
@@ -66,88 +58,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
-
-		// code block
-		String[] codeBlockList_ = {getResources().getString(R.string.codeBlockGreenOnBlack), getResources().getString(R.string.codeBlockWhiteOnBlack),
-			getResources().getString(R.string.codeBlockGreyOnBlack), getResources().getString(R.string.codeBlockWhiteOnGrey),
-			getResources().getString(R.string.codeBlockDarkOnWhite)};
-
-		codeBlockList = new ArrayList<>(Arrays.asList(codeBlockList_));
-		String[] codeBlockArray = new String[codeBlockList.size()];
-		codeBlockList.toArray(codeBlockArray);
-
-		if(codeBlockSelectedChoice == 0) {
-
-			codeBlockSelectedChoice = tinyDb.getInt("codeBlockId");
-			codeBlockSelected.setText(getResources().getString(R.string.codeBlockGreenOnBlack));
-		}
-
-		if(codeBlockSelectedChoice == 1) {
-
-			codeBlockSelected.setText(getResources().getString(R.string.codeBlockWhiteOnBlack));
-		}
-		else if(codeBlockSelectedChoice == 2) {
-
-			codeBlockSelected.setText(getResources().getString(R.string.codeBlockGreyOnBlack));
-		}
-		else if(codeBlockSelectedChoice == 3) {
-
-			codeBlockSelected.setText(getResources().getString(R.string.codeBlockWhiteOnGrey));
-		}
-		else if(codeBlockSelectedChoice == 4) {
-
-			codeBlockSelected.setText(getResources().getString(R.string.codeBlockDarkOnWhite));
-		}
-
-		codeBlockFrame.setOnClickListener(codeBlock -> {
-
-			AlertDialog.Builder cBuilder = new AlertDialog.Builder(SettingsAppearanceActivity.this);
-
-			cBuilder.setTitle(R.string.settingsCodeBlockSelectorDialogTitle);
-			cBuilder.setCancelable(codeBlockSelectedChoice != -1);
-
-			cBuilder.setSingleChoiceItems(codeBlockList_, codeBlockSelectedChoice, (dialogInterfaceCodeBlock, i) -> {
-
-				codeBlockSelectedChoice = i;
-				codeBlockSelected.setText(codeBlockList_[i]);
-				tinyDb.putInt("codeBlockId", i);
-
-				switch(i) {
-					case 1: // white on black
-
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
-						break;
-					case 2: // grey on black
-
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorAccent));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
-						break;
-					case 3: // white on grey
-
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorWhite));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorAccent));
-						break;
-					case 4: // dark on white
-
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorPrimary));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.colorWhite));
-						break;
-					default: // green on black
-
-						tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorLightGreen));
-						tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
-						break;
-				}
-
-				dialogInterfaceCodeBlock.dismiss();
-				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-			});
-
-			AlertDialog cDialog = cBuilder.create();
-			cDialog.show();
-		});
-		// code block
 
 		if(!tinyDb.getString("timeStr").isEmpty()) {
 

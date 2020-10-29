@@ -36,7 +36,7 @@ public class SettingsFileViewerActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
 
-		final TinyDB tinyDb = new TinyDB(appCtx);
+		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
 		ImageView closeActivity = findViewById(R.id.close);
 

@@ -53,7 +53,6 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 	private List<String> assignees = new ArrayList<>();
 	private int milestoneId;
 
-	private String instanceUrl;
 	private String loginUid;
 	private String instanceToken;
 	private String repoOwner;
@@ -78,13 +77,12 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
-		tinyDb = new TinyDB(appCtx);
+		tinyDb = TinyDB.getInstance(appCtx);
 
 		viewBinding = ActivityCreatePrBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
-		instanceUrl = tinyDb.getString("instanceUrl");
 		loginUid = tinyDb.getString("loginUid");
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
@@ -111,8 +109,8 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 		disableProcessButton();
 
-		getMilestones(instanceUrl, instanceToken, repoOwner, repoName, loginUid, resultLimit);
-		getBranches(instanceUrl, instanceToken, repoOwner, repoName, loginUid);
+		getMilestones(repoOwner, repoName, resultLimit);
+		getBranches(repoOwner, repoName);
 
 		viewBinding.prLabels.setOnClickListener(prLabels -> showLabels());
 
@@ -170,8 +168,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		CreatePullRequest createPullRequest = new CreatePullRequest(prTitle, prDescription, loginUid, mergeInto, pullFrom, milestoneId, dueDate, assignees, labelsIds);
 
 		Call<ResponseBody> transferCall = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
+			.getApiInterface(appCtx)
 			.createPullRequest(instanceToken, repoOwner, repoName, createPullRequest);
 
 		transferCall.enqueue(new Callback<ResponseBody>() {
@@ -242,15 +239,14 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		labelsBinding.cancel.setOnClickListener(editProperties -> dialogLabels.dismiss());
 
 		dialogLabels.show();
-		LabelsActions.getRepositoryLabels(ctx, instanceUrl, instanceToken, repoOwner, repoName, labelsList, dialogLabels, labelsAdapter, labelsBinding);
+		LabelsActions.getRepositoryLabels(ctx, repoOwner, repoName, labelsList, dialogLabels, labelsAdapter, labelsBinding);
 	}
 
-	private void getBranches(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid) {
+	private void getBranches(String repoOwner, String repoName) {
 
 		Call<List<Branches>> call = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
-			.getBranches(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName);
+			.getApiInterface(ctx)
+			.getBranches(Authorization.get(ctx), repoOwner, repoName);
 
 		call.enqueue(new Callback<List<Branches>>() {
 
@@ -294,13 +290,12 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 	}
 
-	private void getMilestones(String instanceUrl, String instanceToken, String repoOwner, String repoName, String loginUid, int resultLimit) {
+	private void getMilestones(String repoOwner, String repoName, int resultLimit) {
 
 		String msState = "open";
 		Call<List<Milestones>> call = RetrofitClient
-			.getInstance(instanceUrl, ctx)
-			.getApiInterface()
-			.getMilestones(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, 1, resultLimit, msState);
+			.getApiInterface(appCtx)
+			.getMilestones(Authorization.get(ctx), repoOwner, repoName, 1, resultLimit, msState);
 
 		call.enqueue(new Callback<List<Milestones>>() {
 

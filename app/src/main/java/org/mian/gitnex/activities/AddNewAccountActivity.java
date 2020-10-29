@@ -53,7 +53,7 @@ public class AddNewAccountActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
-		tinyDB = new TinyDB(appCtx);
+		tinyDB = TinyDB.getInstance(appCtx);
 
 		viewBinding = ActivityAddNewAccountBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
@@ -131,7 +131,7 @@ public class AddNewAccountActivity extends BaseActivity {
 
 		Call<GiteaVersion> callVersion;
 
-		callVersion = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithToken("token " + loginToken);
+		callVersion = RetrofitClient.getApiInterface(ctx).getGiteaVersionWithToken("token " + loginToken);
 
 		callVersion.enqueue(new Callback<GiteaVersion>() {
 
@@ -205,7 +205,7 @@ public class AddNewAccountActivity extends BaseActivity {
 
 	private void setupNewAccountWithToken(String instanceUrl, final String loginToken) {
 
-		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserInfo("token " + loginToken);
+		Call<UserInfo> call = RetrofitClient.getApiInterface(ctx).getUserInfo("token " + loginToken);
 
 		call.enqueue(new Callback<UserInfo>() {
 

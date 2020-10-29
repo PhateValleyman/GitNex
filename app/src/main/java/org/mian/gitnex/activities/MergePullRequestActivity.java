@@ -37,9 +37,6 @@ public class MergePullRequestActivity extends BaseActivity {
 	private Context appCtx;
 	private TinyDB tinyDb;
 
-	private String instanceUrl;
-	private String loginUid;
-	private String instanceToken;
 	private String repoOwner;
 	private String repoName;
 	private int prIndex;
@@ -60,15 +57,12 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
-		tinyDb = new TinyDB(appCtx);
+		tinyDb = TinyDB.getInstance(appCtx);
 
 		viewBinding = ActivityMergePullRequestBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
-		instanceUrl = tinyDb.getString("instanceUrl");
-		loginUid = tinyDb.getString("loginUid");
-		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 		repoOwner = parts[0];
@@ -189,7 +183,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		MergePullRequest mergePR = new MergePullRequest(Do, mergePRDT, mergeTitle);
 
-		Call<ResponseBody> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().mergePullRequest(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, prIndex, mergePR);
+		Call<ResponseBody> call = RetrofitClient.getApiInterface(ctx).mergePullRequest(Authorization.get(ctx), repoOwner, repoName, prIndex, mergePR);
 
 		call.enqueue(new Callback<ResponseBody>() {
 
@@ -273,9 +267,8 @@ public class MergePullRequestActivity extends BaseActivity {
 		String branchName = tinyDb.getString("prHeadBranch");
 
 		Call<JsonElement> call = RetrofitClient
-				.getInstance(instanceUrl, ctx)
-				.getApiInterface()
-				.deleteBranch(Authorization.returnAuthentication(ctx, loginUid, instanceToken), repoOwner, repoName, branchName);
+				.getApiInterface(ctx)
+				.deleteBranch(Authorization.get(ctx), repoOwner, repoName, branchName);
 
 		call.enqueue(new Callback<JsonElement>() {
 

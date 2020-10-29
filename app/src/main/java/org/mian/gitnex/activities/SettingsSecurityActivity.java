@@ -53,7 +53,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
 
-		TinyDB tinyDb = new TinyDB(appCtx);
+		TinyDB tinyDb = TinyDB.getInstance(appCtx);
 		String currentVersion = tinyDb.getString("giteaVersion");
 
 		ImageView closeActivity = findViewById(R.id.close);

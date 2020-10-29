@@ -82,7 +82,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private static TinyDB tinyDb;
 	private Typeface myTypeface;
 
-	private String instanceUrl;
 	private String loginUid;
 	private String instanceToken;
 
@@ -102,13 +101,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		super.onCreate(savedInstanceState);
 		appCtx = getApplicationContext();
 
-		tinyDb = new TinyDB(appCtx);
+		tinyDb = TinyDB.getInstance(appCtx);
 		tinyDb.putBoolean("noConnection", false);
 
 		Intent mainIntent = getIntent();
 		String launchFragment = mainIntent.getStringExtra("launchFragment");
 
-		instanceUrl = tinyDb.getString("instanceUrl");
 		loginUid = tinyDb.getString("loginUid");
 		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
@@ -213,7 +211,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleUserAccounts));
 		}
 
-		getNotificationsCount(instanceUrl, instanceToken);
+		getNotificationsCount(instanceToken);
 
 		drawer = findViewById(R.id.drawer_layout);
 		NavigationView navigationView = findViewById(R.id.nav_view);
@@ -231,7 +229,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			@Override
 			public void onDrawerOpened(@NonNull View drawerView) {
 
-				getNotificationsCount(instanceUrl, instanceToken);
+				getNotificationsCount(instanceToken);
 			}
 
 			@Override
@@ -469,8 +467,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else {
 
-			loadUserInfo(instanceUrl, instanceToken, loginUid);
-			giteaVersion(instanceUrl);
+			loadUserInfo(instanceToken, loginUid);
+			giteaVersion();
 			tinyDb.putBoolean("noConnection", false);
 		}
 
@@ -505,7 +503,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	@Override
 	public void onButtonClicked(String text) {
 
-		TinyDB tinyDb = new TinyDB(ctx);
+		TinyDB tinyDb = TinyDB.getInstance(ctx);
 		int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
 
 		if("deleteDrafts".equals(text)) {
@@ -648,13 +646,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void giteaVersion(final String instanceUrl) {
+	private void giteaVersion() {
 
-		final TinyDB tinyDb = new TinyDB(appCtx);
+		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
 		final String token = "token " + tinyDb.getString(tinyDb.getString("loginUid") + "-token");
 
-		Call<GiteaVersion> callVersion = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getGiteaVersionWithToken(token);
+		Call<GiteaVersion> callVersion = RetrofitClient.getApiInterface(ctx).getGiteaVersionWithToken(token);
 
 		callVersion.enqueue(new Callback<GiteaVersion>() {
 
@@ -678,11 +676,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		});
 	}
 
-	private void loadUserInfo(String instanceUrl, String token, String loginUid) {
+	private void loadUserInfo(String token, String loginUid) {
 
-		final TinyDB tinyDb = new TinyDB(appCtx);
+		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
-		Call<UserInfo> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().getUserInfo(Authorization.returnAuthentication(ctx, loginUid, token));
+		Call<UserInfo> call = RetrofitClient.getApiInterface(ctx).getUserInfo(Authorization.get(ctx));
 
 		call.enqueue(new Callback<UserInfo>() {
 
@@ -747,9 +745,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	}
 
-	private void getNotificationsCount(String instanceUrl, String token) {
+	private void getNotificationsCount(String token) {
 
-		Call<NotificationCount> call = RetrofitClient.getInstance(instanceUrl, ctx).getApiInterface().checkUnreadNotifications(token);
+		Call<NotificationCount> call = RetrofitClient.getApiInterface(ctx).checkUnreadNotifications(token);
 
 		call.enqueue(new Callback<NotificationCount>() {
 

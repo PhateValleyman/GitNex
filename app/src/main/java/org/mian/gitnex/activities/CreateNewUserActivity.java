@@ -79,10 +79,7 @@ public class CreateNewUserActivity extends BaseActivity {
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
         AppUtil appUtil = new AppUtil();
-        TinyDB tinyDb = new TinyDB(appCtx);
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+        TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
         String newFullName = fullName.getText().toString().trim();
         String newUserName = userUserName.getText().toString().trim();
@@ -120,18 +117,17 @@ public class CreateNewUserActivity extends BaseActivity {
         }
 
         disableProcessButton();
-        createNewUser(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), newFullName, newUserName, newUserEmail, newUserPassword);
+        createNewUser(Authorization.get(ctx), newFullName, newUserName, newUserEmail, newUserPassword);
     }
 
-    private void createNewUser(final String instanceUrl, final String instanceToken, String newFullName, String newUserName, String newUserEmail, String newUserPassword) {
+    private void createNewUser(final String instanceToken, String newFullName, String newUserName, String newUserEmail, String newUserPassword) {
 
         UserInfo createUser = new UserInfo(newUserEmail, newFullName, newUserName, newUserPassword, newUserName, 0, true);
 
         Call<UserInfo> call;
 
         call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
+                .getApiInterface(appCtx)
                 .createNewUser(instanceToken, createUser);
 
         call.enqueue(new Callback<UserInfo>() {

@@ -47,10 +47,8 @@ public class CreateRepoActivity extends BaseActivity {
     private Context appCtx;
     private TinyDB tinyDb;
 
-    private String instanceUrl;
 	private String loginUid;
 	private String userLogin;
-	private String instanceToken;
 
 	private String selectedOwner;
 
@@ -70,14 +68,12 @@ public class CreateRepoActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
         appCtx = getApplicationContext();
-	    tinyDb = new TinyDB(appCtx);
+	    tinyDb = TinyDB.getInstance(appCtx);
 
         boolean connToInternet = AppUtil.hasNetworkConnection(ctx);
 
-        instanceUrl = tinyDb.getString("instanceUrl");
         loginUid = tinyDb.getString("loginUid");
         userLogin = tinyDb.getString("userLogin");
-        instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -94,7 +90,7 @@ public class CreateRepoActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         spinner = findViewById(R.id.ownerSpinner);
-        getOrganizations(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), userLogin);
+        getOrganizations(Authorization.get(ctx), userLogin);
 
         createRepo = findViewById(R.id.createNewRepoButton);
         disableProcessButton();
@@ -158,11 +154,11 @@ public class CreateRepoActivity extends BaseActivity {
         else {
 
             disableProcessButton();
-            createNewRepository(instanceUrl, Authorization.returnAuthentication(ctx, loginUid, instanceToken), loginUid, newRepoName, newRepoDesc, selectedOwner, newRepoAccess);
+            createNewRepository(Authorization.get(ctx), loginUid, newRepoName, newRepoDesc, selectedOwner, newRepoAccess);
         }
     }
 
-    private void createNewRepository(final String instanceUrl, final String token, String loginUid, String repoName, String repoDesc, String selectedOwner, boolean isPrivate) {
+    private void createNewRepository(final String token, String loginUid, String repoName, String repoDesc, String selectedOwner, boolean isPrivate) {
 
         OrganizationRepository createRepository = new OrganizationRepository(true, repoDesc, null, null, repoName, isPrivate, "Default");
 
@@ -170,15 +166,13 @@ public class CreateRepoActivity extends BaseActivity {
         if(selectedOwner.equals(loginUid)) {
 
             call = RetrofitClient
-                    .getInstance(instanceUrl, ctx)
-                    .getApiInterface()
+                    .getApiInterface(ctx)
                     .createNewUserRepository(token, createRepository);
         }
         else {
 
             call = RetrofitClient
-                    .getInstance(instanceUrl, ctx)
-                    .getApiInterface()
+                    .getApiInterface(ctx)
                     .createNewUserOrgRepository(token, selectedOwner, createRepository);
         }
 
@@ -189,7 +183,7 @@ public class CreateRepoActivity extends BaseActivity {
 
                 if(response.code() == 201) {
 
-                    TinyDB tinyDb = new TinyDB(appCtx);
+                    TinyDB tinyDb = TinyDB.getInstance(appCtx);
                     tinyDb.putBoolean("repoCreated", true);
                     Toasty.success(ctx, getString(R.string.repoCreated));
                     enableProcessButton();
@@ -224,11 +218,10 @@ public class CreateRepoActivity extends BaseActivity {
         });
     }
 
-    private void getOrganizations(String instanceUrl, String instanceToken, final String userLogin) {
+    private void getOrganizations(String instanceToken, final String userLogin) {
 
         Call<List<OrgOwner>> call = RetrofitClient
-                .getInstance(instanceUrl, ctx)
-                .getApiInterface()
+                .getApiInterface(ctx)
                 .getOrgOwners(instanceToken);
 
         call.enqueue(new Callback<List<OrgOwner>>() {

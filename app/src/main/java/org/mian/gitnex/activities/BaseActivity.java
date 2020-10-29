@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		Context appCtx = getApplicationContext();
-		final TinyDB tinyDb = new TinyDB(appCtx);
+		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
 		switch(tinyDb.getInt("themeId")) {
 

@@ -45,7 +45,7 @@ public class SettingsGeneralActivity extends BaseActivity {
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
-		TinyDB tinyDb = new TinyDB(appCtx);
+		TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
 		initCloseListener();
 		viewBinding.close.setOnClickListener(onClickListener);
