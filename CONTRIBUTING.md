@@ -3,16 +3,23 @@
 Please take a few minutes to read this document to make the process of contribution more easy and healthy for all involved.
 
 ### General
-**Be polite and gentle while commenting or creating new issues to maintain a healthy environment in which __everyone__ is able to feel comfortable.**
+> **Be polite and gentle while commenting or creating new issues to maintain a healthy environment in which __everyone__ is able to feel comfortable.**
+<br>
+
+### Issues and Reports
+Before creating an issue please take a moment and search the repository issues(open/closed) to avoid duplicate issues either it's a bug or feature.
+In case you want to submit a bug report, please provide as much details as possible to better debug the problem. The important part is how to reproduce the bug and steps to reproduce are appreciated.<br><br>
+**Note:** Please contact the project directly via [email](mailto:gitnex@swatian.com) if have to share sensitive and security related details.
+<br>
 
 ### Pull Requests
 Patches, enhancements and features are always welcome.
 The PR should focus on the scope of work and avoid many unnecessary commits.
 Please provide as much detail and context as possible to explain the work submitted.
 
-**Please ask if you are not sure about the scope of work to be submitted to avoid waste of time spent on the work. (Submit an issue, before submitting a PR)**
+**Please ask if you are not sure about the scope of work to be submitted to avoid waste of time spent on the work.** (Submit an issue, __before__ submitting a PR)
 
-**Code Standards**  
+**Code Standards**<br><br>
 Please follow the code standards, this will help other developers to understand your code too.  
 It also helps maintaining the code afterwards.  
 It is documented in the Wiki: [Code-Standards](https://codeberg.org/gitnex/GitNex/wiki/Code-Standards)
@@ -27,11 +34,3 @@ It is documented in the Wiki: [Code-Standards](https://codeberg.org/gitnex/GitNe
 For more information, click [here](http://makeapullrequest.com/).
 
 **IMPORTANT:** By submitting PR, you agree to allow GitNex to license your work under the same license as that used by GitNex.
-
-### Issues and Reports
-
-Before creating an issue please take a moment and search the repository issues(open/closed) to avoid duplicate issues either it's a bug or feature.
-
-In case you want to submit a bug report, please provide as much details as possible to better debug the problem. The important part is how to reproduce the bug and steps to reproduce are appreciated.
-
-**Note:** Please contact the project directly via [email](mailto:gitnex@swatian.com) if have to share sensitive and security related details.
