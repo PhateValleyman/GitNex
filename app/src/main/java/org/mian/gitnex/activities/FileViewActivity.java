@@ -1,5 +1,6 @@
 package org.mian.gitnex.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -21,9 +22,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -140,18 +145,15 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			singleFileName = URLDecoder.decode(singleFileName, "UTF-8");
 			singleFileName = singleFileName.replaceAll("//", "/");
 			singleFileName = singleFileName.startsWith("/") ? singleFileName.substring(1) : singleFileName;
-
 		}
 		catch(UnsupportedEncodingException e) {
 
 			Log.i("singleFileName", singleFileName);
-
 		}
 
 		toolbar_title.setText(singleFileName);
 
 		getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName, repoBranch);
-
 	}
 
 	@Override
@@ -169,6 +171,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
 		if(tinyDb.getBoolean("fileModified")) {
+
 			getSingleFileContents(instanceUrl, instanceToken, repoOwner, repoName, singleFileName, repoBranch);
 			tinyDb.putBoolean("fileModified", false);
 		}
@@ -209,7 +212,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							imageData = Base64.decode(response.body().getContent(), Base64.DEFAULT);
 							Drawable imageDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(imageData, 0, imageData.length));
 							imageView.setImageDrawable(imageDrawable);
-
 						}
 						else if(appUtil.sourceCodeExtension(fileExtension)) { // file is sourcecode
 
@@ -219,27 +221,33 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							singleCodeContents.setVisibility(View.VISIBLE);
 
 							switch(tinyDb.getInt("fileviewerSourceCodeThemeId")) {
+
 								case 1:
+
 									singleCodeContents.setTheme(Theme.ARDUINO_LIGHT);
 									break;
 								case 2:
+
 									singleCodeContents.setTheme(Theme.GITHUB);
 									break;
 								case 3:
+
 									singleCodeContents.setTheme(Theme.FAR);
 									break;
 								case 4:
+
 									singleCodeContents.setTheme(Theme.IR_BLACK);
 									break;
 								case 5:
+
 									singleCodeContents.setTheme(Theme.ANDROID_STUDIO);
 									break;
 								default:
+
 									singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
 							}
 
 							singleCodeContents.setSource(appUtil.decodeBase64(response.body().getContent()));
-
 						}
 						else if(appUtil.pdfExtension(fileExtension)) { // file is pdf
 
@@ -264,7 +272,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							singleFileContents.setText(getResources().getString(R.string.excludeFilesInFileviewer));
 							singleFileContents.setGravity(Gravity.CENTER);
 							singleFileContents.setTypeface(null, Typeface.BOLD);
-
 						}
 						else { // file type not known - plain text view
 
@@ -274,37 +281,30 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							singleFileContentsFrame.setVisibility(View.VISIBLE);
 
 							singleFileContents.setText(appUtil.decodeBase64(response.body().getContent()));
-
 						}
-
 					}
 					else {
+
 						singleFileContents.setText("");
 						mProgressBar.setVisibility(View.GONE);
 					}
-
 				}
 				else if(response.code() == 401) {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-
 				}
 				else if(response.code() == 403) {
 
 					Toasty.error(ctx, ctx.getString(R.string.authorizeError));
-
 				}
 				else if(response.code() == 404) {
 
 					Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
-
 				}
 				else {
 
 					Toasty.error(ctx, getString(R.string.labelGeneralError));
-
 				}
-
 			}
 
 			@Override
@@ -324,7 +324,9 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		inflater.inflate(R.menu.files_view_menu, menu);
 
 		String fileExtension = FileUtils.getExtension(singleFileName);
+
 		if(!fileExtension.equalsIgnoreCase("md")) {
+
 			menu.getItem(0).setVisible(false);
 		}
 
@@ -336,89 +338,90 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		int id = item.getItemId();
 
-		switch(id) {
-			case android.R.id.home:
+		if(id == android.R.id.home) {
 
-				finish();
-				return true;
-			case R.id.genericMenu:
-
-				BottomSheetFileViewerFragment bottomSheet = new BottomSheetFileViewerFragment();
-				bottomSheet.show(getSupportFragmentManager(), "fileViewerBottomSheet");
-				return true;
-			case R.id.markdown:
-
-				final Markwon markwon = Markwon.builder(Objects.requireNonNull(ctx)).usePlugin(CorePlugin.create())
-					.usePlugin(ImagesPlugin.create(plugin -> {
-						plugin.addSchemeHandler(new SchemeHandler() {
-
-							@NonNull
-							@Override
-							public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
-
-								final int resourceId = ctx.getResources().getIdentifier(
-									raw.substring("drawable://".length()),
-									"drawable",
-									ctx.getPackageName());
-
-								final Drawable drawable = ctx.getDrawable(resourceId);
-
-								assert drawable != null;
-								return ImageItem.withResult(drawable);
-							}
-
-							@NonNull
-							@Override
-							public Collection<String> supportedSchemes() {
-
-								return Collections.singleton("drawable");
-							}
-						});
-						plugin.placeholderProvider(drawable -> null);
-						plugin.addMediaDecoder(GifMediaDecoder.create(false));
-						plugin.addMediaDecoder(SvgMediaDecoder.create(ctx.getResources()));
-						plugin.addMediaDecoder(SvgMediaDecoder.create());
-						plugin.defaultMediaDecoder(DefaultMediaDecoder.create(ctx.getResources()));
-						plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
-					}))
-					.usePlugin(new AbstractMarkwonPlugin() {
-						@Override
-						public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
-
-							builder.codeTextColor(tinyDb.getInt("codeBlockColor")).codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
-								.linkColor(getResources().getColor(R.color.lightBlue));
-						}
-					})
-					.usePlugin(TablePlugin.create(ctx))
-					.usePlugin(TaskListPlugin.create(ctx))
-					.usePlugin(HtmlPlugin.create())
-					.usePlugin(StrikethroughPlugin.create())
-					.usePlugin(LinkifyPlugin.create())
-					.build();
-
-				if(!tinyDb.getBoolean("enableMarkdownInFileView")) {
-
-					singleCodeContents.setVisibility(View.GONE);
-					singleFileContentsFrame.setVisibility(View.VISIBLE);
-					singleFileContents.setVisibility(View.VISIBLE);
-					Spanned bodyWithMD = markwon.toMarkdown(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
-					markwon.setParsedMarkdown(singleFileContents, bodyWithMD);
-					tinyDb.putBoolean("enableMarkdownInFileView", true);
-				}
-				else {
-
-					singleCodeContents.setVisibility(View.VISIBLE);
-					singleFileContentsFrame.setVisibility(View.GONE);
-					singleFileContents.setVisibility(View.GONE);
-					singleCodeContents.setSource(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
-					tinyDb.putBoolean("enableMarkdownInFileView", false);
-				}
-
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
+			finish();
+			return true;
 		}
+		else if(id == R.id.genericMenu) {
 
+			BottomSheetFileViewerFragment bottomSheet = new BottomSheetFileViewerFragment();
+			bottomSheet.show(getSupportFragmentManager(), "fileViewerBottomSheet");
+			return true;
+		}
+		else if(id == R.id.markdown) {
+
+			final Markwon markwon = Markwon.builder(Objects.requireNonNull(ctx)).usePlugin(CorePlugin.create())
+				.usePlugin(ImagesPlugin.create(plugin -> {
+					plugin.addSchemeHandler(new SchemeHandler() {
+
+						@NonNull
+						@Override
+						public ImageItem handle(@NonNull String raw, @NonNull Uri uri) {
+
+							final int resourceId = ctx.getResources().getIdentifier(
+								raw.substring("drawable://".length()),
+								"drawable",
+								ctx.getPackageName());
+
+							final Drawable drawable = ContextCompat.getDrawable(ctx, resourceId);
+
+							assert drawable != null;
+							return ImageItem.withResult(drawable);
+						}
+
+						@NonNull
+						@Override
+						public Collection<String> supportedSchemes() {
+
+							return Collections.singleton("drawable");
+						}
+					});
+					plugin.placeholderProvider(drawable -> null);
+					plugin.addMediaDecoder(GifMediaDecoder.create(false));
+					plugin.addMediaDecoder(SvgMediaDecoder.create(ctx.getResources()));
+					plugin.addMediaDecoder(SvgMediaDecoder.create());
+					plugin.defaultMediaDecoder(DefaultMediaDecoder.create(ctx.getResources()));
+					plugin.defaultMediaDecoder(DefaultMediaDecoder.create());
+				}))
+				.usePlugin(new AbstractMarkwonPlugin() {
+					@Override
+					public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
+
+						builder.codeTextColor(tinyDb.getInt("codeBlockColor")).codeBackgroundColor(tinyDb.getInt("codeBlockBackground"))
+							.linkColor(getResources().getColor(R.color.lightBlue));
+					}
+				})
+				.usePlugin(TablePlugin.create(ctx))
+				.usePlugin(TaskListPlugin.create(ctx))
+				.usePlugin(HtmlPlugin.create())
+				.usePlugin(StrikethroughPlugin.create())
+				.usePlugin(LinkifyPlugin.create())
+				.build();
+
+			if(!tinyDb.getBoolean("enableMarkdownInFileView")) {
+
+				singleCodeContents.setVisibility(View.GONE);
+				singleFileContentsFrame.setVisibility(View.VISIBLE);
+				singleFileContents.setVisibility(View.VISIBLE);
+				Spanned bodyWithMD = markwon.toMarkdown(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
+				markwon.setParsedMarkdown(singleFileContents, bodyWithMD);
+				tinyDb.putBoolean("enableMarkdownInFileView", true);
+			}
+			else {
+
+				singleCodeContents.setVisibility(View.VISIBLE);
+				singleFileContentsFrame.setVisibility(View.GONE);
+				singleFileContents.setVisibility(View.GONE);
+				singleCodeContents.setSource(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
+				tinyDb.putBoolean("enableMarkdownInFileView", false);
+			}
+			return true;
+		}
+		else {
+
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
@@ -437,10 +440,13 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			intent.putExtra("fileAction", 1);
 			intent.putExtra("filePath", singleFileName);
 			intent.putExtra("fileSha", fileSha);
+
 			if(!appUtil.imageExtension(fileExtension)) {
+
 				intent.putExtra("fileContents", data);
 			}
 			else {
+
 				intent.putExtra("fileContents", "");
 			}
 
@@ -455,10 +461,13 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			intent.putExtra("fileAction", 2);
 			intent.putExtra("filePath", singleFileName);
 			intent.putExtra("fileSha", fileSha);
+
 			if(!appUtil.imageExtension(fileExtension)) {
+
 				intent.putExtra("fileContents", data);
 			}
 			else {
+
 				intent.putExtra("fileContents", "");
 			}
 
@@ -471,8 +480,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		if(!tinyDb.getString("downloadFileContents").isEmpty()) {
 
-			int CREATE_REQUEST_CODE = 40;
-
 			File outputFileName = new File(tinyDb.getString("downloadFileName"));
 
 			Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -481,48 +488,48 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			intent.setType("*/*");
 			intent.putExtra(Intent.EXTRA_TITLE, outputFileName.getName());
 
-			startActivityForResult(intent, CREATE_REQUEST_CODE);
-
+			fileDownloadActivityResultLauncher.launch(intent);
 		}
 		else {
 
 			Toasty.warning(ctx, getString(R.string.waitLoadingDownloadFile));
 		}
-
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+	ActivityResultLauncher<Intent> fileDownloadActivityResultLauncher = registerForActivityResult(
+		new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
 
-		super.onActivityResult(requestCode, resultCode, data);
+		@Override
+		public void onActivityResult(ActivityResult result) {
 
-		if(requestCode == 40 && resultCode == RESULT_OK) {
+			if (result.getResultCode() == Activity.RESULT_OK) {
 
-			try {
+				Intent data = result.getData();
 
-				assert data != null;
-				Uri uri = data.getData();
+				try {
 
-				assert uri != null;
-				OutputStream outputStream = getContentResolver().openOutputStream(uri);
+					assert data != null;
+					Uri uri = data.getData();
 
-				byte[] dataAsBytes = Base64.decode(tinyDb.getString("downloadFileContents"), 0);
+					assert uri != null;
+					OutputStream outputStream = getContentResolver().openOutputStream(uri);
 
-				assert outputStream != null;
-				outputStream.write(dataAsBytes);
-				outputStream.close();
+					byte[] dataAsBytes = Base64.decode(tinyDb.getString("downloadFileContents"), 0);
 
-				Toasty.success(ctx, getString(R.string.downloadFileSaved));
+					assert outputStream != null;
+					outputStream.write(dataAsBytes);
+					outputStream.close();
 
+					Toasty.success(ctx, getString(R.string.downloadFileSaved));
+
+				}
+				catch(IOException e) {
+
+					Log.e("errorFileDownloading", Objects.requireNonNull(e.getMessage()));
+				}
 			}
-			catch(IOException e) {
-
-				Log.e("errorFileDownloading", Objects.requireNonNull(e.getMessage()));
-			}
-
 		}
-
-	}
+	});
 
 	private void initCloseListener() {
 
