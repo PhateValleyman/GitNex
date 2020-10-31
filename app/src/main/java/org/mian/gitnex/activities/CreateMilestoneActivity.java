@@ -1,9 +1,11 @@
 package org.mian.gitnex.activities;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -42,6 +44,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         return R.layout.activity_new_milestone;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -61,6 +64,17 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         milestoneTitle.requestFocus();
         assert imm != null;
         imm.showSoftInput(milestoneTitle, InputMethodManager.SHOW_IMPLICIT);
+
+	    milestoneDescription.setOnTouchListener((touchView, motionEvent) -> {
+
+		    touchView.getParent().requestDisallowInterceptTouchEvent(true);
+
+		    if ((motionEvent.getAction() & MotionEvent.ACTION_UP) != 0 && (motionEvent.getActionMasked() & MotionEvent.ACTION_UP) != 0) {
+
+			    touchView.getParent().requestDisallowInterceptTouchEvent(false);
+		    }
+		    return false;
+	    });
 
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);

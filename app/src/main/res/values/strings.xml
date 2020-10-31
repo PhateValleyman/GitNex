@@ -6,7 +6,6 @@
     <string name="appRepoLink" translatable="false">https://codeberg.org/gitnex/GitNex</string>
     <string name="appWebsiteLink" translatable="false">https://gitnex.com/</string>
     <string name="commitPage" translatable="false">Your Gitea Version</string>
-    <string name="supportLink" translatable="false">https://liberapay.com/mmarif/donate</string>
     <string name="supportLinkPatreon" translatable="false">https://www.patreon.com/mmarif</string>
     <string name="appVersion" translatable="false">Version</string>
     <string name="appBuild" translatable="false">Build</string>
@@ -577,6 +576,7 @@
     <string name="mergeOptionSquash">Squash and Merge</string>
     <string name="mergeStrategy">Merge Strategy</string>
     <string name="selectMergeStrategy">Select merge strategy</string>
+    <string name="mergeNotAllowed">Not allowed to merge [Reason: Does not have enough approvals]</string>
 
     <string name="downloadFile">Download This File</string>
     <string name="waitLoadingDownloadFile">Please wait for the file to load to memory</string>
