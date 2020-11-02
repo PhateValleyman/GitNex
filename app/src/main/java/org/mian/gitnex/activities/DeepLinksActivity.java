@@ -35,7 +35,7 @@ public class DeepLinksActivity extends BaseActivity {
 	private ActivityDeeplinksBinding viewBinding;
 	private String currentInstance;
 	private String instanceToken;
-	private boolean noAccountFound = false;
+	private boolean accountFound = false;
 
 	private Intent mainIntent;
 	private Intent issueIntent;
@@ -75,37 +75,22 @@ public class DeepLinksActivity extends BaseActivity {
 		UserAccountsApi userAccountsApi = new UserAccountsApi(ctx);
 		List<UserAccount> userAccounts = userAccountsApi.usersAccounts();
 
-		if(userAccounts.size() > 0) {
+		for(UserAccount userAccount : userAccounts) {
 
-			String hostUri;
-			for(int i = 0; i < userAccounts.size(); i++) {
+			String hostUri = userAccount.getInstanceUrl();
 
-				hostUri = userAccounts.get(i).getInstanceUrl();
+			currentInstance = userAccount.getInstanceUrl();
+			instanceToken = userAccount.getToken();
 
-				currentInstance = userAccounts.get(i).getInstanceUrl();
-				instanceToken = userAccounts.get(i).getToken();
+			if(hostUri.toLowerCase().contains(Objects.requireNonNull(data.getHost().toLowerCase()))) {
 
-				if(hostUri.toLowerCase().contains(Objects.requireNonNull(data.getHost().toLowerCase()))) {
+				accountFound = true;
+				break;
 
-					noAccountFound = false;
-					break;
-				}
-
-				noAccountFound = true;
 			}
 		}
 
-		URI host;
-		if(data.getPort() > 0) {
-
-			host = UrlBuilder.fromString(UrlHelper.fixScheme(data.getHost(), "https")).withPort(data.getPort()).toUri();
-		}
-		else {
-
-			host = UrlBuilder.fromString(UrlHelper.fixScheme(data.getHost(), "https")).toUri();
-		}
-
-		if(!noAccountFound) {
+		if(accountFound) {
 
 			// redirect to proper fragment/activity, If no action is there, show options where user to want to go like repos, profile, notifications etc
 			if(data.getPathSegments().size() > 0) {
@@ -284,12 +269,21 @@ public class DeepLinksActivity extends BaseActivity {
 
 			viewBinding.openInBrowser.setOnClickListener(addNewAccount -> {
 
+				Integer port = data.getPort() >= 0 ? data.getPort() : null;
+
+				URI host = UrlBuilder.fromString(UrlHelper.fixScheme(data.getHost(), "https"))
+					.withPort(port)
+					.toUri();
+
 				Intent intentBrowser = new Intent();
+
 				intentBrowser.setAction(Intent.ACTION_VIEW);
 				intentBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
 				intentBrowser.setData(Uri.parse(String.valueOf(host)));
+
 				startActivity(intentBrowser);
 				finish();
+
 			});
 
 			viewBinding.launchApp.setOnClickListener(launchApp -> {
