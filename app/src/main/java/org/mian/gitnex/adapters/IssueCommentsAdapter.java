@@ -290,7 +290,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 			.load(issueComment.getUser().getAvatar_url())
 			.placeholder(R.drawable.loader_animated)
 			.transform(new RoundedTransformation(4, 0))
-			.resize(35, 35)
+			.resize(50, 50)
 			.centerCrop()
 			.into(holder.avatar);
 
