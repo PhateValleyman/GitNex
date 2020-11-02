@@ -43,6 +43,7 @@ public abstract class StaticGlobalVariables {
 
 	// drafts
 	public static String draftTypeComment = "comment";
-	public static String draftTypeIssue = "issue";
+	public static String draftTypeIssue = "Issue";
+	public static String draftTypePull = "Pull";
 
 }
