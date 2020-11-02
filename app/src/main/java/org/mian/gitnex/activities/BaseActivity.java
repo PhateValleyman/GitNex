@@ -69,11 +69,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 				break;
 
 			case 4:
-				tinyDB.putString("currentTheme", "light");
-
 				if(TimeHelper.timeBetweenHours(18, 6)) { // 6pm to 6am
+					tinyDB.putString("currentTheme", "dark");
 					setTheme(R.style.AppTheme);
 				} else {
+					tinyDB.putString("currentTheme", "light");
 					setTheme(R.style.AppThemeRetro);
 				}
 				break;
