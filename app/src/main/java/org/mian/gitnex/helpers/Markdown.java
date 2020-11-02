@@ -57,11 +57,10 @@ public class Markdown {
 		@Override
 		public void run() {
 
-			Prism4jTheme prism4jTheme = TinyDB.getInstance(context).getString("themeStr").equals("Dark") ?
+			Prism4jTheme prism4jTheme = TinyDB.getInstance(context).getString("currentTheme").equals("dark") ?
 				Prism4jThemeDarkula.create() :
 				Prism4jThemeDefault.create();
 
-			// Make Builder static
 			Markwon.Builder builder = Markwon.builder(context)
 				.usePlugin(CorePlugin.create())
 				.usePlugin(HtmlPlugin.create())
