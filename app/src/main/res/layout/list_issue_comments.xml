@@ -55,6 +55,7 @@
             android:id="@+id/menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
             android:layout_weight="0"
             android:contentDescription="@string/generalImgContentText"
             app:srcCompat="@drawable/ic_dotted_menu_horizontal" />
