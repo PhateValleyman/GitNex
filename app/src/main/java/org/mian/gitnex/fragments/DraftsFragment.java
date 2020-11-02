@@ -3,6 +3,7 @@ package org.mian.gitnex.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.DraftsAdapter;
 import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.database.models.DraftWithRepository;
@@ -50,7 +52,9 @@ public class DraftsFragment extends Fragment {
 	    ctx = getContext();
         setHasOptionsMenu(true);
 
-        TinyDB tinyDb = new TinyDB(ctx);
+	    ((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.titleDrafts));
+
+        TinyDB tinyDb = TinyDB.getInstance(ctx);
 
 	    draftsList_ = new ArrayList<>();
         draftsApi = new DraftsApi(ctx);
@@ -66,11 +70,9 @@ public class DraftsFragment extends Fragment {
                 DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-	    adapter = new DraftsAdapter(getContext(), draftsList_);
-
+	    adapter = new DraftsAdapter(getContext(), getChildFragmentManager(), draftsList_);
 	    currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
-
-        swipeRefresh.setOnRefreshListener(() -> new Handler().postDelayed(() -> {
+        swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 	        draftsList_.clear();
             fetchDataAsync(currentActiveAccountId);

@@ -3,6 +3,7 @@ package org.mian.gitnex.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.ProfileEmailsAdapter;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.Emails;
 import org.mian.gitnex.viewmodels.ProfileEmailsViewModel;
 import java.util.List;
@@ -69,11 +69,6 @@ public class ProfileEmailsFragment extends Fragment {
 
         final View v = inflater.inflate(R.layout.fragment_profile_emails, container, false);
 
-        TinyDB tinyDb = new TinyDB(getContext());
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-
         final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
 
         noDataEmails = v.findViewById(R.id.noDataEmails);
@@ -88,30 +83,24 @@ public class ProfileEmailsFragment extends Fragment {
 
         mProgressBar = v.findViewById(R.id.progress_bar);
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        ProfileEmailsViewModel.loadEmailsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext());
-                    }
-                }, 200);
-            }
-        });
+        swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
+            swipeRefresh.setRefreshing(false);
+            ProfileEmailsViewModel.loadEmailsList(Authorization.get(getContext()), getContext());
+
+        }, 200));
+
+        fetchDataAsync(Authorization.get(getContext()));
 
         return v;
 
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken) {
+    private void fetchDataAsync(String instanceToken) {
 
         ProfileEmailsViewModel profileEmailModel = new ViewModelProvider(this).get(ProfileEmailsViewModel.class);
 
-        profileEmailModel.getEmailsList(instanceUrl, instanceToken, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Emails>>() {
+        profileEmailModel.getEmailsList(instanceToken, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Emails>>() {
             @Override
             public void onChanged(@Nullable List<Emails> emailsListMain) {
                 adapter = new ProfileEmailsAdapter(getContext(), emailsListMain);

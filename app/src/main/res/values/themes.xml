@@ -36,6 +36,7 @@
         <item name="android:actionOverflowButtonStyle">@style/customOverflowButtonStyle</item>
         <item name="actionOverflowMenuStyle">@style/customOverflowMenuStyle</item>
         <item name="colorSurface">@color/inputBackground</item>
+        <item name="shapeAppearanceSmallComponent">@style/inputsMaterialComponentCorner</item>
     </style>
     <!-- Dark theme - default -->
 
@@ -74,6 +75,7 @@
         <item name="android:actionOverflowButtonStyle">@style/customOverflowButtonStyle</item>
         <item name="actionOverflowMenuStyle">@style/customOverflowMenuStyle</item>
         <item name="colorSurface">@color/lightThemeInputBackground</item>
+        <item name="shapeAppearanceSmallComponent">@style/inputsMaterialComponentCorner</item>
     </style>
     <!-- Light theme -->
 
@@ -112,8 +114,14 @@
         <item name="android:actionOverflowButtonStyle">@style/customOverflowButtonStyle</item>
         <item name="actionOverflowMenuStyle">@style/customOverflowMenuStyle</item>
         <item name="colorSurface">@color/retroThemeInputBackground</item>
+        <item name="shapeAppearanceSmallComponent">@style/inputsMaterialComponentCorner</item>
     </style>
     <!-- Retro theme -->
+
+    <style name="inputsMaterialComponentCorner" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">6dp</item>
+    </style>
 
     <style name="customOverflowButtonStyle">
         <item name="android:src">@drawable/ic_dotted_menu</item>
@@ -133,15 +141,22 @@
     </style>
 
     <style name="AppThemeDarkBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="bottomSheetStyle">@style/AppBottomSheetModalStyle</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppThemeLightBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="bottomSheetStyle">@style/AppBottomSheetModalStyle</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppBottomSheetModalStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/shape_bottom_sheet_top_corners</item>
+        <item name="behavior_peekHeight">420dp</item>
     </style>
 
     <style name="AppThemeLightSearchAutoCompleteTextView" parent="Widget.AppCompat.Light.AutoCompleteTextView">
@@ -210,7 +225,7 @@
     </style>
 
     <style name="AppThemeCheckBoxStyle" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="buttonTint">@color/colorWhite</item>
+        <item name="buttonTint">?attr/iconsColor</item>
     </style>
 
     <!-- Retro theme styles -->

@@ -3,6 +3,7 @@ package org.mian.gitnex.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,10 +71,6 @@ public class LabelsFragment extends Fragment {
         final View v = inflater.inflate(R.layout.fragment_labels, container, false);
         setHasOptionsMenu(true);
 
-        TinyDB tinyDb = new TinyDB(getContext());
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
         noData = v.findViewById(R.id.noData);
 
@@ -87,20 +84,14 @@ public class LabelsFragment extends Fragment {
 
         mProgressBar = v.findViewById(R.id.progress_bar);
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        LabelsViewModel.loadLabelsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, getContext());
-                    }
-                }, 200);
-            }
-        });
+        swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName);
+            swipeRefresh.setRefreshing(false);
+            LabelsViewModel.loadLabelsList(Authorization.get(getContext()), repoOwner, repoName, getContext());
+
+        }, 200));
+
+        fetchDataAsync(Authorization.get(getContext()), repoOwner, repoName);
 
         return v;
 
@@ -109,17 +100,15 @@ public class LabelsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        final TinyDB tinyDb = new TinyDB(getContext());
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
+        final TinyDB tinyDb = TinyDB.getInstance(getContext());
+
         String repoFullName = tinyDb.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         final String repoOwner = parts[0];
         final String repoName = parts[1];
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
         if(tinyDb.getBoolean("labelsRefresh")) {
-            LabelsViewModel.loadLabelsList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), repoOwner, repoName, getContext());
+            LabelsViewModel.loadLabelsList(Authorization.get(getContext()), repoOwner, repoName, getContext());
             tinyDb.putBoolean("labelsRefresh", false);
         }
     }
@@ -140,11 +129,11 @@ public class LabelsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken, String owner, String repo) {
+    private void fetchDataAsync(String instanceToken, String owner, String repo) {
 
         LabelsViewModel labelsModel = new ViewModelProvider(this).get(LabelsViewModel.class);
 
-        labelsModel.getLabelsList(instanceUrl, instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Labels>>() {
+        labelsModel.getLabelsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Labels>>() {
             @Override
             public void onChanged(@Nullable List<Labels> labelsListMain) {
                 adapter = new LabelsAdapter(getContext(), labelsListMain);

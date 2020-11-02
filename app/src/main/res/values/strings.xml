@@ -4,18 +4,20 @@
     <string name="appEmail" translatable="false">gitnex@swatian.com</string>
     <string name="appRepo" translatable="false">Source code</string>
     <string name="appRepoLink" translatable="false">https://codeberg.org/gitnex/GitNex</string>
-    <string name="appWebsite" translatable="false">Website</string>
     <string name="appWebsiteLink" translatable="false">https://gitnex.com/</string>
-    <string name="commitPage" translatable="false">Your Gitea version\n</string>
-    <string name="supportLink" translatable="false">https://liberapay.com/mmarif/donate</string>
+    <string name="commitPage" translatable="false">Your Gitea Version</string>
     <string name="supportLinkPatreon" translatable="false">https://www.patreon.com/mmarif</string>
-    <string name="appVerBuild" translatable="false">%1$s / build %2$d</string>
+    <string name="appVersion" translatable="false">Version</string>
+    <string name="appBuild" translatable="false">Build</string>
     <string name="appDesc" translatable="false">GitNex is a free, open-source Android client for Git repository management tool Gitea. GitNex is Licensed under GPLv3.\n\nThanks to all the contributors and donators for your generous work and donations.</string>
     <string name="crowdInLink" translatable="false">https://crowdin.com/project/gitnex</string>
     <string name="crashReportEmailSubject" translatable="false">[GitNex] - Crash Report #%1$d</string>
+    <string name="translateWithCrowdin" translatable="false">Crowdin</string>
+    <string name="translateText" translatable="false">Translate</string>
+    <string name="supportText" translatable="false">Support</string>
 
-    <string name="supportText" translatable="false">Support the App on Liberapay</string>
-    <string name="supportTextPatreon" translatable="false">Become a Patreon</string>
+    <string name="supportTextLiberapay" translatable="false">Liberapay</string>
+    <string name="supportTextPatreon" translatable="false">Patreon</string>
 
     <!-- menu items -->
     <string name="navMyRepos">My Repositories</string>
@@ -29,6 +31,7 @@
     <string name="navLogout">Logout</string>
     <string name="navExplore">Explore</string>
     <string name="navAdministration">Administration</string>
+    <string name="navSearchIssuesPulls">Search Issues</string>
     <!-- menu items -->
 
     <!-- page titles -->
@@ -55,6 +58,7 @@
     <string name="pageTitleExplore">Explore</string>
     <string name="pageTitleAdministration">Gitea Administration</string>
     <string name="pageTitleUserAccounts">Manage Accounts</string>
+    <string name="pageTitleNewPullRequest">New Pull Request</string>
     <!-- page titles -->
 
     <string name="repoName">Demo repo</string>
@@ -107,6 +111,7 @@
     <string name="repoCreated">Repository created successfully</string>
     <string name="repoCreatedError">Something went wrong, please try again</string>
     <string name="repoExistsError">Repository of this name already exists under selected Owner</string>
+    <string name="repoOwnerError">Select owner for the repository</string>
 
     <string name="orgNameErrorEmpty">Organization name is empty</string>
     <string name="orgNameErrorInvalid">Organization name is not valid, [a&#8211;z A&#8211;Z 0&#8211;9 &#8211; _]</string>
@@ -143,7 +148,6 @@
 
     <string name="noDataIssueTab">No issues found</string>
 
-    <string name="infoTabRepoWebsite">Website</string>
     <string name="infoTabRepoSize">Size</string>
     <string name="infoTabRepoDefaultBranch">Default Branch</string>
     <string name="infoTabRepoSshUrl">SSH URL</string>
@@ -215,7 +219,7 @@
     <string name="issueCreated">New issue created successfully</string>
     <string name="issueCreatedError">Something went wrong, please try again</string>
     <string name="issueCreatedNoMilestone">No milestone</string>
-    <string name="noAssigneesFound">No collaborators found</string>
+    <string name="noAssigneesFound">No assignees found</string>
     <string name="noLabelsFound">No labels found</string>
 
     <!-- settings -->
@@ -265,6 +269,12 @@
     <string name="draftsHintText">Comments draft</string>
     <string name="settingsEnableCommentsDeletionText">Enable Drafts Deletion</string>
     <string name="settingsEnableCommentsDeletionHintText">Delete comment draft when comment is posted</string>
+    <string name="settingsGeneralHeader">General</string>
+    <string name="generalHintText">Home screen, default link handler</string>
+    <string name="generalDeepLinkDefaultScreen">Default Link Handler</string>
+    <string name="generalDeepLinkDefaultScreenHintText">Choose what screen should be loaded if the app cannot handle external links. It will redirect you automatically.</string>
+    <string name="generalDeepLinkSelectedText">N/A</string>
+    <string name="linkSelectorDialogTitle">Select Default Link Handler Screen</string>
     <!-- settings -->
 
     <string name="noMoreData">No more data available</string>
@@ -287,6 +297,7 @@
     <string name="labelDeleteErrorText">Something went wrong, please try again</string>
 
     <string name="noDataBranchesTab">No branches found</string>
+    <string name="selectBranchError">Select a branch for release</string>
 
     <string name="alertDialogTokenRevokedTitle">Authorization Error</string>
     <string name="alertDialogTokenRevokedMessage">It seems that the Access Token is revoked OR your are not allowed to see these contents.\n\nIn case of revoked Token, please logout and login again</string>
@@ -518,7 +529,6 @@
     <string name="genericCopyUrl">Copy URL</string>
     <!-- generic copy -->
 
-    <string name="translateText">Translate GitNex with Crowdin</string>
     <string name="exploreTextBoxHint">Explore repositories</string>
     <string name="starRepository">Star Repository</string>
     <string name="unStarRepository">Unstar Repository</string>
@@ -564,6 +574,9 @@
     <string name="mergeOptionRebase">Rebase and Merge</string>
     <string name="mergeOptionRebaseCommit">Rebase and Merge (&#45;&#45;no-ff)</string>
     <string name="mergeOptionSquash">Squash and Merge</string>
+    <string name="mergeStrategy">Merge Strategy</string>
+    <string name="selectMergeStrategy">Select merge strategy</string>
+    <string name="mergeNotAllowed">Not allowed to merge [Reason: Does not have enough approvals]</string>
 
     <string name="downloadFile">Download This File</string>
     <string name="waitLoadingDownloadFile">Please wait for the file to load to memory</string>
@@ -625,13 +638,15 @@
     <string name="draftsDeleteSuccess">Drafts deleted successfully</string>
     <string name="draftsSingleDeleteSuccess">Draft deleted successfully</string>
     <string name="deleteAllDraftsDialogMessage">This will delete all the drafts for this account. \n\nProceed with deletion?</string>
-    <string name="draftSaved">Draft saved</string>
+    <string name="draftSaved">Draft was saved automatically.</string>
 
-    <string name="appearanceHintText">Themes, fonts, badges, code block theme</string>
+    <string name="appearanceHintText">Themes, fonts, badges</string>
     <string name="fileViewerHintText">PDF mode, source code theme</string>
     <string name="securityHintText">SSL certificates, cache, polling delay</string>
     <string name="languagesHintText">Languages</string>
     <string name="reportsHintText">Crash reports</string>
+    <string name="rateAppHintText">If you like GitNex you can give it a thumbs up</string>
+    <string name="aboutAppHintText">App version, build, user gitea version</string>
 
     <string name="archivedRepository">Archived</string>
 
@@ -691,4 +706,29 @@
     <string name="repoTransferOwnerError">New owner is required</string>
     <string name="repoTransferError">There is a problem with the owner name. Make sure that the new owner exists</string>
 
+    <string name="exploreFilterDialogTitle">Filter Repositories</string>
+    <string name="exploreFilterIncludeTopic">Search ONLY in Topic</string>
+    <string name="exploreFilterIncludeDesc">Search in Description</string>
+    <string name="exploreFilterIncludeArchive">Only Archived Repositories</string>
+    <string name="exploreFilterIncludePrivate">Only Private Repositories</string>
+    <string name="exploreFilterIncludeTemplateRepos">Search in Template Repositories</string>
+
+    <string name="mergeIntoBranch">Merge Into</string>
+    <string name="pullFromBranch">Pull From</string>
+    <string name="sameBranchesError">These branches are equal. There is no need to create a pull request</string>
+    <string name="mergeIntoError">Merge into branch is required</string>
+    <string name="pullFromError">Pull from branch is required</string>
+    <string name="titleError">Title is required</string>
+    <string name="prCreateSuccess">Pull Request created successfully</string>
+    <string name="prAlreadyExists">A pull request between these branches already exists</string>
+
+    <string name="accountDoesNotExist">It seems that account for URI %1$s does not exists in the app. You can add one by tapping on the Add New Account button.</string>
+    <string name="launchApp">Go to App</string>
+    <string name="noActionText">GitNex cannot handle the requested resource, you can open an issue at the project repository as an improvement with providing details of the work. Just launch a default screen for now from the buttons below, it can be changed from settings.</string>
+
+    <string name="codeBlockGreenOnBlack">Green on Black</string>
+    <string name="codeBlockWhiteOnBlack">White on Black</string>
+    <string name="codeBlockGreyOnBlack">Grey on Black</string>
+    <string name="codeBlockWhiteOnGrey">White on Grey</string>
+    <string name="codeBlockDarkOnWhite">Dark on White</string>
 </resources>

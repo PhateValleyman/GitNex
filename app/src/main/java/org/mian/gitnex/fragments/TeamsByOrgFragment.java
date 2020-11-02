@@ -3,6 +3,7 @@ package org.mian.gitnex.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,13 +24,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.TeamsByOrgAdapter;
-import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.Teams;
 import org.mian.gitnex.viewmodels.TeamsByOrgViewModel;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Author M M Arif
@@ -72,10 +71,6 @@ public class TeamsByOrgFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_teams_by_org, container, false);
         setHasOptionsMenu(true);
 
-        TinyDB tinyDb = new TinyDB(getContext());
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         noDataTeams = v.findViewById(R.id.noDataTeams);
 
         final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
@@ -90,20 +85,14 @@ public class TeamsByOrgFragment extends Fragment {
 
         mProgressBar = v.findViewById(R.id.progress_bar);
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        TeamsByOrgViewModel.loadTeamsByOrgList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName, getContext());
-                    }
-                }, 200);
-            }
-        });
+        swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName);
+            swipeRefresh.setRefreshing(false);
+            TeamsByOrgViewModel.loadTeamsByOrgList(Authorization.get(getContext()), orgName, getContext());
+
+        }, 200));
+
+        fetchDataAsync(Authorization.get(getContext()), orgName);
 
         return v;
     }
@@ -111,22 +100,19 @@ public class TeamsByOrgFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        TinyDB tinyDb = new TinyDB(getContext());
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+        TinyDB tinyDb = TinyDB.getInstance(getContext());
 
         if(tinyDb.getBoolean("resumeTeams")) {
-            TeamsByOrgViewModel.loadTeamsByOrgList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName, getContext());
+            TeamsByOrgViewModel.loadTeamsByOrgList(Authorization.get(getContext()), orgName, getContext());
             tinyDb.putBoolean("resumeTeams", false);
         }
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken, String owner) {
+    private void fetchDataAsync(String instanceToken, String owner) {
 
         TeamsByOrgViewModel teamModel = new ViewModelProvider(this).get(TeamsByOrgViewModel.class);
 
-        teamModel.getTeamsByOrg(instanceUrl, instanceToken, owner, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Teams>>() {
+        teamModel.getTeamsByOrg(instanceToken, owner, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Teams>>() {
             @Override
             public void onChanged(@Nullable List<Teams> orgTeamsListMain) {
                 adapter = new TeamsByOrgAdapter(getContext(), orgTeamsListMain);
@@ -147,8 +133,6 @@ public class TeamsByOrgFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-
-        boolean connToInternet = AppUtil.hasNetworkConnection(Objects.requireNonNull(getContext()));
 
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);

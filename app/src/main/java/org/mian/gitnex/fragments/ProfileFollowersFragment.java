@@ -3,6 +3,7 @@ package org.mian.gitnex.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.ProfileFollowersAdapter;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.UserInfo;
 import org.mian.gitnex.viewmodels.ProfileFollowersViewModel;
 import java.util.List;
@@ -69,11 +69,6 @@ public class ProfileFollowersFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_profile_followers, container, false);
 
-        TinyDB tinyDb = new TinyDB(getContext());
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-
         final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
 
         noDataFollowers = v.findViewById(R.id.noDataFollowers);
@@ -88,29 +83,23 @@ public class ProfileFollowersFragment extends Fragment {
 
         mProgressBar = v.findViewById(R.id.progress_bar);
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        ProfileFollowersViewModel.loadFollowersList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext());
-                    }
-                }, 200);
-            }
-        });
+        swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
+            swipeRefresh.setRefreshing(false);
+            ProfileFollowersViewModel.loadFollowersList(Authorization.get(getContext()), getContext());
+
+        }, 200));
+
+        fetchDataAsync(Authorization.get(getContext()));
 
         return v;
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken) {
+    private void fetchDataAsync(String instanceToken) {
 
         ProfileFollowersViewModel pfModel = new ViewModelProvider(this).get(ProfileFollowersViewModel.class);
 
-        pfModel.getFollowersList(instanceUrl, instanceToken, getContext()).observe(getViewLifecycleOwner(), new Observer<List<UserInfo>>() {
+        pfModel.getFollowersList(instanceToken, getContext()).observe(getViewLifecycleOwner(), new Observer<List<UserInfo>>() {
             @Override
             public void onChanged(@Nullable List<UserInfo> pfListMain) {
                 adapter = new ProfileFollowersAdapter(getContext(), pfListMain);

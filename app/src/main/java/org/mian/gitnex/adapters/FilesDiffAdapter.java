@@ -2,8 +2,8 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +12,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.fragment.app.FragmentManager;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.ReplyToIssueActivity;
+import org.mian.gitnex.fragments.BottomSheetReplyFragment;
 import org.mian.gitnex.helpers.DiffTextView;
 import org.mian.gitnex.models.FileDiffView;
 import java.util.List;
@@ -35,12 +36,14 @@ public class FilesDiffAdapter extends BaseAdapter {
 	private static int COLOR_SELECTED;
 	private static int COLOR_FONT;
 
-	private Context context;
-	private List<FileDiffView> fileDiffViews;
+	private final Context context;
+	private final FragmentManager fragmentManager;
+	private final List<FileDiffView> fileDiffViews;
 
-	public FilesDiffAdapter(Context context, List<FileDiffView> fileDiffViews) {
+	public FilesDiffAdapter(Context context, FragmentManager fragmentManager, List<FileDiffView> fileDiffViews) {
 
 		this.context = context;
+		this.fragmentManager = fragmentManager;
 		this.fileDiffViews = fileDiffViews;
 
 		selectedViews = new ConcurrentSkipListMap<>();
@@ -182,7 +185,6 @@ public class FilesDiffAdapter extends BaseAdapter {
 
 						});
 
-
 						diffTextView.setOnLongClickListener(v -> {
 
 							if(((DiffTextView) v).getCurrentBackgroundColor() == COLOR_SELECTED) {
@@ -201,12 +203,11 @@ public class FilesDiffAdapter extends BaseAdapter {
 
 								selectedViews.clear();
 
-								Intent intent = new Intent(context, ReplyToIssueActivity.class);
-								intent.putExtra("commentBody", stringBuilder.toString());
-								intent.putExtra("cursorToEnd", true);
-								intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								Bundle bundle = new Bundle();
+								bundle.putString("commentBody", stringBuilder.toString());
+								bundle.putBoolean("cursorToEnd", true);
 
-								context.startActivity(intent);
+								BottomSheetReplyFragment.newInstance(bundle).show(fragmentManager, "replyBottomSheet");
 
 							}
 

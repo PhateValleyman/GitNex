@@ -16,6 +16,7 @@ import org.mian.gitnex.models.Collaborators;
 import org.mian.gitnex.models.Commits;
 import org.mian.gitnex.models.CreateIssue;
 import org.mian.gitnex.models.CreateLabel;
+import org.mian.gitnex.models.CreatePullRequest;
 import org.mian.gitnex.models.DeleteFile;
 import org.mian.gitnex.models.EditFile;
 import org.mian.gitnex.models.Emails;
@@ -65,6 +66,9 @@ import retrofit2.http.Query;
  */
 
 public interface ApiInterface {
+
+	@GET("version") // gitea version API without any auth
+	Call<GiteaVersion> getGiteaVersion();
 
     @GET("version") // gitea version API
     Call<GiteaVersion> getGiteaVersionWithBasic(@Header("Authorization") String authorization);
@@ -170,6 +174,9 @@ public interface ApiInterface {
 
     @GET("repos/{owner}/{repo}/collaborators") // get collaborators list
     Call<List<Collaborators>> getCollaborators(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
+
+    @GET("orgs/{org}/members") // get organization members
+    Call<List<Collaborators>> getOrgMembers(@Header("Authorization") String token, @Path("org") String ownerName);
 
     @POST("repos/{owner}/{repo}/milestones") // create new milestone
     Call<Milestones> createMilestone(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Body Milestones jsonStr);
@@ -292,7 +299,10 @@ public interface ApiInterface {
     Call<List<UserInfo>> getRepoWatchers(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName);
 
     @GET("repos/search") // get all the repos which match the query string
-    Call<ExploreRepositories> queryRepos(@Header("Authorization") String token, @Query("q") String searchKeyword, @Query("private") Boolean repoTypeInclude, @Query("sort") String sort, @Query("order") String order, @Query("limit") int limit);
+    Call<ExploreRepositories> queryRepos(@Header("Authorization") String token, @Query("q") String searchKeyword, @Query("private") Boolean repoTypeInclude, @Query("sort") String sort, @Query("order") String order, @Query("topic") boolean topic, @Query("includeDesc") boolean includeDesc, @Query("template") boolean template, @Query("archived") boolean archived, @Query("limit") int limit, @Query("page") int page);
+
+	@GET("repos/issues/search") // get all the issues which match the query string
+	Call<List<Issues>> queryIssues(@Header("Authorization") String token, @Query("q") String searchKeyword, @Query("type") String type, @Query("state") String state, @Query("page") int page);
 
     @POST("repos/{owner}/{repo}/contents/{file}") // create new file
     Call<JsonElement> createNewFile(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("file") String fileName, @Body NewFile jsonStr);
@@ -347,6 +357,12 @@ public interface ApiInterface {
 
     @POST("repos/{owner}/{repo}/pulls/{index}/merge") // merge a pull request
     Call<ResponseBody> mergePullRequest(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Path("index") int index, @Body MergePullRequest jsonStr);
+
+	@POST("repos/{owner}/{repo}/pulls") // create a pull request
+	Call<ResponseBody> createPullRequest(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("repo") String repoName, @Body CreatePullRequest jsonStr);
+
+	@GET("repos/{owner}/{repo}/pulls/{index}") // get pull request by index
+	Call<PullRequests> getPullRequestByIndex(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Path("index") int index);
 
     @GET("repos/{owner}/{repo}/commits") // get all commits
     Call<List<Commits>> getRepositoryCommits(@Header("Authorization") String token, @Path("owner") String owner, @Path("repo") String repo, @Query("page") int page, @Query("sha") String branchName, @Query("limit") int limit);

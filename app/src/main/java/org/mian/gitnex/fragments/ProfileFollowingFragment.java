@@ -3,6 +3,7 @@ package org.mian.gitnex.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,10 +70,7 @@ public class ProfileFollowingFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_profile_following, container, false);
 
-        TinyDB tinyDb = new TinyDB(getContext());
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+        TinyDB tinyDb = TinyDB.getInstance(getContext());
 
         final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
 
@@ -88,29 +86,23 @@ public class ProfileFollowingFragment extends Fragment {
 
         mProgressBar = v.findViewById(R.id.progress_bar);
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        ProfileFollowingViewModel.loadFollowingList(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), getContext());
-                    }
-                }, 200);
-            }
-        });
+        swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken));
+            swipeRefresh.setRefreshing(false);
+            ProfileFollowingViewModel.loadFollowingList(Authorization.get(getContext()), getContext());
+
+        }, 200));
+
+        fetchDataAsync(Authorization.get(getContext()));
 
         return v;
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken) {
+    private void fetchDataAsync(String instanceToken) {
 
         ProfileFollowingViewModel pfModel = new ViewModelProvider(this).get(ProfileFollowingViewModel.class);
 
-        pfModel.getFollowingList(instanceUrl, instanceToken, getContext()).observe(getViewLifecycleOwner(), new Observer<List<UserInfo>>() {
+        pfModel.getFollowingList(instanceToken, getContext()).observe(getViewLifecycleOwner(), new Observer<List<UserInfo>>() {
             @Override
             public void onChanged(@Nullable List<UserInfo> pfListMain) {
                 adapter = new ProfileFollowingAdapter(getContext(), pfListMain);

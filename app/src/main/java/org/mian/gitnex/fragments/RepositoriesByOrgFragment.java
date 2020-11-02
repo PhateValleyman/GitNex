@@ -3,6 +3,7 @@ package org.mian.gitnex.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +30,6 @@ import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.UserRepositories;
 import org.mian.gitnex.viewmodels.RepositoriesByOrgViewModel;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Author M M Arif
@@ -73,11 +73,6 @@ public class RepositoriesByOrgFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_repositories_by_org, container, false);
         setHasOptionsMenu(true);
-
-        TinyDB tinyDb = new TinyDB(getContext());
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
         noData = v.findViewById(R.id.noData);
 
         final SwipeRefreshLayout swipeRefresh = v.findViewById(R.id.pullToRefresh);
@@ -92,20 +87,14 @@ public class RepositoriesByOrgFragment extends Fragment {
 
         mProgressBar = v.findViewById(R.id.progress_bar);
 
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefresh.setRefreshing(false);
-                        RepositoriesByOrgViewModel.loadOrgRepos(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName, getContext(), pageSize, resultLimit);
-                    }
-                }, 200);
-            }
-        });
+        swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-        fetchDataAsync(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName, pageSize, resultLimit);
+            swipeRefresh.setRefreshing(false);
+            RepositoriesByOrgViewModel.loadOrgRepos(Authorization.get(getContext()), orgName, getContext(), pageSize, resultLimit);
+
+        }, 200));
+
+        fetchDataAsync(Authorization.get(getContext()), orgName, pageSize, resultLimit);
 
         return v;
     }
@@ -114,23 +103,20 @@ public class RepositoriesByOrgFragment extends Fragment {
     public void onResume() {
 
         super.onResume();
-        TinyDB tinyDb = new TinyDB(getContext());
-        final String instanceUrl = tinyDb.getString("instanceUrl");
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+        TinyDB tinyDb = TinyDB.getInstance(getContext());
 
         if(tinyDb.getBoolean("repoCreated")) {
-            RepositoriesByOrgViewModel.loadOrgRepos(instanceUrl, Authorization.returnAuthentication(getContext(), loginUid, instanceToken), orgName, getContext(), pageSize, resultLimit);
+            RepositoriesByOrgViewModel.loadOrgRepos(Authorization.get(getContext()), orgName, getContext(), pageSize, resultLimit);
             tinyDb.putBoolean("repoCreated", false);
         }
 
     }
 
-    private void fetchDataAsync(String instanceUrl, String instanceToken, String owner, int pageSize, int resultLimit) {
+    private void fetchDataAsync(String instanceToken, String owner, int pageSize, int resultLimit) {
 
         RepositoriesByOrgViewModel orgRepoModel = new ViewModelProvider(this).get(RepositoriesByOrgViewModel.class);
 
-        orgRepoModel.getRepositoriesByOrg(instanceUrl, instanceToken, owner, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(), new Observer<List<UserRepositories>>() {
+        orgRepoModel.getRepositoriesByOrg(instanceToken, owner, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(), new Observer<List<UserRepositories>>() {
             @Override
             public void onChanged(@Nullable List<UserRepositories> orgReposListMain) {
                 adapter = new RepositoriesByOrgAdapter(getContext(), orgReposListMain);
@@ -152,7 +138,7 @@ public class RepositoriesByOrgFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        boolean connToInternet = AppUtil.hasNetworkConnection(Objects.requireNonNull(getContext()));
+        boolean connToInternet = AppUtil.hasNetworkConnection(requireContext());
 
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
