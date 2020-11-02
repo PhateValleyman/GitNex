@@ -20,7 +20,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.DeleteFile;
@@ -49,9 +48,6 @@ public class CreateFileActivity extends BaseActivity {
 	private String filePath;
 	private String fileSha;
 	private int fileAction = 0; // 0 = create, 1 = delete, 2 = edit
-    final Context ctx = this;
-    private Context appCtx;
-    private TinyDB tinyDb;
 
     List<Branches> branchesList = new ArrayList<>();
 
@@ -72,19 +68,17 @@ public class CreateFileActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-	    tinyDb = TinyDB.getInstance(appCtx);
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        loginUid = tinyDb.getString("loginUid");
-        String repoFullName = tinyDb.getString("repoFullName");
+        loginUid = tinyDB.getString("loginUid");
+        String repoFullName = tinyDB.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         repoOwner = parts[0];
         repoName = parts[1];
-        instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+        instanceToken = "token " + tinyDB.getString(loginUid + "-token");
 
         closeActivity = findViewById(R.id.close);
         newFileName = findViewById(R.id.newFileName);
@@ -399,7 +393,7 @@ public class CreateFileActivity extends BaseActivity {
 					getIntent().removeExtra("filePath");
 					getIntent().removeExtra("fileSha");
 					getIntent().removeExtra("fileContents");
-					tinyDb.putBoolean("fileModified", true);
+					tinyDB.putBoolean("fileModified", true);
 					finish();
 				}
 				else if(response.code() == 401) {

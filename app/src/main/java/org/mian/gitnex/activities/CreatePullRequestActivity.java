@@ -3,7 +3,6 @@ package org.mian.gitnex.activities;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Branches;
@@ -43,9 +41,6 @@ import retrofit2.Callback;
 public class CreatePullRequestActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener {
 
 	private View.OnClickListener onClickListener;
-	private Context ctx = this;
-	private Context appCtx;
-	private TinyDB tinyDb;
 	private ActivityCreatePrBinding viewBinding;
 	private CustomLabelsSelectionDialogBinding labelsBinding;
 	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
@@ -79,22 +74,20 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
-		tinyDb = TinyDB.getInstance(appCtx);
 
 		viewBinding = ActivityCreatePrBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
-		loginUid = tinyDb.getString("loginUid");
-		String repoFullName = tinyDb.getString("repoFullName");
+		loginUid = tinyDB.getString("loginUid");
+		String repoFullName = tinyDB.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 		repoOwner = parts[0];
 		repoName = parts[1];
-		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		instanceToken = "token " + tinyDB.getString(loginUid + "-token");
 
 		// require gitea 1.12 or higher
-		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}

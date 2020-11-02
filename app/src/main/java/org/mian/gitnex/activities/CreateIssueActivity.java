@@ -51,9 +51,6 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 	private CustomLabelsSelectionDialogBinding labelsBinding;
 	private CustomAssigneesSelectionDialogBinding assigneesBinding;
     private View.OnClickListener onClickListener;
-    final Context ctx = this;
-    private Context appCtx;
-    private TinyDB tinyDb;
     private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 	private Dialog dialogLabels;
 	private Dialog dialogAssignees;
@@ -84,8 +81,6 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-	    tinyDb = TinyDB.getInstance(appCtx);
 
 	    viewBinding = ActivityCreateIssueBinding.inflate(getLayoutInflater());
 	    View view = viewBinding.getRoot();
@@ -95,14 +90,14 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        loginUid = tinyDb.getString("loginUid");
-        String repoFullName = tinyDb.getString("repoFullName");
+        loginUid = tinyDB.getString("loginUid");
+        String repoFullName = tinyDB.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         repoOwner = parts[0];
         repoName = parts[1];
 
         // require gitea 1.12 or higher
-        if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+        if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 
             resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
         }

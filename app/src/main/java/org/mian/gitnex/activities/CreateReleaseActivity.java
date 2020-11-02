@@ -19,7 +19,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.Branches;
 import org.mian.gitnex.models.Releases;
@@ -43,9 +42,6 @@ public class CreateReleaseActivity extends BaseActivity {
     private CheckBox releaseType;
     private CheckBox releaseDraft;
     private Button createNewRelease;
-    final Context ctx = this;
-    private Context appCtx;
-    private TinyDB tinyDb;
     private String selectedBranch;
 
 	private String repoOwner;
@@ -63,14 +59,12 @@ public class CreateReleaseActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-	    tinyDb = TinyDB.getInstance(appCtx);
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        String repoFullName = tinyDb.getString("repoFullName");
+        String repoFullName = tinyDB.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         repoOwner = parts[0];
         repoName = parts[1];
@@ -175,7 +169,7 @@ public class CreateReleaseActivity extends BaseActivity {
 
                 if (response.code() == 201) {
 
-                    tinyDb.putBoolean("updateReleases", true);
+                    tinyDB.putBoolean("updateReleases", true);
                     Toasty.success(ctx, getString(R.string.releaseCreatedText));
                     enableProcessButton();
                     finish();

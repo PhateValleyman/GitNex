@@ -1,6 +1,5 @@
 package org.mian.gitnex.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,10 +45,6 @@ public class LoginActivity extends BaseActivity {
 
 	private enum LoginType {BASIC, TOKEN}
 
-	private Context appCtx;
-	private Context ctx = this;
-	private TinyDB tinyDB;
-
 	private Button loginButton;
 	private EditText instanceUrlET, loginUidET, loginPassword, otpCode, loginTokenCode;
 	private AutoCompleteTextView protocolSpinner;
@@ -67,9 +62,7 @@ public class LoginActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
 
-		tinyDB = TinyDB.getInstance(appCtx);
 		NetworkObserver networkMonitor = new NetworkObserver(ctx);
 
 		loginButton = findViewById(R.id.login_button);

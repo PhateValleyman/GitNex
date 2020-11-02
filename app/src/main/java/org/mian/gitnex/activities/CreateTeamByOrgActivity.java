@@ -31,8 +31,6 @@ import retrofit2.Callback;
 
 public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClickListener {
 
-    final Context ctx = CreateTeamByOrgActivity.this;
-    private Context appCtx;
     private View.OnClickListener onClickListener;
     private TextView teamName;
     private TextView teamDesc;
@@ -75,7 +73,6 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 

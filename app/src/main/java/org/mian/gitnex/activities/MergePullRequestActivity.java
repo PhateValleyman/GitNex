@@ -15,7 +15,6 @@ import org.mian.gitnex.databinding.ActivityMergePullRequestBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.MergePullRequest;
@@ -33,9 +32,6 @@ import retrofit2.Callback;
 public class MergePullRequestActivity extends BaseActivity {
 
 	private View.OnClickListener onClickListener;
-	final Context ctx = this;
-	private Context appCtx;
-	private TinyDB tinyDb;
 
 	private String repoOwner;
 	private String repoName;
@@ -56,18 +52,16 @@ public class MergePullRequestActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
-		tinyDb = TinyDB.getInstance(appCtx);
 
 		viewBinding = ActivityMergePullRequestBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
-		String repoFullName = tinyDb.getString("repoFullName");
+		String repoFullName = tinyDB.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 		repoOwner = parts[0];
 		repoName = parts[1];
-		prIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+		prIndex = Integer.parseInt(tinyDB.getString("issueNumber"));
 
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
@@ -79,22 +73,22 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		setMergeAdapter();
 
-		if(!tinyDb.getString("issueTitle").isEmpty()) {
+		if(!tinyDB.getString("issueTitle").isEmpty()) {
 
-			viewBinding.toolbarTitle.setText(tinyDb.getString("issueTitle"));
-			viewBinding.mergeTitle.setText(tinyDb.getString("issueTitle") + " (#" + tinyDb.getString("issueNumber") + ")");
+			viewBinding.toolbarTitle.setText(tinyDB.getString("issueTitle"));
+			viewBinding.mergeTitle.setText(tinyDB.getString("issueTitle") + " (#" + tinyDB.getString("issueNumber") + ")");
 		}
 
 		initCloseListener();
 		viewBinding.close.setOnClickListener(onClickListener);
 
 		// if gitea version is greater/equal(1.12.0) than user installed version (installed.higherOrEqual(compareVer))
-		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 
 			viewBinding.deleteBranch.setVisibility(View.VISIBLE);
 		}
 
-		if(tinyDb.getString("prMergeable").equals("false")) {
+		if(tinyDB.getString("prMergeable").equals("false")) {
 
 			disableProcessButton();
 			viewBinding.mergeInfoDisabledMessage.setVisibility(View.VISIBLE);
@@ -104,7 +98,7 @@ public class MergePullRequestActivity extends BaseActivity {
 			viewBinding.mergeInfoDisabledMessage.setVisibility(View.GONE);
 		}
 
-		if(tinyDb.getString("prIsFork").equals("true")) {
+		if(tinyDB.getString("prIsFork").equals("true")) {
 
 			viewBinding.deleteBranchForkInfo.setVisibility(View.VISIBLE);
 		}
@@ -132,7 +126,7 @@ public class MergePullRequestActivity extends BaseActivity {
 		mergeList.add(new MergePullRequestSpinner("rebase", getResources().getString(R.string.mergeOptionRebase)));
 		mergeList.add(new MergePullRequestSpinner("rebase-merge", getResources().getString(R.string.mergeOptionRebaseCommit)));
 		// squash merge works only on gitea > v1.11.4 due to a bug
-		if(new Version(tinyDb.getString("giteaVersion")).higher("1.11.4")) {
+		if(new Version(tinyDB.getString("giteaVersion")).higher("1.11.4")) {
 
 			mergeList.add(new MergePullRequestSpinner("squash", getResources().getString(R.string.mergeOptionSquash)));
 		}
@@ -194,9 +188,9 @@ public class MergePullRequestActivity extends BaseActivity {
 
 					if(deleteBranch) {
 
-						if(tinyDb.getString("prIsFork").equals("true")) {
+						if(tinyDB.getString("prIsFork").equals("true")) {
 
-							String repoFullName = tinyDb.getString("prForkFullName");
+							String repoFullName = tinyDB.getString("prForkFullName");
 							String[] parts = repoFullName.split("/");
 							final String repoOwner = parts[0];
 							final String repoName = parts[1];
@@ -204,13 +198,13 @@ public class MergePullRequestActivity extends BaseActivity {
 							deleteBranchFunction(repoOwner, repoName);
 
 							Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
-							tinyDb.putBoolean("prMerged", true);
-							tinyDb.putBoolean("resumePullRequests", true);
+							tinyDB.putBoolean("prMerged", true);
+							tinyDB.putBoolean("resumePullRequests", true);
 							finish();
 						}
 						else {
 
-							String repoFullName = tinyDb.getString("repoFullName");
+							String repoFullName = tinyDB.getString("repoFullName");
 							String[] parts = repoFullName.split("/");
 							final String repoOwner = parts[0];
 							final String repoName = parts[1];
@@ -218,8 +212,8 @@ public class MergePullRequestActivity extends BaseActivity {
 							deleteBranchFunction(repoOwner, repoName);
 
 							Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
-							tinyDb.putBoolean("prMerged", true);
-							tinyDb.putBoolean("resumePullRequests", true);
+							tinyDB.putBoolean("prMerged", true);
+							tinyDB.putBoolean("resumePullRequests", true);
 							finish();
 						}
 
@@ -227,8 +221,8 @@ public class MergePullRequestActivity extends BaseActivity {
 					else {
 
 						Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
-						tinyDb.putBoolean("prMerged", true);
-						tinyDb.putBoolean("resumePullRequests", true);
+						tinyDB.putBoolean("prMerged", true);
+						tinyDB.putBoolean("resumePullRequests", true);
 						finish();
 					}
 
@@ -269,7 +263,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 	private void deleteBranchFunction(String repoOwner, String repoName) {
 
-		String branchName = tinyDb.getString("prHeadBranch");
+		String branchName = tinyDB.getString("prHeadBranch");
 
 		Call<JsonElement> call = RetrofitClient
 				.getApiInterface(ctx)

@@ -43,9 +43,6 @@ public class CreateRepoActivity extends BaseActivity {
     private EditText repoName;
     private EditText repoDesc;
     private CheckBox repoAccess;
-    final Context ctx = this;
-    private Context appCtx;
-    private TinyDB tinyDb;
 
 	private String loginUid;
 	private String userLogin;
@@ -67,13 +64,11 @@ public class CreateRepoActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-	    tinyDb = TinyDB.getInstance(appCtx);
 
         boolean connToInternet = AppUtil.hasNetworkConnection(ctx);
 
-        loginUid = tinyDb.getString("loginUid");
-        userLogin = tinyDb.getString("userLogin");
+        loginUid = tinyDB.getString("loginUid");
+        userLogin = tinyDB.getString("userLogin");
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -242,9 +237,9 @@ public class CreateRepoActivity extends BaseActivity {
 
 			            for(int i = 0; i < organizationsList_.size(); i++) {
 
-				            if(!tinyDb.getString("organizationId").isEmpty()) {
+				            if(!tinyDB.getString("organizationId").isEmpty()) {
 
-					            if(Integer.parseInt(tinyDb.getString("organizationId")) == organizationsList_.get(i).getId()) {
+					            if(Integer.parseInt(tinyDB.getString("organizationId")) == organizationsList_.get(i).getId()) {
 						            organizationId = i + 1;
 					            }
 				            }
@@ -260,7 +255,7 @@ public class CreateRepoActivity extends BaseActivity {
 
 		            spinner.setOnItemClickListener ((parent, view, position, id) -> selectedOwner = organizationsList.get(position).getUsername());
 
-		            if(tinyDb.getBoolean("organizationAction") & organizationId != 0) {
+		            if(tinyDB.getBoolean("organizationAction") & organizationId != 0) {
 
 			            int selectOwnerById = organizationId;
 			            new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -269,7 +264,7 @@ public class CreateRepoActivity extends BaseActivity {
 				            selectedOwner = organizationsList.get(selectOwnerById).getUsername();
 			            }, 500);
 
-			            tinyDb.putBoolean("organizationAction", false);
+			            tinyDB.putBoolean("organizationAction", false);
 		            }
 
 		            enableProcessButton();

@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -37,7 +36,6 @@ import org.mian.gitnex.fragments.BottomSheetFileViewerFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Markdown;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.highlightjs.HighlightJsView;
 import org.mian.gitnex.helpers.highlightjs.models.Theme;
@@ -62,8 +60,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private LinearLayout singleFileContentsFrame;
 	private HighlightJsView singleCodeContents;
 	private PhotoView imageView;
-	final Context ctx = this;
-	private Context appCtx;
 	private ProgressBar mProgressBar;
 	private byte[] imageData;
 	private PDFView pdfView;
@@ -73,7 +69,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private String singleFileName;
 	private String fileSha;
 	private AppUtil appUtil;
-	private TinyDB tinyDb;
 
 	@Override
 	protected int getLayoutResourceId() {
@@ -85,22 +80,20 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
 		appUtil = new AppUtil();
-		tinyDb = TinyDB.getInstance(appCtx);
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		String repoFullName = tinyDb.getString("repoFullName");
-		String repoBranch = tinyDb.getString("repoBranch");
+		String repoFullName = tinyDB.getString("repoFullName");
+		String repoBranch = tinyDB.getString("repoBranch");
 		String[] parts = repoFullName.split("/");
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
-		final String loginUid = tinyDb.getString("loginUid");
-		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		final String loginUid = tinyDB.getString("loginUid");
+		final String instanceToken = "token " + tinyDB.getString(loginUid + "-token");
 
-		tinyDb.putBoolean("enableMarkdownInFileView", false);
+		tinyDB.putBoolean("enableMarkdownInFileView", false);
 
 		ImageView closeActivity = findViewById(R.id.close);
 		singleFileContents = findViewById(R.id.singleFileContents);
@@ -119,7 +112,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		tinyDb.putString("downloadFileContents", "");
+		tinyDB.putString("downloadFileContents", "");
 
 		try {
 
@@ -142,18 +135,18 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		super.onResume();
 
-		String repoFullName = tinyDb.getString("repoFullName");
-		String repoBranch = tinyDb.getString("repoBranch");
+		String repoFullName = tinyDB.getString("repoFullName");
+		String repoBranch = tinyDB.getString("repoBranch");
 		String[] parts = repoFullName.split("/");
 		String repoOwner = parts[0];
 		String repoName = parts[1];
-		String loginUid = tinyDb.getString("loginUid");
-		String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		String loginUid = tinyDB.getString("loginUid");
+		String instanceToken = "token " + tinyDB.getString(loginUid + "-token");
 
-		if(tinyDb.getBoolean("fileModified")) {
+		if(tinyDB.getBoolean("fileModified")) {
 
 			getSingleFileContents(instanceToken, repoOwner, repoName, singleFileName, repoBranch);
-			tinyDb.putBoolean("fileModified", false);
+			tinyDB.putBoolean("fileModified", false);
 		}
 	}
 
@@ -179,8 +172,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 						fileSha = response.body().getSha();
 
 						// download file meta
-						tinyDb.putString("downloadFileName", filename);
-						tinyDb.putString("downloadFileContents", response.body().getContent());
+						tinyDB.putString("downloadFileName", filename);
+						tinyDB.putString("downloadFileContents", response.body().getContent());
 
 						if(appUtil.imageExtension(fileExtension)) { // file is image
 
@@ -200,7 +193,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							pdfViewFrame.setVisibility(View.GONE);
 							singleCodeContents.setVisibility(View.VISIBLE);
 
-							switch(tinyDb.getInt("fileviewerSourceCodeThemeId")) {
+							switch(tinyDB.getInt("fileviewerSourceCodeThemeId")) {
 
 								case 1:
 
@@ -236,7 +229,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							singleCodeContents.setVisibility(View.GONE);
 							pdfViewFrame.setVisibility(View.VISIBLE);
 
-							pdfNightMode = tinyDb.getBoolean("enablePdfMode");
+							pdfNightMode = tinyDB.getBoolean("enablePdfMode");
 
 							decodedPdf = Base64.decode(response.body().getContent(), Base64.DEFAULT);
 							pdfView.fromBytes(decodedPdf).enableSwipe(true).swipeHorizontal(false).enableDoubletap(true).defaultPage(0).enableAnnotationRendering(false).password(null).scrollHandle(null).enableAntialiasing(true).spacing(0).autoSpacing(true).pageFitPolicy(FitPolicy.WIDTH).fitEachPage(true).pageSnap(false).pageFling(true).nightMode(pdfNightMode).load();
@@ -331,22 +324,22 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		}
 		else if(id == R.id.markdown) {
 
-			new Markdown(ctx, appUtil.decodeBase64(tinyDb.getString("downloadFileContents")), singleFileContents);
+			new Markdown(ctx, appUtil.decodeBase64(tinyDB.getString("downloadFileContents")), singleFileContents);
 
-			if(!tinyDb.getBoolean("enableMarkdownInFileView")) {
+			if(!tinyDB.getBoolean("enableMarkdownInFileView")) {
 
 				singleCodeContents.setVisibility(View.GONE);
 				singleFileContentsFrame.setVisibility(View.VISIBLE);
 				singleFileContents.setVisibility(View.VISIBLE);
-				tinyDb.putBoolean("enableMarkdownInFileView", true);
+				tinyDB.putBoolean("enableMarkdownInFileView", true);
 			}
 			else {
 
 				singleCodeContents.setVisibility(View.VISIBLE);
 				singleFileContentsFrame.setVisibility(View.GONE);
 				singleFileContents.setVisibility(View.GONE);
-				singleCodeContents.setSource(appUtil.decodeBase64(tinyDb.getString("downloadFileContents")));
-				tinyDb.putBoolean("enableMarkdownInFileView", false);
+				singleCodeContents.setSource(appUtil.decodeBase64(tinyDB.getString("downloadFileContents")));
+				tinyDB.putBoolean("enableMarkdownInFileView", false);
 			}
 			return true;
 		}
@@ -367,7 +360,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		if("deleteFile".equals(text)) {
 
 			String fileExtension = FileUtils.getExtension(singleFileName);
-			String data = appUtil.decodeBase64(tinyDb.getString("downloadFileContents"));
+			String data = appUtil.decodeBase64(tinyDB.getString("downloadFileContents"));
 			Intent intent = new Intent(ctx, CreateFileActivity.class);
 			intent.putExtra("fileAction", 1);
 			intent.putExtra("filePath", singleFileName);
@@ -388,7 +381,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		if("editFile".equals(text)) {
 
 			String fileExtension = FileUtils.getExtension(singleFileName);
-			String data = appUtil.decodeBase64(tinyDb.getString("downloadFileContents"));
+			String data = appUtil.decodeBase64(tinyDB.getString("downloadFileContents"));
 			Intent intent = new Intent(ctx, CreateFileActivity.class);
 			intent.putExtra("fileAction", 2);
 			intent.putExtra("filePath", singleFileName);
@@ -410,9 +403,9 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 	private void requestFileDownload() {
 
-		if(!tinyDb.getString("downloadFileContents").isEmpty()) {
+		if(!tinyDB.getString("downloadFileContents").isEmpty()) {
 
-			File outputFileName = new File(tinyDb.getString("downloadFileName"));
+			File outputFileName = new File(tinyDB.getString("downloadFileName"));
 
 			Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
 
@@ -446,7 +439,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 					assert uri != null;
 					OutputStream outputStream = getContentResolver().openOutputStream(uri);
 
-					byte[] dataAsBytes = Base64.decode(tinyDb.getString("downloadFileContents"), 0);
+					byte[] dataAsBytes = Base64.decode(tinyDB.getString("downloadFileContents"), 0);
 
 					assert outputStream != null;
 					outputStream.write(dataAsBytes);

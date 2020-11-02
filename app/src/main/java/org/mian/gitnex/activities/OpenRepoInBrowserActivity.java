@@ -25,6 +25,7 @@ public class OpenRepoInBrowserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
 	    super.onCreate(savedInstanceState);
+
 	    appCtx = getApplicationContext();
 	    TinyDB tinyDb = TinyDB.getInstance(appCtx);
 

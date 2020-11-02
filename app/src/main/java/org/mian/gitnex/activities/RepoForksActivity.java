@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -42,8 +41,6 @@ import retrofit2.Response;
 
 public class RepoForksActivity extends BaseActivity {
 
-	final Context ctx = this;
-	private Context appCtx;
 	private View.OnClickListener onClickListener;
 	private TextView noData;
 	private ProgressBar progressBar;
@@ -67,7 +64,7 @@ public class RepoForksActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
+
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 

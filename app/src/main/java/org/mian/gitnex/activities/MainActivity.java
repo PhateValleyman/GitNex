@@ -77,9 +77,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private ImageView userAvatarBackground;
 	private ViewGroup navHeaderFrame;
 	private TextView toolbarTitle;
-	final Context ctx = this;
-	private Context appCtx;
-	private static TinyDB tinyDb;
 	private Typeface myTypeface;
 
 	private String loginUid;
@@ -99,48 +96,46 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
 
-		tinyDb = TinyDB.getInstance(appCtx);
-		tinyDb.putBoolean("noConnection", false);
+		tinyDB.putBoolean("noConnection", false);
 
 		Intent mainIntent = getIntent();
 		String launchFragment = mainIntent.getStringExtra("launchFragment");
 
-		loginUid = tinyDb.getString("loginUid");
-		instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+		loginUid = tinyDB.getString("loginUid");
+		instanceToken = "token " + tinyDB.getString(loginUid + "-token");
 
-		if(tinyDb.getString("dateFormat").isEmpty()) {
+		if(tinyDB.getString("dateFormat").isEmpty()) {
 
-			tinyDb.putString("dateFormat", "pretty");
+			tinyDB.putString("dateFormat", "pretty");
 		}
 
-		if(tinyDb.getString("codeBlockStr").isEmpty()) {
+		if(tinyDB.getString("codeBlockStr").isEmpty()) {
 
-			tinyDb.putInt("codeBlockColor", getResources().getColor(R.color.colorLightGreen));
-			tinyDb.putInt("codeBlockBackground", getResources().getColor(R.color.black));
+			tinyDB.putInt("codeBlockColor", getResources().getColor(R.color.colorLightGreen));
+			tinyDB.putInt("codeBlockBackground", getResources().getColor(R.color.black));
 		}
 
-		if(tinyDb.getString("enableCounterIssueBadgeInit").isEmpty()) {
+		if(tinyDB.getString("enableCounterIssueBadgeInit").isEmpty()) {
 
-			tinyDb.putBoolean("enableCounterIssueBadge", true);
+			tinyDB.putBoolean("enableCounterIssueBadge", true);
 		}
 
-		if(tinyDb.getString("homeScreenStr").isEmpty()) {
+		if(tinyDB.getString("homeScreenStr").isEmpty()) {
 
-			tinyDb.putString("homeScreenStr", "yes");
-			tinyDb.putInt("homeScreenId", 0);
+			tinyDB.putString("homeScreenStr", "yes");
+			tinyDB.putInt("homeScreenId", 0);
 		}
 
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
-		if(!tinyDb.getBoolean("loggedInMode")) {
+		if(!tinyDB.getBoolean("loggedInMode")) {
 
 			logout(this, ctx);
 			return;
 		}
 
-		if(tinyDb.getInt("currentActiveAccountId") <= 0) {
+		if(tinyDB.getInt("currentActiveAccountId") <= 0) {
 
 			AlertDialogs.forceLogoutDialog(ctx, getResources().getString(R.string.forceLogoutDialogHeader), getResources().getString(R.string.forceLogoutDialogDescription), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 		}
@@ -148,7 +143,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
 
-		switch(tinyDb.getInt("customFontId", -1)) {
+		switch(tinyDB.getInt("customFontId", -1)) {
 
 			case 0:
 
@@ -235,15 +230,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			@Override
 			public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 
-				if(tinyDb.getBoolean("noConnection")) {
+				if(tinyDB.getBoolean("noConnection")) {
 
 					Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
-					tinyDb.putBoolean("noConnection", false);
+					tinyDB.putBoolean("noConnection", false);
 				}
 
-				String userEmailNav = tinyDb.getString("userEmail");
-				String userFullNameNav = tinyDb.getString("userFullname");
-				String userAvatarNav = tinyDb.getString("userAvatar");
+				String userEmailNav = tinyDB.getString("userEmail");
+				String userFullNameNav = tinyDB.getString("userFullname");
+				String userAvatarNav = tinyDB.getString("userAvatar");
 
 				blurView = hView.findViewById(R.id.blurView);
 				userEmail = hView.findViewById(R.id.userEmail);
@@ -324,9 +319,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					drawer.closeDrawers();
 				});
 
-				String currentVersion = tinyDb.getString("giteaVersion");
+				String currentVersion = tinyDB.getString("giteaVersion");
 
-				navigationView.getMenu().findItem(R.id.nav_administration).setVisible(tinyDb.getBoolean("userIsAdmin"));
+				navigationView.getMenu().findItem(R.id.nav_administration).setVisible(tinyDB.getBoolean("userIsAdmin"));
 				navigationView.getMenu().findItem(R.id.nav_notifications).setVisible(new Version(currentVersion).higherOrEqual("1.12.3"));
 			}
 
@@ -395,15 +390,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		if(savedInstanceState == null) {
 
-			if(!new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.3")) {
+			if(!new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
 
-				if(tinyDb.getInt("homeScreenId") == 7) {
+				if(tinyDB.getInt("homeScreenId") == 7) {
 
-					tinyDb.putInt("homeScreenId", 0);
+					tinyDB.putInt("homeScreenId", 0);
 				}
 			}
 
-			switch(tinyDb.getInt("homeScreenId")) {
+			switch(tinyDB.getInt("homeScreenId")) {
 
 				case 1:
 
@@ -458,18 +453,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		if(!connToInternet) {
 
-			if(!tinyDb.getBoolean("noConnection")) {
+			if(!tinyDB.getBoolean("noConnection")) {
 
 				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 			}
 
-			tinyDb.putBoolean("noConnection", true);
+			tinyDB.putBoolean("noConnection", true);
 		}
 		else {
 
 			loadUserInfo(instanceToken, loginUid);
 			giteaVersion();
-			tinyDb.putBoolean("noConnection", false);
+			tinyDB.putBoolean("noConnection", false);
 		}
 
 		// Changelog popup
@@ -485,10 +480,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			Log.e("changelogDialog", Objects.requireNonNull(e.getMessage()));
 		}
 
-		if(versionCode > tinyDb.getInt("versionCode")) {
+		if(versionCode > tinyDB.getInt("versionCode")) {
 
-			tinyDb.putInt("versionCode", versionCode);
-			tinyDb.putBoolean("versionFlag", true);
+			tinyDB.putInt("versionCode", versionCode);
+			tinyDB.putBoolean("versionFlag", true);
 
 			ChangeLog changelogDialog = new ChangeLog(this);
 			changelogDialog.showDialog();
@@ -623,9 +618,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	public static void logout(Activity activity, Context ctx) {
 
-		tinyDb.putBoolean("loggedInMode", false);
-		tinyDb.remove("basicAuthPassword");
-		tinyDb.putBoolean("basicAuthFlag", false);
+		TinyDB tinyDB = TinyDB.getInstance(ctx);
+
+		tinyDB.putBoolean("loggedInMode", false);
+		tinyDB.remove("basicAuthPassword");
+		tinyDB.putBoolean("basicAuthFlag", false);
 		//tinyDb.clear();
 		activity.finish();
 		ctx.startActivity(new Intent(ctx, LoginActivity.class));
