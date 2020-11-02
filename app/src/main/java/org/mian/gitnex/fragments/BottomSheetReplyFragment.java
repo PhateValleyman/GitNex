@@ -83,7 +83,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		if(Objects.equals(arguments.getString("commentAction"), "edit") &&
 			arguments.getString("draftId") == null) {
 
-			send.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_save));
+			send.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_save));
 			mode = Mode.EDIT;
 
 		}
@@ -261,9 +261,26 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		}
 		else {
 
+			String draftType;
+			if(tinyDB.getString("issueType").equalsIgnoreCase("Issue")) {
+
+				draftType = StaticGlobalVariables.draftTypeIssue;
+			}
+			else if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
+
+				draftType = StaticGlobalVariables.draftTypePull;
+			}
+			else {
+
+				draftType = "";
+			}
+
 			if(draftId == 0) {
-				draftId = draftsApi.insertDraft(repositoryId, currentActiveAccountId, issueNumber, text, StaticGlobalVariables.draftTypeComment, "TODO");
-			} else {
+
+				draftId = draftsApi.insertDraft(repositoryId, currentActiveAccountId, issueNumber, text, draftType, "TODO", tinyDB.getString("issueType"));
+			}
+			else {
+
 				DraftsApi.updateDraft(text, (int) draftId, "TODO");
 			}
 

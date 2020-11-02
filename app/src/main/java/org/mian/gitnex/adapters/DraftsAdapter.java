@@ -78,7 +78,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
                 TinyDB tinyDb = TinyDB.getInstance(mCtx);
                 tinyDb.putString("issueNumber", String.valueOf(draftWithRepository.getIssueId()));
                 tinyDb.putLong("repositoryId", draftWithRepository.getRepositoryId());
-		        tinyDb.putString("issueType", draftWithRepository.getDraftType());
+		        tinyDb.putString("issueType", draftWithRepository.getIssueType());
 		        tinyDb.putString("repoFullName", draftWithRepository.getRepositoryOwner() + "/" + draftWithRepository.getRepositoryName());
 
 		        BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle);
