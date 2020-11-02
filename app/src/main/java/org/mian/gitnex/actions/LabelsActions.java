@@ -63,7 +63,7 @@ public class LabelsActions {
 
 		Call<List<Labels>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getlabels(Authorization.get(ctx), repoOwner, repoName);
+			.getLabels(Authorization.get(ctx), repoOwner, repoName);
 
 		call.enqueue(new Callback<List<Labels>>() {
 
@@ -73,24 +73,52 @@ public class LabelsActions {
 				labelsList.clear();
 				List<Labels> labelsList_ = response.body();
 
-				labelsBinding.progressBar.setVisibility(View.GONE);
-				labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
-
 				if (response.code() == 200) {
 
 					assert labelsList_ != null;
 
-					if(labelsList_.size() > 0) {
+					Call<List<Labels>> callOrgLabels = RetrofitClient
+						.getApiInterface(ctx)
+						.getOrganizationLabels(Authorization.get(ctx), repoOwner);
 
-						labelsList.addAll(labelsList_);
-					}
-					else {
+					callOrgLabels.enqueue(new Callback<List<Labels>>() {
 
-						dialogLabels.dismiss();
-						Toasty.warning(ctx, ctx.getResources().getString(R.string.noLabelsFound));
-					}
+						@Override
+						public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> responseOrg) {
 
-					labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
+							labelsBinding.progressBar.setVisibility(View.GONE);
+							labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
+
+							List<Labels> labelsListOrg_ = responseOrg.body();
+							boolean emptyResponse = true;
+
+							if(labelsList_.size() > 0) {
+
+								labelsList.addAll(labelsList_);
+								emptyResponse = false;
+							}
+
+							if(labelsListOrg_ != null) {
+
+								labelsList.addAll(labelsListOrg_);
+								emptyResponse = false;
+							}
+
+							Log.e("orgLabels", String.valueOf(labelsListOrg_));
+
+							if(emptyResponse) {
+
+								dialogLabels.dismiss();
+								Toasty.warning(ctx, ctx.getResources().getString(R.string.noLabelsFound));
+							}
+
+							labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
+						}
+
+						@Override
+						public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
+						}
+					});
 
 				}
 				else {
