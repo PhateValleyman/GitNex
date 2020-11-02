@@ -36,8 +36,6 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
     private EditText milestoneTitle;
     private EditText milestoneDescription;
     private Button createNewMilestoneButton;
-    final Context ctx = this;
-    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -49,7 +47,6 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 

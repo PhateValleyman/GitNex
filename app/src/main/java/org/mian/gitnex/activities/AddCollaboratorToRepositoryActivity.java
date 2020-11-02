@@ -31,8 +31,6 @@ import retrofit2.Response;
 public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
-    final Context ctx = this;
-    private Context appCtx;
     private TextView addCollaboratorSearch;
     private TextView noData;
     private ProgressBar mProgressBar;
@@ -48,7 +46,6 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 

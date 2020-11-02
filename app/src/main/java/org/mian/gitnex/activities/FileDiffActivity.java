@@ -1,6 +1,5 @@
 package org.mian.gitnex.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,8 +34,6 @@ public class FileDiffActivity extends BaseActivity {
 	private TextView toolbarTitle;
 	private ListView mListView;
 	private ProgressBar mProgressBar;
-	final Context ctx = this;
-	private Context appCtx;
 
 	@Override
 	protected int getLayoutResourceId() {
@@ -48,7 +45,6 @@ public class FileDiffActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);

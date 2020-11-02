@@ -37,8 +37,6 @@ public class CreateLabelActivity extends BaseActivity {
     private TextView colorPicker;
     private EditText labelName;
     private Button createLabelButton;
-    final Context ctx = this;
-    private Context appCtx;
 
     @Override
     protected int getLayoutResourceId(){
@@ -49,7 +47,6 @@ public class CreateLabelActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 

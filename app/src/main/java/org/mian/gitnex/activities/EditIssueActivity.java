@@ -24,7 +24,6 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.CreateIssue;
@@ -44,9 +43,6 @@ import retrofit2.Callback;
 
 public class EditIssueActivity extends BaseActivity implements View.OnClickListener {
 
-    final Context ctx = this;
-    private Context appCtx;
-	private TinyDB tinyDb;
     private View.OnClickListener onClickListener;
     private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
 
@@ -77,18 +73,16 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
-	    tinyDb = TinyDB.getInstance(ctx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        loginUid = tinyDb.getString("loginUid");
-        instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-        String repoFullName = tinyDb.getString("repoFullName");
+        loginUid = tinyDB.getString("loginUid");
+        instanceToken = "token " + tinyDB.getString(loginUid + "-token");
+        String repoFullName = tinyDB.getString("repoFullName");
         String[] parts = repoFullName.split("/");
         repoOwner = parts[0];
         repoName = parts[1];
-        issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+        issueIndex = Integer.parseInt(tinyDB.getString("issueNumber"));
 
         ImageView closeActivity = findViewById(R.id.close);
         editIssueButton = findViewById(R.id.editIssueButton);
@@ -98,7 +92,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         editIssueDueDate = findViewById(R.id.editIssueDueDate);
 
         // if gitea is 1.12 or higher use the new limit
-        if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+        if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 
             resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
         }
@@ -126,9 +120,9 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         editIssueDueDate.setOnClickListener(this);
         editIssueButton.setOnClickListener(this);
 
-        if(!tinyDb.getString("issueNumber").isEmpty()) {
+        if(!tinyDB.getString("issueNumber").isEmpty()) {
 
-            if(tinyDb.getString("issueType").equalsIgnoreCase("Pull")) {
+            if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
 
                 toolbar_title.setText(getString(R.string.editPrNavHeader, String.valueOf(issueIndex)));
             }
@@ -195,7 +189,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
                 if(response.code() == 201) {
 
-                    if(tinyDb.getString("issueType").equalsIgnoreCase("Pull")) {
+                    if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
 
                         Toasty.success(ctx, getString(R.string.editPrSuccessMessage));
                     }
@@ -204,8 +198,8 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                         Toasty.success(ctx, getString(R.string.editIssueSuccessMessage));
                     }
 
-                    tinyDb.putBoolean("issueEdited", true);
-                    tinyDb.putBoolean("resumeIssues", true);
+                    tinyDB.putBoolean("issueEdited", true);
+                    tinyDB.putBoolean("resumeIssues", true);
                     finish();
                 }
                 else if(response.code() == 401) {

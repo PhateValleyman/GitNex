@@ -1,6 +1,5 @@
 package org.mian.gitnex.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,7 +23,6 @@ import org.mian.gitnex.adapters.CommitsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.models.Commits;
@@ -40,8 +38,6 @@ import retrofit2.Response;
 
 public class CommitsActivity extends BaseActivity {
 
-	final Context ctx = this;
-	private Context appCtx;
 	private View.OnClickListener onClickListener;
 	private TextView noData;
 	private ProgressBar progressBar;
@@ -64,13 +60,10 @@ public class CommitsActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		TinyDB tinyDb = TinyDB.getInstance(appCtx);
-
-		String repoFullName = tinyDb.getString("repoFullName");
+		String repoFullName = tinyDB.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
@@ -91,7 +84,7 @@ public class CommitsActivity extends BaseActivity {
 		closeActivity.setOnClickListener(onClickListener);
 
 		// if gitea is 1.12 or higher use the new limit (resultLimitNewGiteaInstances)
-		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12")) {
+		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12")) {
 
 			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
 		}

@@ -1,6 +1,5 @@
 package org.mian.gitnex.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -33,9 +32,6 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
     private GridView mGridView;
 	private ProgressBar progressBar;
 
-    final Context ctx = this;
-    private Context appCtx;
-
     private String teamId;
 
     @Override
@@ -47,7 +43,7 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

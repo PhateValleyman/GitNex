@@ -1,7 +1,6 @@
 package org.mian.gitnex.activities;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -79,9 +78,6 @@ import retrofit2.Response;
 public class IssueDetailActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener, AssigneesListAdapter.AssigneesListAdapterListener, BottomSheetSingleIssueFragment.BottomSheetListener {
 
 	private IssueCommentsAdapter adapter;
-	final Context ctx = this;
-	private Context appCtx;
-	private TinyDB tinyDb;
 
 	private String repoOwner;
 	private String repoName;
@@ -114,18 +110,16 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
-		tinyDb = TinyDB.getInstance(appCtx);
 
 		viewBinding = ActivityIssueDetailBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
 		setContentView(view);
 
-		String repoFullName = tinyDb.getString("repoFullName");
+		String repoFullName = tinyDB.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 		repoOwner = parts[0];
 		repoName = parts[1];
-		issueIndex = Integer.parseInt(tinyDb.getString("issueNumber"));
+		issueIndex = Integer.parseInt(tinyDB.getString("issueNumber"));
 
 		setSupportActionBar(viewBinding.toolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle(repoName);
@@ -185,7 +179,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		Typeface myTypeface;
 
-		switch(tinyDb.getInt("customFontId", -1)) {
+		switch(tinyDB.getInt("customFontId", -1)) {
 
 			case 1:
 				myTypeface = Typeface.createFromAsset(Objects.requireNonNull(ctx).getAssets(), "fonts/manroperegular.ttf");
@@ -461,7 +455,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		super.onResume();
 
-		if(tinyDb.getBoolean("commentPosted")) {
+		if(tinyDB.getBoolean("commentPosted")) {
 
 			viewBinding.scrollViewComments.post(() -> {
 
@@ -471,41 +465,41 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 				new Handler(Looper.getMainLooper()).postDelayed(() -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN), 1000);
 
-				tinyDb.putBoolean("commentPosted", false);
+				tinyDB.putBoolean("commentPosted", false);
 			});
 		}
 
-		if(tinyDb.getBoolean("commentEdited")) {
+		if(tinyDB.getBoolean("commentEdited")) {
 
 			viewBinding.scrollViewComments.post(() -> {
 
 				IssueCommentsViewModel
 					.loadIssueComments(Authorization.get(ctx), repoOwner, repoName, issueIndex,
 						ctx);
-				tinyDb.putBoolean("commentEdited", false);
+				tinyDB.putBoolean("commentEdited", false);
 			});
 		}
 
-		if(tinyDb.getBoolean("singleIssueUpdate")) {
+		if(tinyDB.getBoolean("singleIssueUpdate")) {
 
 			new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 				viewBinding.frameAssignees.removeAllViews();
 				viewBinding.frameLabels.removeAllViews();
 				getSingleIssue(repoOwner, repoName, issueIndex);
-				tinyDb.putBoolean("singleIssueUpdate", false);
+				tinyDB.putBoolean("singleIssueUpdate", false);
 
 			}, 500);
 		}
 
-		if(tinyDb.getBoolean("issueEdited")) {
+		if(tinyDB.getBoolean("issueEdited")) {
 
 			new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 				viewBinding.frameAssignees.removeAllViews();
 				viewBinding.frameLabels.removeAllViews();
 				getSingleIssue(repoOwner, repoName, issueIndex);
-				tinyDb.putBoolean("issueEdited", false);
+				tinyDB.putBoolean("issueEdited", false);
 
 			}, 500);
 		}

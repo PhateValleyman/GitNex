@@ -33,8 +33,6 @@ public class ProfileEmailActivity extends BaseActivity {
 
     private View.OnClickListener onClickListener;
     private EditText userEmail;
-    final Context ctx = this;
-    private Context appCtx;
     private Button addEmailButton;
 
     @Override
@@ -46,7 +44,6 @@ public class ProfileEmailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 

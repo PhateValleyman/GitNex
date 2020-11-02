@@ -1,6 +1,5 @@
 package org.mian.gitnex.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
@@ -25,9 +24,6 @@ public class RepoStargazersActivity extends BaseActivity {
     private GridView mGridView;
     private ProgressBar mProgressBar;
 
-    final Context ctx = this;
-    private Context appCtx;
-
     @Override
     protected int getLayoutResourceId(){
         return R.layout.activity_repo_stargazers;
@@ -37,7 +33,6 @@ public class RepoStargazersActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
 
         ImageView closeActivity = findViewById(R.id.close);
         TextView toolbarTitle = findViewById(R.id.toolbar_title);

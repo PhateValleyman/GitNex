@@ -1,6 +1,5 @@
 package org.mian.gitnex.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,7 +8,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.mian.gitnex.R;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 
 /**
@@ -18,7 +16,6 @@ import org.mian.gitnex.helpers.Toasty;
 
 public class SettingsAppearanceActivity extends BaseActivity {
 
-	private Context appCtx;
 	private View.OnClickListener onClickListener;
 
 	private static final String[] timeList = {"Pretty", "Normal"};
@@ -40,9 +37,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
-
-		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
 		ImageView closeActivity = findViewById(R.id.close);
 
@@ -59,42 +53,42 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		if(!tinyDb.getString("timeStr").isEmpty()) {
+		if(!tinyDB.getString("timeStr").isEmpty()) {
 
-			tvDateTimeSelected.setText(tinyDb.getString("timeStr"));
+			tvDateTimeSelected.setText(tinyDB.getString("timeStr"));
 		}
 
-		if(!tinyDb.getString("customFontStr").isEmpty()) {
+		if(!tinyDB.getString("customFontStr").isEmpty()) {
 
-			customFontSelected.setText(tinyDb.getString("customFontStr"));
+			customFontSelected.setText(tinyDB.getString("customFontStr"));
 		}
 
-		if(!tinyDb.getString("themeStr").isEmpty()) {
+		if(!tinyDB.getString("themeStr").isEmpty()) {
 
-			themeSelected.setText(tinyDb.getString("themeStr"));
+			themeSelected.setText(tinyDB.getString("themeStr"));
 		}
 
 		if(timeSelectedChoice == 0) {
 
-			timeSelectedChoice = tinyDb.getInt("timeId");
+			timeSelectedChoice = tinyDB.getInt("timeId");
 		}
 
 		if(customFontSelectedChoice == 0) {
 
-			customFontSelectedChoice = tinyDb.getInt("customFontId", 1);
+			customFontSelectedChoice = tinyDB.getInt("customFontId", 1);
 		}
 
 		if(themeSelectedChoice == 0) {
 
-			themeSelectedChoice = tinyDb.getInt("themeId");
+			themeSelectedChoice = tinyDB.getInt("themeId");
 		}
 
-		counterBadgesSwitch.setChecked(tinyDb.getBoolean("enableCounterBadges"));
+		counterBadgesSwitch.setChecked(tinyDB.getBoolean("enableCounterBadges"));
 
 		// counter badge switcher
 		counterBadgesSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-			tinyDb.putBoolean("enableCounterBadges", isChecked);
+			tinyDB.putBoolean("enableCounterBadges", isChecked);
 			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 		});
 
@@ -110,10 +104,10 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 				themeSelectedChoice = i;
 				themeSelected.setText(themeList[i]);
-				tinyDb.putString("themeStr", themeList[i]);
-				tinyDb.putInt("themeId", i);
+				tinyDB.putString("themeStr", themeList[i]);
+				tinyDB.putInt("themeId", i);
 
-				tinyDb.putBoolean("refreshParent", true);
+				tinyDB.putBoolean("refreshParent", true);
 				this.recreate();
 				this.overridePendingTransition(0, 0);
 				dialogInterfaceTheme.dismiss();
@@ -136,10 +130,10 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 				customFontSelectedChoice = i;
 				customFontSelected.setText(customFontList[i]);
-				tinyDb.putString("customFontStr", customFontList[i]);
-				tinyDb.putInt("customFontId", i);
+				tinyDB.putString("customFontStr", customFontList[i]);
+				tinyDB.putInt("customFontId", i);
 
-				tinyDb.putBoolean("refreshParent", true);
+				tinyDB.putBoolean("refreshParent", true);
 				this.recreate();
 				this.overridePendingTransition(0, 0);
 				dialogInterfaceCustomFont.dismiss();
@@ -162,16 +156,16 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 				timeSelectedChoice = i;
 				tvDateTimeSelected.setText(timeList[i]);
-				tinyDb.putString("timeStr", timeList[i]);
-				tinyDb.putInt("timeId", i);
+				tinyDB.putString("timeStr", timeList[i]);
+				tinyDB.putInt("timeId", i);
 
 				if("Normal".equals(timeList[i])) {
 
-					tinyDb.putString("dateFormat", "normal");
+					tinyDB.putString("dateFormat", "normal");
 				}
 				else {
 
-					tinyDb.putString("dateFormat", "pretty");
+					tinyDB.putString("dateFormat", "pretty");
 				}
 
 				dialogInterfaceTime.dismiss();

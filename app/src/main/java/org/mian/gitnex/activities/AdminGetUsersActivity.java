@@ -33,8 +33,6 @@ import org.mian.gitnex.viewmodels.AdminGetUsersViewModel;
 public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAdminUsersFragment.BottomSheetListener {
 
     private View.OnClickListener onClickListener;
-    final Context ctx = this;
-    private Context appCtx;
     private AdminGetUsersAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataUsers;
@@ -49,7 +47,6 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetAd
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        appCtx = getApplicationContext();
 
         ImageView closeActivity = findViewById(R.id.close);
         noDataUsers = findViewById(R.id.noDataUsers);

@@ -71,9 +71,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	private FragmentRefreshListenerMilestone fragmentRefreshListenerMilestone;
 	private FragmentRefreshListenerFiles fragmentRefreshListenerFiles;
 
-	private final Context ctx = this;
-	private Context appCtx;
-
 	private TinyDB tinyDB;
 
 	private String loginUid;
@@ -95,9 +92,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
-
-		tinyDB = TinyDB.getInstance(appCtx);
 
 		String[] repoNameParts = tinyDB.getString("repoFullName").split("/");
 		repositoryOwner = repoNameParts[0];
