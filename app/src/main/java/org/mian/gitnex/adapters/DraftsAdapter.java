@@ -2,6 +2,7 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.database.models.DraftWithRepository;
 import org.mian.gitnex.fragments.BottomSheetReplyFragment;
@@ -76,9 +78,12 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
                 TinyDB tinyDb = TinyDB.getInstance(mCtx);
                 tinyDb.putString("issueNumber", String.valueOf(draftWithRepository.getIssueId()));
                 tinyDb.putLong("repositoryId", draftWithRepository.getRepositoryId());
-                //tinyDb.putString("issueType", issueType.getText().toString());
+		        tinyDb.putString("issueType", draftWithRepository.getDraftType());
+		        tinyDb.putString("repoFullName", draftWithRepository.getRepositoryOwner() + "/" + draftWithRepository.getRepositoryName());
 
-		        BottomSheetReplyFragment.newInstance(bundle).show(fragmentManager, "replyBottomSheet");
+		        BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle);
+		        bottomSheetReplyFragment.setOnInteractedListener(() -> mCtx.startActivity(new Intent(mCtx, IssueDetailActivity.class)));
+		        bottomSheetReplyFragment.show(fragmentManager, "replyBottomSheet");
 
             });
 

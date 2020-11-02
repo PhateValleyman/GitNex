@@ -35,8 +35,8 @@ import java.util.Objects;
 
 public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
-	private enum Mode { EDIT, COMMENT }
-	private Mode mode = Mode.COMMENT;
+	private enum Mode { EDIT, SEND }
+	private Mode mode = Mode.SEND;
 
 	private TinyDB tinyDB;
 	private DraftsApi draftsApi;
@@ -80,7 +80,8 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 		send.setEnabled(false);
 
-		if(Objects.equals(arguments.getString("commentAction"), "edit")) {
+		if(Objects.equals(arguments.getString("commentAction"), "edit") &&
+			arguments.getString("draftId") == null) {
 
 			send.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_save));
 			mode = Mode.EDIT;
@@ -89,9 +90,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 		if(arguments.getString("draftId") != null) {
 
-			send.setVisibility(View.GONE);
 			draftId = Long.parseLong(arguments.getString("draftId"));
-
 		}
 
 		if(!tinyDB.getString("issueTitle").isEmpty()) {
@@ -176,7 +175,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 		send.setOnClickListener(v -> {
 
-			if(mode == Mode.COMMENT) {
+			if(mode == Mode.SEND) {
 
 				IssueActions
 					.reply(getContext(), comment.getText().toString(), issueNumber)
