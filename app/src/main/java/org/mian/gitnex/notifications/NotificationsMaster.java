@@ -7,6 +7,7 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Version;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +40,7 @@ public class NotificationsMaster {
 		TinyDB tinyDB = TinyDB.getInstance(context);
 
 		if(notificationsSupported == -1) {
+
 			checkVersion(tinyDB);
 		}
 
@@ -55,13 +57,14 @@ public class NotificationsMaster {
 				constraints.setRequiresDeviceIdle(false);
 			}
 
-			PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, tinyDB.getInt("pollingDelayMinutes"), TimeUnit.MINUTES)
+			int pollingDelayMinutes = Math.max(tinyDB.getInt("pollingDelayMinutes", StaticGlobalVariables.defaultPollingDelay), 15);
+
+			PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, pollingDelayMinutes, TimeUnit.MINUTES)
 				.setConstraints(constraints.build())
 				.addTag(context.getPackageName())
 				.build();
 
 			WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getPackageName(), ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
-
 		}
 	}
 }
