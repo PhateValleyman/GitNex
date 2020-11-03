@@ -671,6 +671,7 @@
     <string name="pinNotification">Pin Notification</string>
     <string name="markedNotificationsAsRead">Successfully marked all notifications as read</string>
     <string name="notificationsHintText">Polling delay, light, vibration</string>
+    <string name="enableNotificationsHeaderText">Enable Notifications</string>
     <string name="enableLightsHeaderText">Enable Light</string>
     <string name="enableVibrationHeaderText">Enable Vibration</string>
     <string name="chooseColorSelectorHeader">Choose Color</string>
@@ -735,5 +736,4 @@
     <string name="codeBlockGreyOnBlack">Grey on Black</string>
     <string name="codeBlockWhiteOnGrey">White on Grey</string>
     <string name="codeBlockDarkOnWhite">Dark on White</string>
-    <string name="enableNotificationsHeaderText">Enable Notifications</string>
 </resources>
