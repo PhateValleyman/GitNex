@@ -16,7 +16,7 @@ public class IssueReaction {
         this.content = content;
     }
 
-    public class userObject {
+    public static class userObject {
 
         private int id;
         private String login;

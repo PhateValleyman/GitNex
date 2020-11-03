@@ -225,17 +225,13 @@
 
                         </RelativeLayout>
 
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/reactionsMainFrame"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/issueTimeFrame"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp" >
-
-                        <include layout="@layout/layout_reactions" />
+                        <LinearLayout
+                            android:id="@+id/commentReactionBadges"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/issueTimeFrame"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal" />
 
                     </RelativeLayout>
 
