@@ -71,12 +71,12 @@ public class LabelsActions {
 			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
 
 				labelsList.clear();
-				List<Labels> labelsList_ = response.body();
 
 				if (response.code() == 200) {
 
-					assert labelsList_ != null;
+					labelsList.addAll(response.body());
 
+					// Load organization labels
 					Call<List<Labels>> callOrgLabels = RetrofitClient
 						.getApiInterface(ctx)
 						.getOrganizationLabels(Authorization.get(ctx), repoOwner);
@@ -89,35 +89,20 @@ public class LabelsActions {
 							labelsBinding.progressBar.setVisibility(View.GONE);
 							labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
 
-							List<Labels> labelsListOrg_ = responseOrg.body();
-							boolean emptyResponse = true;
+							labelsList.addAll(responseOrg.body());
 
-							if(labelsList_.size() > 0) {
-
-								labelsList.addAll(labelsList_);
-								emptyResponse = false;
-							}
-
-							if(labelsListOrg_ != null) {
-
-								labelsList.addAll(labelsListOrg_);
-								emptyResponse = false;
-							}
-
-							Log.e("orgLabels", String.valueOf(labelsListOrg_));
-
-							if(emptyResponse) {
+							if(labelsList.isEmpty()) {
 
 								dialogLabels.dismiss();
 								Toasty.warning(ctx, ctx.getResources().getString(R.string.noLabelsFound));
+
 							}
 
 							labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
 						}
 
-						@Override
-						public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
-						}
+						@Override public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {}
+
 					});
 
 				}
