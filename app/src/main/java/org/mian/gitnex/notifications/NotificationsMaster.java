@@ -39,32 +39,33 @@ public class NotificationsMaster {
 
 		TinyDB tinyDB = TinyDB.getInstance(context);
 
-		if(notificationsSupported == -1) {
+		if(tinyDB.getBoolean("notificationsEnabled", true)) {
 
-			checkVersion(tinyDB);
-		}
+			if(notificationsSupported == -1) checkVersion(tinyDB);
 
-		if(notificationsSupported == 1) {
+			if(notificationsSupported == 1) {
 
-			Constraints.Builder constraints = new Constraints.Builder()
-				.setRequiredNetworkType(NetworkType.CONNECTED)
-				.setRequiresBatteryNotLow(false)
-				.setRequiresStorageNotLow(false)
-				.setRequiresCharging(false);
+				Constraints.Builder constraints = new Constraints.Builder()
+					.setRequiredNetworkType(NetworkType.CONNECTED)
+					.setRequiresBatteryNotLow(false)
+					.setRequiresStorageNotLow(false)
+					.setRequiresCharging(false);
 
-			if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-				constraints.setRequiresDeviceIdle(false);
+					constraints.setRequiresDeviceIdle(false);
+				}
+
+				int pollingDelayMinutes = Math.max(tinyDB.getInt("pollingDelayMinutes", StaticGlobalVariables.defaultPollingDelay), 15);
+
+				PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, pollingDelayMinutes, TimeUnit.MINUTES)
+					.setConstraints(constraints.build())
+					.addTag(context.getPackageName())
+					.build();
+
+				WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getPackageName(), ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
+
 			}
-
-			int pollingDelayMinutes = Math.max(tinyDB.getInt("pollingDelayMinutes", StaticGlobalVariables.defaultPollingDelay), 15);
-
-			PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, pollingDelayMinutes, TimeUnit.MINUTES)
-				.setConstraints(constraints.build())
-				.addTag(context.getPackageName())
-				.build();
-
-			WorkManager.getInstance(context).enqueueUniquePeriodicWork(context.getPackageName(), ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
 		}
 	}
 }

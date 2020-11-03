@@ -1,6 +1,5 @@
 package org.mian.gitnex.activities;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -20,9 +19,6 @@ import org.mian.gitnex.notifications.NotificationsMaster;
 
 public class SettingsNotificationsActivity extends BaseActivity {
 
-	private Context appCtx;
-	private Context ctx = this;
-
 	private ActivitySettingsNotificationsBinding viewBinding;
 
 	@Override
@@ -35,7 +31,6 @@ public class SettingsNotificationsActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appCtx = getApplicationContext();
 
 		viewBinding = ActivitySettingsNotificationsBinding.inflate(getLayoutInflater());
 		View view = viewBinding.getRoot();
@@ -48,9 +43,17 @@ public class SettingsNotificationsActivity extends BaseActivity {
 		viewBinding.pollingDelaySelected.setText(String.format(getString(R.string.pollingDelaySelectedText), tinyDB.getInt("pollingDelayMinutes", StaticGlobalVariables.defaultPollingDelay)));
 		viewBinding.chooseColorState.setCardBackgroundColor(tinyDB.getInt("notificationsLightColor", Color.GREEN));
 
+		viewBinding.enableNotificationsMode.setChecked(tinyDB.getBoolean("notificationsEnabled", true));
 		viewBinding.enableLightsMode.setChecked(tinyDB.getBoolean("notificationsEnableLights", true));
-
 		viewBinding.enableVibrationMode.setChecked(tinyDB.getBoolean("notificationsEnableVibration", true));
+
+		viewBinding.enableNotificationsMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+			tinyDB.putBoolean("notificationsEnabled", isChecked);
+			if(!isChecked) NotificationsMaster.fireWorker(ctx);
+			Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
+
+		});
 
 		// polling delay
 		viewBinding.pollingDelayFrame.setOnClickListener(v -> {
@@ -87,6 +90,7 @@ public class SettingsNotificationsActivity extends BaseActivity {
 
 			tinyDB.putBoolean("notificationsEnableLights", isChecked);
 			Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
+
 		});
 
 		// lights color chooser
@@ -103,6 +107,7 @@ public class SettingsNotificationsActivity extends BaseActivity {
 			});
 
 			colorPicker.show();
+
 		});
 
 		// vibration switcher
@@ -110,6 +115,7 @@ public class SettingsNotificationsActivity extends BaseActivity {
 
 			tinyDB.putBoolean("notificationsEnableVibration", isChecked);
 			Toasty.info(appCtx, getResources().getString(R.string.settingsSave));
+
 		});
 
 	}

@@ -735,4 +735,5 @@
     <string name="codeBlockGreyOnBlack">Grey on Black</string>
     <string name="codeBlockWhiteOnGrey">White on Grey</string>
     <string name="codeBlockDarkOnWhite">Dark on White</string>
+    <string name="enableNotificationsHeaderText">Enable Notifications</string>
 </resources>
