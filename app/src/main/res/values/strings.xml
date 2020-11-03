@@ -670,7 +670,7 @@
     <string name="markAsUnread">Mark as Unread</string>
     <string name="pinNotification">Pin Notification</string>
     <string name="markedNotificationsAsRead">Successfully marked all notifications as read</string>
-    <string name="notificationsHintText">Polling delay, lights, vibrations</string>
+    <string name="notificationsHintText">Polling delay, light, vibration</string>
     <string name="enableLightsHeaderText">Enable Light</string>
     <string name="enableVibrationHeaderText">Enable Vibration</string>
     <string name="chooseColorSelectorHeader">Choose Color</string>
