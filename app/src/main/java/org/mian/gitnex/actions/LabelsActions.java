@@ -74,7 +74,10 @@ public class LabelsActions {
 
 				if (response.code() == 200) {
 
-					labelsList.addAll(response.body());
+					if(response.body() != null) {
+
+						labelsList.addAll(response.body());
+					}
 
 					// Load organization labels
 					Call<List<Labels>> callOrgLabels = RetrofitClient
@@ -89,7 +92,10 @@ public class LabelsActions {
 							labelsBinding.progressBar.setVisibility(View.GONE);
 							labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
 
-							labelsList.addAll(responseOrg.body());
+							if(responseOrg.body() != null) {
+
+								labelsList.addAll(responseOrg.body());
+							}
 
 							if(labelsList.isEmpty()) {
 
