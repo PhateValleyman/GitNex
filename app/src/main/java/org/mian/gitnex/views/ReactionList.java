@@ -2,7 +2,6 @@ package org.mian.gitnex.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.models.IssueReaction;
@@ -117,7 +117,7 @@ public class ReactionList extends HorizontalScrollView {
 					for(IssueReaction issueReaction : issueReactions) {
 
 						if(issueReaction.getUser().getLogin().equals(loginUid)) {
-							reactionBadge.setCardBackgroundColor(Color.parseColor("#add8e6"));
+							reactionBadge.setCardBackgroundColor(AppUtil.getColorFromAttribute(context, R.attr.inputSelectedColor));
 							break;
 						}
 					}

@@ -2,7 +2,6 @@ package org.mian.gitnex.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -95,7 +94,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 					if(myReaction != null) {
 
-						reactionButton.setCardBackgroundColor(Color.parseColor("#add8e6"));
+						reactionButton.setCardBackgroundColor(AppUtil.getColorFromAttribute(context, R.attr.inputSelectedColor));
 						reactionAction = ReactionAction.REMOVE;
 					} else {
 						reactionAction = ReactionAction.ADD;
