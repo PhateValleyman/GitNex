@@ -109,7 +109,7 @@ dependencies {
     implementation "androidx.work:work-runtime:$work_version"
     implementation "com.eightbitlab:blurview:1.6.4"
     implementation "io.mikael:urlbuilder:2.0.9"
-    implementation "org.codeberg.gitnex-garage:emoji-java:master-SNAPSHOT"
+    implementation "org.codeberg.gitnex-garage:emoji-java:v5.1.2"
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:1.1.0"
 
 }
