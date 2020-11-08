@@ -10,7 +10,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
-import com.vdurmont.emoji.EmojiParser;
+import com.vdurmont.emoji.Emoji;
+import com.vdurmont.emoji.EmojiManager;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AppUtil;
@@ -110,7 +111,9 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 					}).start());
 
-					((TextView) reactionButton.findViewById(R.id.symbol)).setText(EmojiParser.parseToUnicode(":" + allowedReaction + ":"));
+					Emoji emoji = EmojiManager.getForAlias(allowedReaction);
+
+					((TextView) reactionButton.findViewById(R.id.symbol)).setText((emoji == null) ? allowedReaction : emoji.getUnicode());
 					root.post(() -> root.addView(reactionButton));
 
 				}

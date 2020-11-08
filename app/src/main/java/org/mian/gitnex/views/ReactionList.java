@@ -10,7 +10,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
-import com.vdurmont.emoji.EmojiParser;
+import com.vdurmont.emoji.Emoji;
+import com.vdurmont.emoji.EmojiManager;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AppUtil;
@@ -33,6 +34,7 @@ public class ReactionList extends HorizontalScrollView {
 
 	private enum ReactionType { COMMENT, ISSUE }
 
+	@SuppressLint("SetTextI18n")
 	public ReactionList(Context context, Bundle bundle) {
 
 		super(context);
@@ -122,7 +124,9 @@ public class ReactionList extends HorizontalScrollView {
 						}
 					}
 
-					((TextView) reactionBadge.findViewById(R.id.symbol)).setText(EmojiParser.parseToUnicode(":" + content + ": " + issueReactions.size()));
+					Emoji emoji = EmojiManager.getForAlias(content);
+
+					((TextView) reactionBadge.findViewById(R.id.symbol)).setText(((emoji == null) ? content : emoji.getUnicode()) + " " + issueReactions.size());
 					root.post(() -> root.addView(reactionBadge));
 
 				}
