@@ -436,7 +436,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 				else {
 
-					ctx.startActivity(issueIntent);
+					ctx.startActivity(mainIntent);
 					finish();
 					Log.e("onFailure-goToRepo", String.valueOf(response.code()));
 				}
@@ -446,7 +446,7 @@ public class DeepLinksActivity extends BaseActivity {
 			@Override
 			public void onFailure(@NonNull Call<UserRepositories> call, @NonNull Throwable t) {
 
-				ctx.startActivity(issueIntent);
+				ctx.startActivity(mainIntent);
 				finish();
 				Log.e("onFailure-goToRepo", t.toString());
 			}
