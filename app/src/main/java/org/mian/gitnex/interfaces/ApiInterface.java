@@ -229,6 +229,15 @@ public interface ApiInterface {
 	@GET("orgs/{owner}/labels") // get org labels list
 	Call<List<Labels>> getOrganizationLabels(@Header("Authorization") String token, @Path("owner") String ownerName);
 
+	@POST("orgs/{owner}/labels") // create org label
+	Call<CreateLabel> createOrganizationLabel(@Header("Authorization") String token, @Path("owner") String ownerName, @Body CreateLabel jsonStr);
+
+	@PATCH("orgs/{owner}/labels/{index}") // update / patch org label
+	Call<CreateLabel> patchOrganizationLabel(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("index") int labelIndex, @Body CreateLabel jsonStr);
+
+	@DELETE("orgs/{owner}/labels/{index}") // delete org label
+	Call<Labels> deleteOrganizationLabel(@Header("Authorization") String token, @Path("owner") String ownerName, @Path("index") int labelIndex);
+
     @GET("users/{username}/repos") // get current logged in user repositories
     Call<List<UserRepositories>> getCurrentUserRepositories(@Header("Authorization") String token, @Path("username") String username, @Query("page") int page, @Query("limit") int limit);
 

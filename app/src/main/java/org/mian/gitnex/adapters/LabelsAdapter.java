@@ -32,6 +32,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
     private List<Labels> labelsList;
     final private Context mCtx;
     private ArrayList<Integer> labelsArray = new ArrayList<>();
+    private static String type;
 
     static class LabelsViewHolder extends RecyclerView.ViewHolder {
 
@@ -77,6 +78,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
                     intent.putExtra("labelTitle", labelTitle.getText());
                     intent.putExtra("labelColor", labelColor.getText());
                     intent.putExtra("labelAction", "edit");
+	                intent.putExtra("type", type);
                     context.startActivity(intent);
                     dialog.dismiss();
 
@@ -87,8 +89,9 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
                     AlertDialogs.labelDeleteDialog(context, labelTitle.getText().toString(), labelId.getText().toString(),
                             context.getResources().getString(R.string.labelDeleteTitle),
                             context.getResources().getString(R.string.labelDeleteMessage),
-                            context.getResources().getString(R.string.labelDeletePositiveButton),
-                            context.getResources().getString(R.string.labelDeleteNegativeButton));
+                            context.getResources().getString(R.string.labelDeleteTitle),
+                            context.getResources().getString(R.string.labelDeleteNegativeButton),
+	                        type);
                     dialog.dismiss();
 
                 });
@@ -98,9 +101,11 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
         }
     }
 
-    public LabelsAdapter(Context mCtx, List<Labels> labelsMain) {
+    public LabelsAdapter(Context mCtx, List<Labels> labelsMain, String type) {
+
         this.mCtx = mCtx;
         this.labelsList = labelsMain;
+        LabelsAdapter.type = type;
     }
 
     @NonNull

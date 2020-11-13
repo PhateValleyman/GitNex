@@ -146,6 +146,12 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
                 tinyDB.putBoolean("organizationAction", true);
                 startActivity(new Intent(OrganizationDetailActivity.this, CreateRepoActivity.class));
                 break;
+	        case "label":
+
+		        Intent intent = new Intent(ctx, CreateLabelActivity.class);
+		        intent.putExtra("type", "org");
+		        ctx.startActivity(intent);
+		        break;
             case "team":
 
                 startActivity(new Intent(OrganizationDetailActivity.this, CreateTeamByOrgActivity.class));

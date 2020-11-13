@@ -20,7 +20,6 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.LabelsAdapter;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.viewmodels.LabelsViewModel;
 import org.mian.gitnex.viewmodels.OrganizationLabelsViewModel;
 
 /**
@@ -33,7 +32,8 @@ public class OrganizationLabelsFragment extends Fragment {
 	private RecyclerView mRecyclerView;
 	private LabelsAdapter adapter;
 	private TextView noData;
-	private static String repoOwnerF = "param1";
+	private static final String repoOwnerF = "param1";
+	private final String type = "org";
 
 	private String repoOwner;
 
@@ -97,14 +97,9 @@ public class OrganizationLabelsFragment extends Fragment {
 		super.onResume();
 		final TinyDB tinyDb = TinyDB.getInstance(getContext());
 
-		String repoFullName = tinyDb.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		final String repoOwner = parts[0];
-		final String repoName = parts[1];
-
 		if(tinyDb.getBoolean("labelsRefresh")) {
 
-			LabelsViewModel.loadLabelsList(Authorization.get(getContext()), repoOwner, repoName, getContext());
+			OrganizationLabelsViewModel.loadOrgLabelsList(Authorization.get(getContext()), repoOwner, getContext(), mProgressBar, noData);
 			tinyDb.putBoolean("labelsRefresh", false);
 		}
 	}
@@ -135,7 +130,7 @@ public class OrganizationLabelsFragment extends Fragment {
 
 		organizationLabelsViewModel.getOrgLabelsList(instanceToken, owner, getContext(), mProgressBar, noData).observe(getViewLifecycleOwner(), labelsListMain -> {
 
-			adapter = new LabelsAdapter(getContext(), labelsListMain);
+			adapter = new LabelsAdapter(getContext(), labelsListMain, type);
 
 			if(adapter.getItemCount() > 0) {
 
