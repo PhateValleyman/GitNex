@@ -33,6 +33,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
     final private Context mCtx;
     private ArrayList<Integer> labelsArray = new ArrayList<>();
     private static String type;
+	private static String orgName;
 
     static class LabelsViewHolder extends RecyclerView.ViewHolder {
 
@@ -79,6 +80,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
                     intent.putExtra("labelColor", labelColor.getText());
                     intent.putExtra("labelAction", "edit");
 	                intent.putExtra("type", type);
+	                intent.putExtra("orgName", orgName);
                     context.startActivity(intent);
                     dialog.dismiss();
 
@@ -91,7 +93,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
                             context.getResources().getString(R.string.labelDeleteMessage),
                             context.getResources().getString(R.string.labelDeleteTitle),
                             context.getResources().getString(R.string.labelDeleteNegativeButton),
-	                        type);
+	                        type, orgName);
                     dialog.dismiss();
 
                 });
@@ -101,11 +103,12 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
         }
     }
 
-    public LabelsAdapter(Context mCtx, List<Labels> labelsMain, String type) {
+    public LabelsAdapter(Context mCtx, List<Labels> labelsMain, String type, String orgName) {
 
         this.mCtx = mCtx;
         this.labelsList = labelsMain;
         LabelsAdapter.type = type;
+        LabelsAdapter.orgName = orgName;
     }
 
     @NonNull

@@ -130,7 +130,7 @@ public class OrganizationLabelsFragment extends Fragment {
 
 		organizationLabelsViewModel.getOrgLabelsList(instanceToken, owner, getContext(), mProgressBar, noData).observe(getViewLifecycleOwner(), labelsListMain -> {
 
-			adapter = new LabelsAdapter(getContext(), labelsListMain, type);
+			adapter = new LabelsAdapter(getContext(), labelsListMain, type, owner);
 
 			if(adapter.getItemCount() > 0) {
 

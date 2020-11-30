@@ -140,7 +140,7 @@ public class LabelsFragment extends Fragment {
 
         labelsModel.getLabelsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), labelsListMain -> {
 
-            adapter = new LabelsAdapter(getContext(), labelsListMain, type);
+            adapter = new LabelsAdapter(getContext(), labelsListMain, type, owner);
 
             if(adapter.getItemCount() > 0) {
 
