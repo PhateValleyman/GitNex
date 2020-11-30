@@ -149,6 +149,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 	        case "label":
 
 		        Intent intent = new Intent(ctx, CreateLabelActivity.class);
+		        intent.putExtra("orgName", getIntent().getStringExtra("orgName"));
 		        intent.putExtra("type", "org");
 		        ctx.startActivity(intent);
 		        break;

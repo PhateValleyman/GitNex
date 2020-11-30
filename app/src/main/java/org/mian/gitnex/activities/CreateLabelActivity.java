@@ -217,7 +217,7 @@ public class CreateLabelActivity extends BaseActivity {
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-	    	call = RetrofitClient.getApiInterface(ctx).createOrganizationLabel(Authorization.get(ctx), repoOwner, createLabelFunc);
+	    	call = RetrofitClient.getApiInterface(ctx).createOrganizationLabel(Authorization.get(ctx), getIntent().getStringExtra("orgName"), createLabelFunc);
 	    }
 	    else {
 
