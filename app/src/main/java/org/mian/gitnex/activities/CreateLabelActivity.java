@@ -271,7 +271,7 @@ public class CreateLabelActivity extends BaseActivity {
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-		    call = RetrofitClient.getApiInterface(ctx).patchOrganizationLabel(Authorization.get(ctx), repoOwner, labelId, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(ctx).patchOrganizationLabel(Authorization.get(ctx), getIntent().getStringExtra("orgName"), labelId, createLabelFunc);
 	    }
 	    else {
 
@@ -347,7 +347,7 @@ public class CreateLabelActivity extends BaseActivity {
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-		    call = RetrofitClient.getApiInterface(appCtx).deleteOrganizationLabel(Authorization.get(ctx), repoOwner, labelId);
+		    call = RetrofitClient.getApiInterface(appCtx).deleteOrganizationLabel(Authorization.get(ctx), getIntent().getStringExtra("orgName"), labelId);
 	    }
 	    else {
 
