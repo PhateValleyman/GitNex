@@ -56,11 +56,10 @@ public class RetrofitClient {
 
 					Request request = chain.request()
 						.newBuilder()
-						.header("Cache-Control", "public, max-age=" + 60)
+						.header("Cache-Control", "public, if-cached, max-stale=" + 60 * 60 * 24 * 30)
 						.build();
 
 					return chain.proceed(request);
-
 				});
 
 			return new Retrofit.Builder()
@@ -72,7 +71,7 @@ public class RetrofitClient {
 
 		} catch(Exception e) {
 
-			Log.e("onFailure", e.toString());
+			Log.e("onFailureRetrofit", e.toString());
 		}
 
 		return null;
