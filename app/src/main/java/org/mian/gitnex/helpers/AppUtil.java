@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import androidx.annotation.ColorInt;
+import androidx.core.content.pm.PackageInfoCompat;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +40,7 @@ public class AppUtil {
 
 		try {
 			PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-			return (int) packageInfo.getLongVersionCode();
+			return (int) PackageInfoCompat.getLongVersionCode(packageInfo);
 		}
 		catch(PackageManager.NameNotFoundException e) {
 			throw new RuntimeException("Could not get package name: " + e);
