@@ -6,7 +6,7 @@ android {
         applicationId "org.mian.gitnex"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 334
+        versionCode 346
         versionName "3.5.0-dev"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
