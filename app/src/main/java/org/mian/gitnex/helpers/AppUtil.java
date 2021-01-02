@@ -33,7 +33,7 @@ public class AppUtil {
 
 	public static boolean hasNetworkConnection(Context context) {
 
-		return NetworkStatusObserver.getInstance(context).hasNetworkConnection();
+		return NetworkStatusObserver.get(context).hasNetworkConnection();
 	}
 
 	public static int getAppBuildNo(Context context) {
