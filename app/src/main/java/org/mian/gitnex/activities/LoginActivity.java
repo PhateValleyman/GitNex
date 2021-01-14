@@ -2,6 +2,7 @@ package org.mian.gitnex.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -115,18 +116,24 @@ public class LoginActivity extends BaseActivity {
 			}
 		});
 
+		Handler handler = new Handler(getMainLooper());
+
 		networkStatusObserver.registerNetworkStatusListener(hasNetworkConnection -> {
 
-			if(hasNetworkConnection) {
+			handler.post(() -> {
 
-				enableProcessButton();
-			}
-			else {
+				if(hasNetworkConnection) {
 
-				disableProcessButton();
-				loginButton.setText(getResources().getString(R.string.btnLogin));
-				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
-			}
+					enableProcessButton();
+				}
+				else {
+
+					disableProcessButton();
+					loginButton.setText(getResources().getString(R.string.btnLogin));
+					Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
+				}
+
+			});
 		});
 
 		loadDefaults();
