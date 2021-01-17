@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
@@ -29,7 +30,7 @@ import java.util.Locale;
 
 public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-	private Context context;
+	private final Context context;
 	private final int TYPE_LOAD = 0;
 	private List<PullRequests> prList;
 	private PullRequestsAdapter.OnLoadMoreListener loadMoreListener;
@@ -96,15 +97,15 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 	class PullRequestsHolder extends RecyclerView.ViewHolder {
 
-		private TextView prNumber;
-		private TextView prMergeable;
-		private TextView prHeadBranch;
-		private TextView prIsFork;
-		private TextView prForkFullName;
-		private ImageView assigneeAvatar;
-		private TextView prTitle;
-		private TextView prCreatedTime;
-		private TextView prCommentsCount;
+		private final TextView prNumber;
+		private final TextView prMergeable;
+		private final TextView prHeadBranch;
+		private final TextView prIsFork;
+		private final TextView prForkFullName;
+		private final ImageView assigneeAvatar;
+		private final TextView prTitle;
+		private final TextView prCreatedTime;
+		private final TextView prCommentsCount;
 
 		PullRequestsHolder(View itemView) {
 
@@ -184,7 +185,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			}
 
 			String prNumber_ = "<font color='" + context.getResources().getColor(R.color.lightGray) + "'>" + context.getResources().getString(R.string.hash) + prModel.getNumber() + "</font>";
-			prTitle.setText(Html.fromHtml(prNumber_ + " " + prModel.getTitle()));
+			prTitle.setText(Html.fromHtml(prNumber_ + " " + EmojiParser.parseToUnicode(prModel.getTitle())));
 
 			prNumber.setText(String.valueOf(prModel.getNumber()));
 			prMergeable.setText(String.valueOf(prModel.isMergeable()));

@@ -89,8 +89,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 	private List<Integer> currentLabelsIds = new ArrayList<>();
 	private List<Integer> labelsIds = new ArrayList<>();
-	private List<Labels> labelsList = new ArrayList<>();
-	private List<Collaborators> assigneesList = new ArrayList<>();
+	private final List<Labels> labelsList = new ArrayList<>();
+	private final List<Collaborators> assigneesList = new ArrayList<>();
 	private List<String> assigneesListData = new ArrayList<>();
 	private List<String> currentAssignees = new ArrayList<>();
 
@@ -585,7 +585,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 						.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewBinding.assigneeAvatar);
 					String issueNumber_ = "<font color='" + appCtx.getResources().getColor(R.color.lightGray) + "'>" + appCtx.getResources()
 						.getString(R.string.hash) + singleIssue.getNumber() + "</font>";
-					viewBinding.issueTitle.setText(Html.fromHtml(issueNumber_ + " " + singleIssue.getTitle()));
+					viewBinding.issueTitle.setText(Html.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(singleIssue.getTitle())));
 					String cleanIssueDescription = singleIssue.getBody().trim();
 
 					new Markdown(ctx, EmojiParser.parseToUnicode(cleanIssueDescription), viewBinding.issueDescription);

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
@@ -32,7 +33,7 @@ import java.util.Locale;
 
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-	private Context context;
+	private final Context context;
 	private final int TYPE_LOAD = 0;
 	private List<Issues> issuesList;
 	private OnLoadMoreListener loadMoreListener;
@@ -99,11 +100,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	class IssuesHolder extends RecyclerView.ViewHolder {
 
-		private TextView issueNumber;
-		private ImageView issueAssigneeAvatar;
-		private TextView issueTitle;
-		private TextView issueCreatedTime;
-		private TextView issueCommentsCount;
+		private final TextView issueNumber;
+		private final ImageView issueAssigneeAvatar;
+		private final TextView issueTitle;
+		private final TextView issueCreatedTime;
+		private final TextView issueCommentsCount;
 
 		IssuesHolder(View itemView) {
 
@@ -162,7 +163,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			PicassoService.getInstance(context).get().load(issuesModel.getUser().getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(issueAssigneeAvatar);
 
 			String issueNumber_ = "<font color='" + context.getResources().getColor(R.color.lightGray) + "'>" + context.getResources().getString(R.string.hash) + issuesModel.getNumber() + "</font>";
-			issueTitle.setText(Html.fromHtml(issueNumber_ + " " + issuesModel.getTitle()));
+			issueTitle.setText(Html.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(issuesModel.getTitle())));
 
 			issueNumber.setText(String.valueOf(issuesModel.getNumber()));
 			issueCommentsCount.setText(String.valueOf(issuesModel.getComments()));
