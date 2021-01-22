@@ -30,6 +30,7 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
+import org.mian.gitnex.databinding.ActivityMainBinding;
 import org.mian.gitnex.fragments.AdministrationFragment;
 import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
 import org.mian.gitnex.fragments.DraftsFragment;
@@ -95,6 +96,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		super.onCreate(savedInstanceState);
 
+		ActivityMainBinding activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
+
 		tinyDB.putBoolean("noConnection", false);
 
 		String currentVersion = tinyDB.getString("giteaVersion");
@@ -140,8 +143,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			AlertDialogs.forceLogoutDialog(ctx, getResources().getString(R.string.forceLogoutDialogHeader), getResources().getString(R.string.forceLogoutDialogDescription), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 		}
 
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
+		Toolbar toolbar = activityMainBinding.toolbar;
+		toolbarTitle = activityMainBinding.toolbarTitle;
 
 		switch(tinyDB.getInt("customFontId", -1)) {
 
@@ -208,8 +211,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		getNotificationsCount(instanceToken);
 
-		drawer = findViewById(R.id.drawer_layout);
-		NavigationView navigationView = findViewById(R.id.nav_view);
+		drawer = activityMainBinding.drawerLayout;
+		NavigationView navigationView = activityMainBinding.navView;
 		navigationView.setNavigationItemSelectedListener(this);
 		hView = navigationView.getHeaderView(0);
 

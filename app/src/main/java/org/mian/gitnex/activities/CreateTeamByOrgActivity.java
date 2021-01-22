@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.databinding.ActivityCreateTeamByOrgBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
@@ -75,18 +76,20 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 
         super.onCreate(savedInstanceState);
 
+	    ActivityCreateTeamByOrgBinding activityCreateTeamByOrgBinding = ActivityCreateTeamByOrgBinding.inflate(getLayoutInflater());
+
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        ImageView closeActivity = findViewById(R.id.close);
-        teamName = findViewById(R.id.teamName);
-        teamDesc = findViewById(R.id.teamDesc);
-        teamPermission = findViewById(R.id.teamPermission);
-        teamPermissionDetail = findViewById(R.id.teamPermissionDetail);
-        teamAccessControls = findViewById(R.id.teamAccessControls);
-        teamAccessControlsArray = findViewById(R.id.teamAccessControlsArray);
-        createTeamButton = findViewById(R.id.createTeamButton);
+        ImageView closeActivity = activityCreateTeamByOrgBinding.close;
+        teamName = activityCreateTeamByOrgBinding.teamName;
+        teamDesc = activityCreateTeamByOrgBinding.teamDesc;
+        teamPermission = activityCreateTeamByOrgBinding.teamPermission;
+        teamPermissionDetail = activityCreateTeamByOrgBinding.teamPermissionDetail;
+        teamAccessControls = activityCreateTeamByOrgBinding.teamAccessControls;
+        teamAccessControlsArray = activityCreateTeamByOrgBinding.teamAccessControlsArray;
+        createTeamButton = activityCreateTeamByOrgBinding.createTeamButton;
 
         teamName.requestFocus();
         assert imm != null;
