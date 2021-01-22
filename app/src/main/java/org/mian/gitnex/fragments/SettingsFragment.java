@@ -22,6 +22,7 @@ import org.mian.gitnex.activities.SettingsNotificationsActivity;
 import org.mian.gitnex.activities.SettingsReportsActivity;
 import org.mian.gitnex.activities.SettingsSecurityActivity;
 import org.mian.gitnex.activities.SettingsTranslationActivity;
+import org.mian.gitnex.databinding.FragmentSettingsBinding;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Version;
 
@@ -38,22 +39,23 @@ public class SettingsFragment extends Fragment {
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		View v = inflater.inflate(R.layout.fragment_settings, container, false);
+		FragmentSettingsBinding fragmentSettingsBinding = FragmentSettingsBinding.inflate(inflater, container, false);
+
 		ctx = getContext();
 		tinyDB = TinyDB.getInstance(ctx);
 
 		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navSettings));
 
-		LinearLayout generalFrame = v.findViewById(R.id.generalFrame);
-		LinearLayout appearanceFrame = v.findViewById(R.id.appearanceFrame);
-		LinearLayout fileViewerFrame = v.findViewById(R.id.fileViewerFrame);
-		LinearLayout draftsFrame = v.findViewById(R.id.draftsFrame);
-		LinearLayout securityFrame = v.findViewById(R.id.securityFrame);
-		LinearLayout notificationsFrame = v.findViewById(R.id.notificationsFrame);
-		LinearLayout languagesFrame = v.findViewById(R.id.languagesFrame);
-		LinearLayout reportsFrame = v.findViewById(R.id.reportsFrame);
-		LinearLayout rateAppFrame = v.findViewById(R.id.rateAppFrame);
-		LinearLayout aboutAppFrame = v.findViewById(R.id.aboutAppFrame);
+		LinearLayout generalFrame = fragmentSettingsBinding.generalFrame;
+		LinearLayout appearanceFrame = fragmentSettingsBinding.appearanceFrame;
+		LinearLayout fileViewerFrame = fragmentSettingsBinding.fileViewerFrame;
+		LinearLayout draftsFrame = fragmentSettingsBinding.draftsFrame;
+		LinearLayout securityFrame = fragmentSettingsBinding.securityFrame;
+		LinearLayout notificationsFrame = fragmentSettingsBinding.notificationsFrame;
+		LinearLayout languagesFrame = fragmentSettingsBinding.languagesFrame;
+		LinearLayout reportsFrame = fragmentSettingsBinding.reportsFrame;
+		LinearLayout rateAppFrame = fragmentSettingsBinding.rateAppFrame;
+		LinearLayout aboutAppFrame = fragmentSettingsBinding.aboutAppFrame;
 
 		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
 
@@ -80,7 +82,7 @@ public class SettingsFragment extends Fragment {
 
 		aboutAppFrame.setOnClickListener(aboutApp -> requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit());
 
-		return v;
+		return fragmentSettingsBinding.getRoot();
 	}
 
 	public void rateThisApp() {
