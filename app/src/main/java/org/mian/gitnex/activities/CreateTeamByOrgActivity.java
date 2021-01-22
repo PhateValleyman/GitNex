@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.res.ResourcesCompat;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -210,9 +211,9 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
         if(!connToInternet) {
 
             createTeamButton.setEnabled(false);
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius( 8 );
-            shape.setColor(getResources().getColor(R.color.hintColor));
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(8);
+            shape.setColor(ResourcesCompat.getColor(getResources(), R.color.hintColor, null));
             createTeamButton.setBackground(shape);
         }
         else {
