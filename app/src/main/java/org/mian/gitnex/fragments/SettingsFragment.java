@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -46,41 +45,30 @@ public class SettingsFragment extends Fragment {
 
 		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navSettings));
 
-		LinearLayout generalFrame = fragmentSettingsBinding.generalFrame;
-		LinearLayout appearanceFrame = fragmentSettingsBinding.appearanceFrame;
-		LinearLayout fileViewerFrame = fragmentSettingsBinding.fileViewerFrame;
-		LinearLayout draftsFrame = fragmentSettingsBinding.draftsFrame;
-		LinearLayout securityFrame = fragmentSettingsBinding.securityFrame;
-		LinearLayout notificationsFrame = fragmentSettingsBinding.notificationsFrame;
-		LinearLayout languagesFrame = fragmentSettingsBinding.languagesFrame;
-		LinearLayout reportsFrame = fragmentSettingsBinding.reportsFrame;
-		LinearLayout rateAppFrame = fragmentSettingsBinding.rateAppFrame;
-		LinearLayout aboutAppFrame = fragmentSettingsBinding.aboutAppFrame;
-
 		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
 
-			notificationsFrame.setVisibility(View.VISIBLE);
+			fragmentSettingsBinding.notificationsFrame.setVisibility(View.VISIBLE);
 		}
 
-		generalFrame.setOnClickListener(generalFrameCall -> startActivity(new Intent(ctx, SettingsGeneralActivity.class)));
+		fragmentSettingsBinding.generalFrame.setOnClickListener(generalFrameCall -> startActivity(new Intent(ctx, SettingsGeneralActivity.class)));
 
-		appearanceFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsAppearanceActivity.class)));
+		fragmentSettingsBinding.appearanceFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsAppearanceActivity.class)));
 
-		fileViewerFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsFileViewerActivity.class)));
+		fragmentSettingsBinding.fileViewerFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsFileViewerActivity.class)));
 
-		draftsFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsDraftsActivity.class)));
+		fragmentSettingsBinding.draftsFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsDraftsActivity.class)));
 
-		securityFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsSecurityActivity.class)));
+		fragmentSettingsBinding.securityFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsSecurityActivity.class)));
 
-		notificationsFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsNotificationsActivity.class)));
+		fragmentSettingsBinding.notificationsFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsNotificationsActivity.class)));
 
-		languagesFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsTranslationActivity.class)));
+		fragmentSettingsBinding.languagesFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsTranslationActivity.class)));
 
-		reportsFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsReportsActivity.class)));
+		fragmentSettingsBinding.reportsFrame.setOnClickListener(v1 -> startActivity(new Intent(ctx, SettingsReportsActivity.class)));
 
-		rateAppFrame.setOnClickListener(aboutApp -> rateThisApp());
+		fragmentSettingsBinding.rateAppFrame.setOnClickListener(aboutApp -> rateThisApp());
 
-		aboutAppFrame.setOnClickListener(aboutApp -> requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit());
+		fragmentSettingsBinding.aboutAppFrame.setOnClickListener(aboutApp -> requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit());
 
 		return fragmentSettingsBinding.getRoot();
 	}
