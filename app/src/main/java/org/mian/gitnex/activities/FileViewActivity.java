@@ -33,6 +33,7 @@ import com.vdurmont.emoji.EmojiParser;
 import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.databinding.ActivityFileViewBinding;
 import org.mian.gitnex.fragments.BottomSheetFileViewerFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
@@ -83,7 +84,9 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		super.onCreate(savedInstanceState);
 		appUtil = new AppUtil();
 
-		Toolbar toolbar = findViewById(R.id.toolbar);
+		ActivityFileViewBinding activityFileViewBinding = ActivityFileViewBinding.inflate(getLayoutInflater());
+
+		Toolbar toolbar = activityFileViewBinding.toolbar;
 		setSupportActionBar(toolbar);
 
 		String repoFullName = tinyDB.getString("repoFullName");
@@ -96,18 +99,18 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		tinyDB.putBoolean("enableMarkdownInFileView", false);
 
-		ImageView closeActivity = findViewById(R.id.close);
-		singleFileContents = findViewById(R.id.singleFileContents);
-		singleCodeContents = findViewById(R.id.singleCodeContents);
-		imageView = findViewById(R.id.imageView);
-		mProgressBar = findViewById(R.id.progress_bar);
-		pdfView = findViewById(R.id.pdfView);
-		pdfViewFrame = findViewById(R.id.pdfViewFrame);
-		singleFileContentsFrame = findViewById(R.id.singleFileContentsFrame);
+		ImageView closeActivity = activityFileViewBinding.close;
+		singleFileContents = activityFileViewBinding.singleFileContents;
+		singleCodeContents = activityFileViewBinding.singleCodeContents;
+		imageView = activityFileViewBinding.imageView;
+		mProgressBar = activityFileViewBinding.progressBar;
+		pdfView = activityFileViewBinding.pdfView;
+		pdfViewFrame = activityFileViewBinding.pdfViewFrame;
+		singleFileContentsFrame = activityFileViewBinding.singleFileContentsFrame;
 
 		singleFileName = getIntent().getStringExtra("singleFileName");
 
-		TextView toolbar_title = findViewById(R.id.toolbar_title);
+		TextView toolbar_title = activityFileViewBinding.toolbarTitle;
 		toolbar_title.setMovementMethod(new ScrollingMovementMethod());
 
 		initCloseListener();
