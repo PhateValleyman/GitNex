@@ -412,6 +412,7 @@
     <string name="adminCreateNewUser">Add New User</string>
     <string name="adminUsers">System Users</string>
     <string name="userRoleAdmin">Admin</string>
+    <string name="adminCron">Cron Tasks</string>
     <!-- admin -->
 
     <!-- create user -->
