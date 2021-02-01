@@ -44,9 +44,8 @@ public class CreateFileActivity extends BaseActivity {
 
     private EditText newFileName;
     private EditText newFileContent;
-    private EditText newFileBranchName;
     private EditText newFileCommitMessage;
-    private AutoCompleteTextView newFileBranchesSpinner;
+    private AutoCompleteTextView newFileBranches;
 	private String filePath;
 	private String fileSha;
 
@@ -56,12 +55,10 @@ public class CreateFileActivity extends BaseActivity {
 
 	private int fileAction = FILE_ACTION_CREATE;
 
-    private final List<Branches> branchesList = new ArrayList<>();
+    private final List<String> branches = new ArrayList<>();
 
 	private String repoOwner;
 	private String repoName;
-
-	private String selectedBranch = "";
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -82,7 +79,6 @@ public class CreateFileActivity extends BaseActivity {
         closeActivity = activityCreateFileBinding.close;
         newFileName = activityCreateFileBinding.newFileName;
         newFileContent = activityCreateFileBinding.newFileContent;
-        newFileBranchName = activityCreateFileBinding.newFileBranchName;
         newFileCommitMessage = activityCreateFileBinding.newFileCommitMessage;
 	    TextView toolbarTitle = activityCreateFileBinding.toolbarTitle;
 
@@ -91,10 +87,10 @@ public class CreateFileActivity extends BaseActivity {
         imm.showSoftInput(newFileName, InputMethodManager.SHOW_IMPLICIT);
 
         initCloseListener();
+
         closeActivity.setOnClickListener(onClickListener);
 
         newFileCreate = activityCreateFileBinding.newFileCreate;
-
 	    newFileContent.setOnTouchListener((touchView, motionEvent) -> {
 
 		    touchView.getParent().requestDisallowInterceptTouchEvent(true);
@@ -149,7 +145,7 @@ public class CreateFileActivity extends BaseActivity {
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);
 
-        newFileBranchesSpinner = activityCreateFileBinding.newFileBranchesSpinner;
+        newFileBranches = activityCreateFileBinding.newFileBranches;
         getBranches(repoOwner, repoName);
 
         disableProcessButton();
@@ -170,7 +166,7 @@ public class CreateFileActivity extends BaseActivity {
 
         String newFileName_ = newFileName.getText().toString();
         String newFileContent_ = newFileContent.getText().toString();
-        String newFileBranchName_ = newFileBranchName.getText().toString();
+        String newFileBranchName_ = newFileBranches.getText().toString();
         String newFileCommitMessage_ = newFileCommitMessage.getText().toString();
 
         if(!connToInternet) {
@@ -185,21 +181,10 @@ public class CreateFileActivity extends BaseActivity {
             return;
         }
 
-	    if(selectedBranch.equals("No branch")) {
+	    if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
 
-		    if(newFileBranchName_.equals("")) {
-
-			    Toasty.error(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
-			    return;
-		    }
-		    else {
-
-			    if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
-
-				    Toasty.error(ctx, getString(R.string.newFileInvalidBranchName));
-				    return;
-			    }
-		    }
+		    Toasty.error(ctx, getString(R.string.newFileInvalidBranchName));
+		    return;
 	    }
 
         if(newFileCommitMessage_.length() > 255) {
@@ -213,37 +198,27 @@ public class CreateFileActivity extends BaseActivity {
             switch(fileAction) {
 
 	            case FILE_ACTION_CREATE:
-		            createNewFile(Authorization.get(ctx), repoOwner, repoName, newFileName_,
-			            appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, selectedBranch);
+		            createNewFile(Authorization.get(ctx), repoOwner, repoName, newFileName_, appUtil.encodeBase64(newFileContent_), newFileCommitMessage_, newFileBranchName_);
 		            break;
 
 	            case FILE_ACTION_DELETE:
-		            deleteFile(Authorization.get(ctx), repoOwner, repoName, filePath,
-			            newFileBranchName_, newFileCommitMessage_, selectedBranch, fileSha);
+		            deleteFile(Authorization.get(ctx), repoOwner, repoName, filePath, newFileCommitMessage_, newFileBranchName_, fileSha);
 		            break;
 
 	            case FILE_ACTION_EDIT:
 		            editFile(Authorization.get(ctx), repoOwner, repoName, filePath,
-			            appUtil.encodeBase64(newFileContent_), newFileBranchName_, newFileCommitMessage_, selectedBranch, fileSha);
+			            appUtil.encodeBase64(newFileContent_), newFileCommitMessage_, newFileBranchName_, fileSha);
 	            	break;
 
             }
         }
     }
 
-    private void createNewFile(final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch) {
+    private void createNewFile(final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileCommitMessage, String branchName) {
 
-        NewFile createNewFileJsonStr;
-
-	    createNewFileJsonStr = new NewFile(currentBranch, fileContent, fileCommitMessage, "");
-
-	    if(currentBranch != null) {
-
-		    if(currentBranch.equals("No branch")) {
-
-			    createNewFileJsonStr = new NewFile("", fileContent, fileCommitMessage, fileBranchName);
-		    }
-        }
+        NewFile createNewFileJsonStr = branches.contains(branchName) ?
+	        new NewFile(branchName, fileContent, fileCommitMessage, "") :
+	        new NewFile("", fileContent, fileCommitMessage, branchName);
 
         Call<JsonElement> call = RetrofitClient
                 .getApiInterface(ctx)
@@ -294,21 +269,11 @@ public class CreateFileActivity extends BaseActivity {
 
     }
 
-	private void deleteFile(final String token, String repoOwner, String repoName, String fileName, String fileBranchName, String fileCommitMessage, String currentBranch, String fileSha) {
+	private void deleteFile(final String token, String repoOwner, String repoName, String fileName, String fileCommitMessage, String branchName, String fileSha) {
 
-    	String branchName;
-		DeleteFile deleteFileJsonStr;
-
-		if(currentBranch.equals("No branch")) {
-
-			branchName = fileBranchName;
-			deleteFileJsonStr = new DeleteFile("", fileCommitMessage, fileBranchName, fileSha);
-		}
-		else {
-
-			branchName = currentBranch;
-			deleteFileJsonStr = new DeleteFile(currentBranch, fileCommitMessage, "", fileSha);
-		}
+    	DeleteFile deleteFileJsonStr = branches.contains(branchName) ?
+		    new DeleteFile(branchName, fileCommitMessage, "", fileSha) :
+		    new DeleteFile("", fileCommitMessage, branchName, fileSha);
 
 		Call<JsonElement> call = RetrofitClient
 			.getApiInterface(ctx)
@@ -322,7 +287,7 @@ public class CreateFileActivity extends BaseActivity {
 				if(response.code() == 200) {
 
 					enableProcessButton();
-					Toasty.info(ctx, getString(R.string.deleteFileMessage, branchName));
+					Toasty.info(ctx, getString(R.string.deleteFileMessage, tinyDB.getString("repoBranch")));
 					getIntent().removeExtra("filePath");
 					getIntent().removeExtra("fileSha");
 					getIntent().removeExtra("fileContents");
@@ -361,21 +326,11 @@ public class CreateFileActivity extends BaseActivity {
 
 	}
 
-	private void editFile(final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch, String fileSha) {
+	private void editFile(final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileCommitMessage, String branchName, String fileSha) {
 
-		String branchName;
-		EditFile editFileJsonStr;
-
-		if(currentBranch.equals("No branch")) {
-
-			branchName = fileBranchName;
-			editFileJsonStr = new EditFile("", fileCommitMessage, fileBranchName, fileSha, fileContent);
-		}
-		else {
-
-			branchName = currentBranch;
-			editFileJsonStr = new EditFile(currentBranch, fileCommitMessage, "", fileSha, fileContent);
-		}
+		EditFile editFileJsonStr = branches.contains(branchName) ?
+			new EditFile(branchName, fileCommitMessage, "", fileSha, fileContent) :
+			new EditFile("", fileCommitMessage, branchName, fileSha, fileContent);
 
 		Call<JsonElement> call = RetrofitClient
 			.getApiInterface(ctx)
@@ -443,42 +398,16 @@ public class CreateFileActivity extends BaseActivity {
 
                 if(response.code() == 200) {
 
-                    List<Branches> branchesList_ = response.body();
+                	assert response.body() != null;
+                    for(Branches branch : response.body()) branches.add(branch.getName());
 
-                    branchesList.add(new Branches("No branch"));
-                    assert branchesList_ != null;
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateFileActivity.this, R.layout.list_spinner_items, branches);
 
-                    for (int i = 0; i < branchesList_.size(); i++) {
+                    newFileBranches.setAdapter(adapter);
+                    newFileBranches.setText(tinyDB.getString("repoBranch"), false);
 
-                        Branches data = new Branches(branchesList_.get(i).getName());
-                        branchesList.add(data);
-
-                    }
-
-                    ArrayAdapter<Branches> adapter = new ArrayAdapter<>(CreateFileActivity.this,
-                            R.layout.list_spinner_items, branchesList);
-
-                    newFileBranchesSpinner.setAdapter(adapter);
-                    newFileBranchesSpinner.setText(branchesList.get(0).getName(), false);
 	                enableProcessButton();
 
-	                newFileBranchesSpinner.setOnItemClickListener((parent, view, position, id) -> {
-
-	                    selectedBranch = branchesList.get(position).getName();
-
-	                    if(selectedBranch.equals("No branch")) {
-
-		                    newFileBranchName.setEnabled(true);
-		                    newFileBranchName.setVisibility(View.VISIBLE);
-	                    }
-	                    else {
-
-		                    newFileBranchName.setEnabled(false);
-		                    newFileBranchName.setVisibility(View.GONE);
-		                    newFileBranchName.setText("");
-	                    }
-
-                    });
                 }
             }
 

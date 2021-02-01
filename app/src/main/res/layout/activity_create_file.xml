@@ -111,7 +111,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/newFileBranchesSpinnerLayout"
+                android:id="@+id/newFileBranchesLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:boxBackgroundColor="?attr/inputBackgroundColor"
@@ -119,48 +119,20 @@
                 app:hintTextColor="?attr/hintColor"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:hint="@string/newFileOldBranches"
+                android:hint="@string/newFileBranches"
                 app:endIconTint="?attr/iconsColor"
                 app:helperTextEnabled="true"
-                app:helperText="@string/newFileCurrentBranchMessage"
+                app:helperText="@string/newFileEmptyBranchMessage"
                 app:helperTextTextColor="?attr/inputTextColor"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
 
                 <AutoCompleteTextView
-                    android:id="@+id/newFileBranchesSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:textColor="?attr/inputTextColor"
-                    android:labelFor="@+id/newFileBranchesSpinner"
-                    android:textSize="16sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/newFileBranchNameLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:boxBackgroundColor="?attr/inputBackgroundColor"
-                android:textColorHint="?attr/hintColor"
-                app:hintTextColor="?attr/hintColor"
-                app:boxStrokeErrorColor="@color/darkRed"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                app:endIconMode="clear_text"
-                app:endIconTint="?attr/iconsColor"
-                app:helperTextEnabled="true"
-                app:helperText="@string/newFileNewBranchMessage"
-                app:helperTextTextColor="?attr/inputTextColor"
-                android:hint="@string/newFileBranchTintCopy">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/newFileBranchName"
+                    android:id="@+id/new_file_branches"
+                    style="@style/Widget.MaterialComponents.AutoCompleteTextView.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/inputTextColor"
-                    android:textColorHighlight="?attr/hintColor"
-                    android:textColorHint="?attr/hintColor"
+                    android:labelFor="@id/new_file_branches"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
