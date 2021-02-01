@@ -473,7 +473,7 @@
     <string name="newFileSuccessMessage">New file created</string>
     <string name="newFileBranches">Select or create a branch</string>
     <string name="newFileRequiredFields">Fields like filename, content and commit message are required</string>
-    <string name="newFileEmptyBranchMessage">Leave blank to instead push on the default branch</string>
+    <string name="newFileEmptyBranchMessage">Leave blank to push to the default branch</string>
     <string name="newFileRequiredFieldNewBranchName">New branch name cannot be empty if current branch is not selected</string>
 
     <string name="strFilter">Filter</string>

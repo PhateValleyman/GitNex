@@ -100,12 +100,12 @@
                     android:id="@+id/newFileContent"
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine"
+                    android:scrollbars="vertical"
                     android:textColor="?attr/inputTextColor"
                     android:textColorHighlight="?attr/hintColor"
                     android:textColorHint="?attr/hintColor"
-                    android:gravity="top|start"
-                    android:scrollbars="vertical"
-                    android:inputType="textCapSentences"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -131,8 +131,10 @@
                     style="@style/Widget.MaterialComponents.AutoCompleteTextView.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/inputTextColor"
+                    android:inputType="text"
                     android:labelFor="@id/new_file_branches"
+                    android:singleLine="true"
+                    android:textColor="?attr/inputTextColor"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -158,10 +160,10 @@
                     android:id="@+id/newFileCommitMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
                     android:textColor="?attr/inputTextColor"
                     android:textColorHighlight="?attr/hintColor"
                     android:textColorHint="?attr/hintColor"
-                    android:inputType="textCapSentences"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
