@@ -187,23 +187,25 @@ public class CreateFileActivity extends BaseActivity {
             return;
         }
 
-        if(selectedBranch.equals("No branch")) {
+	    if(selectedBranch != null) {
 
-            if(newFileBranchName_.equals("")) {
+		    if(selectedBranch.equals("No branch")) {
 
-                Toasty.error(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
-                return;
-            }
-            else {
+			    if(newFileBranchName_.equals("")) {
 
-                if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
+				    Toasty.error(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
+				    return;
+			    }
+			    else {
 
-                    Toasty.error(ctx, getString(R.string.newFileInvalidBranchName));
-                    return;
-                }
-            }
+				    if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
 
-        }
+					    Toasty.error(ctx, getString(R.string.newFileInvalidBranchName));
+					    return;
+				    }
+			    }
+		    }
+	    }
 
         if(appUtil.charactersLength(newFileCommitMessage_) > 255) {
 
@@ -236,13 +238,15 @@ public class CreateFileActivity extends BaseActivity {
     private void createNewFile(final String token, String repoOwner, String repoName, String fileName, String fileContent, String fileBranchName, String fileCommitMessage, String currentBranch) {
 
         NewFile createNewFileJsonStr;
-        if(currentBranch.equals("No branch")) {
 
-            createNewFileJsonStr = new NewFile("", fileContent, fileCommitMessage, fileBranchName);
-        }
-        else {
+	    createNewFileJsonStr = new NewFile(currentBranch, fileContent, fileCommitMessage, "");
 
-            createNewFileJsonStr = new NewFile(currentBranch, fileContent, fileCommitMessage, "");
+	    if(currentBranch != null) {
+
+		    if(currentBranch.equals("No branch")) {
+
+			    createNewFileJsonStr = new NewFile("", fileContent, fileCommitMessage, fileBranchName);
+		    }
         }
 
         Call<JsonElement> call = RetrofitClient
