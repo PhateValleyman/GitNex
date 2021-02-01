@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import org.mian.gitnex.activities.AdminCronTasksActivity;
 import org.mian.gitnex.activities.AdminGetUsersActivity;
 import org.mian.gitnex.databinding.FragmentAdministrationBinding;
 
@@ -22,6 +23,8 @@ public class AdministrationFragment extends Fragment {
 		FragmentAdministrationBinding fragmentAdministrationBinding = FragmentAdministrationBinding.inflate(inflater, container, false);
 
 		fragmentAdministrationBinding.adminUsers.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminGetUsersActivity.class)));
+
+		fragmentAdministrationBinding.adminCron.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminCronTasksActivity.class)));
 
 		return fragmentAdministrationBinding.getRoot();
 
