@@ -61,7 +61,7 @@ public class CreateFileActivity extends BaseActivity {
 	private String repoOwner;
 	private String repoName;
 
-	private String selectedBranch;
+	private String selectedBranch = "";
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -106,7 +106,7 @@ public class CreateFileActivity extends BaseActivity {
 		    return false;
 	    });
 
-	    if(getIntent().getStringExtra("filePath") != null && getIntent().getIntExtra("fileAction", 1) == 1) {
+	    if(getIntent().getStringExtra("filePath") != null && getIntent().getIntExtra("fileAction", FILE_ACTION_DELETE) == FILE_ACTION_DELETE) {
 
 		    fileAction = getIntent().getIntExtra("fileAction", FILE_ACTION_DELETE);
 
@@ -124,9 +124,10 @@ public class CreateFileActivity extends BaseActivity {
 		    newFileContent.setText(fileContents);
 		    newFileContent.setEnabled(false);
 		    newFileContent.setFocusable(false);
+
 	    }
 
-	    if(getIntent().getStringExtra("filePath") != null && getIntent().getIntExtra("fileAction", 2) == 2) {
+	    if(getIntent().getStringExtra("filePath") != null && getIntent().getIntExtra("fileAction", FILE_ACTION_EDIT) == FILE_ACTION_EDIT) {
 
 		    fileAction = getIntent().getIntExtra("fileAction", FILE_ACTION_EDIT);
 
@@ -142,6 +143,7 @@ public class CreateFileActivity extends BaseActivity {
 		    newFileName.setFocusable(false);
 
 		    newFileContent.setText(fileContents);
+
 	    }
 
         initCloseListener();
@@ -183,22 +185,19 @@ public class CreateFileActivity extends BaseActivity {
             return;
         }
 
-	    if(selectedBranch != null) {
+	    if(selectedBranch.equals("No branch")) {
 
-		    if(selectedBranch.equals("No branch")) {
+		    if(newFileBranchName_.equals("")) {
 
-			    if(newFileBranchName_.equals("")) {
+			    Toasty.error(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
+			    return;
+		    }
+		    else {
 
-				    Toasty.error(ctx, getString(R.string.newFileRequiredFieldNewBranchName));
+			    if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
+
+				    Toasty.error(ctx, getString(R.string.newFileInvalidBranchName));
 				    return;
-			    }
-			    else {
-
-				    if(!appUtil.checkStringsWithDash(newFileBranchName_)) {
-
-					    Toasty.error(ctx, getString(R.string.newFileInvalidBranchName));
-					    return;
-				    }
 			    }
 		    }
 	    }
@@ -453,15 +452,17 @@ public class CreateFileActivity extends BaseActivity {
 
                         Branches data = new Branches(branchesList_.get(i).getName());
                         branchesList.add(data);
+
                     }
 
                     ArrayAdapter<Branches> adapter = new ArrayAdapter<>(CreateFileActivity.this,
                             R.layout.list_spinner_items, branchesList);
 
                     newFileBranchesSpinner.setAdapter(adapter);
-                    enableProcessButton();
+                    newFileBranchesSpinner.setText(branchesList.get(0).getName(), false);
+	                enableProcessButton();
 
-                    newFileBranchesSpinner.setOnItemClickListener ((parent, view, position, id) -> {
+	                newFileBranchesSpinner.setOnItemClickListener((parent, view, position, id) -> {
 
 	                    selectedBranch = branchesList.get(position).getName();
 
