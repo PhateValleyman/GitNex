@@ -7,7 +7,7 @@
     android:background="?attr/primaryBackgroundColor" >
 
     <LinearLayout
-        android:id="@+id/cronTasksInfo"
+        android:id="@+id/cronTasksRun"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -25,10 +25,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/cronTasksRun"
+        android:id="@+id/cronTasksInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/cronTasksInfo"
+        android:layout_toEndOf="@id/cronTasksRun"
         android:orientation="vertical">
 
         <TextView
