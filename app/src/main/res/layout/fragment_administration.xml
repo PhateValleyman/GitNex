@@ -42,6 +42,7 @@
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
                 android:padding="16dp"
+                android:visibility="gone"
                 app:drawableStartCompat="@drawable/ic_tasks" />
 
         </LinearLayout>
