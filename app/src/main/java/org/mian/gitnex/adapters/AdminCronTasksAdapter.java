@@ -10,13 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.gson.JsonElement;
 import org.apache.commons.lang3.StringUtils;
 import org.mian.gitnex.R;
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.models.CronTasks;
 import java.util.List;
 import java.util.Locale;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -26,6 +32,7 @@ public class AdminCronTasksAdapter extends RecyclerView.Adapter<AdminCronTasksAd
 
 	private final List<CronTasks> tasksList;
 	private final Context mCtx;
+	private static TinyDB tinyDb;
 
 	static class CronTasksViewHolder extends RecyclerView.ViewHolder {
 
@@ -40,7 +47,6 @@ public class AdminCronTasksAdapter extends RecyclerView.Adapter<AdminCronTasksAd
 
 			super(itemView);
 			Context ctx = itemView.getContext();
-			TinyDB tinyDb = TinyDB.getInstance(ctx);
 
 			final String locale = tinyDb.getString("locale");
 			final String timeFormat = tinyDb.getString("dateFormat");
@@ -82,11 +88,17 @@ public class AdminCronTasksAdapter extends RecyclerView.Adapter<AdminCronTasksAd
 				alertDialog.create().show();
 
 			});
+
+			cronTasksRun.setOnClickListener(taskInfo -> {
+
+				runCronTask(ctx, cronTasks.getName());
+			});
 		}
 	}
 
 	public AdminCronTasksAdapter(Context mCtx, List<CronTasks> tasksListMain) {
 
+		tinyDb = TinyDB.getInstance(mCtx);
 		this.mCtx = mCtx;
 		this.tasksList = tasksListMain;
 	}
@@ -106,6 +118,55 @@ public class AdminCronTasksAdapter extends RecyclerView.Adapter<AdminCronTasksAd
 
 		holder.cronTasks = currentItem;
 		holder.taskName.setText(StringUtils.capitalize(currentItem.getName().replace("_", " ")));
+	}
+
+	private static void runCronTask(final Context ctx, final String taskName) {
+
+		final String loginUid = tinyDb.getString("loginUid");
+		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
+
+		Call<JsonElement> call = RetrofitClient
+			.getApiInterface(ctx)
+			.adminRunCronTask(instanceToken, taskName);
+
+		call.enqueue(new Callback<JsonElement>() {
+
+			@Override
+			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+				switch(response.code()) {
+
+					case 204:
+						Toasty.success(ctx, ctx.getString(R.string.adminCronTaskSuccessMsg, taskName));
+						break;
+
+					case 401:
+						AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getString(R.string.alertDialogTokenRevokedTitle),
+							ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+							ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+							ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						break;
+
+					case 403:
+						Toasty.error(ctx, ctx.getString(R.string.authorizeError));
+						break;
+
+					case 404:
+						Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
+						break;
+
+					default:
+						Toasty.error(ctx, ctx.getString(R.string.genericError));
+
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
+			}
+		});
 	}
 
 	@Override

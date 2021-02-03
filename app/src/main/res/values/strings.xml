@@ -417,6 +417,7 @@
     <string name="adminCronNextRunHeader">Next Run</string>
     <string name="adminCronLastRunHeader">Last Run</string>
     <string name="adminCronExecutionHeader">Executions</string>
+    <string name="adminCronTaskSuccessMsg">Task %1$s is initiated successfully</string>
     <!-- admin -->
 
     <!-- create user -->
