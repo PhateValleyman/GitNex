@@ -17,6 +17,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -57,6 +59,7 @@ import org.mian.gitnex.models.NotificationCount;
 import org.mian.gitnex.models.UserInfo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 import retrofit2.Call;
@@ -84,6 +87,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private View hView;
 	private MenuItem navNotifications;
 	private TextView notificationCounter;
+
+	private Executor executor;
+	private BiometricPrompt biometricPrompt;
+	private BiometricPrompt.PromptInfo biometricPromptBuilder;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -155,6 +162,43 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				myTypeface = Typeface.createFromAsset(getAssets(), "fonts/manroperegular.ttf");
 				break;
+		}
+
+		// biometric auth
+		if(tinyDB.getBoolean("biometricStatus")) {
+
+			executor = ContextCompat.getMainExecutor(this);
+			biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
+
+				@Override
+				public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+
+					super.onAuthenticationError(errorCode, errString);
+					// Authentication error, close the app
+				}
+
+				@Override
+				public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+
+					super.onAuthenticationSucceeded(result);
+					// Authentication succeeded, continue to app
+				}
+
+				@Override
+				public void onAuthenticationFailed() {
+
+					super.onAuthenticationFailed();
+					// Authentication failed, close the app
+				}
+			});
+
+			biometricPromptBuilder = new BiometricPrompt.PromptInfo.Builder()
+				.setTitle(getString(R.string.biometricAuthHeader))
+				.setSubtitle(getString(R.string.biometricAuthDescription))
+				.setNegativeButtonText(getString(R.string.cancelButton))
+				.build();
+
+			biometricPrompt.authenticate(biometricPromptBuilder);
 		}
 
 		toolbarTitle.setTypeface(myTypeface);

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsSecurityBinding;
@@ -53,6 +54,8 @@ public class SettingsSecurityActivity extends BaseActivity {
 		LinearLayout cacheSizeImagesFrame = activitySettingsSecurityBinding.cacheSizeImagesSelectionFrame;
 		LinearLayout clearCacheFrame = activitySettingsSecurityBinding.clearCacheSelectionFrame;
 
+		SwitchMaterial switchBiometric = activitySettingsSecurityBinding.switchBiometric;
+
 		if(!tinyDB.getString("cacheSizeStr").isEmpty()) {
 
 			cacheSizeDataSelected.setText(tinyDB.getString("cacheSizeStr"));
@@ -72,6 +75,15 @@ public class SettingsSecurityActivity extends BaseActivity {
 
 			cacheSizeImagesSelectedChoice = tinyDB.getInt("cacheSizeImagesId");
 		}
+
+		switchBiometric.setChecked(tinyDB.getBoolean("biometricStatus"));
+
+		// biometric switcher
+		switchBiometric.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+			tinyDB.putBoolean("biometricStatus", isChecked);
+			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
+		});
 
 		// clear cache setter
 		File cacheDir = appCtx.getCacheDir();
