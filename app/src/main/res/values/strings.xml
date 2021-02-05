@@ -743,6 +743,6 @@
     <string name="codeBlockWhiteOnGrey">White on Grey</string>
     <string name="codeBlockDarkOnWhite">Dark on White</string>
 
-    <string name="biometricAuthHeader">Biometric Authentication</string>
-    <string name="biometricAuthDescription">Unlock using your biometric credential</string>
+    <string name="biometricAuthTitle">Biometric Authentication</string>
+    <string name="biometricAuthSubTitle">Unlock using your biometric credentials</string>
 </resources>

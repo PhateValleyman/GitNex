@@ -175,6 +175,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 					super.onAuthenticationError(errorCode, errString);
 					// Authentication error, close the app
+					if (errorCode == BiometricPrompt.ERROR_USER_CANCELED || errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+
+						finish();
+					}
 				}
 
 				@Override
@@ -193,8 +197,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			});
 
 			biometricPromptBuilder = new BiometricPrompt.PromptInfo.Builder()
-				.setTitle(getString(R.string.biometricAuthHeader))
-				.setSubtitle(getString(R.string.biometricAuthDescription))
+				.setTitle(getString(R.string.biometricAuthTitle))
+				.setSubtitle(getString(R.string.biometricAuthSubTitle))
 				.setNegativeButtonText(getString(R.string.cancelButton))
 				.build();
 
