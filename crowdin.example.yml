@@ -1,5 +1,5 @@
-"project_identifier" : "gitnex"
-"api_key" : "-- PASTE HERE --"
+"project_id":         "375123"
+"api_token":          "-removed-"
 "base_path" : ""
 "preserve_hierarchy": false
 files: [
