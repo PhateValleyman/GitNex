@@ -745,4 +745,7 @@
 
     <string name="biometricAuthTitle">Biometric Authentication</string>
     <string name="biometricAuthSubTitle">Unlock using your biometric credentials</string>
+    <string name="biometricNotSupported">No biometric features available on this device</string>
+    <string name="biometricNotAvailable">Biometric features are currently unavailable</string>
+    <string name="enrollBiometric">Enroll biometric from phone settings</string>
 </resources>

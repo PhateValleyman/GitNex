@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import androidx.biometric.BiometricManager;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.apache.commons.io.FileUtils;
 import org.mian.gitnex.R;
@@ -17,6 +18,8 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.ssl.MemorizingTrustManager;
 import java.io.File;
 import java.io.IOException;
+import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
+import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
 
 /**
  * Author M M Arif
@@ -81,8 +84,43 @@ public class SettingsSecurityActivity extends BaseActivity {
 		// biometric switcher
 		switchBiometric.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-			tinyDB.putBoolean("biometricStatus", isChecked);
-			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
+			if(isChecked) {
+
+				BiometricManager biometricManager = BiometricManager.from(this);
+
+				switch(biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)) {
+
+					case BiometricManager.BIOMETRIC_SUCCESS:
+
+						tinyDB.putBoolean("biometricStatus", true);
+						Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
+						break;
+					case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+					case BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED:
+					case BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED:
+					case BiometricManager.BIOMETRIC_STATUS_UNKNOWN:
+
+						switchBiometric.setChecked(false);
+						Toasty.error(appCtx, getResources().getString(R.string.biometricNotSupported));
+						break;
+					case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+
+						switchBiometric.setChecked(false);
+						Toasty.error(appCtx, getResources().getString(R.string.biometricNotAvailable));
+						break;
+					case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+
+						switchBiometric.setChecked(false);
+						Toasty.info(appCtx, getResources().getString(R.string.enrollBiometric));
+						break;
+				}
+			}
+			else {
+
+				tinyDB.putBoolean("biometricStatus", false);
+				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
+			}
+
 		});
 
 		// clear cache setter
