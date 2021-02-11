@@ -100,16 +100,19 @@ public class SettingsSecurityActivity extends BaseActivity {
 					case BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED:
 					case BiometricManager.BIOMETRIC_STATUS_UNKNOWN:
 
+						tinyDB.putBoolean("biometricStatus", false);
 						switchBiometric.setChecked(false);
 						Toasty.error(appCtx, getResources().getString(R.string.biometricNotSupported));
 						break;
 					case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
 
+						tinyDB.putBoolean("biometricStatus", false);
 						switchBiometric.setChecked(false);
 						Toasty.error(appCtx, getResources().getString(R.string.biometricNotAvailable));
 						break;
 					case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
 
+						tinyDB.putBoolean("biometricStatus", false);
 						switchBiometric.setChecked(false);
 						Toasty.info(appCtx, getResources().getString(R.string.enrollBiometric));
 						break;
