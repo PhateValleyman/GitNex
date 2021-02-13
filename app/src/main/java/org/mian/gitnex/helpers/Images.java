@@ -9,25 +9,25 @@ import android.graphics.BitmapFactory;
 
 public class Images {
 
-	public static Bitmap scaleImage(byte[] imageData, int size_limit) {
+	public static Bitmap scaleImage(byte[] imageData, int sizeLimit) {
 
 		Bitmap original = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
 
-		if(original.getHeight() > size_limit && original.getWidth() <= original.getHeight()) {
+		if(original.getHeight() > sizeLimit && original.getWidth() <= original.getHeight()) {
 
-			double reduction_percentage = (double) size_limit / original.getHeight();
+			double reductionPercentage = (double) sizeLimit / original.getHeight();
 
-			Bitmap scaled = Bitmap.createScaledBitmap(original, (int) (reduction_percentage * original.getWidth()), size_limit, false);
+			Bitmap scaled = Bitmap.createScaledBitmap(original, (int) (reductionPercentage * original.getWidth()), sizeLimit, false);
 			original.recycle();
 
 			return scaled;
 
 		}
-		else if(original.getWidth() > size_limit && original.getHeight() < original.getWidth()) {
+		else if(original.getWidth() > sizeLimit && original.getHeight() < original.getWidth()) {
 
-			double reduction_percentage = (double) size_limit / original.getWidth();
+			double reductionPercentage = (double) sizeLimit / original.getWidth();
 
-			Bitmap scaled = Bitmap.createScaledBitmap(original, size_limit, (int) (reduction_percentage * original.getHeight()), false);
+			Bitmap scaled = Bitmap.createScaledBitmap(original, sizeLimit, (int) (reductionPercentage * original.getHeight()), false);
 			original.recycle();
 
 			return scaled;

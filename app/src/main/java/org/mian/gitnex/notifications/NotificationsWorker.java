@@ -157,7 +157,7 @@ public class NotificationsWorker extends Worker {
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-			NotificationChannel notificationChannel = new NotificationChannel(context.getPackageName(), context.getString(R.string.app_name),
+			NotificationChannel notificationChannel = new NotificationChannel(context.getPackageName(), context.getString(R.string.appName),
 				NotificationManager.IMPORTANCE_DEFAULT);
 
 			notificationChannel.setDescription(context.getString(R.string.notificationChannelDescription));

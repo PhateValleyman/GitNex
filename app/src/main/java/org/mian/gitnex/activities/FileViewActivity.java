@@ -140,7 +140,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 			getSingleFileContents(instanceToken, repoOwner, repoName, singleFileName, repoBranch);
 			tinyDB.putBoolean("fileModified", false);
-
 		}
 	}
 
@@ -174,6 +173,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 						switch(AppUtil.getFileType(fileExtension)) {
 
 							case IMAGE:
+
 								singleFileContentsFrame.setVisibility(View.GONE);
 								singleCodeContents.setVisibility(View.GONE);
 								pdfViewFrame.setVisibility(View.GONE);
@@ -182,8 +182,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 								imageData = Base64.decode(response.body().getContent(), Base64.DEFAULT);
 								imageView.setImageBitmap(Images.scaleImage(imageData, 1920));
 								break;
-
 							case TEXT:
+
 								imageView.setVisibility(View.GONE);
 								singleFileContentsFrame.setVisibility(View.GONE);
 								pdfViewFrame.setVisibility(View.GONE);
@@ -203,8 +203,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 								singleCodeContents.setSource(AppUtil.decodeBase64(response.body().getContent()));
 								break;
-
 							case DOCUMENT:
+
 								if(fileExtension.equalsIgnoreCase("pdf")) {
 
 									imageView.setVisibility(View.GONE);
@@ -231,18 +231,17 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 										.pageSnap(false)
 										.pageFling(true)
 										.nightMode(pdfNightMode).load();
-
-								} else {
+								}
+								else {
 
 									unknown = true;
 								}
 								break;
-
 							case UNKNOWN:
+
 							default:
 								unknown = true;
 								break;
-
 						}
 
 						if(unknown) { // While the file could still be non-binary,
@@ -253,17 +252,15 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							pdfViewFrame.setVisibility(View.GONE);
 							singleFileContentsFrame.setVisibility(View.VISIBLE);
 
-							singleFileContents.setText(getString(R.string.excludeFilesInFileviewer));
+							singleFileContents.setText(getString(R.string.excludeFilesInFileViewer));
 							singleFileContents.setGravity(Gravity.CENTER);
 							singleFileContents.setTypeface(null, Typeface.BOLD);
-
 						}
 					}
 					else {
 
 						singleFileContents.setText("");
 						mProgressBar.setVisibility(View.GONE);
-
 					}
 				}
 				else if(response.code() == 401) {
@@ -375,7 +372,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			intent.putExtra("fileContents", data);
 
 			ctx.startActivity(intent);
-
 		}
 
 		if("editFile".equals(text)) {
@@ -386,6 +382,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 				case TEXT:
 				case UNKNOWN:
+
 					Intent intent = new Intent(ctx, CreateFileActivity.class);
 
 					intent.putExtra("fileAction", CreateFileActivity.FILE_ACTION_EDIT);
@@ -395,10 +392,9 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 					ctx.startActivity(intent);
 					break;
-
 				default:
-					Toasty.error(ctx, getString(R.string.filetype_cannot_be_edited));
 
+					Toasty.error(ctx, getString(R.string.fileTypeCannotBeEdited));
 			}
 		}
 	}
@@ -445,7 +441,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 					outputStream.close();
 
 					Toasty.success(ctx, getString(R.string.downloadFileSaved));
-
 				}
 				catch(IOException e) {
 
