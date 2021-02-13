@@ -381,7 +381,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 			switch(AppUtil.getFileType(fileExtension)) {
 
 				case TEXT:
-				case UNKNOWN:
 
 					Intent intent = new Intent(ctx, CreateFileActivity.class);
 
