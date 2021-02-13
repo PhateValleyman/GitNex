@@ -17,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -68,13 +66,11 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private Boolean pdfNightMode;
 	private String singleFileName;
 	private String fileSha;
-	private AppUtil appUtil;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		appUtil = new AppUtil();
 
 		ActivityFileViewBinding activityFileViewBinding = ActivityFileViewBinding.inflate(getLayoutInflater());
 		setContentView(activityFileViewBinding.getRoot());
@@ -144,6 +140,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 			getSingleFileContents(instanceToken, repoOwner, repoName, singleFileName, repoBranch);
 			tinyDB.putBoolean("fileModified", false);
+
 		}
 	}
 
@@ -172,91 +169,101 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 						tinyDB.putString("downloadFileName", filename);
 						tinyDB.putString("downloadFileContents", response.body().getContent());
 
-						if(appUtil.imageExtension(fileExtension)) { // file is image
+						boolean unknown = false;
 
-							singleFileContentsFrame.setVisibility(View.GONE);
-							singleCodeContents.setVisibility(View.GONE);
-							pdfViewFrame.setVisibility(View.GONE);
-							imageView.setVisibility(View.VISIBLE);
+						switch(AppUtil.getFileType(fileExtension)) {
 
-							imageData = Base64.decode(response.body().getContent(), Base64.DEFAULT);
-							imageView.setImageBitmap(Images.scaleImage(imageData, 1920));
+							case IMAGE:
+								singleFileContentsFrame.setVisibility(View.GONE);
+								singleCodeContents.setVisibility(View.GONE);
+								pdfViewFrame.setVisibility(View.GONE);
+								imageView.setVisibility(View.VISIBLE);
+
+								imageData = Base64.decode(response.body().getContent(), Base64.DEFAULT);
+								imageView.setImageBitmap(Images.scaleImage(imageData, 1920));
+								break;
+
+							case TEXT:
+								imageView.setVisibility(View.GONE);
+								singleFileContentsFrame.setVisibility(View.GONE);
+								pdfViewFrame.setVisibility(View.GONE);
+								singleCodeContents.setVisibility(View.VISIBLE);
+
+								switch(tinyDB.getInt("fileviewerSourceCodeThemeId")) {
+
+									case 1: singleCodeContents.setTheme(Theme.ARDUINO_LIGHT); break;
+									case 2: singleCodeContents.setTheme(Theme.GITHUB); break;
+									case 3: singleCodeContents.setTheme(Theme.FAR); break;
+									case 4: singleCodeContents.setTheme(Theme.IR_BLACK); break;
+									case 5: singleCodeContents.setTheme(Theme.ANDROID_STUDIO); break;
+
+									default: singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
+
+								}
+
+								singleCodeContents.setSource(AppUtil.decodeBase64(response.body().getContent()));
+								break;
+
+							case DOCUMENT:
+								if(fileExtension.equalsIgnoreCase("pdf")) {
+
+									imageView.setVisibility(View.GONE);
+									singleFileContentsFrame.setVisibility(View.GONE);
+									singleCodeContents.setVisibility(View.GONE);
+									pdfViewFrame.setVisibility(View.VISIBLE);
+
+									pdfNightMode = tinyDB.getBoolean("enablePdfMode");
+									decodedPdf = Base64.decode(response.body().getContent(), Base64.DEFAULT);
+
+									pdfView.fromBytes(decodedPdf)
+										.enableSwipe(true)
+										.swipeHorizontal(false)
+										.enableDoubletap(true)
+										.defaultPage(0)
+										.enableAnnotationRendering(false)
+										.password(null)
+										.scrollHandle(null)
+										.enableAntialiasing(true)
+										.spacing(0)
+										.autoSpacing(true)
+										.pageFitPolicy(FitPolicy.WIDTH)
+										.fitEachPage(true)
+										.pageSnap(false)
+										.pageFling(true)
+										.nightMode(pdfNightMode).load();
+
+								} else {
+
+									unknown = true;
+								}
+								break;
+
+							case UNKNOWN:
+							default:
+								unknown = true;
+								break;
 
 						}
-						else if(appUtil.sourceCodeExtension(fileExtension)) { // file is sourcecode
 
-							imageView.setVisibility(View.GONE);
-							singleFileContentsFrame.setVisibility(View.GONE);
-							pdfViewFrame.setVisibility(View.GONE);
-							singleCodeContents.setVisibility(View.VISIBLE);
-
-							switch(tinyDB.getInt("fileviewerSourceCodeThemeId")) {
-
-								case 1:
-
-									singleCodeContents.setTheme(Theme.ARDUINO_LIGHT);
-									break;
-								case 2:
-
-									singleCodeContents.setTheme(Theme.GITHUB);
-									break;
-								case 3:
-
-									singleCodeContents.setTheme(Theme.FAR);
-									break;
-								case 4:
-
-									singleCodeContents.setTheme(Theme.IR_BLACK);
-									break;
-								case 5:
-
-									singleCodeContents.setTheme(Theme.ANDROID_STUDIO);
-									break;
-								default:
-
-									singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
-							}
-
-							singleCodeContents.setSource(appUtil.decodeBase64(response.body().getContent()));
-						}
-						else if(appUtil.pdfExtension(fileExtension)) { // file is pdf
-
-							imageView.setVisibility(View.GONE);
-							singleFileContentsFrame.setVisibility(View.GONE);
-							singleCodeContents.setVisibility(View.GONE);
-							pdfViewFrame.setVisibility(View.VISIBLE);
-
-							pdfNightMode = tinyDB.getBoolean("enablePdfMode");
-
-							decodedPdf = Base64.decode(response.body().getContent(), Base64.DEFAULT);
-							pdfView.fromBytes(decodedPdf).enableSwipe(true).swipeHorizontal(false).enableDoubletap(true).defaultPage(0).enableAnnotationRendering(false).password(null).scrollHandle(null).enableAntialiasing(true).spacing(0).autoSpacing(true).pageFitPolicy(FitPolicy.WIDTH).fitEachPage(true).pageSnap(false).pageFling(true).nightMode(pdfNightMode).load();
-
-						}
-						else if(appUtil.excludeFilesInFileViewerExtension(fileExtension)) { // files need to be excluded
+						if(unknown) { // While the file could still be non-binary,
+							// it's better we don't show it (to prevent any crashes and/or unwanted behavior) and let the user download it instead.
 
 							imageView.setVisibility(View.GONE);
 							singleCodeContents.setVisibility(View.GONE);
 							pdfViewFrame.setVisibility(View.GONE);
 							singleFileContentsFrame.setVisibility(View.VISIBLE);
 
-							singleFileContents.setText(getResources().getString(R.string.excludeFilesInFileviewer));
+							singleFileContents.setText(getString(R.string.excludeFilesInFileviewer));
 							singleFileContents.setGravity(Gravity.CENTER);
 							singleFileContents.setTypeface(null, Typeface.BOLD);
-						}
-						else { // file type not known - plain text view
 
-							imageView.setVisibility(View.GONE);
-							singleCodeContents.setVisibility(View.GONE);
-							pdfViewFrame.setVisibility(View.GONE);
-							singleFileContentsFrame.setVisibility(View.VISIBLE);
-
-							singleFileContents.setText(appUtil.decodeBase64(response.body().getContent()));
 						}
 					}
 					else {
 
 						singleFileContents.setText("");
 						mProgressBar.setVisibility(View.GONE);
+
 					}
 				}
 				else if(response.code() == 401) {
@@ -321,7 +328,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		}
 		else if(id == R.id.markdown) {
 
-			new Markdown(ctx, EmojiParser.parseToUnicode(appUtil.decodeBase64(tinyDB.getString("downloadFileContents"))), singleFileContents);
+			new Markdown(ctx, EmojiParser.parseToUnicode(AppUtil.decodeBase64(tinyDB.getString("downloadFileContents"))), singleFileContents);
 
 			if(!tinyDB.getBoolean("enableMarkdownInFileView")) {
 
@@ -335,7 +342,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				singleCodeContents.setVisibility(View.VISIBLE);
 				singleFileContentsFrame.setVisibility(View.GONE);
 				singleFileContents.setVisibility(View.GONE);
-				singleCodeContents.setSource(appUtil.decodeBase64(tinyDB.getString("downloadFileContents")));
+				singleCodeContents.setSource(AppUtil.decodeBase64(tinyDB.getString("downloadFileContents")));
 				tinyDB.putBoolean("enableMarkdownInFileView", false);
 			}
 			return true;
@@ -357,45 +364,43 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		if("deleteFile".equals(text)) {
 
 			String fileExtension = FileUtils.getExtension(singleFileName);
-			String data = appUtil.decodeBase64(tinyDB.getString("downloadFileContents"));
+
+			String data = AppUtil.getFileType(fileExtension) == AppUtil.FileType.TEXT ?
+				AppUtil.decodeBase64(tinyDB.getString("downloadFileContents")) : "";
+
 			Intent intent = new Intent(ctx, CreateFileActivity.class);
 			intent.putExtra("fileAction", CreateFileActivity.FILE_ACTION_DELETE);
 			intent.putExtra("filePath", singleFileName);
 			intent.putExtra("fileSha", fileSha);
-
-			if(!appUtil.imageExtension(fileExtension)) {
-
-				intent.putExtra("fileContents", data);
-			}
-			else {
-
-				intent.putExtra("fileContents", "");
-			}
+			intent.putExtra("fileContents", data);
 
 			ctx.startActivity(intent);
+
 		}
 
 		if("editFile".equals(text)) {
 
 			String fileExtension = FileUtils.getExtension(singleFileName);
-			String data = appUtil.decodeBase64(tinyDB.getString("downloadFileContents"));
-			Intent intent = new Intent(ctx, CreateFileActivity.class);
-			intent.putExtra("fileAction", CreateFileActivity.FILE_ACTION_EDIT);
-			intent.putExtra("filePath", singleFileName);
-			intent.putExtra("fileSha", fileSha);
 
-			if(!appUtil.imageExtension(fileExtension)) {
+			switch(AppUtil.getFileType(fileExtension)) {
 
-				intent.putExtra("fileContents", data);
+				case TEXT:
+				case UNKNOWN:
+					Intent intent = new Intent(ctx, CreateFileActivity.class);
+
+					intent.putExtra("fileAction", CreateFileActivity.FILE_ACTION_EDIT);
+					intent.putExtra("filePath", singleFileName);
+					intent.putExtra("fileSha", fileSha);
+					intent.putExtra("fileContents", AppUtil.decodeBase64(tinyDB.getString("downloadFileContents")));
+
+					ctx.startActivity(intent);
+					break;
+
+				default:
+					Toasty.error(ctx, getString(R.string.filetype_cannot_be_edited));
+
 			}
-			else {
-
-				intent.putExtra("fileContents", "");
-			}
-
-			ctx.startActivity(intent);
 		}
-
 	}
 
 	private void requestFileDownload() {
@@ -418,11 +423,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		}
 	}
 
-	ActivityResultLauncher<Intent> fileDownloadActivityResultLauncher = registerForActivityResult(
-		new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-
-		@Override
-		public void onActivityResult(ActivityResult result) {
+	ActivityResultLauncher<Intent> fileDownloadActivityResultLauncher =
+		registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
 
 			if (result.getResultCode() == Activity.RESULT_OK) {
 
@@ -450,8 +452,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 					Log.e("errorFileDownloading", Objects.requireNonNull(e.getMessage()));
 				}
 			}
-		}
-	});
+
+		});
 
 	private void initCloseListener() {
 

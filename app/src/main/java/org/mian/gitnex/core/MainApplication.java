@@ -1,4 +1,4 @@
-package org.mian.gitnex;
+package org.mian.gitnex.core;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -12,6 +12,7 @@ import org.acra.config.CoreConfigurationBuilder;
 import org.acra.config.LimiterConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
 import org.acra.data.StringFormat;
+import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.StaticGlobalVariables;
@@ -29,7 +30,7 @@ import org.mian.gitnex.notifications.Notifications;
 	resText = R.string.crashMessage)
 @AcraCore(reportContent = { ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.STACK_TRACE })
 
-public class CustomApplication extends Application {
+public class MainApplication extends Application {
 
 	private Context appCtx;
 	private TinyDB tinyDB;

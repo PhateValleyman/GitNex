@@ -496,7 +496,7 @@
     <string name="noDataFilesTab">No files found</string>
     <string name="filesGenericError">Sorry this file cannot be viewed as API returned an error</string>
     <string name="colonDivider" translatable="false">\u0020:\u0020</string>
-
+    <string name="filetype_cannot_be_edited">Files of this type cannot be edited</string>
     <string name="notSupported">Not supported</string>
 
     <!-- generic copy -->
@@ -741,4 +741,5 @@
     <string name="codeBlockGreyOnBlack">Grey on Black</string>
     <string name="codeBlockWhiteOnGrey">White on Grey</string>
     <string name="codeBlockDarkOnWhite">Dark on White</string>
+
 </resources>

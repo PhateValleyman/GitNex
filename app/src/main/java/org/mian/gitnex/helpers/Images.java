@@ -15,18 +15,19 @@ public class Images {
 
 		if(original.getHeight() > size_limit && original.getWidth() <= original.getHeight()) {
 
-			double reduction_ratio = (double) size_limit / original.getHeight();
+			double reduction_percentage = (double) size_limit / original.getHeight();
 
-			Bitmap scaled = Bitmap.createScaledBitmap(original, (int) (reduction_ratio * original.getWidth()), size_limit, false);
+			Bitmap scaled = Bitmap.createScaledBitmap(original, (int) (reduction_percentage * original.getWidth()), size_limit, false);
 			original.recycle();
 
 			return scaled;
 
-		} else if(original.getWidth() > size_limit && original.getHeight() < original.getWidth()) {
+		}
+		else if(original.getWidth() > size_limit && original.getHeight() < original.getWidth()) {
 
-			double reduction_ratio = (double) size_limit / original.getWidth();
+			double reduction_percentage = (double) size_limit / original.getWidth();
 
-			Bitmap scaled = Bitmap.createScaledBitmap(original, size_limit, (int) (reduction_ratio * original.getHeight()), false);
+			Bitmap scaled = Bitmap.createScaledBitmap(original, size_limit, (int) (reduction_percentage * original.getHeight()), false);
 			original.recycle();
 
 			return scaled;
