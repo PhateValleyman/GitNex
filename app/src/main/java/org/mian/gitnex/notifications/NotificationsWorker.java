@@ -36,8 +36,8 @@ public class NotificationsWorker extends Worker {
 	private static final int MAXIMUM_NOTIFICATIONS = 100;
 	private static final long[] VIBRATION_PATTERN = new long[]{ 1000, 1000 };
 
-	private Context context;
-	private TinyDB tinyDB;
+	private final Context context;
+	private final TinyDB tinyDB;
 
 	public NotificationsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
 

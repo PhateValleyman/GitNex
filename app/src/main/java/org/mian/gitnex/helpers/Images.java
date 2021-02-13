@@ -9,24 +9,33 @@ import android.graphics.BitmapFactory;
 
 public class Images {
 
-	public static Bitmap scaleImage(byte[] imageData, int maxSizeWidth, int maxSizeScaledWidth) {
+	public static Bitmap scaleImage(byte[] imageData, int size_limit) {
 
-		Bitmap scaledImage;
-		Bitmap image = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-		int orgWidth = image.getWidth();
-		int orgHeight = image.getHeight();
+		Bitmap original = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
 
-		if(orgWidth > maxSizeWidth) {
+		if(original.getHeight() > size_limit && original.getWidth() <= original.getHeight()) {
 
-			int aspectRatio = orgWidth / orgHeight;
-			int scaledHeight = maxSizeScaledWidth * aspectRatio;
-			scaledImage = Bitmap.createScaledBitmap(image, maxSizeScaledWidth, scaledHeight, false);
+			double reduction_ratio = (double) size_limit / original.getHeight();
+
+			Bitmap scaled = Bitmap.createScaledBitmap(original, (int) (reduction_ratio * original.getWidth()), size_limit, false);
+			original.recycle();
+
+			return scaled;
+
+		} else if(original.getWidth() > size_limit && original.getHeight() < original.getWidth()) {
+
+			double reduction_ratio = (double) size_limit / original.getWidth();
+
+			Bitmap scaled = Bitmap.createScaledBitmap(original, size_limit, (int) (reduction_ratio * original.getHeight()), false);
+			original.recycle();
+
+			return scaled;
+
 		}
-		else {
 
-			scaledImage = Bitmap.createScaledBitmap(image, orgWidth, orgHeight, false);
-		}
+		// Image size does not exceed bounds.
+		return original;
 
-		return scaledImage;
 	}
+
 }

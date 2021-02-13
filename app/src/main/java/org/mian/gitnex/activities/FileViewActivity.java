@@ -180,8 +180,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							imageView.setVisibility(View.VISIBLE);
 
 							imageData = Base64.decode(response.body().getContent(), Base64.DEFAULT);
+							imageView.setImageBitmap(Images.scaleImage(imageData, 1920));
 
-							imageView.setImageBitmap(Images.scaleImage(imageData, 1920, 1920));
 						}
 						else if(appUtil.sourceCodeExtension(fileExtension)) { // file is sourcecode
 
