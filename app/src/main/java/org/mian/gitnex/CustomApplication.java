@@ -1,9 +1,13 @@
 package org.mian.gitnex;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import org.acra.ACRA;
 import org.acra.BuildConfig;
+import org.acra.ReportField;
+import org.acra.annotation.AcraCore;
+import org.acra.annotation.AcraNotification;
 import org.acra.config.CoreConfigurationBuilder;
 import org.acra.config.LimiterConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
@@ -17,6 +21,13 @@ import org.mian.gitnex.notifications.Notifications;
 /**
  * @author opyale
  */
+
+@SuppressLint("NonConstantResourceId")
+@AcraNotification(resIcon = R.drawable.gitnex_transparent,
+	resTitle = R.string.crashTitle,
+	resChannelName = R.string.setCrashReports,
+	resText = R.string.crashMessage)
+@AcraCore(reportContent = { ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.STACK_TRACE })
 
 public class CustomApplication extends Application {
 
