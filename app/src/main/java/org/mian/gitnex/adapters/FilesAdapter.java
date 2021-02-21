@@ -38,17 +38,18 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
 
 	class FilesViewHolder extends RecyclerView.ViewHolder {
 
+    	private String fileType;
+
         private final ImageView fileTypeIs;
         private final TextView fileName;
-        private final TextView fileType;
         private final TextView fileInfo;
 
         private FilesViewHolder(View itemView) {
 
             super(itemView);
+
             fileName = itemView.findViewById(R.id.fileName);
 	        fileTypeIs = itemView.findViewById(R.id.fileTypeIs);
-            fileType = itemView.findViewById(R.id.fileType);
             fileInfo = itemView.findViewById(R.id.fileInfo);
 
             //ImageView filesDropdownMenu = itemView.findViewById(R.id.filesDropdownMenu);
@@ -57,10 +58,10 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
 
                 Context context = v.getContext();
 
-                if(fileType.getText().toString().equals("file")) {
+                if(fileType.equals("file")) {
                     filesListener.onClickFile(fileName.getText().toString());
                 }
-                else if(fileType.getText().toString().equals("dir")) {
+                else if(fileType.equals("dir")) {
                     filesListener.onClickDir(fileName.getText().toString());
                 }
                 else {
@@ -168,7 +169,7 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
 
         Files currentItem = alteredFiles.get(position);
 
-        holder.fileType.setText(currentItem.getType());
+        holder.fileType = currentItem.getType();
         holder.fileName.setText(currentItem.getName());
 
         if(currentItem.getType().equals("file")) {

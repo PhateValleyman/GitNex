@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linearLayoutFilesFrame"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
-    android:background="?attr/primaryBackgroundColor">
-
-    <TextView
-        android:id="@+id/fileType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible" />
+    android:background="?attr/primaryBackgroundColor"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/fileTypeIs"
@@ -25,25 +20,15 @@
         android:id="@+id/infoSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/fileTypeIs"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/filesRow"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/fileName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/fileName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:text="@string/defaultFilename"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp" />
-
-        </LinearLayout>
+            android:text="@string/defaultFilename"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:id="@+id/infoRow"
@@ -56,22 +41,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sizeCopy"
-                android:visibility="gone"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
+
+        <!--
 
         <ImageView
             android:id="@+id/filesDropdownMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:contentDescription="@string/menuContentDesc"
             android:scaleType="fitEnd"
-            android:visibility="gone"
             android:src="@drawable/ic_dotted_menu_horizontal"
-            android:contentDescription="@string/menuContentDesc" />
+            android:visibility="gone" />
+
+        -->
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
