@@ -13,45 +13,19 @@
         android:layout_height="wrap_content"
         android:visibility="invisible" />
 
-    <RelativeLayout
-        android:id="@+id/imageTypes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/fileImage"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="15dp"
-            android:contentDescription="@string/generalImgContentText"
-            android:visibility="gone"
-            android:src="@drawable/ic_file" />
-
-        <ImageView
-            android:id="@+id/dirImage"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="15dp"
-            android:contentDescription="@string/generalImgContentText"
-            android:visibility="gone"
-            android:src="@drawable/ic_directory" />
-
-        <ImageView
-            android:id="@+id/unknownImage"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="15dp"
-            android:contentDescription="@string/generalImgContentText"
-            android:visibility="gone"
-            android:src="@drawable/ic_question" />
-
-    </RelativeLayout>
+    <ImageView
+        android:id="@+id/fileTypeIs"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="15dp"
+        android:contentDescription="@string/generalImgContentText"
+        android:src="@drawable/ic_file" />
 
     <LinearLayout
         android:id="@+id/infoSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/imageTypes"
+        android:layout_toEndOf="@+id/fileTypeIs"
         android:orientation="vertical">
 
         <LinearLayout
