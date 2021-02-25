@@ -81,7 +81,6 @@ Thanks to all the open source libraries, contributors and donators.
 - Pes/materialcolorpicker
 - HamidrezaAmz/BreadcrumbsView
 - Chrisbanes/PhotoView
-- Pddstudio/highlightjs-android
 - Apache/commons-io
 - Caverock/androidsvg
 - Droidsonroids.gif/android-gif-drawable

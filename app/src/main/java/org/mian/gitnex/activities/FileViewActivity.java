@@ -35,9 +35,8 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Images;
 import org.mian.gitnex.helpers.Markdown;
+import org.mian.gitnex.helpers.SyntaxHighlightedArea;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.highlightjs.HighlightJsView;
-import org.mian.gitnex.helpers.highlightjs.models.Theme;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -56,14 +55,13 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private View.OnClickListener onClickListener;
 	private TextView singleFileContents;
 	private LinearLayout singleFileContentsFrame;
-	private HighlightJsView singleCodeContents;
+	private SyntaxHighlightedArea singleCodeContents;
 	private PhotoView imageView;
 	private ProgressBar mProgressBar;
 	private byte[] imageData;
 	private PDFView pdfView;
 	private LinearLayout pdfViewFrame;
 	private byte[] decodedPdf;
-	private Boolean pdfNightMode;
 	private String singleFileName;
 	private String fileSha;
 
@@ -189,19 +187,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 								pdfViewFrame.setVisibility(View.GONE);
 								singleCodeContents.setVisibility(View.VISIBLE);
 
-								switch(tinyDB.getInt("fileviewerSourceCodeThemeId")) {
-
-									case 1: singleCodeContents.setTheme(Theme.ARDUINO_LIGHT); break;
-									case 2: singleCodeContents.setTheme(Theme.GITHUB); break;
-									case 3: singleCodeContents.setTheme(Theme.FAR); break;
-									case 4: singleCodeContents.setTheme(Theme.IR_BLACK); break;
-									case 5: singleCodeContents.setTheme(Theme.ANDROID_STUDIO); break;
-
-									default: singleCodeContents.setTheme(Theme.MONOKAI_SUBLIME);
-
-								}
-
-								singleCodeContents.setSource(AppUtil.decodeBase64(response.body().getContent()));
+								singleCodeContents.setSource(AppUtil.decodeBase64(response.body().getContent()), fileExtension);
 								break;
 							case DOCUMENT:
 
@@ -212,7 +198,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 									singleCodeContents.setVisibility(View.GONE);
 									pdfViewFrame.setVisibility(View.VISIBLE);
 
-									pdfNightMode = tinyDB.getBoolean("enablePdfMode");
 									decodedPdf = Base64.decode(response.body().getContent(), Base64.DEFAULT);
 
 									pdfView.fromBytes(decodedPdf)
@@ -230,7 +215,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 										.fitEachPage(true)
 										.pageSnap(false)
 										.pageFling(true)
-										.nightMode(pdfNightMode).load();
+										.nightMode(tinyDB.getString("currentTheme").equals("dark"))
+										.load();
 								}
 								else {
 
@@ -339,7 +325,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				singleCodeContents.setVisibility(View.VISIBLE);
 				singleFileContentsFrame.setVisibility(View.GONE);
 				singleFileContents.setVisibility(View.GONE);
-				singleCodeContents.setSource(AppUtil.decodeBase64(tinyDB.getString("downloadFileContents")));
+				singleCodeContents.setSource(AppUtil.decodeBase64(tinyDB.getString("downloadFileContents")), FileUtils.extension(tinyDB.getString("downloadFileName")));
 				tinyDB.putBoolean("enableMarkdownInFileView", false);
 			}
 			return true;

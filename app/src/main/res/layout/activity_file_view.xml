@@ -95,11 +95,10 @@
 
             </LinearLayout>
 
-            <org.mian.gitnex.helpers.highlightjs.HighlightJsView
+            <org.mian.gitnex.helpers.SyntaxHighlightedArea
                 android:id="@+id/singleCodeContents"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:layout_height="match_parent"
                 android:visibility="gone" />
 
             <com.github.chrisbanes.photoview.PhotoView
