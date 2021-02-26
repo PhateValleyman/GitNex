@@ -20,7 +20,7 @@ public class MainGrammarLocator implements GrammarLocator {
 	public static final String DEFAULT_FALLBACK_LANGUAGE = "clike";
 
 	private static final DefaultGrammarLocator defaultGrammarLocator = new DefaultGrammarLocator();
-	private static MainGrammarLocator instance;
+	private static volatile MainGrammarLocator instance;
 
 	private MainGrammarLocator() {}
 
