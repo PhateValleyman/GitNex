@@ -1,5 +1,7 @@
 package org.mian.gitnex.helpers;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -21,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +62,7 @@ public class AppUtil {
 
 	public static boolean hasNetworkConnection(Context context) {
 
-		return NetworkStatusObserver.get(context).hasNetworkConnection();
+		return NetworkStatusObserver.getInstance(context).hasNetworkConnection();
 	}
 
 	public static int getAppBuildNo(Context context) {
@@ -261,4 +264,14 @@ public class AppUtil {
 
 	}
 
+	public static void copyToClipboard(Context ctx, CharSequence data, String message) {
+
+		ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
+		assert clipboard != null;
+
+		ClipData clip = ClipData.newPlainText(data, data);
+		clipboard.setPrimaryClip(clip);
+
+		Toasty.info(ctx, message);
+	}
 }
