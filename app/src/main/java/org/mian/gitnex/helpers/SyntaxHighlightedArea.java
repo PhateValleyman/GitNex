@@ -59,7 +59,7 @@ public class SyntaxHighlightedArea extends LinearLayout {
 
 		sourceView = new TextView(getContext());
 
-		sourceView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		sourceView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		sourceView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 		sourceView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/sourcecodeproregular.ttf"));
 		sourceView.setTextColor(prism4jTheme.textColor());
@@ -68,11 +68,12 @@ public class SyntaxHighlightedArea extends LinearLayout {
 		sourceView.setPadding(padding, 0, padding, 0);
 
 		HorizontalScrollView horizontalScrollView = new HorizontalScrollView(getContext());
+		horizontalScrollView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		horizontalScrollView.addView(sourceView);
 
 		linesView = new LinesView(getContext());
 
-		linesView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+		linesView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
 		linesView.setPadding(
 			AppUtil.getPixelsFromDensity(getContext(), 3), 0,
 			AppUtil.getPixelsFromDensity(getContext(), 6), 0);
@@ -86,7 +87,6 @@ public class SyntaxHighlightedArea extends LinearLayout {
 
 		setOrientation(HORIZONTAL);
 		setBackgroundColor(prism4jTheme.background());
-		setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		addView(linesView);
 		addView(horizontalScrollView);
 
