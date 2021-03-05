@@ -53,6 +53,8 @@ import retrofit2.Callback;
 
 public class FileViewActivity extends BaseActivity implements BottomSheetFileViewerFragment.BottomSheetListener {
 
+	private static final int MAX_FILE_VIEWER_SIZE = 3 * 1024 * 1024; // 3 MiB
+
 	private View.OnClickListener onClickListener;
 	private TextView singleFileContents;
 	private LinearLayout singleFileContentsFrame;
@@ -155,34 +157,45 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 				if(response.code() == 200) {
 
-					assert response.body() != null;
+					Files file = response.body();
 
-					if(!response.body().getContent().equals("")) {
+					if(file != null && !file.getContent().isEmpty()) {
 
 						String fileExtension = FileUtils.getExtension(filename);
 						mProgressBar.setVisibility(View.GONE);
 
-						fileSha = response.body().getSha();
+						fileSha = file.getSha();
 
-						// download file meta
 						tinyDB.putString("downloadFileName", filename);
-						tinyDB.putString("downloadFileContents", response.body().getContent());
+						tinyDB.putString("downloadFileContents", file.getContent());
+						tinyDB.putInt("downloadFileSize", file.getSize());
 
-						boolean unknown = false;
+						boolean processable = false;
 
 						switch(AppUtil.getFileType(fileExtension)) {
 
 							case IMAGE:
+
+								processable = true;
 
 								singleFileContentsFrame.setVisibility(View.GONE);
 								singleCodeContents.setVisibility(View.GONE);
 								pdfViewFrame.setVisibility(View.GONE);
 								imageView.setVisibility(View.VISIBLE);
 
-								imageData = Base64.decode(response.body().getContent(), Base64.DEFAULT);
+								imageData = Base64.decode(file.getContent(), Base64.DEFAULT);
 								imageView.setImageBitmap(Images.scaleImage(imageData, 1920));
 								break;
+
+							case UNKNOWN:
+
+								if(file.getSize() > MAX_FILE_VIEWER_SIZE) {
+									break;
+								}
+
 							case TEXT:
+
+								processable = true;
 
 								imageView.setVisibility(View.GONE);
 								singleFileContentsFrame.setVisibility(View.GONE);
@@ -201,11 +214,14 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 								}
 
-								singleCodeContents.setSource(AppUtil.decodeBase64(response.body().getContent()));
+								singleCodeContents.setSource(AppUtil.decodeBase64(file.getContent()));
 								break;
+
 							case DOCUMENT:
 
 								if(fileExtension.equalsIgnoreCase("pdf")) {
+
+									processable = true;
 
 									imageView.setVisibility(View.GONE);
 									singleFileContentsFrame.setVisibility(View.GONE);
@@ -213,7 +229,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 									pdfViewFrame.setVisibility(View.VISIBLE);
 
 									pdfNightMode = tinyDB.getBoolean("enablePdfMode");
-									decodedPdf = Base64.decode(response.body().getContent(), Base64.DEFAULT);
+									decodedPdf = Base64.decode(file.getContent(), Base64.DEFAULT);
 
 									pdfView.fromBytes(decodedPdf)
 										.enableSwipe(true)
@@ -232,19 +248,11 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 										.pageFling(true)
 										.nightMode(pdfNightMode).load();
 								}
-								else {
-
-									unknown = true;
-								}
 								break;
-							case UNKNOWN:
 
-							default:
-								unknown = true;
-								break;
 						}
 
-						if(unknown) { // While the file could still be non-binary,
+						if(!processable) { // While the file could still be non-binary,
 							// it's better we don't show it (to prevent any crashes and/or unwanted behavior) and let the user download it instead.
 
 							imageView.setVisibility(View.GONE);
@@ -255,12 +263,14 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							singleFileContents.setText(getString(R.string.excludeFilesInFileViewer));
 							singleFileContents.setGravity(Gravity.CENTER);
 							singleFileContents.setTypeface(null, Typeface.BOLD);
+
 						}
 					}
 					else {
 
 						singleFileContents.setText("");
 						mProgressBar.setVisibility(View.GONE);
+
 					}
 				}
 				else if(response.code() == 401) {
@@ -378,9 +388,19 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 			String fileExtension = FileUtils.getExtension(singleFileName);
 
+			boolean editable = false;
+
 			switch(AppUtil.getFileType(fileExtension)) {
 
+				case UNKNOWN:
+
+					if(tinyDB.getInt("downloadFileSize") > MAX_FILE_VIEWER_SIZE) {
+						break;
+					}
+
 				case TEXT:
+
+					editable = true;
 
 					Intent intent = new Intent(ctx, CreateFileActivity.class);
 
@@ -391,9 +411,12 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 					ctx.startActivity(intent);
 					break;
-				default:
 
-					Toasty.error(ctx, getString(R.string.fileTypeCannotBeEdited));
+			}
+
+			if(!editable) {
+
+				Toasty.error(ctx, getString(R.string.fileTypeCannotBeEdited));
 			}
 		}
 	}

@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class AppUtil {
 
-	public enum FileType { IMAGE, DOCUMENT, TEXT, UNKNOWN }
+	public enum FileType { IMAGE, DOCUMENT, TEXT, EXECUTABLE, UNKNOWN }
 
 	private static final HashMap<List<String>, FileType> extensions = new HashMap<>();
 
@@ -38,21 +38,29 @@ public class AppUtil {
 	static {
 
 		extensions.put(Arrays.asList("jpg", "jpeg", "gif", "png", "ico"), FileType.IMAGE);
-		extensions.put(Arrays.asList("doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "exe", "jar", "odg", "otg", "odp", "otp", "bin", "dmg", "psd", "xcf", "pdf"), FileType.DOCUMENT);
+		extensions.put(Arrays.asList("doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "odg", "otg", "odp", "otp", "bin", "psd", "xcf", "pdf"), FileType.DOCUMENT);
+		extensions.put(Arrays.asList("exe", "jar", "dmg", "deb", "apk"), FileType.EXECUTABLE);
 		extensions.put(Arrays.asList("txt", "md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv", "python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs", "lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl", "wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf", "gitignore", "gradle", "txt", "properties", "bat", "twig", "cvs", "cmake", "in", "info", "spec", "m4", "am", "dist", "pam", "hx", "ts"), FileType.TEXT);
+
 	}
 
 	public static FileType getFileType(String extension) {
 
-		for(List<String> e : extensions.keySet()) {
+		if(extension != null && !extension.isEmpty()) {
 
-			if(e.contains(extension)) {
+			for(List<String> testExtensions : extensions.keySet()) {
 
-				return extensions.get(e);
+				for(String testExtension : testExtensions) {
+
+					if(testExtension.equalsIgnoreCase(extension))
+						return extensions.get(testExtensions);
+
+				}
 			}
 		}
 
 		return FileType.UNKNOWN;
+
 	}
 
 	public static boolean hasNetworkConnection(Context context) {
