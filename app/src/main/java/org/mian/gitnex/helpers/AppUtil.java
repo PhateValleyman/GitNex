@@ -40,7 +40,7 @@ public class AppUtil {
 
 	static {
 
-		extensions.put(Arrays.asList("jpg", "jpeg", "gif", "png", "ico"), FileType.IMAGE);
+		extensions.put(Arrays.asList("jpg", "jpeg", "gif", "png", "ico", "tif", "tiff", "bmp"), FileType.IMAGE);
 		extensions.put(Arrays.asList("mp3", "wav", "opus", "flac", "wma", "aac", "m4a", "oga", "mpc", "ogg"), FileType.AUDIO);
 		extensions.put(Arrays.asList("mp4", "mkv", "avi", "mov", "wmv", "qt", "mts", "m2ts", "webm", "flv", "ogv", "amv", "mpg", "mpeg", "mpv", "m4v", "3gp", "wmv"), FileType.VIDEO);
 		extensions.put(Arrays.asList("doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "odg", "otg", "odp", "otp", "bin", "psd", "xcf", "pdf"), FileType.DOCUMENT);
