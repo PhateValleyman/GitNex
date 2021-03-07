@@ -739,4 +739,7 @@
     <string name="biometricNotSupported">No biometric features available on this device</string>
     <string name="biometricNotAvailable">Biometric features are currently unavailable</string>
     <string name="enrollBiometric">Enroll biometric from phone settings</string>
+
+    <string name="copyLoginIdToClipBoard">Login ID \'%s\' copied to clipboard</string>
+
 </resources>
