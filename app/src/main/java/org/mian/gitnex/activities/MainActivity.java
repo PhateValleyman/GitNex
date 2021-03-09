@@ -89,10 +89,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private MenuItem navNotifications;
 	private TextView notificationCounter;
 
-	private Executor executor;
-	private BiometricPrompt biometricPrompt;
-	private BiometricPrompt.PromptInfo biometricPromptBuilder;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -168,42 +164,38 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		// biometric auth
 		if(tinyDB.getBoolean("biometricStatus")) {
 
-			executor = ContextCompat.getMainExecutor(this);
-			biometricPrompt = new BiometricPrompt(MainActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
+			Executor executor = ContextCompat.getMainExecutor(this);
+
+			BiometricPrompt biometricPrompt = new BiometricPrompt(this, executor, new BiometricPrompt.AuthenticationCallback() {
 
 				@Override
 				public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
 
 					super.onAuthenticationError(errorCode, errString);
+
 					// Authentication error, close the app
-					if (errorCode == BiometricPrompt.ERROR_USER_CANCELED || errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+					if(errorCode == BiometricPrompt.ERROR_USER_CANCELED ||
+						errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
 
 						finish();
 					}
 				}
 
-				@Override
-				public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+				// Authentication succeeded, continue to app
+				@Override public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) { super.onAuthenticationSucceeded(result); }
 
-					super.onAuthenticationSucceeded(result);
-					// Authentication succeeded, continue to app
-				}
+				// Authentication failed, close the app
+				@Override public void onAuthenticationFailed() { super.onAuthenticationFailed(); }
 
-				@Override
-				public void onAuthenticationFailed() {
-
-					super.onAuthenticationFailed();
-					// Authentication failed, close the app
-				}
 			});
 
-			biometricPromptBuilder = new BiometricPrompt.PromptInfo.Builder()
+			BiometricPrompt.PromptInfo biometricPromptBuilder = new BiometricPrompt.PromptInfo.Builder()
 				.setTitle(getString(R.string.biometricAuthTitle))
 				.setSubtitle(getString(R.string.biometricAuthSubTitle))
-				.setNegativeButtonText(getString(R.string.cancelButton))
-				.build();
+				.setNegativeButtonText(getString(R.string.cancelButton)).build();
 
 			biometricPrompt.authenticate(biometricPromptBuilder);
+
 		}
 
 		toolbarTitle.setTypeface(myTypeface);
