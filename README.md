@@ -91,3 +91,5 @@ Thanks to all the open source libraries, contributors and donators.
 - Mikaelhg/urlbuilder
 
 [Follow me on Fediverse - mastodon.social/@mmarif](https://mastodon.social/@mmarif)
+
+*All trademarks and logos are the properties of their respective owners.*
