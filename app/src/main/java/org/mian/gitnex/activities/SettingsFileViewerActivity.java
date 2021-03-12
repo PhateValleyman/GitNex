@@ -1,14 +1,12 @@
 package org.mian.gitnex.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.NumberPicker;
 import androidx.appcompat.app.AlertDialog;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsFileviewerBinding;
+import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.Toasty;
 
 /**
@@ -17,40 +15,30 @@ import org.mian.gitnex.helpers.Toasty;
 
 public class SettingsFileViewerActivity extends BaseActivity {
 
-	private View.OnClickListener onClickListener;
-
 	private static final String[] fileViewerSourceCodeThemesList = {"Sublime", "Arduino Light", "Github", "Far ", "Ir Black", "Android Studio"};
 	private static int fileViewerSourceCodeThemesSelectedChoice = 0;
 
+	@SuppressLint("DefaultLocale")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 
-		ActivitySettingsFileviewerBinding activitySettingsFileviewerBinding = ActivitySettingsFileviewerBinding.inflate(getLayoutInflater());
-		setContentView(activitySettingsFileviewerBinding.getRoot());
+		ActivitySettingsFileviewerBinding binding = ActivitySettingsFileviewerBinding.inflate(getLayoutInflater());
+		setContentView(binding.getRoot());
 
-		ImageView closeActivity = activitySettingsFileviewerBinding.close;
-
-		initCloseListener();
-		closeActivity.setOnClickListener(onClickListener);
-
-		TextView fileViewerSourceCodeThemesSelected = activitySettingsFileviewerBinding.sourceCodeThemeSelected; // setter for fileviewer theme
-		LinearLayout sourceCodeThemeFrame = activitySettingsFileviewerBinding.sourceCodeThemeFrame;
-		SwitchMaterial pdfModeSwitch = activitySettingsFileviewerBinding.switchPdfMode;
-
-		if(!tinyDB.getString("fileviewerSourceCodeThemeStr").isEmpty()) {
-			fileViewerSourceCodeThemesSelected.setText(tinyDB.getString("fileviewerSourceCodeThemeStr"));
-		}
+		binding.close.setOnClickListener(view -> finish());
 
 		if(fileViewerSourceCodeThemesSelectedChoice == 0) {
 			fileViewerSourceCodeThemesSelectedChoice = tinyDB.getInt("fileviewerThemeId");
 		}
 
-		pdfModeSwitch.setChecked(tinyDB.getBoolean("enablePdfMode"));
+		binding.sourceCodeThemeSelected.setText(tinyDB.getString("fileviewerSourceCodeThemeStr", fileViewerSourceCodeThemesList[0]));
+		binding.maxViewerSizeSelected.setText(String.format("%d MB", tinyDB.getInt("maxFileViewerSize", StaticGlobalVariables.defaultFileViewerSize)));
+		binding.switchPdfMode.setChecked(tinyDB.getBoolean("enablePdfMode"));
 
-		// fileviewer srouce code theme selection dialog
-		sourceCodeThemeFrame.setOnClickListener(view -> {
+		// fileviewer source code theme selection dialog
+		binding.sourceCodeThemeFrame.setOnClickListener(view -> {
 
 			AlertDialog.Builder fvtsBuilder = new AlertDialog.Builder(SettingsFileViewerActivity.this);
 
@@ -60,7 +48,7 @@ public class SettingsFileViewerActivity extends BaseActivity {
 			fvtsBuilder.setSingleChoiceItems(fileViewerSourceCodeThemesList, fileViewerSourceCodeThemesSelectedChoice, (dialogInterfaceTheme, i) -> {
 
 				fileViewerSourceCodeThemesSelectedChoice = i;
-				fileViewerSourceCodeThemesSelected.setText(fileViewerSourceCodeThemesList[i]);
+				binding.sourceCodeThemeSelected.setText(fileViewerSourceCodeThemesList[i]);
 				tinyDB.putString("fileviewerSourceCodeThemeStr", fileViewerSourceCodeThemesList[i]);
 				tinyDB.putInt("fileviewerSourceCodeThemeId", i);
 
@@ -69,21 +57,48 @@ public class SettingsFileViewerActivity extends BaseActivity {
 
 			});
 
-			AlertDialog cfDialog = fvtsBuilder.create();
-			cfDialog.show();
+			AlertDialog alertDialog = fvtsBuilder.create();
+			alertDialog.show();
+
 		});
 
 		// pdf night mode switcher
-		pdfModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+		binding.switchPdfMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
 			tinyDB.putBoolean("enablePdfMode", isChecked);
 			tinyDB.putString("enablePdfModeInit", "yes");
 			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-		});
-	}
 
-	private void initCloseListener() {
-		onClickListener = view -> finish();
+		});
+
+		binding.maxViewerSizeFrame.setOnClickListener(v -> {
+
+			NumberPicker numberPicker = new NumberPicker(ctx);
+			numberPicker.setMinValue(StaticGlobalVariables.minimumFileViewerSize);
+			numberPicker.setMaxValue(StaticGlobalVariables.maximumFileViewerSize);
+			numberPicker.setValue(tinyDB.getInt("maxFileViewerSize", StaticGlobalVariables.defaultFileViewerSize));
+			numberPicker.setWrapSelectorWheel(true);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+			builder.setTitle(getString(R.string.fileViewerDialogHeaderText));
+			builder.setMessage(getString(R.string.fileViewerDialogDescriptionText));
+
+			builder.setCancelable(true);
+			builder.setPositiveButton(getString(R.string.okButton), (dialog, which) -> {
+
+				tinyDB.putInt("maxFileViewerSize", numberPicker.getValue());
+
+				binding.maxViewerSizeSelected.setText(String.format("%d MB", numberPicker.getValue()));
+				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
+
+			});
+
+			builder.setNeutralButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss());
+			builder.setView(numberPicker);
+			builder.create().show();
+
+		});
+
 	}
 
 }

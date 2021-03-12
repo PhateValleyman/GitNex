@@ -50,4 +50,9 @@ public abstract class StaticGlobalVariables {
 	public static int minimumPollingDelay = 1;
 	public static int defaultPollingDelay = 15;
 	public static int maximumPollingDelay = 720;
+
+	public static int minimumFileViewerSize = 1;
+	public static int defaultFileViewerSize = 3;
+	public static int maximumFileViewerSize = 10;
+
 }

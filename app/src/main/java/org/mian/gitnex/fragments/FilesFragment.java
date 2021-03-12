@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import org.gitnex.tea4j.models.Files;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.FileViewActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
@@ -157,30 +158,25 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 	}
 
 	@Override
-	public void onClickDir(String dirName) {
+	public void onClickFile(Files file) {
 
-		path.add(dirName);
-		mBreadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(dirName)));
+		switch(file.getType()) {
 
-		fetchDataAsyncSub(Authorization.get(getContext()), repoOwner, repoName, path.toString(), ref);
+			case "dir":
+				path.add(file.getName());
+				mBreadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(file.getName())));
 
-	}
+				fetchDataAsyncSub(Authorization.get(getContext()), repoOwner, repoName, path.toString(), ref);
+				break;
 
-	@Override
-	public void onClickFile(String fileName) {
+			case "file":
+				Intent intent = new Intent(getContext(), FileViewActivity.class);
+				intent.putExtra("file", file);
 
-		Intent intent = new Intent(getContext(), FileViewActivity.class);
+				requireContext().startActivity(intent);
+				break;
 
-		if(path.size() != 0) {
-
-			intent.putExtra("singleFileName", path.toString() + "/" + fileName);
 		}
-		else {
-
-			intent.putExtra("singleFileName", fileName);
-		}
-
-		requireContext().startActivity(intent);
 	}
 
 	private void fetchDataAsync(String instanceToken, String owner, String repo, String ref) {

@@ -76,6 +76,7 @@ public class SettingsNotificationsActivity extends BaseActivity {
 			builder.setNeutralButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss());
 			builder.setView(numberPicker);
 			builder.create().show();
+
 		});
 
 		// lights switcher

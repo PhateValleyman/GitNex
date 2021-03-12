@@ -30,7 +30,6 @@ import org.mian.gitnex.helpers.Version;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -165,14 +164,14 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 		CreatePullRequest createPullRequest = new CreatePullRequest(prTitle, prDescription, loginUid, mergeInto, pullFrom, milestoneId, dueDate, assignees, labelsIds);
 
-		Call<ResponseBody> transferCall = RetrofitClient
+		Call<Void> transferCall = RetrofitClient
 			.getApiInterface(appCtx)
 			.createPullRequest(instanceToken, repoOwner, repoName, createPullRequest);
 
-		transferCall.enqueue(new Callback<ResponseBody>() {
+		transferCall.enqueue(new Callback<Void>() {
 
 			@Override
-			public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
+			public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
 
 				disableProcessButton();
 
@@ -199,7 +198,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
 				enableProcessButton();
 				Toasty.error(ctx, getString(R.string.genericServerResponseError));
