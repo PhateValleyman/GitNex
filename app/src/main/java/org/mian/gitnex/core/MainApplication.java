@@ -3,8 +3,6 @@ package org.mian.gitnex.core;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.work.Configuration;
 import org.acra.ACRA;
 import org.acra.BuildConfig;
 import org.acra.ReportField;
@@ -19,6 +17,7 @@ import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.notifications.Notifications;
 
 /**
  * @author opyale
@@ -33,7 +32,7 @@ import org.mian.gitnex.helpers.TinyDB;
 	ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL,
 	ReportField.STACK_TRACE, ReportField.AVAILABLE_MEM_SIZE, ReportField.BRAND })
 
-public class MainApplication extends Application implements Configuration.Provider {
+public class MainApplication extends Application {
 
 	private Context appCtx;
 	private TinyDB tinyDB;
@@ -84,8 +83,8 @@ public class MainApplication extends Application implements Configuration.Provid
 
 		}
 
-		//WorkManager.initialize(appCtx, getWorkManagerConfiguration());
-		//Notifications.startWorker(appCtx);
+		Notifications.createChannels(appCtx);
+		Notifications.startWorker(appCtx);
 
 	}
 
@@ -135,12 +134,4 @@ public class MainApplication extends Application implements Configuration.Provid
 			tinyDB.putString("biometricStatusInit", "yes");
 		}
 	}
-
-	@NonNull
-	@Override
-	public Configuration getWorkManagerConfiguration() {
-
-		return null;
-	}
-
 }

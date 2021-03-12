@@ -676,7 +676,8 @@
     <string name="chooseColorSelectorHeader">Choose Color</string>
     <string name="newMessages">New messages</string>
     <string name="youHaveGotNewNotifications">You\'ve got %d new notifications.</string>
-    <string name="notificationChannelDescription" translatable="false">This is the main notification channel of GitNex.</string>
+    <string name="mainNotificationChannelName">Notifications</string>
+    <string name="mainNotificationChannelDescription">This is the main notification channel of GitNex.</string>
     <string name="notificationExtraInfo" translatable="false">- %s (%s)</string>
 
     <string name="isRead">Read</string>
@@ -743,5 +744,16 @@
     <string name="enrollBiometric">Enroll biometric from phone settings</string>
 
     <string name="copyLoginIdToClipBoard">Login ID \'%s\' copied to clipboard</string>
+
+    <!-- file viewer activity -->
+    <string name="fileViewerNotificationTitleStarted">Download in progress</string>
+    <string name="fileViewerNotificationDescriptionStarted">Downloading %s</string>
+    <string name="fileViewerNotificationTitleFinished">Download successful</string>
+    <string name="fileViewerNotificationDescriptionFinished">Downloaded %s</string>
+    <string name="fileViewerNotificationTitleFailed">Download failed</string>
+    <string name="fileViewerNotificationDescriptionFailed">Couldn\'t download %s</string>
+
+    <string name="fileViewerNotificationChannelName">Download manager</string>
+    <string name="fileViewerNotificationChannelDescription">Indicates the progress of ongoing downloads</string>
 
 </resources>

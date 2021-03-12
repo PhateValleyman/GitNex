@@ -52,14 +52,11 @@ public class AppUtil {
 	public static FileType getFileType(String extension) {
 
 		if(extension != null && !extension.isEmpty()) {
-
 			for(List<String> testExtensions : extensions.keySet()) {
-
 				for(String testExtension : testExtensions) {
 
 					if(testExtension.equalsIgnoreCase(extension))
 						return extensions.get(testExtensions);
-
 				}
 			}
 		}

@@ -1,11 +1,10 @@
 package org.mian.gitnex.activities;
 
 import android.app.Activity;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Gravity;
@@ -16,7 +15,6 @@ import android.view.View;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.vdurmont.emoji.EmojiParser;
 import org.apache.commons.io.FileUtils;
@@ -34,6 +32,7 @@ import org.mian.gitnex.helpers.Images;
 import org.mian.gitnex.helpers.Markdown;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.highlightjs.models.Theme;
+import org.mian.gitnex.notifications.Notifications;
 import java.io.IOException;
 import java.io.OutputStream;
 import okhttp3.ResponseBody;
@@ -395,7 +394,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 	}
 
-	// TODO Notifications do not work, translations, test for crashes
+	// TODO test for crashes
 
 	ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
 
@@ -408,24 +407,18 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 				OutputStream outputStream = getContentResolver().openOutputStream(result.getData().getData());
 
 				NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, ctx.getPackageName())
-					.setContentTitle("Download in progress")
-					.setContentText("Downloading " + file.getName())
+					.setContentTitle(getString(R.string.fileViewerNotificationTitleStarted))
+					.setContentText(getString(R.string.fileViewerNotificationDescriptionStarted, file.getName()))
 					.setSmallIcon(R.drawable.gitnex_transparent)
 					.setPriority(NotificationCompat.PRIORITY_LOW)
+					.setChannelId(Constants.downloadNotificationChannelId)
 					.setProgress(0,0,true)
 					.setOngoing(true);
 
-				NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ctx);
+				int notificationId = Notifications.uniqueNotificationId(ctx);
 
-				if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-					NotificationChannel channel = new NotificationChannel("channeslsdsasdsa", "name", NotificationManager.IMPORTANCE_LOW);
-					channel.setDescription("description");
-					notificationManager.createNotificationChannel(channel);
-
-				}
-
-				notificationManager.notify(100, builder.build());
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);;
+				notificationManager.notify(notificationId, builder.build());
 
 				String repoFullName = tinyDB.getString("repoFullName");
 				String repoBranch = tinyDB.getString("repoBranch");
@@ -447,21 +440,21 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 						IOUtil.copy(response.body().byteStream(), outputStream);
 
-						builder.setContentTitle("Download successful")
-							.setContentText("Downloaded " + file.getName())
-							.setProgress(0,0,false)
-							.setOngoing(false);
+						builder.setContentTitle(getString(R.string.fileViewerNotificationTitleFinished))
+							.setContentText(getString(R.string.fileViewerNotificationDescriptionFinished, file.getName()));
 
 					} catch(IOException ignored) {
 
-						builder.setContentTitle("Download failed")
-							.setContentText("Couldn't download " + file.getName())
-							.setProgress(0,0,false)
-							.setOngoing(false);
+						builder.setContentTitle(getString(R.string.fileViewerNotificationTitleFailed))
+							.setContentText(getString(R.string.fileViewerNotificationDescriptionFailed, file.getName()));
 
 					} finally {
 
-						notificationManager.notify(100, builder.build());
+						builder.setProgress(0,0,false)
+							.setOngoing(false);
+
+						notificationManager.notify(notificationId, builder.build());
+
 					}
 
 				});

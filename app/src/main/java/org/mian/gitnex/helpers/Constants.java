@@ -55,4 +55,7 @@ public class Constants {
 	public static final int defaultFileViewerSize = 3;
 	public static final int maximumFileViewerSize = 10;
 
+	public static final String mainNotificationChannelId = "main_channel";
+	public static final String downloadNotificationChannelId = "dl_channel";
+
 }
