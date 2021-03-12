@@ -24,7 +24,7 @@ import org.mian.gitnex.databinding.ActivityCreatePrBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 	private View.OnClickListener onClickListener;
 	private ActivityCreatePrBinding viewBinding;
 	private CustomLabelsSelectionDialogBinding labelsBinding;
-	private int resultLimit = StaticGlobalVariables.resultLimitOldGiteaInstances;
+	private int resultLimit = Constants.resultLimitOldGiteaInstances;
 	private Dialog dialogLabels;
 	private String labelsSetter;
 	private List<Integer> labelsIds = new ArrayList<>();
@@ -79,7 +79,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		// require gitea 1.12 or higher
 		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.0")) {
 
-			resultLimit = StaticGlobalVariables.resultLimitNewGiteaInstances;
+			resultLimit = Constants.resultLimitNewGiteaInstances;
 		}
 
 		viewBinding.prBody.setOnTouchListener((touchView, motionEvent) -> {

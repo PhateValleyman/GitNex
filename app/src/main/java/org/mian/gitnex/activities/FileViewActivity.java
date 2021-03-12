@@ -29,9 +29,9 @@ import org.mian.gitnex.fragments.BottomSheetFileViewerFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Images;
 import org.mian.gitnex.helpers.Markdown;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.highlightjs.models.Theme;
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 		setSupportActionBar(binding.toolbar);
 
-		maxFileViewerSize = tinyDB.getInt("maxFileViewerSize", StaticGlobalVariables.defaultFileViewerSize) * 1024 * 1024;
+		maxFileViewerSize = tinyDB.getInt("maxFileViewerSize", Constants.defaultFileViewerSize) * 1024 * 1024;
 
 		tinyDB.putBoolean("enableMarkdownInFileView", false);
 

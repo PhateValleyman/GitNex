@@ -6,7 +6,7 @@ import android.widget.NumberPicker;
 import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsFileviewerBinding;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
 
 /**
@@ -34,7 +34,7 @@ public class SettingsFileViewerActivity extends BaseActivity {
 		}
 
 		binding.sourceCodeThemeSelected.setText(tinyDB.getString("fileviewerSourceCodeThemeStr", fileViewerSourceCodeThemesList[0]));
-		binding.maxViewerSizeSelected.setText(String.format("%d MB", tinyDB.getInt("maxFileViewerSize", StaticGlobalVariables.defaultFileViewerSize)));
+		binding.maxViewerSizeSelected.setText(String.format("%d MB", tinyDB.getInt("maxFileViewerSize", Constants.defaultFileViewerSize)));
 		binding.switchPdfMode.setChecked(tinyDB.getBoolean("enablePdfMode"));
 
 		// fileviewer source code theme selection dialog
@@ -74,9 +74,9 @@ public class SettingsFileViewerActivity extends BaseActivity {
 		binding.maxViewerSizeFrame.setOnClickListener(v -> {
 
 			NumberPicker numberPicker = new NumberPicker(ctx);
-			numberPicker.setMinValue(StaticGlobalVariables.minimumFileViewerSize);
-			numberPicker.setMaxValue(StaticGlobalVariables.maximumFileViewerSize);
-			numberPicker.setValue(tinyDB.getInt("maxFileViewerSize", StaticGlobalVariables.defaultFileViewerSize));
+			numberPicker.setMinValue(Constants.minimumFileViewerSize);
+			numberPicker.setMaxValue(Constants.maximumFileViewerSize);
+			numberPicker.setValue(tinyDB.getInt("maxFileViewerSize", Constants.defaultFileViewerSize));
 			numberPicker.setWrapSelectorWheel(true);
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);

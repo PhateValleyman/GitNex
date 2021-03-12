@@ -3,6 +3,8 @@ package org.mian.gitnex.core;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import androidx.annotation.NonNull;
+import androidx.work.Configuration;
 import org.acra.ACRA;
 import org.acra.BuildConfig;
 import org.acra.ReportField;
@@ -14,10 +16,9 @@ import org.acra.config.MailSenderConfigurationBuilder;
 import org.acra.data.StringFormat;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.FontsOverride;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
 import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.notifications.Notifications;
 
 /**
  * @author opyale
@@ -28,9 +29,11 @@ import org.mian.gitnex.notifications.Notifications;
 	resTitle = R.string.crashTitle,
 	resChannelName = R.string.setCrashReports,
 	resText = R.string.crashMessage)
-@AcraCore(reportContent = { ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.STACK_TRACE })
+@AcraCore(reportContent = {
+	ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL,
+	ReportField.STACK_TRACE, ReportField.AVAILABLE_MEM_SIZE, ReportField.BRAND })
 
-public class MainApplication extends Application {
+public class MainApplication extends Application implements Configuration.Provider {
 
 	private Context appCtx;
 	private TinyDB tinyDB;
@@ -81,7 +84,8 @@ public class MainApplication extends Application {
 
 		}
 
-		Notifications.startWorker(appCtx);
+		//WorkManager.initialize(appCtx, getWorkManagerConfiguration());
+		//Notifications.startWorker(appCtx);
 
 	}
 
@@ -121,7 +125,7 @@ public class MainApplication extends Application {
 		// setting default polling delay
 		if(tinyDB.getInt("pollingDelayMinutes", 0) <= 0) {
 
-			tinyDB.putInt("pollingDelayMinutes", StaticGlobalVariables.defaultPollingDelay);
+			tinyDB.putInt("pollingDelayMinutes", Constants.defaultPollingDelay);
 		}
 
 		// disable biometric by default
@@ -131,4 +135,12 @@ public class MainApplication extends Application {
 			tinyDB.putString("biometricStatusInit", "yes");
 		}
 	}
+
+	@NonNull
+	@Override
+	public Configuration getWorkManagerConfiguration() {
+
+		return null;
+	}
+
 }

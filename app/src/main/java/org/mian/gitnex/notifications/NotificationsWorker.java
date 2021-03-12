@@ -20,7 +20,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.StaticGlobalVariables;
+import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.TinyDB;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +53,7 @@ public class NotificationsWorker extends Worker {
 
 		String token = "token " + tinyDB.getString(tinyDB.getString("loginUid") + "-token");
 
-		int notificationLoops = tinyDB.getInt("pollingDelayMinutes", StaticGlobalVariables.defaultPollingDelay) >= 15 ? 1 : Math.min(15 - tinyDB.getInt("pollingDelayMinutes"), 10);
+		int notificationLoops = tinyDB.getInt("pollingDelayMinutes", Constants.defaultPollingDelay) >= 15 ? 1 : Math.min(15 - tinyDB.getInt("pollingDelayMinutes"), 10);
 
 		for(int i=0; i<notificationLoops; i++) {
 
