@@ -13,6 +13,9 @@ import android.util.TypedValue;
 import android.view.View;
 import androidx.annotation.ColorInt;
 import androidx.core.content.pm.PackageInfoCompat;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -67,6 +70,36 @@ public class AppUtil {
 
 		return NetworkStatusObserver.getInstance(context).hasNetworkConnection();
 	}
+
+	public static void copyProgress(InputStream inputStream, OutputStream outputStream, long totalSize, ProgressListener progressListener) throws IOException {
+
+		byte[] buffer = new byte[4096];
+		int read;
+
+		long totalSteps = totalSize / buffer.length;
+		long stepsPerPercent = totalSteps / 100;
+
+		short percent = 0;
+		long stepCount = 0;
+
+		while((read = inputStream.read(buffer)) != -1) {
+
+			outputStream.write(buffer, 0, read);
+			stepCount++;
+
+			if(stepCount == stepsPerPercent) {
+				percent++;
+				progressListener.onProgressChanged(percent);
+				stepCount = 0;
+			}
+		}
+
+		if(percent < 100) {
+			progressListener.onProgressChanged((short) 100);
+		}
+	}
+
+	public interface ProgressListener { void onProgressChanged(short progress); }
 
 	public static int getAppBuildNo(Context context) {
 

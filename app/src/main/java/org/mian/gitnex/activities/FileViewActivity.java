@@ -18,7 +18,6 @@ import androidx.core.app.NotificationCompat;
 import com.github.barteksc.pdfviewer.util.FitPolicy;
 import com.vdurmont.emoji.EmojiParser;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtil;
 import org.gitnex.tea4j.models.Files;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -410,7 +409,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 					.setSmallIcon(R.drawable.gitnex_transparent)
 					.setPriority(NotificationCompat.PRIORITY_LOW)
 					.setChannelId(Constants.downloadNotificationChannelId)
-					.setProgress(0,0,true)
+					.setProgress(100, 0, false)
 					.setOngoing(true);
 
 				int notificationId = Notifications.uniqueNotificationId(ctx);
@@ -436,7 +435,12 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 						assert response.body() != null;
 
-						IOUtil.copy(response.body().byteStream(), outputStream);
+						AppUtil.copyProgress(response.body().byteStream(), outputStream, file.getSize(), progress -> {
+
+							builder.setProgress(100, progress, false);
+							notificationManager.notify(notificationId, builder.build());
+
+						});
 
 						builder.setContentTitle(getString(R.string.fileViewerNotificationTitleFinished))
 							.setContentText(getString(R.string.fileViewerNotificationDescriptionFinished, file.getName()));
