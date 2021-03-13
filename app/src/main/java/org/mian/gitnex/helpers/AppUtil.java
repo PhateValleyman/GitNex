@@ -17,11 +17,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -33,26 +31,26 @@ public class AppUtil {
 
 	public enum FileType { IMAGE, AUDIO, VIDEO, DOCUMENT, TEXT, EXECUTABLE, UNKNOWN }
 
-	private static final HashMap<List<String>, FileType> extensions = new HashMap<>();
+	private static final HashMap<String[], FileType> extensions = new HashMap<>();
 
 	// AppUtil should not be instantiated.
 	private AppUtil() {}
 
 	static {
 
-		extensions.put(Arrays.asList("jpg", "jpeg", "gif", "png", "ico", "tif", "tiff", "bmp"), FileType.IMAGE);
-		extensions.put(Arrays.asList("mp3", "wav", "opus", "flac", "wma", "aac", "m4a", "oga", "mpc", "ogg"), FileType.AUDIO);
-		extensions.put(Arrays.asList("mp4", "mkv", "avi", "mov", "wmv", "qt", "mts", "m2ts", "webm", "flv", "ogv", "amv", "mpg", "mpeg", "mpv", "m4v", "3gp", "wmv"), FileType.VIDEO);
-		extensions.put(Arrays.asList("doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "odg", "otg", "odp", "otp", "bin", "psd", "xcf", "pdf"), FileType.DOCUMENT);
-		extensions.put(Arrays.asList("exe", "msi", "jar", "dmg", "deb", "apk"), FileType.EXECUTABLE);
-		extensions.put(Arrays.asList("txt", "md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv", "python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs", "lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl", "wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf", "gitignore", "gradle", "txt", "properties", "bat", "twig", "cvs", "cmake", "in", "info", "spec", "m4", "am", "dist", "pam", "hx", "ts", "kt", "kts"), FileType.TEXT);
+		extensions.put(new String[]{"jpg", "jpeg", "gif", "png", "ico", "tif", "tiff", "bmp"}, FileType.IMAGE);
+		extensions.put(new String[]{"mp3", "wav", "opus", "flac", "wma", "aac", "m4a", "oga", "mpc", "ogg"}, FileType.AUDIO);
+		extensions.put(new String[]{"mp4", "mkv", "avi", "mov", "wmv", "qt", "mts", "m2ts", "webm", "flv", "ogv", "amv", "mpg", "mpeg", "mpv", "m4v", "3gp", "wmv"}, FileType.VIDEO);
+		extensions.put(new String[]{"doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "odg", "otg", "odp", "otp", "bin", "psd", "xcf", "pdf"}, FileType.DOCUMENT);
+		extensions.put(new String[]{"exe", "msi", "jar", "dmg", "deb", "apk"}, FileType.EXECUTABLE);
+		extensions.put(new String[]{"txt", "md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv", "python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs", "lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl", "wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf", "gitignore", "gradle", "txt", "properties", "bat", "twig", "cvs", "cmake", "in", "info", "spec", "m4", "am", "dist", "pam", "hx", "ts", "kt", "kts"}, FileType.TEXT);
 
 	}
 
 	public static FileType getFileType(String extension) {
 
 		if(extension != null && !extension.isEmpty()) {
-			for(List<String> testExtensions : extensions.keySet()) {
+			for(String[] testExtensions : extensions.keySet()) {
 				for(String testExtension : testExtensions) {
 
 					if(testExtension.equalsIgnoreCase(extension))

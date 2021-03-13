@@ -394,8 +394,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 	}
 
-	// TODO test for crashes
-
 	ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
 
 		if (result.getResultCode() == Activity.RESULT_OK) {
