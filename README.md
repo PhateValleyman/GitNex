@@ -73,6 +73,8 @@ Thanks to all the open source libraries, contributors and donators.
 - [google/gson](https://github.com/google/gson)
 - [square/okhttp](https://github.com/square/okhttp)
 - [square/picasso](https://github.com/square/picasso)
+- [wasabeef/picasso-transformations](https://github.com/wasabeef/picasso-transformations)
+- [cats-oss/android-gpuimage](https://github.com/cats-oss/android-gpuimage)
 - [noties/Markwon](https://github.com/noties/Markwon)
 - [noties/Prism4j](https://github.com/noties/Prism4j)
 - [ocpsoft/prettytime](https://github.com/ocpsoft/prettytime)
@@ -85,7 +87,6 @@ Thanks to all the open source libraries, contributors and donators.
 - [apache/commons](https://github.com/apache/commons-io)
 - [barteksc/AndroidPdfViewer](https://github.com/barteksc/AndroidPdfViewer)
 - [ge0rg/MemorizingTrustManager](https://github.com/ge0rg/MemorizingTrustManager)
-- [Dimezis/BlurView](https://github.com/Dimezis/BlurView)
 - [mikaelhg/urlbuilder](https://github.com/mikaelhg/urlbuilder)
 - [ACRA/acra](https://github.com/ACRA/acra)
 

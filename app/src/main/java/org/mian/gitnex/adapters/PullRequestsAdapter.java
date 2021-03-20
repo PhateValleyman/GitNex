@@ -125,7 +125,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 				tinyDb.putString("prMergeable", String.valueOf(pullRequest.isMergeable()));
 				tinyDb.putString("prHeadBranch", pullRequest.getHead().getRef());
 
-				if(pullRequest.getHead().getRepo() != null) {
+				if(pullRequest.getHead() != null && pullRequest.getHead().getRepo() != null) {
 					tinyDb.putString("prIsFork", String.valueOf(pullRequest.getHead().getRepo().isFork()));
 					tinyDb.putString("prForkFullName", pullRequest.getHead().getRepo().getFull_name());
 				}
@@ -154,7 +154,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 				tinyDb.putString("prMergeable", String.valueOf(pullRequest.isMergeable()));
 				tinyDb.putString("prHeadBranch", pullRequest.getHead().getRef());
 
-				if(pullRequest.getHead().getRepo() != null) {
+				if(pullRequest.getHead() != null && pullRequest.getHead().getRepo() != null) {
 					tinyDb.putString("prIsFork", String.valueOf(pullRequest.getHead().getRepo().isFork()));
 					tinyDb.putString("prForkFullName", pullRequest.getHead().getRepo().getFull_name());
 				}
