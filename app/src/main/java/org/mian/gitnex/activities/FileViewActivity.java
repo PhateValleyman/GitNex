@@ -34,6 +34,7 @@ import org.mian.gitnex.helpers.highlightjs.models.Theme;
 import org.mian.gitnex.notifications.Notifications;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -129,20 +130,24 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 
 							case IMAGE:
 
-								processable = true;
+								// See https://developer.android.com/guide/topics/media/media-formats#core
+								if(Arrays.asList("bmp", "gif", "jpg", "jpeg", "png", "webp", "heic", "heif").contains(fileExtension.toLowerCase())) {
 
-								byte[] pictureBytes = responseBody.bytes();
+									processable = true;
 
-								runOnUiThread(() -> {
+									byte[] pictureBytes = responseBody.bytes();
 
-									binding.contents.setVisibility(View.GONE);
-									binding.pdfViewFrame.setVisibility(View.GONE);
-									binding.markdownFrame.setVisibility(View.GONE);
+									runOnUiThread(() -> {
 
-									binding.photoView.setVisibility(View.VISIBLE);
-									binding.photoView.setImageBitmap(Images.scaleImage(pictureBytes, 1920));
+										binding.contents.setVisibility(View.GONE);
+										binding.pdfViewFrame.setVisibility(View.GONE);
+										binding.markdownFrame.setVisibility(View.GONE);
 
-								});
+										binding.photoView.setVisibility(View.VISIBLE);
+										binding.photoView.setImageBitmap(Images.scaleImage(pictureBytes, 1920));
+
+									});
+								}
 								break;
 
 							case UNKNOWN:
@@ -436,10 +441,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 						assert response.body() != null;
 
 						AppUtil.copyProgress(response.body().byteStream(), outputStream, file.getSize(), progress -> {
-
 							builder.setProgress(100, progress, false);
 							notificationManager.notify(notificationId, builder.build());
-
 						});
 
 						builder.setContentTitle(getString(R.string.fileViewerNotificationTitleFinished))
@@ -458,7 +461,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 						notificationManager.notify(notificationId, builder.build());
 
 					}
-
 				});
 
 				thread.start();

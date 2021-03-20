@@ -76,11 +76,13 @@ public class AppUtil {
 		byte[] buffer = new byte[4096];
 		int read;
 
-		long totalSteps = totalSize / buffer.length;
-		long stepsPerPercent = totalSteps / 100;
+		long totalSteps = (long) Math.ceil((double) totalSize / buffer.length);
+		long stepsPerPercent = (long) Math.floor((double) totalSteps / 100);
 
 		short percent = 0;
 		long stepCount = 0;
+
+		progressListener.onActionStarted();
 
 		while((read = inputStream.read(buffer)) != -1) {
 
@@ -89,7 +91,7 @@ public class AppUtil {
 
 			if(stepCount == stepsPerPercent) {
 				percent++;
-				progressListener.onProgressChanged(percent);
+				if(percent <= 100) progressListener.onProgressChanged(percent);
 				stepCount = 0;
 			}
 		}
@@ -97,9 +99,16 @@ public class AppUtil {
 		if(percent < 100) {
 			progressListener.onProgressChanged((short) 100);
 		}
+
+		progressListener.onActionFinished();
 	}
 
-	public interface ProgressListener { void onProgressChanged(short progress); }
+	public interface ProgressListener {
+		default void onActionStarted() {}
+		default void onActionFinished() {}
+
+		void onProgressChanged(short progress);
+	}
 
 	public static int getAppBuildNo(Context context) {
 
