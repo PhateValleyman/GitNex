@@ -157,22 +157,33 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
         holder.file = currentItem;
         holder.fileName.setText(currentItem.getName());
 
-        if(currentItem.getType().equals("file")) {
+        switch(currentItem.getType()) {
 
-            holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(mCtx, R.drawable.ic_file));
-            holder.fileInfo.setVisibility(View.VISIBLE);
-            holder.fileInfo.setText(FileUtils.byteCountToDisplaySize(currentItem.getSize()));
+	        case "file":
+		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(mCtx, R.drawable.ic_file));
+		        holder.fileInfo.setVisibility(View.VISIBLE);
+		        holder.fileInfo.setText(FileUtils.byteCountToDisplaySize(currentItem.getSize()));
+	        	break;
+
+	        case "dir":
+		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(mCtx, R.drawable.ic_directory));
+		        holder.fileInfo.setVisibility(View.GONE);
+	        	break;
+
+	        case "submodule":
+		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(mCtx, R.drawable.ic_submodule));
+		        holder.fileInfo.setVisibility(View.GONE);
+	        	break;
+
+	        case "symlink":
+		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(mCtx, R.drawable.ic_symlink));
+		        holder.fileInfo.setVisibility(View.GONE);
+		        break;
+
+	        default:
+		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(mCtx, R.drawable.ic_question));
+
         }
-        else if(currentItem.getType().equals("dir")) {
-
-	        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(mCtx, R.drawable.ic_directory));
-	        holder.fileInfo.setVisibility(View.GONE);
-        }
-        else {
-
-	        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(mCtx, R.drawable.ic_question));
-        }
-
     }
 
     @Override
