@@ -92,26 +92,26 @@ public class SyntaxHighlightedArea extends LinearLayout {
 
 	}
 
-	public void setContent(String source, String extension) {
+	public void setContent(@NonNull String source, @NonNull String extension) {
+		if(source.length() > 0) {
 
-		linesView.setLineCount(AppUtil.getLineCount(source));
+			linesView.setLineCount(AppUtil.getLineCount(source));
 
-		MainGrammarLocator mainGrammarLocator = MainGrammarLocator.getInstance();
-		Prism4jSyntaxHighlight prism4jSyntaxHighlight = Prism4jSyntaxHighlight.create(new Prism4j(mainGrammarLocator), prism4jTheme, MainGrammarLocator.DEFAULT_FALLBACK_LANGUAGE);
+			MainGrammarLocator mainGrammarLocator = MainGrammarLocator.getInstance();
+			Prism4jSyntaxHighlight prism4jSyntaxHighlight = Prism4jSyntaxHighlight.create(new Prism4j(mainGrammarLocator), prism4jTheme, MainGrammarLocator.DEFAULT_FALLBACK_LANGUAGE);
 
-		CharSequence highlightedSource = prism4jSyntaxHighlight.highlight(mainGrammarLocator.fromExtension(extension), source);
+			CharSequence highlightedSource = prism4jSyntaxHighlight.highlight(mainGrammarLocator.fromExtension(extension), source);
 
-		if(highlightedSource.charAt(highlightedSource.length() - 1) == '\n') {
-
-			// Removes a line break which is probably added by Prism4j but not actually present in the source.
-			// This line should be altered in case this gets fixed.
-			sourceView.setText(highlightedSource.subSequence(0, highlightedSource.length() - 1));
-
-		} else {
-
-			sourceView.setText(highlightedSource);
+			if(highlightedSource.charAt(highlightedSource.length() - 1) == '\n') {
+				// Removes a line break which is probably added by Prism4j but not actually present in the source.
+				// This line should be altered in case this gets fixed.
+				sourceView.setText(highlightedSource.subSequence(0, highlightedSource.length() - 1));
+			}
+			else {
+				sourceView.setText(highlightedSource);
+			}
 		}
-    }
+	}
 
     public String getContent() {
 
