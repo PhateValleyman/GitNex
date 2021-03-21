@@ -255,8 +255,6 @@
     <string name="settingsFileViewerSourceCodeHeaderText">Source Code Theme</string>
     <string name="settingsFileViewerSourceCodeSelectedText" translatable="false">Sublime</string>
     <string name="fileViewerSourceCodeThemeSelectorDialogTitle">Select Source Code Theme</string>
-    <string name="fileViewerDialogHeaderText">Select maximum file viewer size</string>
-    <string name="fileViewerDialogDescriptionText">Selects the maximum file viewer size in MB\n\nWarning: Higher file sizes may lead to crashes!</string>
     <string name="cacheSizeDataDialogHeader">Data Cache Size</string>
     <string name="cacheSizeDataSelectionHeaderText">Data Cache Size</string>
     <string name="cacheSizeDataSelectionSelectedText" translatable="false">50 MB</string>

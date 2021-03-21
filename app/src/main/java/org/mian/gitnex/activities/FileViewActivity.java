@@ -48,8 +48,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 	private ActivityFileViewBinding binding;
 	private Boolean pdfNightMode;
 
-	private int maxFileViewerSize;
-
 	private Files file;
 
 	@Override
@@ -61,8 +59,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		setContentView(binding.getRoot());
 
 		setSupportActionBar(binding.toolbar);
-
-		maxFileViewerSize = tinyDB.getInt("maxFileViewerSize", Constants.defaultFileViewerSize) * 1024 * 1024;
 
 		tinyDB.putBoolean("enableMarkdownInFileView", false);
 
@@ -153,7 +149,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							case UNKNOWN:
 							case TEXT:
 
-								if(file.getSize() > maxFileViewerSize) {
+								if(file.getSize() > Constants.maximumFileViewerSize) {
 									break;
 								}
 

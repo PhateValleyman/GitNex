@@ -51,9 +51,7 @@ public class Constants {
 	public static final int defaultPollingDelay = 15;
 	public static final int maximumPollingDelay = 720;
 
-	public static final int minimumFileViewerSize = 1;
-	public static final int defaultFileViewerSize = 3;
-	public static final int maximumFileViewerSize = 10;
+	public static final int maximumFileViewerSize = 3 * 1024 * 1024;
 
 	public static final String mainNotificationChannelId = "main_channel";
 	public static final String downloadNotificationChannelId = "dl_channel";

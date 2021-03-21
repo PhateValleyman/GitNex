@@ -2,11 +2,9 @@ package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.widget.NumberPicker;
 import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsFileviewerBinding;
-import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
 
 /**
@@ -34,7 +32,6 @@ public class SettingsFileViewerActivity extends BaseActivity {
 		}
 
 		binding.sourceCodeThemeSelected.setText(tinyDB.getString("fileviewerSourceCodeThemeStr", fileViewerSourceCodeThemesList[0]));
-		binding.maxViewerSizeSelected.setText(String.format("%d MB", tinyDB.getInt("maxFileViewerSize", Constants.defaultFileViewerSize)));
 		binding.switchPdfMode.setChecked(tinyDB.getBoolean("enablePdfMode"));
 
 		// fileviewer source code theme selection dialog
@@ -68,34 +65,6 @@ public class SettingsFileViewerActivity extends BaseActivity {
 			tinyDB.putBoolean("enablePdfMode", isChecked);
 			tinyDB.putString("enablePdfModeInit", "yes");
 			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-
-		});
-
-		binding.maxViewerSizeFrame.setOnClickListener(v -> {
-
-			NumberPicker numberPicker = new NumberPicker(ctx);
-			numberPicker.setMinValue(Constants.minimumFileViewerSize);
-			numberPicker.setMaxValue(Constants.maximumFileViewerSize);
-			numberPicker.setValue(tinyDB.getInt("maxFileViewerSize", Constants.defaultFileViewerSize));
-			numberPicker.setWrapSelectorWheel(true);
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-			builder.setTitle(getString(R.string.fileViewerDialogHeaderText));
-			builder.setMessage(getString(R.string.fileViewerDialogDescriptionText));
-
-			builder.setCancelable(true);
-			builder.setPositiveButton(getString(R.string.okButton), (dialog, which) -> {
-
-				tinyDB.putInt("maxFileViewerSize", numberPicker.getValue());
-
-				binding.maxViewerSizeSelected.setText(String.format("%d MB", numberPicker.getValue()));
-				Toasty.info(ctx, getResources().getString(R.string.settingsSave));
-
-			});
-
-			builder.setNeutralButton(R.string.cancelButton, (dialog, which) -> dialog.dismiss());
-			builder.setView(numberPicker);
-			builder.create().show();
 
 		});
 
