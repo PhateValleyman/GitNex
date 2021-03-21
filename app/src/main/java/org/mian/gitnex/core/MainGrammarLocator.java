@@ -99,6 +99,8 @@ public class MainGrammarLocator implements GrammarLocator {
 
 			case "yaml":
 			case "yml":
+			case "properties": // This extension doesn't correspond to YAML, but it's the next best option
+			case "ini": // This extension doesn't correspond to YAML, but it's the next best option
 				return "yaml";
 
 		}
