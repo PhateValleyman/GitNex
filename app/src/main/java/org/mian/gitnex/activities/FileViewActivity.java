@@ -29,9 +29,7 @@ import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Images;
 import org.mian.gitnex.helpers.Markdown;
-import org.mian.gitnex.helpers.SyntaxHighlightedArea;
 import org.mian.gitnex.helpers.Toasty;
-import java.io.File;
 import org.mian.gitnex.notifications.Notifications;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -165,7 +163,8 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 									binding.pdfViewFrame.setVisibility(View.GONE);
 
 									binding.contents.setVisibility(View.VISIBLE);
-									binding.contents.setContent(text);
+									binding.contents.setContent(text, fileExtension);
+
 								});
 								break;
 

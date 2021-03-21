@@ -92,7 +92,7 @@ public class SyntaxHighlightedArea extends LinearLayout {
 
 	}
 
-	public void setSource(String source, String extension) {
+	public void setContent(String source, String extension) {
 
 		linesView.setLineCount(AppUtil.getLineCount(source));
 
@@ -113,9 +113,10 @@ public class SyntaxHighlightedArea extends LinearLayout {
 		}
     }
 
-	/**
-	 * @author opyale
-	 */
+    public String getContent() {
+
+		return sourceView.getText().toString();
+    }
 
 	private static class LinesView extends View {
 
