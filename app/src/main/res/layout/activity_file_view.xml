@@ -65,7 +65,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/singleFileContentsFrame"
+                android:id="@+id/markdownFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/primaryBackgroundColor"
@@ -74,7 +74,7 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/singleFileContents"
+                    android:id="@+id/markdown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/primaryTextColor"
@@ -100,14 +100,14 @@
             </LinearLayout>
 
             <org.mian.gitnex.helpers.SyntaxHighlightedArea
-                android:id="@+id/singleCodeContents"
+                android:id="@+id/contents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
             <com.github.chrisbanes.photoview.PhotoView
-                android:id="@+id/imageView"
+                android:id="@+id/photo_view"
                 android:visibility="gone"
                 android:padding="16dp"
                 android:layout_width="match_parent"
