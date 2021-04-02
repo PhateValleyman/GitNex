@@ -292,15 +292,20 @@ public class AppUtil {
 		return (int) (context.getResources().getDisplayMetrics().scaledDensity * sp);
 	}
 
-	public static int getLineCount(String s) {
+	public static long getLineCount(String s) {
 
-		int lines = 0;
+		long lines = 0;
 
 		Pattern pattern = Pattern.compile("(\r\n|\r|\n)");
 		Matcher matcher = pattern.matcher(s);
 
 		while(matcher.find())
 			lines++;
+
+		// Sometimes there may be text, but no line breaks.
+		// This should still count as one line.
+		if(s.length() > 0 && lines == 0)
+			return 1;
 
 		return lines;
 
