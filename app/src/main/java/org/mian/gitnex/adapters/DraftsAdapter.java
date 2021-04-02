@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
+import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.database.models.DraftWithRepository;
 import org.mian.gitnex.fragments.BottomSheetReplyFragment;
@@ -56,7 +57,8 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
                 int getDraftId = draftWithRepository.getDraftId();
                 deleteDraft(getAdapterPosition());
-	            DraftsApi draftsApi = new DraftsApi(mCtx);
+
+	            DraftsApi draftsApi = BaseApi.getInstance(mCtx, DraftsApi.class);
 	            draftsApi.deleteSingleDraft(getDraftId);
 
             });

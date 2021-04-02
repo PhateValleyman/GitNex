@@ -13,6 +13,7 @@ import android.util.TypedValue;
 import android.view.View;
 import androidx.annotation.ColorInt;
 import androidx.core.content.pm.PackageInfoCompat;
+import org.mian.gitnex.database.models.UserAccount;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -69,7 +70,6 @@ public class AppUtil {
 	}
 
 	public static boolean hasNetworkConnection(Context context) {
-
 		return NetworkStatusObserver.getInstance(context).hasNetworkConnection();
 	}
 
@@ -274,26 +274,21 @@ public class AppUtil {
 	}
 
 	public static String getLastCharactersOfWord(String str, int count) {
-
 		return str.substring(str.length() - count);
 
 	}
 
 	public static void setMultiVisibility(int visibility, View... views) {
-
 		for(View view : views) {
-
 			view.setVisibility(visibility);
 		}
 	}
 
 	public static int getPixelsFromDensity(Context context, int dp) {
-
 		return (int) (context.getResources().getDisplayMetrics().density * dp);
 	}
 
 	public static int getPixelsFromScaledDensity(Context context, int sp) {
-
 		return (int) (context.getResources().getDisplayMetrics().scaledDensity * sp);
 	}
 
@@ -320,5 +315,27 @@ public class AppUtil {
 		clipboard.setPrimaryClip(clip);
 
 		Toasty.info(ctx, message);
+
 	}
+
+	public static boolean switchToAccount(Context context, UserAccount userAccount) {
+
+		TinyDB tinyDB = TinyDB.getInstance(context);
+
+		if(tinyDB.getInt("currentActiveAccountId") != userAccount.getAccountId()) {
+
+			tinyDB.putString("loginUid", userAccount.getUserName());
+			tinyDB.putString("userLogin", userAccount.getUserName());
+			tinyDB.putString(userAccount.getUserName() + "-token", userAccount.getToken());
+			tinyDB.putString("instanceUrl", userAccount.getInstanceUrl());
+			tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
 }

@@ -18,11 +18,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
-import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.fragments.UserAccountsFragment;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
 import io.mikael.urlbuilder.UrlBuilder;
@@ -96,7 +95,6 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 	private void customDialogUserAccountsList(List<UserAccount> allAccountsList) {
 
-		TinyDB tinyDB = TinyDB.getInstance(mCtx);
 		Dialog dialog = new Dialog(mCtx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 		dialog.setContentView(R.layout.custom_user_accounts_dialog);
 
@@ -113,6 +111,7 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 			AppCompatActivity activity = (AppCompatActivity) mCtx;
 			activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserAccountsFragment()).commit();
 			dialog.dismiss();
+
 		});
 
 		UserAccountsListDialogAdapter arrayAdapter = new UserAccountsListDialogAdapter(mCtx, R.layout.custom_user_accounts_list, allAccountsList);
@@ -120,27 +119,21 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 		listView.setOnItemClickListener((adapterView, view, which, l) -> {
 
-			String accountNameSwitch = allAccountsList.get(which).getAccountName();
-			UserAccountsApi userAccountsApi = new UserAccountsApi(mCtx);
-			UserAccount userAccount = userAccountsApi.getAccountData(accountNameSwitch);
+			UserAccount userAccount = allAccountsList.get(which);
 
-			if(tinyDB.getInt("currentActiveAccountId") != userAccount.getAccountId()) {
+			if(AppUtil.switchToAccount(mCtx, userAccount)) {
 
 				String url = UrlBuilder.fromString(userAccount.getInstanceUrl())
 					.withPath("/")
 					.toString();
 
-				tinyDB.putString("loginUid", userAccount.getUserName());
-				tinyDB.putString("userLogin", userAccount.getUserName());
-				tinyDB.putString(userAccount.getUserName() + "-token", userAccount.getToken());
-				tinyDB.putString("instanceUrl", userAccount.getInstanceUrl());
-				tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
-
 				Toasty.success(mCtx,  mCtx.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
 				((Activity) mCtx).recreate();
 				dialog.dismiss();
+
 			}
 		});
+
 		dialog.show();
 	}
 

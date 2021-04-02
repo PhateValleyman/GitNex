@@ -13,6 +13,7 @@ import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.NotificationThread;
 import org.mian.gitnex.R;
+import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.helpers.TinyDB;
@@ -24,11 +25,11 @@ import java.util.List;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.NotificationsViewHolder> {
 
-	private Context context;
-	private List<NotificationThread> notificationThreads;
-	private OnMoreClickedListener onMoreClickedListener;
-	private OnNotificationClickedListener onNotificationClickedListener;
-	private TinyDB tinyDb;
+	private final Context context;
+	private final List<NotificationThread> notificationThreads;
+	private final OnMoreClickedListener onMoreClickedListener;
+	private final OnNotificationClickedListener onNotificationClickedListener;
+	private final TinyDB tinyDb;
 
 	public NotificationsAdapter(Context context, List<NotificationThread> notificationThreads, OnMoreClickedListener onMoreClickedListener, OnNotificationClickedListener onNotificationClickedListener) {
 
@@ -42,14 +43,14 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
 	static class NotificationsViewHolder extends RecyclerView.ViewHolder {
 
-		private LinearLayout frame;
-		private TextView subject;
-		private TextView repository;
-		private ImageView typePr;
-		private ImageView typeIssue;
-		private ImageView typeUnknown;
-		private ImageView pinned;
-		private ImageView more;
+		private final LinearLayout frame;
+		private final TextView subject;
+		private final TextView repository;
+		private final ImageView typePr;
+		private final ImageView typeIssue;
+		private final ImageView typeUnknown;
+		private final ImageView pinned;
+		private final ImageView more;
 
 		public NotificationsViewHolder(@NonNull View itemView) {
 
@@ -90,8 +91,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
 		if(notificationThread.isPinned()) {
 			holder.pinned.setVisibility(View.VISIBLE);
-		}
-		else {
+		} else {
 			holder.pinned.setVisibility(View.GONE);
 		}
 
@@ -126,21 +126,16 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 			final String repoName = parts[1];
 
 			int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
-			RepositoriesApi repositoryData = new RepositoriesApi(context);
+			RepositoriesApi repositoryData = BaseApi.getInstance(context, RepositoriesApi.class);
 
 			Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
 			if(count == 0) {
-
 				long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
 				tinyDb.putLong("repositoryId", id);
-
-			}
-			else {
-
+			} else {
 				Repository data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
 				tinyDb.putLong("repositoryId", data.getRepositoryId());
-
 			}
 		});
 
