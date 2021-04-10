@@ -27,10 +27,12 @@
                 android:id="@+id/repoTypeToolbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/generalImgContentText"
                 android:paddingStart="0dp"
                 android:paddingEnd="8dp"
-                android:contentDescription="@string/generalImgContentText"
-                android:src="@drawable/ic_lock" />
+                android:src="@drawable/ic_lock"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <TextView
                 android:layout_width="match_parent"
