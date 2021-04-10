@@ -1,4 +1,4 @@
-package org.mian.gitnex.helpers;
+package org.mian.gitnex.helpers.views;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,6 +17,8 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import org.mian.gitnex.core.MainGrammarLocator;
+import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.TinyDB;
 import io.noties.markwon.syntax.Prism4jSyntaxHighlight;
 import io.noties.markwon.syntax.Prism4jTheme;
 import io.noties.markwon.syntax.Prism4jThemeDarkula;
