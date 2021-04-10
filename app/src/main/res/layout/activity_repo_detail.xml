@@ -23,6 +23,15 @@
             android:layout_weight="1"
             android:background="?attr/primaryBackgroundColor">
 
+            <ImageView
+                android:id="@+id/repoTypeToolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="0dp"
+                android:paddingEnd="8dp"
+                android:contentDescription="@string/generalImgContentText"
+                android:src="@drawable/ic_lock" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
