@@ -1,327 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="16dp"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
+    android:focusable="true"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/primaryBackgroundColor">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/repoType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/repoBranch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/htmlUrl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible" />
-
-    <RelativeLayout
-        android:id="@+id/linearLayoutFrame"
+    <CheckBox
+        android:id="@+id/repoIsAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:buttonTint="#FFFFFF"
+        android:checked="false"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/orgInfoFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageAvatar1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="15dp"
+            android:id="@+id/imageAvatar"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="@string/repoContentAvatar"
             android:src="@drawable/ic_android" />
 
-        <LinearLayout
-            android:id="@+id/infoSection"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/orgName"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/imageAvatar1"
-            android:orientation="vertical">
+            android:layout_weight="1"
+            android:text="@string/orgName"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="16sp"
+            android:gravity="top"
+            android:layout_gravity="start" />
 
-            <LinearLayout
-                android:id="@+id/frameRepoName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/repoName1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".95"
-                    android:text="@string/repoName"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="18sp" />
+    <TextView
+        android:id="@+id/repoName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/repoName"
+        android:textColor="?attr/primaryTextColor"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
 
-                <LinearLayout
-                    android:id="@+id/archiveRepoFrame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="6dp"
-                    android:background="@drawable/shape_archived"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:gravity="center_vertical"
-                        android:text="@string/archivedRepository"
-                        android:visibility="gone"
-                        android:textColor="@color/colorWhite" />
-
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_marginStart="3dp"
-                        android:layout_weight="0"
-                        android:visibility="gone"
-                        android:contentDescription="@string/generalImgContentText"
-                        app:srcCompat="@drawable/ic_archive"
-                        app:tint="@color/colorWhite" />
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/imageRepoType"
-                    android:layout_width="10dp"
-                    android:layout_height="20dp"
-                    android:layout_weight=".05"
-                    android:visibility="gone"
-                    android:contentDescription="@string/privateAvatar"
-                    android:src="@drawable/ic_lock" />
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/repoFullName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/repoFullName"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/repoDescription1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="@string/repoDescription"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:visibility="gone" />
-
-            <CheckBox
-                android:id="@+id/repoIsAdmin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:buttonTint="#FFFFFF"
-                android:checked="false"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/repoOpenIssuesCount"
-                    android:layout_width="0dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight=".25"
-                    app:drawableStartCompat="@drawable/ic_issue"
-                    android:drawablePadding="6dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/repoWatchers"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/repoStars1"
-                    android:layout_width="0dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight=".25"
-                    app:drawableStartCompat="@drawable/ic_star_unfilled"
-                    android:drawablePadding="6dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/repoStars"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/repoForks"
-                    android:layout_width="0dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight=".25"
-                    app:drawableStartCompat="@drawable/ic_fork"
-                    android:drawablePadding="6dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/repoWatchers"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp" />
-
-                <ImageView
-                    android:id="@+id/reposDropdownMenu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_weight=".10"
-                    android:contentDescription="@string/menuContentDesc"
-                    android:scaleType="fitEnd"
-                    android:src="@drawable/ic_dotted_menu_horizontal" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/repoDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayoutFrame"
-        android:layout_margin="15dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:focusable="true"
-        android:orientation="vertical">
+        android:text="@string/noDataDescription"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp" />
 
-        <LinearLayout
-            android:id="@+id/orgInfoFrame"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageAvatar"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="0dp"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="@string/repoContentAvatar"
-                android:src="@drawable/ic_android" />
-
-            <TextView
-                android:id="@+id/orgName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/orgName"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp"
-                android:gravity="top"
-                android:layout_gravity="start" />
-
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/repoInfoFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/repoName"
+            android:id="@+id/repoLastUpdated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/repoName"
-            android:textColor="?attr/primaryTextColor"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/repoDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/noDataDescription"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp" />
+            android:text="@string/lastUpdatedAt"
+            android:textColor="?attr/hintColor"
+            android:textSize="12sp" />
 
         <LinearLayout
-            android:id="@+id/repoInfoFrame"
-            android:layout_width="match_parent"
+            android:id="@+id/repoInfoStarsFrame"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="6dp"
+            android:gravity="end"
+            android:layout_gravity="end"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="5dp"
+                android:contentDescription="@string/generalImgContentText"
+                app:srcCompat="@drawable/ic_star"
+                app:tint="?attr/iconsColor" />
 
             <TextView
-                android:id="@+id/repoLastUpdated"
+                android:id="@+id/repoStars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lastUpdatedAt"
-                android:textColor="?attr/hintColor"
-                android:textSize="12sp" />
+                android:gravity="center_vertical"
+                android:text="@string/repoStars"
+                android:textSize="14sp"
+                android:textColor="?attr/primaryTextColor" />
 
-            <LinearLayout
-                android:id="@+id/repoInfoStarsFrame"
-                android:layout_width="0dp"
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="5dp"
+                android:contentDescription="@string/generalImgContentText"
+                app:srcCompat="@drawable/ic_star"
+                android:visibility="gone"
+                app:tint="?attr/iconsColor" />
+
+            <TextView
+                android:id="@+id/repoStars2"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="6dp"
-                android:gravity="end"
-                android:layout_gravity="end"
-                android:orientation="horizontal"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="5dp"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_star"
-                    app:tint="?attr/iconsColor" />
-
-                <TextView
-                    android:id="@+id/repoStars"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="@string/repoStars"
-                    android:textSize="14sp"
-                    android:textColor="?attr/primaryTextColor" />
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="5dp"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_star"
-                    android:visibility="gone"
-                    app:tint="?attr/iconsColor" />
-
-                <TextView
-                    android:id="@+id/repoStars2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="Java"
-                    android:textSize="14sp"
-                    android:visibility="gone"
-                    android:textColor="?attr/primaryTextColor" />
-
-            </LinearLayout>
+                android:gravity="center_vertical"
+                android:text="Java"
+                android:textSize="14sp"
+                android:visibility="gone"
+                android:textColor="?attr/primaryTextColor" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
