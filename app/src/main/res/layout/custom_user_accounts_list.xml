@@ -11,9 +11,9 @@
     <ImageView
         android:id="@+id/profileImage"
         android:visibility="visible"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginEnd="15dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/generalImgContentText" />
 
     <LinearLayout
@@ -31,7 +31,7 @@
             android:layout_weight=".95"
             android:layout_gravity="start"
             android:textColor="?attr/primaryTextColor"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -54,7 +54,7 @@
         android:layout_toEndOf="@+id/profileImage"
         android:layout_below="@+id/frameAccountsInfo"
         android:textColor="?attr/primaryTextColor"
-        android:textSize="16sp" />
+        android:textSize="12sp" />
 
 </RelativeLayout>
 

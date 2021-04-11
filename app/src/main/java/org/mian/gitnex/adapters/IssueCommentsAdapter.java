@@ -327,7 +327,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 		PicassoService.getInstance(ctx).get()
 			.load(issueComment.getUser().getAvatar_url())
 			.placeholder(R.drawable.loader_animated)
-			.transform(new RoundedTransformation(4, 0))
+			.transform(new RoundedTransformation(8, 0))
 			.resize(AppUtil.getPixelsFromDensity(ctx, 35), AppUtil.getPixelsFromDensity(ctx, 35))
 			.centerCrop()
 			.into(holder.avatar);

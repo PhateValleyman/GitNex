@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sizeCopy"
-                android:textColor="?attr/primaryTextColor"
+                android:textColor="?attr/hintColor"
                 android:textSize="12sp"
                 android:visibility="gone"
                 tools:visibility="visible" />

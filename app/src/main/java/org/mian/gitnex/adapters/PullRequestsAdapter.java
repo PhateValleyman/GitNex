@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -89,7 +88,6 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 	public int getItemCount() {
 
 		return prList.size();
-
 	}
 
 	class PullRequestsHolder extends RecyclerView.ViewHolder {
@@ -104,43 +102,12 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 		PullRequestsHolder(View itemView) {
 
 			super(itemView);
-
 			assigneeAvatar = itemView.findViewById(R.id.assigneeAvatar);
 			prTitle = itemView.findViewById(R.id.prTitle);
 			prCommentsCount = itemView.findViewById(R.id.prCommentsCount);
-			LinearLayout frameCommentsCount = itemView.findViewById(R.id.frameCommentsCount);
 			prCreatedTime = itemView.findViewById(R.id.prCreatedTime);
 
-			prTitle.setOnClickListener(v -> {
-
-				Context context = v.getContext();
-
-				Intent intent = new Intent(context, IssueDetailActivity.class);
-				intent.putExtra("issueNumber", pullRequest.getNumber());
-				intent.putExtra("prMergeable", pullRequest.isMergeable());
-				intent.putExtra("prHeadBranch", pullRequest.getHead().getRef());
-
-				TinyDB tinyDb = TinyDB.getInstance(context);
-				tinyDb.putString("issueNumber", String.valueOf(pullRequest.getNumber()));
-				tinyDb.putString("prMergeable", String.valueOf(pullRequest.isMergeable()));
-				tinyDb.putString("prHeadBranch", pullRequest.getHead().getRef());
-
-				if(pullRequest.getHead() != null && pullRequest.getHead().getRepo() != null) {
-					tinyDb.putString("prIsFork", String.valueOf(pullRequest.getHead().getRepo().isFork()));
-					tinyDb.putString("prForkFullName", pullRequest.getHead().getRepo().getFull_name());
-				}
-				else {
-					// pull was done from a deleted fork
-					tinyDb.putString("prIsFork", "true");
-					tinyDb.putString("prForkFullName", context.getString(R.string.prDeletedFork));
-				}
-
-				tinyDb.putString("issueType", "Pull");
-				context.startActivity(intent);
-
-			});
-
-			frameCommentsCount.setOnClickListener(v -> {
+			itemView.setOnClickListener(v -> {
 
 				Context context = v.getContext();
 
@@ -226,19 +193,16 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 		notifyDataSetChanged();
 		isLoading = false;
-
 	}
 
 	public interface OnLoadMoreListener {
 
 		void onLoadMore();
-
 	}
 
 	public void setLoadMoreListener(PullRequestsAdapter.OnLoadMoreListener loadMoreListener) {
 
 		this.loadMoreListener = loadMoreListener;
-
 	}
 
 	public void updateList(List<PullRequests> list) {

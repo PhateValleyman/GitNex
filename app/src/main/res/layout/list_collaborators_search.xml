@@ -16,9 +16,9 @@
 
     <ImageView
         android:id="@+id/userAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="15dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/generalImgContentText"
         android:src="@drawable/ic_android" />
 
@@ -36,7 +36,7 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/userName"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/userName"
@@ -45,7 +45,7 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/addCollaboratorViewUserDesc"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
     </LinearLayout>
 
@@ -69,8 +69,8 @@
 
         <ImageView
             android:id="@+id/addCollaboratorButtonAdd"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_gravity="end"
             android:contentDescription="@string/addNewContent"
             android:background="@drawable/shape_circle"
@@ -80,8 +80,8 @@
 
         <ImageView
             android:id="@+id/addCollaboratorButtonRemove"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_gravity="end"
             android:contentDescription="@string/removeContent"
             android:background="@drawable/shape_circle_red"

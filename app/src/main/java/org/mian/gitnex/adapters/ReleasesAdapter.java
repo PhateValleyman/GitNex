@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
@@ -30,25 +29,25 @@ import java.util.Locale;
 
 public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.ReleasesViewHolder> {
 
-    private List<Releases> releasesList;
-    private Context mCtx;
+    private final List<Releases> releasesList;
+    private final Context mCtx;
 
 	static class ReleasesViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView releaseType;
-        private TextView releaseName;
-        private ImageView authorAvatar;
-        private TextView authorName;
-        private TextView releaseTag;
-        private TextView releaseCommitSha;
-        private TextView releaseDate;
-        private TextView releaseBodyContent;
-        private LinearLayout downloadFrame;
-        private RelativeLayout downloads;
-        private TextView releaseZipDownload;
-	    private TextView releaseTarDownload;
-	    private ImageView downloadDropdownIcon;
-	    private RecyclerView downloadList;
+        private final TextView releaseType;
+        private final TextView releaseName;
+        private final ImageView authorAvatar;
+        private final TextView authorName;
+        private final TextView releaseTag;
+        private final TextView releaseCommitSha;
+        private final TextView releaseDate;
+        private final TextView releaseBodyContent;
+        private final LinearLayout downloadFrame;
+        private final LinearLayout downloads;
+        private final TextView releaseZipDownload;
+	    private final TextView releaseTarDownload;
+	    private final ImageView downloadDropdownIcon;
+	    private final RecyclerView downloadList;
 
         private ReleasesViewHolder(View itemView) {
 
@@ -71,7 +70,6 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
 	        downloadList.setHasFixedSize(true);
 	        downloadList.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-
         }
     }
 
@@ -141,13 +139,11 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
 			    holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_down);
 			    holder.downloads.setVisibility(View.VISIBLE);
-
 		    }
 		    else {
 
 			    holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_right);
 			    holder.downloads.setVisibility(View.GONE);
-
 		    }
 
 	    });
@@ -162,7 +158,6 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
 	    ReleasesDownloadsAdapter adapter = new ReleasesDownloadsAdapter(currentItem.getAssets());
 	    holder.downloadList.setAdapter(adapter);
-
     }
 
     @Override
