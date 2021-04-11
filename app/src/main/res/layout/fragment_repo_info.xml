@@ -57,40 +57,26 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/archiveRepoFrame"
+                <TextView
+                    android:id="@+id/repoIsArchived"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center"
+                    android:text="@string/archivedRepositoryMessage"
+                    android:background="@drawable/shape_archived"
+                    android:padding="5dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/colorWhite" />
+
+                <TextView
+                    android:id="@+id/repoMetaName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/repoMetaName"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:textColor="?attr/primaryTextColor"
-                        android:layout_marginBottom="5dp"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
-                        tools:text="@string/repoName"/>
-
-                    <TextView
-                        android:id="@+id/repoIsArchived"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="center"
-                        android:text="@string/archivedRepository"
-                        android:background="@drawable/shape_archived"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        android:textColor="@color/colorWhite" />
-
-                </LinearLayout>
+                    android:textColor="?attr/primaryTextColor"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/repoMetaDescription"
