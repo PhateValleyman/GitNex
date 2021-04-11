@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayoutFrame"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="?android:attr/selectableItemBackgroundBorderless"
+    android:background="?android:attr/selectableItemBackground"
     android:focusable="true"
-    android:layout_margin="16dp">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <LinearLayout
         android:id="@+id/orgInfoFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/imageAvatar"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginStart="0dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="10dp"
             android:contentDescription="@string/repoContentAvatar"
             android:src="@drawable/ic_android" />
 
         <TextView
-            android:id="@+id/orgUsername"
-            android:layout_width="0dp"
+            android:id="@+id/orgName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/orgName"
             android:textColor="?attr/primaryTextColor"
-            android:textSize="16sp"
-            android:gravity="top"
-            android:layout_gravity="start" />
+            android:textSize="14sp"
+            tools:text="@string/orgName" />
 
     </LinearLayout>
 
@@ -44,6 +43,6 @@
         android:layout_height="wrap_content"
         android:text="@string/noDataDescription"
         android:textColor="?attr/primaryTextColor"
-        android:textSize="14sp" />
+        android:textSize="15sp" />
 
 </LinearLayout>

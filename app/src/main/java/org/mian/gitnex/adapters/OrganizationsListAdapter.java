@@ -36,12 +36,12 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
     	private UserOrganizations userOrganizations;
 
         private final ImageView image;
-        private final TextView orgUsername;
+        private final TextView orgName;
         private final TextView orgDescription;
 
         private OrganizationsViewHolder(View itemView) {
             super(itemView);
-	        orgUsername = itemView.findViewById(R.id.orgUsername);
+	        orgName = itemView.findViewById(R.id.orgName);
 	        orgDescription = itemView.findViewById(R.id.orgDescription);
             image = itemView.findViewById(R.id.imageAvatar);
 
@@ -82,7 +82,7 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
         UserOrganizations currentItem = orgList.get(position);
 
 	    holder.userOrganizations = currentItem;
-	    holder.orgUsername.setText(currentItem.getUsername());
+	    holder.orgName.setText(currentItem.getUsername());
 
         PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.image);
 
