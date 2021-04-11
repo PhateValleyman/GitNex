@@ -29,10 +29,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageAvatar"
+            android:id="@+id/imageAvatar1"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="15dp"
@@ -43,7 +44,7 @@
             android:id="@+id/infoSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/imageAvatar"
+            android:layout_toEndOf="@+id/imageAvatar1"
             android:orientation="vertical">
 
             <LinearLayout
@@ -53,7 +54,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/repoName"
+                    android:id="@+id/repoName1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".95"
@@ -81,6 +82,7 @@
                         android:layout_weight="0"
                         android:gravity="center_vertical"
                         android:text="@string/archivedRepository"
+                        android:visibility="gone"
                         android:textColor="@color/colorWhite" />
 
                     <ImageView
@@ -88,6 +90,7 @@
                         android:layout_height="18dp"
                         android:layout_marginStart="3dp"
                         android:layout_weight="0"
+                        android:visibility="gone"
                         android:contentDescription="@string/generalImgContentText"
                         app:srcCompat="@drawable/ic_archive"
                         app:tint="@color/colorWhite" />
@@ -98,6 +101,7 @@
                     android:layout_width="10dp"
                     android:layout_height="20dp"
                     android:layout_weight=".05"
+                    android:visibility="gone"
                     android:contentDescription="@string/privateAvatar"
                     android:src="@drawable/ic_lock" />
 
@@ -113,7 +117,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/repoDescription"
+                android:id="@+id/repoDescription1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -150,7 +154,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/repoStars"
+                    android:id="@+id/repoStars1"
                     android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
@@ -190,5 +194,134 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayoutFrame"
+        android:layout_margin="15dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:focusable="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/orgInfoFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageAvatar"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/repoContentAvatar"
+                android:src="@drawable/ic_android" />
+
+            <TextView
+                android:id="@+id/orgName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/orgName"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:gravity="top"
+                android:layout_gravity="start" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/repoName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/repoName"
+            android:textColor="?attr/primaryTextColor"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/repoDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/noDataDescription"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/repoInfoFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/repoLastUpdated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lastUpdatedAt"
+                android:textColor="?attr/hintColor"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:id="@+id/repoInfoStarsFrame"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="6dp"
+                android:gravity="end"
+                android:layout_gravity="end"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/generalImgContentText"
+                    app:srcCompat="@drawable/ic_star"
+                    app:tint="?attr/iconsColor" />
+
+                <TextView
+                    android:id="@+id/repoStars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/repoStars"
+                    android:textSize="14sp"
+                    android:textColor="?attr/primaryTextColor" />
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/generalImgContentText"
+                    app:srcCompat="@drawable/ic_star"
+                    android:visibility="gone"
+                    app:tint="?attr/iconsColor" />
+
+                <TextView
+                    android:id="@+id/repoStars2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="Java"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    android:textColor="?attr/primaryTextColor" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -754,4 +754,5 @@
     <string name="fileViewerNotificationChannelName">Download manager</string>
     <string name="fileViewerNotificationChannelDescription">Indicates the progress of ongoing downloads</string>
 
+    <string name="lastUpdatedAt">Updated %s</string>
 </resources>
