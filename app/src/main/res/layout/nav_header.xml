@@ -49,16 +49,19 @@
                     android:layout_weight="1" />
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/userAccountsFrame"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
+                    android:visibility="gone"
                     app:cardBackgroundColor="?attr/primaryBackgroundColor"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp"
                     app:contentPaddingLeft="5dp"
-                    app:contentPaddingRight="5dp">
+                    app:contentPaddingRight="5dp"
+                    tools:visibility="visible">
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/navRecyclerViewUserAccounts"
+                        android:id="@+id/userAccounts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
