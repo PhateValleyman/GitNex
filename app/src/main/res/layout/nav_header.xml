@@ -36,15 +36,38 @@
                 android:contentDescription="@string/generalImgContentText"
                 tools:srcCompat="@tools:sample/avatars" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/navRecyclerViewUserAccounts"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:reverseLayout="true" />
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    app:cardBackgroundColor="?attr/primaryBackgroundColor"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp"
+                    app:contentPaddingLeft="5dp"
+                    app:contentPaddingRight="5dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/navRecyclerViewUserAccounts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:reverseLayout="true" />
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
         </LinearLayout>
 

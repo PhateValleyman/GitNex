@@ -285,9 +285,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				adapterUserAccounts = new UserAccountsNavAdapter(ctx, userAccountsList, drawer, toolbarTitle);
 
 				userAccountsApi.getAllAccounts().observe((AppCompatActivity) ctx, userAccounts -> {
-
 					if(userAccounts.size() > 0) {
-
 						userAccountsList.addAll(userAccounts);
 						navRecyclerViewUserAccounts.setAdapter(adapterUserAccounts);
 					}

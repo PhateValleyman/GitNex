@@ -98,7 +98,7 @@
                             android:id="@+id/assigneeAvatar"
                             android:layout_width="@dimen/list_avatar_size"
                             android:layout_height="@dimen/list_avatar_size"
-                            android:layout_marginEnd="16dp"
+                            android:layout_marginEnd="10dp"
                             android:contentDescription="@string/generalImgContentText" />
 
                         <TextView

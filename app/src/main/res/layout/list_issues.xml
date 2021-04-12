@@ -22,19 +22,20 @@
             android:id="@+id/assigneeAvatar"
             android:layout_width="@dimen/list_avatar_size"
             android:layout_height="@dimen/list_avatar_size"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="10dp"
             android:contentDescription="@string/generalImgContentText"
-            android:src="@drawable/ic_android" />
+            tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/issueTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="top|center_vertical"
-            android:textAlignment="gravity"
             android:text="@string/strFilter"
+            android:textAlignment="gravity"
             android:textColor="?attr/primaryTextColor"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:text="Id illum odio repellat omnis fuga deserunt aut. Ut est aut similique qui incidunt quia et." />
 
     </LinearLayout>
 
@@ -42,6 +43,7 @@
         android:id="@+id/issueInfoFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <TextView
@@ -50,17 +52,18 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:textColor="?attr/hintColor"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:text="10.01.2020" />
 
         <LinearLayout
             android:id="@+id/frameCommentsCount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="end"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="6dp"
+            android:layout_weight="1"
             android:gravity="end"
-            android:layout_gravity="end"
             android:orientation="horizontal"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -81,8 +84,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/repoStars"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="14sp"
-                android:textColor="?attr/primaryTextColor" />
+                tools:text="50" />
 
         </LinearLayout>
 

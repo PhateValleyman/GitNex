@@ -21,6 +21,7 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.fragments.UserAccountsFragment;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -34,9 +35,9 @@ import io.mikael.urlbuilder.UrlBuilder;
 public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNavAdapter.UserAccountsViewHolder> {
 
 	private static DrawerLayout drawer;
-	private List<UserAccount> userAccountsList;
-	private Context mCtx;
-	private TextView toolbarTitle;
+	private final List<UserAccount> userAccountsList;
+	private final Context mCtx;
+	private final TextView toolbarTitle;
 
 	public UserAccountsNavAdapter(Context mCtx, List<UserAccount> userAccountsListMain, DrawerLayout drawerLayout, TextView toolbarTitle) {
 
@@ -48,7 +49,7 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
 
-		private ImageView userAccountAvatar;
+		private final ImageView userAccountAvatar;
 
 		private UserAccountsViewHolder(View itemView) {
 
@@ -57,7 +58,6 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 			userAccountAvatar = itemView.findViewById(R.id.userAccountAvatar);
 
 			itemView.setOnClickListener(item -> {
-
 				customDialogUserAccountsList(userAccountsList);
 				drawer.closeDrawers();
 			});
@@ -84,8 +84,15 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 			.withPath("/")
 			.toString();
 
-		PicassoService
-			.getInstance(mCtx).get().load(url + "img/favicon.png").placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.userAccountAvatar);
+		int imageSize = AppUtil.getPixelsFromDensity(mCtx, 35);
+
+		PicassoService.getInstance(mCtx).get()
+			.load(url + "img/favicon.png")
+			.placeholder(R.drawable.loader_animated)
+			.transform(new RoundedTransformation(8, 0))
+			.resize(imageSize, imageSize)
+			.centerCrop()
+			.into(holder.userAccountAvatar);
 	}
 
 	@Override
