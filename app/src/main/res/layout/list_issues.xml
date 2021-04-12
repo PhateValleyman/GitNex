@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/assigneeAvatar"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="@dimen/list_avatar_size"
+            android:layout_height="@dimen/list_avatar_size"
             android:layout_marginEnd="16dp"
             android:contentDescription="@string/generalImgContentText"
             android:src="@drawable/ic_android" />
