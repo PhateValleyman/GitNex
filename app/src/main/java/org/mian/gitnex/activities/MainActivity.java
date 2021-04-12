@@ -273,8 +273,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				ImageView userAvatarBackground = hView.findViewById(R.id.userAvatarBackground);
 				CardView navRecyclerViewFrame = hView.findViewById(R.id.userAccountsFrame);
 
-				List<UserAccount> userAccountsList;
-				userAccountsList = new ArrayList<>();
+				List<UserAccount> userAccountsList = new ArrayList<>();
 				UserAccountsApi userAccountsApi;
 				userAccountsApi = new UserAccountsApi(ctx);
 
@@ -306,10 +305,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				if(!userAvatarNav.equals("")) {
 
+					int avatarRadius = AppUtil.getPixelsFromDensity(ctx, 3);
+
 					PicassoService.getInstance(ctx).get()
 						.load(userAvatarNav)
 						.placeholder(R.drawable.loader_animated)
-						.transform(new RoundedTransformation(8, 0))
+						.transform(new RoundedTransformation(avatarRadius, 0))
 						.resize(160, 160)
 						.centerCrop().into(userAvatar);
 

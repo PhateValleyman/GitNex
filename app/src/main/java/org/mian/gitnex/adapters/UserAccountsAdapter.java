@@ -16,6 +16,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -131,17 +132,23 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		holder.accountId = currentItem.getAccountId();
 		holder.accountName = currentItem.getAccountName();
 
-		holder.userId.setText(String.format("@%s", currentItem.getUserName()));
+		holder.userId.setText(currentItem.getUserName());
 		holder.accountUrl.setText(url);
 
-		PicassoService.getInstance(mCtx).get().load(url + "img/favicon.png").placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.repoAvatar);
+		int faviconRadius = AppUtil.getPixelsFromDensity(mCtx, 3);
+
+		PicassoService.getInstance(mCtx).get()
+			.load(url + "img/favicon.png")
+			.placeholder(R.drawable.loader_animated)
+			.transform(new RoundedTransformation(faviconRadius, 0))
+			.resize(120, 120)
+			.centerCrop()
+			.into(holder.repoAvatar);
 
 		if(tinyDB.getInt("currentActiveAccountId") == currentItem.getAccountId()) {
-
 			holder.activeAccount.setVisibility(View.VISIBLE);
 		}
 		else {
-
 			holder.deleteAccount.setVisibility(View.VISIBLE);
 		}
 	}

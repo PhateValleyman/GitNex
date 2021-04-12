@@ -72,13 +72,11 @@ public class ProfileFollowersAdapter extends RecyclerView.Adapter<ProfileFollowe
 	    holder.userLoginId = currentItem.getLogin();
 
         if(!currentItem.getFullname().equals("")) {
-
             holder.userFullName.setText(Html.fromHtml(currentItem.getFullname()));
             holder.userName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getUsername()));
         }
         else {
-
-            holder.userFullName.setText(mCtx.getResources().getString(R.string.usernameWithAt, currentItem.getUsername()));
+            holder.userFullName.setText(currentItem.getUsername());
             holder.userName.setVisibility(View.GONE);
         }
 
