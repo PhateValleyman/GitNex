@@ -4,8 +4,9 @@
     android:id="@+id/fileFrame"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:background="?attr/primaryBackgroundColor"
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:focusable="true"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
