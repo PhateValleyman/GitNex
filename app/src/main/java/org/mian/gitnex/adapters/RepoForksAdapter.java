@@ -22,6 +22,7 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.database.models.Repository;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -41,7 +42,7 @@ import retrofit2.Callback;
 
 public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-	private final Context ctx;
+	private final Context context;
 	private final int TYPE_LOAD = 0;
 	private List<UserRepositories> forksList;
 	private OnLoadMoreListener loadMoreListener;
@@ -50,7 +51,7 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 	public RepoForksAdapter(Context ctx, List<UserRepositories> forksListMain) {
 
-		this.ctx = ctx;
+		this.context = ctx;
 		this.forksList = forksListMain;
 	}
 
@@ -58,7 +59,7 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 	@Override
 	public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-		LayoutInflater inflater = LayoutInflater.from(ctx);
+		LayoutInflater inflater = LayoutInflater.from(context);
 
 		if(viewType == TYPE_LOAD) {
 			return new RepoForksAdapter.ForksHolder(inflater.inflate(R.layout.list_repositories, parent, false));
@@ -127,7 +128,8 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 		@SuppressLint("SetTextI18n")
 		void bindData(UserRepositories forksModel) {
 
-			TinyDB tinyDb = TinyDB.getInstance(ctx);
+			TinyDB tinyDb = TinyDB.getInstance(context);
+			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 			String locale = tinyDb.getString("locale");
 			String timeFormat = tinyDb.getString("dateFormat");
@@ -146,8 +148,8 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 			if(forksModel.getAvatar_url() != null) {
 				if(!forksModel.getAvatar_url().equals("")) {
-					PicassoService.getInstance(ctx).get().load(forksModel.getAvatar_url()).placeholder(R.drawable.loader_animated)
-						.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(image);
+					PicassoService.getInstance(context).get().load(forksModel.getAvatar_url()).placeholder(R.drawable.loader_animated)
+						.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(image);
 				}
 				else {
 					image.setImageDrawable(drawable);
@@ -163,20 +165,20 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 					case "pretty": {
 						PrettyTime prettyTime = new PrettyTime(new Locale(locale));
 						String createdTime = prettyTime.format(forksModel.getUpdated_at());
-						repoLastUpdated.setText(ctx.getString(R.string.lastUpdatedAt, createdTime));
-						repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(forksModel.getUpdated_at()), ctx));
+						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
+						repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(forksModel.getUpdated_at()), context));
 						break;
 					}
 					case "normal": {
-						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + ctx.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
+						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
 						String createdTime = formatter.format(forksModel.getUpdated_at());
-						repoLastUpdated.setText(ctx.getString(R.string.lastUpdatedAt, createdTime));
+						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
 					}
 					case "normal1": {
-						DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + ctx.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
+						DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
 						String createdTime = formatter.format(forksModel.getUpdated_at());
-						repoLastUpdated.setText(ctx.getString(R.string.lastUpdatedAt, createdTime));
+						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
 					}
 				}
@@ -190,7 +192,7 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			}
 
 			if(isRepoAdmin == null) {
-				isRepoAdmin = new CheckBox(ctx);
+				isRepoAdmin = new CheckBox(context);
 			}
 			isRepoAdmin.setChecked(forksModel.getPermissions().isAdmin());
 
@@ -299,7 +301,6 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
 
 		isMoreDataAvailable = moreDataAvailable;
-
 	}
 
 	public void notifyDataChanged() {

@@ -41,7 +41,6 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 		this.context = context;
 		this.prList = prListMain;
-
 	}
 
 	@NonNull
@@ -56,7 +55,6 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 		else {
 			return new PullRequestsAdapter.LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
 		}
-
 	}
 
 	@Override
@@ -151,11 +149,12 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			TinyDB tinyDb = TinyDB.getInstance(context);
 			String locale = tinyDb.getString("locale");
 			String timeFormat = tinyDb.getString("dateFormat");
+			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 			PicassoService.getInstance(context).get()
 				.load(pullRequest.getUser().getAvatar_url())
 				.placeholder(R.drawable.loader_animated)
-				.transform(new RoundedTransformation(8, 0))
+				.transform(new RoundedTransformation(imgRadius, 0))
 				.resize(120, 120)
 				.centerCrop()
 				.into(this.assigneeAvatar);

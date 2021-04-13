@@ -8,12 +8,6 @@
     android:paddingEnd="20dp"
     android:background="?attr/primaryBackgroundColor" >
 
-    <TextView
-        android:id="@+id/teamId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
     <ImageView
         android:id="@+id/userAvatar"
         android:layout_width="@dimen/list_avatar_size"
@@ -49,12 +43,6 @@
                 android:textSize="12sp" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/userNameMain"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/frameAddCollaborator"

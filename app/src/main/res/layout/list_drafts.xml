@@ -5,8 +5,6 @@
     android:id="@+id/layoutDraftsFrame"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="?android:attr/selectableItemBackground"

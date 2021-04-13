@@ -23,6 +23,7 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.database.models.Repository;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -44,7 +45,7 @@ import retrofit2.Callback;
 public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.ReposViewHolder> implements Filterable {
 
 	private final List<UserRepositories> reposList;
-	private final Context mCtx;
+	private final Context context;
 	private final List<UserRepositories> reposListFull;
 
 	static class ReposViewHolder extends RecyclerView.ViewHolder {
@@ -164,9 +165,9 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 
 	}
 
-	public ReposListAdapter(Context mCtx, List<UserRepositories> reposListMain) {
+	public ReposListAdapter(Context ctx, List<UserRepositories> reposListMain) {
 
-		this.mCtx = mCtx;
+		this.context = ctx;
 		this.reposList = reposListMain;
 		reposListFull = new ArrayList<>(reposList);
 	}
@@ -182,8 +183,9 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 	@Override
 	public void onBindViewHolder(@NonNull ReposViewHolder holder, int position) {
 
-		TinyDB tinyDb = TinyDB.getInstance(mCtx);
+		TinyDB tinyDb = TinyDB.getInstance(context);
 		UserRepositories currentItem = reposList.get(position);
+		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 		String locale = tinyDb.getString("locale");
 		String timeFormat = tinyDb.getString("dateFormat");
@@ -200,7 +202,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 
 		if(currentItem.getAvatar_url() != null) {
 			if(!currentItem.getAvatar_url().equals("")) {
-				PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.image);
+				PicassoService.getInstance(context).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.image);
 			}
 			else {
 				holder.image.setImageDrawable(drawable);
@@ -216,20 +218,20 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 				case "pretty": {
 					PrettyTime prettyTime = new PrettyTime(new Locale(locale));
 					String createdTime = prettyTime.format(currentItem.getUpdated_at());
-					holder.repoLastUpdated.setText(mCtx.getString(R.string.lastUpdatedAt, createdTime));
-					holder.repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getUpdated_at()), mCtx));
+					holder.repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
+					holder.repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getUpdated_at()), context));
 					break;
 				}
 				case "normal": {
-					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + mCtx.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
+					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
 					String createdTime = formatter.format(currentItem.getUpdated_at());
-					holder.repoLastUpdated.setText(mCtx.getString(R.string.lastUpdatedAt, createdTime));
+					holder.repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 					break;
 				}
 				case "normal1": {
-					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + mCtx.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
+					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
 					String createdTime = formatter.format(currentItem.getUpdated_at());
-					holder.repoLastUpdated.setText(mCtx.getString(R.string.lastUpdatedAt, createdTime));
+					holder.repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 					break;
 				}
 			}
@@ -243,7 +245,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 		}
 
 		if(holder.isRepoAdmin == null) {
-			holder.isRepoAdmin = new CheckBox(mCtx);
+			holder.isRepoAdmin = new CheckBox(context);
 		}
 		holder.isRepoAdmin.setChecked(currentItem.getPermissions().isAdmin());
 	}

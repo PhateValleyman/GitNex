@@ -36,12 +36,12 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 	private static DrawerLayout drawer;
 	private final List<UserAccount> userAccountsList;
-	private final Context mCtx;
+	private final Context context;
 	private final TextView toolbarTitle;
 
-	public UserAccountsNavAdapter(Context mCtx, List<UserAccount> userAccountsListMain, DrawerLayout drawerLayout, TextView toolbarTitle) {
+	public UserAccountsNavAdapter(Context ctx, List<UserAccount> userAccountsListMain, DrawerLayout drawerLayout, TextView toolbarTitle) {
 
-		this.mCtx = mCtx;
+		this.context = ctx;
 		this.userAccountsList = userAccountsListMain;
 		drawer = drawerLayout;
 		this.toolbarTitle = toolbarTitle;
@@ -84,9 +84,9 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 			.withPath("/")
 			.toString();
 
-		int imageSize = AppUtil.getPixelsFromDensity(mCtx, 35);
+		int imageSize = AppUtil.getPixelsFromDensity(context, 35);
 
-		PicassoService.getInstance(mCtx).get()
+		PicassoService.getInstance(context).get()
 			.load(url + "img/favicon.png")
 			.placeholder(R.drawable.loader_animated)
 			.transform(new RoundedTransformation(8, 0))
@@ -103,8 +103,8 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 	private void customDialogUserAccountsList(List<UserAccount> allAccountsList) {
 
-		TinyDB tinyDB = TinyDB.getInstance(mCtx);
-		Dialog dialog = new Dialog(mCtx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
+		TinyDB tinyDB = TinyDB.getInstance(context);
+		Dialog dialog = new Dialog(context, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 		dialog.setContentView(R.layout.custom_user_accounts_dialog);
 
 		ListView listView = dialog.findViewById(R.id.accountsList);
@@ -116,19 +116,19 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 		manageAccounts.setOnClickListener(item -> {
 
-			toolbarTitle.setText(mCtx.getResources().getString(R.string.pageTitleUserAccounts));
-			AppCompatActivity activity = (AppCompatActivity) mCtx;
+			toolbarTitle.setText(context.getResources().getString(R.string.pageTitleUserAccounts));
+			AppCompatActivity activity = (AppCompatActivity) context;
 			activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserAccountsFragment()).commit();
 			dialog.dismiss();
 		});
 
-		UserAccountsListDialogAdapter arrayAdapter = new UserAccountsListDialogAdapter(mCtx, R.layout.custom_user_accounts_list, allAccountsList);
+		UserAccountsListDialogAdapter arrayAdapter = new UserAccountsListDialogAdapter(context, R.layout.custom_user_accounts_list, allAccountsList);
 		listView.setAdapter(arrayAdapter);
 
 		listView.setOnItemClickListener((adapterView, view, which, l) -> {
 
 			String accountNameSwitch = allAccountsList.get(which).getAccountName();
-			UserAccountsApi userAccountsApi = new UserAccountsApi(mCtx);
+			UserAccountsApi userAccountsApi = new UserAccountsApi(context);
 			UserAccount userAccount = userAccountsApi.getAccountData(accountNameSwitch);
 
 			if(tinyDB.getInt("currentActiveAccountId") != userAccount.getAccountId()) {
@@ -143,8 +143,8 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 				tinyDB.putString("instanceUrl", userAccount.getInstanceUrl());
 				tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
 
-				Toasty.success(mCtx,  mCtx.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
-				((Activity) mCtx).recreate();
+				Toasty.success(context,  context.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
+				((Activity) context).recreate();
 				dialog.dismiss();
 			}
 		});

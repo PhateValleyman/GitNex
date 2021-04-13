@@ -16,6 +16,7 @@ import org.gitnex.tea4j.models.UserOrganizations;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.OrganizationDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TinyDB;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import java.util.List;
 public class OrganizationsListAdapter extends RecyclerView.Adapter<OrganizationsListAdapter.OrganizationsViewHolder> implements Filterable {
 
     private final List<UserOrganizations> orgList;
-    private final Context mCtx;
+    private final Context context;
     private final List<UserOrganizations> orgListFull;
 
     static class OrganizationsViewHolder extends RecyclerView.ViewHolder {
@@ -60,9 +61,9 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
         }
     }
 
-    public OrganizationsListAdapter(Context mCtx, List<UserOrganizations> orgsListMain) {
+    public OrganizationsListAdapter(Context ctx, List<UserOrganizations> orgsListMain) {
 
-        this.mCtx = mCtx;
+        this.context = ctx;
         this.orgList = orgsListMain;
         orgListFull = new ArrayList<>(orgList);
     }
@@ -80,11 +81,12 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
     public void onBindViewHolder(@NonNull OrganizationsViewHolder holder, int position) {
 
         UserOrganizations currentItem = orgList.get(position);
+	    int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 	    holder.userOrganizations = currentItem;
 	    holder.orgName.setText(currentItem.getUsername());
 
-        PicassoService.getInstance(mCtx).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.image);
+        PicassoService.getInstance(context).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.image);
 
         if (!currentItem.getDescription().equals("")) {
 

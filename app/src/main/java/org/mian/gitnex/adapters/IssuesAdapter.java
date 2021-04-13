@@ -40,9 +40,9 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
-	public IssuesAdapter(Context context, List<Issues> issuesListMain) {
+	public IssuesAdapter(Context ctx, List<Issues> issuesListMain) {
 
-		this.context = context;
+		this.context = ctx;
 		this.issuesList = issuesListMain;
 	}
 
@@ -138,10 +138,12 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			String locale = tinyDb.getString("locale");
 			String timeFormat = tinyDb.getString("dateFormat");
 
+			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
+
 			PicassoService.getInstance(context).get()
 				.load(issue.getUser().getAvatar_url())
 				.placeholder(R.drawable.loader_animated)
-				.transform(new RoundedTransformation(8, 0))
+				.transform(new RoundedTransformation(imgRadius, 0))
 				.resize(120, 120)
 				.centerCrop()
 				.into(issueAssigneeAvatar);
