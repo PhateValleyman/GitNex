@@ -38,7 +38,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 		this.notificationThreads = notificationThreads;
 		this.onMoreClickedListener = onMoreClickedListener;
 		this.onNotificationClickedListener = onNotificationClickedListener;
-
 	}
 
 	static class NotificationsViewHolder extends RecyclerView.ViewHolder {
@@ -64,7 +63,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 			typeUnknown = itemView.findViewById(R.id.typeUnknown);
 			pinned = itemView.findViewById(R.id.pinned);
 			more = itemView.findViewById(R.id.more);
-
 		}
 	}
 
@@ -74,7 +72,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
 		View v = LayoutInflater.from(context).inflate(R.layout.list_notifications, parent, false);
 		return new NotificationsAdapter.NotificationsViewHolder(v);
-
 	}
 
 	@Override
@@ -140,7 +137,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 		});
 
 		holder.more.setOnClickListener(v -> onMoreClickedListener.onMoreClicked(notificationThread));
-
 	}
 
 	@Override

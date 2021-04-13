@@ -31,7 +31,7 @@ import io.mikael.urlbuilder.UrlBuilder;
 public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapter.UserAccountsViewHolder> {
 
 	private final List<UserAccount> userAccountsList;
-	private final Context mCtx;
+	private final Context context;
 	private TinyDB tinyDB;
 
 	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
@@ -57,32 +57,32 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 
 			deleteAccount.setOnClickListener(itemDelete -> {
 
-				new AlertDialog.Builder(mCtx)
-					.setIcon(AppCompatResources.getDrawable(mCtx, R.drawable.ic_delete))
-					.setTitle(mCtx.getResources().getString(R.string.removeAccountPopupTitle))
-					.setMessage(mCtx.getResources().getString(R.string.removeAccountPopupMessage))
-					.setPositiveButton(mCtx.getResources().getString(R.string.removeButton), (dialog, which) -> {
+				new AlertDialog.Builder(context)
+					.setIcon(AppCompatResources.getDrawable(context, R.drawable.ic_delete))
+					.setTitle(context.getResources().getString(R.string.removeAccountPopupTitle))
+					.setMessage(context.getResources().getString(R.string.removeAccountPopupMessage))
+					.setPositiveButton(context.getResources().getString(R.string.removeButton), (dialog, which) -> {
 
 						updateLayoutByPosition(getAdapterPosition());
-						UserAccountsApi userAccountsApi = BaseApi.getInstance(mCtx, UserAccountsApi.class);
+						UserAccountsApi userAccountsApi = BaseApi.getInstance(context, UserAccountsApi.class);
 						userAccountsApi.deleteAccount(Integer.parseInt(String.valueOf(accountId)));
-					}).setNeutralButton(mCtx.getResources().getString(R.string.cancelButton), null)
+					}).setNeutralButton(context.getResources().getString(R.string.cancelButton), null)
 					.show();
 			});
 
 			itemView.setOnClickListener(switchAccount -> {
 
-				UserAccountsApi userAccountsApi = BaseApi.getInstance(mCtx, UserAccountsApi.class);
+				UserAccountsApi userAccountsApi = BaseApi.getInstance(context, UserAccountsApi.class);
 				UserAccount userAccount = userAccountsApi.getAccountByName(accountName);
 
-				if(AppUtil.switchToAccount(mCtx, userAccount)) {
+				if(AppUtil.switchToAccount(context, userAccount)) {
 
 					String url = UrlBuilder.fromString(userAccount.getInstanceUrl())
 						.withPath("/")
 						.toString();
 
-					Toasty.success(mCtx,  mCtx.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
-					((Activity) mCtx).recreate();
+					Toasty.success(context,  context.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
+					((Activity) context).recreate();
 
 				}
 			});
@@ -91,9 +91,9 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 
 	}
 
-	public UserAccountsAdapter(Context mCtx, List<UserAccount> userAccountsListMain) {
+	public UserAccountsAdapter(Context ctx, List<UserAccount> userAccountsListMain) {
 
-		this.mCtx = mCtx;
+		this.context = ctx;
 		this.userAccountsList = userAccountsListMain;
 	}
 
@@ -102,7 +102,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		userAccountsList.remove(position);
 		notifyItemRemoved(position);
 		notifyItemRangeChanged(position, userAccountsList.size());
-		Toasty.success(mCtx, mCtx.getResources().getString(R.string.accountDeletedMessage));
+		Toasty.success(context, context.getResources().getString(R.string.accountDeletedMessage));
 	}
 
 	@NonNull
@@ -118,7 +118,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 	public void onBindViewHolder(@NonNull UserAccountsAdapter.UserAccountsViewHolder holder, int position) {
 
 		UserAccount currentItem = userAccountsList.get(position);
-		tinyDB = TinyDB.getInstance(mCtx);
+		tinyDB = TinyDB.getInstance(context);
 
 		String url = UrlBuilder.fromString(currentItem.getInstanceUrl())
 			.withPath("/")
@@ -127,17 +127,23 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		holder.accountId = currentItem.getAccountId();
 		holder.accountName = currentItem.getAccountName();
 
-		holder.userId.setText(String.format("@%s", currentItem.getUserName()));
+		holder.userId.setText(currentItem.getUserName());
 		holder.accountUrl.setText(url);
 
-		PicassoService.getInstance(mCtx).get().load(url + "img/favicon.png").placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(holder.repoAvatar);
+		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
+
+		PicassoService.getInstance(context).get()
+			.load(url + "img/favicon.png")
+			.placeholder(R.drawable.loader_animated)
+			.transform(new RoundedTransformation(imgRadius, 0))
+			.resize(120, 120)
+			.centerCrop()
+			.into(holder.repoAvatar);
 
 		if(tinyDB.getInt("currentActiveAccountId") == currentItem.getAccountId()) {
-
 			holder.activeAccount.setVisibility(View.VISIBLE);
 		}
 		else {
-
 			holder.deleteAccount.setVisibility(View.VISIBLE);
 		}
 	}

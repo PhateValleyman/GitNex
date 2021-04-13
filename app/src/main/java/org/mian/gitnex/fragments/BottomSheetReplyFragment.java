@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.ActionResult;
 import org.mian.gitnex.actions.IssueActions;
@@ -62,7 +63,6 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		repositoryId = (int) tinyDB.getLong("repositoryId", 0);
 		currentActiveAccountId = tinyDB.getInt("currentActiveAccountId");
 		issueNumber = Integer.parseInt(tinyDB.getString("issueNumber"));
-
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -88,7 +88,6 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 			send.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_save));
 			mode = Mode.EDIT;
-
 		}
 
 		if(arguments.getString("draftId") != null) {
@@ -98,7 +97,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 		if(!tinyDB.getString("issueTitle").isEmpty()) {
 
-			toolbarTitle.setText(tinyDB.getString("issueTitle"));
+			toolbarTitle.setText(EmojiParser.parseToUnicode(tinyDB.getString("issueTitle")));
 		}
 		else if(arguments.getString("draftTitle") != null) {
 
@@ -135,7 +134,6 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 			}
 
 			return false;
-
 		});
 
 		comment.addTextChangedListener(new TextWatcher() {
