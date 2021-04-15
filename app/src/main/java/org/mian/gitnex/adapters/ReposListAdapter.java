@@ -100,6 +100,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 				RepositoriesApi repositoryData = BaseApi.getInstance(context, RepositoriesApi.class);
 
 				//RepositoriesRepository.deleteRepositoriesByAccount(currentActiveAccountId);
+				assert repositoryData != null;
 				Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
 				if(count == 0) {
@@ -243,6 +244,9 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 
 		if(!currentItem.getDescription().equals("")) {
 			holder.repoDescription.setText(currentItem.getDescription());
+		}
+		else {
+			holder.repoDescription.setText(context.getString(R.string.noDataDescription));
 		}
 
 		if(holder.isRepoAdmin == null) {
