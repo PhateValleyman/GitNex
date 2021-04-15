@@ -198,7 +198,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 
 		ColorGenerator generator = ColorGenerator.MATERIAL;
 		int color = generator.getColor(currentItem.getName());
-		String firstCharacter = String.valueOf(currentItem.getFullName().split("/")[0].charAt(0));
+		String firstCharacter = String.valueOf(currentItem.getFullName().charAt(0));
 
 		TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
 

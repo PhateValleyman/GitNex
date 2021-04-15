@@ -142,7 +142,7 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 			ColorGenerator generator = ColorGenerator.MATERIAL;
 			int color = generator.getColor(forksModel.getName());
-			String firstCharacter = String.valueOf(forksModel.getFullName().split("/")[0].charAt(0));
+			String firstCharacter = String.valueOf(forksModel.getFullName().charAt(0));
 
 			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28)
 				.endConfig().buildRoundRect(firstCharacter, color, 3);
