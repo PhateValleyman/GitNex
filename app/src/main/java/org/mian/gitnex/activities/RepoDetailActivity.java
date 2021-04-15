@@ -71,7 +71,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	private FragmentRefreshListenerMilestone fragmentRefreshListenerMilestone;
 	private FragmentRefreshListenerFiles fragmentRefreshListenerFiles;
 
-	private String loginUid;
 	private String instanceToken;
 
 	private String repositoryOwner;
@@ -108,7 +107,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		Objects.requireNonNull(getSupportActionBar()).setTitle(repositoryName);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		loginUid = tinyDB.getString("loginUid");
+		String loginUid = tinyDB.getString("loginUid");
 		instanceToken = "token " + tinyDB.getString(loginUid + "-token");
 
 		tinyDB.putString("repoIssuesState", "open");

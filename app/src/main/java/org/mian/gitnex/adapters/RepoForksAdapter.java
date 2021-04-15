@@ -227,6 +227,7 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 				RepositoriesApi repositoryData = BaseApi.getInstance(context, RepositoriesApi.class);
 
 				//RepositoriesRepository.deleteRepositoriesByAccount(currentActiveAccountId);
+				assert repositoryData != null;
 				Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
 				if(count == 0) {
