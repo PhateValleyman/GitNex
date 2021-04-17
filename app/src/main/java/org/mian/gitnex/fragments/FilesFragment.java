@@ -163,6 +163,25 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		}
 	}
 
+	public boolean goBack() {
+
+		if(path.size() > 0) {
+
+			path.pop(1);
+			binding.breadcrumbsView.removeLastItem();
+
+			if(path.size() > 0) {
+				fetchDataAsyncSub(Authorization.get(getContext()), repoOwner, repoName, path.toString(), ref);
+			} else {
+				fetchDataAsync(Authorization.get(getContext()), repoOwner, repoName, ref);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void fetchDataAsync(String instanceToken, String owner, String repo, String ref) {
 
 		binding.recyclerView.setVisibility(View.GONE);

@@ -112,7 +112,7 @@ public class RepoInfoFragment extends Fragment {
 			ctx.startActivity(intent);
 		});
 
-		binding.repoMetaPullRequestsFrame.setOnClickListener(metaPR -> RepoDetailActivity.mViewPager.setCurrentItem(3));
+		binding.repoMetaPullRequestsFrame.setOnClickListener(metaPR -> ((RepoDetailActivity) getActivity()).viewPager.setCurrentItem(3, true));
 
 		return binding.getRoot();
 	}

@@ -56,6 +56,15 @@ public class PullRequestsFragment extends Fragment {
 	private int resultLimit = Constants.resultLimitOldGiteaInstances;
 	private ProgressBar progressLoadMore;
 
+	public static PullRequestsFragment newInstance() {
+
+		Bundle args = new Bundle();
+		PullRequestsFragment fragment = new PullRequestsFragment();
+		fragment.setArguments(args);
+		return fragment;
+
+	}
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

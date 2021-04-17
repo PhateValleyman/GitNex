@@ -57,6 +57,15 @@ public class IssuesFragment extends Fragment {
 	private String requestType = Constants.issuesRequestType;
 	private ProgressBar progressLoadMore;
 
+	public static IssuesFragment newInstance() {
+
+		Bundle args = new Bundle();
+		IssuesFragment fragment = new IssuesFragment();
+		fragment.setArguments(args);
+		return fragment;
+
+	}
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -48,6 +48,15 @@ public class MilestonesFragment extends Fragment {
     private String TAG = Constants.tagMilestonesFragment;
     private int resultLimit = Constants.resultLimitOldGiteaInstances;
 
+	public static MilestonesFragment newInstance() {
+
+		Bundle args = new Bundle();
+		MilestonesFragment fragment = new MilestonesFragment();
+		fragment.setArguments(args);
+		return fragment;
+
+	}
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
