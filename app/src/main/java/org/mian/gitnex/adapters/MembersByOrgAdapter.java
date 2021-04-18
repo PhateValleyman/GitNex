@@ -76,7 +76,7 @@ public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
     @Override
     public View getView(int position, View finalView, ViewGroup parent) {
 
-        MembersByOrgAdapter.ViewHolder viewHolder = null;
+        MembersByOrgAdapter.ViewHolder viewHolder;
 
         if (finalView == null) {
 

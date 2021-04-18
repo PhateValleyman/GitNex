@@ -8,15 +8,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
+import org.mian.gitnex.activities.DiffActivity;
 import org.mian.gitnex.activities.EditIssueActivity;
-import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
 import org.mian.gitnex.databinding.BottomSheetSingleIssueBinding;
 import org.mian.gitnex.helpers.TinyDB;
@@ -37,35 +35,21 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		BottomSheetSingleIssueBinding bottomSheetSingleIssueBinding = BottomSheetSingleIssueBinding.inflate(inflater, container, false);
+		BottomSheetSingleIssueBinding binding = BottomSheetSingleIssueBinding.inflate(inflater, container, false);
 
 		final Context ctx = getContext();
 		final TinyDB tinyDB = TinyDB.getInstance(ctx);
 
-		TextView editIssue = bottomSheetSingleIssueBinding.editIssue;
-		TextView editLabels = bottomSheetSingleIssueBinding.editLabels;
-		TextView closeIssue = bottomSheetSingleIssueBinding.closeIssue;
-		TextView reOpenIssue = bottomSheetSingleIssueBinding.reOpenIssue;
-		TextView addRemoveAssignees = bottomSheetSingleIssueBinding.addRemoveAssignees;
-		TextView copyIssueUrl = bottomSheetSingleIssueBinding.copyIssueUrl;
-		TextView openFilesDiff = bottomSheetSingleIssueBinding.openFilesDiff;
-		TextView mergePullRequest = bottomSheetSingleIssueBinding.mergePullRequest;
-		TextView shareIssue = bottomSheetSingleIssueBinding.shareIssue;
-		TextView subscribeIssue = bottomSheetSingleIssueBinding.subscribeIssue;
-		TextView unsubscribeIssue = bottomSheetSingleIssueBinding.unsubscribeIssue;
-
-		LinearLayout linearLayout = bottomSheetSingleIssueBinding.commentReactionButtons;
-
-		Bundle bundle1 = new Bundle();
-
 		String repoFullName = tinyDB.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 
-		bundle1.putString("repoOwner", parts[0]);
-		bundle1.putString("repoName", parts[1]);
-		bundle1.putInt("issueId", Integer.parseInt(tinyDB.getString("issueNumber")));
+		Bundle bundle = new Bundle();
 
-		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle1);
+		bundle.putString("repoOwner", parts[0]);
+		bundle.putString("repoName", parts[1]);
+		bundle.putInt("issueId", Integer.parseInt(tinyDB.getString("issueNumber")));
+
+		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle);
 		reactionSpinner.setOnInteractedListener(() -> {
 
 			tinyDB.putBoolean("singleIssueUpdate", true);
@@ -75,68 +59,63 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		});
 
-		linearLayout.addView(reactionSpinner);
+		binding.commentReactionButtons.addView(reactionSpinner);
 
 		if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
 
-			editIssue.setText(R.string.editPrText);
-			copyIssueUrl.setText(R.string.copyPrUrlText);
-			shareIssue.setText(R.string.sharePr);
+			binding.editIssue.setText(R.string.editPrText);
+			binding.copyIssueUrl.setText(R.string.copyPrUrlText);
+			binding.shareIssue.setText(R.string.sharePr);
 
 			if(tinyDB.getBoolean("prMerged") || tinyDB.getString("repoPrState").equals("closed")) {
-				mergePullRequest.setVisibility(View.GONE);
+				binding.mergePullRequest.setVisibility(View.GONE);
 			}
 			else {
-				mergePullRequest.setVisibility(View.VISIBLE);
+				binding.mergePullRequest.setVisibility(View.VISIBLE);
 			}
 
 			if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.13.0")) {
-				openFilesDiff.setVisibility(View.VISIBLE);
+				binding.openFilesDiff.setVisibility(View.VISIBLE);
 			}
 			else if(tinyDB.getString("repoType").equals("public")) {
-				openFilesDiff.setVisibility(View.VISIBLE);
+				binding.openFilesDiff.setVisibility(View.VISIBLE);
 			}
 			else {
-				openFilesDiff.setVisibility(View.GONE);
+				binding.openFilesDiff.setVisibility(View.GONE);
 			}
 
 		}
 		else {
 
-			mergePullRequest.setVisibility(View.GONE);
+			binding.mergePullRequest.setVisibility(View.GONE);
 		}
 
-		mergePullRequest.setOnClickListener(v13 -> {
-
+		binding.mergePullRequest.setOnClickListener(v13 -> {
 			startActivity(new Intent(ctx, MergePullRequestActivity.class));
 			dismiss();
 		});
 
-		openFilesDiff.setOnClickListener(v14 -> {
-
-			startActivity(new Intent(ctx, FileDiffActivity.class));
+		binding.openFilesDiff.setOnClickListener(v14 -> {
+			startActivity(new Intent(ctx, DiffActivity.class));
 			dismiss();
 		});
 
-		editIssue.setOnClickListener(v15 -> {
-
+		binding.editIssue.setOnClickListener(v15 -> {
 			startActivity(new Intent(ctx, EditIssueActivity.class));
 			dismiss();
 		});
 
-		editLabels.setOnClickListener(v16 -> {
-
+		binding.editLabels.setOnClickListener(v16 -> {
 			bmListener.onButtonClicked("showLabels");
 			dismiss();
 		});
 
-		addRemoveAssignees.setOnClickListener(v17 -> {
-
+		binding.addRemoveAssignees.setOnClickListener(v17 -> {
 			bmListener.onButtonClicked("showAssignees");
 			dismiss();
 		});
 
-		shareIssue.setOnClickListener(v1 -> {
+		binding.shareIssue.setOnClickListener(v1 -> {
 
 			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 			sharingIntent.setType("text/plain");
@@ -147,7 +126,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			dismiss();
 		});
 
-		copyIssueUrl.setOnClickListener(v12 -> {
+		binding.copyIssueUrl.setOnClickListener(v12 -> {
 
 			// copy to clipboard
 			ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
@@ -164,10 +143,10 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 			if(tinyDB.getString("issueState").equals("open")) { // close issue
 
-				reOpenIssue.setVisibility(View.GONE);
-				closeIssue.setVisibility(View.VISIBLE);
+				binding.reOpenIssue.setVisibility(View.GONE);
+				binding.closeIssue.setVisibility(View.VISIBLE);
 
-				closeIssue.setOnClickListener(closeSingleIssue -> {
+				binding.closeIssue.setOnClickListener(closeSingleIssue -> {
 
 					IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "closed");
 					dismiss();
@@ -177,10 +156,10 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			}
 			else if(tinyDB.getString("issueState").equals("closed")) {
 
-				closeIssue.setVisibility(View.GONE);
-				reOpenIssue.setVisibility(View.VISIBLE);
+				binding.closeIssue.setVisibility(View.GONE);
+				binding.reOpenIssue.setVisibility(View.VISIBLE);
 
-				reOpenIssue.setOnClickListener(reOpenSingleIssue -> {
+				binding.reOpenIssue.setOnClickListener(reOpenSingleIssue -> {
 
 					IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "open");
 					dismiss();
@@ -192,37 +171,37 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		}
 		else {
 
-			reOpenIssue.setVisibility(View.GONE);
-			closeIssue.setVisibility(View.GONE);
+			binding.reOpenIssue.setVisibility(View.GONE);
+			binding.closeIssue.setVisibility(View.GONE);
 
 		}
 
-		subscribeIssue.setOnClickListener(subscribeToIssue -> {
+		binding.subscribeIssue.setOnClickListener(subscribeToIssue -> {
 
 			IssueActions.subscribe(ctx);
 			dismiss();
 		});
 
-		unsubscribeIssue.setOnClickListener(unsubscribeToIssue -> {
+		binding.unsubscribeIssue.setOnClickListener(unsubscribeToIssue -> {
 
 			IssueActions.unsubscribe(ctx);
 			dismiss();
 		});
 
 		if(new Version(tinyDB.getString("giteaVersion")).less("1.12.0")) {
-			subscribeIssue.setVisibility(View.GONE);
-			unsubscribeIssue.setVisibility(View.GONE);
+			binding.subscribeIssue.setVisibility(View.GONE);
+			binding.unsubscribeIssue.setVisibility(View.GONE);
 		}
 		else if(tinyDB.getBoolean("issueSubscribed")) {
-			subscribeIssue.setVisibility(View.GONE);
-			unsubscribeIssue.setVisibility(View.VISIBLE);
+			binding.subscribeIssue.setVisibility(View.GONE);
+			binding.unsubscribeIssue.setVisibility(View.VISIBLE);
 		}
 		else {
-			subscribeIssue.setVisibility(View.VISIBLE);
-			unsubscribeIssue.setVisibility(View.GONE);
+			binding.subscribeIssue.setVisibility(View.VISIBLE);
+			binding.unsubscribeIssue.setVisibility(View.GONE);
 		}
 
-		return bottomSheetSingleIssueBinding.getRoot();
+		return binding.getRoot();
 	}
 
 	public interface BottomSheetListener {

@@ -73,7 +73,7 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View finalView, ViewGroup parent) {
 
-        TeamMembersByOrgAdapter.ViewHolder viewHolder = null;
+        TeamMembersByOrgAdapter.ViewHolder viewHolder;
 
         if (finalView == null) {
 

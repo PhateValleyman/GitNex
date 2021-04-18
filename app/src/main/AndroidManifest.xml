@@ -18,7 +18,6 @@
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         tools:targetApi="n">
-
         <activity
             android:name=".activities.MergePullRequestActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
@@ -87,11 +86,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation">
+            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation"
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -99,7 +97,7 @@
             android:name=".activities.LoginActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTask"
-            android:theme="@android:style/Theme.NoTitleBar"/>
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".activities.CreateRepoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
@@ -110,8 +108,9 @@
             android:name=".activities.OpenRepoInBrowserActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
         <activity
-            android:name=".activities.FileDiffActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
+            android:name=".activities.DiffActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation"
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".activities.CommitsActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
@@ -121,9 +120,6 @@
             android:theme="@android:style/Theme.Material.Dialog" />
         <activity
             android:name=".activities.SettingsAppearanceActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
-        <activity
-            android:name=".activities.SettingsFileViewerActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
         <activity
             android:name=".activities.SettingsSecurityActivity"
@@ -158,27 +154,26 @@
         <activity
             android:name=".activities.SettingsNotificationsActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
-
         <activity
             android:name=".activities.AdminCronTasksActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
-
-        <!-- Version < 3.0. DeX Mode and Screen Mirroring support -->
-        <meta-data android:name="com.samsung.android.keepalive.density" android:value="true"/>
-        <!-- Version >= 3.0. DeX Dual Mode support -->
-        <meta-data android:name="com.samsung.android.multidisplay.keep_process_alive" android:value="true"/>
-
-        <!-- deep links -->
+            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" /> <!-- Version < 3.0. DeX Mode and Screen Mirroring support -->
+        <meta-data
+            android:name="com.samsung.android.keepalive.density"
+            android:value="true" /> <!-- Version >= 3.0. DeX Dual Mode support -->
+        <meta-data
+            android:name="com.samsung.android.multidisplay.keep_process_alive"
+            android:value="true" /> <!-- deep links -->
         <activity
             android:name=".activities.DeepLinksActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleTask"
             android:noHistory="true"
-            android:launchMode="singleTask">
-
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="codeberg.org" />
@@ -188,10 +183,7 @@
                 <data android:host="git.fsfe.org" />
                 <data android:host="opendev.org" />
             </intent-filter>
-
         </activity>
-        <!-- deep links -->
-
     </application>
 
 </manifest>
