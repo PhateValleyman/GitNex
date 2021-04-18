@@ -1,0 +1,74 @@
+package org.mian.gitnex.database.models;
+
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
+/**
+ * @author opyale
+ */
+
+@Entity(
+	tableName = "localPreferences",
+	foreignKeys = {
+		@ForeignKey(entity = UserAccount.class, parentColumns = "accountId", childColumns = "userAccountId", onDelete = ForeignKey.CASCADE),
+		@ForeignKey(entity = PreferencesGroup.class, parentColumns = "id", childColumns = "preferencesGroupId", onDelete = ForeignKey.CASCADE)
+	},
+	indices = @Index(value = {"userAccountId", "preferencesGroupId", "key"}, unique = true)
+)
+public class LocalPreference {
+
+	@PrimaryKey(autoGenerate = true)
+	private int id;
+
+	private int userAccountId;
+	private int preferencesGroupId;
+
+	private String key;
+	private String value;
+
+	public LocalPreference(int userAccountId, int preferencesGroupId, String key, String value) {
+		this.userAccountId = userAccountId;
+		this.preferencesGroupId = preferencesGroupId;
+		this.key = key;
+		this.value = value;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public int getUserAccountId() {
+		return userAccountId;
+	}
+
+	public void setUserAccountId(int userAccountId) {
+		this.userAccountId = userAccountId;
+	}
+
+	public int getPreferencesGroupId() {
+		return preferencesGroupId;
+	}
+
+	public void setPreferencesGroupId(int preferencesGroupId) {
+		this.preferencesGroupId = preferencesGroupId;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+}
