@@ -4,6 +4,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import java.io.Serializable;
 
 /**
  * @author opyale
@@ -17,7 +18,7 @@ import androidx.room.PrimaryKey;
 	},
 	indices = @Index(value = {"userAccountId", "preferencesGroupId", "key"}, unique = true)
 )
-public class LocalPreference {
+public class LocalPreference implements Serializable {
 
 	@PrimaryKey(autoGenerate = true)
 	private int id;

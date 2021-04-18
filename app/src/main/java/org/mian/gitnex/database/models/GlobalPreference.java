@@ -4,6 +4,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import java.io.Serializable;
 
 /**
  * @author opyale
@@ -14,7 +15,7 @@ import androidx.room.PrimaryKey;
 	foreignKeys = @ForeignKey(entity = PreferencesGroup.class, parentColumns = "id", childColumns = "preferencesGroupId", onDelete = ForeignKey.CASCADE),
 	indices = @Index(value = {"preferencesGroupId", "key"}, unique = true)
 )
-public class GlobalPreference {
+public class GlobalPreference implements Serializable {
 
 	@PrimaryKey(autoGenerate = true)
 	private int id;
