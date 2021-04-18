@@ -199,7 +199,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		fetchDataAsync(repoOwner, repoName, issueIndex);
 
 		if(getIntent().getStringExtra("openPrDiff") != null && getIntent().getStringExtra("openPrDiff").equals("true")) {
-			startActivity(new Intent(ctx, FileDiffActivity.class));
+			startActivity(new Intent(ctx, DiffActivity.class));
 		}
 
 	}
