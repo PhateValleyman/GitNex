@@ -7,14 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.Teams;
+import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.OrganizationTeamMembersActivity;
+import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.Authorization;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -32,27 +41,33 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
 
         private final TextView teamTitle;
         private final TextView teamDescription;
-        private final TextView teamPermission;
+        private final LinearLayout membersPreviewFrame;
+
+	    private final List<UserInfo> userInfos;
+        private final TeamMembersByOrgPreviewAdapter adapter;
 
         private OrgTeamsViewHolder(View itemView) {
-
             super(itemView);
+
             teamTitle = itemView.findViewById(R.id.teamTitle);
             teamDescription = itemView.findViewById(R.id.teamDescription);
-            teamPermission = itemView.findViewById(R.id.teamPermission);
+            membersPreviewFrame = itemView.findViewById(R.id.membersPreviewFrame);
+
+	        RecyclerView membersPreview = itemView.findViewById(R.id.membersPreview);
+
+            adapter = new TeamMembersByOrgPreviewAdapter(itemView.getContext(), (userInfos = new ArrayList<>()));
+
+            membersPreview.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.HORIZONTAL, false));
+            membersPreview.setAdapter(adapter);
 
             itemView.setOnClickListener(v -> {
-
                 Context context = v.getContext();
 
                 Intent intent = new Intent(context, OrganizationTeamMembersActivity.class);
-                intent.putExtra("teamTitle", teams.getName());
-                intent.putExtra("teamId", String.valueOf(teams.getId()));
+                intent.putExtra("team", teams);
                 context.startActivity(intent);
             });
-
         }
-
     }
 
     public TeamsByOrgAdapter(Context ctx, List<Teams> teamListMain) {
@@ -76,15 +91,38 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
         holder.teams = currentItem;
         holder.teamTitle.setText(currentItem.getName());
 
-        if (!currentItem.getDescription().equals("")) {
+	    holder.membersPreviewFrame.setVisibility(View.GONE);
+	    holder.userInfos.clear();
+	    holder.adapter.notifyDataSetChanged();
+
+	    RetrofitClient.getApiInterface(context)
+		    .getTeamMembersByOrg(Authorization.get(context), currentItem.getId())
+		    .enqueue(new Callback<List<UserInfo>>() {
+			    @Override
+			    public void onResponse(@NonNull Call<List<UserInfo>> call, @NonNull Response<List<UserInfo>> response) {
+				    if(response.isSuccessful() &&
+					    response.body() != null &&
+					    response.body().size() > 0) {
+
+					    holder.membersPreviewFrame.setVisibility(View.VISIBLE);
+					    holder.userInfos.addAll(response.body().stream()
+						    .limit(Math.min(response.body().size(), 6))
+						    .collect(Collectors.toList()));
+
+					    holder.adapter.notifyDataSetChanged();
+				    }
+			    }
+
+			    @Override public void onFailure(@NonNull Call<List<UserInfo>> call, @NonNull Throwable t) {}
+	    });
+
+        if (currentItem.getDescription() != null && !currentItem.getDescription().isEmpty()) {
             holder.teamDescription.setVisibility(View.VISIBLE);
             holder.teamDescription.setText(currentItem.getDescription());
-        }
-        else {
+        } else {
             holder.teamDescription.setVisibility(View.GONE);
             holder.teamDescription.setText("");
         }
-        holder.teamPermission.setText(context.getResources().getString(R.string.teamPermission, currentItem.getPermission()));
     }
 
     @Override

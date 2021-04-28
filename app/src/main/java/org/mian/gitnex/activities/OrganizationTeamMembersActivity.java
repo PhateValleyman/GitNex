@@ -1,26 +1,30 @@
 package org.mian.gitnex.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.annotation.NonNull;
+import org.gitnex.tea4j.models.Teams;
+import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserGridAdapter;
+import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityOrgTeamMembersBinding;
 import org.mian.gitnex.fragments.BottomSheetOrganizationTeamsFragment;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import org.mian.gitnex.structs.BottomSheetListener;
-import org.mian.gitnex.viewmodels.TeamMembersByOrgViewModel;
-import java.util.Objects;
 
 /**
  * Author M M Arif
@@ -28,54 +32,61 @@ import java.util.Objects;
 
 public class OrganizationTeamMembersActivity extends BaseActivity implements BottomSheetListener {
 
-    private TextView noDataMembers;
-    private View.OnClickListener onClickListener;
-    private UserGridAdapter adapter;
-    private GridView mGridView;
-	private ProgressBar progressBar;
+	private ActivityOrgTeamMembersBinding binding;
+	private UserGridAdapter adapter;
 
-    private String teamId;
+    private Teams team;
+    private final List<UserInfo> teamUserInfo = new ArrayList<>();
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-	    ActivityOrgTeamMembersBinding activityOrgTeamMembersBinding = ActivityOrgTeamMembersBinding.inflate(getLayoutInflater());
-	    setContentView(activityOrgTeamMembersBinding.getRoot());
+	    binding = ActivityOrgTeamMembersBinding.inflate(getLayoutInflater());
 
-        Toolbar toolbar = activityOrgTeamMembersBinding.toolbar;
-        setSupportActionBar(toolbar);
+	    setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
 
-        ImageView closeActivity = activityOrgTeamMembersBinding.close;
-        TextView toolbarTitle = activityOrgTeamMembersBinding.toolbarTitle;
-        noDataMembers = activityOrgTeamMembersBinding.noDataMembers;
-        mGridView = activityOrgTeamMembersBinding.gridView;
-	    progressBar = activityOrgTeamMembersBinding.progressBar;
+	    team = (Teams) getIntent().getSerializableExtra("team");
+	    adapter = new UserGridAdapter(ctx, teamUserInfo);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+	    if(team.getName() != null && !team.getName().isEmpty()) {
+		    binding.toolbarTitle.setText(team.getName());
+	    } else {
+		    binding.toolbarTitle.setText(R.string.orgTeamMembers);
+	    }
 
-        if(getIntent().getStringExtra("teamTitle") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamTitle")).equals("")) {
+	    binding.close.setOnClickListener(view -> finish());
+	    binding.members.setAdapter(adapter);
 
-        	toolbarTitle.setText(getIntent().getStringExtra("teamTitle"));
-        }
-        else {
+	    StringBuilder permissions = new StringBuilder();
 
-        	toolbarTitle.setText(R.string.orgTeamMembers);
-        }
+	    // Future proofing in case of gitea becoming able to assign multiple permissions per team
+	    for(String permission : Collections.singletonList(team.getPermission())) {
 
-        if(getIntent().getStringExtra("teamId") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamId")).equals("")){
+		    switch(permission) {
+			    case "none":
+				    permissions.append(getString(R.string.teamPermissionNone)).append("\n");
+				    break;
+			    case "read":
+				    permissions.append(getString(R.string.teamPermissionRead)).append("\n");
+				    break;
+			    case "write":
+				    permissions.append(getString(R.string.teamPermissionWrite)).append("\n");
+				    break;
+			    case "admin":
+				    permissions.append(getString(R.string.teamPermissionAdmin)).append("\n");
+				    break;
+			    case "owner":
+				    permissions.append(getString(R.string.teamPermissionOwner)).append("\n");
+				    break;
+		    }
+	    }
 
-        	teamId = getIntent().getStringExtra("teamId");
-        }
-        else {
-
-        	teamId = "0";
-        }
-
-        assert teamId != null;
-        fetchDataAsync(Authorization.get(ctx), Integer.parseInt(teamId));
+	    binding.permissions.setText(permissions.toString());
+        fetchMembersAsync();
     }
 
     @Override
@@ -85,34 +96,46 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
         TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
         if(tinyDb.getBoolean("teamActionFlag")) {
-
-            fetchDataAsync(Authorization.get(ctx), Integer.parseInt(teamId));
+            fetchMembersAsync();
             tinyDb.putBoolean("teamActionFlag", false);
         }
     }
 
-    private void fetchDataAsync(String instanceToken, int teamId) {
+    private void fetchMembersAsync() {
 
-        TeamMembersByOrgViewModel teamMembersModel = new ViewModelProvider(this).get(TeamMembersByOrgViewModel.class);
+	    Call<List<UserInfo>> call = RetrofitClient
+		    .getApiInterface(ctx)
+		    .getTeamMembersByOrg(Authorization.get(ctx), team.getId());
 
-        teamMembersModel.getMembersByOrgList(instanceToken, teamId, ctx).observe(this, teamMembersListMain -> {
+	    binding.progressBar.setVisibility(View.VISIBLE);
 
-            adapter = new UserGridAdapter(ctx, teamMembersListMain);
+	    call.enqueue(new Callback<List<UserInfo>>() {
 
-            if(adapter.getCount() > 0) {
+		    @Override
+		    public void onResponse(@NonNull Call<List<UserInfo>> call, @NonNull Response<List<UserInfo>> response) {
+			    if(response.isSuccessful() && response.body() != null) {
+			    	teamUserInfo.clear();
+			    	teamUserInfo.addAll(response.body());
 
-                mGridView.setAdapter(adapter);
-                noDataMembers.setVisibility(View.GONE);
-            }
-            else {
+				    adapter.notifyDataSetChanged();
 
-                adapter.notifyDataSetChanged();
-                mGridView.setAdapter(adapter);
-                noDataMembers.setVisibility(View.VISIBLE);
-            }
+				    if(response.body().size() > 0) {
+					    binding.noDataMembers.setVisibility(View.GONE);
+					    binding.members.setVisibility(View.VISIBLE);
+				    } else {
+					    binding.members.setVisibility(View.GONE);
+					    binding.noDataMembers.setVisibility(View.VISIBLE);
+				    }
+			    }
+			    binding.progressBar.setVisibility(View.GONE);
+		    }
 
-	        progressBar.setVisibility(View.GONE);
-        });
+		    @Override
+		    public void onFailure(@NonNull Call<List<UserInfo>> call, @NonNull Throwable t) {
+			    Log.i("onFailure", t.toString());
+		    }
+
+	    });
     }
 
     @Override
@@ -125,38 +148,29 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
 
 	    if(id == android.R.id.home) {
 
 		    finish();
 		    return true;
-	    }
-	    else if(id == R.id.genericMenu) {
+	    } else if(id == R.id.genericMenu) {
 
 		    BottomSheetOrganizationTeamsFragment bottomSheet = new BottomSheetOrganizationTeamsFragment();
 		    bottomSheet.show(getSupportFragmentManager(), "orgTeamsBottomSheet");
 		    return true;
-	    }
-	    else {
-
+	    } else {
 		    return super.onOptionsItemSelected(item);
 	    }
     }
 
     @Override
     public void onButtonClicked(String text) {
-
         if("newMember".equals(text)) {
-
             Intent intent = new Intent(OrganizationTeamMembersActivity.this, AddNewTeamMemberActivity.class);
-            intent.putExtra("teamId", teamId);
+            intent.putExtra("team", team);
             startActivity(intent);
         }
     }
 
-    private void initCloseListener() {
-        onClickListener = view -> finish();
-    }
 }
