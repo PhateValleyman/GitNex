@@ -40,16 +40,13 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
             memberName  = v.findViewById(R.id.memberName);
 
 	        memberAvatar.setOnClickListener(loginId -> {
-
 		        Context context = loginId.getContext();
-
 		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
 	        });
         }
     }
 
     public TeamMembersByOrgAdapter(Context ctx, List<UserInfo> membersListMain) {
-
         this.context = ctx;
         this.teamMembersList = membersListMain;
     }
@@ -119,11 +116,8 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
         }
 
         if(!currentItem.getFullname().equals("")) {
-
             viewHolder.memberName.setText(Html.fromHtml(currentItem.getFullname()));
-        }
-        else {
-
+        } else {
             viewHolder.memberName.setText(currentItem.getLogin());
         }
 

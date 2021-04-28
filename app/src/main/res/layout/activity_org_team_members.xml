@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -22,13 +23,13 @@
                 android:id="@+id/close"
                 android:layout_width="@dimen/close_button_size"
                 android:layout_height="@dimen/close_button_size"
-                android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
-                android:gravity="center_vertical"
-                android:contentDescription="@string/close"
+                android:layout_marginRight="15dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:focusable="true"
                 android:clickable="true"
+                android:contentDescription="@string/close"
+                android:focusable="true"
+                android:gravity="center_vertical"
                 android:src="@drawable/ic_close" />
 
             <TextView
@@ -36,11 +37,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="?attr/primaryTextColor"
                 android:maxLines="1"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="20sp" />
 
         </com.google.android.material.appbar.MaterialToolbar>
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -52,27 +54,60 @@
         style="@style/Widget.MaterialComponents.LinearProgressIndicator"
         app:indicatorColor="?attr/progressIndicatorColor" />
 
-    <GridView
-        android:id="@+id/gridView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:horizontalSpacing="10dp"
-        android:numColumns="4"
-        android:columnWidth="80dp"
-        android:stretchMode="columnWidth"
-        android:background="?attr/primaryBackgroundColor"
-        android:gravity="center"/>
-
-    <TextView
-        android:id="@+id/noDataMembers"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="15dp"
-        android:gravity="center"
-        android:text="@string/noDataMembers"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="20sp"
-        android:visibility="gone" />
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/teamPermissions"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/permissions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="15sp"
+            tools:text="• Members of this team can view team repositories." />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/teamMembers"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <GridView
+            android:id="@+id/members"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/primaryBackgroundColor"
+            android:columnWidth="80dp"
+            android:gravity="center"
+            android:horizontalSpacing="10dp"
+            android:numColumns="4"
+            android:stretchMode="columnWidth"
+            android:visibility="gone">
+
+        </GridView>
+
+        <TextView
+            android:id="@+id/noDataMembers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/noDataMembers"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="15sp" />
+
+    </LinearLayout>
 
 </LinearLayout>
