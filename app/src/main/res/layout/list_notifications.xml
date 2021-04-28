@@ -21,25 +21,10 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/typePr"
+                android:id="@+id/type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/generalImgContentText"
-                app:srcCompat="@drawable/ic_pull_request" />
-
-            <ImageView
-                android:id="@+id/typeIssue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/generalImgContentText"
-                app:srcCompat="@drawable/ic_issue" />
-
-            <ImageView
-                android:id="@+id/typeUnknown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/generalImgContentText"
-                app:srcCompat="@drawable/ic_question" />
+                android:contentDescription="@string/generalImgContentText" />
 
             <ImageView
                 android:id="@+id/pinned"

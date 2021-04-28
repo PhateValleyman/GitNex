@@ -1,6 +1,7 @@
 package org.mian.gitnex.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
+import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.NotificationThread;
 import org.mian.gitnex.R;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.database.models.Repository;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
 
@@ -45,9 +48,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 		private final LinearLayout frame;
 		private final TextView subject;
 		private final TextView repository;
-		private final ImageView typePr;
-		private final ImageView typeIssue;
-		private final ImageView typeUnknown;
+		private final ImageView type;
 		private final ImageView pinned;
 		private final ImageView more;
 
@@ -58,9 +59,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 			frame = itemView.findViewById(R.id.frame);
 			subject = itemView.findViewById(R.id.subject);
 			repository = itemView.findViewById(R.id.repository);
-			typePr = itemView.findViewById(R.id.typePr);
-			typeIssue = itemView.findViewById(R.id.typeIssue);
-			typeUnknown = itemView.findViewById(R.id.typeUnknown);
+			type = itemView.findViewById(R.id.type);
 			pinned = itemView.findViewById(R.id.pinned);
 			more = itemView.findViewById(R.id.more);
 		}
@@ -92,24 +91,39 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 			holder.pinned.setVisibility(View.GONE);
 		}
 
-		switch(notificationThread.getSubject().getType()) {
+		switch(notificationThread.getSubject().getType().toLowerCase()) {
 
-			case "Pull":
-				holder.typePr.setVisibility(View.VISIBLE);
-				holder.typeIssue.setVisibility(View.GONE);
-				holder.typeUnknown.setVisibility(View.GONE);
+			case "pull":
+				holder.type.setImageResource(R.drawable.ic_pull_request);
 				break;
-
-			case "Issue":
-				holder.typePr.setVisibility(View.GONE);
-				holder.typeIssue.setVisibility(View.VISIBLE);
-				holder.typeUnknown.setVisibility(View.GONE);
+			case "issue":
+				holder.type.setImageResource(R.drawable.ic_issue);
+				break;
+			case "commit":
+				holder.type.setImageResource(R.drawable.ic_commit);
+				break;
+			case "repository":
+				holder.type.setImageResource(R.drawable.ic_repo);
 				break;
 
 			default:
-				holder.typePr.setVisibility(View.GONE);
-				holder.typeIssue.setVisibility(View.GONE);
-				holder.typeUnknown.setVisibility(View.VISIBLE);
+				holder.type.setImageResource(R.drawable.ic_question);
+				break;
+
+		}
+
+		switch(notificationThread.getSubject().getState().toLowerCase()) {
+
+			case "closed":
+				ImageViewCompat.setImageTintList(holder.type, ColorStateList.valueOf(context.getResources().getColor(R.color.iconIssuePrClosedColor)));
+				break;
+			case "merged":
+				ImageViewCompat.setImageTintList(holder.type, ColorStateList.valueOf(context.getResources().getColor(R.color.iconPrMergedColor)));
+				break;
+
+			default:
+			case "open":
+				ImageViewCompat.setImageTintList(holder.type, ColorStateList.valueOf(AppUtil.getColorFromAttribute(context, R.attr.iconsColor)));
 				break;
 
 		}
@@ -119,15 +133,13 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 			onNotificationClickedListener.onNotificationClicked(notificationThread);
 
 			String[] parts = notificationThread.getRepository().getFullName().split("/");
-			final String repoOwner = parts[0];
-			final String repoName = parts[1];
+			String repoOwner = parts[0];
+			String repoName = parts[1];
 
 			int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
 			RepositoriesApi repositoryData = BaseApi.getInstance(context, RepositoriesApi.class);
 
-			Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
-
-			if(count == 0) {
+			if(repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName) == 0) {
 				long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
 				tinyDb.putLong("repositoryId", id);
 			} else {
@@ -137,21 +149,19 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 		});
 
 		holder.more.setOnClickListener(v -> onMoreClickedListener.onMoreClicked(notificationThread));
+
 	}
 
 	@Override
 	public int getItemCount() {
-
 		return notificationThreads.size();
 	}
 
 	public interface OnNotificationClickedListener {
-
 		void onNotificationClicked(NotificationThread notificationThread);
 	}
 
 	public interface OnMoreClickedListener {
-
 		void onMoreClicked(NotificationThread notificationThread);
 	}
 
