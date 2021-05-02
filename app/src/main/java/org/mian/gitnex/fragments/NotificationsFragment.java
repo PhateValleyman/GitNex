@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,23 +22,20 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import org.apache.commons.lang3.StringUtils;
 import org.gitnex.tea4j.models.NotificationThread;
 import org.mian.gitnex.R;
-import org.mian.gitnex.actions.NotificationsActions;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.adapters.NotificationsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentNotificationsBinding;
 import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.InfiniteScrollListener;
+import org.mian.gitnex.helpers.SimpleCallback;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Author opyale
@@ -49,7 +45,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 	private List<NotificationThread> notificationThreads;
 	private NotificationsAdapter notificationsAdapter;
-	private NotificationsActions notificationsActions;
 
 	private ExtendedFloatingActionButton markAllAsRead;
 	private ProgressBar progressBar;
@@ -92,7 +87,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		progressBar = fragmentNotificationsBinding.progressBar;
 
 		notificationThreads = new ArrayList<>();
-		notificationsActions = new NotificationsActions(context);
 		notificationsAdapter = new NotificationsAdapter(context, notificationThreads, this, this);
 
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
@@ -105,10 +99,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 			@Override
 			public void onScrolledToEnd(int firstVisibleItemPosition) {
-
 				pageCurrentIndex++;
 				loadNotifications(true);
-
 			}
 		});
 
@@ -120,10 +112,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 				if(currentFilterMode.equalsIgnoreCase("unread")) {
 
 					if(dy > 0 && markAllAsRead.isShown()) {
-
 						markAllAsRead.setVisibility(View.GONE);
 					} else if(dy < 0) {
-
 						markAllAsRead.setVisibility(View.VISIBLE);
 					}
 				}
@@ -131,39 +121,23 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 			@Override
 			public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-
 				super.onScrollStateChanged(recyclerView, newState);
 			}
 
 		});
 
-		markAllAsRead.setOnClickListener(v1 -> {
+		markAllAsRead.setOnClickListener(v1 ->
+			RetrofitClient.getApiInterface(context)
+				.markNotificationThreadsAsRead(Authorization.get(context), AppUtil.getTimestampFromDate(context, new Date()), true, new String[]{"unread", "pinned"}, "read")
+				.enqueue((SimpleCallback<Void>) (call, voidResponse) -> {
 
-			Thread thread = new Thread(() -> {
-
-				try {
-
-					if(notificationsActions.setAllNotificationsRead(new Date())) {
-
-						activity.runOnUiThread(() -> {
-
-							Toasty.success(context, getString(R.string.markedNotificationsAsRead));
-							loadNotifications(true);
-
-						});
+					if(voidResponse.isPresent() && voidResponse.get().isSuccessful()) {
+						Toasty.success(context, getString(R.string.markedNotificationsAsRead));
+						loadNotifications(false);
+					} else {
+						activity.runOnUiThread(() -> Toasty.error(context, getString(R.string.genericError)));
 					}
-				}
-				catch(IOException e) {
-
-					activity.runOnUiThread(() -> Toasty.error(context, getString(R.string.genericError)));
-					Log.e("onError", e.toString());
-
-				}
-			});
-
-			thread.start();
-
-		});
+				}));
 
 		pullToRefresh = fragmentNotificationsBinding.pullToRefresh;
 		pullToRefresh.setOnRefreshListener(() -> {
@@ -201,56 +175,26 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 			new String[]{"pinned", "read"} :
 			new String[]{"pinned", "unread"};
 
-		Call<List<NotificationThread>> call = RetrofitClient
+		RetrofitClient
 			.getApiInterface(context)
-			.getNotificationThreads(instanceToken, false, filter,
-				Constants.defaultOldestTimestamp, "",
-				pageCurrentIndex, pageResultLimit);
+			.getNotificationThreads(instanceToken, false, filter, Constants.defaultOldestTimestamp, "", pageCurrentIndex, pageResultLimit)
+			.enqueue((SimpleCallback<List<NotificationThread>>) (call1, listResponse) -> {
 
-		call.enqueue(new Callback<List<NotificationThread>>() {
-
-			@Override
-			public void onResponse(@NonNull Call<List<NotificationThread>> call, @NonNull Response<List<NotificationThread>> response) {
-
-				if(response.code() == 200) {
-
-					assert response.body() != null;
-
+				if(listResponse.isPresent() && listResponse.get().isSuccessful() && listResponse.get().body() != null) {
 					if(!append) {
-
 						notificationThreads.clear();
 					}
 
-					notificationThreads.addAll(response.body());
+					notificationThreads.addAll(listResponse.get().body());
 					notificationsAdapter.notifyDataSetChanged();
-
-				} else {
-
-					Log.e("onError", String.valueOf(response.code()));
 				}
-
-				onCleanup();
-
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<List<NotificationThread>> call, @NonNull Throwable t) {
-
-				Log.e("onError", t.toString());
-				onCleanup();
-
-			}
-
-			private void onCleanup() {
 
 				AppUtil.setMultiVisibility(View.GONE, loadingMoreView, progressBar);
 				pullToRefresh.setRefreshing(false);
 
 				if(notificationThreads.isEmpty()) {
-
 					noDataNotifications.setVisibility(View.VISIBLE);
 				}
-			}
 		});
 	}
 
@@ -263,10 +207,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		menu.getItem(0).setIcon(filterIcon);
 
 		if(currentFilterMode.equalsIgnoreCase("read")) {
-
 			markAllAsRead.setVisibility(View.GONE);
 		} else {
-
 			markAllAsRead.setVisibility(View.VISIBLE);
 		}
 	}
@@ -313,21 +255,14 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 	@Override
 	public void onNotificationClicked(NotificationThread notificationThread) {
 
-		Thread thread = new Thread(() -> {
+		RetrofitClient.getApiInterface(context)
+			.markNotificationThreadAsRead(Authorization.get(context), notificationThread.getId(), "read")
+			.enqueue((SimpleCallback<Void>) (call, voidResponse) -> {
 
-			try {
-
-				if(notificationThread.isUnread()) {
-
-					notificationsActions.setNotificationStatus(notificationThread, NotificationsActions.NotificationStatus.READ);
-					activity.runOnUiThread(() -> loadNotifications(false));
-
+				if(voidResponse.isPresent() && voidResponse.get().isSuccessful()) {
+					loadNotifications(false);
 				}
-			} catch(IOException ignored) {}
-
-		});
-
-		thread.start();
+			});
 
 		if(StringUtils.containsAny(notificationThread.getSubject().getType().toLowerCase(), "pull", "issue")) {
 
