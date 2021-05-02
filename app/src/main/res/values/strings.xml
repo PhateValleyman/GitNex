@@ -594,7 +594,7 @@
     <string name="shareRepository">Share Repository</string>
     <string name="createRepository">Create Repository</string>
     <string name="commitTitle">Commits</string>
-    <string name="commitCommittedBy">Committed by %1$s</string>
+    <string name="commitCommittedByWhen">%s committed %s</string>
     <string name="viewCommits">View Commits</string>
     <string name="changelogTitle" translatable="false">Changelog</string>
 
