@@ -1,19 +1,21 @@
 package org.mian.gitnex.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Commits;
 import org.mian.gitnex.R;
+import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -48,8 +50,7 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if(viewType == TYPE_LOAD) {
             return new CommitsHolder(inflater.inflate(R.layout.list_commits, parent, false));
-        }
-        else {
+        } else {
             return new LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
         }
     }
@@ -72,56 +73,84 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if(commitsList.get(position).getSha() != null) {
             return TYPE_LOAD;
-        }
-        else {
+        } else {
             return 1;
         }
     }
 
     @Override
     public int getItemCount() {
-
         return commitsList.size();
     }
 
     class CommitsHolder extends RecyclerView.ViewHolder {
 
-        TextView commitTitle;
+    	View rootView;
+
+        TextView commitSubject;
+        TextView commitBody;
         TextView commitCommitter;
-        TextView commitDate;
-        Button commitHtmlUrl;
+        ImageView commitCommitterAvatar;
+        TextView commitSha;
 
         CommitsHolder(View itemView) {
 
             super(itemView);
 
-            commitTitle = itemView.findViewById(R.id.commitTitleVw);
-            commitCommitter = itemView.findViewById(R.id.commitCommitterVw);
-            commitDate = itemView.findViewById(R.id.commitDateVw);
-            commitHtmlUrl = itemView.findViewById(R.id.commitHtmlUrlVw);
+            rootView = itemView;
+
+            commitSubject = itemView.findViewById(R.id.commitSubject);
+            commitBody = itemView.findViewById(R.id.commitBody);
+            commitCommitter = itemView.findViewById(R.id.commitCommitter);
+            commitCommitterAvatar = itemView.findViewById(R.id.commitCommitterAvatar);
+            commitSha = itemView.findViewById(R.id.commitSha);
+
         }
 
-        @SuppressLint("SetTextI18n")
+
         void bindData(Commits commitsModel) {
 
-            final TinyDB tinyDb = TinyDB.getInstance(context);
-	        Locale locale = context.getResources().getConfiguration().locale;
-            final String timeFormat = tinyDb.getString("dateFormat");
+            TinyDB tinyDb = TinyDB.getInstance(context);
 
-            commitTitle.setText(EmojiParser.parseToUnicode(commitsModel.getCommit().getMessage()));
-            commitCommitter.setText(context.getString(R.string.commitCommittedBy, commitsModel.getCommit().getCommitter().getName()));
-            commitDate.setText(TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), locale, timeFormat, context));
+            String[] commitMessageParts = commitsModel.getCommit().getMessage().split("(\r\n|\n)", 2);
 
-            if(timeFormat.equals("pretty")) {
-                commitDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(commitsModel.getCommit().getCommitter().getDate()), context));
+            if(commitMessageParts.length > 1 && !commitMessageParts[1].trim().isEmpty()) {
+	            commitBody.setVisibility(View.VISIBLE);
+	            commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
+	            commitBody.setText(EmojiParser.parseToUnicode(commitMessageParts[1].trim()));
+            } else {
+	            commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
+	            commitBody.setVisibility(View.GONE);
             }
-            commitHtmlUrl.setOnClickListener(v -> AppUtil.openUrlInBrowser(context, commitsModel.getHtml_url()));
-        }
 
+            commitCommitter.setText(
+            	context.getString(R.string.commitCommittedByWhen,
+		            commitsModel.getCommit().getCommitter().getName(),
+		            TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), new Locale(tinyDb.getString("locale")), "pretty", context)));
+
+	        if(commitsModel.getCommitter().getAvatar_url() != null &&
+		        !commitsModel.getCommitter().getAvatar_url().isEmpty()) {
+
+		        int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
+
+		        PicassoService.getInstance(context).get()
+			        .load(commitsModel.getCommitter().getAvatar_url())
+			        .placeholder(R.drawable.loader_animated)
+			        .transform(new RoundedTransformation(imgRadius, 0))
+			        .resize(120, 120)
+			        .centerCrop().into(commitCommitterAvatar);
+
+	        } else {
+		        commitCommitterAvatar.setImageDrawable(null);
+	        }
+
+	        commitSha.setText(commitsModel.getSha().substring(0, Math.min(commitsModel.getSha().length(), 10)));
+            rootView.setOnClickListener(v -> AppUtil.openUrlInBrowser(context, commitsModel.getHtml_url()));
+
+        }
     }
 
     static class LoadHolder extends RecyclerView.ViewHolder {
-
         LoadHolder(View itemView) {
             super(itemView);
         }
