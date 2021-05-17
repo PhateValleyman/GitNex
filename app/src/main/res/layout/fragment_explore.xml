@@ -15,7 +15,7 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabsExplore"
-            app:tabMode="fixed"
+            app:tabMode="scrollable"
             app:tabTextAppearance="@style/customTabLayout"
             android:layout_width="match_parent"
             android:background="?attr/primaryBackgroundColor"
@@ -34,6 +34,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pageTitleIssues" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabExplorePublicOrganizations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pageTitleOrganizations" />
 
         </com.google.android.material.tabs.TabLayout>
 
