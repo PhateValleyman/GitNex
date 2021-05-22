@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.Organization;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.PublicOrganizationsAdapter;
@@ -37,7 +36,6 @@ import retrofit2.Response;
 public class ExplorePublicOrgFragment extends Fragment {
 
 	private FragmentOrganizationsBinding fragmentPublicOrgBinding;
-	private RecyclerView recyclerView;
 	private List<Organization> organizationsList;
 	private PublicOrganizationsAdapter adapter;
 	private Context context;
@@ -50,7 +48,6 @@ public class ExplorePublicOrgFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 		fragmentPublicOrgBinding = FragmentOrganizationsBinding.inflate(inflater, container, false);
-
 		context = getContext();
 
 		TinyDB tinyDb = TinyDB.getInstance(getContext());
@@ -63,7 +60,6 @@ public class ExplorePublicOrgFragment extends Fragment {
 		}
 
 		fragmentPublicOrgBinding.addNewOrganization.setVisibility(View.GONE);
-		recyclerView = fragmentPublicOrgBinding.recyclerView;
 		organizationsList = new ArrayList<>();
 
 		fragmentPublicOrgBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -75,7 +71,7 @@ public class ExplorePublicOrgFragment extends Fragment {
 		}, 200));
 
 		adapter = new PublicOrganizationsAdapter(getContext(), organizationsList);
-		adapter.setLoadMoreListener(() -> recyclerView.post(() -> {
+		adapter.setLoadMoreListener(() -> fragmentPublicOrgBinding.recyclerView.post(() -> {
 
 			if(organizationsList.size() == resultLimit || pageSize == resultLimit) {
 
@@ -84,11 +80,11 @@ public class ExplorePublicOrgFragment extends Fragment {
 			}
 		}));
 
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-		recyclerView.setHasFixedSize(true);
-		recyclerView.addItemDecoration(dividerItemDecoration);
-		recyclerView.setLayoutManager(new LinearLayoutManager(context));
-		recyclerView.setAdapter(adapter);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentPublicOrgBinding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+		fragmentPublicOrgBinding.recyclerView.setHasFixedSize(true);
+		fragmentPublicOrgBinding.recyclerView.addItemDecoration(dividerItemDecoration);
+		fragmentPublicOrgBinding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+		fragmentPublicOrgBinding.recyclerView.setAdapter(adapter);
 
 		loadInitial(Authorization.get(getContext()), resultLimit);
 
