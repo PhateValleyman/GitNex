@@ -51,10 +51,10 @@ public class IssuesFragment extends Fragment {
 	private Context context;
 	private int pageSize = Constants.issuesPageInit;
 	private ProgressBar mProgressBar;
-	private String TAG = Constants.tagIssuesList;
+	private final String TAG = Constants.tagIssuesList;
 	private TextView noDataIssues;
 	private int resultLimit = Constants.resultLimitOldGiteaInstances;
-	private String requestType = Constants.issuesRequestType;
+	private final String requestType = Constants.issuesRequestType;
 	private ProgressBar progressLoadMore;
 
 	@Nullable

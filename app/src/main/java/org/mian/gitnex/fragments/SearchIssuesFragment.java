@@ -33,16 +33,12 @@ import retrofit2.Response;
 
 public class SearchIssuesFragment extends Fragment {
 
-	private Context ctx;
-	private TinyDB tinyDb;
 	private FragmentSearchIssuesBinding viewBinding;
 	private SearchIssuesAdapter adapter;
 	private List<Issues> dataList;
 
 	private int apiCallCurrentValue = 10;
 	private int pageCurrentIndex = 1;
-	private String type = "issues";
-	private String state = "open";
 
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,8 +46,8 @@ public class SearchIssuesFragment extends Fragment {
 		viewBinding = FragmentSearchIssuesBinding.inflate(inflater, container, false);
 		setHasOptionsMenu(true);
 
-		ctx = getContext();
-		tinyDb = TinyDB.getInstance(getContext());
+		Context ctx = getContext();
+		TinyDB tinyDb = TinyDB.getInstance(getContext());
 
 		dataList = new ArrayList<>();
 		adapter = new SearchIssuesAdapter(dataList, ctx);
@@ -128,6 +124,8 @@ public class SearchIssuesFragment extends Fragment {
 			viewBinding.loadingMoreView.setVisibility(View.VISIBLE);
 		}
 
+		String type = "issues";
+		String state = "open";
 		Call<List<Issues>> call = RetrofitClient.getApiInterface(getContext())
 			.queryIssues(Authorization.get(getContext()), searchKeyword, type, state, pageCurrentIndex);
 

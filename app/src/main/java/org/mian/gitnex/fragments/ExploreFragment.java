@@ -112,7 +112,7 @@ public class ExploreFragment extends Fragment {
 					break;
 
 				case 2: // Organizations
-					fragment = new SearchIssuesFragment();
+					fragment = new ExplorePublicOrgFragment();
 					break;
 			}
 
