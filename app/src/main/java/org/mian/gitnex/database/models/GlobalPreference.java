@@ -18,28 +18,32 @@ import java.io.Serializable;
 public class GlobalPreference implements Serializable {
 
 	@PrimaryKey(autoGenerate = true)
-	private int id;
+	private long id;
 
-	private int preferencesGroupId;
+	private long preferencesGroupId;
 
 	private String key;
 	private String value;
 
-	public GlobalPreference(int preferencesGroupId, String key, String value) {
+	public GlobalPreference(long preferencesGroupId, String key, String value) {
 		this.preferencesGroupId = preferencesGroupId;
 		this.key = key;
 		this.value = value;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public int getPreferencesGroupId() {
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public long getPreferencesGroupId() {
 		return preferencesGroupId;
 	}
 
-	public void setPreferencesGroupId(int preferencesGroupId) {
+	public void setPreferencesGroupId(long preferencesGroupId) {
 		this.preferencesGroupId = preferencesGroupId;
 	}
 

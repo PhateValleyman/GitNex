@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class PreferencesGroup implements Serializable {
 
 	@PrimaryKey(autoGenerate = true)
-	private int id;
+	private long id;
 
 	private String name;
 
@@ -23,8 +23,12 @@ public class PreferencesGroup implements Serializable {
 		this.name = name;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getName() {

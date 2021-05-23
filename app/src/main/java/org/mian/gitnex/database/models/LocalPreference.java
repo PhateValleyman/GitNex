@@ -21,38 +21,42 @@ import java.io.Serializable;
 public class LocalPreference implements Serializable {
 
 	@PrimaryKey(autoGenerate = true)
-	private int id;
+	private long id;
 
-	private int userAccountId;
-	private int preferencesGroupId;
+	private long userAccountId;
+	private long preferencesGroupId;
 
 	private String key;
 	private String value;
 
-	public LocalPreference(int userAccountId, int preferencesGroupId, String key, String value) {
+	public LocalPreference(long userAccountId, long preferencesGroupId, String key, String value) {
 		this.userAccountId = userAccountId;
 		this.preferencesGroupId = preferencesGroupId;
 		this.key = key;
 		this.value = value;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public int getUserAccountId() {
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public long getUserAccountId() {
 		return userAccountId;
 	}
 
-	public void setUserAccountId(int userAccountId) {
+	public void setUserAccountId(long userAccountId) {
 		this.userAccountId = userAccountId;
 	}
 
-	public int getPreferencesGroupId() {
+	public long getPreferencesGroupId() {
 		return preferencesGroupId;
 	}
 
-	public void setPreferencesGroupId(int preferencesGroupId) {
+	public void setPreferencesGroupId(long preferencesGroupId) {
 		this.preferencesGroupId = preferencesGroupId;
 	}
 

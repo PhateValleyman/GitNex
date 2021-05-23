@@ -8,9 +8,13 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import org.mian.gitnex.database.dao.DraftsDao;
+import org.mian.gitnex.database.dao.PreferencesDao;
 import org.mian.gitnex.database.dao.RepositoriesDao;
 import org.mian.gitnex.database.dao.UserAccountsDao;
 import org.mian.gitnex.database.models.Draft;
+import org.mian.gitnex.database.models.GlobalPreference;
+import org.mian.gitnex.database.models.LocalPreference;
+import org.mian.gitnex.database.models.PreferencesGroup;
 import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.database.models.UserAccount;
 
@@ -18,14 +22,21 @@ import org.mian.gitnex.database.models.UserAccount;
  * Author M M Arif
  */
 
-@Database(entities = {Draft.class, Repository.class, UserAccount.class},
-        version = 3, exportSchema = false)
+@Database(entities = {
+	Draft.class,
+	GlobalPreference.class,
+	LocalPreference.class,
+	PreferencesGroup.class,
+	Repository.class,
+	UserAccount.class
+}, 	version = 3, exportSchema = false)
 public abstract class GitnexDatabase extends RoomDatabase {
 
 	private static final String DB_NAME = "gitnex";
     private static GitnexDatabase gitnexDatabase;
 
     public abstract DraftsDao draftsDao();
+    public abstract PreferencesDao preferencesDao();
     public abstract RepositoriesDao repositoriesDao();
     public abstract UserAccountsDao userAccountsDao();
 
