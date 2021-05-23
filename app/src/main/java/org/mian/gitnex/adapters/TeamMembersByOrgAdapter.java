@@ -39,9 +39,11 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
             memberAvatar  = v.findViewById(R.id.memberAvatar);
             memberName  = v.findViewById(R.id.memberName);
 
-	        memberAvatar.setOnClickListener(loginId -> {
+	        memberAvatar.setOnLongClickListener(loginId -> {
 		        Context context = loginId.getContext();
 		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+
+		        return true;
 	        });
         }
     }

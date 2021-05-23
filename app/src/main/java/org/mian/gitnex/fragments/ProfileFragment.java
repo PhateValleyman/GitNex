@@ -75,10 +75,12 @@ public class ProfileFragment extends Fragment {
 	    	userLanguage.setText(R.string.notSupported);
 	    }
 
-	    userAvatar.setOnClickListener(loginId ->
-		    AppUtil.copyToClipboard(ctx,
-			    tinyDb.getString("userLogin"),
-			    ctx.getString(R.string.copyLoginIdToClipBoard, tinyDb.getString("userLogin"))));
+	    userAvatar.setOnLongClickListener(v1 -> {
+		    String userLoginId = tinyDb.getString("userLogin");
+		    AppUtil.copyToClipboard(ctx, userLoginId, ctx.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+
+		    return true;
+	    });
 
 	    userFullName.setText(Html.fromHtml(tinyDb.getString("userFullname")));
 	    userLogin.setText(getString(R.string.usernameWithAt, tinyDb.getString("userLogin")));

@@ -102,11 +102,13 @@ public class SearchIssuesAdapter extends RecyclerView.Adapter<SearchIssuesAdapte
 				context.startActivity(intent);
 			});
 
-			issueAssigneeAvatar.setOnClickListener(v -> {
-				Context context = v.getContext();
+			issueAssigneeAvatar.setOnLongClickListener(v -> {
 				String userLoginId = issue.getUser().getLogin();
 
+				Context context = v.getContext();
 				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+
+				return true;
 			});
 		}
 	}

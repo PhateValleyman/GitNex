@@ -227,11 +227,11 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 			});
 
-			avatar.setOnClickListener(loginId -> {
-
+			avatar.setOnLongClickListener(loginId -> {
 				Context context = loginId.getContext();
-
 				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+
+				return true;
 			});
 
 		}

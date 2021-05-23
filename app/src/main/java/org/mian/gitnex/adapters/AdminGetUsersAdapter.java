@@ -51,11 +51,11 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
             userEmail = itemView.findViewById(R.id.userEmail);
             userRole = itemView.findViewById(R.id.userRole);
 
-	        userAvatar.setOnClickListener(loginId -> {
-
+	        userAvatar.setOnLongClickListener(loginId -> {
 		        Context context = loginId.getContext();
-
 		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+
+		        return true;
 	        });
         }
     }

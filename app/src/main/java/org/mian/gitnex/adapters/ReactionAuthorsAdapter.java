@@ -74,6 +74,15 @@ public class ReactionAuthorsAdapter extends RecyclerView.Adapter<ReactionAuthors
 			authorAvatar = itemView.findViewById(R.id.authorAvatar);
 			authorFullName = itemView.findViewById(R.id.authorFullName);
 			authorLogin = itemView.findViewById(R.id.authorLogin);
+
+			authorAvatar.setOnLongClickListener(v -> {
+				String authorLoginId = authorLogin.getText().toString();
+
+				Context context = v.getContext();
+				AppUtil.copyToClipboard(context, authorLoginId, context.getString(R.string.copyLoginIdToClipBoard, authorLoginId));
+
+				return true;
+			});
 		}
 	}
 

@@ -37,11 +37,11 @@ public class CollaboratorsAdapter extends BaseAdapter  {
             collaboratorAvatar  = v.findViewById(R.id.collaboratorAvatar);
             collaboratorName  = v.findViewById(R.id.collaboratorName);
 
-	        collaboratorAvatar.setOnClickListener(loginId -> {
-
+	        collaboratorAvatar.setOnLongClickListener(loginId -> {
 		        Context context = loginId.getContext();
-
 		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+
+		        return true;
 	        });
         }
     }

@@ -41,11 +41,11 @@ public class ProfileFollowingAdapter extends RecyclerView.Adapter<ProfileFollowi
             userFullName = itemView.findViewById(R.id.userFullName);
             userName = itemView.findViewById(R.id.userName);
 
-	        userAvatar.setOnClickListener(loginId -> {
-
+	        userAvatar.setOnLongClickListener(loginId -> {
 		        Context context = loginId.getContext();
-
 		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+
+		        return true;
 	        });
         }
     }

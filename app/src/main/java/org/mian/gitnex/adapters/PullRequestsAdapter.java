@@ -134,11 +134,13 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 			});
 
-			assigneeAvatar.setOnClickListener(v -> {
-				Context context = v.getContext();
+			assigneeAvatar.setOnLongClickListener(v -> {
 				String userLoginId = pullRequest.getUser().getLogin();
 
+				Context context = v.getContext();
 				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+
+				return true;
 			});
 
 		}
