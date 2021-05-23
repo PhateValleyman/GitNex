@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,13 +22,13 @@
                 android:id="@+id/close"
                 android:layout_width="@dimen/close_button_size"
                 android:layout_height="@dimen/close_button_size"
-                android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
-                android:gravity="center_vertical"
-                android:contentDescription="@string/close"
+                android:layout_marginRight="15dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:focusable="true"
                 android:clickable="true"
+                android:contentDescription="@string/close"
+                android:focusable="true"
+                android:gravity="center_vertical"
                 android:src="@drawable/ic_close" />
 
             <TextView
@@ -37,41 +36,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="?attr/primaryTextColor"
                 android:maxLines="1"
+                android:textColor="?attr/primaryTextColor"
                 android:textSize="20sp" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/primaryBackgroundColor"
+            app:tabIndicatorColor="?attr/pagerTabIndicatorColor"
+            app:tabIndicatorFullWidth="true"
+            app:tabMode="auto"
+            app:tabTextAppearance="@style/customTabLayout"
+            app:tabTextColor="?attr/primaryTextColor" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progress_bar"
-        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        app:indicatorColor="?attr/progressIndicatorColor" />
-
-    <TextView
-        android:id="@+id/noDataWatchers"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/noDataFound"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="20sp"
-        android:visibility="gone" />
-
-    <GridView
-        android:id="@+id/gridView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/primaryBackgroundColor"
-        android:columnWidth="80dp"
-        android:gravity="center"
-        android:horizontalSpacing="10dp"
-        android:numColumns="4"
-        android:stretchMode="columnWidth" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </LinearLayout>

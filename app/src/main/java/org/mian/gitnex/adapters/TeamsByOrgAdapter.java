@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.Teams;
 import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.OrganizationTeamMembersActivity;
+import org.mian.gitnex.activities.OrganizationTeamInfoActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Authorization;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
 
     static class OrgTeamsViewHolder extends RecyclerView.ViewHolder {
 
-    	private Teams teams;
+    	private Teams team;
 
         private final TextView teamTitle;
         private final TextView teamDescription;
@@ -55,7 +55,8 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
 
 	        RecyclerView membersPreview = itemView.findViewById(R.id.membersPreview);
 
-            adapter = new TeamMembersByOrgPreviewAdapter(itemView.getContext(), (userInfos = new ArrayList<>()));
+	        userInfos = new ArrayList<>();
+            adapter = new TeamMembersByOrgPreviewAdapter(itemView.getContext(), userInfos);
 
             membersPreview.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.HORIZONTAL, false));
             membersPreview.setAdapter(adapter);
@@ -63,8 +64,8 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
             itemView.setOnClickListener(v -> {
                 Context context = v.getContext();
 
-                Intent intent = new Intent(context, OrganizationTeamMembersActivity.class);
-                intent.putExtra("team", teams);
+                Intent intent = new Intent(context, OrganizationTeamInfoActivity.class);
+                intent.putExtra("team", team);
                 context.startActivity(intent);
             });
         }
@@ -88,7 +89,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
 
         Teams currentItem = teamList.get(position);
 
-        holder.teams = currentItem;
+        holder.team = currentItem;
         holder.teamTitle.setText(currentItem.getName());
 
 	    holder.membersPreviewFrame.setVisibility(View.GONE);
