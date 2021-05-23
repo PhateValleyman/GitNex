@@ -59,7 +59,7 @@
             android:name=".activities.CreateTeamByOrgActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
         <activity
-            android:name=".activities.OrganizationTeamMembersActivity"
+            android:name=".activities.OrganizationTeamInfoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation" />
         <activity
             android:name=".activities.OrganizationDetailActivity"
