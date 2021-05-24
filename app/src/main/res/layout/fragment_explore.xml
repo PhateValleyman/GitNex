@@ -16,7 +16,7 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabsExplore"
-            app:tabMode="scrollable"
+            app:tabMode="auto"
             app:tabTextAppearance="@style/customTabLayout"
             android:layout_width="match_parent"
             android:background="?attr/primaryBackgroundColor"

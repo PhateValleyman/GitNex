@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/primaryBackgroundColor"
             app:tabIndicatorColor="?attr/pagerTabIndicatorColor"
-            app:tabMode="scrollable"
+            app:tabMode="auto"
             app:tabGravity="center"
             app:tabTextAppearance="@style/customTabLayout"
             app:tabTextColor="?attr/primaryTextColor">

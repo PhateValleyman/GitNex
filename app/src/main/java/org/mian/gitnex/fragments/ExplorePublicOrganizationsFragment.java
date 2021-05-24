@@ -20,8 +20,8 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentOrganizationsBinding;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
+import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +33,13 @@ import retrofit2.Response;
  * Author M M Arif
  */
 
-public class ExplorePublicOrgFragment extends Fragment {
+public class ExplorePublicOrganizationsFragment extends Fragment {
 
 	private FragmentOrganizationsBinding fragmentPublicOrgBinding;
 	private List<Organization> organizationsList;
 	private PublicOrganizationsAdapter adapter;
 	private Context context;
-	private int pageSize = Constants.publicOrganizationsInit;
+	private int pageSize = Constants.publicOrganizationsPageInit;
 	private final String TAG = Constants.publicOrganizations;
 	private int resultLimit = Constants.resultLimitOldGiteaInstances;
 
@@ -63,7 +63,6 @@ public class ExplorePublicOrgFragment extends Fragment {
 		organizationsList = new ArrayList<>();
 
 		fragmentPublicOrgBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
 			fragmentPublicOrgBinding.pullToRefresh.setRefreshing(false);
 			loadInitial(instanceToken, resultLimit);
 			adapter.notifyDataChanged();
@@ -72,9 +71,7 @@ public class ExplorePublicOrgFragment extends Fragment {
 
 		adapter = new PublicOrganizationsAdapter(getContext(), organizationsList);
 		adapter.setLoadMoreListener(() -> fragmentPublicOrgBinding.recyclerView.post(() -> {
-
 			if(organizationsList.size() == resultLimit || pageSize == resultLimit) {
-
 				int page = (organizationsList.size() + resultLimit) / resultLimit;
 				loadMore(Authorization.get(getContext()), page, resultLimit);
 			}
@@ -95,33 +92,24 @@ public class ExplorePublicOrgFragment extends Fragment {
 
 		Call<List<Organization>> call = RetrofitClient
 			.getApiInterface(context).getAllOrgs(token, 1, resultLimit);
-
 		call.enqueue(new Callback<List<Organization>>() {
-
 			@Override
 			public void onResponse(@NonNull Call<List<Organization>> call, @NonNull Response<List<Organization>> response) {
-
-				if(response.code() == 200) {
-
-					assert response.body() != null;
-					if(response.body().size() > 0) {
-
+				if(response.isSuccessful()) {
+					if(response.body() != null && response.body().size() > 0) {
 						organizationsList.clear();
 						organizationsList.addAll(response.body());
 						adapter.notifyDataChanged();
 						fragmentPublicOrgBinding.noDataOrg.setVisibility(View.GONE);
 					}
 					else {
-
 						organizationsList.clear();
 						adapter.notifyDataChanged();
 						fragmentPublicOrgBinding.noDataOrg.setVisibility(View.VISIBLE);
 					}
-
 					fragmentPublicOrgBinding.progressBar.setVisibility(View.GONE);
 				}
 				else if(response.code() == 404) {
-
 					fragmentPublicOrgBinding.noDataOrg.setVisibility(View.VISIBLE);
 					fragmentPublicOrgBinding.progressBar.setVisibility(View.GONE);
 				}
@@ -132,7 +120,6 @@ public class ExplorePublicOrgFragment extends Fragment {
 
 			@Override
 			public void onFailure(@NonNull Call<List<Organization>> call, @NonNull Throwable t) {
-
 				Log.e(TAG, t.toString());
 			}
 		});
@@ -141,42 +128,32 @@ public class ExplorePublicOrgFragment extends Fragment {
 	private void loadMore(String token, int page, int resultLimit) {
 
 		fragmentPublicOrgBinding.progressLoadMore.setVisibility(View.VISIBLE);
-
 		Call<List<Organization>> call = RetrofitClient.getApiInterface(context).getAllOrgs(token, page, resultLimit);
-
 		call.enqueue(new Callback<List<Organization>>() {
-
 			@Override
 			public void onResponse(@NonNull Call<List<Organization>> call, @NonNull Response<List<Organization>> response) {
-
-				if(response.code() == 200) {
-
+				if(response.isSuccessful()) {
 					List<Organization> result = response.body();
-
-					assert result != null;
-					if(result.size() > 0) {
-
-						pageSize = result.size();
-						organizationsList.addAll(result);
+					if(result != null) {
+						if(result.size() > 0) {
+							pageSize = result.size();
+							organizationsList.addAll(result);
+						}
+						else {
+							SnackBar.info(context, fragmentPublicOrgBinding.getRoot(), getString(R.string.noMoreData));
+							adapter.setMoreDataAvailable(false);
+						}
 					}
-					else {
-
-						Toasty.warning(context, getString(R.string.noMoreData));
-						adapter.setMoreDataAvailable(false);
-					}
-
 					adapter.notifyDataChanged();
 					fragmentPublicOrgBinding.progressLoadMore.setVisibility(View.GONE);
 				}
 				else {
-
 					Log.e(TAG, String.valueOf(response.code()));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<List<Organization>> call, @NonNull Throwable t) {
-
 				Log.e(TAG, t.toString());
 			}
 		});

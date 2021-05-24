@@ -32,7 +32,6 @@ public class PublicOrganizationsAdapter extends RecyclerView.Adapter<RecyclerVie
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
 	public PublicOrganizationsAdapter(Context ctx, List<Organization> organizationsListMain) {
-
 		this.context = ctx;
 		this.organizationsList = organizationsListMain;
 	}
@@ -40,9 +39,7 @@ public class PublicOrganizationsAdapter extends RecyclerView.Adapter<RecyclerVie
 	@NonNull
 	@Override
 	public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
 		LayoutInflater inflater = LayoutInflater.from(context);
-
 		if(viewType == TYPE_LOAD) {
 			return new PublicOrganizationsAdapter.OrganizationsHolder(inflater.inflate(R.layout.list_organizations, parent, false));
 		}
@@ -53,22 +50,18 @@ public class PublicOrganizationsAdapter extends RecyclerView.Adapter<RecyclerVie
 
 	@Override
 	public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
 		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
-
 			isLoading = true;
 			loadMoreListener.onLoadMore();
 		}
 
 		if(getItemViewType(position) == TYPE_LOAD) {
-
 			((PublicOrganizationsAdapter.OrganizationsHolder) holder).bindData(organizationsList.get(position));
 		}
 	}
 
 	@Override
 	public int getItemViewType(int position) {
-
 		if(organizationsList.get(position).getFull_name() != null) {
 			return TYPE_LOAD;
 		}
@@ -79,27 +72,22 @@ public class PublicOrganizationsAdapter extends RecyclerView.Adapter<RecyclerVie
 
 	@Override
 	public int getItemCount() {
-
 		return organizationsList.size();
 	}
 
 	class OrganizationsHolder extends RecyclerView.ViewHolder {
-
 		private Organization organization;
-
 		private final ImageView image;
 		private final TextView orgName;
 		private final TextView orgDescription;
 
 		OrganizationsHolder(View itemView) {
-
 			super(itemView);
 			image = itemView.findViewById(R.id.imageAvatar);
 			orgName = itemView.findViewById(R.id.orgName);
 			orgDescription = itemView.findViewById(R.id.orgDescription);
 
 			itemView.setOnClickListener(v -> {
-
 				Context context = v.getContext();
 				Intent intent = new Intent(context, OrganizationDetailActivity.class);
 				intent.putExtra("orgName", organization.getUsername());
@@ -114,53 +102,46 @@ public class PublicOrganizationsAdapter extends RecyclerView.Adapter<RecyclerVie
 
 		@SuppressLint("SetTextI18n")
 		void bindData(Organization organization) {
-
 			this.organization = organization;
 		    int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
-
 			orgName.setText(organization.getUsername());
-
-	        PicassoService.getInstance(context).get().load(organization.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(image);
-
+	        PicassoService.getInstance(context).get()
+		        .load(organization.getAvatar_url())
+		        .placeholder(R.drawable.loader_animated)
+		        .transform(new RoundedTransformation(imgRadius, 0))
+		        .resize(120, 120)
+		        .centerCrop()
+		        .into(image);
 	        if (!organization.getDescription().equals("")) {
-
 	            orgDescription.setText(organization.getDescription());
 	        }
 		}
-
 	}
 
 	static class LoadHolder extends RecyclerView.ViewHolder {
-
 		LoadHolder(View itemView) {
-
 			super(itemView);
 		}
 	}
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
-
 		isMoreDataAvailable = moreDataAvailable;
 	}
 
 	public void notifyDataChanged() {
-
 		notifyDataSetChanged();
 		isLoading = false;
 	}
 
 	public interface OnLoadMoreListener {
-
 		void onLoadMore();
 	}
 
 	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
-
 		this.loadMoreListener = loadMoreListener;
 	}
 
 	public void updateList(List<Organization> list) {
-
 		organizationsList = list;
 		notifyDataSetChanged();
 	}

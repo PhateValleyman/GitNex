@@ -53,7 +53,7 @@ public class Constants {
 	public static final int maximumPollingDelay = 720;
 
 	// public organizations
-	public static final int publicOrganizationsInit = 1;
+	public static final int publicOrganizationsPageInit = 1;
 
 	public static final int maximumFileViewerSize = 3 * 1024 * 1024;
 
