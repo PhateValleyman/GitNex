@@ -16,7 +16,7 @@ public class SnackBar {
 		Snackbar snackBar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
 		View sbView = snackBar.getView();
 		TextView textView = sbView.findViewById(R.id.snackbar_text);
-		textView.setTextColor(context.getResources().getColor(R.color.lightBlue));
+		textView.setTextColor(context.getResources().getColor(R.color.colorWhite));
 		snackBar.show();
 	}
 
@@ -24,7 +24,7 @@ public class SnackBar {
 		Snackbar snackBar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
 		View sbView = snackBar.getView();
 		TextView textView = sbView.findViewById(R.id.snackbar_text);
-		textView.setTextColor(context.getResources().getColor(R.color.colorWhite));
+		textView.setTextColor(context.getResources().getColor(R.color.colorLightGreen));
 		snackBar.show();
 	}
 
