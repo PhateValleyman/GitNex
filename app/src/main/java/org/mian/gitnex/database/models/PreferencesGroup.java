@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 
 @Entity(
-	tableName = "preferencesGroups",
+	tableName = "PreferencesGroups",
 	indices = @Index(value = "name", unique = true))
 public class PreferencesGroup implements Serializable {
 

@@ -29,7 +29,7 @@ import org.mian.gitnex.database.models.UserAccount;
 	PreferencesGroup.class,
 	Repository.class,
 	UserAccount.class
-}, 	version = 3, exportSchema = false)
+}, version = 4, exportSchema = false)
 public abstract class GitnexDatabase extends RoomDatabase {
 
 	private static final String DB_NAME = "gitnex";
@@ -55,6 +55,23 @@ public abstract class GitnexDatabase extends RoomDatabase {
 		}
 	};
 
+	private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+		@Override
+		public void migrate(@NonNull SupportSQLiteDatabase database) {
+			database.execSQL("CREATE TABLE IF NOT EXISTS `PreferencesGroups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT)");
+			database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_preferencesGroups_name` ON `PreferencesGroups` (`name`)");
+
+			database.execSQL("CREATE TABLE IF NOT EXISTS `GlobalPreferences` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `preferencesGroupId` INTEGER NOT NULL, `key` TEXT NOT NULL, `value` TEXT, FOREIGN KEY(`preferencesGroupId`) REFERENCES `PreferencesGroups`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+			database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_globalPreferences_preferencesGroupId_key` ON `GlobalPreferences` (`preferencesGroupId`, `key`)");
+
+			database.execSQL("CREATE TABLE IF NOT EXISTS `LocalPreferences` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userAccountId` INTEGER NOT NULL, `preferencesGroupId` INTEGER NOT NULL, `key` TEXT NOT NULL, `value` TEXT, FOREIGN KEY(`userAccountId`) REFERENCES `UserAccounts`(`accountId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`preferencesGroupId`) REFERENCES `PreferencesGroups`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+			database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_localPreferences_userAccountId_preferencesGroupId_key` ON `LocalPreferences` (`userAccountId`, `preferencesGroupId`, `key`)");
+
+			database.execSQL("ALTER TABLE `userAccounts` RENAME TO `userAccounts_temp`");
+			database.execSQL("ALTER TABLE `userAccounts_temp` RENAME TO `UserAccounts`");
+		}
+	};
+
 	public static GitnexDatabase getDatabaseInstance(Context context) {
 
 		if (gitnexDatabase == null) {
@@ -64,7 +81,7 @@ public abstract class GitnexDatabase extends RoomDatabase {
 					gitnexDatabase = Room.databaseBuilder(context, GitnexDatabase.class, DB_NAME)
 						// .fallbackToDestructiveMigration()
 						.allowMainThreadQueries()
-						.addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+						.addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
 						.build();
 
 				}

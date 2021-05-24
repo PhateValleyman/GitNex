@@ -1,5 +1,7 @@
 package org.mian.gitnex.database.models;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -11,7 +13,7 @@ import java.io.Serializable;
  */
 
 @Entity(
-	tableName = "globalPreferences",
+	tableName = "GlobalPreferences",
 	foreignKeys = @ForeignKey(entity = PreferencesGroup.class, parentColumns = "id", childColumns = "preferencesGroupId", onDelete = ForeignKey.CASCADE),
 	indices = @Index(value = {"preferencesGroupId", "key"}, unique = true)
 )
@@ -22,10 +24,12 @@ public class GlobalPreference implements Serializable {
 
 	private long preferencesGroupId;
 
+	@NonNull
 	private String key;
+	@Nullable
 	private String value;
 
-	public GlobalPreference(long preferencesGroupId, String key, String value) {
+	public GlobalPreference(long preferencesGroupId, @NonNull String key, @Nullable String value) {
 		this.preferencesGroupId = preferencesGroupId;
 		this.key = key;
 		this.value = value;
@@ -47,19 +51,21 @@ public class GlobalPreference implements Serializable {
 		this.preferencesGroupId = preferencesGroupId;
 	}
 
+	@NonNull
 	public String getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setKey(@NonNull String key) {
 		this.key = key;
 	}
 
+	@Nullable
 	public String getValue() {
 		return value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(@Nullable String value) {
 		this.value = value;
 	}
 
