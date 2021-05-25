@@ -20,7 +20,7 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 	private View.OnClickListener onClickListener;
 
-	private static String[] langList = {"English", "Arabic", "Chinese", "Czech", "Finnish", "French", "German", "Italian", "Latvian", "Persian",
+	private static String[] langList = {"System", "English", "Arabic", "Chinese", "Czech", "Finnish", "French", "German", "Italian", "Latvian", "Persian",
 		"Polish", "Portuguese/Brazilian", "Russian", "Serbian", "Spanish", "Turkish", "Ukrainian"};
 	private static int langSelectedChoice = 0;
 
@@ -52,10 +52,11 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 		});
 
-		if(!tinyDB.getString("localeStr").isEmpty()) {
+		if(tinyDB.getString("localeStr").isEmpty()) {
 
-			tvLanguageSelected.setText(tinyDB.getString("localeStr"));
+			tinyDB.putString("localeStr", "System");
 		}
+		tvLanguageSelected.setText(tinyDB.getString("localeStr"));
 
 		if(langSelectedChoice == 0) {
 
@@ -142,9 +143,13 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 						tinyDB.putString("locale", "uk");
 						break;
-					default:
+					case "English":
 
 						tinyDB.putString("locale", "en");
+						break;
+					default:
+
+						tinyDB.putString("locale", "");
 						break;
 				}
 
