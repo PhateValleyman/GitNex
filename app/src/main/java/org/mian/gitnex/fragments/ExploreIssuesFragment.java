@@ -30,7 +30,7 @@ import retrofit2.Response;
  * Author M M Arif
  */
 
-public class SearchIssuesFragment extends Fragment {
+public class ExploreIssuesFragment extends Fragment {
 
 	private FragmentSearchIssuesBinding viewBinding;
 	private SearchIssuesAdapter adapter;
@@ -111,10 +111,8 @@ public class SearchIssuesFragment extends Fragment {
 			viewBinding.loadingMoreView.setVisibility(View.VISIBLE);
 		}
 
-		String type = "issues";
-		String state = "open";
 		Call<List<Issues>> call = RetrofitClient.getApiInterface(getContext())
-			.queryIssues(Authorization.get(getContext()), searchKeyword, type, state, pageCurrentIndex);
+			.queryIssues(Authorization.get(getContext()), searchKeyword, "issues", "open", pageCurrentIndex);
 
 		call.enqueue(new Callback<List<Issues>>() {
 			@Override

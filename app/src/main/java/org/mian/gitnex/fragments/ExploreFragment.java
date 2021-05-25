@@ -108,7 +108,7 @@ public class ExploreFragment extends Fragment {
 					break;
 
 				case 1: // Issues
-					fragment = new SearchIssuesFragment();
+					fragment = new ExploreIssuesFragment();
 					break;
 
 				case 2: // Organizations

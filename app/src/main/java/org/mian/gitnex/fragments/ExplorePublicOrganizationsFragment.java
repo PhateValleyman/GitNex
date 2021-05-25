@@ -39,7 +39,7 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 	private List<Organization> organizationsList;
 	private PublicOrganizationsAdapter adapter;
 	private Context context;
-	private int pageSize = Constants.publicOrganizationsPageInit;
+	private int pageSize;
 	private final String TAG = Constants.publicOrganizations;
 	private int resultLimit = Constants.resultLimitOldGiteaInstances;
 
@@ -66,7 +66,6 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 			fragmentPublicOrgBinding.pullToRefresh.setRefreshing(false);
 			loadInitial(instanceToken, resultLimit);
 			adapter.notifyDataChanged();
-
 		}, 200));
 
 		adapter = new PublicOrganizationsAdapter(getContext(), organizationsList);
@@ -91,7 +90,7 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 	private void loadInitial(String token, int resultLimit) {
 
 		Call<List<Organization>> call = RetrofitClient
-			.getApiInterface(context).getAllOrgs(token, 1, resultLimit);
+			.getApiInterface(context).getAllOrgs(token, Constants.publicOrganizationsPageInit, resultLimit);
 		call.enqueue(new Callback<List<Organization>>() {
 			@Override
 			public void onResponse(@NonNull Call<List<Organization>> call, @NonNull Response<List<Organization>> response) {
