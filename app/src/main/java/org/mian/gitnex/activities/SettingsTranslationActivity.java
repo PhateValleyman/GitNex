@@ -100,7 +100,6 @@ public class SettingsTranslationActivity extends BaseActivity {
 					langCode = "en";
 				}
 				langSelectedChoice = i;
-				tvLanguageSelected.setText(langs.get(selectedLanguage));
 				tinyDB.putString("localeStr", langs.get(selectedLanguage));
 				tinyDB.putInt("langId", i);
 
