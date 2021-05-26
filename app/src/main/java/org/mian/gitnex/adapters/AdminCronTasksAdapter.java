@@ -16,6 +16,7 @@ import org.gitnex.tea4j.models.CronTasks;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -44,7 +45,7 @@ public class AdminCronTasksAdapter extends RecyclerView.Adapter<AdminCronTasksAd
 			super(itemView);
 			Context ctx = itemView.getContext();
 
-			final String locale = tinyDb.getString("locale");
+			final String locale = ctx.getResources().getConfiguration().locale.getLanguage();
 			final String timeFormat = tinyDb.getString("dateFormat");
 
 			ImageView runTask = itemView.findViewById(R.id.runTask);
