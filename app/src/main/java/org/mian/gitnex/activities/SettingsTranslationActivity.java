@@ -106,10 +106,10 @@ public class SettingsTranslationActivity extends BaseActivity {
 				tinyDB.putString("locale", langCode);
 
 				tinyDB.putBoolean("refreshParent", true);
-				this.recreate();
 				this.overridePendingTransition(0, 0);
 				dialogInterface.dismiss();
 				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
+				this.recreate();
 			});
 
 			lBuilder.setNeutralButton(getString(R.string.cancelButton), null);
