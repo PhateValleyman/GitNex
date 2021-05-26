@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsTranslationBinding;
 import org.mian.gitnex.helpers.Toasty;
+import java.util.TreeMap;
 
 /**
  * Author M M Arif
@@ -20,14 +21,33 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 	private View.OnClickListener onClickListener;
 
-	private static String[] langList = {"System", "English", "Arabic", "Chinese", "Czech", "Finnish", "French", "German", "Italian", "Latvian", "Persian",
-		"Polish", "Portuguese/Brazilian", "Russian", "Serbian", "Spanish", "Turkish", "Ukrainian"};
 	private static int langSelectedChoice = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
+		TreeMap<String, String> langs = new TreeMap<>();
+		langs.put("", getString(R.string.settingsLanguageSystem));
+		// key is "a" to sort it in the correct order
+		langs.put("a", "English");
+		langs.put("ar", "Arabic");
+		langs.put("zh", "Chinese");
+		langs.put("cs", "Czech");
+		langs.put("fi", "Finnish");
+		langs.put("fr", "French");
+		langs.put("de", "German");
+		langs.put("it", "Italian");
+		langs.put("lv", "Latvian");
+		langs.put("fa", "Persian");
+		langs.put("pl", "Polish");
+		langs.put("pt", "Portuguese/Brazilian");
+		langs.put("ru", "Russian");
+		langs.put("sr", "Serbia");
+		langs.put("es", "Spanish");
+		langs.put("tr", "Turkey");
+		langs.put("uk", "Ukrainian");
 
 		ActivitySettingsTranslationBinding activitySettingsTranslationBinding = ActivitySettingsTranslationBinding.inflate(getLayoutInflater());
 		setContentView(activitySettingsTranslationBinding.getRoot());
@@ -71,87 +91,20 @@ public class SettingsTranslationActivity extends BaseActivity {
 			lBuilder.setTitle(R.string.settingsLanguageSelectorDialogTitle);
 			lBuilder.setCancelable(langSelectedChoice != -1);
 
-			lBuilder.setSingleChoiceItems(langList, langSelectedChoice, (dialogInterface, i) -> {
+			lBuilder.setSingleChoiceItems(langs.values().toArray(new String[0]), langSelectedChoice, (dialogInterface, i) -> {
 
+				String selectedLanguage = langs.keySet().toArray(new String[0])[i];
+				String langCode = selectedLanguage;
+				if (selectedLanguage.equals("a")) {
+
+					langCode = "en";
+				}
 				langSelectedChoice = i;
-				tvLanguageSelected.setText(langList[i]);
-				tinyDB.putString("localeStr", langList[i]);
+				tvLanguageSelected.setText(langs.get(selectedLanguage));
+				tinyDB.putString("localeStr", langs.get(selectedLanguage));
 				tinyDB.putInt("langId", i);
 
-				switch(langList[i]) {
-					case "Arabic":
-
-						tinyDB.putString("locale", "ar");
-						break;
-					case "Chinese":
-
-						tinyDB.putString("locale", "zh");
-						break;
-					case "Czech":
-
-						tinyDB.putString("locale", "cs");
-						break;
-					case "Finnish":
-
-						tinyDB.putString("locale", "fi");
-						break;
-					case "French":
-
-						tinyDB.putString("locale", "fr");
-						break;
-					case "German":
-
-						tinyDB.putString("locale", "de");
-						break;
-					case "Italian":
-
-						tinyDB.putString("locale", "it");
-						break;
-					case "Latvian":
-
-						tinyDB.putString("locale", "lv");
-						break;
-					case "Persian":
-
-						tinyDB.putString("locale", "fa");
-						break;
-					case "Polish":
-
-						tinyDB.putString("locale", "pl");
-						break;
-					case "Portuguese/Brazilian":
-
-						tinyDB.putString("locale", "pt");
-						break;
-					case "Russian":
-
-						tinyDB.putString("locale", "ru");
-						break;
-					case "Serbian":
-
-						tinyDB.putString("locale", "sr");
-						break;
-					case "Spanish":
-
-						tinyDB.putString("locale", "es");
-						break;
-					case "Turkish":
-
-						tinyDB.putString("locale", "tr");
-						break;
-					case "Ukrainian":
-
-						tinyDB.putString("locale", "uk");
-						break;
-					case "English":
-
-						tinyDB.putString("locale", "en");
-						break;
-					default:
-
-						tinyDB.putString("locale", "");
-						break;
-				}
+				tinyDB.putString("locale", langCode);
 
 				tinyDB.putBoolean("refreshParent", true);
 				this.recreate();
