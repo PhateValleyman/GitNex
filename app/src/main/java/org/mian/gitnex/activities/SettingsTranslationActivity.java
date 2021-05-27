@@ -127,7 +127,8 @@ public class SettingsTranslationActivity extends BaseActivity {
 	}
 
 	public static String getLanguageDisplayName(String langCode/*, Context context*/) {
-		//Locale phone = context.getResources().getConfiguration().locale;
+		//Locale current = context.getResources().getConfiguration().locale;
+		//Locale phone = Locale.getDefault();
 		Locale english = new Locale("en");
 		Locale translated = new Locale(langCode);
 		return translated.getDisplayName(translated) + " (" + translated.getDisplayName(english) + ")";
