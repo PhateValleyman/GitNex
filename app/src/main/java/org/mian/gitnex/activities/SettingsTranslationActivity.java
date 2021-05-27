@@ -1,5 +1,6 @@
 package org.mian.gitnex.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsTranslationBinding;
 import org.mian.gitnex.helpers.Toasty;
+import java.util.Locale;
 import java.util.TreeMap;
 
 /**
@@ -32,22 +34,22 @@ public class SettingsTranslationActivity extends BaseActivity {
 		langs.put("", getString(R.string.settingsLanguageSystem));
 		// key is "a" to sort it in the correct order
 		langs.put("a", "English");
-		langs.put("ar", "Arabic");
-		langs.put("zh", "Chinese");
-		langs.put("cs", "Czech");
-		langs.put("fi", "Finnish");
-		langs.put("fr", "French");
-		langs.put("de", "German");
-		langs.put("it", "Italian");
-		langs.put("lv", "Latvian");
-		langs.put("fa", "Persian");
-		langs.put("pl", "Polish");
-		langs.put("pt", "Portuguese/Brazilian");
-		langs.put("ru", "Russian");
-		langs.put("sr", "Serbia");
-		langs.put("es", "Spanish");
-		langs.put("tr", "Turkey");
-		langs.put("uk", "Ukrainian");
+		langs.put("ar", getLanguageDisplayName("ar"));
+		langs.put("zh", getLanguageDisplayName("zh"));
+		langs.put("cs", getLanguageDisplayName("cs"));
+		langs.put("fi", getLanguageDisplayName("fi"));
+		langs.put("fr", getLanguageDisplayName("fr"));
+		langs.put("de", getLanguageDisplayName("de"));
+		langs.put("it", getLanguageDisplayName("it"));
+		langs.put("lv", getLanguageDisplayName("lv"));
+		langs.put("fa", getLanguageDisplayName("fa"));
+		langs.put("pl", getLanguageDisplayName("pl"));
+		langs.put("pt", getLanguageDisplayName("pt"));
+		langs.put("ru", getLanguageDisplayName("ru"));
+		langs.put("sr", getLanguageDisplayName("sr"));
+		langs.put("es", getLanguageDisplayName("es"));
+		langs.put("tr", getLanguageDisplayName("tr"));
+		langs.put("uk", getLanguageDisplayName("uk"));
 
 		ActivitySettingsTranslationBinding activitySettingsTranslationBinding = ActivitySettingsTranslationBinding.inflate(getLayoutInflater());
 		setContentView(activitySettingsTranslationBinding.getRoot());
@@ -122,6 +124,13 @@ public class SettingsTranslationActivity extends BaseActivity {
 	private void initCloseListener() {
 
 		onClickListener = view -> finish();
+	}
+
+	public static String getLanguageDisplayName(String langCode/*, Context context*/) {
+		//Locale phone = context.getResources().getConfiguration().locale;
+		Locale english = new Locale("en");
+		Locale translated = new Locale(langCode);
+		return translated.getDisplayName(translated) + " (" + translated.getDisplayName(english) + ")";
 	}
 
 }
