@@ -81,7 +81,6 @@ public class Markdown {
 
 		try {
 			textView.setMovementMethod(LinkMovementMethod.getInstance());
-
 			Renderer renderer = rendererPool.claim(timeout);
 
 			if(renderer != null) {
