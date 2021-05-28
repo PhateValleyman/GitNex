@@ -2,6 +2,7 @@ package org.mian.gitnex.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -34,22 +35,9 @@ public class SettingsTranslationActivity extends BaseActivity {
 		langs.put("", getString(R.string.settingsLanguageSystem));
 		// key is "a" to sort it in the correct order
 		langs.put("a", "English");
-		langs.put("ar", getLanguageDisplayName("ar"));
-		langs.put("zh", getLanguageDisplayName("zh"));
-		langs.put("cs", getLanguageDisplayName("cs"));
-		langs.put("fi", getLanguageDisplayName("fi"));
-		langs.put("fr", getLanguageDisplayName("fr"));
-		langs.put("de", getLanguageDisplayName("de"));
-		langs.put("it", getLanguageDisplayName("it"));
-		langs.put("lv", getLanguageDisplayName("lv"));
-		langs.put("fa", getLanguageDisplayName("fa"));
-		langs.put("pl", getLanguageDisplayName("pl"));
-		langs.put("pt", getLanguageDisplayName("pt"));
-		langs.put("ru", getLanguageDisplayName("ru"));
-		langs.put("sr", getLanguageDisplayName("sr"));
-		langs.put("es", getLanguageDisplayName("es"));
-		langs.put("tr", getLanguageDisplayName("tr"));
-		langs.put("uk", getLanguageDisplayName("uk"));
+		for(String n : new String[]{"ar", "zh", "cs", "fi", "fr", "de", "it", "lv", "fa", "pl", "pt", "ru", "sr", "es", "tr", "uk"}) {
+			langs.put(n, getLanguageDisplayName(n));
+		}
 
 		ActivitySettingsTranslationBinding activitySettingsTranslationBinding = ActivitySettingsTranslationBinding.inflate(getLayoutInflater());
 		setContentView(activitySettingsTranslationBinding.getRoot());
