@@ -97,7 +97,7 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 				String selectedLanguage = langs.keySet().toArray(new String[0])[i];
 				String langCode = selectedLanguage;
-				if (selectedLanguage.equals("a")) {
+				if(selectedLanguage.equals("a")) {
 
 					langCode = "en";
 				}
