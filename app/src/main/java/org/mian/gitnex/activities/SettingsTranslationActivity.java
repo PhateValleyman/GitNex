@@ -61,16 +61,9 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 		});
 
-		if(tinyDB.getString("localeStr").isEmpty()) {
-
-			tinyDB.putString("localeStr", "System");
-		}
 		tvLanguageSelected.setText(tinyDB.getString("localeStr"));
 
-		if(langSelectedChoice == 0) {
-
-			langSelectedChoice = tinyDB.getInt("langId");
-		}
+		langSelectedChoice = tinyDB.getInt("langId");
 
 		// language dialog
 		langFrame.setOnClickListener(view -> {
@@ -88,7 +81,6 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 					langCode = "en";
 				}
-				langSelectedChoice = i;
 				tinyDB.putString("localeStr", langs.get(selectedLanguage));
 				tinyDB.putInt("langId", i);
 
