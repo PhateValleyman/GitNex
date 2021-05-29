@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsTranslationBinding;
 import org.mian.gitnex.helpers.Toasty;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.TreeMap;
 
@@ -29,11 +30,10 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 
-		TreeMap<String, String> langs = new TreeMap<>();
+		LinkedHashMap<String, String> langs = new LinkedHashMap<>();
 		langs.put("", getString(R.string.settingsLanguageSystem));
 		// key is "a" to sort it in the correct order
-		langs.put("a", "English");
-		for(String n : new String[]{"ar", "zh", "cs", "fi", "fr", "de", "it", "lv", "fa", "pl", "pt", "ru", "sr", "es", "tr", "uk"}) {
+		for(String n : new String[]{"en", "ar", "zh", "cs", "fi", "fr", "de", "it", "lv", "fa", "pl", "pt", "ru", "sr", "es", "tr", "uk"}) {
 			langs.put(n, getLanguageDisplayName(n));
 		}
 
