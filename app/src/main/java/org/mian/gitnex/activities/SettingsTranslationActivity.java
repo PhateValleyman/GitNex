@@ -33,8 +33,8 @@ public class SettingsTranslationActivity extends BaseActivity {
 		LinkedHashMap<String, String> langs = new LinkedHashMap<>();
 		langs.put("", getString(R.string.settingsLanguageSystem));
 		// key is "a" to sort it in the correct order
-		for(String n : new String[]{"en", "ar", "zh", "cs", "fi", "fr", "de", "it", "lv", "fa", "pl", "pt", "ru", "sr", "es", "tr", "uk"}) {
-			langs.put(n, getLanguageDisplayName(n));
+		for(String langCode : getResources().getStringArray(R.array.languages)) {
+			langs.put(langCode, getLanguageDisplayName(langCode));
 		}
 
 		ActivitySettingsTranslationBinding activitySettingsTranslationBinding = ActivitySettingsTranslationBinding.inflate(getLayoutInflater());
