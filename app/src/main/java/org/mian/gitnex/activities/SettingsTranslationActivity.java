@@ -1,6 +1,5 @@
 package org.mian.gitnex.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -105,12 +104,10 @@ public class SettingsTranslationActivity extends BaseActivity {
 		onClickListener = view -> finish();
 	}
 
-	public static String getLanguageDisplayName(String langCode/*, Context context*/) {
-		//Locale current = context.getResources().getConfiguration().locale;
-		//Locale phone = Locale.getDefault();
+	private static String getLanguageDisplayName(String langCode) {
 		Locale english = new Locale("en");
 		Locale translated = new Locale(langCode);
-		return translated.getDisplayName(translated) + " (" + translated.getDisplayName(english) + ")";
+		return String.format("%s (%s)", translated.getDisplayName(translated), translated.getDisplayName(english));
 	}
 
 }
