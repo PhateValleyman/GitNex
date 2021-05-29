@@ -80,11 +80,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 		String locale = tinyDB.getString("locale");
 		if (locale.isEmpty()) {
-
 			AppUtil.setAppLocale(getResources(), Locale.getDefault().getLanguage());
 		}
 		else {
-
 			AppUtil.setAppLocale(getResources(), locale);
 		}
 
