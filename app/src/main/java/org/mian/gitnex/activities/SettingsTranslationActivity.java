@@ -32,7 +32,6 @@ public class SettingsTranslationActivity extends BaseActivity {
 
 		LinkedHashMap<String, String> langs = new LinkedHashMap<>();
 		langs.put("", getString(R.string.settingsLanguageSystem));
-		// key is "a" to sort it in the correct order
 		for(String langCode : getResources().getStringArray(R.array.languages)) {
 			langs.put(langCode, getLanguageDisplayName(langCode));
 		}
