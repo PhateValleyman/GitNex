@@ -74,15 +74,9 @@ public class SettingsTranslationActivity extends BaseActivity {
 			lBuilder.setSingleChoiceItems(langs.values().toArray(new String[0]), langSelectedChoice, (dialogInterface, i) -> {
 
 				String selectedLanguage = langs.keySet().toArray(new String[0])[i];
-				String langCode = selectedLanguage;
-				if(selectedLanguage.equals("a")) {
-
-					langCode = "en";
-				}
 				tinyDB.putString("localeStr", langs.get(selectedLanguage));
 				tinyDB.putInt("langId", i);
-
-				tinyDB.putString("locale", langCode);
+				tinyDB.putString("locale", selectedLanguage);
 
 				tinyDB.putBoolean("refreshParent", true);
 				this.overridePendingTransition(0, 0);
