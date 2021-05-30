@@ -45,15 +45,9 @@ public class FilesViewModel extends ViewModel {
             @Override
             public void onResponse(@NonNull Call<List<Files>> call, @NonNull Response<List<Files>> response) {
 
-                if (response.isSuccessful()) {
-	                if((response.body() != null ? response.body().size() : 0) > 0) {
-		                Collections.sort(response.body(), (byType1, byType2) -> byType1.getType().compareTo(byType2.getType()));
-	                    filesList.postValue(response.body());
-	                }
-	                else {
-		                progressBar.setVisibility(View.GONE);
-		                noDataFiles.setVisibility(View.VISIBLE);
-	                }
+                if((response.isSuccessful() && response.body() != null ? response.body().size() : 0) > 0) {
+	                Collections.sort(response.body(), (byType1, byType2) -> byType1.getType().compareTo(byType2.getType()));
+                    filesList.postValue(response.body());
                 }
                 else {
 	                progressBar.setVisibility(View.GONE);
@@ -86,15 +80,9 @@ public class FilesViewModel extends ViewModel {
             @Override
             public void onResponse(@NonNull Call<List<Files>> call, @NonNull Response<List<Files>> response) {
 
-                if (response.isSuccessful()) {
-	                if((response.body() != null ? response.body().size() : 0) > 0) {
-		                Collections.sort(response.body(), (byType1, byType2) -> byType1.getType().compareTo(byType2.getType()));
-		                filesList2.postValue(response.body());
-	                }
-	                else {
-		                progressBar.setVisibility(View.GONE);
-		                noDataFiles.setVisibility(View.VISIBLE);
-	                }
+                if((response.isSuccessful() && response.body() != null ? response.body().size() : 0) > 0) {
+	                Collections.sort(response.body(), (byType1, byType2) -> byType1.getType().compareTo(byType2.getType()));
+	                filesList2.postValue(response.body());
                 }
                 else {
 	                progressBar.setVisibility(View.GONE);
