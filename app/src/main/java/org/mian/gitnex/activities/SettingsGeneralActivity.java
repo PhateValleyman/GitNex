@@ -23,7 +23,7 @@ public class SettingsGeneralActivity extends BaseActivity {
 	private List<String> homeScreenList;
 	private static int homeScreenSelectedChoice = 0;
 
-	private List<String> defaultScreen;
+	private List<String> linkHandlerDefaultScreen;
 	private static int defaultLinkHandlerScreenSelectedChoice = 0;
 
 	@Override
@@ -38,16 +38,16 @@ public class SettingsGeneralActivity extends BaseActivity {
 		viewBinding.close.setOnClickListener(onClickListener);
 
 		// home screen
-		String[] homeDefaultScreen_ = getResources().getStringArray(R.array.appDefaultHomeScreen);
+		String[] appHomeDefaultScreen = getResources().getStringArray(R.array.appDefaultHomeScreen);
 
-		String[] homeDefaultScreenNew = getResources().getStringArray(R.array.appDefaultHomeScreenNew);
+		String[] appHomeDefaultScreenNew = getResources().getStringArray(R.array.appDefaultHomeScreenNew);
 
 		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
 
-			homeDefaultScreen_ = homeDefaultScreenNew;
+			appHomeDefaultScreen = appHomeDefaultScreenNew;
 		}
 
-		homeScreenList = new ArrayList<>(Arrays.asList(homeDefaultScreen_));
+		homeScreenList = new ArrayList<>(Arrays.asList(appHomeDefaultScreen));
 		String[] homeScreenArray = new String[homeScreenList.size()];
 		homeScreenList.toArray(homeScreenArray);
 
@@ -109,11 +109,11 @@ public class SettingsGeneralActivity extends BaseActivity {
 		// home screen
 
 		// link handler
-		String[] defaultScreen_ = getResources().getStringArray(R.array.appDeepLinksDefaultScreen);
-		defaultScreen = new ArrayList<>(Arrays.asList(defaultScreen_));
+		String[] linkHandlerDefaultScreenList = getResources().getStringArray(R.array.linkHandlerDefaultScreen);
+		linkHandlerDefaultScreen = new ArrayList<>(Arrays.asList(linkHandlerDefaultScreenList));
 
-		String[] linksArray = new String[defaultScreen.size()];
-		defaultScreen.toArray(linksArray);
+		String[] linksArray = new String[linkHandlerDefaultScreen.size()];
+		linkHandlerDefaultScreen.toArray(linksArray);
 
 		if(defaultLinkHandlerScreenSelectedChoice == 0) {
 
