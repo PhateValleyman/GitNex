@@ -183,6 +183,7 @@
                 app:cardBackgroundColor="?attr/primaryBackgroundColor"
                 app:cardCornerRadius="48dp"
                 app:cardElevation="2dp"
+                app:contentPadding="4dp"
                 android:layout_gravity="center_horizontal"
                 tools:visibility="visible">
 
