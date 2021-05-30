@@ -38,9 +38,9 @@ public class SettingsGeneralActivity extends BaseActivity {
 		viewBinding.close.setOnClickListener(onClickListener);
 
 		// home screen
-		String[] homeDefaultScreen_ = getResources().getStringArray(R.array.homeDefaultScreen);
+		String[] homeDefaultScreen_ = getResources().getStringArray(R.array.appDefaultHomeScreen);
 
-		String[] homeDefaultScreenNew = getResources().getStringArray(R.array.homeDefaultScreenNew);
+		String[] homeDefaultScreenNew = getResources().getStringArray(R.array.appDefaultHomeScreenNew);
 
 		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
 
