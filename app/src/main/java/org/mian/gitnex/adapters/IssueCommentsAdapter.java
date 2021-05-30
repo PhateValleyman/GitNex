@@ -50,7 +50,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 	private final List<IssueComments> issuesComments;
 	private final FragmentManager fragmentManager;
 	private final BottomSheetReplyFragment.OnInteractedListener onInteractedListener;
-	private final String locale;
+	private final Locale locale;
 
 	public IssueCommentsAdapter(Context ctx, Bundle bundle, List<IssueComments> issuesCommentsMain, FragmentManager fragmentManager, BottomSheetReplyFragment.OnInteractedListener onInteractedListener) {
 
@@ -60,7 +60,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 		this.fragmentManager = fragmentManager;
 		this.onInteractedListener = onInteractedListener;
 		tinyDB = TinyDB.getInstance(ctx);
-		locale = ctx.getResources().getConfiguration().locale.getLanguage();
+		locale = ctx.getResources().getConfiguration().locale;
 	}
 
 	class IssueCommentViewHolder extends RecyclerView.ViewHolder {
@@ -318,11 +318,11 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 		if(issueComment.getCreated_at() != null) {
 
 			if(timeFormat.equals("pretty")) {
-				informationBuilder = new StringBuilder(TimeHelper.formatTime(issueComment.getCreated_at(), new Locale(locale), "pretty", context));
+				informationBuilder = new StringBuilder(TimeHelper.formatTime(issueComment.getCreated_at(), locale, "pretty", context));
 				holder.information.setOnClickListener(v -> TimeHelper.customDateFormatForToastDateFormat(issueComment.getCreated_at()));
 			}
 			else if(timeFormat.equals("normal")) {
-				informationBuilder = new StringBuilder(TimeHelper.formatTime(issueComment.getCreated_at(), new Locale(locale), "normal", context));
+				informationBuilder = new StringBuilder(TimeHelper.formatTime(issueComment.getCreated_at(), locale, "normal", context));
 			}
 
 			if(!issueComment.getCreated_at().equals(issueComment.getUpdated_at())) {

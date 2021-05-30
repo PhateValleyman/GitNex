@@ -121,7 +121,7 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<ExploreIssuesAdap
 		Issues currentItem = searchedList.get(position);
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
-		String locale = context.getResources().getConfiguration().locale.getLanguage();
+		Locale locale = context.getResources().getConfiguration().locale;
 		String timeFormat = tinyDb.getString("dateFormat");
 
 		PicassoService.getInstance(context).get()
@@ -140,20 +140,20 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<ExploreIssuesAdap
 
 		switch(timeFormat) {
 			case "pretty": {
-				PrettyTime prettyTime = new PrettyTime(new Locale(locale));
+				PrettyTime prettyTime = new PrettyTime(locale);
 				String createdTime = prettyTime.format(currentItem.getCreated_at());
 				holder.issueCreatedTime.setText(createdTime);
 				holder.issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getCreated_at()), context));
 				break;
 			}
 			case "normal": {
-				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 				String createdTime = formatter.format(currentItem.getCreated_at());
 				holder.issueCreatedTime.setText(createdTime);
 				break;
 			}
 			case "normal1": {
-				DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", new Locale(locale));
+				DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 				String createdTime = formatter.format(currentItem.getCreated_at());
 				holder.issueCreatedTime.setText(createdTime);
 				break;

@@ -104,12 +104,12 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         void bindData(Commits commitsModel) {
 
             final TinyDB tinyDb = TinyDB.getInstance(context);
-	        String locale = context.getResources().getConfiguration().locale.getLanguage();
+	        Locale locale = context.getResources().getConfiguration().locale;
             final String timeFormat = tinyDb.getString("dateFormat");
 
             commitTitle.setText(EmojiParser.parseToUnicode(commitsModel.getCommit().getMessage()));
             commitCommitter.setText(context.getString(R.string.commitCommittedBy, commitsModel.getCommit().getCommitter().getName()));
-            commitDate.setText(TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), new Locale(locale), timeFormat, context));
+            commitDate.setText(TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), locale, timeFormat, context));
 
             if(timeFormat.equals("pretty")) {
                 commitDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(commitsModel.getCommit().getCommitter().getDate()), context));
