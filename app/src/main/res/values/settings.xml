@@ -61,4 +61,12 @@
         <item>@string/titleDrafts</item>
         <item>@string/pageTitleNotifications</item>
     </string-array>
+
+    <string-array name="appDeepLinksDefaultScreen">
+        <item>@string/generalDeepLinkSelectedText</item>
+        <item>@string/navRepos</item>
+        <item>@string/navOrg</item>
+        <item>@string/pageTitleNotifications</item>
+        <item>@string/navExplore</item>
+    </string-array>
 </resources>

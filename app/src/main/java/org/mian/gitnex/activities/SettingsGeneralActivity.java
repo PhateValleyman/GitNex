@@ -109,7 +109,7 @@ public class SettingsGeneralActivity extends BaseActivity {
 		// home screen
 
 		// link handler
-		String[] defaultScreen_ = {getResources().getString(R.string.generalDeepLinkSelectedText), getResources().getString(R.string.navRepos), getResources().getString(R.string.navOrg), getResources().getString(R.string.pageTitleNotifications), getResources().getString(R.string.navExplore)};
+		String[] defaultScreen_ = getResources().getStringArray(R.array.appDeepLinksDefaultScreen);
 		defaultScreen = new ArrayList<>(Arrays.asList(defaultScreen_));
 
 		String[] linksArray = new String[defaultScreen.size()];
