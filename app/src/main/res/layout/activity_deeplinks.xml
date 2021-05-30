@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/primaryBackgroundColor"
@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         style="@style/Widget.MaterialComponents.LinearProgressIndicator"
-        android:layout_centerInParent="true"
         app:indicatorColor="?attr/progressIndicatorColor" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,7 +71,7 @@
                     android:layout_marginTop="8dp" />
 
             </LinearLayout>
-            
+
             <LinearLayout
                 android:id="@+id/noActionFrame"
                 android:layout_width="match_parent"
@@ -142,4 +142,4 @@
 
     </ScrollView>
 
-</RelativeLayout>
+</LinearLayout>
