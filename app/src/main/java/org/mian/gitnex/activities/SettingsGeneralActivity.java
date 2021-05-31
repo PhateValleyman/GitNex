@@ -115,28 +115,8 @@ public class SettingsGeneralActivity extends BaseActivity {
 		String[] linksArray = new String[linkHandlerDefaultScreen.size()];
 		linkHandlerDefaultScreen.toArray(linksArray);
 
-		if(defaultLinkHandlerScreenSelectedChoice == 0) {
-
-			defaultLinkHandlerScreenSelectedChoice = tinyDB.getInt("defaultScreenId");
-			viewBinding.generalDeepLinkSelected.setText(getResources().getString(R.string.generalDeepLinkSelectedText));
-		}
-
-		if(defaultLinkHandlerScreenSelectedChoice == 1) {
-
-			viewBinding.generalDeepLinkSelected.setText(getResources().getString(R.string.navRepos));
-		}
-		else if(defaultLinkHandlerScreenSelectedChoice == 2) {
-
-			viewBinding.generalDeepLinkSelected.setText(getResources().getString(R.string.navOrg));
-		}
-		else if(defaultLinkHandlerScreenSelectedChoice == 3) {
-
-			viewBinding.generalDeepLinkSelected.setText(getResources().getString(R.string.pageTitleNotifications));
-		}
-		else if(defaultLinkHandlerScreenSelectedChoice == 4) {
-
-			viewBinding.generalDeepLinkSelected.setText(getResources().getString(R.string.navExplore));
-		}
+		defaultLinkHandlerScreenSelectedChoice = tinyDB.getInt("defaultScreenId");
+		viewBinding.generalDeepLinkSelected.setText(linksArray[defaultLinkHandlerScreenSelectedChoice]);
 
 		viewBinding.setDefaultLinkHandler.setOnClickListener(setDefaultLinkHandler -> {
 

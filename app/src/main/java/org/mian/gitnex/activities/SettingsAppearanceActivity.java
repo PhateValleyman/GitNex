@@ -161,13 +161,13 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				tinyDB.putString("timeStr", timeList[i]);
 				tinyDB.putInt("timeId", i);
 
-				if(getString(R.string.settingsDateTimeNormal).equals(timeList[i])) {
-
-					tinyDB.putString("dateFormat", "normal");
-				}
-				else {
-
-					tinyDB.putString("dateFormat", "pretty");
+				switch(i) {
+					case 0:
+						tinyDB.putString("dateFormat", "pretty");
+						break;
+					case 1:
+						tinyDB.putString("dateFormat", "normal");
+						break;
 				}
 
 				dialogInterfaceTime.dismiss();
