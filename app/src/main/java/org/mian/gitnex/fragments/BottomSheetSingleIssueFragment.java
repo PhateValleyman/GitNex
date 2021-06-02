@@ -13,17 +13,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
+import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.BottomSheetSingleIssueBinding;
+import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.views.ReactionSpinner;
 import java.util.Objects;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -50,6 +56,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		TextView copyIssueUrl = bottomSheetSingleIssueBinding.copyIssueUrl;
 		TextView openFilesDiff = bottomSheetSingleIssueBinding.openFilesDiff;
 		TextView mergePullRequest = bottomSheetSingleIssueBinding.mergePullRequest;
+		TextView deletePullRequestBranch = bottomSheetSingleIssueBinding.deletePrHeadBranch;
 		TextView shareIssue = bottomSheetSingleIssueBinding.shareIssue;
 		TextView subscribeIssue = bottomSheetSingleIssueBinding.subscribeIssue;
 		TextView unsubscribeIssue = bottomSheetSingleIssueBinding.unsubscribeIssue;
@@ -85,9 +92,11 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 			if(tinyDB.getBoolean("prMerged") || tinyDB.getString("repoPrState").equals("closed")) {
 				mergePullRequest.setVisibility(View.GONE);
+				deletePullRequestBranch.setVisibility(View.VISIBLE);
 			}
 			else {
 				mergePullRequest.setVisibility(View.VISIBLE);
+				deletePullRequestBranch.setVisibility(View.GONE);
 			}
 
 			if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.13.0")) {
@@ -104,11 +113,60 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		else {
 
 			mergePullRequest.setVisibility(View.GONE);
+			deletePullRequestBranch.setVisibility(View.GONE);
 		}
 
 		mergePullRequest.setOnClickListener(v13 -> {
 
 			startActivity(new Intent(ctx, MergePullRequestActivity.class));
+			dismiss();
+		});
+
+		deletePullRequestBranch.setOnClickListener(v -> {
+
+			String branchName = tinyDB.getString("prHeadBranch");
+
+			Call<JsonElement> call = RetrofitClient
+				.getApiInterface(ctx)
+				.deleteBranch(Authorization.get(ctx), parts[0], parts[1], branchName);
+
+			call.enqueue(new Callback<JsonElement>() {
+
+				@Override
+				public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+
+					assert ctx != null;
+					if(response.code() == 204) {
+
+						Toasty.success(ctx, ctx.getString(R.string.deleteBranchSuccess));
+					}
+					else if(response.code() == 401) {
+
+						AlertDialogs
+							.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					}
+					else if(response.code() == 403) {
+
+						Toasty.error(ctx, ctx.getString(R.string.authorizeError));
+					}
+					else if(response.code() == 404) {
+
+						Toasty.warning(ctx, ctx.getString(R.string.deleteBranchErrorNotFound));
+					}
+					else {
+
+						Toasty.error(ctx, ctx.getString(R.string.genericError));
+					}
+				}
+
+				@Override
+				public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+					assert ctx != null;
+					Toasty.error(ctx, ctx.getString(R.string.deleteBranchError));
+				}
+
+			});
 			dismiss();
 		});
 
