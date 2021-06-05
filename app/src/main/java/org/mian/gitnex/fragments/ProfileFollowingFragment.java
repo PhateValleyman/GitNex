@@ -32,8 +32,8 @@ public class ProfileFollowingFragment extends Fragment {
     private ProfileFollowingAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataFollowing;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
+    private static final String repoNameF = "param2";
+    private static final String repoOwnerF = "param1";
 
     private String repoName;
     private String repoOwner;
