@@ -3,6 +3,7 @@ package org.mian.gitnex.helpers;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -78,6 +79,7 @@ public class Markdown {
 	public static void render(Context context, String markdown, TextView textView) {
 
 		try {
+			textView.setMovementMethod(LinkMovementMethod.getInstance());
 			Renderer renderer = rendererPool.claim(OBJECT_POOL_CLAIM_TIMEOUT);
 
 			if(renderer != null) {

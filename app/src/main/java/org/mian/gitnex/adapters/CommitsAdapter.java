@@ -124,7 +124,7 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             commitCommitter.setText(
             	context.getString(R.string.commitCommittedByWhen,
 		            commitsModel.getCommit().getCommitter().getName(),
-		            TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), new Locale(tinyDb.getString("locale")), "pretty", context)));
+		            TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), context.getResources().getConfiguration().locale, "pretty", context)));
 
 	        if(commitsModel.getCommitter().getAvatar_url() != null &&
 		        !commitsModel.getCommitter().getAvatar_url().isEmpty()) {
@@ -175,5 +175,4 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         commitsList = list;
         notifyDataSetChanged();
     }
-
 }
