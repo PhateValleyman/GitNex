@@ -1,0 +1,206 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "ff741a6a1530c7f831a45a911a9ecb7f",
+    "entities": [
+      {
+        "tableName": "Drafts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`draftId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `draftRepositoryId` INTEGER NOT NULL, `draftAccountId` INTEGER NOT NULL, `issueId` INTEGER NOT NULL, `draftText` TEXT, `draftType` TEXT, `commentId` TEXT, `issueType` TEXT, FOREIGN KEY(`draftRepositoryId`) REFERENCES `Repositories`(`repositoryId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "draftId",
+            "columnName": "draftId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "draftRepositoryId",
+            "columnName": "draftRepositoryId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "draftAccountId",
+            "columnName": "draftAccountId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "issueId",
+            "columnName": "issueId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "draftText",
+            "columnName": "draftText",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "draftType",
+            "columnName": "draftType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "commentId",
+            "columnName": "commentId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "issueType",
+            "columnName": "issueType",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "draftId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Drafts_draftRepositoryId",
+            "unique": false,
+            "columnNames": [
+              "draftRepositoryId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Drafts_draftRepositoryId` ON `${TABLE_NAME}` (`draftRepositoryId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Repositories",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "draftRepositoryId"
+            ],
+            "referencedColumns": [
+              "repositoryId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Repositories",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`repositoryId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `repoAccountId` INTEGER NOT NULL, `repositoryOwner` TEXT, `repositoryName` TEXT, FOREIGN KEY(`repoAccountId`) REFERENCES `userAccounts`(`accountId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "repositoryId",
+            "columnName": "repositoryId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repoAccountId",
+            "columnName": "repoAccountId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repositoryOwner",
+            "columnName": "repositoryOwner",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repositoryName",
+            "columnName": "repositoryName",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "repositoryId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Repositories_repoAccountId",
+            "unique": false,
+            "columnNames": [
+              "repoAccountId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Repositories_repoAccountId` ON `${TABLE_NAME}` (`repoAccountId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "userAccounts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "repoAccountId"
+            ],
+            "referencedColumns": [
+              "accountId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "userAccounts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`accountId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `accountName` TEXT, `instanceUrl` TEXT, `userName` TEXT, `token` TEXT, `serverVersion` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "accountId",
+            "columnName": "accountId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountName",
+            "columnName": "accountName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "instanceUrl",
+            "columnName": "instanceUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userName",
+            "columnName": "userName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "token",
+            "columnName": "token",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "serverVersion",
+            "columnName": "serverVersion",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "accountId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ff741a6a1530c7f831a45a911a9ecb7f')"
+    ]
+  }
+}
