@@ -16,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
+import org.mian.gitnex.actions.PullRequestActions;
 import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
@@ -124,49 +125,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		deletePullRequestBranch.setOnClickListener(v -> {
 
-			String branchName = tinyDB.getString("prHeadBranch");
-
-			Call<JsonElement> call = RetrofitClient
-				.getApiInterface(ctx)
-				.deleteBranch(Authorization.get(ctx), parts[0], parts[1], branchName);
-
-			call.enqueue(new Callback<JsonElement>() {
-
-				@Override
-				public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
-
-					assert ctx != null;
-					if(response.code() == 204) {
-
-						Toasty.success(ctx, ctx.getString(R.string.deleteBranchSuccess));
-					}
-					else if(response.code() == 401) {
-
-						AlertDialogs
-							.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
-					}
-					else if(response.code() == 403) {
-
-						Toasty.error(ctx, ctx.getString(R.string.authorizeError));
-					}
-					else if(response.code() == 404) {
-
-						Toasty.warning(ctx, ctx.getString(R.string.deleteBranchErrorNotFound));
-					}
-					else {
-
-						Toasty.error(ctx, ctx.getString(R.string.genericError));
-					}
-				}
-
-				@Override
-				public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
-					assert ctx != null;
-					Toasty.error(ctx, ctx.getString(R.string.deleteBranchError));
-				}
-
-			});
+			assert ctx != null;
+			PullRequestActions.deleteHeadBranch(ctx, parts[0], parts[1], tinyDB.getString("prHeadBranch"), true);
 			dismiss();
 		});
 
