@@ -12,6 +12,10 @@ import org.mian.gitnex.helpers.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 
+/**
+ * Author qwerty287
+ */
+
 public class PullRequestActions {
 
 	public static void deleteHeadBranch(@NonNull Context context, String repoOwner, String repoName, String headBranch, boolean showToasts) {
