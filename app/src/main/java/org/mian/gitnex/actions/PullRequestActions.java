@@ -1,7 +1,6 @@
 package org.mian.gitnex.actions;
 
 import android.content.Context;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
