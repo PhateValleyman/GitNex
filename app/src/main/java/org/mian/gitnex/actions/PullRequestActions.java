@@ -55,7 +55,6 @@ public class PullRequestActions {
 				public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
 					if(showToasts) Toasty.error(context, context.getString(R.string.deleteBranchError));
-					Log.i("onFailure", t.toString());
 				}
 
 			});
