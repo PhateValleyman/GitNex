@@ -18,7 +18,7 @@ import retrofit2.Callback;
 
 public class PullRequestActions {
 
-	public static void deleteHeadBranch(@NonNull Context context, String repoOwner, String repoName, String headBranch, boolean showToasts) {
+	public static void deleteHeadBranch(Context context, String repoOwner, String repoName, String headBranch, boolean showToasts) {
 		Call<JsonElement> call = RetrofitClient
 				.getApiInterface(context)
 				.deleteBranch(Authorization.get(context), repoOwner, repoName, headBranch);

@@ -125,7 +125,6 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		deletePullRequestBranch.setOnClickListener(v -> {
 
-			assert ctx != null;
 			PullRequestActions.deleteHeadBranch(ctx, parts[0], parts[1], tinyDB.getString("prHeadBranch"), true);
 			dismiss();
 		});
