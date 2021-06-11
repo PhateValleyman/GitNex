@@ -77,6 +77,19 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		if(!tinyDB.getString("themeStr").isEmpty()) {
 
 			themeSelected.setText(tinyDB.getString("themeStr"));
+			if(tinyDB.getString("themeStr").startsWith("Auto")) {
+				darkTimeFrame.setVisibility(View.VISIBLE);
+				lightTimeFrame.setVisibility(View.VISIBLE);
+			}
+			else {
+				darkTimeFrame.setVisibility(View.GONE);
+				lightTimeFrame.setVisibility(View.GONE);
+			}
+		}
+		else {
+			// theme is "Dark"
+			darkTimeFrame.setVisibility(View.GONE);
+			lightTimeFrame.setVisibility(View.GONE);
 		}
 
 		if(timeSelectedChoice == 0) {
