@@ -1,14 +1,21 @@
 package org.mian.gitnex.activities;
 
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import org.jetbrains.annotations.NotNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsAppearanceBinding;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 
 /**
@@ -45,6 +52,8 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		LinearLayout timeFrame = activitySettingsAppearanceBinding.timeFrame;
 		LinearLayout customFontFrame = activitySettingsAppearanceBinding.customFontFrame;
 		LinearLayout themeFrame = activitySettingsAppearanceBinding.themeSelectionFrame;
+		LinearLayout lightTimeFrame = activitySettingsAppearanceBinding.lightThemeTimeSelectionFrame;
+		LinearLayout darkTimeFrame = activitySettingsAppearanceBinding.darkThemeTimeSelectionFrame;
 
 		SwitchMaterial counterBadgesSwitch = activitySettingsAppearanceBinding.switchCounterBadge;
 
@@ -120,6 +129,18 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			cfDialog.show();
 		});
 
+		lightTimeFrame.setOnClickListener(view -> {
+			LightTimePicker timePicker = new LightTimePicker();
+			timePicker.setVariables(tinyDB);
+	        timePicker.show(getSupportFragmentManager(), "timePicker");
+		});
+
+		darkTimeFrame.setOnClickListener(view -> {
+			DarkTimePicker timePicker = new DarkTimePicker();
+			timePicker.setVariables(tinyDB);
+	        timePicker.show(getSupportFragmentManager(), "timePicker");
+		});
+
 		// custom font dialog
 		customFontFrame.setOnClickListener(view -> {
 
@@ -182,6 +203,64 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 	private void initCloseListener() {
 		onClickListener = view -> finish();
+	}
+
+	public static class LightTimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+
+		TinyDB db;
+
+		public void setVariables(TinyDB db) {
+			this.db = db;
+		}
+
+		@NotNull
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			int hour = db.getInt("lightThemeTimeHour");
+			int minute = db.getInt("lightThemeTimeMinute");
+
+			return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
+		}
+
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			db.putInt("lightThemeTimeHour", hourOfDay);
+			db.putInt("lightThemeTimeMinute", minute);
+			db.putBoolean("refreshParent", true);
+			requireActivity().overridePendingTransition(0, 0);
+			this.dismiss();
+			Toasty.success(requireActivity().getApplicationContext(), requireContext().getResources().getString(R.string.settingsSave));
+			requireActivity().recreate();
+		}
+
+	}
+
+	public static class DarkTimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+
+		TinyDB db;
+
+		public void setVariables(TinyDB db) {
+			this.db = db;
+		}
+
+		@NotNull
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			int hour = db.getInt("darkThemeTimeHour");
+			int minute = db.getInt("darkThemeTimeMinute");
+
+			return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
+		}
+
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			db.putInt("darkThemeTimeHour", hourOfDay);
+			db.putInt("darkThemeTimeMinute", minute);
+			db.putBoolean("refreshParent", true);
+			requireActivity().overridePendingTransition(0, 0);
+			this.dismiss();
+			Toasty.success(requireActivity().getApplicationContext(), requireContext().getResources().getString(R.string.settingsSave));
+			requireActivity().recreate();
+		}
+
 	}
 
 }
