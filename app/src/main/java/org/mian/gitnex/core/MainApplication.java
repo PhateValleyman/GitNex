@@ -164,5 +164,17 @@ public class MainApplication extends Application {
 			tinyDB.putInt("darkThemeTimeMinute", 0);
 		}
 
+		if(tinyDB.getString("timeStr").isEmpty()) {
+			tinyDB.putString("timeStr", getString(R.string.settingsDateTimeHeaderDefault));
+		}
+
+		if(tinyDB.getString("customFontStr").isEmpty()) {
+			tinyDB.putString("customFontStr", "Manrope");
+		}
+
+		if(tinyDB.getString("themeStr").isEmpty()) {
+			tinyDB.putString("themeStr", "Dark");
+		}
+
 	}
 }

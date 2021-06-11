@@ -64,48 +64,22 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		if(!tinyDB.getString("timeStr").isEmpty()) {
-
-			tvDateTimeSelected.setText(tinyDB.getString("timeStr"));
-		}
-
-		if(!tinyDB.getString("customFontStr").isEmpty()) {
-
-			customFontSelected.setText(tinyDB.getString("customFontStr"));
-		}
-
-		if(!tinyDB.getString("themeStr").isEmpty()) {
-
-			themeSelected.setText(tinyDB.getString("themeStr"));
-			if(tinyDB.getString("themeStr").startsWith("Auto")) {
-				darkTimeFrame.setVisibility(View.VISIBLE);
-				lightTimeFrame.setVisibility(View.VISIBLE);
-			}
-			else {
-				darkTimeFrame.setVisibility(View.GONE);
-				lightTimeFrame.setVisibility(View.GONE);
-			}
+		tvDateTimeSelected.setText(tinyDB.getString("timeStr"));
+		customFontSelected.setText(tinyDB.getString("customFontStr"));
+		themeSelected.setText(tinyDB.getString("themeStr"));
+		
+		if(tinyDB.getString("themeStr").startsWith("Auto")) {
+			darkTimeFrame.setVisibility(View.VISIBLE);
+			lightTimeFrame.setVisibility(View.VISIBLE);
 		}
 		else {
-			// theme is "Dark"
 			darkTimeFrame.setVisibility(View.GONE);
 			lightTimeFrame.setVisibility(View.GONE);
 		}
 
-		if(timeSelectedChoice == 0) {
-
-			timeSelectedChoice = tinyDB.getInt("timeId");
-		}
-
-		if(customFontSelectedChoice == 0) {
-
-			customFontSelectedChoice = tinyDB.getInt("customFontId", 1);
-		}
-
-		if(themeSelectedChoice == 0) {
-
-			themeSelectedChoice = tinyDB.getInt("themeId");
-		}
+		timeSelectedChoice = tinyDB.getInt("timeId");
+		customFontSelectedChoice = tinyDB.getInt("customFontId", 1);
+		themeSelectedChoice = tinyDB.getInt("themeId");
 
 		counterBadgesSwitch.setChecked(tinyDB.getBoolean("enableCounterBadges"));
 
