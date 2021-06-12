@@ -59,8 +59,16 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		activitySettingsAppearanceBinding.lightThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, String.valueOf(tinyDB.getInt("lightThemeTimeHour")), String.valueOf(tinyDB.getInt("lightThemeTimeMinute"))));
-		activitySettingsAppearanceBinding.darkThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, String.valueOf(tinyDB.getInt("darkThemeTimeHour")), String.valueOf(tinyDB.getInt("darkThemeTimeMinute"))));
+		String lightMinute = String.valueOf(tinyDB.getInt("lightThemeTimeMinute"));
+		if(lightMinute.length() == 1) lightMinute = "0" + lightMinute;
+
+		String darkMinute = String.valueOf(tinyDB.getInt("darkThemeTimeMinute"));
+		if(darkMinute.length() == 1) darkMinute = "0" + darkMinute;
+
+		activitySettingsAppearanceBinding.lightThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, String.valueOf(tinyDB.getInt("lightThemeTimeHour")),
+			lightMinute));
+		activitySettingsAppearanceBinding.darkThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, String.valueOf(tinyDB.getInt("darkThemeTimeHour")),
+			darkMinute));
 		activitySettingsAppearanceBinding.tvDateTimeSelected.setText(tinyDB.getString("timeStr"));
 		activitySettingsAppearanceBinding.customFontSelected.setText(tinyDB.getString("customFontStr"));
 		activitySettingsAppearanceBinding.themeSelected.setText(tinyDB.getString("themeStr"));
