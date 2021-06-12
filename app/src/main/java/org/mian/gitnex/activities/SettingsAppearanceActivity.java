@@ -7,7 +7,6 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -45,10 +44,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 		ImageView closeActivity = activitySettingsAppearanceBinding.close;
 
-		final TextView tvDateTimeSelected = activitySettingsAppearanceBinding.tvDateTimeSelected; // setter for time
-		final TextView customFontSelected = activitySettingsAppearanceBinding.customFontSelected; // setter for custom font
-		final TextView themeSelected = activitySettingsAppearanceBinding.themeSelected; // setter for theme
-
 		LinearLayout timeFrame = activitySettingsAppearanceBinding.timeFrame;
 		LinearLayout customFontFrame = activitySettingsAppearanceBinding.customFontFrame;
 		LinearLayout themeFrame = activitySettingsAppearanceBinding.themeSelectionFrame;
@@ -64,10 +59,12 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		tvDateTimeSelected.setText(tinyDB.getString("timeStr"));
-		customFontSelected.setText(tinyDB.getString("customFontStr"));
-		themeSelected.setText(tinyDB.getString("themeStr"));
-		
+		activitySettingsAppearanceBinding.lightThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, String.valueOf(tinyDB.getInt("lightThemeTimeHour")), String.valueOf(tinyDB.getInt("lightThemeTimeMinute"))));
+		activitySettingsAppearanceBinding.darkThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, String.valueOf(tinyDB.getInt("darkThemeTimeHour")), String.valueOf(tinyDB.getInt("darkThemeTimeMinute"))));
+		activitySettingsAppearanceBinding.tvDateTimeSelected.setText(tinyDB.getString("timeStr"));
+		activitySettingsAppearanceBinding.customFontSelected.setText(tinyDB.getString("customFontStr"));
+		activitySettingsAppearanceBinding.themeSelected.setText(tinyDB.getString("themeStr"));
+
 		if(tinyDB.getString("themeStr").startsWith("Auto")) {
 			darkTimeFrame.setVisibility(View.VISIBLE);
 			lightTimeFrame.setVisibility(View.VISIBLE);
@@ -101,7 +98,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			tsBuilder.setSingleChoiceItems(themeList, themeSelectedChoice, (dialogInterfaceTheme, i) -> {
 
 				themeSelectedChoice = i;
-				themeSelected.setText(themeList[i]);
+				activitySettingsAppearanceBinding.themeSelected.setText(themeList[i]);
 				tinyDB.putString("themeStr", themeList[i]);
 				tinyDB.putInt("themeId", i);
 
@@ -139,7 +136,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			cfBuilder.setSingleChoiceItems(customFontList, customFontSelectedChoice, (dialogInterfaceCustomFont, i) -> {
 
 				customFontSelectedChoice = i;
-				customFontSelected.setText(customFontList[i]);
+				activitySettingsAppearanceBinding.customFontSelected.setText(customFontList[i]);
 				tinyDB.putString("customFontStr", customFontList[i]);
 				tinyDB.putInt("customFontId", i);
 
@@ -165,7 +162,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			tBuilder.setSingleChoiceItems(timeList, timeSelectedChoice, (dialogInterfaceTime, i) -> {
 
 				timeSelectedChoice = i;
-				tvDateTimeSelected.setText(timeList[i]);
+				activitySettingsAppearanceBinding.tvDateTimeSelected.setText(timeList[i]);
 				tinyDB.putString("timeStr", timeList[i]);
 				tinyDB.putInt("timeId", i);
 
@@ -218,7 +215,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			Toasty.success(requireActivity().getApplicationContext(), requireContext().getResources().getString(R.string.settingsSave));
 			requireActivity().recreate();
 		}
-
 	}
 
 	public static class DarkTimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -247,7 +243,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			Toasty.success(requireActivity().getApplicationContext(), requireContext().getResources().getString(R.string.settingsSave));
 			requireActivity().recreate();
 		}
-
 	}
 
 }

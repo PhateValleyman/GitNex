@@ -102,6 +102,16 @@
             android:textColor="?attr/primaryTextColor"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/lightThemeSelectedTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/settingsThemeTimeSelectedHint"
+            android:textColor="?attr/selectedTextColor"
+            android:textSize="14sp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -124,6 +134,16 @@
             android:text="@string/settingsDarkThemeTimeSelectorHeader"
             android:textColor="?attr/primaryTextColor"
             android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/darkThemeSelectedTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/settingsThemeTimeSelectedHint"
+            android:textColor="?attr/selectedTextColor"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
