@@ -20,9 +20,6 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import org.ocpsoft.prettytime.PrettyTime;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -107,28 +104,10 @@ public class DetailFragment extends Fragment {
 								.centerCrop()
 								.into(binding.userAvatar);
 
-							switch(timeFormat) {
-								case "pretty": {
-									PrettyTime prettyTime = new PrettyTime(locale);
-									String createdTime = prettyTime.format(response.body().getCreated());
-									binding.userJoinedOn.setText(createdTime);
-									binding.userJoinedOn.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(response.body().getCreated()), context));
-									break;
-								}
-								case "normal": {
-									DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
-									String createdTime = formatter.format(response.body().getCreated());
-									binding.userJoinedOn.setText(createdTime);
-									break;
-								}
-								case "normal1": {
-									DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
-									String createdTime = formatter.format(response.body().getCreated());
-									binding.userJoinedOn.setText(createdTime);
-									break;
-								}
+							binding.userJoinedOn.setText(TimeHelper.formatTime(response.body().getCreated(), locale, timeFormat, context));
+							if(timeFormat.equals("pretty")) {
+								binding.userJoinedOn.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(response.body().getCreated()), context));
 							}
-
 							break;
 
 						case 401:
@@ -136,7 +115,12 @@ public class DetailFragment extends Fragment {
 								.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle), context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 							break;
 
+						case 403:
+							Toasty.error(context, context.getString(R.string.authorizeError));
+							break;
+
 						default:
+							Toasty.error(getContext(), getString(R.string.genericError));
 							break;
 					}
 				}

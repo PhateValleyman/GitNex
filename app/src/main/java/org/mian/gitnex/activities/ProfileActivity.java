@@ -18,6 +18,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import org.mian.gitnex.R;
 import org.mian.gitnex.fragments.profile.DetailFragment;
 import org.mian.gitnex.fragments.profile.RepositoriesFragment;
+import org.mian.gitnex.fragments.profile.StarredRepositoriesFragment;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.Objects;
 
@@ -105,7 +106,7 @@ public class ProfileActivity extends BaseActivity {
 				case 1: // repos
 					return RepositoriesFragment.newInstance(username);
 				case 2: // starred repos
-					return DetailFragment.newInstance(username);
+					return StarredRepositoriesFragment.newInstance(username);
 				case 3: // following
 					return DetailFragment.newInstance(username);
 				case 4: // followers
