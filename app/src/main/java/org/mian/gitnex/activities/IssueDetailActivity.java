@@ -434,6 +434,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		if(id == android.R.id.home) {
 
+			if (!tinyDB.getBoolean("issueOpenedFromList")) startActivity(new Intent(this, RepoDetailActivity.class));
+			tinyDB.putBoolean("issueOpenedFromList", false);
 			finish();
 			return true;
 		}
