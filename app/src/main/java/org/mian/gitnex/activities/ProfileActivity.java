@@ -14,8 +14,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import org.mian.gitnex.R;
 import org.mian.gitnex.fragments.profile.DetailFragment;
+import org.mian.gitnex.fragments.profile.RepositoriesFragment;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.Objects;
 
@@ -68,6 +70,11 @@ public class ProfileActivity extends BaseActivity {
 		toolbarTitle.setTypeface(myTypeface);
 		toolbarTitle.setText(username);
 
+		viewPager.setAdapter(new ViewPagerAdapter(this));
+
+		String[] tabTitles = {ctx.getResources().getString(R.string.tabTextInfo), ctx.getResources().getString(R.string.navRepos), ctx.getResources().getString(R.string.navStarredRepos), ctx.getResources().getString(R.string.profileTabFollowers), ctx.getResources().getString(R.string.profileTabFollowing)};
+		new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(tabTitles[position])).attach();
+
 		ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
 		int tabsCount = vg.getChildCount();
 
@@ -83,8 +90,6 @@ public class ProfileActivity extends BaseActivity {
 				}
 			}
 		}
-
-		viewPager.setAdapter(new ViewPagerAdapter(this));
 	}
 
 	public class ViewPagerAdapter extends FragmentStateAdapter {
@@ -98,16 +103,15 @@ public class ProfileActivity extends BaseActivity {
 				case 0: // detail
 					return DetailFragment.newInstance(username);
 				case 1: // repos
-					return DetailFragment.newInstance(username);
+					return RepositoriesFragment.newInstance(username);
 				case 2: // starred repos
 					return DetailFragment.newInstance(username);
 				case 3: // following
 					return DetailFragment.newInstance(username);
 				case 4: // followers
 					return DetailFragment.newInstance(username);
-				default:
-					return null;
 			}
+			return null;
 		}
 
 		@Override

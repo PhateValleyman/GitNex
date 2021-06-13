@@ -41,39 +41,7 @@
             android:background="?attr/primaryBackgroundColor"
             app:tabIndicatorColor="?attr/pagerTabIndicatorColor"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItemInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tabTextInfo" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItemRepos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/orgTabRepos" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItemStarredRepos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/navStarredRepos" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItemFollowers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profileTabFollowers" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItemFollowing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profileTabFollowing" />
-
-        </com.google.android.material.tabs.TabLayout>
+            android:layout_height="wrap_content" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
