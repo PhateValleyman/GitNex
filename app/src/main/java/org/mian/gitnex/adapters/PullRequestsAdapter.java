@@ -129,6 +129,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 					tinyDb.putString("prForkFullName", context.getString(R.string.prDeletedFork));
 				}
 
+				tinyDb.putBoolean("issueOpenedFromList", true);
 				tinyDb.putString("issueType", "Pull");
 				context.startActivity(intent);
 
