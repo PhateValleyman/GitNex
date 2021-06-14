@@ -61,8 +61,6 @@ public class ProfileFragment extends Fragment {
         TextView userLanguage = v.findViewById(R.id.userLanguage);
         ImageView userLanguageIcon = v.findViewById(R.id.userLanguageIcon);
 
-	    ViewGroup aboutFrame = v.findViewById(R.id.aboutFrame);
-
 	    String[] userLanguageCodes = tinyDb.getString("userLang").split("-");
 
 	    if(userLanguageCodes.length >= 2) {
@@ -159,7 +157,6 @@ public class ProfileFragment extends Fragment {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         return v;
-
     }
 
     public static class SectionsPagerAdapter extends FragmentStatePagerAdapter {
@@ -186,14 +183,12 @@ public class ProfileFragment extends Fragment {
             }
 
             return null;
-
         }
 
         @Override
         public int getCount() {
             return 3;
         }
-
     }
 
     @Override
@@ -202,7 +197,6 @@ public class ProfileFragment extends Fragment {
         menu.clear();
         requireActivity().getMenuInflater().inflate(R.menu.profile_dotted_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-
     }
 
     @Override
@@ -210,21 +204,18 @@ public class ProfileFragment extends Fragment {
 
         int id = item.getItemId();
 
-        switch (id) {
-
-            case android.R.id.home:
-                ((MainActivity)ctx).finish();
-                return true;
-
-            case R.id.profileMenu:
-                BottomSheetProfileFragment bottomSheet = new BottomSheetProfileFragment();
-                bottomSheet.show(getChildFragmentManager(), "profileBottomSheet");
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
+	    if(id == android.R.id.home) {
+		    ((MainActivity)ctx).finish();
+		    return true;
+	    }
+	    else if(id == R.id.profileMenu) {
+		    BottomSheetProfileFragment bottomSheet = new BottomSheetProfileFragment();
+		    bottomSheet.show(getChildFragmentManager(), "profileBottomSheet");
+		    return true;
+	    }
+	    else {
+		    return super.onOptionsItemSelected(item);
+	    }
     }
 
 }

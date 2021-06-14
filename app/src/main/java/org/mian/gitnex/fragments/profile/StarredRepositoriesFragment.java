@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.models.UserRepositories;
 import org.mian.gitnex.R;
-import org.mian.gitnex.adapters.profile.RepositoriesAdapter;
-import org.mian.gitnex.databinding.FragmentRepositoriesBinding;
+import org.mian.gitnex.adapters.profile.StarredRepositoriesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.databinding.FragmentRepositoriesBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
@@ -44,7 +44,7 @@ public class StarredRepositoriesFragment extends Fragment {
 	private FragmentRepositoriesBinding fragmentRepositoriesBinding;
 
 	private List<UserRepositories> reposList;
-	private RepositoriesAdapter adapter;
+	private StarredRepositoriesAdapter adapter;
 
 	private int pageSize;
 	private int resultLimit = Constants.resultLimitOldGiteaInstances;
@@ -77,8 +77,7 @@ public class StarredRepositoriesFragment extends Fragment {
 		fragmentRepositoriesBinding = org.mian.gitnex.databinding.FragmentRepositoriesBinding.inflate(inflater, container, false);
 		setHasOptionsMenu(true);
 		context = getContext();
-
-		TinyDB tinyDb = TinyDB.getInstance(getContext());
+		TinyDB tinyDb = TinyDB.getInstance(context);
 
 		// if gitea is 1.12 or higher use the new limit
 		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
@@ -91,25 +90,25 @@ public class StarredRepositoriesFragment extends Fragment {
 
 		fragmentRepositoriesBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 			fragmentRepositoriesBinding.pullToRefresh.setRefreshing(false);
-			loadInitial(Authorization.get(getContext()), username, resultLimit);
+			loadInitial(Authorization.get(context), username, resultLimit);
 			adapter.notifyDataChanged();
 		}, 200));
 
-		adapter = new RepositoriesAdapter(getContext(), reposList);
+		adapter = new StarredRepositoriesAdapter(context, reposList);
 		adapter.setLoadMoreListener(() -> fragmentRepositoriesBinding.recyclerView.post(() -> {
 			if(reposList.size() == resultLimit || pageSize == resultLimit) {
 				int page = (reposList.size() + resultLimit) / resultLimit;
-				loadMore(Authorization.get(getContext()), username, page, resultLimit);
+				loadMore(Authorization.get(context), username, page, resultLimit);
 			}
 		}));
 
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentRepositoriesBinding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
 		fragmentRepositoriesBinding.recyclerView.setHasFixedSize(true);
 		fragmentRepositoriesBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 		fragmentRepositoriesBinding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 		fragmentRepositoriesBinding.recyclerView.setAdapter(adapter);
 
-		loadInitial(Authorization.get(getContext()), username, resultLimit);
+		loadInitial(Authorization.get(context), username, resultLimit);
 
 		return fragmentRepositoriesBinding.getRoot();
 	}
@@ -159,7 +158,7 @@ public class StarredRepositoriesFragment extends Fragment {
 							break;
 
 						default:
-							Toasty.error(getContext(), getString(R.string.genericError));
+							Toasty.error(context, getString(R.string.genericError));
 							break;
 					}
 				}
@@ -167,7 +166,7 @@ public class StarredRepositoriesFragment extends Fragment {
 
 			@Override
 			public void onFailure(@NonNull Call<List<UserRepositories>> call, @NonNull Throwable t) {
-				Toasty.error(getContext(), getString(R.string.genericError));
+				Toasty.error(context, getString(R.string.genericError));
 			}
 		});
 	}
@@ -219,7 +218,7 @@ public class StarredRepositoriesFragment extends Fragment {
 							break;
 
 						default:
-							Toasty.error(getContext(), getString(R.string.genericError));
+							Toasty.error(context, getString(R.string.genericError));
 							break;
 					}
 				}
@@ -227,7 +226,7 @@ public class StarredRepositoriesFragment extends Fragment {
 
 			@Override
 			public void onFailure(@NonNull Call<List<UserRepositories>> call, @NonNull Throwable t) {
-				Toasty.error(getContext(), getString(R.string.genericError));
+				Toasty.error(context, getString(R.string.genericError));
 			}
 		});
 	}

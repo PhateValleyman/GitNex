@@ -16,11 +16,13 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.ClickListener;
+import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.Locale;
+import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -30,7 +32,7 @@ import retrofit2.Callback;
 
 public class DetailFragment extends Fragment {
 
-	private Context ctx;
+	private Context context;
 	private FragmentProfileDetailBinding binding;
 	Locale locale;
 	TinyDB tinyDb;
@@ -60,16 +62,16 @@ public class DetailFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		binding = FragmentProfileDetailBinding.inflate(inflater, container, false);
-		tinyDb = TinyDB.getInstance(getContext());
-		ctx = getContext();
+		context = getContext();
+		tinyDb = TinyDB.getInstance(context);
 		locale = getResources().getConfiguration().locale;
 
-		getProfileDetail(ctx, username);
+		getProfileDetail(username);
 
 		return binding.getRoot();
 	}
 
-	public void getProfileDetail(Context context, String username) {
+	public void getProfileDetail(String username) {
 
 		Call<UserInfo> call = RetrofitClient
 			.getApiInterface(context)
@@ -85,9 +87,9 @@ public class DetailFragment extends Fragment {
 						case 200:
 							String username = !response.body().getFullname().isEmpty() ? response.body().getFullname() : response.body().getUsername();
 							String email = !response.body().getEmail().isEmpty() ? response.body().getEmail() : "";
-							String lang = !response.body().getLang().isEmpty() ? response.body().getLang() : "";
+							String lang = !response.body().getLang().isEmpty() ? response.body().getLang() : locale.getDisplayLanguage();
 
-							int imgRadius = AppUtil.getPixelsFromDensity(ctx, 3);
+							int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 							String timeFormat = tinyDb.getString("dateFormat");
 
 							binding.username.setText(username);
@@ -95,14 +97,28 @@ public class DetailFragment extends Fragment {
 							binding.userLang.setText(lang);
 							binding.userLogin.setText(response.body().getLogin());
 
-							PicassoService.getInstance(ctx)
-								.get()
+							PicassoService.getInstance(context).get()
 								.load(response.body().getAvatar())
-								.placeholder(R.drawable.loader_animated)
 								.transform(new RoundedTransformation(imgRadius, 0))
+								.placeholder(R.drawable.loader_animated)
 								.resize(120, 120)
 								.centerCrop()
 								.into(binding.userAvatar);
+
+							PicassoService.getInstance(context).get()
+								.load(response.body().getAvatar())
+								.transform(new BlurTransformation(context))
+								.into(binding.userAvatarBackground, new com.squareup.picasso.Callback() {
+
+									@Override
+									public void onSuccess() {
+										int invertedColor = new ColorInverter().getImageViewContrastColor(binding.userAvatarBackground);
+
+										binding.username.setTextColor(invertedColor);
+									}
+
+									@Override public void onError(Exception e) {}
+								});
 
 							binding.userJoinedOn.setText(TimeHelper.formatTime(response.body().getCreated(), locale, timeFormat, context));
 							if(timeFormat.equals("pretty")) {
@@ -120,7 +136,7 @@ public class DetailFragment extends Fragment {
 							break;
 
 						default:
-							Toasty.error(getContext(), getString(R.string.genericError));
+							Toasty.error(context, getString(R.string.genericError));
 							break;
 					}
 				}
@@ -128,7 +144,7 @@ public class DetailFragment extends Fragment {
 
 			@Override
 			public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
-				Toasty.error(ctx, ctx.getResources().getString(R.string.genericError));
+				Toasty.error(context, context.getResources().getString(R.string.genericError));
 			}
 		});
 	}
