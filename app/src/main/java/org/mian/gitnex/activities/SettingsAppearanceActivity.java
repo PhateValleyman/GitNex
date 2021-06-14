@@ -123,13 +123,11 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 		lightTimeFrame.setOnClickListener(view -> {
 			LightTimePicker timePicker = new LightTimePicker();
-			timePicker.setVariables(tinyDB);
 	        timePicker.show(getSupportFragmentManager(), "timePicker");
 		});
 
 		darkTimeFrame.setOnClickListener(view -> {
 			DarkTimePicker timePicker = new DarkTimePicker();
-			timePicker.setVariables(tinyDB);
 	        timePicker.show(getSupportFragmentManager(), "timePicker");
 		});
 
@@ -199,11 +197,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 	public static class LightTimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
-		TinyDB db;
-
-		public void setVariables(TinyDB db) {
-			this.db = db;
-		}
+		TinyDB db = TinyDB.getInstance(getContext());
 
 		@NotNull
 		@Override
@@ -227,11 +221,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 	public static class DarkTimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
-		TinyDB db;
-
-		public void setVariables(TinyDB db) {
-			this.db = db;
-		}
+		TinyDB db = TinyDB.getInstance(getContext());
 
 		@NotNull
 		@Override
