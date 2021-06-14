@@ -208,6 +208,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
 		}
 
+		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 			db.putInt("lightThemeTimeHour", hourOfDay);
 			db.putInt("lightThemeTimeMinute", minute);
@@ -232,6 +233,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
 		}
 
+		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 			db.putInt("darkThemeTimeHour", hourOfDay);
 			db.putInt("darkThemeTimeMinute", minute);
