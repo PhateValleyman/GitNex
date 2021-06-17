@@ -1,6 +1,7 @@
 package org.mian.gitnex.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -79,6 +81,14 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 						context.getResources().getString(R.string.removeTeamMemberMessage),
 						context.getResources().getString(R.string.removeButton),
 						context.getResources().getString(R.string.cancelButton), Integer.parseInt(String.valueOf(teamId)));
+			});
+
+			userAvatar.setOnClickListener(loginId -> {
+				Context context = loginId.getContext();
+
+				Intent intent = new Intent(context, ProfileActivity.class);
+				intent.putExtra("username", userInfo.getLogin());
+				context.startActivity(intent);
 			});
 		}
 

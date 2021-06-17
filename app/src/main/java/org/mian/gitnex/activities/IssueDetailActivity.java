@@ -1,6 +1,7 @@
 package org.mian.gitnex.activities;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -582,6 +583,14 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					viewBinding.issueTitle.setText(HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(singleIssue.getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
 					String cleanIssueDescription = singleIssue.getBody().trim();
 
+					viewBinding.assigneeAvatar.setOnClickListener(loginId -> {
+						Context context = loginId.getContext();
+
+						Intent intent = new Intent(context, ProfileActivity.class);
+						intent.putExtra("username", singleIssue.getUser().getLogin());
+						context.startActivity(intent);
+					});
+
 					Markdown.render(ctx, EmojiParser.parseToUnicode(cleanIssueDescription), viewBinding.issueDescription);
 
 					RelativeLayout.LayoutParams paramsDesc = (RelativeLayout.LayoutParams) viewBinding.issueDescription.getLayoutParams();
@@ -603,7 +612,17 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 							viewBinding.frameAssignees.addView(assigneesView);
 							assigneesView.setLayoutParams(params1);
-							if(!singleIssue.getAssignees().get(i).getFull_name().equals("")) {
+
+							int finalI = i;
+							assigneesView.setOnClickListener(loginId -> {
+								Context context = loginId.getContext();
+
+								Intent intent = new Intent(context, ProfileActivity.class);
+								intent.putExtra("username", singleIssue.getAssignees().get(finalI).getLogin());
+								context.startActivity(intent);
+							});
+
+							/*if(!singleIssue.getAssignees().get(i).getFull_name().equals("")) {
 
 								assigneesView.setOnClickListener(
 									new ClickListener(getString(R.string.assignedTo, singleIssue.getAssignees().get(i).getFull_name()), ctx));
@@ -612,7 +631,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 								assigneesView.setOnClickListener(
 									new ClickListener(getString(R.string.assignedTo, singleIssue.getAssignees().get(i).getLogin()), ctx));
-							}
+							}*/
 						}
 					}
 					else {
@@ -750,7 +769,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 						viewBinding.issueMilestone.setVisibility(View.GONE);
 					}
 
-					if(!singleIssue.getUser().getFull_name().equals("")) {
+					/*if(!singleIssue.getUser().getFull_name().equals("")) {
 
 						viewBinding.assigneeAvatar.setOnClickListener(
 							new ClickListener(ctx.getResources().getString(R.string.issueCreator) + singleIssue.getUser().getFull_name(), ctx));
@@ -759,7 +778,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 						viewBinding.assigneeAvatar.setOnClickListener(
 							new ClickListener(ctx.getResources().getString(R.string.issueCreator) + singleIssue.getUser().getLogin(), ctx));
-					}
+					}*/
 
 					viewBinding.progressBar.setVisibility(View.GONE);
 				}

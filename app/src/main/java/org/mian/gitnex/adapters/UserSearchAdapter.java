@@ -1,6 +1,7 @@
 package org.mian.gitnex.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.CollaboratorActions;
+import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -99,6 +101,13 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
                         context.getResources().getString(R.string.cancelButton), "fa");
             });
 
+	        userAvatar.setOnClickListener(loginId -> {
+		        Context context = loginId.getContext();
+
+		        Intent intent = new Intent(context, ProfileActivity.class);
+		        intent.putExtra("username", userInfo.getLogin());
+		        context.startActivity(intent);
+	        });
         }
 
     }

@@ -20,6 +20,7 @@ import com.google.gson.JsonElement;
 import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.IssueComments;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetReplyFragment;
@@ -213,9 +214,12 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 			});
 
 			avatar.setOnClickListener(loginId -> {
-
 				Context context = loginId.getContext();
-				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+
+				Intent intent = new Intent(context, ProfileActivity.class);
+				intent.putExtra("username", userLoginId);
+				context.startActivity(intent);
+				//AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
 			});
 		}
 	}

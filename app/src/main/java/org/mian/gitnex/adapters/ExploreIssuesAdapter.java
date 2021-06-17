@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.Issues;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
+import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.RepositoriesApi;
@@ -100,9 +101,11 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<ExploreIssuesAdap
 
 			issueAssigneeAvatar.setOnClickListener(v -> {
 				Context context = v.getContext();
-				String userLoginId = issue.getUser().getLogin();
 
-				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+				Intent intent = new Intent(context, ProfileActivity.class);
+				intent.putExtra("username", issue.getUser().getLogin());
+				context.startActivity(intent);
+				//AppUtil.copyToClipboard(context, issue.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, issue.getUser().getLogin()));
 			});
 		}
 	}

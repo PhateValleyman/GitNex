@@ -16,6 +16,7 @@ import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.PullRequests;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
+import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
@@ -136,9 +137,11 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 			assigneeAvatar.setOnClickListener(v -> {
 				Context context = v.getContext();
-				String userLoginId = pullRequest.getUser().getLogin();
 
-				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+				Intent intent = new Intent(context, ProfileActivity.class);
+				intent.putExtra("username", pullRequest.getUser().getLogin());
+				context.startActivity(intent);
+				//AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
 			});
 
 		}

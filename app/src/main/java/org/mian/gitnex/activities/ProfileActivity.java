@@ -109,9 +109,9 @@ public class ProfileActivity extends BaseActivity {
 					return RepositoriesFragment.newInstance(username);
 				case 2: // starred repos
 					return StarredRepositoriesFragment.newInstance(username);
-				case 3: // following
+				case 3: // followers
 					return FollowersFragment.newInstance(username);
-				case 4: // followers
+				case 4: // following
 					return FollowingFragment.newInstance(username);
 			}
 			return null;
