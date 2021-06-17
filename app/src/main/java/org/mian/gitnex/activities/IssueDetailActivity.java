@@ -102,6 +102,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private CustomAssigneesSelectionDialogBinding assigneesBinding;
 	private ActivityIssueDetailBinding viewBinding;
 
+	private boolean openedFromList = false;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -115,6 +117,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		repoOwner = parts[0];
 		repoName = parts[1];
 		issueIndex = Integer.parseInt(tinyDB.getString("issueNumber"));
+
+		openedFromList = tinyDB.getBoolean("issueOpenedFromList");
 
 		setSupportActionBar(viewBinding.toolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle(repoName);
@@ -434,7 +438,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		if(id == android.R.id.home) {
 
-			if(!tinyDB.getBoolean("issueOpenedFromList")) {
+			if(!openedFromList) {
 				Intent intent = new Intent(this, RepoDetailActivity.class);
 				startActivity(intent);
 			}
