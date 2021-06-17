@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.mian.gitnex.adapters.ProfileFollowingAdapter;
-import org.mian.gitnex.databinding.FragmentProfileFollowingBinding;
+import org.mian.gitnex.databinding.FragmentProfileFollowersFollowingBinding;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.ProfileFollowingViewModel;
@@ -65,14 +65,14 @@ public class ProfileFollowingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-	    FragmentProfileFollowingBinding fragmentProfileFollowingBinding = FragmentProfileFollowingBinding.inflate(inflater, container, false);
+	    FragmentProfileFollowersFollowingBinding fragmentProfileFollowersFollowingBinding = FragmentProfileFollowersFollowingBinding.inflate(inflater, container, false);
 
         TinyDB tinyDb = TinyDB.getInstance(getContext());
 
-        final SwipeRefreshLayout swipeRefresh = fragmentProfileFollowingBinding.pullToRefresh;
+        final SwipeRefreshLayout swipeRefresh = fragmentProfileFollowersFollowingBinding.pullToRefresh;
 
-        noDataFollowing = fragmentProfileFollowingBinding.noDataFollowing;
-        mRecyclerView = fragmentProfileFollowingBinding.recyclerView;
+        noDataFollowing = fragmentProfileFollowersFollowingBinding.noData;
+        mRecyclerView = fragmentProfileFollowersFollowingBinding.recyclerView;
 
 	    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
 
@@ -80,7 +80,7 @@ public class ProfileFollowingFragment extends Fragment {
 	    mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        mProgressBar = fragmentProfileFollowingBinding.progressBar;
+        mProgressBar = fragmentProfileFollowersFollowingBinding.progressBar;
 
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
@@ -91,7 +91,7 @@ public class ProfileFollowingFragment extends Fragment {
 
         fetchDataAsync(Authorization.get(getContext()));
 
-        return fragmentProfileFollowingBinding.getRoot();
+        return fragmentProfileFollowersFollowingBinding.getRoot();
     }
 
     private void fetchDataAsync(String instanceToken) {

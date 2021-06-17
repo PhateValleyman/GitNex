@@ -110,6 +110,7 @@ public class StarredRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 		@SuppressLint("SetTextI18n")
 		void bindData(UserRepositories userRepositories) {
 
+			this.userRepositories = userRepositories;
 			TinyDB tinyDb = TinyDB.getInstance(context);
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
