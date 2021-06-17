@@ -21,7 +21,7 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 	private final Context context;
 	private final int TYPE_LOAD = 0;
@@ -29,7 +29,7 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
-	public FollowersAdapter(Context ctx, List<UserInfo> usersListMain) {
+	public FollowingAdapter(Context ctx, List<UserInfo> usersListMain) {
 		this.context = ctx;
 		this.usersList = usersListMain;
 	}
@@ -109,7 +109,8 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 				userName.setVisibility(View.GONE);
 			}
 
-			PicassoService.getInstance(context)
+			PicassoService
+				.getInstance(context)
 				.get()
 				.load(userInfo.getAvatar())
 				.placeholder(R.drawable.loader_animated)
@@ -147,5 +148,4 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 		usersList = list;
 		notifyDataSetChanged();
 	}
-
 }
