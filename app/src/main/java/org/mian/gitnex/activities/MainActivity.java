@@ -17,17 +17,11 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.biometric.BiometricPrompt;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
-import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 import org.gitnex.tea4j.models.GiteaVersion;
@@ -64,7 +58,6 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -73,7 +66,7 @@ import retrofit2.Callback;
  * Author M M Arif
  */
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomSheetDraftsFragment.BottomSheetListener, LifecycleObserver {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomSheetDraftsFragment.BottomSheetListener {
 
 	private DrawerLayout drawer;
 	private TextView toolbarTitle;
@@ -85,13 +78,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private View hView;
 	private MenuItem navNotifications;
 	private TextView notificationCounter;
-	private boolean biometricLifeCycle = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
 		ActivityMainBinding activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(activityMainBinding.getRoot());
@@ -444,46 +435,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 			ChangeLog changelogDialog = new ChangeLog(this);
 			changelogDialog.showDialog();
-		}
-	}
-
-	@OnLifecycleEvent(Lifecycle.Event.ON_START)
-	public void onAppForegrounded() {
-
-		if(tinyDB.getBoolean("biometricStatus") && !biometricLifeCycle) {
-
-			Executor executor = ContextCompat.getMainExecutor(this);
-
-			BiometricPrompt biometricPrompt = new BiometricPrompt(this, executor, new BiometricPrompt.AuthenticationCallback() {
-
-				@Override
-				public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-
-					super.onAuthenticationError(errorCode, errString);
-
-					// Authentication error, close the app
-					if(errorCode == BiometricPrompt.ERROR_USER_CANCELED ||
-						errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
-
-						finish();
-					}
-				}
-
-				// Authentication succeeded, continue to app
-				@Override public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) { super.onAuthenticationSucceeded(result); biometricLifeCycle = true; }
-
-				// Authentication failed, close the app
-				@Override public void onAuthenticationFailed() { super.onAuthenticationFailed(); }
-
-			});
-
-			BiometricPrompt.PromptInfo biometricPromptBuilder = new BiometricPrompt.PromptInfo.Builder()
-				.setTitle(getString(R.string.biometricAuthTitle))
-				.setSubtitle(getString(R.string.biometricAuthSubTitle))
-				.setNegativeButtonText(getString(R.string.cancelButton)).build();
-
-			biometricPrompt.authenticate(biometricPromptBuilder);
-
 		}
 	}
 
