@@ -253,6 +253,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 				if(notificationThreads.isEmpty()) {
 
 					noDataNotifications.setVisibility(View.VISIBLE);
+					markAllAsRead.setVisibility(View.GONE);
 				}
 			}
 		});
