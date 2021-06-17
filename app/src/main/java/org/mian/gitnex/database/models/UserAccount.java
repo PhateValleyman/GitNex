@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Author M M Arif
  */
 
-@Entity(tableName = "UserAccounts")
+@Entity(tableName = "userAccounts")
 public class UserAccount implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
