@@ -119,7 +119,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 				TinyDB tinyDb = TinyDB.getInstance(context);
 				tinyDb.putString("issueNumber", String.valueOf(issue.getNumber()));
 				tinyDb.putString("issueType", "Issue");
-				tinyDb.putBoolean("issueOpenedFromList", true);
 				context.startActivity(intent);
 			});
 
