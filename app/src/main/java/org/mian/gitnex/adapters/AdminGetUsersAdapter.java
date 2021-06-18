@@ -33,7 +33,7 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
     private final Context context;
     private final List<UserInfo> usersListFull;
 
-    static class UsersViewHolder extends RecyclerView.ViewHolder {
+    class UsersViewHolder extends RecyclerView.ViewHolder {
 
 	    private String userLoginId;
 
@@ -54,12 +54,14 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
             userRole = itemView.findViewById(R.id.userRole);
 
 	        userAvatar.setOnClickListener(loginId -> {
-		        Context context = loginId.getContext();
-
 		        Intent intent = new Intent(context, ProfileActivity.class);
 		        intent.putExtra("username", userLoginId);
 		        context.startActivity(intent);
-		        //AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+	        });
+
+	        userAvatar.setOnLongClickListener(loginId -> {
+		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+		        return true;
 	        });
         }
     }

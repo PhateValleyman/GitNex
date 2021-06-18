@@ -42,7 +42,7 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 		UserSearchForTeamMemberAdapter.teamId = teamId;
 	}
 
-	static class UserSearchViewHolder extends RecyclerView.ViewHolder {
+	class UserSearchViewHolder extends RecyclerView.ViewHolder {
 
 		private UserInfo userInfo;
 
@@ -62,9 +62,6 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 			addMemberButtonRemove = itemView.findViewById(R.id.addCollaboratorButtonRemove);
 
 			addMemberButtonAdd.setOnClickListener(v -> {
-
-				Context context = v.getContext();
-
 				AlertDialogs.addMemberDialog(context, userInfo.getLogin(),
 						context.getResources().getString(R.string.addTeamMemberTitle),
 						context.getResources().getString(R.string.addTeamMemberMessage),
@@ -73,9 +70,6 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 			});
 
 			addMemberButtonRemove.setOnClickListener(v -> {
-
-				Context context = v.getContext();
-
 				AlertDialogs.removeMemberDialog(context, userInfo.getLogin(),
 						context.getResources().getString(R.string.removeTeamMemberTitle),
 						context.getResources().getString(R.string.removeTeamMemberMessage),
@@ -84,11 +78,14 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 			});
 
 			userAvatar.setOnClickListener(loginId -> {
-				Context context = loginId.getContext();
-
 				Intent intent = new Intent(context, ProfileActivity.class);
 				intent.putExtra("username", userInfo.getLogin());
 				context.startActivity(intent);
+			});
+
+			userAvatar.setOnLongClickListener(loginId -> {
+				AppUtil.copyToClipboard(context, userInfo.getLogin(), context.getString(R.string.copyLoginIdToClipBoard, userInfo.getLogin()));
+				return true;
 			});
 		}
 

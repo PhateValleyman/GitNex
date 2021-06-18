@@ -584,11 +584,14 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					String cleanIssueDescription = singleIssue.getBody().trim();
 
 					viewBinding.assigneeAvatar.setOnClickListener(loginId -> {
-						Context context = loginId.getContext();
-
-						Intent intent = new Intent(context, ProfileActivity.class);
+						Intent intent = new Intent(ctx, ProfileActivity.class);
 						intent.putExtra("username", singleIssue.getUser().getLogin());
-						context.startActivity(intent);
+						ctx.startActivity(intent);
+					});
+
+					viewBinding.assigneeAvatar.setOnLongClickListener(loginId -> {
+						AppUtil.copyToClipboard(ctx, singleIssue.getUser().getLogin(), ctx.getString(R.string.copyLoginIdToClipBoard, singleIssue.getUser().getLogin()));
+						return true;
 					});
 
 					Markdown.render(ctx, EmojiParser.parseToUnicode(cleanIssueDescription), viewBinding.issueDescription);
@@ -615,11 +618,14 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 							int finalI = i;
 							assigneesView.setOnClickListener(loginId -> {
-								Context context = loginId.getContext();
-
-								Intent intent = new Intent(context, ProfileActivity.class);
+								Intent intent = new Intent(ctx, ProfileActivity.class);
 								intent.putExtra("username", singleIssue.getAssignees().get(finalI).getLogin());
-								context.startActivity(intent);
+								ctx.startActivity(intent);
+							});
+
+							assigneesView.setOnLongClickListener(loginId -> {
+								AppUtil.copyToClipboard(ctx, singleIssue.getAssignees().get(finalI).getLogin(), ctx.getString(R.string.copyLoginIdToClipBoard, singleIssue.getAssignees().get(finalI).getLogin()));
+								return true;
 							});
 
 							/*if(!singleIssue.getAssignees().get(i).getFull_name().equals("")) {

@@ -65,8 +65,6 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<ExploreIssuesAdap
 			issueCreatedTime = itemView.findViewById(R.id.issueCreatedTime);
 
 			itemView.setOnClickListener(v -> {
-
-				Context context = v.getContext();
 				Intent intent = new Intent(context, IssueDetailActivity.class);
 				intent.putExtra("issueNumber", issue.getNumber());
 
@@ -100,12 +98,14 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<ExploreIssuesAdap
 			});
 
 			issueAssigneeAvatar.setOnClickListener(v -> {
-				Context context = v.getContext();
-
 				Intent intent = new Intent(context, ProfileActivity.class);
 				intent.putExtra("username", issue.getUser().getLogin());
 				context.startActivity(intent);
-				//AppUtil.copyToClipboard(context, issue.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, issue.getUser().getLogin()));
+			});
+
+			issueAssigneeAvatar.setOnLongClickListener(loginId -> {
+				AppUtil.copyToClipboard(context, issue.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, issue.getUser().getLogin()));
+				return true;
 			});
 		}
 	}

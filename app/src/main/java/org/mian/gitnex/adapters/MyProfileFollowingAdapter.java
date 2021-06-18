@@ -27,7 +27,7 @@ public class MyProfileFollowingAdapter extends RecyclerView.Adapter<MyProfileFol
     private final List<UserInfo> followingList;
     private final Context context;
 
-    static class FollowingViewHolder extends RecyclerView.ViewHolder {
+    class FollowingViewHolder extends RecyclerView.ViewHolder {
 
 	    private String userLoginId;
 
@@ -44,13 +44,14 @@ public class MyProfileFollowingAdapter extends RecyclerView.Adapter<MyProfileFol
             userName = itemView.findViewById(R.id.userName);
 
 	        userAvatar.setOnClickListener(loginId -> {
-
-		        Context context = loginId.getContext();
-
 		        Intent intent = new Intent(context, ProfileActivity.class);
 		        intent.putExtra("username", userLoginId);
 		        context.startActivity(intent);
-		        //AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+	        });
+
+	        userAvatar.setOnLongClickListener(loginId -> {
+		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+		        return true;
 	        });
         }
     }

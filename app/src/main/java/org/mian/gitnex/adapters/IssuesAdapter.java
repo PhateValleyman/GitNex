@@ -111,9 +111,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			issueCreatedTime = itemView.findViewById(R.id.issueCreatedTime);
 
 			itemView.setOnClickListener(layoutView -> {
-
-				Context context = layoutView.getContext();
-
 				Intent intent = new Intent(context, IssueDetailActivity.class);
 				intent.putExtra("issueNumber", issue.getNumber());
 
@@ -124,14 +121,15 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			});
 
 			issueAssigneeAvatar.setOnClickListener(v -> {
-				Context context = v.getContext();
-
 				Intent intent = new Intent(context, ProfileActivity.class);
 				intent.putExtra("username", issue.getUser().getLogin());
 				context.startActivity(intent);
-				//AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
 			});
 
+			issueAssigneeAvatar.setOnLongClickListener(loginId -> {
+				AppUtil.copyToClipboard(context, issue.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, issue.getUser().getLogin()));
+				return true;
+			});
 		}
 
 		@SuppressLint("SetTextI18n")

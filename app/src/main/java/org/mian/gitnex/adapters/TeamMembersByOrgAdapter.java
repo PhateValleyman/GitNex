@@ -29,7 +29,7 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
     private final List<UserInfo> teamMembersList;
     private final Context context;
 
-    private static class ViewHolder {
+    private class ViewHolder {
 
 	    private String userLoginId;
 
@@ -42,12 +42,14 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
             memberName  = v.findViewById(R.id.memberName);
 
 	        memberAvatar.setOnClickListener(loginId -> {
-		        Context context = loginId.getContext();
-
 		        Intent intent = new Intent(context, ProfileActivity.class);
 		        intent.putExtra("username", userLoginId);
 		        context.startActivity(intent);
-		        //AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+	        });
+
+	        memberAvatar.setOnLongClickListener(loginId -> {
+		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+		        return true;
 	        });
         }
     }

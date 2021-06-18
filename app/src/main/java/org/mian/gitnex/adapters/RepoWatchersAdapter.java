@@ -28,7 +28,7 @@ public class RepoWatchersAdapter extends BaseAdapter {
     private final List<UserInfo> watchersList;
     private final Context context;
 
-    private static class ViewHolder {
+    private class ViewHolder {
 
 	    private UserInfo userInfo;
 
@@ -40,11 +40,14 @@ public class RepoWatchersAdapter extends BaseAdapter {
             memberName  = v.findViewById(R.id.memberName);
 
 	        memberAvatar.setOnClickListener(loginId -> {
-		        Context context = loginId.getContext();
-
 		        Intent intent = new Intent(context, ProfileActivity.class);
 		        intent.putExtra("username", userInfo.getLogin());
 		        context.startActivity(intent);
+	        });
+
+	        memberAvatar.setOnLongClickListener(loginId -> {
+		        AppUtil.copyToClipboard(context, userInfo.getLogin(), context.getString(R.string.copyLoginIdToClipBoard, userInfo.getLogin()));
+		        return true;
 	        });
         }
     }

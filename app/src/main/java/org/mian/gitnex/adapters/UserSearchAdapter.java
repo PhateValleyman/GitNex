@@ -44,7 +44,7 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
         this.usersSearchList = dataList;
     }
 
-    static class UserSearchViewHolder extends RecyclerView.ViewHolder {
+    class UserSearchViewHolder extends RecyclerView.ViewHolder {
 
 	    private UserInfo userInfo;
 
@@ -67,9 +67,6 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
             addCollaboratorButtonRemove = itemView.findViewById(R.id.addCollaboratorButtonRemove);
 
             addCollaboratorButtonAdd.setOnClickListener(v -> {
-
-                final Context context = v.getContext();
-
                 AlertDialog.Builder pBuilder = new AlertDialog.Builder(context);
 
                 pBuilder.setTitle(R.string.newTeamPermission);
@@ -91,9 +88,6 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
             });
 
             addCollaboratorButtonRemove.setOnClickListener(v -> {
-
-                Context context = v.getContext();
-
                 AlertDialogs.collaboratorRemoveDialog(context, userInfo.getUsername(),
                         context.getResources().getString(R.string.removeCollaboratorTitle),
                         context.getResources().getString(R.string.removeCollaboratorMessage),
@@ -102,11 +96,14 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
             });
 
 	        userAvatar.setOnClickListener(loginId -> {
-		        Context context = loginId.getContext();
-
 		        Intent intent = new Intent(context, ProfileActivity.class);
 		        intent.putExtra("username", userInfo.getLogin());
 		        context.startActivity(intent);
+	        });
+
+	        userAvatar.setOnLongClickListener(loginId -> {
+		        AppUtil.copyToClipboard(context, userInfo.getLogin(), context.getString(R.string.copyLoginIdToClipBoard, userInfo.getLogin()));
+		        return true;
 	        });
         }
 

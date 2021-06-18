@@ -27,7 +27,7 @@ public class CollaboratorsAdapter extends BaseAdapter  {
     private final List<Collaborators> collaboratorsList;
     private final Context context;
 
-    private static class ViewHolder {
+    private class ViewHolder {
 
 	    private String userLoginId;
 
@@ -40,12 +40,14 @@ public class CollaboratorsAdapter extends BaseAdapter  {
             collaboratorName  = v.findViewById(R.id.collaboratorName);
 
 	        collaboratorAvatar.setOnClickListener(loginId -> {
-		        Context context = loginId.getContext();
-
 		        Intent intent = new Intent(context, ProfileActivity.class);
 		        intent.putExtra("username", userLoginId);
 		        context.startActivity(intent);
-		        //AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+	        });
+
+	        collaboratorAvatar.setOnLongClickListener(loginId -> {
+		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+		        return true;
 	        });
         }
     }
