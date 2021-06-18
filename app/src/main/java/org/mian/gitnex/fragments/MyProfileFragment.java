@@ -36,7 +36,7 @@ import jp.wasabeef.picasso.transformations.BlurTransformation;
  * Author M M Arif
  */
 
-public class ProfileFragment extends Fragment {
+public class MyProfileFragment extends Fragment {
 
     private Context ctx;
 
@@ -110,7 +110,7 @@ public class ProfileFragment extends Fragment {
 			    @Override public void onError(Exception e) {}
 		    });
 
-        ProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
+        MyProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
         ViewPager mViewPager = v.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -172,13 +172,13 @@ public class ProfileFragment extends Fragment {
             switch (position) {
 
                 case 0: // followers
-                    return ProfileFollowersFragment.newInstance("repoOwner", "repoName");
+                    return MyProfileFollowersFragment.newInstance("repoOwner", "repoName");
 
                 case 1: // following
-                    return ProfileFollowingFragment.newInstance("repoOwner", "repoName");
+                    return MyProfileFollowingFragment.newInstance("repoOwner", "repoName");
 
                 case 2: // emails
-                    return ProfileEmailsFragment.newInstance("repoOwner", "repoName");
+                    return MyProfileEmailsFragment.newInstance("repoOwner", "repoName");
 
             }
 
@@ -209,7 +209,7 @@ public class ProfileFragment extends Fragment {
 		    return true;
 	    }
 	    else if(id == R.id.profileMenu) {
-		    BottomSheetProfileFragment bottomSheet = new BottomSheetProfileFragment();
+		    BottomSheetMyProfileFragment bottomSheet = new BottomSheetMyProfileFragment();
 		    bottomSheet.show(getChildFragmentManager(), "profileBottomSheet");
 		    return true;
 	    }

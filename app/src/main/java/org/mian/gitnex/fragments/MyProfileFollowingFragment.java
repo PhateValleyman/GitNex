@@ -16,34 +16,35 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import org.mian.gitnex.adapters.ProfileFollowersAdapter;
+import org.mian.gitnex.adapters.MyProfileFollowingAdapter;
 import org.mian.gitnex.databinding.FragmentProfileFollowersFollowingBinding;
 import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.viewmodels.ProfileFollowersViewModel;
+import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.viewmodels.ProfileFollowingViewModel;
 
 /**
  * Author M M Arif
  */
 
-public class ProfileFollowersFragment extends Fragment {
+public class MyProfileFollowingFragment extends Fragment {
 
     private ProgressBar mProgressBar;
-    private ProfileFollowersAdapter adapter;
+    private MyProfileFollowingAdapter adapter;
     private RecyclerView mRecyclerView;
-    private TextView noDataFollowers;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
+    private TextView noDataFollowing;
+    private static final String repoNameF = "param2";
+    private static final String repoOwnerF = "param1";
 
     private String repoName;
     private String repoOwner;
 
     private OnFragmentInteractionListener mListener;
 
-    public ProfileFollowersFragment() {
+    public MyProfileFollowingFragment() {
     }
 
-    public static ProfileFollowersFragment newInstance(String param1, String param2) {
-        ProfileFollowersFragment fragment = new ProfileFollowersFragment();
+    public static MyProfileFollowingFragment newInstance(String param1, String param2) {
+        MyProfileFollowingFragment fragment = new MyProfileFollowingFragment();
         Bundle args = new Bundle();
         args.putString(repoOwnerF, param1);
         args.putString(repoNameF, param2);
@@ -66,9 +67,11 @@ public class ProfileFollowersFragment extends Fragment {
 
 	    FragmentProfileFollowersFollowingBinding fragmentProfileFollowersFollowingBinding = FragmentProfileFollowersFollowingBinding.inflate(inflater, container, false);
 
+        TinyDB tinyDb = TinyDB.getInstance(getContext());
+
         final SwipeRefreshLayout swipeRefresh = fragmentProfileFollowersFollowingBinding.pullToRefresh;
 
-        noDataFollowers = fragmentProfileFollowersFollowingBinding.noData;
+        noDataFollowing = fragmentProfileFollowersFollowingBinding.noData;
         mRecyclerView = fragmentProfileFollowersFollowingBinding.recyclerView;
 
 	    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
@@ -82,7 +85,7 @@ public class ProfileFollowersFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            ProfileFollowersViewModel.loadFollowersList(Authorization.get(getContext()), getContext());
+            ProfileFollowingViewModel.loadFollowingList(Authorization.get(getContext()), getContext());
 
         }, 200));
 
@@ -93,20 +96,20 @@ public class ProfileFollowersFragment extends Fragment {
 
     private void fetchDataAsync(String instanceToken) {
 
-        ProfileFollowersViewModel pfModel = new ViewModelProvider(this).get(ProfileFollowersViewModel.class);
+        ProfileFollowingViewModel pfModel = new ViewModelProvider(this).get(ProfileFollowingViewModel.class);
 
-        pfModel.getFollowersList(instanceToken, getContext()).observe(getViewLifecycleOwner(), pfListMain -> {
+        pfModel.getFollowingList(instanceToken, getContext()).observe(getViewLifecycleOwner(), pfListMain -> {
 
-            adapter = new ProfileFollowersAdapter(getContext(), pfListMain);
+            adapter = new MyProfileFollowingAdapter(getContext(), pfListMain);
 
             if(adapter.getItemCount() > 0) {
                 mRecyclerView.setAdapter(adapter);
-                noDataFollowers.setVisibility(View.GONE);
+                noDataFollowing.setVisibility(View.GONE);
             }
             else {
                 adapter.notifyDataSetChanged();
                 mRecyclerView.setAdapter(adapter);
-                noDataFollowers.setVisibility(View.VISIBLE);
+                noDataFollowing.setVisibility(View.VISIBLE);
             }
 
             mProgressBar.setVisibility(View.GONE);

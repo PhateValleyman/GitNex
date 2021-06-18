@@ -2,6 +2,7 @@ package org.mian.gitnex.adapters.profile;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
@@ -90,6 +92,16 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			userAvatar = itemView.findViewById(R.id.userAvatar);
 			userFullName = itemView.findViewById(R.id.userFullName);
 			userName = itemView.findViewById(R.id.userName);
+
+			userAvatar.setOnClickListener(loginId -> {
+
+				Context context = loginId.getContext();
+
+				Intent intent = new Intent(context, ProfileActivity.class);
+				intent.putExtra("username", userInfo.getLogin());
+				context.startActivity(intent);
+				//AppUtil.copyToClipboard(context, userInfo.getLogin(), context.getString(R.string.copyLoginIdToClipBoard, userInfo.getLogin()));
+			});
 		}
 
 		@SuppressLint("SetTextI18n")

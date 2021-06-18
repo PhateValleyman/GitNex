@@ -22,7 +22,7 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class ProfileFollowersAdapter extends RecyclerView.Adapter<ProfileFollowersAdapter.FollowersViewHolder> {
+public class MyProfileFollowersAdapter extends RecyclerView.Adapter<MyProfileFollowersAdapter.FollowersViewHolder> {
 
     private final List<UserInfo> followersList;
     private final Context context;
@@ -55,7 +55,7 @@ public class ProfileFollowersAdapter extends RecyclerView.Adapter<ProfileFollowe
         }
     }
 
-    public ProfileFollowersAdapter(Context ctx, List<UserInfo> followersListMain) {
+    public MyProfileFollowersAdapter(Context ctx, List<UserInfo> followersListMain) {
 
         this.context = ctx;
         this.followersList = followersListMain;
@@ -63,14 +63,14 @@ public class ProfileFollowersAdapter extends RecyclerView.Adapter<ProfileFollowe
 
     @NonNull
     @Override
-    public ProfileFollowersAdapter.FollowersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyProfileFollowersAdapter.FollowersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_profile_followers_following, parent, false);
         return new FollowersViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProfileFollowersAdapter.FollowersViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyProfileFollowersAdapter.FollowersViewHolder holder, int position) {
 
         UserInfo currentItem = followersList.get(position);
 	    int imgRadius = AppUtil.getPixelsFromDensity(context, 3);

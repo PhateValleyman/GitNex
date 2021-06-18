@@ -75,7 +75,7 @@ public class ProfileActivity extends BaseActivity {
 
 		viewPager.setAdapter(new ViewPagerAdapter(this));
 
-		String[] tabTitles = {ctx.getResources().getString(R.string.tabTextInfo), ctx.getResources().getString(R.string.navRepos), ctx.getResources().getString(R.string.navStarredRepos), ctx.getResources().getString(R.string.profileTabFollowers), ctx.getResources().getString(R.string.profileTabFollowing)};
+		String[] tabTitles = {ctx.getResources().getString(R.string.tabTextInfo), ctx.getResources().getString(R.string.navRepos), ctx.getResources().getString(R.string.navStarredRepos), ctx.getResources().getString(R.string.navOrg), ctx.getResources().getString(R.string.profileTabFollowers), ctx.getResources().getString(R.string.profileTabFollowing)};
 		new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(tabTitles[position])).attach();
 
 		ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
@@ -109,9 +109,11 @@ public class ProfileActivity extends BaseActivity {
 					return RepositoriesFragment.newInstance(username);
 				case 2: // starred repos
 					return StarredRepositoriesFragment.newInstance(username);
-				case 3: // followers
+				case 3: // organizations
 					return FollowersFragment.newInstance(username);
-				case 4: // following
+				case 4: // followers
+					return FollowersFragment.newInstance(username);
+				case 5: // following
 					return FollowingFragment.newInstance(username);
 			}
 			return null;
@@ -119,7 +121,7 @@ public class ProfileActivity extends BaseActivity {
 
 		@Override
 		public int getItemCount() {
-			return 5;
+			return 6;
 		}
 	}
 
