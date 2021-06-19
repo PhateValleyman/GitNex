@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * InfiniteScrollListener, which can be added to RecyclerView with addOnScrollListener
  * to detect moment when RecyclerView was scrolled to the end.
+ *
+ * Source: https://github.com/pwittchen/InfiniteScroll/blob/master/library/src/main/java/com/github/pwittchen/infinitescroll/library/InfiniteScrollListener.java
  */
 public abstract class InfiniteScrollListener extends RecyclerView.OnScrollListener {
 	private final int maxItemsPerRequest;
