@@ -17,7 +17,7 @@
             android:id="@+id/commitSubject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
             android:textColor="?attr/primaryTextColor"
             android:textSize="18sp"
             tools:text="This is a test" />
@@ -26,7 +26,8 @@
             android:id="@+id/commitBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
+            android:alpha=".8"
             android:textColor="?attr/primaryTextColor"
             tools:text="This is a test commit message" />
 
@@ -67,7 +68,7 @@
                 android:id="@+id/commitSha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha=".5"
+                android:alpha=".8"
                 android:textColor="?attr/primaryTextColor"
                 tools:text="357f3qd5s" />
 
