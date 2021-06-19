@@ -17,9 +17,7 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Author M M Arif
@@ -107,8 +105,6 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
         void bindData(Commits commitsModel) {
-
-            TinyDB tinyDb = TinyDB.getInstance(context);
 
             String[] commitMessageParts = commitsModel.getCommit().getMessage().split("(\r\n|\n)", 2);
 
