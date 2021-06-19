@@ -59,9 +59,7 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 				customDialogUserAccountsList(userAccountsList);
 				drawer.closeDrawers();
 			});
-
 		}
-
 	}
 
 	@NonNull
@@ -78,14 +76,10 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 		UserAccount currentItem = userAccountsList.get(position);
 
-		String url = UrlBuilder.fromString(currentItem.getInstanceUrl())
-			.withPath("/")
-			.toString();
-
 		int imageSize = AppUtil.getPixelsFromDensity(context, 35);
 
 		PicassoService.getInstance(context).get()
-			.load(url + "img/favicon.png")
+			.load(AppUtil.getFaviconUrl(context, currentItem))
 			.placeholder(R.drawable.loader_animated)
 			.transform(new RoundedTransformation(8, 0))
 			.resize(imageSize, imageSize)

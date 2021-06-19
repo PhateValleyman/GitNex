@@ -135,7 +135,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 		PicassoService.getInstance(context).get()
-			.load(url + "img/favicon.png")
+			.load(AppUtil.getFaviconUrl(context, currentItem))
 			.placeholder(R.drawable.loader_animated)
 			.transform(new RoundedTransformation(imgRadius, 0))
 			.resize(120, 120)

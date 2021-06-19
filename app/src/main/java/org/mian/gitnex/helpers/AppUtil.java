@@ -12,7 +12,10 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
 import androidx.core.content.pm.PackageInfoCompat;
+import org.mian.gitnex.database.api.BaseApi;
+import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +31,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import io.mikael.urlbuilder.UrlBuilder;
 
 /**
  * Author M M Arif
@@ -333,6 +337,7 @@ public class AppUtil {
 			tinyDB.putString("userLogin", userAccount.getUserName());
 			tinyDB.putString(userAccount.getUserName() + "-token", userAccount.getToken());
 			tinyDB.putString("instanceUrl", userAccount.getInstanceUrl());
+			tinyDB.putString("giteaVersion", userAccount.getServerVersion());
 			tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
 
 			return true;
@@ -341,6 +346,22 @@ public class AppUtil {
 
 		return false;
 
+	}
+
+	public static String getFaviconUrl(Context context, @Nullable UserAccount userAccount) {
+
+		UserAccountsApi userAccountsApi = BaseApi.getInstance(context, UserAccountsApi.class);
+		assert userAccountsApi != null;
+
+		if(userAccount == null) {
+			userAccount = userAccountsApi.getAccountById(TinyDB.getInstance(context).getInt("currentActiveAccountId"));
+		}
+
+		if(userAccount.getServerVersion() == null || new Version(userAccount.getServerVersion()).less("1.15.0")) {
+			return UrlBuilder.fromString(userAccount.getInstanceUrl()).withPath("/img/favicon.png").toString();
+		} else {
+			return UrlBuilder.fromString(userAccount.getInstanceUrl()).withPath("/assets/img/favicon.png").toString();
+		}
 	}
 
 }

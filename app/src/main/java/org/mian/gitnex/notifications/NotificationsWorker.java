@@ -53,7 +53,8 @@ public class NotificationsWorker extends Worker {
 		for(UserAccount userAccount : userAccountsApi.usersAccounts()) {
 
 			// We do also accept empty values, since the server version was not saved properly in the beginning.
-			if(userAccount.getServerVersion() == null || userAccount.getServerVersion().isEmpty() ||
+			if(userAccount.getServerVersion() == null ||
+				userAccount.getServerVersion().isEmpty() ||
 				new Version(userAccount.getServerVersion()).higherOrEqual("1.12.3")) {
 
 				Map<String, String> userAccountParameters = new HashMap<>();

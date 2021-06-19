@@ -67,8 +67,13 @@ public class UserAccountsListDialogAdapter extends ArrayAdapter<UserAccount> {
 			activeAccount.setVisibility(View.GONE);
 		}
 
-		PicassoService
-			.getInstance(context).get().load(url + "img/favicon.png").placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(profileImage);
+		PicassoService.getInstance(context).get()
+			.load(AppUtil.getFaviconUrl(context, currentItem))
+			.placeholder(R.drawable.loader_animated)
+			.transform(new RoundedTransformation(imgRadius, 0))
+			.resize(120, 120)
+			.centerCrop()
+			.into(profileImage);
 
 		return convertView;
 

@@ -213,15 +213,12 @@ public class AddNewAccountActivity extends BaseActivity {
 							Toasty.success(ctx, getResources().getString(R.string.accountAddedMessage));
 							finish();
 
-						}
-						else {
-
+						} else {
 							Toasty.warning(ctx, getResources().getString(R.string.accountAlreadyExistsError));
 						}
 						break;
 
 					case 401:
-
 						Toasty.error(ctx, getResources().getString(R.string.unauthorizedApiError));
 						break;
 

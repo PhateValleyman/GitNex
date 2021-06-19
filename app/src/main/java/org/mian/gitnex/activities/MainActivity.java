@@ -75,9 +75,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private TextView toolbarTitle;
 	private Typeface myTypeface;
 
-	private String loginUid;
-	private String instanceToken;
-
 	private View hView;
 	private MenuItem navNotifications;
 	private TextView notificationCounter;
@@ -100,19 +97,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			mainIntent.removeExtra("switchAccountId");
 			recreate();
 			return;
-
 		}
 		// DO NOT MOVE
 
 		tinyDB.putBoolean("noConnection", false);
 
-		loginUid = tinyDB.getString("loginUid");
-		instanceToken = "token " + tinyDB.getString(loginUid + "-token");
-
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
 		if(!tinyDB.getBoolean("loggedInMode")) {
-
 			logout(this, ctx);
 			return;
 		}
@@ -216,7 +208,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleUserAccounts));
 		}
 
-		getNotificationsCount(instanceToken);
+		getNotificationsCount();
 
 		drawer = activityMainBinding.drawerLayout;
 		NavigationView navigationView = activityMainBinding.navView;
@@ -315,7 +307,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				});
 
-				getNotificationsCount(instanceToken);
+				getNotificationsCount();
 			}
 
 			@Override
@@ -450,17 +442,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 
 		if(!connToInternet) {
-
 			if(!tinyDB.getBoolean("noConnection")) {
-
 				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
 			}
 
 			tinyDB.putBoolean("noConnection", true);
-		}
-		else {
-
-			loadUserInfo(instanceToken, loginUid);
+		} else {
+			loadUserInfo();
 			giteaVersion();
 			tinyDB.putBoolean("noConnection", false);
 		}
@@ -643,7 +631,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					String version = responseVersion.body().getVersion();
 
 					tinyDB.putString("giteaVersion", version);
-					BaseApi.getInstance(ctx, UserAccountsApi.class).updateServerVersion(version, tinyDB.getInt("currentActiveAccountId"));
+
+					UserAccountsApi userAccountsApi = BaseApi.getInstance(ctx, UserAccountsApi.class);
+					assert userAccountsApi != null;
+					userAccountsApi.updateServerVersion(version, tinyDB.getInt("currentActiveAccountId"));
 				}
 			}
 
@@ -654,7 +645,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		});
 	}
 
-	private void loadUserInfo(String token, String loginUid) {
+	private void loadUserInfo() {
 
 		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
@@ -723,9 +714,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	}
 
-	private void getNotificationsCount(String token) {
+	private void getNotificationsCount() {
 
-		Call<NotificationCount> call = RetrofitClient.getApiInterface(ctx).checkUnreadNotifications(token);
+		Call<NotificationCount> call = RetrofitClient.getApiInterface(ctx).checkUnreadNotifications(Authorization.get(ctx));
 
 		call.enqueue(new Callback<NotificationCount>() {
 
