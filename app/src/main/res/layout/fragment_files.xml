@@ -19,6 +19,7 @@
             android:id="@+id/breadcrumbs_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:saveEnabled="false"
             android:text="@string/filesBreadcrumbRoot"
             app:CustomTextSize="16sp"
             app:SelectedTextColor="?attr/primaryTextColor"
