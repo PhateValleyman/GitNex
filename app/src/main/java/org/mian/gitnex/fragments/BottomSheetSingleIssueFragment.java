@@ -11,17 +11,24 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.activities.DiffActivity;
+import org.mian.gitnex.actions.PullRequestActions;
 import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
+import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.BottomSheetSingleIssueBinding;
+import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.views.ReactionSpinner;
 import java.util.Objects;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Author M M Arif
@@ -69,9 +76,11 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 			if(tinyDB.getBoolean("prMerged") || tinyDB.getString("repoPrState").equals("closed")) {
 				binding.mergePullRequest.setVisibility(View.GONE);
+				binding.deletePrHeadBranch.setVisibility(View.VISIBLE);
 			}
 			else {
 				binding.mergePullRequest.setVisibility(View.VISIBLE);
+				binding.deletePrHeadBranch.setVisibility(View.GONE);
 			}
 
 			if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.13.0")) {
@@ -84,14 +93,19 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 				binding.openFilesDiff.setVisibility(View.GONE);
 			}
 
-		}
-		else {
+		} else {
 
 			binding.mergePullRequest.setVisibility(View.GONE);
+			binding.deletePrHeadBranch.setVisibility(View.GONE);
 		}
 
 		binding.mergePullRequest.setOnClickListener(v13 -> {
 			startActivity(new Intent(ctx, MergePullRequestActivity.class));
+			dismiss();
+		});
+
+		binding.deletePrHeadBranch.setOnClickListener(v -> {
+			PullRequestActions.deleteHeadBranch(ctx, parts[0], parts[1], tinyDB.getString("prHeadBranch"), true);
 			dismiss();
 		});
 
