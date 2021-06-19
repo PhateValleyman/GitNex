@@ -19,7 +19,9 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.TimeHelper;
+import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Author M M Arif
@@ -122,7 +124,7 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             commitCommitter.setText(
             	context.getString(R.string.commitCommittedByWhen,
 		            commitsModel.getCommit().getCommitter().getName(),
-		            TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), new Locale(tinyDb.getString("locale")), "pretty", context)));
+		            TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), new Locale(TinyDB.getInstance(context).getString("locale")), "pretty", context)));
 
 	        if(commitsModel.getCommitter().getAvatar_url() != null &&
 		        !commitsModel.getCommitter().getAvatar_url().isEmpty()) {
