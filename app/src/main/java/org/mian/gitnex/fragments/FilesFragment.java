@@ -170,12 +170,6 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 	}
 
 	@Override
-	public void onResume() {
-
-		super.onResume();
-	}
-
-	@Override
 	public void onClickFile(Files file) {
 
 		switch(file.getType()) {
