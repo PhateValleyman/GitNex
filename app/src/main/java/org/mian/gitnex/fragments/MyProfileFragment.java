@@ -64,13 +64,11 @@ public class MyProfileFragment extends Fragment {
 	    String[] userLanguageCodes = tinyDb.getString("userLang").split("-");
 
 	    if(userLanguageCodes.length >= 2) {
-
 		    Locale locale = new Locale(userLanguageCodes[0], userLanguageCodes[1]);
 		    userLanguage.setText(locale.getDisplayLanguage());
 	    }
 	    else {
-
-	    	userLanguage.setText(R.string.notSupported);
+	    	userLanguage.setText(getResources().getConfiguration().locale.getDisplayLanguage());
 	    }
 
 	    userAvatar.setOnClickListener(loginId ->

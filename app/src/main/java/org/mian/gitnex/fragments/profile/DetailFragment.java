@@ -87,15 +87,23 @@ public class DetailFragment extends Fragment {
 						case 200:
 							String username = !response.body().getFullname().isEmpty() ? response.body().getFullname() : response.body().getUsername();
 							String email = !response.body().getEmail().isEmpty() ? response.body().getEmail() : "";
-							String lang = !response.body().getLang().isEmpty() ? response.body().getLang() : locale.getDisplayLanguage();
 
 							int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 							String timeFormat = tinyDb.getString("dateFormat");
 
-							binding.username.setText(username);
+							binding.userFullName.setText(username);
+							binding.userLogin.setText(getString(R.string.usernameWithAt, response.body().getLogin()));
 							binding.userEmail.setText(email);
-							binding.userLang.setText(lang);
-							binding.userLogin.setText(response.body().getLogin());
+
+							String[] userLanguageCodes = response.body().getLang().split("-");
+
+							if(userLanguageCodes.length >= 2) {
+								Locale locale = new Locale(userLanguageCodes[0], userLanguageCodes[1]);
+								binding.userLang.setText(locale.getDisplayLanguage());
+							}
+							else {
+								binding.userLang.setText(locale.getDisplayLanguage());
+							}
 
 							PicassoService.getInstance(context).get()
 								.load(response.body().getAvatar())
@@ -114,7 +122,8 @@ public class DetailFragment extends Fragment {
 									public void onSuccess() {
 										int invertedColor = new ColorInverter().getImageViewContrastColor(binding.userAvatarBackground);
 
-										binding.username.setTextColor(invertedColor);
+										binding.userFullName.setTextColor(invertedColor);
+										binding.userLogin.setTextColor(invertedColor);
 									}
 
 									@Override public void onError(Exception e) {}
