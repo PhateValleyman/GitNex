@@ -90,11 +90,36 @@ public class DeepLinksActivity extends BaseActivity {
 		if(accountFound) {
 
 			// redirect to proper fragment/activity, If no action is there, show options where user to want to go like repos, profile, notifications etc
-			if(data.getPathSegments().size() == 3 || data.getPathSegments().size() == 4) {
+			if(data.getPathSegments().size() == 1) {
+				if(data.getPathSegments().get(0).equals("notifications")) { // notifications
+					mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
+					ctx.startActivity(mainIntent);
+					finish();
+				}
+				else { // no action, show options
+					showNoActionButtons();
+				}
+			}
+			else if(data.getPathSegments().size() == 2) {
 
 				viewBinding.progressBar.setVisibility(View.GONE);
 				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
+				if(!restOfUrl[restOfUrl.length - 2].equals("") & !restOfUrl[restOfUrl.length - 1].equals("")) { // go to repo
+
+					new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 2], restOfUrl[restOfUrl.length - 1], "repo");
+					}, 500);
+				}
+				else { // no action, show options
+					showNoActionButtons();
+				}
+			}
+			else if(data.getPathSegments().size() == 3 || data.getPathSegments().size() == 4) {
+
+				viewBinding.progressBar.setVisibility(View.GONE);
+				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
 				// TODO switch?
 				if(data.getPathSegments().get(2).equals("issues")) { // issue
@@ -172,33 +197,6 @@ public class DeepLinksActivity extends BaseActivity {
 
 						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3], "pull");
 					}, 500);
-				}
-				else { // no action, show options
-					showNoActionButtons();
-				}
-			}
-			else if(data.getPathSegments().size() == 2) {
-
-				viewBinding.progressBar.setVisibility(View.GONE);
-				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
-
-				if(!restOfUrl[restOfUrl.length - 2].equals("") & !restOfUrl[restOfUrl.length - 1].equals("")) { // go to repo
-
-					new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 2], restOfUrl[restOfUrl.length - 1], "repo");
-					}, 500);
-				}
-				else { // no action, show options
-					showNoActionButtons();
-				}
-			}
-			// TODO sort else if beginning with 1, then 2...
-			else if(data.getPathSegments().size() == 1) {
-				if(data.getPathSegments().get(0).equals("notifications")) { // notifications
-					mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
-					ctx.startActivity(mainIntent);
-					finish();
 				}
 				else { // no action, show options
 					showNoActionButtons();
