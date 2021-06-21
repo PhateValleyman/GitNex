@@ -95,7 +95,7 @@ public class DeepLinksActivity extends BaseActivity {
 				viewBinding.progressBar.setVisibility(View.GONE);
 				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
-				if(data.getPathSegments().contains("issues")) { // issue
+				if(data.getPathSegments().get(2).equals("issues")) { // issue
 
 					if(!Objects.requireNonNull(data.getLastPathSegment()).contains("issues") & StringUtils.isNumeric(data.getLastPathSegment())) {
 
@@ -141,7 +141,7 @@ public class DeepLinksActivity extends BaseActivity {
 						finish();
 					}
 				}
-				else if(data.getPathSegments().contains("pulls")) { // pr
+				else if(data.getPathSegments().get(2).equals("pulls")) { // pr
 
 					if(!Objects.requireNonNull(data.getLastPathSegment()).contains("pulls") & StringUtils.isNumeric(data.getLastPathSegment())) {
 
@@ -164,7 +164,7 @@ public class DeepLinksActivity extends BaseActivity {
 						finish();
 					}
 				}
-				else if(data.getPathSegments().contains("commit")) { // commits (no API yet to properly implement)
+				else if(data.getPathSegments().get(2).equals("commit")) { // commits (no API yet to properly implement)
 
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
