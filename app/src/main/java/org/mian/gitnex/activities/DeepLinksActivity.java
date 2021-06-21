@@ -96,6 +96,11 @@ public class DeepLinksActivity extends BaseActivity {
 					ctx.startActivity(mainIntent);
 					finish();
 				}
+				if(data.getPathSegments().get(0).equals("explore")) { // explore
+					mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
+					ctx.startActivity(mainIntent);
+					finish();
+				}
 				else { // no action, show options
 					showNoActionButtons();
 				}
@@ -105,7 +110,21 @@ public class DeepLinksActivity extends BaseActivity {
 				viewBinding.progressBar.setVisibility(View.GONE);
 				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
-				if(!restOfUrl[restOfUrl.length - 2].equals("") & !restOfUrl[restOfUrl.length - 1].equals("")) { // go to repo
+
+				if(data.getPathSegments().get(0).equals("explore")) { // explore
+					if(data.getPathSegments().get(1).equals("organizations")) { // orgs
+						mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
+						mainIntent.putExtra("exploreOrgs", true);
+						ctx.startActivity(mainIntent);
+						finish();
+					}
+					else { // repos
+						mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
+						ctx.startActivity(mainIntent);
+						finish();
+					}
+				}
+				else if(!restOfUrl[restOfUrl.length - 2].equals("") & !restOfUrl[restOfUrl.length - 1].equals("")) { // go to repo
 
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
