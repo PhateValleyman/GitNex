@@ -90,18 +90,14 @@ public class DeepLinksActivity extends BaseActivity {
 		if(accountFound) {
 
 			// redirect to proper fragment/activity, If no action is there, show options where user to want to go like repos, profile, notifications etc
-			if(data.getPathSegments().size() > 0) {
+			if(data.getPathSegments().size() == 3 || data.getPathSegments().size() == 4) {
 
 				viewBinding.progressBar.setVisibility(View.GONE);
 				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
 
-				if(data.getPathSegments().get(0).equals("notifications")) { // notifications
-					mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
-					ctx.startActivity(mainIntent);
-					finish();
-				}
-				else if(data.getPathSegments().get(2).equals("issues")) { // issue
+				// TODO switch?
+				if(data.getPathSegments().get(2).equals("issues")) { // issue
 
 					if(!Objects.requireNonNull(data.getLastPathSegment()).contains("issues") & StringUtils.isNumeric(data.getLastPathSegment())) {
 
@@ -177,7 +173,13 @@ public class DeepLinksActivity extends BaseActivity {
 						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3], "pull");
 					}, 500);
 				}
-				else if(!restOfUrl[restOfUrl.length - 2].equals("") & !restOfUrl[restOfUrl.length - 1].equals("")) { // go to repo
+			}
+			else if(data.getPathSegments().size() == 2) {
+
+				viewBinding.progressBar.setVisibility(View.GONE);
+				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
+
+				if(!restOfUrl[restOfUrl.length - 2].equals("") & !restOfUrl[restOfUrl.length - 1].equals("")) { // go to repo
 
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
@@ -185,6 +187,8 @@ public class DeepLinksActivity extends BaseActivity {
 					}, 500);
 				}
 				else { // no action, show options
+
+					// TODO move this to method
 
 					if(tinyDB.getInt("defaultScreenId") == 1) { // repos
 
@@ -254,6 +258,14 @@ public class DeepLinksActivity extends BaseActivity {
 							finish();
 						});
 					}
+				}
+			}
+			// TODO sort else if beginning with 1, then 2...
+			else if(data.getPathSegments().size() == 1) {
+				if(data.getPathSegments().get(0).equals("notifications")) { // notifications
+					mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
+					ctx.startActivity(mainIntent);
+					finish();
 				}
 			}
 			else {
