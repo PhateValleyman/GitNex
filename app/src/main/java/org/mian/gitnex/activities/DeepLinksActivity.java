@@ -173,6 +173,9 @@ public class DeepLinksActivity extends BaseActivity {
 						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3], "pull");
 					}, 500);
 				}
+				else { // no action, show options
+					showNoActionButtons();
+				}
 			}
 			else if(data.getPathSegments().size() == 2) {
 
@@ -187,77 +190,7 @@ public class DeepLinksActivity extends BaseActivity {
 					}, 500);
 				}
 				else { // no action, show options
-
-					// TODO move this to method
-
-					if(tinyDB.getInt("defaultScreenId") == 1) { // repos
-
-						mainIntent.putExtra("launchFragmentByLinkHandler", "repos");
-						ctx.startActivity(mainIntent);
-						finish();
-					}
-					else if(tinyDB.getInt("defaultScreenId") == 2) { // org
-
-						mainIntent.putExtra("launchFragmentByLinkHandler", "org");
-						ctx.startActivity(mainIntent);
-						finish();
-					}
-					else if(tinyDB.getInt("defaultScreenId") == 3) { // notifications
-
-						mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
-						ctx.startActivity(mainIntent);
-						finish();
-					}
-					else if(tinyDB.getInt("defaultScreenId") == 4) { // explore
-
-						mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
-						ctx.startActivity(mainIntent);
-						finish();
-					}
-					else if(tinyDB.getInt("defaultScreenId") == 0) { // show options
-
-						viewBinding.noActionFrame.setVisibility(View.VISIBLE);
-						viewBinding.addNewAccountFrame.setVisibility(View.GONE);
-
-						viewBinding.repository.setOnClickListener(repository -> {
-
-							tinyDB.putInt("defaultScreenId", 1);
-							mainIntent.putExtra("launchFragmentByLinkHandler", "repos");
-							ctx.startActivity(mainIntent);
-							finish();
-						});
-
-						viewBinding.organization.setOnClickListener(organization -> {
-
-							tinyDB.putInt("defaultScreenId", 2);
-							mainIntent.putExtra("launchFragmentByLinkHandler", "org");
-							ctx.startActivity(mainIntent);
-							finish();
-						});
-
-						viewBinding.notification.setOnClickListener(notification -> {
-
-							tinyDB.putInt("defaultScreenId", 3);
-							mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
-							ctx.startActivity(mainIntent);
-							finish();
-						});
-
-						viewBinding.explore.setOnClickListener(explore -> {
-
-							tinyDB.putInt("defaultScreenId", 4);
-							mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
-							ctx.startActivity(mainIntent);
-							finish();
-						});
-
-						viewBinding.launchApp2.setOnClickListener(launchApp2 -> {
-
-							tinyDB.putInt("defaultScreenId", 0);
-							ctx.startActivity(mainIntent);
-							finish();
-						});
-					}
+					showNoActionButtons();
 				}
 			}
 			// TODO sort else if beginning with 1, then 2...
@@ -266,6 +199,9 @@ public class DeepLinksActivity extends BaseActivity {
 					mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
 					ctx.startActivity(mainIntent);
 					finish();
+				}
+				else { // no action, show options
+					showNoActionButtons();
 				}
 			}
 			else {
@@ -467,5 +403,76 @@ public class DeepLinksActivity extends BaseActivity {
 				Log.e("onFailure-goToRepo", t.toString());
 			}
 		});
+	}
+
+	private void showNoActionButtons()  {
+		if(tinyDB.getInt("defaultScreenId") == 1) { // repos
+
+			mainIntent.putExtra("launchFragmentByLinkHandler", "repos");
+			ctx.startActivity(mainIntent);
+			finish();
+		}
+		else if(tinyDB.getInt("defaultScreenId") == 2) { // org
+
+			mainIntent.putExtra("launchFragmentByLinkHandler", "org");
+			ctx.startActivity(mainIntent);
+			finish();
+		}
+		else if(tinyDB.getInt("defaultScreenId") == 3) { // notifications
+
+			mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
+			ctx.startActivity(mainIntent);
+			finish();
+		}
+		else if(tinyDB.getInt("defaultScreenId") == 4) { // explore
+
+			mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
+			ctx.startActivity(mainIntent);
+			finish();
+		}
+		else if(tinyDB.getInt("defaultScreenId") == 0) { // show options
+
+			viewBinding.noActionFrame.setVisibility(View.VISIBLE);
+			viewBinding.addNewAccountFrame.setVisibility(View.GONE);
+
+			viewBinding.repository.setOnClickListener(repository -> {
+
+				tinyDB.putInt("defaultScreenId", 1);
+				mainIntent.putExtra("launchFragmentByLinkHandler", "repos");
+				ctx.startActivity(mainIntent);
+				finish();
+			});
+
+			viewBinding.organization.setOnClickListener(organization -> {
+
+				tinyDB.putInt("defaultScreenId", 2);
+				mainIntent.putExtra("launchFragmentByLinkHandler", "org");
+				ctx.startActivity(mainIntent);
+				finish();
+			});
+
+			viewBinding.notification.setOnClickListener(notification -> {
+
+				tinyDB.putInt("defaultScreenId", 3);
+				mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
+				ctx.startActivity(mainIntent);
+				finish();
+			});
+
+			viewBinding.explore.setOnClickListener(explore -> {
+
+				tinyDB.putInt("defaultScreenId", 4);
+				mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
+				ctx.startActivity(mainIntent);
+				finish();
+			});
+
+			viewBinding.launchApp2.setOnClickListener(launchApp2 -> {
+
+				tinyDB.putInt("defaultScreenId", 0);
+				ctx.startActivity(mainIntent);
+				finish();
+			});
+		}
 	}
 }
