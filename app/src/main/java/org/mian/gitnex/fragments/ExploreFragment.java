@@ -27,6 +27,8 @@ public class ExploreFragment extends Fragment {
 	private int tabsCount;
 	public ViewPager mViewPager;
 
+	public boolean goToOrgs = false;
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,6 +85,10 @@ public class ExploreFragment extends Fragment {
 
 		SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+
+		if(goToOrgs) {
+			mViewPager.setCurrentItem(2);
+		}
 
 		return view;
 
