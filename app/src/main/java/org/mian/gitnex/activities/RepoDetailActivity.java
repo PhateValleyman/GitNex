@@ -240,6 +240,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 				RepoDetailActivity.mViewPager.setCurrentItem(3);
 			}
+			else if(goToSectionType.equals("milestones")) {
+				RepoDetailActivity.mViewPager.setCurrentItem(5);
+			}
 		}
 
 		checkRepositoryStarStatus(Authorization.get(ctx), repositoryOwner, repositoryName);

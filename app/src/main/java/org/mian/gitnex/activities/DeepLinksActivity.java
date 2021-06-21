@@ -217,6 +217,14 @@ public class DeepLinksActivity extends BaseActivity {
 						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3], "pull");
 					}, 500);
 				}
+				else if(data.getPathSegments().get(2).equals("milestones")) { // milestones
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 3], restOfUrl[restOfUrl.length - 2], "milestones"), 500);
+				}
+				else if(data.getPathSegments().get(2).equals("milestone")) { // milestone
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3], "milestones"), 500);
+				}
 				else { // no action, show options
 					showNoActionButtons();
 				}
