@@ -205,7 +205,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			int hour = db.getInt("lightThemeTimeHour");
 			int minute = db.getInt("lightThemeTimeMinute");
 
-			return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
+			return new TimePickerDialog(getActivity(), this, hour, minute, true);
 		}
 
 		@Override
@@ -230,7 +230,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			int hour = db.getInt("darkThemeTimeHour");
 			int minute = db.getInt("darkThemeTimeMinute");
 
-			return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
+			return new TimePickerDialog(getActivity(), this, hour, minute, true);
 		}
 
 		@Override
