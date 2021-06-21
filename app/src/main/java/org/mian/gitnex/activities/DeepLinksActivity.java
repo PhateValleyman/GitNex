@@ -135,7 +135,7 @@ public class DeepLinksActivity extends BaseActivity {
 					showNoActionButtons();
 				}
 			}
-			else if(data.getPathSegments().size() == 3 || data.getPathSegments().size() == 4) {
+			else if(data.getPathSegments().size() >= 3) {
 
 				viewBinding.progressBar.setVisibility(View.GONE);
 				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
@@ -224,6 +224,10 @@ public class DeepLinksActivity extends BaseActivity {
 				else if(data.getPathSegments().get(2).equals("milestone")) { // milestone
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3], "milestones"), 500);
+				}
+				else if(data.getPathSegments().get(2).equals("releases")) { // releases
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "releases"), 500);
 				}
 				else { // no action, show options
 					showNoActionButtons();
