@@ -147,6 +147,11 @@ public class DeepLinksActivity extends BaseActivity {
 
 						issueIntent.putExtra("issueNumber", data.getLastPathSegment());
 
+						String[] urlSplitted = data.toString().split("#");
+						if (urlSplitted.length == 2) {
+							issueIntent.putExtra("issueComment", urlSplitted[1]);
+						}
+
 						tinyDB.putString("issueNumber", data.getLastPathSegment());
 						tinyDB.putString("issueType", "Issue");
 
@@ -192,6 +197,11 @@ public class DeepLinksActivity extends BaseActivity {
 					if(!Objects.requireNonNull(data.getLastPathSegment()).contains("pulls") & StringUtils.isNumeric(data.getLastPathSegment())) {
 
 						new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+							String[] urlSplitted = data.toString().split("#");
+							if (urlSplitted.length == 2) {
+								issueIntent.putExtra("issueComment", urlSplitted[1]);
+							}
 
 							getPullRequest(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3], Integer.parseInt(data.getLastPathSegment()));
 						}, 500);

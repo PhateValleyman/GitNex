@@ -16,13 +16,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +33,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.JsonElement;
 import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Collaborators;
+import org.gitnex.tea4j.models.IssueComments;
 import org.gitnex.tea4j.models.Issues;
 import org.gitnex.tea4j.models.Labels;
 import org.gitnex.tea4j.models.UpdateIssueAssignees;
@@ -84,6 +88,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private String repoOwner;
 	private String repoName;
 	private int issueIndex;
+	private String issueComment;
 
 	private LabelsListAdapter labelsAdapter;
 	private AssigneesListAdapter assigneesAdapter;
@@ -115,6 +120,11 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		repoOwner = parts[0];
 		repoName = parts[1];
 		issueIndex = Integer.parseInt(tinyDB.getString("issueNumber"));
+		issueComment = getIntent().getStringExtra("issueComment");
+
+		if(!issueComment.startsWith("issuecomment-")) {
+			issueComment = null;
+		}
 
 		setSupportActionBar(viewBinding.toolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle(repoName);
@@ -526,8 +536,33 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				adapter = new IssueCommentsAdapter(ctx, bundle, issueCommentsMain, getSupportFragmentManager(), this::onResume);
 
 				viewBinding.recyclerView.setAdapter(adapter);
+				if(issueComment != null) {
+					int issueCommentId = Integer.parseInt(issueComment.substring(13));
+					int commentIndex = getCommentIndex(issueCommentId, issueCommentsMain);
+					if(commentIndex != -1) {
+						if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+							viewBinding.recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+								@Override
+								public void onGlobalLayout() {
+									viewBinding.scrollViewComments.scrollToDescendant(viewBinding.recyclerView.getChildAt(commentIndex));
+									viewBinding.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+								}
+							});
+						}
+						issueComment = null;
+					}
+				}
 
 			});
+	}
+
+	private int getCommentIndex(int commentId, List<IssueComments> issueComments) {
+		for (IssueComments comment : issueComments) {
+			if(comment.getId() == commentId) {
+				return issueComments.indexOf(comment);
+			}
+		}
+		return -1;
 	}
 
 	private void getSingleIssue(String repoOwner, String repoName, int issueIndex) {
