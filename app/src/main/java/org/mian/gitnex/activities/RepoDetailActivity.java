@@ -249,6 +249,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			else if(goToSectionType.equals("labels")) {
 				RepoDetailActivity.mViewPager.setCurrentItem(6);
 			}
+			else if(goToSectionType.equals("settings")) {
+				startActivity(new Intent(RepoDetailActivity.this, RepositorySettingsActivity.class));
+			}
 		}
 
 		checkRepositoryStarStatus(Authorization.get(ctx), repositoryOwner, repositoryName);
