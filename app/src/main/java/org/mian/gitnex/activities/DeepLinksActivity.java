@@ -137,6 +137,13 @@ public class DeepLinksActivity extends BaseActivity {
 					ctx.startActivity(mainIntent);
 					finish();
 				}
+				else if(data.getPathSegments().get(0).equals("user") && data.getPathSegments().get(1).equals("login")) { // open login
+					Intent loginIntent = new Intent(ctx, AddNewAccountActivity.class);
+					loginIntent.putExtra("instanceUrl", data.getHost());
+					loginIntent.putExtra("instanceProtocol", data.getScheme());
+					ctx.startActivity(loginIntent);
+					finish();
+				}
 				else if(!data.getPathSegments().get(0).equals("") & !data.getLastPathSegment().equals("")) { // go to repo
 
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
