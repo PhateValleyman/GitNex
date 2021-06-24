@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import org.apache.commons.lang3.StringUtils;
+import org.gitnex.tea4j.models.Organization;
 import org.gitnex.tea4j.models.PullRequests;
 import org.gitnex.tea4j.models.UserRepositories;
+import org.jetbrains.annotations.NotNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.BaseApi;
@@ -20,13 +22,18 @@ import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityDeeplinksBinding;
 import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.UrlHelper;
+import java.lang.reflect.Array;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import io.mikael.urlbuilder.UrlBuilder;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -42,6 +49,7 @@ public class DeepLinksActivity extends BaseActivity {
 	private Intent mainIntent;
 	private Intent issueIntent;
 	private Intent repoIntent;
+	private Intent orgIntent;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,7 @@ public class DeepLinksActivity extends BaseActivity {
 		mainIntent = new Intent(ctx, MainActivity.class);
 		issueIntent = new Intent(ctx, IssueDetailActivity.class);
 		repoIntent = new Intent(ctx, RepoDetailActivity.class);
+		orgIntent = new Intent(ctx, OrganizationDetailActivity.class);
 
 		Intent intent = getIntent();
 		Uri data = intent.getData();
@@ -96,10 +105,14 @@ public class DeepLinksActivity extends BaseActivity {
 					ctx.startActivity(mainIntent);
 					finish();
 				}
-				if(data.getPathSegments().get(0).equals("explore")) { // explore
+				else if(data.getPathSegments().get(0).equals("explore")) { // explore
 					mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
 					ctx.startActivity(mainIntent);
 					finish();
+				}
+				else if(isValidUsername(data.getLastPathSegment())) {
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						getUserOrOrg(currentInstance, instanceToken, data.getLastPathSegment()), 500);
 				}
 				else { // no action, show options
 					showNoActionButtons();
@@ -463,6 +476,39 @@ public class DeepLinksActivity extends BaseActivity {
 		});
 	}
 
+	private void getUserOrOrg(String url, String instanceToken, String userOrgName) {
+		Call<Organization> call = RetrofitClient.getApiInterface(ctx, url).getOrganization(instanceToken, userOrgName);
+
+		call.enqueue(new Callback<Organization>() {
+
+			@Override
+			public void onResponse(@NotNull Call<Organization> call, @NotNull Response<Organization> response) {
+				if(response.code() == 404) { // org doesn't exist or it's a user user
+					Log.d("goToUserOrOrg-404", String.valueOf(response.code()));
+				}
+				else if(response.code() == 200) { // org
+					assert response.body() != null;
+					orgIntent.putExtra("orgName", response.body().getUsername());
+
+
+					TinyDB tinyDb = TinyDB.getInstance(ctx);
+					tinyDb.putString("orgName", response.body().getUsername());
+					tinyDb.putString("organizationId", String.valueOf(response.body().getId()));
+					tinyDb.putBoolean("organizationAction", true);
+					ctx.startActivity(orgIntent);
+				}
+				else {
+					Log.e("getUserOrOrg-code", String.valueOf(response.code()));
+				}
+			}
+
+			@Override
+			public void onFailure(@NotNull Call<Organization> call, @NotNull Throwable t) {
+				Log.e("onFailure-getUserOrOrg", t.toString());
+			}
+		});
+	}
+
 	private void showNoActionButtons()  {
 		if(tinyDB.getInt("defaultScreenId") == 1) { // repos
 
@@ -532,5 +578,14 @@ public class DeepLinksActivity extends BaseActivity {
 				finish();
 			});
 		}
+	}
+
+	private static boolean isValidUsername(String userName) {
+		String[] invalidUsernames = new String[]{".", "..", ".well-known", "admin", "api", "assets",
+			"attachments", "avatars", "captcha", "commits", "debug", "error", "explore", "favicon.ico", "ghost",
+			"help", "install", "issues", "less", "login", "manifest.json", "metrics", "milestones",
+			"new", "notifications", "org", "plugins", "pulls", "raw", "repo", "robots.txt", "search",
+			"serviceworker.js", "stars", "template", "user"};
+		return !Arrays.asList(invalidUsernames).contains(userName);
 	}
 }
