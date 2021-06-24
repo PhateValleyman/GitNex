@@ -161,7 +161,6 @@ public class DeepLinksActivity extends BaseActivity {
 				viewBinding.progressBar.setVisibility(View.GONE);
 				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
-				// TODO switch?
 				if(data.getPathSegments().get(2).equals("issues")) { // issue
 
 					if(!Objects.requireNonNull(data.getLastPathSegment()).contains("issues") & StringUtils.isNumeric(data.getLastPathSegment())) {
