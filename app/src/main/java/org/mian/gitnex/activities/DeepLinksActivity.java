@@ -255,6 +255,10 @@ public class DeepLinksActivity extends BaseActivity {
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "settings"), 500);
 				}
+				else if(data.getLastPathSegment().equals("branches")) { // branches list
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "branchesList"), 500);
+				}
 				else { // no action, show options
 					showNoActionButtons();
 				}

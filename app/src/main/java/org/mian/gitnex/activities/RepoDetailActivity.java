@@ -233,6 +233,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			mainIntent.removeExtra("goToSectionType");
 
 			switch(goToSectionType) {
+				case "branchesList":
+					RepoDetailActivity.mViewPager.setCurrentItem(1);
+					chooseBranch();
+					break;
 				case "issue":
 					RepoDetailActivity.mViewPager.setCurrentItem(2);
 					break;
