@@ -103,7 +103,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 			viewBinding.progressBar.setVisibility(View.GONE);
 
-			// redirect to proper fragment/activity, If no action is there, show options where user to want to go like repos, profile, notifications etc
+			// redirect to proper fragment/activity, if no action is there, show options where user to want to go like repos, profile, notifications etc
 			if(data.getPathSegments().size() == 1) {
 				if(data.getLastPathSegment().equals("notifications")) { // notifications
 					mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
@@ -132,7 +132,7 @@ public class DeepLinksActivity extends BaseActivity {
 				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
 
-				if(data.getPathSegments().get(0).equals("explore")) { // explore
+				if(data.getPathSegments().get(0).equals("explore")) { // specific explore tab
 					if(data.getPathSegments().get(1).equals("organizations")) { // orgs
 						mainIntent.putExtra("exploreOrgs", true);
 					}
@@ -267,7 +267,7 @@ public class DeepLinksActivity extends BaseActivity {
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "labels"), 500);
 				}
-				else if(data.getPathSegments().get(2).equals("settings")) {
+				else if(data.getPathSegments().get(2).equals("settings")) { // repo settings
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "settings"), 500);
 				}
