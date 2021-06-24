@@ -226,6 +226,11 @@ public class DeepLinksActivity extends BaseActivity {
 						finish();
 					}
 				}
+
+				else if(data.getPathSegments().get(2).equals("compare")) { // new pull request
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "pullNew"), 500);
+				}
 				else if(data.getPathSegments().get(2).equals("commit")) { // commits (no API yet to properly implement)
 
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
