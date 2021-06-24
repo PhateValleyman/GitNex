@@ -237,6 +237,14 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 					RepoDetailActivity.mViewPager.setCurrentItem(1);
 					chooseBranch();
 					break;
+				case "branch":
+					RepoDetailActivity.mViewPager.setCurrentItem(1);
+					String selectedBranch = mainIntent.getStringExtra("selectedBranch");
+					tinyDB.putString("repoBranch", selectedBranch);
+					if(getFragmentRefreshListenerFiles() != null) {
+						getFragmentRefreshListenerFiles().onRefresh(selectedBranch);
+					}
+					break;
 				case "commitsList":
 					RepoDetailActivity.mViewPager.setCurrentItem(1);
 					String branch = mainIntent.getStringExtra("branchName");
