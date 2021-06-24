@@ -232,37 +232,38 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			mainIntent.removeExtra("goToSection");
 			mainIntent.removeExtra("goToSectionType");
 
-			if(goToSectionType.equals("issue")) {
+			switch(goToSectionType) {
+				case "issue":
+					RepoDetailActivity.mViewPager.setCurrentItem(2);
+					break;
+				case "issueNew":
+					RepoDetailActivity.mViewPager.setCurrentItem(2);
+					startActivity(new Intent(RepoDetailActivity.this, CreateIssueActivity.class));
+					break;
+				case "pull":
 
-				RepoDetailActivity.mViewPager.setCurrentItem(2);
-			}
-			if(goToSectionType.equals("issueNew")) {
-				RepoDetailActivity.mViewPager.setCurrentItem(2);
-				startActivity(new Intent(RepoDetailActivity.this, CreateIssueActivity.class));
-			}
-			else if(goToSectionType.equals("pull")) {
-
-				RepoDetailActivity.mViewPager.setCurrentItem(3);
-			}
-			else if(goToSectionType.equals("pullNew")) {
-				RepoDetailActivity.mViewPager.setCurrentItem(3);
-				startActivity(new Intent(RepoDetailActivity.this, CreatePullRequestActivity.class));
-			}
-			else if(goToSectionType.equals("releases")) {
-				RepoDetailActivity.mViewPager.setCurrentItem(4);
-			}
-			else if(goToSectionType.equals("milestones")) {
-				RepoDetailActivity.mViewPager.setCurrentItem(5);
-			}
-			else if(goToSectionType.equals("milestonesNew")) {
-				RepoDetailActivity.mViewPager.setCurrentItem(5);
-				startActivity(new Intent(RepoDetailActivity.this, CreateMilestoneActivity.class));
-			}
-			else if(goToSectionType.equals("labels")) {
-				RepoDetailActivity.mViewPager.setCurrentItem(6);
-			}
-			else if(goToSectionType.equals("settings")) {
-				startActivity(new Intent(RepoDetailActivity.this, RepositorySettingsActivity.class));
+					RepoDetailActivity.mViewPager.setCurrentItem(3);
+					break;
+				case "pullNew":
+					RepoDetailActivity.mViewPager.setCurrentItem(3);
+					startActivity(new Intent(RepoDetailActivity.this, CreatePullRequestActivity.class));
+					break;
+				case "releases":
+					RepoDetailActivity.mViewPager.setCurrentItem(4);
+					break;
+				case "milestones":
+					RepoDetailActivity.mViewPager.setCurrentItem(5);
+					break;
+				case "milestonesNew":
+					RepoDetailActivity.mViewPager.setCurrentItem(5);
+					startActivity(new Intent(RepoDetailActivity.this, CreateMilestoneActivity.class));
+					break;
+				case "labels":
+					RepoDetailActivity.mViewPager.setCurrentItem(6);
+					break;
+				case "settings":
+					startActivity(new Intent(RepoDetailActivity.this, RepositorySettingsActivity.class));
+					break;
 			}
 		}
 
