@@ -74,8 +74,8 @@ public class DeepLinksActivity extends BaseActivity {
 		// check for login
 		if(!tinyDB.getBoolean("loggedInMode")) {
 
-			finish();
 			ctx.startActivity(new Intent(ctx, LoginActivity.class));
+			finish();
 		}
 
 		// check for the links(URI) to be in the db
@@ -486,7 +486,7 @@ public class DeepLinksActivity extends BaseActivity {
 			@Override
 			public void onResponse(@NotNull Call<Organization> call, @NotNull Response<Organization> response) {
 				if(response.code() == 404) { // org doesn't exist or it's a user user
-					Log.d("goToUserOrOrg-404", String.valueOf(response.code()));
+					Log.d("getUserOrOrg-404", String.valueOf(response.code()));
 					getUser(url, instanceToken, userOrgName);
 				}
 				else if(response.code() == 200) { // org
@@ -499,10 +499,12 @@ public class DeepLinksActivity extends BaseActivity {
 					tinyDb.putString("organizationId", String.valueOf(response.body().getId()));
 					tinyDb.putBoolean("organizationAction", true);
 					ctx.startActivity(orgIntent);
+					finish();
 				}
 				else {
 					Log.e("getUserOrOrg-code", String.valueOf(response.code()));
 					ctx.startActivity(mainIntent);
+					finish();
 				}
 			}
 
@@ -527,6 +529,7 @@ public class DeepLinksActivity extends BaseActivity {
 				else {
 					Log.e("getUser-code", String.valueOf(response.code()));
 					ctx.startActivity(mainIntent);
+					finish();
 				}
 			}
 
@@ -534,6 +537,7 @@ public class DeepLinksActivity extends BaseActivity {
 			public void onFailure(@NotNull Call<UserInfo> call, @NotNull Throwable t) {
 				Log.e("onFailure-getUser", t.toString());
 				ctx.startActivity(mainIntent);
+				finish();
 			}
 		});*/
 	}
