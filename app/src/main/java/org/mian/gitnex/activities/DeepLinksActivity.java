@@ -73,8 +73,9 @@ public class DeepLinksActivity extends BaseActivity {
 
 		// check for login
 		if(!tinyDB.getBoolean("loggedInMode")) {
-
-			ctx.startActivity(new Intent(ctx, LoginActivity.class));
+			Intent loginIntent = new Intent(ctx, LoginActivity.class);
+			loginIntent.putExtra("instanceUrl", data.getHost());
+			ctx.startActivity(loginIntent);
 			finish();
 		}
 
