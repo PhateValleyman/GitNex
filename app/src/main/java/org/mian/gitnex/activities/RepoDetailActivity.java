@@ -273,6 +273,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 				case "releases":
 					RepoDetailActivity.mViewPager.setCurrentItem(4);
 					break;
+				case "newRelease":
+					RepoDetailActivity.mViewPager.setCurrentItem(4);
+					startActivity(new Intent(RepoDetailActivity.this, CreateReleaseActivity.class));
+					break;
 				case "milestones":
 					RepoDetailActivity.mViewPager.setCurrentItem(5);
 					break;
