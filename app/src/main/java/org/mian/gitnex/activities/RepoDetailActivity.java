@@ -246,6 +246,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			else if(goToSectionType.equals("milestones")) {
 				RepoDetailActivity.mViewPager.setCurrentItem(5);
 			}
+			else if(goToSectionType.equals("milestonesNew")) {
+				RepoDetailActivity.mViewPager.setCurrentItem(5);
+				startActivity(new Intent(RepoDetailActivity.this, CreateMilestoneActivity.class));
+			}
 			else if(goToSectionType.equals("labels")) {
 				RepoDetailActivity.mViewPager.setCurrentItem(6);
 			}
