@@ -236,6 +236,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 				RepoDetailActivity.mViewPager.setCurrentItem(2);
 			}
+			if(goToSectionType.equals("issueNew")) {
+				RepoDetailActivity.mViewPager.setCurrentItem(2);
+				startActivity(new Intent(RepoDetailActivity.this, CreateIssueActivity.class));
+			}
 			else if(goToSectionType.equals("pull")) {
 
 				RepoDetailActivity.mViewPager.setCurrentItem(3);
