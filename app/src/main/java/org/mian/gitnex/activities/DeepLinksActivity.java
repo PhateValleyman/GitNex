@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.gitnex.tea4j.models.Organization;
 import org.gitnex.tea4j.models.PullRequests;
-import org.gitnex.tea4j.models.UserInfo;
 import org.gitnex.tea4j.models.UserRepositories;
 import org.jetbrains.annotations.NotNull;
 import org.mian.gitnex.R;
@@ -25,9 +24,7 @@ import org.mian.gitnex.databinding.ActivityDeeplinksBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.UrlHelper;
-import java.lang.reflect.Array;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -146,11 +143,8 @@ public class DeepLinksActivity extends BaseActivity {
 					finish();
 				}
 				else if(!data.getPathSegments().get(0).equals("") & !data.getLastPathSegment().equals("")) { // go to repo
-
-					new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getLastPathSegment(), "repo");
-					}, 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getLastPathSegment(), "repo"), 500);
 				}
 				else { // no action, show options
 					showNoActionButtons();
@@ -196,20 +190,14 @@ public class DeepLinksActivity extends BaseActivity {
 						finish();
 					}
 					else if(Objects.requireNonNull(data.getLastPathSegment()).contains("issues")) {
-
-						new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "issue");
-						}, 500);
+						new Handler(Looper.getMainLooper()).postDelayed(() ->
+							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "issue"), 500);
 					}
 					else if(data.getLastPathSegment().equals("new")) {
-							new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "issueNew");
-						}, 500);
+						new Handler(Looper.getMainLooper()).postDelayed(() ->
+							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "issueNew"), 500);
 					}
 					else {
-
 						ctx.startActivity(mainIntent);
 						finish();
 					}
@@ -230,14 +218,10 @@ public class DeepLinksActivity extends BaseActivity {
 
 					}
 					else if(Objects.requireNonNull(data.getLastPathSegment()).contains("pulls")) {
-
-						new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pull");
-						}, 500);
+						new Handler(Looper.getMainLooper()).postDelayed(() ->
+							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pull"), 500);
 					}
 					else {
-
 						ctx.startActivity(mainIntent);
 						finish();
 					}
@@ -248,11 +232,8 @@ public class DeepLinksActivity extends BaseActivity {
 						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pullNew"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("commit")) { // commits (no API yet to properly implement)
-
-					new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pull");
-					}, 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pull"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("milestones") && data.getLastPathSegment().equals("new")) { // new milestone
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
