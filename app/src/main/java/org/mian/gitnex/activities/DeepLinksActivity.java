@@ -129,9 +129,6 @@ public class DeepLinksActivity extends BaseActivity {
 				}
 			}
 			else if(data.getPathSegments().size() == 2) {
-				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
-
-
 				if(data.getPathSegments().get(0).equals("explore")) { // specific explore tab
 					if(data.getPathSegments().get(1).equals("organizations")) { // orgs
 						mainIntent.putExtra("exploreOrgs", true);
@@ -140,11 +137,11 @@ public class DeepLinksActivity extends BaseActivity {
 					ctx.startActivity(mainIntent);
 					finish();
 				}
-				else if(!restOfUrl[restOfUrl.length - 2].equals("") & !restOfUrl[restOfUrl.length - 1].equals("")) { // go to repo
+				else if(!data.getPathSegments().get(0).equals("") & !data.getLastPathSegment().equals("")) { // go to repo
 
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 2], restOfUrl[restOfUrl.length - 1], "repo");
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getLastPathSegment(), "repo");
 					}, 500);
 				}
 				else { // no action, show options
@@ -152,8 +149,6 @@ public class DeepLinksActivity extends BaseActivity {
 				}
 			}
 			else if(data.getPathSegments().size() >= 3) {
-				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
-
 				if(data.getPathSegments().get(2).equals("issues")) { // issue
 
 					if(!Objects.requireNonNull(data.getLastPathSegment()).contains("issues") & StringUtils.isNumeric(data.getLastPathSegment())) {
@@ -168,10 +163,10 @@ public class DeepLinksActivity extends BaseActivity {
 						tinyDB.putString("issueNumber", data.getLastPathSegment());
 						tinyDB.putString("issueType", "Issue");
 
-						tinyDB.putString("repoFullName", restOfUrl[restOfUrl.length - 4] + "/" + restOfUrl[restOfUrl.length - 3]);
+						tinyDB.putString("repoFullName", data.getPathSegments().get(0) + "/" + data.getPathSegments().get(1));
 
-						final String repoOwner = restOfUrl[restOfUrl.length - 4];
-						final String repoName = restOfUrl[restOfUrl.length - 3];
+						final String repoOwner = data.getPathSegments().get(0);
+						final String repoName = data.getPathSegments().get(1);
 
 						int currentActiveAccountId = tinyDB.getInt("currentActiveAccountId");
 						RepositoriesApi repositoryData = BaseApi.getInstance(ctx, RepositoriesApi.class);
@@ -196,13 +191,13 @@ public class DeepLinksActivity extends BaseActivity {
 
 						new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-							goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "issue");
+							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "issue");
 						}, 500);
 					}
 					else if(data.getLastPathSegment().equals("new")) {
 							new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-							goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "issueNew");
+							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "issueNew");
 						}, 500);
 					}
 					else {
@@ -222,7 +217,7 @@ public class DeepLinksActivity extends BaseActivity {
 								issueIntent.putExtra("issueComment", urlSplitted[1]);
 							}
 
-							getPullRequest(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3], Integer.parseInt(data.getLastPathSegment()));
+							getPullRequest(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), Integer.parseInt(data.getLastPathSegment()));
 						}, 500);
 
 					}
@@ -230,7 +225,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 						new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-							goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 3], restOfUrl[restOfUrl.length - 2], "pull");
+							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pull");
 						}, 500);
 					}
 					else {
@@ -242,34 +237,34 @@ public class DeepLinksActivity extends BaseActivity {
 
 				else if(data.getPathSegments().get(2).equals("compare")) { // new pull request
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
-						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "pullNew"), 500);
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pullNew"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("commit")) { // commits (no API yet to properly implement)
 
 					new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-						goToRepoSection(currentInstance, instanceToken, restOfUrl[restOfUrl.length - 4], restOfUrl[restOfUrl.length - 3], "pull");
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pull");
 					}, 500);
 				}
 				else if(data.getPathSegments().get(2).equals("milestones") && data.getLastPathSegment().equals("new")) { // new milestone
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
-						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "milestonesNew"), 500);
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "milestonesNew"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("milestones") || data.getPathSegments().get(2).equals("milestone")) { // milestones
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
-						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "milestones"), 500);
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "milestones"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("releases")) { // releases
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
-						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "releases"), 500);
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "releases"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("labels")) { // labels
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
-						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "labels"), 500);
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "labels"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("settings")) { // repo settings
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
-						goToRepoSection(currentInstance, instanceToken, restOfUrl[1], restOfUrl[2], "settings"), 500);
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "settings"), 500);
 				}
 				else { // no action, show options
 					showNoActionButtons();

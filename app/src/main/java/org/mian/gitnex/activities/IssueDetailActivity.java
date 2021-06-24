@@ -122,8 +122,10 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		issueIndex = Integer.parseInt(tinyDB.getString("issueNumber"));
 		issueComment = getIntent().getStringExtra("issueComment");
 
-		if(!issueComment.startsWith("issuecomment-")) {
-			issueComment = null;
+		if(issueComment != null) {
+			if(!issueComment.startsWith("issuecomment-")) {
+				issueComment = null;
+			}
 		}
 
 		setSupportActionBar(viewBinding.toolbar);
