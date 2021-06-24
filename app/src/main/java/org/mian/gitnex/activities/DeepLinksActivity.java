@@ -110,6 +110,11 @@ public class DeepLinksActivity extends BaseActivity {
 					ctx.startActivity(mainIntent);
 					finish();
 				}
+				else if(data.getLastPathSegment().equals(tinyDB.getString("userLogin"))) { // your user profile
+					mainIntent.putExtra("launchFragmentByLinkHandler", "profile");
+					ctx.startActivity(mainIntent);
+					finish();
+				}
 				else if(isValidUsername(data.getLastPathSegment())) {
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						getUserOrOrg(currentInstance, instanceToken, data.getLastPathSegment()), 500);
