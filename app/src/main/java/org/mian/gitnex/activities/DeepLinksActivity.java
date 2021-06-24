@@ -103,12 +103,12 @@ public class DeepLinksActivity extends BaseActivity {
 
 			// redirect to proper fragment/activity, If no action is there, show options where user to want to go like repos, profile, notifications etc
 			if(data.getPathSegments().size() == 1) {
-				if(data.getPathSegments().get(0).equals("notifications")) { // notifications
+				if(data.getLastPathSegment().equals("notifications")) { // notifications
 					mainIntent.putExtra("launchFragmentByLinkHandler", "notification");
 					ctx.startActivity(mainIntent);
 					finish();
 				}
-				else if(data.getPathSegments().get(0).equals("explore")) { // explore
+				else if(data.getLastPathSegment().equals("explore")) { // explore
 					mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
 					ctx.startActivity(mainIntent);
 					finish();
@@ -134,16 +134,11 @@ public class DeepLinksActivity extends BaseActivity {
 
 				if(data.getPathSegments().get(0).equals("explore")) { // explore
 					if(data.getPathSegments().get(1).equals("organizations")) { // orgs
-						mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
 						mainIntent.putExtra("exploreOrgs", true);
-						ctx.startActivity(mainIntent);
-						finish();
 					}
-					else { // repos
-						mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
-						ctx.startActivity(mainIntent);
-						finish();
-					}
+					mainIntent.putExtra("launchFragmentByLinkHandler", "explore");
+					ctx.startActivity(mainIntent);
+					finish();
 				}
 				else if(!restOfUrl[restOfUrl.length - 2].equals("") & !restOfUrl[restOfUrl.length - 1].equals("")) { // go to repo
 
