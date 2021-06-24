@@ -235,6 +235,12 @@ public class DeepLinksActivity extends BaseActivity {
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pull"), 500);
 				}
+				else if(data.getPathSegments().get(2).equals("commits")) { // commits list
+					String branch = data.getLastPathSegment();
+					repoIntent.putExtra("branchName", branch);
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "commitsList"), 500);
+				}
 				else if(data.getPathSegments().get(2).equals("milestones") && data.getLastPathSegment().equals("new")) { // new milestone
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "milestonesNew"), 500);
