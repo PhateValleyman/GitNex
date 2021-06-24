@@ -276,9 +276,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 				case "milestones":
 					RepoDetailActivity.mViewPager.setCurrentItem(5);
 					break;
-				case "singleMilestone":
-					RepoDetailActivity.mViewPager.setCurrentItem(5);
-					break;
 				case "milestonesNew":
 					RepoDetailActivity.mViewPager.setCurrentItem(5);
 					startActivity(new Intent(RepoDetailActivity.this, CreateMilestoneActivity.class));
