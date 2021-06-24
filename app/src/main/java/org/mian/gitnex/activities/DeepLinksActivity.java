@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.gitnex.tea4j.models.Organization;
 import org.gitnex.tea4j.models.PullRequests;
+import org.gitnex.tea4j.models.UserInfo;
 import org.gitnex.tea4j.models.UserRepositories;
 import org.jetbrains.annotations.NotNull;
 import org.mian.gitnex.R;
@@ -50,6 +51,7 @@ public class DeepLinksActivity extends BaseActivity {
 	private Intent issueIntent;
 	private Intent repoIntent;
 	private Intent orgIntent;
+	private Intent userIntent;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class DeepLinksActivity extends BaseActivity {
 		issueIntent = new Intent(ctx, IssueDetailActivity.class);
 		repoIntent = new Intent(ctx, RepoDetailActivity.class);
 		orgIntent = new Intent(ctx, OrganizationDetailActivity.class);
+		//userIntent = new Intent(ctx, ProfileActivity.class)
 
 		Intent intent = getIntent();
 		Uri data = intent.getData();
@@ -490,6 +493,7 @@ public class DeepLinksActivity extends BaseActivity {
 			public void onResponse(@NotNull Call<Organization> call, @NotNull Response<Organization> response) {
 				if(response.code() == 404) { // org doesn't exist or it's a user user
 					Log.d("goToUserOrOrg-404", String.valueOf(response.code()));
+					getUser(url, instanceToken, userOrgName);
 				}
 				else if(response.code() == 200) { // org
 					assert response.body() != null;
@@ -504,6 +508,7 @@ public class DeepLinksActivity extends BaseActivity {
 				}
 				else {
 					Log.e("getUserOrOrg-code", String.valueOf(response.code()));
+					ctx.startActivity(mainIntent);
 				}
 			}
 
@@ -512,6 +517,31 @@ public class DeepLinksActivity extends BaseActivity {
 				Log.e("onFailure-getUserOrOrg", t.toString());
 			}
 		});
+	}
+
+	private void getUser(String url, String instanceToken, String userName) {
+		/*Call<UserInfo> call = RetrofitClient.getApiInterface(ctx, url).getUserProfile(instanceToken, userName);
+
+		call.enqueue(new Callback<UserInfo>() {
+
+			@Override
+			public void onResponse(@NotNull Call<UserInfo> call, @NotNull Response<UserInfo> response) {
+				if(response.code() == 200) {
+					assert response.body() != null;
+					userIntent.putExtra("username", response.body().getLogin());
+				}
+				else {
+					Log.e("getUser-code", String.valueOf(response.code()));
+					ctx.startActivity(mainIntent);
+				}
+			}
+
+			@Override
+			public void onFailure(@NotNull Call<UserInfo> call, @NotNull Throwable t) {
+				Log.e("onFailure-getUser", t.toString());
+				ctx.startActivity(mainIntent);
+			}
+		});*/
 	}
 
 	private void showNoActionButtons()  {
