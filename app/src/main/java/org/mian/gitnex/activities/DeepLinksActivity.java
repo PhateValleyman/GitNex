@@ -101,6 +101,8 @@ public class DeepLinksActivity extends BaseActivity {
 
 		if(accountFound) {
 
+			viewBinding.progressBar.setVisibility(View.GONE);
+
 			// redirect to proper fragment/activity, If no action is there, show options where user to want to go like repos, profile, notifications etc
 			if(data.getPathSegments().size() == 1) {
 				if(data.getLastPathSegment().equals("notifications")) { // notifications
@@ -127,8 +129,6 @@ public class DeepLinksActivity extends BaseActivity {
 				}
 			}
 			else if(data.getPathSegments().size() == 2) {
-
-				viewBinding.progressBar.setVisibility(View.GONE);
 				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
 
@@ -152,8 +152,6 @@ public class DeepLinksActivity extends BaseActivity {
 				}
 			}
 			else if(data.getPathSegments().size() >= 3) {
-
-				viewBinding.progressBar.setVisibility(View.GONE);
 				String[] restOfUrl = Objects.requireNonNull(data.getPath()).split("/");
 
 				if(data.getPathSegments().get(2).equals("issues")) { // issue
