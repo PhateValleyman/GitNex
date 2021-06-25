@@ -531,6 +531,8 @@ public class DeepLinksActivity extends BaseActivity {
 				if(response.code() == 200) {
 					assert response.body() != null;
 					userIntent.putExtra("username", response.body().getLogin());
+					ctx.startActivity(userIntent);
+					finish();
 				}
 				else {
 					Log.e("getUser-code", String.valueOf(response.code()));
