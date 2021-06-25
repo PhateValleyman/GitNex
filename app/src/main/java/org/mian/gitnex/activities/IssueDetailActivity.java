@@ -556,7 +556,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			});
 	}
 
-	private int getCommentIndex(int commentId, List<IssueComments> issueComments) {
+	private static int getCommentIndex(int commentId, List<IssueComments> issueComments) {
 		for (IssueComments comment : issueComments) {
 			if(comment.getId() == commentId) {
 				return issueComments.indexOf(comment);
