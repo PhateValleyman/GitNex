@@ -245,6 +245,26 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 						getFragmentRefreshListenerFiles().onRefresh(selectedBranch);
 					}
 					break;
+				case "file":
+					RepoDetailActivity.mViewPager.setCurrentItem(1);
+					String branch1 = mainIntent.getStringExtra("branch");
+					tinyDB.putString("repoBranch", branch1);
+					if(getFragmentRefreshListenerFiles() != null) {
+						getFragmentRefreshListenerFiles().onRefresh(branch1);
+					}
+					Intent intent = new Intent(ctx, FileViewActivity.class);
+					intent.putExtra("file", mainIntent.getSerializableExtra("file"));
+					startActivity(intent);
+					break;
+				case "dir":
+					RepoDetailActivity.mViewPager.setCurrentItem(1);
+					String branch2 = mainIntent.getStringExtra("branch");
+					tinyDB.putString("repoBranch", branch2);
+					if(getFragmentRefreshListenerFiles() != null) {
+						getFragmentRefreshListenerFiles().onRefresh(branch2);
+					}
+					//((SectionsPagerAdapter) Objects.requireNonNull(RepoDetailActivity.mViewPager.getAdapter())).getItem(1);
+					break;
 				case "commitsList":
 					RepoDetailActivity.mViewPager.setCurrentItem(1);
 					String branch = mainIntent.getStringExtra("branchName");
@@ -252,9 +272,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 					if(getFragmentRefreshListenerFiles() != null) {
 						getFragmentRefreshListenerFiles().onRefresh(branch);
 					}
-					Intent intent = new Intent(ctx, CommitsActivity.class);
-					intent.putExtra("branchName", branch);
-					ctx.startActivity(intent);
+					Intent intent1 = new Intent(ctx, CommitsActivity.class);
+					intent1.putExtra("branchName", branch);
+					ctx.startActivity(intent1);
 					break;
 				case "issue":
 					RepoDetailActivity.mViewPager.setCurrentItem(2);

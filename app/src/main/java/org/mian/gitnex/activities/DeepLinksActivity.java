@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import org.apache.commons.lang3.StringUtils;
+import org.gitnex.tea4j.models.Files;
 import org.gitnex.tea4j.models.Organization;
 import org.gitnex.tea4j.models.PullRequests;
 import org.gitnex.tea4j.models.UserRepositories;
@@ -25,6 +26,7 @@ import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.UrlHelper;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -283,6 +285,19 @@ public class DeepLinksActivity extends BaseActivity {
 					repoIntent.putExtra("selectedBranch", data.getLastPathSegment());
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "branch"), 500);
+				}
+				else if(data.getPathSegments().get(2).equals("src") && data.getPathSegments().get(3).equals("branch")) { // file/dir
+					StringBuilder filePath = new StringBuilder();
+					ArrayList<String> segments = new ArrayList<>(data.getPathSegments());
+					segments.subList(0, 5).clear();
+					for (String item : segments) {
+						filePath.append(item);
+						filePath.append("/");
+					}
+					filePath.deleteCharAt(filePath.toString().length() - 1);
+					new Handler(Looper.getMainLooper()).postDelayed(() ->
+						getFile(currentInstance, instanceToken, data.getPathSegments().get(0),
+							data.getPathSegments().get(1), filePath.toString(), data.getPathSegments().get(4)), 500);
 				}
 				else { // no action, show options
 					showNoActionButtons();
@@ -554,6 +569,45 @@ public class DeepLinksActivity extends BaseActivity {
 				finish();
 			}
 		});*/
+	}
+
+	private void getFile(String url, String instanceToken, String owner, String repo, String filePath, String branch) {
+		Call<Files> call = RetrofitClient.getApiInterface(ctx, url).getSingleFileContents(instanceToken, owner, repo, filePath, branch);
+
+		call.enqueue(new Callback<Files>() {
+
+			@Override
+			public void onResponse(@NotNull Call<Files> call, @NotNull Response<Files> response) {
+				if(response.code() == 200) {
+					// check if file and open file/dir
+					Files file = response.body();
+					assert file != null;
+					if(file.getType().equals("file")) {
+						repoIntent.putExtra("file", file);
+						repoIntent.putExtra("branch", branch);
+						goToRepoSection(url, instanceToken, owner, repo, "file");
+					}
+				}
+				else {
+					Log.e("getFile-onFailure", String.valueOf(response.code()));
+					ctx.startActivity(mainIntent);
+					finish();
+				}
+			}
+
+			@Override
+			public void onFailure(@NotNull Call<Files> call, @NotNull Throwable t) {
+				Log.e("getFile-onFailure", t.toString());
+				// maybe it's a directory
+				getDir(url, instanceToken, owner, repo, filePath, branch);
+			}
+		});
+	}
+
+	private void getDir(String url, String instanceToken, String owner, String repo, String filePath, String branch) {
+		repoIntent.putExtra("branch", branch);
+		repoIntent.putExtra("dir", filePath);
+		goToRepoSection(url, instanceToken, owner, repo, "dir");
 	}
 
 	private void showNoActionButtons()  {
