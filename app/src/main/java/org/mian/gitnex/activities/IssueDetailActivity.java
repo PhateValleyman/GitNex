@@ -536,7 +536,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				adapter = new IssueCommentsAdapter(ctx, bundle, issueCommentsMain, getSupportFragmentManager(), this::onResume);
 
 				viewBinding.recyclerView.setAdapter(adapter);
-				if(issueComment != null) {
+				/*if(issueComment != null) {
 					int issueCommentId = Integer.parseInt(issueComment.substring(13));
 					int commentIndex = getCommentIndex(issueCommentId, issueCommentsMain);
 					if(commentIndex != -1) {
@@ -544,14 +544,25 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 							viewBinding.recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 								@Override
 								public void onGlobalLayout() {
-									viewBinding.scrollViewComments.scrollToDescendant(viewBinding.recyclerView.getChildAt(commentIndex));
+									//viewBinding.scrollViewComments.scrollToDescendant(viewBinding.recyclerView.getChildAt(commentIndex));
+									//viewBinding.scrollViewComments.scrollToDescendant(viewBinding.recyclerView);
+									//float y = viewBinding.recyclerView.getY() + viewBinding.recyclerView.getChildAt(commentIndex).getY();
+									//System.out.println(y);
+									//System.out.println(viewBinding.recyclerView.getY());
+									float y = ((RelativeLayout) viewBinding.scrollViewComments.getChildAt(0)).getChildAt(2).getY() +
+										viewBinding.recyclerView.getChildAt(commentIndex).getY();
+									System.out.println(((RelativeLayout) viewBinding.scrollViewComments.getChildAt(0)).getChildAt(2).getY());
+									System.out.println(viewBinding.recyclerView.getChildAt(commentIndex).getY());
+									System.out.println(y);
+									//viewBinding.scrollViewComments.scrollTo(0, (int) y);
+									viewBinding.scrollViewComments.scrollTo(0, 2553);
 									viewBinding.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 								}
 							});
 						}
 						issueComment = null;
 					}
-				}
+				}*/
 
 			});
 	}
