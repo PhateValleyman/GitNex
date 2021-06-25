@@ -101,8 +101,6 @@ public class DeepLinksActivity extends BaseActivity {
 
 		if(accountFound) {
 
-			viewBinding.progressBar.setVisibility(View.GONE);
-
 			// redirect to proper fragment/activity, if no action is there, show options where user to want to go like repos, profile, notifications etc
 			if(data.getPathSegments().size() == 1) {
 				if(data.getLastPathSegment().equals("notifications")) { // notifications
@@ -611,6 +609,8 @@ public class DeepLinksActivity extends BaseActivity {
 	}
 
 	private void showNoActionButtons()  {
+		viewBinding.progressBar.setVisibility(View.GONE);
+		
 		if(tinyDB.getInt("defaultScreenId") == 1) { // repos
 
 			mainIntent.putExtra("launchFragmentByLinkHandler", "repos");
