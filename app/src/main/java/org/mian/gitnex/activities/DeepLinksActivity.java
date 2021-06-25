@@ -299,6 +299,7 @@ public class DeepLinksActivity extends BaseActivity {
 			viewBinding.addNewAccount.setOnClickListener(addNewAccount -> {
 
 				Intent accountIntent = new Intent(ctx, AddNewAccountActivity.class);
+				accountIntent.putExtra("instanceUrl", data.getHost());
 				startActivity(accountIntent);
 				finish();
 			});
