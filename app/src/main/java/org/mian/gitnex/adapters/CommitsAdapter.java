@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Commits;
@@ -85,8 +86,9 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         TextView commitSubject;
         TextView commitBody;
-        TextView commitCommitter;
-        ImageView commitCommitterAvatar;
+	    TextView commitAuthorAndCommitter;
+	    ImageView commitAuthorAvatar;
+	    ImageView commitCommitterAvatar;
         TextView commitSha;
 
         CommitsHolder(View itemView) {
@@ -97,12 +99,12 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             commitSubject = itemView.findViewById(R.id.commitSubject);
             commitBody = itemView.findViewById(R.id.commitBody);
-            commitCommitter = itemView.findViewById(R.id.commitCommitter);
-            commitCommitterAvatar = itemView.findViewById(R.id.commitCommitterAvatar);
+	        commitAuthorAndCommitter = itemView.findViewById(R.id.commitAuthorAndCommitter);
+	        commitAuthorAvatar = itemView.findViewById(R.id.commitAuthorAvatar);
+	        commitCommitterAvatar = itemView.findViewById(R.id.commitCommitterAvatar);
             commitSha = itemView.findViewById(R.id.commitSha);
 
         }
-
 
         void bindData(Commits commitsModel) {
 
@@ -117,26 +119,49 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 	            commitBody.setVisibility(View.GONE);
             }
 
-            commitCommitter.setText(
-            	context.getString(R.string.commitCommittedByWhen,
-		            commitsModel.getCommit().getCommitter().getName(),
-		            TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), context.getResources().getConfiguration().locale, "pretty", context)));
+	        commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(context.getString(R.string.commitAuthoredByAndCommittedByWhen,
+			        commitsModel.getAuthor().getUsername(),
+			        commitsModel.getCommitter().getUsername(),
+			        TimeHelper.formatTime(commitsModel.getCommit().getCommitter().getDate(), context.getResources().getConfiguration().locale, "pretty", context)), HtmlCompat.FROM_HTML_MODE_COMPACT));
 
-	        if(commitsModel.getCommitter().getAvatar_url() != null &&
-		        !commitsModel.getCommitter().getAvatar_url().isEmpty()) {
+	        if(commitsModel.getAuthor().getAvatar_url() != null &&
+		        !commitsModel.getAuthor().getAvatar_url().isEmpty()) {
+
+		        commitAuthorAvatar.setVisibility(View.VISIBLE);
 
 		        int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 		        PicassoService.getInstance(context).get()
-			        .load(commitsModel.getCommitter().getAvatar_url())
+			        .load(commitsModel.getAuthor().getAvatar_url())
 			        .placeholder(R.drawable.loader_animated)
 			        .transform(new RoundedTransformation(imgRadius, 0))
 			        .resize(120, 120)
-			        .centerCrop().into(commitCommitterAvatar);
+			        .centerCrop().into(commitAuthorAvatar);
 
 	        } else {
-		        commitCommitterAvatar.setImageDrawable(null);
+		        commitAuthorAvatar.setImageDrawable(null);
+		        commitAuthorAvatar.setVisibility(View.GONE);
 	        }
+
+            if(!commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin()) &&
+	            commitsModel.getCommitter().getAvatar_url() != null &&
+	            !commitsModel.getCommitter().getAvatar_url().isEmpty()) {
+
+	            commitCommitterAvatar.setVisibility(View.VISIBLE);
+
+	            int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
+
+	            PicassoService.getInstance(context).get()
+		            .load(commitsModel.getCommitter().getAvatar_url())
+		            .placeholder(R.drawable.loader_animated)
+		            .transform(new RoundedTransformation(imgRadius, 0))
+		            .resize(120, 120)
+		            .centerCrop().into(commitCommitterAvatar);
+
+            } else {
+	            commitCommitterAvatar.setImageDrawable(null);
+	            commitCommitterAvatar.setVisibility(View.GONE);
+            }
 
 	        commitSha.setText(commitsModel.getSha().substring(0, Math.min(commitsModel.getSha().length(), 10)));
             rootView.setOnClickListener(v -> context.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(commitsModel.getHtml_url()))));

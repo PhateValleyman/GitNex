@@ -30,6 +30,7 @@
             android:layout_marginBottom="8dp"
             android:alpha=".8"
             android:textColor="?attr/primaryTextColor"
+            android:textSize="14sp"
             tools:text="This is a test commit message" />
 
         <LinearLayout
@@ -40,7 +41,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
@@ -48,20 +49,27 @@
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
+                    android:id="@+id/commitAuthorAvatar"
+                    android:layout_width="@dimen/list_avatar_size"
+                    android:layout_height="@dimen/list_avatar_size"
+                    android:contentDescription="@string/generalImgContentText"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <ImageView
                     android:id="@+id/commitCommitterAvatar"
                     android:layout_width="@dimen/list_avatar_size"
                     android:layout_height="@dimen/list_avatar_size"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="5dp"
                     android:contentDescription="@string/generalImgContentText"
                     tools:srcCompat="@tools:sample/avatars" />
 
                 <TextView
-                    android:id="@+id/commitCommitter"
+                    android:id="@+id/commitAuthorAndCommitter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
-                    tools:text="opyale" />
+                    tools:text="opyale authored and opyale committed" />
 
             </LinearLayout>
 
@@ -69,6 +77,7 @@
                 android:id="@+id/commitSha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0"
                 android:alpha=".8"
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
