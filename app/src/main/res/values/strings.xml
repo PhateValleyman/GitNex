@@ -586,7 +586,8 @@
     <string name="shareRepository">Share Repository</string>
     <string name="createRepository">Create Repository</string>
     <string name="commitTitle">Commits</string>
-    <string name="commitCommittedByWhen">%s committed %s</string>
+    <string name="commitAuthoredByAndCommittedByWhen"><![CDATA[<b>%s</b> authored and <b>%s</b> committed %s]]></string>
+    <string name="commitCommittedByWhen"><![CDATA[<b>%s</b> committed %s]]></string>
     <string name="viewCommits">View Commits</string>
     <string name="changelogTitle" translatable="false">Changelog</string>
 
