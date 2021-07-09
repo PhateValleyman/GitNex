@@ -545,6 +545,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 	private void getUser(String url, String instanceToken, String userName) {
 		// TODO: enable if UserProfile Activity exist
+		showNoActionButtons();
 		/*Call<UserInfo> call = RetrofitClient.getApiInterface(ctx, url).getUserProfile(instanceToken, userName);
 
 		call.enqueue(new Callback<UserInfo>() {
