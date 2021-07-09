@@ -394,6 +394,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_profile);
 					return;
+
+				case "admin":
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdministrationFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_administration);
+					return;
+
 			}
 		}
 

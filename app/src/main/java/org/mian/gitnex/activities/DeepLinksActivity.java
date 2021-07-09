@@ -119,6 +119,11 @@ public class DeepLinksActivity extends BaseActivity {
 					ctx.startActivity(mainIntent);
 					finish();
 				}
+				else if(data.getLastPathSegment().equals("admin")) {
+					mainIntent.putExtra("launchFragmentByLinkHandler", "admin");
+					ctx.startActivity(mainIntent);
+					finish();
+				}
 				else if(isValidUsername(data.getLastPathSegment())) {
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						getUserOrOrg(currentInstance, instanceToken, data.getLastPathSegment()), 500);
@@ -141,6 +146,12 @@ public class DeepLinksActivity extends BaseActivity {
 					loginIntent.putExtra("instanceUrl", data.getHost());
 					loginIntent.putExtra("instanceProtocol", data.getScheme());
 					ctx.startActivity(loginIntent);
+					finish();
+				}
+				else if(data.getPathSegments().get(0).equals("admin")) {
+					mainIntent.putExtra("launchFragmentByLinkHandler", "admin");
+					mainIntent.putExtra("giteaAdminAction", data.getLastPathSegment());
+					ctx.startActivity(mainIntent);
 					finish();
 				}
 				else if(!data.getPathSegments().get(0).equals("") & !data.getLastPathSegment().equals("")) { // go to repo
