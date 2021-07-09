@@ -234,6 +234,12 @@ public class DeepLinksActivity extends BaseActivity {
 						new Handler(Looper.getMainLooper()).postDelayed(() ->
 							goToRepoSection(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), "pull"), 500);
 					}
+					else if(data.getLastPathSegment().equals("files")) { // pr diff
+						new Handler(Looper.getMainLooper()).postDelayed(() -> {
+							issueIntent.putExtra("openPrDiff", "true");
+							getPullRequest(currentInstance, instanceToken, data.getPathSegments().get(0), data.getPathSegments().get(1), Integer.parseInt(data.getPathSegments().get(3)));
+						}, 500);
+					}
 					else {
 						ctx.startActivity(mainIntent);
 						finish();
