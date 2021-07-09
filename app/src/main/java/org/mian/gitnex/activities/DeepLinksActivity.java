@@ -64,6 +64,7 @@ public class DeepLinksActivity extends BaseActivity {
 		issueIntent = new Intent(ctx, IssueDetailActivity.class);
 		repoIntent = new Intent(ctx, RepoDetailActivity.class);
 		orgIntent = new Intent(ctx, OrganizationDetailActivity.class);
+		// TODO: enable if UserProfile Activity exist
 		//userIntent = new Intent(ctx, ProfileActivity.class)
 
 		Intent intent = getIntent();
@@ -543,6 +544,7 @@ public class DeepLinksActivity extends BaseActivity {
 	}
 
 	private void getUser(String url, String instanceToken, String userName) {
+		// TODO: enable if UserProfile Activity exist
 		/*Call<UserInfo> call = RetrofitClient.getApiInterface(ctx, url).getUserProfile(instanceToken, userName);
 
 		call.enqueue(new Callback<UserInfo>() {
@@ -612,7 +614,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 	private void showNoActionButtons()  {
 		viewBinding.progressBar.setVisibility(View.GONE);
-		
+
 		if(tinyDB.getInt("defaultScreenId") == 1) { // repos
 
 			mainIntent.putExtra("launchFragmentByLinkHandler", "repos");
