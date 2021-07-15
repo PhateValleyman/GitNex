@@ -124,12 +124,9 @@ public class DeepLinksActivity extends BaseActivity {
 					ctx.startActivity(mainIntent);
 					finish();
 				}
-				else if(isValidUsername(data.getLastPathSegment())) {
+				else {
 					new Handler(Looper.getMainLooper()).postDelayed(() ->
 						getUserOrOrg(currentInstance, instanceToken, data.getLastPathSegment()), 500);
-				}
-				else { // no action, show options
-					showNoActionButtons();
 				}
 			}
 			else if(data.getPathSegments().size() == 2) {
@@ -701,14 +698,5 @@ public class DeepLinksActivity extends BaseActivity {
 				finish();
 			});
 		}
-	}
-
-	private static boolean isValidUsername(String userName) {
-		String[] invalidUsernames = new String[]{".", "..", ".well-known", "admin", "api", "assets",
-			"attachments", "avatars", "captcha", "commits", "debug", "error", "explore", "favicon.ico", "ghost",
-			"help", "install", "issues", "less", "login", "manifest.json", "metrics", "milestones",
-			"new", "notifications", "org", "plugins", "pulls", "raw", "repo", "robots.txt", "search",
-			"serviceworker.js", "stars", "template", "user"};
-		return !Arrays.asList(invalidUsernames).contains(userName);
 	}
 }
