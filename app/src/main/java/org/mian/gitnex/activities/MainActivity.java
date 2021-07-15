@@ -384,9 +384,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					return;
 
 				case "explore":
-					ExploreFragment exploreFragment = new ExploreFragment();
-					if(mainIntent.getBooleanExtra("exploreOrgs", false)) exploreFragment.goToOrgs = true;
-					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, exploreFragment).commit();
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ExploreFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_explore);
 					return;
 
