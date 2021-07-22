@@ -131,7 +131,6 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		});
 
 		String dir = requireActivity().getIntent().getStringExtra("dir");
-		System.out.println(dir);
 		if(dir != null) {
 			fetchDataAsyncSub(Authorization.get(getContext()), repoOwner, repoName, dir, ref);
 			for(String segment: dir.split("/")) {
