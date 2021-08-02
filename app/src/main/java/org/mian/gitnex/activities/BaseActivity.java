@@ -6,9 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -21,7 +18,7 @@ import java.util.concurrent.Executor;
  * Author M M Arif
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements LifecycleObserver {
+public abstract class BaseActivity extends AppCompatActivity {
 
 	protected TinyDB tinyDB;
 
@@ -35,7 +32,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 
 		this.appCtx = getApplicationContext();
 		this.tinyDB = TinyDB.getInstance(appCtx);
-		getLifecycle().addObserver(this);
 
 		switch(tinyDB.getInt("themeId")) {
 
@@ -97,8 +93,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 		Notifications.startWorker(appCtx);
 	}
 
-	@OnLifecycleEvent(Lifecycle.Event.ON_START)
-	public void onAppForegrounded() {
+	public void onResume() {
+		super.onResume();
 
 		if(tinyDB.getBoolean("biometricStatus") && !tinyDB.getBoolean("biometricLifeCycle")) {
 
@@ -114,7 +110,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 					// Authentication error, close the app
 					if(errorCode == BiometricPrompt.ERROR_USER_CANCELED ||
 						errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
-
 						finish();
 					}
 				}
