@@ -57,6 +57,7 @@ public class ProfileActivity extends BaseActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		ViewPager2 viewPager = findViewById(R.id.profileContainer);
+		viewPager.setOffscreenPageLimit(1);
 		TabLayout tabLayout = findViewById(R.id.tabs);
 
 		switch(tinyDB.getInt("customFontId", -1)) {
