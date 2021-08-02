@@ -95,13 +95,13 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			userFullName = itemView.findViewById(R.id.userFullName);
 			userName = itemView.findViewById(R.id.userName);
 
-			userAvatar.setOnClickListener(loginId -> {
+			itemView.setOnClickListener(loginId -> {
 				Intent intent = new Intent(context, ProfileActivity.class);
 				intent.putExtra("username", userInfo.getLogin());
 				context.startActivity(intent);
 			});
 
-			userAvatar.setOnLongClickListener(loginId -> {
+			itemView.setOnLongClickListener(loginId -> {
 				AppUtil.copyToClipboard(context, userInfo.getLogin(), context.getString(R.string.copyLoginIdToClipBoard, userInfo.getLogin()));
 				return true;
 			});

@@ -389,7 +389,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					return;
 
 				case "profile":
-					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProfileFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_profile);
 					return;
 

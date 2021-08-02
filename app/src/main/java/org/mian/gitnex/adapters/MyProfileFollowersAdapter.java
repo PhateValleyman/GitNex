@@ -43,13 +43,13 @@ public class MyProfileFollowersAdapter extends RecyclerView.Adapter<MyProfileFol
             userFullName = itemView.findViewById(R.id.userFullName);
             userName = itemView.findViewById(R.id.userName);
 
-	        userAvatar.setOnClickListener(loginId -> {
+	        itemView.setOnClickListener(loginId -> {
 		        Intent intent = new Intent(context, ProfileActivity.class);
 		        intent.putExtra("username", userLoginId);
 		        context.startActivity(intent);
 	        });
 
-	        userAvatar.setOnLongClickListener(loginId -> {
+	        itemView.setOnLongClickListener(loginId -> {
 		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
 		        return true;
 	        });
