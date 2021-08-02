@@ -197,6 +197,10 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		getSingleIssue(repoOwner, repoName, issueIndex);
 		fetchDataAsync(repoOwner, repoName, issueIndex);
 
+		if(getIntent().getStringExtra("openPrDiff") != null && getIntent().getStringExtra("openPrDiff").equals("true")) {
+			startActivity(new Intent(ctx, FileDiffActivity.class));
+		}
+
 	}
 
 	@Override
@@ -435,6 +439,11 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		if(id == android.R.id.home) {
 
+			if(getIntent().getStringExtra("openedFromLink") != null && getIntent().getStringExtra("openedFromLink").equals("true")) {
+				Intent intent = new Intent(ctx, RepoDetailActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+			}
 			finish();
 			return true;
 		}
