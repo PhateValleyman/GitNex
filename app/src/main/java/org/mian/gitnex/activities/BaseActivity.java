@@ -46,7 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 				break;
 			case 2:
 
-				if(TimeHelper.timeBetweenHours(18, 6)) { // 6pm to 6am
+				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour"), tinyDB.getInt("lightThemeTimeHour"), tinyDB.getInt("darkThemeTimeMinute"), tinyDB.getInt("lightThemeTimeMinute"))) {
 
 					tinyDB.putString("currentTheme", "dark");
 					setTheme(R.style.AppTheme);
@@ -63,7 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Lifecycl
 				setTheme(R.style.AppThemeRetro);
 				break;
 			case 4:
-				if(TimeHelper.timeBetweenHours(18, 6)) { // 6pm to 6am
+				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour"), tinyDB.getInt("lightThemeTimeHour"), tinyDB.getInt("darkThemeTimeMinute"), tinyDB.getInt("lightThemeTimeMinute"))) {
 
 					tinyDB.putString("currentTheme", "dark");
 					setTheme(R.style.AppTheme);
