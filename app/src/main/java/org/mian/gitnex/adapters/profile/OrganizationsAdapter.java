@@ -2,6 +2,7 @@ package org.mian.gitnex.adapters.profile;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.UserOrganizations;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.OrganizationDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
 
 /**
@@ -104,6 +107,18 @@ public class OrganizationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 			if (!userOrganizations.getDescription().equals("")) {
 				orgDescription.setText(userOrganizations.getDescription());
 			}
+
+			itemView.setOnClickListener(v -> {
+				Context context = v.getContext();
+				Intent intent = new Intent(context, OrganizationDetailActivity.class);
+				intent.putExtra("orgName", userOrganizations.getUsername());
+
+				TinyDB tinyDb = TinyDB.getInstance(context);
+				tinyDb.putString("orgName", userOrganizations.getUsername());
+				tinyDb.putString("organizationId", String.valueOf(userOrganizations.getId()));
+				tinyDb.putBoolean("organizationAction", true);
+				context.startActivity(intent);
+			});
 		}
 	}
 
