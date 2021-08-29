@@ -14,7 +14,8 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.BottomSheetUserProfileBinding;
 
 /**
- * Author M M Arif
+ * Template M M Arif
+ * @author qwerty287
  */
 
 public class BottomSheetUserProfileFragment extends BottomSheetDialogFragment {
