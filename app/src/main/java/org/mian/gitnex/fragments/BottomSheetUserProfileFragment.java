@@ -14,7 +14,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.BottomSheetUserProfileBinding;
 
 /**
- * Template M M Arif
+ * Template Author M M Arif
  * @author qwerty287
  */
 

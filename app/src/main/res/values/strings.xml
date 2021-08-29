@@ -757,7 +757,7 @@
     <string name="userFollow">Follow</string>
     <string name="unfollowUser">Unfollow</string>
     <string name="unfollowedUser">Unfollowed @%s</string>
-    <string name="nowFollowUser">You now follow @%s.</string>
-    <string name="unfollowingFailed">Couldn\'t unfollow user.</string>
-    <string name="followingFailed">Couldn\'t follow user.</string>
+    <string name="nowFollowUser">You now follow @%s</string>
+    <string name="unfollowingFailed">Couldn\'t unfollow user</string>
+    <string name="followingFailed">Couldn\'t follow user</string>
 </resources>

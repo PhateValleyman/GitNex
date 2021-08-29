@@ -131,13 +131,11 @@ public class ProfileActivity extends BaseActivity implements BottomSheetUserProf
 				}
 				else {
 					following = false;
-					Log.d("ProfileActivty-check", String.valueOf(response.code()));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-				t.printStackTrace();
 				following = false;
 			}
 		});
@@ -171,13 +169,11 @@ public class ProfileActivity extends BaseActivity implements BottomSheetUserProf
 					else {
 						Toasty.error(ProfileActivity.this, getString(R.string.followingFailed));
 					}
-					Log.d("ProfileActivty-follow", String.valueOf(response.code()));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-				t.printStackTrace();
 				if (following) {
 					Toasty.error(ProfileActivity.this, getString(R.string.unfollowingFailed));
 				}
