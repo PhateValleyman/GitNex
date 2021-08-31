@@ -67,7 +67,7 @@ public class PullRequestActions {
 			@Override
 			public void onResponse(@NonNull Call call, @NonNull Response response) {
 				if(response.isSuccessful()) {
-					Toasty.success(context, "Pull request updated successfully");
+					Toasty.success(context, context.getString(R.string.updatePrSuccess));
 				}
 				else {
 					if(response.code() == 403) {
