@@ -755,5 +755,11 @@
 
     <string name="lastUpdatedAt">Updated %s</string>
     <string name="joined">Joined</string>
+    <string name="userFollow">Follow</string>
+    <string name="unfollowUser">Unfollow</string>
+    <string name="unfollowedUser">Unfollowed @%s</string>
+    <string name="nowFollowUser">You now follow @%s</string>
+    <string name="unfollowingFailed">Couldn\'t unfollow user</string>
+    <string name="followingFailed">Couldn\'t follow user</string>
     <string name="updatePrConflict">The pull request conflicts with the base branch. Please resolve the conflicts and try again.</string>
 </resources>
