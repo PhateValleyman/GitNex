@@ -56,6 +56,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		TextView addRemoveAssignees = bottomSheetSingleIssueBinding.addRemoveAssignees;
 		TextView copyIssueUrl = bottomSheetSingleIssueBinding.copyIssueUrl;
 		TextView openFilesDiff = bottomSheetSingleIssueBinding.openFilesDiff;
+		TextView updatePullRequest = bottomSheetSingleIssueBinding.updatePullRequest;
 		TextView mergePullRequest = bottomSheetSingleIssueBinding.mergePullRequest;
 		TextView deletePullRequestBranch = bottomSheetSingleIssueBinding.deletePrHeadBranch;
 		TextView shareIssue = bottomSheetSingleIssueBinding.shareIssue;
@@ -92,10 +93,12 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			shareIssue.setText(R.string.sharePr);
 
 			if(tinyDB.getBoolean("prMerged") || tinyDB.getString("repoPrState").equals("closed")) {
+				updatePullRequest.setVisibility(View.GONE);
 				mergePullRequest.setVisibility(View.GONE);
 				deletePullRequestBranch.setVisibility(View.VISIBLE);
 			}
 			else {
+				updatePullRequest.setVisibility(View.VISIBLE);
 				mergePullRequest.setVisibility(View.VISIBLE);
 				deletePullRequestBranch.setVisibility(View.GONE);
 			}
@@ -113,9 +116,15 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		}
 		else {
 
+			updatePullRequest.setVisibility(View.GONE);
 			mergePullRequest.setVisibility(View.GONE);
 			deletePullRequestBranch.setVisibility(View.GONE);
 		}
+
+		updatePullRequest.setOnClickListener(v -> {
+			PullRequestActions.updatePr(requireContext(), parts[0], parts[1], tinyDB.getString("issueNumber"));
+			dismiss();
+		});
 
 		mergePullRequest.setOnClickListener(v13 -> {
 

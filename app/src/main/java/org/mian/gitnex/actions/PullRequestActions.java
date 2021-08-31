@@ -10,6 +10,7 @@ import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author qwerty287
@@ -56,6 +57,35 @@ public class PullRequestActions {
 				if(showToasts) Toasty.error(context, context.getString(R.string.deleteBranchError));
 			}
 
+		});
+	}
+
+	public static void updatePr(Context context, String repoOwner, String repoName, String index) {
+		RetrofitClient.getApiInterface(context).updatePullRequest(Authorization.get(context), repoOwner, repoName, Integer.parseInt(index))
+			.enqueue(new Callback<Void>() {
+
+			@Override
+			public void onResponse(@NonNull Call call, @NonNull Response response) {
+				if(response.isSuccessful()) {
+					Toasty.success(context, "Pull request updated successfully");
+				}
+				else {
+					if(response.code() == 403) {
+						Toasty.error(context, context.getString(R.string.authorizeError));
+					}
+					else if(response.code() == 409) {
+						Toasty.error(context, context.getString(R.string.updatePrConflict));
+					}
+					else {
+						Toasty.error(context, context.getString(R.string.genericError));
+					}
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call call, @NonNull Throwable t) {
+				Toasty.error(context, context.getString(R.string.genericError));
+			}
 		});
 	}
 
