@@ -539,7 +539,7 @@
     <string name="titleDrafts">Drafts</string>
     <string name="filesBreadcrumbRoot" translatable="false">Root</string>
 
-    <string name="versionUnsupportedOld">Unsupported old version(%1$s) of Gitea detected. Please update to latest stable version. If you continue, the app may not function properly</string>
+    <string name="versionUnsupportedOld">Unsupported old version(%1$s) of Gitea detected. Please update to latest stable version. If you continue, some features may not work.</string>
     <string name="versionUnsupportedNew">New Gitea version detected! Please UPDATE GitNex!</string>
     <string name="versionUnknown">No Gitea detected!</string>
     <string name="versionAlertDialogHeader">Unsupported Version of Gitea</string>
