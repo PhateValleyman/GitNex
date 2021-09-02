@@ -60,8 +60,18 @@ public class PullRequestActions {
 		});
 	}
 
-	public static void updatePr(Context context, String repoOwner, String repoName, String index) {
-		RetrofitClient.getApiInterface(context).updatePullRequest(Authorization.get(context), repoOwner, repoName, Integer.parseInt(index))
+	public static void updatePr(Context context, String repoOwner, String repoName, String index, Boolean rebase) {
+		String strategy;
+		if(rebase == null) {
+			strategy = null;
+		}
+		else if(!rebase) {
+			strategy = "merge";
+		}
+		else {
+			strategy = "rebase";
+		}
+		RetrofitClient.getApiInterface(context).updatePullRequest(Authorization.get(context), repoOwner, repoName, Integer.parseInt(index), strategy)
 			.enqueue(new Callback<Void>() {
 
 			@Override

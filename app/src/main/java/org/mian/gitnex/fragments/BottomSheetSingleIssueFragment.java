@@ -122,7 +122,12 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		}
 
 		updatePullRequest.setOnClickListener(v -> {
-			PullRequestActions.updatePr(requireContext(), parts[0], parts[1], tinyDB.getString("issueNumber"));
+			if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.16.0")) {
+				AlertDialogs.selectPullUpdateStrategy(requireContext(), parts[0], parts[1], tinyDB.getString("issueNumber"));
+			}
+			else {
+				PullRequestActions.updatePr(requireContext(), parts[0], parts[1], tinyDB.getString("issueNumber"), null);
+			}
 			dismiss();
 		});
 

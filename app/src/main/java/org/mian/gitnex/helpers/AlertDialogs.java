@@ -1,10 +1,12 @@
 package org.mian.gitnex.helpers;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.CollaboratorActions;
+import org.mian.gitnex.actions.PullRequestActions;
 import org.mian.gitnex.actions.TeamActions;
 import org.mian.gitnex.activities.CreateLabelActivity;
 import org.mian.gitnex.activities.LoginActivity;
@@ -110,6 +112,14 @@ public class AlertDialogs {
                 .setPositiveButton(positiveButton, (dialog, whichButton) -> TeamActions.removeTeamMember(context, userNameMain, teamId))
                 .setNeutralButton(negativeButton, null).show();
 
+    }
+
+    public static void selectPullUpdateStrategy(Context context, String repoOwner, String repo, String issueNumber) {
+    	new AlertDialog.Builder(context)
+		    .setTitle(R.string.selectUpdateStrategy)
+		    .setNeutralButton(R.string.cancelButton, null)
+		    .setItems(new String[]{context.getString(R.string.updateStrategyMerge), context.getString(R.string.updateStrategyRebase)},
+			    (dialog, which) -> PullRequestActions.updatePr(context, repoOwner, repo, issueNumber, which != 0)).show();
     }
 
 }
