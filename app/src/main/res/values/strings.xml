@@ -762,8 +762,8 @@
     <string name="unfollowingFailed">Couldn\'t unfollow user</string>
     <string name="followingFailed">Couldn\'t follow user</string>
     <string name="updatePrConflict">The pull request conflicts with the base branch. Please resolve the conflicts and try again.</string>
-    <string name="updatePrSuccess">Pull request updated successfully</string>
+    <string name="updatePrSuccess">Pull Request updated successfully</string>
     <string name="updateStrategyMerge">Merge</string>
     <string name="updateStrategyRebase">Rebase</string>
-    <string name="selectUpdateStrategy">Select update strategy</string>
+    <string name="selectUpdateStrategy">Select Update Strategy</string>
 </resources>
