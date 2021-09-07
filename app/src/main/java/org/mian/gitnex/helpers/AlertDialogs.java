@@ -140,9 +140,6 @@ public class AlertDialogs {
 	    });
 	    cancelBtn.setOnClickListener((v) -> dialog.dismiss());
 	    dialog.show();
-	    //.setNeutralButton(R.string.cancelButton, null)
-		    //.setItems(new String[]{context.getString(R.string.updateStrategyMerge), context.getString(R.string.updateStrategyRebase)},
-			//    (dialog, which) -> PullRequestActions.updatePr(context, repoOwner, repo, issueNumber, which != 0)).show();
     }
 
 }
