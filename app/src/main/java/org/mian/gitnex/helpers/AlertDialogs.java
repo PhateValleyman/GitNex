@@ -120,7 +120,6 @@ public class AlertDialogs {
 
     public static void selectPullUpdateStrategy(Context context, String repoOwner, String repo, String issueNumber) {
     	Dialog dialog = new Dialog(context, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
-    	dialog.setTitle(R.string.selectUpdateStrategy);
 
 	    if (dialog.getWindow() != null) {
 		    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
