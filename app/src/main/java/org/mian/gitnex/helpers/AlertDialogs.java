@@ -2,7 +2,6 @@ package org.mian.gitnex.helpers;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -125,7 +124,7 @@ public class AlertDialogs {
 		    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 	    }
 
-    	dialog.setContentView(R.layout.custom_update_strategy_dialog);
+    	dialog.setContentView(R.layout.custom_pr_update_strategy_dialog);
     	Button mergeBtn = dialog.findViewById(R.id.updatePullMerge);
     	Button rebaseBtn = dialog.findViewById(R.id.updatePullRebase);
     	Button cancelBtn = dialog.findViewById(R.id.cancelPullUpdate);
