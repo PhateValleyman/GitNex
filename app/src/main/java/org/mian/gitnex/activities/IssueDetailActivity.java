@@ -85,6 +85,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private String repoOwner;
 	private String repoName;
 	private int issueIndex;
+	private String issueCreator;
 
 	private LabelsListAdapter labelsAdapter;
 	private AssigneesListAdapter assigneesAdapter;
@@ -449,7 +450,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		}
 		else if(id == R.id.genericMenu) {
 
-			BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment();
+			BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment(issueCreator);
 			bottomSheet.show(getSupportFragmentManager(), "singleIssueBottomSheet");
 			return true;
 		}
@@ -584,6 +585,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					tinyDb.putString("issueState", singleIssue.getState());
 					tinyDb.putString("issueTitle", singleIssue.getTitle());
 					tinyDb.putString("singleIssueHtmlUrl", singleIssue.getHtml_url());
+					issueCreator = singleIssue.getUser().getLogin();
 
 					PicassoService.getInstance(ctx).get().load(singleIssue.getUser().getAvatar_url()).placeholder(R.drawable.loader_animated)
 						.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewBinding.assigneeAvatar);

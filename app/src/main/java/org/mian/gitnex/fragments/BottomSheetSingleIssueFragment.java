@@ -39,6 +39,11 @@ import retrofit2.Callback;
 public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 	private BottomSheetListener bmListener;
+	private String issueCreator;
+
+	public BottomSheetSingleIssueFragment(String username) {
+		issueCreator = username;
+	}
 
 	@Nullable
 	@Override
@@ -48,6 +53,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		final Context ctx = getContext();
 		final TinyDB tinyDB = TinyDB.getInstance(ctx);
+
+		boolean userIsCreator = issueCreator.equals(tinyDB.getString("loginUid"));
 
 		TextView editIssue = bottomSheetSingleIssueBinding.editIssue;
 		TextView editLabels = bottomSheetSingleIssueBinding.editLabels;
@@ -95,10 +102,23 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			if(tinyDB.getBoolean("prMerged") || tinyDB.getString("repoPrState").equals("closed")) {
 				updatePullRequest.setVisibility(View.GONE);
 				mergePullRequest.setVisibility(View.GONE);
-				deletePullRequestBranch.setVisibility(View.VISIBLE);
+				if(userIsCreator) {
+					deletePullRequestBranch.setVisibility(View.VISIBLE);
+				}
+				else {
+					editIssue.setVisibility(View.GONE);
+					deletePullRequestBranch.setVisibility(View.GONE);
+				}
 			}
 			else {
-				updatePullRequest.setVisibility(View.VISIBLE);
+				if(userIsCreator) {
+					updatePullRequest.setVisibility(View.VISIBLE);
+				}
+				else {
+					editIssue.setVisibility(View.GONE);
+					updatePullRequest.setVisibility(View.GONE);
+					mergePullRequest.setVisibility(View.GONE);
+				}
 				mergePullRequest.setVisibility(View.VISIBLE);
 				deletePullRequestBranch.setVisibility(View.GONE);
 			}
@@ -115,7 +135,9 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		}
 		else {
-
+			if(!userIsCreator) {
+				editIssue.setVisibility(View.GONE);
+			}
 			updatePullRequest.setVisibility(View.GONE);
 			mergePullRequest.setVisibility(View.GONE);
 			deletePullRequestBranch.setVisibility(View.GONE);
