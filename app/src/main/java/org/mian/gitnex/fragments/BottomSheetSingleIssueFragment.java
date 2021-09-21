@@ -216,9 +216,10 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		if(tinyDB.getString("issueType").equalsIgnoreCase("Issue")) {
 
 			if(tinyDB.getString("issueState").equals("open")) { // close issue
-
-				reOpenIssue.setVisibility(View.GONE);
-				closeIssue.setVisibility(View.VISIBLE);
+				if(userIsCreator) {
+					reOpenIssue.setVisibility(View.GONE);
+					closeIssue.setVisibility(View.VISIBLE);
+				}
 
 				closeIssue.setOnClickListener(closeSingleIssue -> {
 
@@ -229,9 +230,10 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 			}
 			else if(tinyDB.getString("issueState").equals("closed")) {
-
-				closeIssue.setVisibility(View.GONE);
-				reOpenIssue.setVisibility(View.VISIBLE);
+				if(userIsCreator) {
+					closeIssue.setVisibility(View.GONE);
+					reOpenIssue.setVisibility(View.VISIBLE);
+				}
 
 				reOpenIssue.setOnClickListener(reOpenSingleIssue -> {
 
