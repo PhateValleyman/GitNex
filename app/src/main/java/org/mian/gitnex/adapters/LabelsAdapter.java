@@ -20,6 +20,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.CreateLabelActivity;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.ColorInverter;
+import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
 
 /**
@@ -48,6 +49,9 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
             labelName = itemView.findViewById(R.id.labelName);
             ImageView labelsOptionsMenu = itemView.findViewById(R.id.labelsOptionsMenu);
 
+            if(!TinyDB.getInstance(itemView.getContext()).getBoolean("isRepoAdmin")) {
+	            labelsOptionsMenu.setVisibility(View.GONE);
+            }
             labelsOptionsMenu.setOnClickListener(v -> {
 
                 final Context context = v.getContext();
