@@ -55,11 +55,11 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		final TinyDB tinyDB = TinyDB.getInstance(ctx);
 
 		boolean userIsCreator = issueCreator.equals(tinyDB.getString("loginUid"));
+		boolean isRepoAdmin = tinyDB.getBoolean("isRepoAdmin");
 
 		TextView editIssue = bottomSheetSingleIssueBinding.editIssue;
 		TextView editLabels = bottomSheetSingleIssueBinding.editLabels;
 		TextView closeIssue = bottomSheetSingleIssueBinding.closeIssue;
-		TextView reOpenIssue = bottomSheetSingleIssueBinding.reOpenIssue;
 		TextView addRemoveAssignees = bottomSheetSingleIssueBinding.addRemoveAssignees;
 		TextView copyIssueUrl = bottomSheetSingleIssueBinding.copyIssueUrl;
 		TextView openFilesDiff = bottomSheetSingleIssueBinding.openFilesDiff;
@@ -69,6 +69,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		TextView shareIssue = bottomSheetSingleIssueBinding.shareIssue;
 		TextView subscribeIssue = bottomSheetSingleIssueBinding.subscribeIssue;
 		TextView unsubscribeIssue = bottomSheetSingleIssueBinding.unsubscribeIssue;
+		View closeReopenDivider = bottomSheetSingleIssueBinding.dividerCloseReopenIssue;
 
 		LinearLayout linearLayout = bottomSheetSingleIssueBinding.commentReactionButtons;
 
@@ -213,43 +214,36 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			dismiss();
 		});
 
-		if(tinyDB.getString("issueType").equalsIgnoreCase("Issue")) {
-
-			if(tinyDB.getString("issueState").equals("open")) { // close issue
-				if(userIsCreator) {
-					reOpenIssue.setVisibility(View.GONE);
-					closeIssue.setVisibility(View.VISIBLE);
-				}
-
-				closeIssue.setOnClickListener(closeSingleIssue -> {
-
-					IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "closed");
-					dismiss();
-
-				});
-
+		if(tinyDB.getString("issueState").equals("open")) { // close issue
+			if(!userIsCreator && !isRepoAdmin) {
+				closeIssue.setVisibility(View.GONE);
+				closeReopenDivider.setVisibility(View.GONE);
 			}
-			else if(tinyDB.getString("issueState").equals("closed")) {
-				if(userIsCreator) {
-					closeIssue.setVisibility(View.GONE);
-					reOpenIssue.setVisibility(View.VISIBLE);
-				}
-
-				reOpenIssue.setOnClickListener(reOpenSingleIssue -> {
-
-					IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "open");
-					dismiss();
-
-				});
-
+			else if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
+				closeIssue.setText(R.string.closePr);
 			}
-
+			closeIssue.setOnClickListener(closeSingleIssue -> {
+				IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "closed");
+				dismiss();
+			});
 		}
-		else {
-
-			reOpenIssue.setVisibility(View.GONE);
-			closeIssue.setVisibility(View.GONE);
-
+		else if(tinyDB.getString("issueState").equals("closed")) {
+			if(userIsCreator || isRepoAdmin) {
+				if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
+					closeIssue.setText(R.string.reopenPr);
+				}
+				else {
+					closeIssue.setText(R.string.reOpenIssue);
+				}
+			}
+			else {
+				closeIssue.setVisibility(View.GONE);
+				closeReopenDivider.setVisibility(View.GONE);
+			}
+			closeIssue.setOnClickListener(closeSingleIssue -> {
+				IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "open");
+				dismiss();
+			});
 		}
 
 		subscribeIssue.setOnClickListener(subscribeToIssue -> {
