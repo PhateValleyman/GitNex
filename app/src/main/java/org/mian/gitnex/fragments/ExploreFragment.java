@@ -98,7 +98,7 @@ public class ExploreFragment extends Fragment {
 					fragment = new ExplorePublicOrganizationsFragment();
 					break;
 				case 3: // Users
-					fragment = new ExplorePublicOrganizationsFragment();
+					fragment = new ExploreUsersFragment();
 					break;
 			}
 			assert fragment != null;

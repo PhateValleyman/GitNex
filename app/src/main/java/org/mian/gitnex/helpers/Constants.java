@@ -30,6 +30,7 @@ public class Constants {
 	public static final String tagDraftsBottomSheet = "BottomSheetDraftsFragment";
 	public static final String userAccountsApi = "UserAccountsApi";
 	public static final String publicOrganizations = "PublicOrganizations";
+	public static final String exploreUsers = "ExploreUsers";
 
 	// issues variables
 	public static final int issuesPageInit = 1;
