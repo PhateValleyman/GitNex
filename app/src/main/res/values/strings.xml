@@ -28,9 +28,7 @@
     <string name="navAbout">About</string>
     <string name="navRate">Rate GitNex</string>
     <string name="navLogout">Logout</string>
-    <string name="navExplore">Explore</string>
     <string name="navAdministration">Administration</string>
-    <string name="navSearchIssuesPulls">Search Issues</string>
     <!-- menu items -->
 
     <!-- page titles -->
@@ -527,6 +525,8 @@
     <string name="genericCopyUrl">Copy URL</string>
     <!-- generic copy -->
 
+    <string name="exploreUsers">Explore users</string>
+    <string name="exploreIssues">Explore issues</string>
     <string name="exploreTextBoxHint">Explore repositories</string>
     <string name="starRepository">Star Repository</string>
     <string name="unStarRepository">Unstar Repository</string>

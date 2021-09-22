@@ -33,7 +33,7 @@ public class ExploreFragment extends Fragment {
 		Context ctx = getContext();
 		TinyDB tinyDB = TinyDB.getInstance(ctx);
 
-		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navExplore));
+		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.pageTitleExplore));
 
 		ViewPager2 viewPager = view.findViewById(R.id.containerExplore);
 		viewPager.setOffscreenPageLimit(1);
