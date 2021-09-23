@@ -31,6 +31,7 @@ public class Constants {
 	public static final String userAccountsApi = "UserAccountsApi";
 	public static final String publicOrganizations = "PublicOrganizations";
 	public static final String exploreIssues = "ExploreIssues";
+	public static final String exploreRepositories = "ExploreRepositories";
 
 	// issues variables
 	public static final int issuesPageInit = 1;

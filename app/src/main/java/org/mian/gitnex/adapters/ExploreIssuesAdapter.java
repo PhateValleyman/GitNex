@@ -55,7 +55,7 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 	public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		if(viewType == TYPE_LOAD) {
-			return new ExploreIssuesAdapter.UsersHolder(inflater.inflate(R.layout.list_issues, parent, false));
+			return new ExploreIssuesAdapter.IssuesHolder(inflater.inflate(R.layout.list_issues, parent, false));
 		}
 		else {
 			return new ExploreIssuesAdapter.LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
@@ -70,7 +70,7 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 		}
 
 		if(getItemViewType(position) == TYPE_LOAD) {
-			((ExploreIssuesAdapter.UsersHolder) holder).bindData(searchedList.get(position));
+			((ExploreIssuesAdapter.IssuesHolder) holder).bindData(searchedList.get(position));
 		}
 	}
 
@@ -89,14 +89,14 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 		return searchedList.size();
 	}
 
-	class UsersHolder extends RecyclerView.ViewHolder {
+	class IssuesHolder extends RecyclerView.ViewHolder {
 		private Issues issue;
 		private final ImageView issueAssigneeAvatar;
 		private final TextView issueTitle;
 		private final TextView issueCreatedTime;
 		private final TextView issueCommentsCount;
 
-		UsersHolder(View itemView) {
+		IssuesHolder(View itemView) {
 			super(itemView);
 			issueAssigneeAvatar = itemView.findViewById(R.id.assigneeAvatar);
 			issueTitle = itemView.findViewById(R.id.issueTitle);
