@@ -56,6 +56,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		boolean userIsCreator = issueCreator.equals(tinyDB.getString("loginUid"));
 		boolean isRepoAdmin = tinyDB.getBoolean("isRepoAdmin");
+		boolean canPush = tinyDB.getBoolean("canPush");
 
 		TextView editIssue = bottomSheetSingleIssueBinding.editIssue;
 		TextView editLabels = bottomSheetSingleIssueBinding.editLabels;
@@ -107,7 +108,9 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 					deletePullRequestBranch.setVisibility(View.VISIBLE);
 				}
 				else {
-					editIssue.setVisibility(View.GONE);
+					if(!canPush) {
+						editIssue.setVisibility(View.GONE);
+					}
 					deletePullRequestBranch.setVisibility(View.GONE);
 				}
 			}
@@ -116,11 +119,15 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 					updatePullRequest.setVisibility(View.VISIBLE);
 				}
 				else {
-					editIssue.setVisibility(View.GONE);
+					if(!canPush) {
+						editIssue.setVisibility(View.GONE);
+					}
 					updatePullRequest.setVisibility(View.GONE);
 					mergePullRequest.setVisibility(View.GONE);
 				}
-				mergePullRequest.setVisibility(View.VISIBLE);
+				if(canPush) {
+					mergePullRequest.setVisibility(View.VISIBLE);
+				}
 				deletePullRequestBranch.setVisibility(View.GONE);
 			}
 
@@ -136,7 +143,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		}
 		else {
-			if(!userIsCreator) {
+			if(!userIsCreator && !canPush) {
 				editIssue.setVisibility(View.GONE);
 			}
 			updatePullRequest.setVisibility(View.GONE);
@@ -215,7 +222,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		});
 
 		if(tinyDB.getString("issueState").equals("open")) { // close issue
-			if(!userIsCreator && !isRepoAdmin) {
+			if(!userIsCreator && !canPush) {
 				closeIssue.setVisibility(View.GONE);
 				closeReopenDivider.setVisibility(View.GONE);
 			}
@@ -228,7 +235,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			});
 		}
 		else if(tinyDB.getString("issueState").equals("closed")) {
-			if(userIsCreator || isRepoAdmin) {
+			if(userIsCreator || canPush) {
 				if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
 					closeIssue.setText(R.string.reopenPr);
 				}
