@@ -45,7 +45,7 @@ public class ExploreUsersFragment extends Fragment {
 	private ExploreUsersAdapter adapter;
 	private int pageSize;
 	private final String TAG = Constants.exploreUsers;
-	private int resultLimit = Constants.resultLimitOldGiteaInstances;
+	private int resultLimit;
 
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,12 +53,7 @@ public class ExploreUsersFragment extends Fragment {
 		viewBinding = FragmentExploreUsersBinding.inflate(inflater, container, false);
 		context = getContext();
 
-		TinyDB tinyDb = TinyDB.getInstance(context);
-
-		// if gitea is 1.12 or higher use the new limit
-		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
-			resultLimit = Constants.resultLimitNewGiteaInstances;
-		}
+		resultLimit = Constants.getCurrentResultLimit(context);
 
 		usersList = new ArrayList<>();
 		adapter = new ExploreUsersAdapter(context, usersList);
