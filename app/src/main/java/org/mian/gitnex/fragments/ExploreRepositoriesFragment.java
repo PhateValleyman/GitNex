@@ -32,7 +32,6 @@ import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.helpers.Version;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -57,7 +56,7 @@ public class ExploreRepositoriesFragment extends Fragment {
 	private final String sort = "updated";
 	private final String order = "desc";
 	private final String TAG = Constants.exploreRepositories;
-	private int resultLimit = Constants.resultLimitOldGiteaInstances;
+	private int resultLimit;
 	private List<UserRepositories> dataList;
 	private ExploreRepositoriesAdapter adapter;
 
@@ -81,10 +80,7 @@ public class ExploreRepositoriesFragment extends Fragment {
 		tinyDb.putBoolean("exploreRepoIncludeTemplate", false);
 		tinyDb.putBoolean("exploreRepoOnlyArchived", false);
 
-		// if gitea is 1.12 or higher use the new limit
-		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
-			resultLimit = Constants.resultLimitNewGiteaInstances;
-		}
+		resultLimit = Constants.getCurrentResultLimit(context);
 
 		viewBinding.searchKeyword.setOnEditorActionListener((v1, actionId, event) -> {
 			if(actionId == EditorInfo.IME_ACTION_SEND) {
@@ -207,7 +203,6 @@ public class ExploreRepositoriesFragment extends Fragment {
 		menu.clear();
 		inflater.inflate(R.menu.filter_menu, menu);
 		super.onCreateOptionsMenu(menu, inflater);
-
 		MenuItem filter = menu.findItem(R.id.filter);
 
 		filter.setOnMenuItemClickListener(filter_ -> {
@@ -215,7 +210,6 @@ public class ExploreRepositoriesFragment extends Fragment {
 			showFilterOptions();
 			return false;
 		});
-
 	}
 
 	private void showFilterOptions() {
@@ -223,7 +217,6 @@ public class ExploreRepositoriesFragment extends Fragment {
 		dialogFilterOptions = new Dialog(context, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
 		if (dialogFilterOptions.getWindow() != null) {
-
 			dialogFilterOptions.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
 
@@ -262,13 +255,10 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 	@Override
 	public void onDetach() {
-
 		super.onDetach();
 	}
 
 	public interface OnFragmentInteractionListener {
-
 		void onFragmentInteraction(Uri uri);
 	}
-
 }

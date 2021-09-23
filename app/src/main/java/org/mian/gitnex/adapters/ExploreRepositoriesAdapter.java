@@ -119,8 +119,6 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 			itemView.setOnClickListener(v -> {
 
 				Context context = v.getContext();
-				//TinyDB tinyDb = TinyDB.getInstance(context);
-
 				Intent intent = new Intent(context, RepoDetailActivity.class);
 				intent.putExtra("repoFullName", userRepositories.getFullName());
 
@@ -198,10 +196,8 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 		@SuppressLint("SetTextI18n")
 		void bindData(UserRepositories userRepositories) {
 			this.userRepositories = userRepositories;
-			TinyDB tinyDb = TinyDB.getInstance(context);
 
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
-
 			Locale locale = context.getResources().getConfiguration().locale;
 			String timeFormat = tinyDb.getString("dateFormat");
 

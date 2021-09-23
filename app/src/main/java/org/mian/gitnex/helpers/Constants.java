@@ -14,10 +14,8 @@ public class Constants {
 	public static final String defaultOldestTimestamp = "1970-01-01T00:00:00+00:00";
 
 	public static int getCurrentResultLimit(Context context) {
-
 		Version version = new Version(TinyDB.getInstance(context).getString("giteaVersion"));
 		return version.higherOrEqual("1.12") ? resultLimitNewGiteaInstances : resultLimitOldGiteaInstances;
-
 	}
 
 	// tags
@@ -32,6 +30,7 @@ public class Constants {
 	public static final String publicOrganizations = "PublicOrganizations";
 	public static final String exploreIssues = "ExploreIssues";
 	public static final String exploreRepositories = "ExploreRepositories";
+	public static final String tagNotifications = "TagNotifications";
 
 	// issues variables
 	public static final int issuesPageInit = 1;
