@@ -170,7 +170,7 @@ public class MyProfileFragment extends Fragment {
             switch (position) {
 
                 case 0: // followers
-                    return MyProfileFollowersFragment.newInstance("repoOwner", "repoName");
+                    return new MyProfileFollowersFragment();
 
                 case 1: // following
                     return MyProfileFollowingFragment.newInstance("repoOwner", "repoName");
@@ -215,5 +215,4 @@ public class MyProfileFragment extends Fragment {
 		    return super.onOptionsItemSelected(item);
 	    }
     }
-
 }

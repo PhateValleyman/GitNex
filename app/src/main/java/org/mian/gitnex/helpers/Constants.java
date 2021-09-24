@@ -31,6 +31,7 @@ public class Constants {
 	public static final String exploreIssues = "ExploreIssues";
 	public static final String exploreRepositories = "ExploreRepositories";
 	public static final String tagNotifications = "TagNotifications";
+	public static final String tagFollowers = "TagFollowers";
 
 	// issues variables
 	public static final int issuesPageInit = 1;
