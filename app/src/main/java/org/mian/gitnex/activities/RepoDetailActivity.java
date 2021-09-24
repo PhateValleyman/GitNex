@@ -529,7 +529,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 					}
 
 					AlertDialog.Builder pBuilder = new AlertDialog.Builder(ctx);
-					pBuilder.setTitle(R.string.pageTitleCreateMilestone);
+					pBuilder.setTitle(R.string.selectMilestone);
 
 					pBuilder.setSingleChoiceItems(milestonesList.toArray(new String[0]), selectedMilestone, (dialogInterface, i) -> {
 
