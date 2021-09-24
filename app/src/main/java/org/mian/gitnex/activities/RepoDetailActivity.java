@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
@@ -29,6 +28,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonElement;
 import org.gitnex.tea4j.models.Branches;
+import org.gitnex.tea4j.models.Milestones;
 import org.gitnex.tea4j.models.UserRepositories;
 import org.gitnex.tea4j.models.WatchInfo;
 import org.mian.gitnex.R;
@@ -70,6 +70,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	private FragmentRefreshListenerPr fragmentRefreshListenerPr;
 	private FragmentRefreshListenerMilestone fragmentRefreshListenerMilestone;
 	private FragmentRefreshListenerFiles fragmentRefreshListenerFiles;
+	private FragmentRefreshListenerFilterIssuesByMilestone fragmentRefreshListenerFilterIssuesByMilestone;
 
 	private String repositoryOwner;
 	private String repositoryName;
@@ -441,6 +442,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 				startActivity(new Intent(RepoDetailActivity.this, CreateFileActivity.class));
 				break;
+			case "filterByMilestone":
+				filterIssuesByMilestone();
+				break;
 			case "openIssues":
 
 				if(getFragmentRefreshListener() != null) {
@@ -494,6 +498,67 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		}
 	}
 
+	private void filterIssuesByMilestone() {
+
+		Call<List<Milestones>> call = RetrofitClient
+			.getApiInterface(ctx)
+			.getMilestones(Authorization.get(ctx), repositoryOwner, repositoryName, 1, 50, "open");
+
+		call.enqueue(new Callback<List<Milestones>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull Response<List<Milestones>> response) {
+
+				if(response.code() == 200) {
+
+					Milestones milestones;
+					List<String> milestonesList = new ArrayList<>();
+					int selectedMilestone = 0;
+					assert response.body() != null;
+
+					milestonesList.add("All");
+					for(int i = 0; i < response.body().size(); i++) {
+						milestones = response.body().get(i);
+						milestonesList.add(milestones.getTitle());
+					}
+
+					for(int j = 0; j < milestonesList.size(); j++) {
+						if(tinyDB.getString("issueMilestoneFilterId").equals(milestonesList.get(j))) {
+							selectedMilestone = j;
+						}
+					}
+
+					AlertDialog.Builder pBuilder = new AlertDialog.Builder(ctx);
+					pBuilder.setTitle(R.string.pageTitleCreateMilestone);
+
+					pBuilder.setSingleChoiceItems(milestonesList.toArray(new String[0]), selectedMilestone, (dialogInterface, i) -> {
+
+						tinyDB.putString("issueMilestoneFilterId", milestonesList.get(i));
+
+						if(getFragmentRefreshListenerFilterIssuesByMilestone() != null) {
+
+							getFragmentRefreshListenerFilterIssuesByMilestone().onRefresh(milestonesList.get(i));
+						}
+						dialogInterface.dismiss();
+					});
+					pBuilder.setNeutralButton(R.string.cancelButton, null);
+
+					pBuilder.create().show();
+
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
+
+				Log.e("onFailure", t.toString());
+			}
+
+		});
+
+	}
+
 	private void chooseBranch() {
 
 		Call<List<Branches>> call = RetrofitClient
@@ -525,19 +590,15 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 					AlertDialog.Builder pBuilder = new AlertDialog.Builder(ctx);
 					pBuilder.setTitle(R.string.pageTitleChooseBranch);
 
-					pBuilder.setSingleChoiceItems(branchesList.toArray(new String[0]), selectedBranch, new  DialogInterface.OnClickListener() {
+					pBuilder.setSingleChoiceItems(branchesList.toArray(new String[0]), selectedBranch, (dialogInterface, i) -> {
 
-						@Override
-						public void onClick(DialogInterface dialogInterface, int i) {
+						tinyDB.putString("repoBranch", branchesList.get(i));
 
-							tinyDB.putString("repoBranch", branchesList.get(i));
+						if(getFragmentRefreshListenerFiles() != null) {
 
-							if(getFragmentRefreshListenerFiles() != null) {
-
-								getFragmentRefreshListenerFiles().onRefresh(branchesList.get(i));
-							}
-							dialogInterface.dismiss();
+							getFragmentRefreshListenerFiles().onRefresh(branchesList.get(i));
 						}
+						dialogInterface.dismiss();
 					});
 					pBuilder.setNeutralButton(R.string.cancelButton, null);
 
@@ -714,6 +775,13 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 		});
 
 	}
+
+	// Issues milestone filter interface
+	public FragmentRefreshListenerFilterIssuesByMilestone getFragmentRefreshListenerFilterIssuesByMilestone() { return fragmentRefreshListenerFilterIssuesByMilestone; }
+
+	public void setFragmentRefreshListenerFilterIssuesByMilestone(FragmentRefreshListenerFilterIssuesByMilestone fragmentRefreshListener) { this.fragmentRefreshListenerFilterIssuesByMilestone = fragmentRefreshListener; }
+
+	public interface FragmentRefreshListenerFilterIssuesByMilestone { void onRefresh(String text); }
 
 	// Issues interface
 	public FragmentRefreshListener getFragmentRefreshListener() { return fragmentRefreshListener; }
