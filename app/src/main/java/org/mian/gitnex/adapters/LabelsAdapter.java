@@ -49,7 +49,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
             labelName = itemView.findViewById(R.id.labelName);
             ImageView labelsOptionsMenu = itemView.findViewById(R.id.labelsOptionsMenu);
 
-            if(!TinyDB.getInstance(itemView.getContext()).getBoolean("isRepoAdmin")) {
+            if(type.equals("repo") && !TinyDB.getInstance(itemView.getContext()).getBoolean("isRepoAdmin")) {
 	            labelsOptionsMenu.setVisibility(View.GONE);
             }
             labelsOptionsMenu.setOnClickListener(v -> {
