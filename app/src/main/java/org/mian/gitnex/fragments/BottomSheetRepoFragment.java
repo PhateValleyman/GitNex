@@ -53,7 +53,6 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
 		    createRelease.setVisibility(View.GONE);
 		    newFile.setVisibility(View.GONE);
 	    }
-	    System.out.println(canPush);
 
         createLabel.setOnClickListener(v112 -> {
 
