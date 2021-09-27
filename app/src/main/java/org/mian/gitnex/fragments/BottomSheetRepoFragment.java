@@ -46,6 +46,15 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
 	    TextView repoSettings = bottomSheetRepoBinding.repoSettings;
 	    TextView createPullRequest = bottomSheetRepoBinding.createPullRequest;
 
+	    boolean canPush = tinyDb.getBoolean("canPush");
+	    if(!canPush) {
+		    createMilestone.setVisibility(View.GONE);
+		    createLabel.setVisibility(View.GONE);
+		    createRelease.setVisibility(View.GONE);
+		    newFile.setVisibility(View.GONE);
+	    }
+	    System.out.println(canPush);
+
         createLabel.setOnClickListener(v112 -> {
 
             bmListener.onButtonClicked("label");

@@ -39,7 +39,7 @@ import retrofit2.Callback;
 public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 	private BottomSheetListener bmListener;
-	private String issueCreator;
+	private final String issueCreator;
 
 	public BottomSheetSingleIssueFragment(String username) {
 		issueCreator = username;
