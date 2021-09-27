@@ -1,6 +1,7 @@
 package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -500,6 +501,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 
 	private void filterIssuesByMilestone() {
 
+		Dialog progressDialog = new Dialog(this);
+		progressDialog.setContentView(R.layout.custom_progress_loader);
+		progressDialog.show();
+
 		Call<List<Milestones>> call = RetrofitClient
 			.getApiInterface(ctx)
 			.getMilestones(Authorization.get(ctx), repositoryOwner, repositoryName, 1, 50, "open");
@@ -509,6 +514,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			@Override
 			public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull Response<List<Milestones>> response) {
 
+				progressDialog.hide();
 				if(response.code() == 200) {
 
 					Milestones milestones;
@@ -552,6 +558,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			@Override
 			public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
 
+				progressDialog.hide();
 				Log.e("onFailure", t.toString());
 			}
 
@@ -560,6 +567,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	}
 
 	private void chooseBranch() {
+
+		Dialog progressDialog = new Dialog(this);
+		progressDialog.setContentView(R.layout.custom_progress_loader);
+		progressDialog.show();
 
 		Call<List<Branches>> call = RetrofitClient
 			.getApiInterface(ctx)
@@ -570,6 +581,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			@Override
 			public void onResponse(@NonNull Call<List<Branches>> call, @NonNull Response<List<Branches>> response) {
 
+				progressDialog.hide();
 				if(response.code() == 200) {
 
 					List<String> branchesList = new ArrayList<>();
@@ -609,6 +621,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			@Override
 			public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
 
+				progressDialog.hide();
 				Log.e("onFailure", t.toString());
 			}
 		});
