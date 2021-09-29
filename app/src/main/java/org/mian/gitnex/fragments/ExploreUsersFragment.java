@@ -141,7 +141,7 @@ public class ExploreUsersFragment extends Fragment {
 
 	private void loadMore(String token, String searchKeyword, int resultLimit, int page) {
 
-		viewBinding.loadingMoreView.setVisibility(View.VISIBLE);
+		viewBinding.progressBar.setVisibility(View.VISIBLE);
 		Call<UserSearch> call = RetrofitClient.getApiInterface(context).getUserBySearch(token, searchKeyword, resultLimit, page);
 		call.enqueue(new Callback<UserSearch>() {
 			@Override
@@ -160,7 +160,7 @@ public class ExploreUsersFragment extends Fragment {
 						}
 					}
 					adapter.notifyDataChanged();
-					viewBinding.loadingMoreView.setVisibility(View.GONE);
+					viewBinding.progressBar.setVisibility(View.GONE);
 				}
 				else {
 					Log.e(TAG, String.valueOf(response.code()));
