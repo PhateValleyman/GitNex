@@ -20,7 +20,7 @@ public class Constants {
 
 	// tags
 	public static final String tagMilestonesFragment = "MilestonesFragment";
-	public static final String tagPullRequestsList = "PrListFragment";
+	public static final String tagPullRequestsList = "PullRequestFragment";
 	public static final String tagIssuesList = "IssuesListFragment";
 	public static final String tagMilestonesAdapter = "MilestonesAdapter";
 	public static final String draftsApi = "DraftsApi";
