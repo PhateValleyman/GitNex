@@ -123,10 +123,12 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 						editIssue.setVisibility(View.GONE);
 					}
 					updatePullRequest.setVisibility(View.GONE);
-					mergePullRequest.setVisibility(View.GONE);
 				}
 				if(canPush) {
 					mergePullRequest.setVisibility(View.VISIBLE);
+				}
+				else {
+					mergePullRequest.setVisibility(View.GONE);
 				}
 				deletePullRequestBranch.setVisibility(View.GONE);
 			}
