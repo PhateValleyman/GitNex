@@ -34,6 +34,7 @@ import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.Issues;
 import org.gitnex.tea4j.models.Labels;
 import org.gitnex.tea4j.models.UpdateIssueAssignees;
+import org.gitnex.tea4j.models.UserRepositories;
 import org.gitnex.tea4j.models.WatchInfo;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.AssigneesActions;
@@ -542,6 +543,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	}
 
 	private void getSingleIssue(String repoOwner, String repoName, int issueIndex) {
+		updateTinyDBPermissionValues();
 
 		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 		Call<Issues> call = RetrofitClient.getApiInterface(ctx)
@@ -863,6 +865,29 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		}
 
+	}
+
+	private void updateTinyDBPermissionValues() {
+		RetrofitClient.getApiInterface(this).getUserRepository(Authorization.get(this), repoOwner, repoName).enqueue(new Callback<UserRepositories>() {
+
+			@Override
+			public void onResponse(@NonNull Call<UserRepositories> call, @NonNull Response<UserRepositories> response) {
+				if(response.isSuccessful()) {
+					assert response.body() != null;
+					tinyDB.putBoolean("isRepoAdmin", response.body().getPermissions().isAdmin());
+					tinyDB.putBoolean("canPush", response.body().getPermissions().canPush());
+				}
+				else {
+					onFailure(call, new Throwable());
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<UserRepositories> call, @NonNull Throwable t) {
+				tinyDB.putBoolean("isRepoAdmin", false);
+				tinyDB.putBoolean("canPush", false);
+			}
+		});
 	}
 
 }

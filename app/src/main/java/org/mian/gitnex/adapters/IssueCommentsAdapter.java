@@ -99,7 +99,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 				TextView commentMenuDelete = vw.findViewById(R.id.commentMenuDelete);
 				TextView issueCommentCopyUrl = vw.findViewById(R.id.issueCommentCopyUrl);
 
-				if(!loginUid.contentEquals(issueComment.getUser().getUsername())) {
+				if(!loginUid.contentEquals(issueComment.getUser().getUsername()) && !tinyDB.getBoolean("canPush")) {
 					commentMenuEdit.setVisibility(View.GONE);
 					commentMenuDelete.setVisibility(View.GONE);
 				}
