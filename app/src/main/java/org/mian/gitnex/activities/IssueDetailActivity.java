@@ -33,6 +33,7 @@ import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.Issues;
 import org.gitnex.tea4j.models.Labels;
+import org.gitnex.tea4j.models.PullRequests;
 import org.gitnex.tea4j.models.UpdateIssueAssignees;
 import org.gitnex.tea4j.models.UserRepositories;
 import org.gitnex.tea4j.models.WatchInfo;
@@ -562,7 +563,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					viewBinding.issuePrState.setVisibility(View.VISIBLE);
 
 					if(singleIssue.getPull_request() != null) {
-
+						getPullSourceRepo();
 						if(singleIssue.getPull_request().isMerged()) { // merged
 
 							viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_merged);
@@ -886,6 +887,26 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			public void onFailure(@NonNull Call<UserRepositories> call, @NonNull Throwable t) {
 				tinyDB.putBoolean("isRepoAdmin", false);
 				tinyDB.putBoolean("canPush", false);
+			}
+		});
+	}
+
+	private void getPullSourceRepo() {
+		RetrofitClient.getApiInterface(this).getPullRequestByIndex(Authorization.get(this), repoOwner, repoName, issueIndex).enqueue(new Callback<PullRequests>() {
+
+			@Override
+			public void onResponse(@NonNull Call<PullRequests> call, @NonNull Response<PullRequests> response) {
+				if(response.isSuccessful() && response.body() != null) {
+					tinyDB.putBoolean("canPushPullSource", response.body().getHead().getRepo().getPermissions().isPush());
+				}
+				else {
+					tinyDB.putBoolean("canPushPullSource", false);
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<PullRequests> call, @NonNull Throwable t) {
+				tinyDB.putBoolean("canPushPullSource", false);
 			}
 		});
 	}

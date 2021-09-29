@@ -101,10 +101,11 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			copyIssueUrl.setText(R.string.copyPrUrlText);
 			shareIssue.setText(R.string.sharePr);
 
+			boolean canPushPullSource = tinyDB.getBoolean("canPushPullSource");
 			if(tinyDB.getBoolean("prMerged") || tinyDB.getString("repoPrState").equals("closed")) {
 				updatePullRequest.setVisibility(View.GONE);
 				mergePullRequest.setVisibility(View.GONE);
-				if(userIsCreator) {
+				if(canPushPullSource) {
 					deletePullRequestBranch.setVisibility(View.VISIBLE);
 				}
 				else {
@@ -115,14 +116,14 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 				}
 			}
 			else {
-				if(userIsCreator) {
+				if(canPushPullSource) {
 					updatePullRequest.setVisibility(View.VISIBLE);
 				}
 				else {
-					if(!canPush) {
-						editIssue.setVisibility(View.GONE);
-					}
 					updatePullRequest.setVisibility(View.GONE);
+				}
+				if(!userIsCreator && !canPush) {
+					editIssue.setVisibility(View.GONE);
 				}
 				if(canPush) {
 					mergePullRequest.setVisibility(View.VISIBLE);
