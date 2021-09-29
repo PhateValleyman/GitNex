@@ -524,6 +524,7 @@
     <string name="isClosed">Closed</string>
     <string name="genericServerResponseError">We cannot reach the server at the moment, please check your server status and try again</string>
     <string name="genericCopyUrl">Copy URL</string>
+    <string name="genericWaitFor">Hold on ☕</string>
     <!-- generic copy -->
 
     <string name="exploreUsers">Explore users</string>
