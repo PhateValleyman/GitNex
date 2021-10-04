@@ -23,17 +23,17 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class MyProfileFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ExploreUsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 	private final Context context;
 	private final int TYPE_LOAD = 0;
-	private List<UserInfo> followingList;
+	private List<UserInfo> usersList;
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
-	public MyProfileFollowingAdapter(List<UserInfo> dataList, Context ctx) {
+	public ExploreUsersAdapter(Context ctx, List<UserInfo> usersListMain) {
 		this.context = ctx;
-		this.followingList = dataList;
+		this.usersList = usersListMain;
 	}
 
 	@NonNull
@@ -41,10 +41,10 @@ public class MyProfileFollowingAdapter extends RecyclerView.Adapter<RecyclerView
 	public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		if(viewType == TYPE_LOAD) {
-			return new MyProfileFollowingAdapter.FollowingHolder(inflater.inflate(R.layout.list_profile_followers_following, parent, false));
+			return new ExploreUsersAdapter.UsersHolder(inflater.inflate(R.layout.list_explore_users, parent, false));
 		}
 		else {
-			return new MyProfileFollowingAdapter.LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
+			return new ExploreUsersAdapter.LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
 		}
 	}
 
@@ -56,13 +56,13 @@ public class MyProfileFollowingAdapter extends RecyclerView.Adapter<RecyclerView
 		}
 
 		if(getItemViewType(position) == TYPE_LOAD) {
-			((MyProfileFollowingAdapter.FollowingHolder) holder).bindData(followingList.get(position));
+			((ExploreUsersAdapter.UsersHolder) holder).bindData(usersList.get(position));
 		}
 	}
 
 	@Override
 	public int getItemViewType(int position) {
-		if(followingList.get(position).getUsername() != null) {
+		if(usersList.get(position).getUsername() != null) {
 			return TYPE_LOAD;
 		}
 		else {
@@ -72,18 +72,17 @@ public class MyProfileFollowingAdapter extends RecyclerView.Adapter<RecyclerView
 
 	@Override
 	public int getItemCount() {
-		return followingList.size();
+		return usersList.size();
 	}
 
-	class FollowingHolder extends RecyclerView.ViewHolder {
+	class UsersHolder extends RecyclerView.ViewHolder {
 		private UserInfo userInfo;
 		private final ImageView userAvatar;
 		private final TextView userFullName;
 		private final TextView userName;
 
-		FollowingHolder(View itemView) {
+		UsersHolder(View itemView) {
 			super(itemView);
-
 			userAvatar = itemView.findViewById(R.id.userAvatar);
 			userFullName = itemView.findViewById(R.id.userFullName);
 			userName = itemView.findViewById(R.id.userName);
@@ -104,6 +103,14 @@ public class MyProfileFollowingAdapter extends RecyclerView.Adapter<RecyclerView
 		void bindData(UserInfo userInfo) {
 			this.userInfo = userInfo;
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
+			userName.setText(userInfo.getUsername());
+			PicassoService.getInstance(context).get()
+				.load(userInfo.getAvatar())
+				.placeholder(R.drawable.loader_animated)
+				.transform(new RoundedTransformation(imgRadius, 0))
+				.resize(120, 120)
+				.centerCrop()
+				.into(userAvatar);
 
 			if(!userInfo.getFullname().equals("")) {
 				userFullName.setText(Html.fromHtml(userInfo.getFullname()));
@@ -113,8 +120,6 @@ public class MyProfileFollowingAdapter extends RecyclerView.Adapter<RecyclerView
 				userFullName.setText(userInfo.getUsername());
 				userName.setVisibility(View.GONE);
 			}
-
-			PicassoService.getInstance(context).get().load(userInfo.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(userAvatar);
 		}
 	}
 
@@ -143,7 +148,7 @@ public class MyProfileFollowingAdapter extends RecyclerView.Adapter<RecyclerView
 	}
 
 	public void updateList(List<UserInfo> list) {
-		followingList = list;
+		usersList = list;
 		notifyDataChanged();
 	}
 }

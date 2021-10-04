@@ -25,9 +25,7 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.SnackBar;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -47,7 +45,7 @@ public class StarredRepositoriesFragment extends Fragment {
 	private StarredRepositoriesAdapter adapter;
 
 	private int pageSize;
-	private int resultLimit = Constants.resultLimitOldGiteaInstances;
+	private int resultLimit;
 
 	private static final String usernameBundle = "";
 	private String username;
@@ -77,13 +75,8 @@ public class StarredRepositoriesFragment extends Fragment {
 		fragmentRepositoriesBinding = org.mian.gitnex.databinding.FragmentRepositoriesBinding.inflate(inflater, container, false);
 		setHasOptionsMenu(true);
 		context = getContext();
-		TinyDB tinyDb = TinyDB.getInstance(context);
 
-		// if gitea is 1.12 or higher use the new limit
-		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
-			resultLimit = Constants.resultLimitNewGiteaInstances;
-		}
-
+		resultLimit = Constants.getCurrentResultLimit(context);
 		reposList = new ArrayList<>();
 
 		fragmentRepositoriesBinding.addNewRepo.setVisibility(View.GONE);
@@ -173,7 +166,7 @@ public class StarredRepositoriesFragment extends Fragment {
 
 	private void loadMore(String token, String username, int page, int resultLimit) {
 
-		fragmentRepositoriesBinding.progressLoadMore.setVisibility(View.VISIBLE);
+		fragmentRepositoriesBinding.progressBar.setVisibility(View.VISIBLE);
 
 		Call<List<UserRepositories>> call = RetrofitClient
 			.getApiInterface(context)
@@ -199,7 +192,7 @@ public class StarredRepositoriesFragment extends Fragment {
 								adapter.setMoreDataAvailable(false);
 							}
 							adapter.notifyDataChanged();
-							fragmentRepositoriesBinding.progressLoadMore.setVisibility(View.GONE);
+							fragmentRepositoriesBinding.progressBar.setVisibility(View.GONE);
 							break;
 
 						case 401:
