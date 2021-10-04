@@ -123,6 +123,7 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 		isMoreDataAvailable = moreDataAvailable;
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	public void notifyDataChanged() {
 		notifyDataSetChanged();
 		isLoading = false;
@@ -138,6 +139,6 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 
 	public void updateList(List<Organization> list) {
 		organizationsList = list;
-		notifyDataSetChanged();
+		notifyDataChanged();
 	}
 }
