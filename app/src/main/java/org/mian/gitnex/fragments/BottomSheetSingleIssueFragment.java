@@ -125,7 +125,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 				if(!userIsCreator && !canPush) {
 					editIssue.setVisibility(View.GONE);
 				}
-				if(canPush) {
+				if(canPush && !tinyDB.getString("prMergeable").equals("false")) {
 					mergePullRequest.setVisibility(View.VISIBLE);
 				}
 				else {
