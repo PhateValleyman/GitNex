@@ -37,12 +37,4 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/orgDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/noDataDescription"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="15sp" />
-
 </LinearLayout>

@@ -38,12 +38,10 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
 
         private final ImageView image;
         private final TextView orgName;
-        private final TextView orgDescription;
 
         private OrganizationsViewHolder(View itemView) {
             super(itemView);
 	        orgName = itemView.findViewById(R.id.orgName);
-	        orgDescription = itemView.findViewById(R.id.orgDescription);
             image = itemView.findViewById(R.id.imageAvatar);
 
             itemView.setOnClickListener(v -> {
@@ -87,11 +85,6 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
 	    holder.orgName.setText(currentItem.getUsername());
 
         PicassoService.getInstance(context).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.image);
-
-        if (!currentItem.getDescription().equals("")) {
-
-            holder.orgDescription.setText(currentItem.getDescription());
-        }
     }
 
     @Override
