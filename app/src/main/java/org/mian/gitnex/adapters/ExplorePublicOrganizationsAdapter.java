@@ -79,11 +79,13 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 		private Organization organization;
 		private final ImageView image;
 		private final TextView orgName;
+		private final TextView orgDescription;
 
 		OrganizationsHolder(View itemView) {
 			super(itemView);
 			image = itemView.findViewById(R.id.imageAvatar);
 			orgName = itemView.findViewById(R.id.orgName);
+			orgDescription = itemView.findViewById(R.id.orgDescription);
 
 			itemView.setOnClickListener(v -> {
 				Context context = v.getContext();
@@ -110,6 +112,9 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 		        .resize(120, 120)
 		        .centerCrop()
 		        .into(image);
+	        if (!organization.getDescription().equals("")) {
+	            orgDescription.setText(organization.getDescription());
+	        }
 		}
 	}
 
