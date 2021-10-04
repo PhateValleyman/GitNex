@@ -56,6 +56,7 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
 	    private final ImageView image;
 	    private final TextView repoName;
 	    private final TextView orgName;
+	    private final TextView repoDescription;
 	    private CheckBox isRepoAdmin;
 	    private final TextView repoStars;
 	    private final TextView repoLastUpdated;
@@ -65,6 +66,7 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
 	        super(itemView);
 	        repoName = itemView.findViewById(R.id.repoName);
 	        orgName = itemView.findViewById(R.id.orgName);
+	        repoDescription = itemView.findViewById(R.id.repoDescription);
 	        isRepoAdmin = itemView.findViewById(R.id.repoIsAdmin);
 	        image = itemView.findViewById(R.id.imageAvatar);
 	        repoStars = itemView.findViewById(R.id.repoStars);
@@ -242,6 +244,13 @@ public class RepositoriesByOrgAdapter extends RecyclerView.Adapter<RepositoriesB
 	    }
 	    else {
 		    holder.repoLastUpdated.setVisibility(View.GONE);
+	    }
+
+	    if(!currentItem.getDescription().equals("")) {
+		    holder.repoDescription.setText(currentItem.getDescription());
+	    }
+	    else {
+		    holder.repoDescription.setText(context.getString(R.string.noDataDescription));
 	    }
 
 	    if(holder.isRepoAdmin == null) {

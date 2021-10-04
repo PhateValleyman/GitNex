@@ -52,8 +52,16 @@
         android:text="@string/repoName"
         android:textColor="?attr/primaryTextColor"
         android:textSize="18sp"
-        android:layout_marginBottom="8dp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/repoDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:textColor="?attr/primaryTextColor"
+        android:textSize="15sp"
+        android:text="@string/noDataDescription" />
 
     <LinearLayout
         android:id="@+id/repoInfoFrame"
