@@ -215,7 +215,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 			new String[]{"pinned", "read"} :
 			new String[]{"pinned", "unread"};
 
-		viewBinding.loadingMoreView.setVisibility(View.VISIBLE);
+		viewBinding.progressBar.setVisibility(View.VISIBLE);
 		Call<List<NotificationThread>> call = RetrofitClient.getApiInterface(context)
 			.getNotificationThreads(instanceToken, false, filter,
 				Constants.defaultOldestTimestamp, "",
@@ -236,7 +236,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 						notificationsAdapter.setMoreDataAvailable(false);
 					}
 					notificationsAdapter.notifyDataChanged();
-					viewBinding.loadingMoreView.setVisibility(View.GONE);
+					viewBinding.progressBar.setVisibility(View.GONE);
 				}
 				else {
 					Log.e(TAG, String.valueOf(response.code()));
@@ -254,7 +254,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 	private void onCleanup() {
 
-		AppUtil.setMultiVisibility(View.GONE, viewBinding.loadingMoreView, viewBinding.progressBar);
+		AppUtil.setMultiVisibility(View.GONE, viewBinding.progressBar, viewBinding.progressBar);
 		viewBinding.pullToRefresh.setRefreshing(false);
 
 		if(currentFilterMode.equalsIgnoreCase("unread")) {
@@ -331,6 +331,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		if(StringUtils.containsAny(notificationThread.getSubject().getType().toLowerCase(), "pull", "issue")) {
 
 			Intent intent = new Intent(context, IssueDetailActivity.class);
+			intent.putExtra("openedFromLink", "true");
 			String issueUrl = notificationThread.getSubject().getUrl();
 			tinyDB.putString("issueNumber", issueUrl.substring(issueUrl.lastIndexOf("/") + 1));
 			tinyDB.putString("issueType", notificationThread.getSubject().getType());
