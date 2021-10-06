@@ -428,10 +428,10 @@
     <string name="isClosed">Geschlossen</string>
     <string name="genericServerResponseError">Wir können den Server im Moment nicht erreichen. Bitte überprüfen Sie Ihren Serverstatus und versuchen Sie es erneut</string>
     <string name="genericCopyUrl">Link kopieren</string>
-    <string name="genericWaitFor">Lade Emoji\'s ... ☕</string>
+    <string name="genericWaitFor">Laden ... ☕</string>
     <!-- generic copy -->
-    <string name="exploreUsers">Erkunde Benutzer</string>
-    <string name="exploreIssues">Erkunde Issues</string>
+    <string name="exploreUsers">Benutzer erkunden</string>
+    <string name="exploreIssues">Issues erkunden</string>
     <string name="exploreTextBoxHint">Repositories entdecken</string>
     <string name="starRepository">Repository favorisieren</string>
     <string name="unStarRepository">Repository nicht mehr favorisieren</string>
