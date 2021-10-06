@@ -37,7 +37,7 @@
     <string name="pageTitleAdministration">Administration de Gitea</string>
     <string name="pageTitleUserAccounts">Gestion des comptes</string>
     <string name="pageTitleNewPullRequest">Nouvelle demande de tirage</string>
-    <string name="pageTitleUsers">Users</string>
+    <string name="pageTitleUsers">Utilisateurs</string>
     <!-- page titles -->
     <string name="repoName">Dépôt de démonstration</string>
     <string name="repoFullName">Nom complet du dépôt</string>
@@ -151,7 +151,7 @@
     <string name="milestoneNoDescription">Pas de description</string>
     <string name="milestoneIssueStatusOpen">%1$d ouvert</string>
     <string name="milestoneIssueStatusClosed">%1$d fermé</string>
-    <string name="selectMilestone">Select Milestone</string>
+    <string name="selectMilestone">Sélectionner un jalon</string>
     <string name="newIssueSelectAssigneesListTitle">Assignés</string>
     <string name="newIssueSelectLabelsListTitle">Sélectionner des étiquettes</string>
     <string name="newIssueTitle">Titre</string>
@@ -428,10 +428,10 @@
     <string name="isClosed">Fermé</string>
     <string name="genericServerResponseError">Impossible de se connecter au serveur pour le moment, veuillez vérifier son statut puis réessayer</string>
     <string name="genericCopyUrl">Copier l’URL</string>
-    <string name="genericWaitFor">Hold on ☕</string>
+    <string name="genericWaitFor">Attendez un instant ☕</string>
     <!-- generic copy -->
-    <string name="exploreUsers">Explore users</string>
-    <string name="exploreIssues">Explore issues</string>
+    <string name="exploreUsers">Voir les utilisateurs</string>
+    <string name="exploreIssues">Voir les tickets</string>
     <string name="exploreTextBoxHint">Explorer les dépôts</string>
     <string name="starRepository">Ajouter aux favoris</string>
     <string name="unStarRepository">Retirer des favoris</string>
@@ -442,7 +442,7 @@
     <string name="watchRepositorySuccess">Vous suivez ce dépôt</string>
     <string name="unWatchRepositorySuccess">Vous ne suivez plus ce dépôt</string>
     <string name="titleDrafts">Brouillons</string>
-    <string name="versionUnsupportedOld">Unsupported old version(%1$s) of Gitea detected. Please update to latest stable version. If you continue, some features may not work.</string>
+    <string name="versionUnsupportedOld">Version périmée de Gitea (%1$s) détectée. Veuillez mettre à jour vers la dernière version stable. Si vous continuez, l’application peut ne pas fonctionner correctement.</string>
     <string name="versionUnsupportedNew">Nouvelle version de Gitea détectée ! Veuillez mettre à jour GitNex !</string>
     <string name="versionUnknown">Aucun serveur Gitea détecté !</string>
     <string name="versionAlertDialogHeader">Version de Gitea non prise en charge</string>
@@ -551,7 +551,7 @@
     <string name="switchAccountSuccess">Passé au compte : %1$s@%2$s</string>
     <!-- Notifications -->
     <string name="pageTitleNotifications">Notifications</string>
-    <string name="noDataNotifications">All caught up 🚀</string>
+    <string name="noDataNotifications">C’est parti 🚀</string>
     <string name="notificationsPollingHeaderText">Période de scrutation</string>
     <string name="pollingDelaySelectedText">%d minutes</string>
     <string name="pollingDelayDialogHeaderText">Période de scrutation</string>
