@@ -6,8 +6,8 @@ android {
         applicationId "org.mian.gitnex"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 405
-        versionName "4.1.0-dev"
+        versionCode 415
+        versionName "4.2.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,7 +63,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.viewpager2:viewpager2:1.1.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
     testImplementation 'junit:junit:4.13.2'
