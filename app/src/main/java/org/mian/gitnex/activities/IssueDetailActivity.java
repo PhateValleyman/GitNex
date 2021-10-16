@@ -891,23 +891,28 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	}
 
 	private void getPullSourceRepo() {
-		RetrofitClient.getApiInterface(this).getPullRequestByIndex(Authorization.get(this), repoOwner, repoName, issueIndex).enqueue(new Callback<PullRequests>() {
+		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.15.4")) {
+			RetrofitClient.getApiInterface(this).getPullRequestByIndex(Authorization.get(this), repoOwner, repoName, issueIndex).enqueue(new Callback<PullRequests>() {
 
-			@Override
-			public void onResponse(@NonNull Call<PullRequests> call, @NonNull Response<PullRequests> response) {
-				if(response.isSuccessful() && response.body() != null) {
-					tinyDB.putBoolean("canPushPullSource", response.body().getHead().getRepo().getPermissions().isPush());
+				@Override
+				public void onResponse(@NonNull Call<PullRequests> call, @NonNull Response<PullRequests> response) {
+					if(response.isSuccessful() && response.body() != null) {
+						tinyDB.putBoolean("canPushPullSource", response.body().getHead().getRepo().getPermissions().isPush());
+					}
+					else {
+						tinyDB.putBoolean("canPushPullSource", false);
+					}
 				}
-				else {
+
+				@Override
+				public void onFailure(@NonNull Call<PullRequests> call, @NonNull Throwable t) {
 					tinyDB.putBoolean("canPushPullSource", false);
 				}
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<PullRequests> call, @NonNull Throwable t) {
-				tinyDB.putBoolean("canPushPullSource", false);
-			}
-		});
+			});
+		}
+		else {
+			tinyDB.putBoolean("canPushPullSource", true);
+		}
 	}
 
 }
