@@ -114,15 +114,20 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
 	    if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.16.0")) {
 		    RetrofitClient.getApiInterface(this)
-			    .getOrgPermissions(Authorization.get(this), tinyDB.getString("loginUid"), orgName).enqueue(new Callback<List<OrgPermissions>>() {
+			    .getOrgPermissions(Authorization.get(this), tinyDB.getString("loginUid"), orgName).enqueue(new Callback<OrgPermissions>() {
 
 			    @Override
-			    public void onResponse(@NonNull Call<List<OrgPermissions>> call, @NonNull Response<List<OrgPermissions>> response) {
-				    permissions = response.body().get(0);
+			    public void onResponse(@NonNull Call<OrgPermissions> call, @NonNull Response<OrgPermissions> response) {
+			    	if(response.isSuccessful()) {
+					    permissions = response.body();
+				    }
+			    	else {
+			    		permissions = null;
+				    }
 			    }
 
 			    @Override
-			    public void onFailure(@NonNull Call<List<OrgPermissions>> call, @NonNull Throwable t) {
+			    public void onFailure(@NonNull Call<OrgPermissions> call, @NonNull Throwable t) {
 					permissions = null;
 			    }
 		    });
