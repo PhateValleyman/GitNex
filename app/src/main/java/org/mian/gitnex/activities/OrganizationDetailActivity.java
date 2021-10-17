@@ -36,6 +36,8 @@ import io.mikael.urlbuilder.UrlBuilder;
 
 public class OrganizationDetailActivity extends BaseActivity implements BottomSheetOrganizationFragment.BottomSheetListener {
 
+	private String orgName;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -43,7 +45,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
 	    setContentView(R.layout.activity_org_detail);
 
-        String orgName = tinyDB.getString("orgName");
+        orgName = tinyDB.getString("orgName");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
@@ -124,7 +126,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
         }
         else if(id == R.id.repoMenu) {
 
-	        BottomSheetOrganizationFragment bottomSheet = new BottomSheetOrganizationFragment();
+	        BottomSheetOrganizationFragment bottomSheet = new BottomSheetOrganizationFragment(orgName);
 	        bottomSheet.show(getSupportFragmentManager(), "orgBottomSheet");
 	        return true;
         }
