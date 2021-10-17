@@ -19,16 +19,24 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
+import org.gitnex.tea4j.models.OrgPermissions;
 import org.mian.gitnex.R;
+import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetOrganizationFragment;
 import org.mian.gitnex.fragments.MembersByOrgFragment;
 import org.mian.gitnex.fragments.OrganizationInfoFragment;
 import org.mian.gitnex.fragments.OrganizationLabelsFragment;
 import org.mian.gitnex.fragments.RepositoriesByOrgFragment;
 import org.mian.gitnex.fragments.TeamsByOrgFragment;
+import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.Version;
+import java.util.List;
 import java.util.Objects;
 import io.mikael.urlbuilder.UrlBuilder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -36,7 +44,7 @@ import io.mikael.urlbuilder.UrlBuilder;
 
 public class OrganizationDetailActivity extends BaseActivity implements BottomSheetOrganizationFragment.BottomSheetListener {
 
-	private String orgName;
+	private  OrgPermissions permissions;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +53,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
 	    setContentView(R.layout.activity_org_detail);
 
-        orgName = tinyDB.getString("orgName");
+	    String orgName = tinyDB.getString("orgName");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
@@ -103,6 +111,24 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+	    if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.16.0")) {
+		    RetrofitClient.getApiInterface(this)
+			    .getOrgPermissions(Authorization.get(this), tinyDB.getString("loginUid"), orgName).enqueue(new Callback<List<OrgPermissions>>() {
+
+			    @Override
+			    public void onResponse(@NonNull Call<List<OrgPermissions>> call, @NonNull Response<List<OrgPermissions>> response) {
+				    permissions = response.body().get(0);
+			    }
+
+			    @Override
+			    public void onFailure(@NonNull Call<List<OrgPermissions>> call, @NonNull Throwable t) {
+					permissions = null;
+			    }
+		    });
+	    } else {
+	    	permissions = null;
+	    }
     }
 
 
@@ -126,7 +152,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
         }
         else if(id == R.id.repoMenu) {
 
-	        BottomSheetOrganizationFragment bottomSheet = new BottomSheetOrganizationFragment(orgName);
+	        BottomSheetOrganizationFragment bottomSheet = new BottomSheetOrganizationFragment(permissions);
 	        bottomSheet.show(getSupportFragmentManager(), "orgBottomSheet");
 	        return true;
         }
@@ -204,7 +230,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
                     return OrganizationLabelsFragment.newInstance(orgName);
                 case 3: // teams
 
-                    return TeamsByOrgFragment.newInstance(orgName);
+                    return TeamsByOrgFragment.newInstance(orgName, permissions);
                 case 4: // members
 
                     return MembersByOrgFragment.newInstance(orgName);

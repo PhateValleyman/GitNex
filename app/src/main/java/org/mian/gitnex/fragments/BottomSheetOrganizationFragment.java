@@ -13,6 +13,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.BottomSheetOrganizationBinding;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Version;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,10 +26,10 @@ import retrofit2.Response;
 public class BottomSheetOrganizationFragment extends BottomSheetDialogFragment {
 
     private BottomSheetOrganizationFragment.BottomSheetListener bmListener;
-    private String org;
+    private final OrgPermissions permissions;
 
-    public BottomSheetOrganizationFragment(String org) {
-    	this.org = org;
+    public BottomSheetOrganizationFragment(OrgPermissions org) {
+    	permissions = org;
     }
 
     @Nullable
@@ -37,28 +38,15 @@ public class BottomSheetOrganizationFragment extends BottomSheetDialogFragment {
 
 	    BottomSheetOrganizationBinding bottomSheetOrganizationBinding = BottomSheetOrganizationBinding.inflate(inflater, container, false);
 
-	    RetrofitClient.getApiInterface(requireContext()).getOrgPermissions(Authorization.get(requireContext()), TinyDB.getInstance(requireContext()).getString("loginUid"), org)
-	    .enqueue(new Callback<List<OrgPermissions>>() {
-
-		    @Override
-		    public void onResponse(@NonNull Call<List<OrgPermissions>> call, @NonNull Response<List<OrgPermissions>> response) {
-		    	OrgPermissions permissions = response.body().get(0);
-				if(response.isSuccessful() && permissions != null) {
-					if(!permissions.canCreateRepositories()) {
-						bottomSheetOrganizationBinding.createRepository.setVisibility(View.GONE);
-					}
-					if(!permissions.isOwner()) {
-						bottomSheetOrganizationBinding.createLabel.setVisibility(View.GONE);
-						bottomSheetOrganizationBinding.createTeam.setVisibility(View.GONE);
-					}
-				}
+	    if(permissions != null) {
+		    if(!permissions.canCreateRepositories()) {
+			    bottomSheetOrganizationBinding.createRepository.setVisibility(View.GONE);
 		    }
-
-		    @Override
-		    public void onFailure(@NonNull Call<List<OrgPermissions>> call, @NonNull Throwable t) {
-
+		    if(!permissions.isOwner()) {
+			    bottomSheetOrganizationBinding.createLabel.setVisibility(View.GONE);
+			    bottomSheetOrganizationBinding.createTeam.setVisibility(View.GONE);
 		    }
-	    });
+	    }
 
 	    bottomSheetOrganizationBinding.createTeam.setOnClickListener(v1 -> {
 
