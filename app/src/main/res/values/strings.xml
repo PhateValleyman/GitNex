@@ -769,4 +769,6 @@
     <string name="updateStrategyMerge">Merge</string>
     <string name="updateStrategyRebase">Rebase</string>
     <string name="selectUpdateStrategy">Select Update Strategy</string>
+    <string name="tags">Tags</string>
+    <string name="releasesTags">Releases/Tags</string>
 </resources>

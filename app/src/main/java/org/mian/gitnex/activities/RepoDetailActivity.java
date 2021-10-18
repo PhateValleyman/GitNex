@@ -37,6 +37,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetIssuesFilterFragment;
 import org.mian.gitnex.fragments.BottomSheetMilestonesFilterFragment;
 import org.mian.gitnex.fragments.BottomSheetPullRequestFilterFragment;
+import org.mian.gitnex.fragments.BottomSheetReleasesTagsFragment;
 import org.mian.gitnex.fragments.BottomSheetRepoFragment;
 import org.mian.gitnex.fragments.CollaboratorsFragment;
 import org.mian.gitnex.fragments.FilesFragment;
@@ -61,7 +62,7 @@ import retrofit2.Response;
  */
 
 public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoFragment.BottomSheetListener, BottomSheetIssuesFilterFragment.BottomSheetListener,
-		BottomSheetPullRequestFilterFragment.BottomSheetListener, BottomSheetMilestonesFilterFragment.BottomSheetListener {
+		BottomSheetPullRequestFilterFragment.BottomSheetListener, BottomSheetMilestonesFilterFragment.BottomSheetListener, BottomSheetReleasesTagsFragment.BottomSheetListener {
 
 	private TextView textViewBadgeIssue;
 	private TextView textViewBadgePull;
@@ -72,6 +73,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	private FragmentRefreshListenerMilestone fragmentRefreshListenerMilestone;
 	private FragmentRefreshListenerFiles fragmentRefreshListenerFiles;
 	private FragmentRefreshListenerFilterIssuesByMilestone fragmentRefreshListenerFilterIssuesByMilestone;
+	private FragmentRefreshListenerReleases fragmentRefreshListenerReleases;
 
 	private String repositoryOwner;
 	private String repositoryName;
@@ -384,6 +386,11 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			ctx.startActivity(intent);
 			return true;
 		}
+		else if(id == R.id.filterReleases) {
+			BottomSheetReleasesTagsFragment bottomSheetReleasesTagsFragment = new BottomSheetReleasesTagsFragment();
+			bottomSheetReleasesTagsFragment.show(getSupportFragmentManager(), "repoFilterReleasesMenuBottomSheet");
+			return true;
+		}
 
 		return super.onOptionsItemSelected(item);
 
@@ -495,6 +502,16 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 			case "newPullRequest":
 
 				startActivity(new Intent(RepoDetailActivity.this, CreatePullRequestActivity.class));
+				break;
+			case "tags":
+				if(getFragmentRefreshListenerReleases() != null) {
+					getFragmentRefreshListenerReleases().onRefresh("tags");
+				}
+				break;
+			case "releases":
+				if(getFragmentRefreshListenerReleases() != null) {
+					getFragmentRefreshListenerReleases().onRefresh("releases");
+				}
 				break;
 		}
 	}
@@ -813,5 +830,12 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoF
 	public void setFragmentRefreshListenerFiles(FragmentRefreshListenerFiles fragmentRefreshListenerFiles) { this.fragmentRefreshListenerFiles = fragmentRefreshListenerFiles; }
 
 	public interface FragmentRefreshListenerFiles { void onRefresh(String text); }
+
+	//Releases interface
+	public FragmentRefreshListenerReleases getFragmentRefreshListenerReleases() { return fragmentRefreshListenerReleases; }
+
+	public void setFragmentRefreshListenerReleases(FragmentRefreshListenerReleases fragmentRefreshListener) { this.fragmentRefreshListenerReleases = fragmentRefreshListener; }
+
+	public interface FragmentRefreshListenerReleases { void onRefresh(String text); }
 
 }

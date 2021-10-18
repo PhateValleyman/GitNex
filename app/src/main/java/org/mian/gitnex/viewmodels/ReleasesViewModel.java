@@ -1,11 +1,13 @@
 package org.mian.gitnex.viewmodels;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import org.gitnex.tea4j.models.GitTag;
 import org.gitnex.tea4j.models.Releases;
 import org.mian.gitnex.clients.RetrofitClient;
 import java.util.List;
@@ -55,5 +57,42 @@ public class ReleasesViewModel extends ViewModel {
 
         });
     }
+
+	private static MutableLiveData<List<GitTag>> tagsList;
+
+	public LiveData<List<GitTag>> getTagsList(String token, String owner, String repo, Context ctx) {
+
+		tagsList = new MutableLiveData<>();
+		loadTagsList(token, owner, repo, ctx);
+
+		return tagsList;
+	}
+
+	public static void loadTagsList(String token, String owner, String repo, Context ctx) {
+
+		Call<List<GitTag>> call = RetrofitClient
+			.getApiInterface(ctx)
+			.getTags(token, owner, repo, 0, 50);
+
+		call.enqueue(new Callback<List<GitTag>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<GitTag>> call, @NonNull Response<List<GitTag>> response) {
+
+				if (response.isSuccessful()) {
+					tagsList.postValue(response.body());
+				} else {
+					Log.i("onResponse", String.valueOf(response.code()));
+				}
+
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<GitTag>> call, @NonNull Throwable t) {
+				Log.i("onFailure", t.toString());
+			}
+
+		});
+	}
 
 }
