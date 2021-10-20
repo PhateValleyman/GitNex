@@ -111,7 +111,8 @@ public class ReleasesFragment extends Fragment {
 
         setHasOptionsMenu(true);
 	    ((RepoDetailActivity) requireActivity()).setFragmentRefreshListenerReleases(type -> {
-			viewTypeIsTags = !viewTypeIsTags;
+			viewTypeIsTags = type.equals("tags");
+			page = 1;
 		    if(viewTypeIsTags) {
 			    ReleasesViewModel.loadTagsList(Authorization.get(getContext()), repoOwner, repoName, getContext());
 		    } else {

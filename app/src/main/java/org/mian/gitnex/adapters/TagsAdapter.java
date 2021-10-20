@@ -132,7 +132,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
 	public void updateList(List<GitTag> list) {
 		tags = list;
-		notifyDataSetChanged();
+		notifyDataChanged();
 	}
 
 }
