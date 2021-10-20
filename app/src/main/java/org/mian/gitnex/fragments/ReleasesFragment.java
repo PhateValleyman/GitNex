@@ -50,6 +50,7 @@ public class ReleasesFragment extends Fragment {
     private String repoOwner;
     private String releaseTag;
     private boolean viewTypeIsTags = false;
+    private int page = 1;
 
     private OnFragmentInteractionListener mListener;
 
@@ -190,6 +191,10 @@ public class ReleasesFragment extends Fragment {
 		    public void onChanged(@Nullable List<GitTag> tagList) {
 		    	if(viewTypeIsTags) {
 				    tagsAdapter = new TagsAdapter(getContext(), tagList);
+				    tagsAdapter.setLoadMoreListener(() -> {
+					    page += 1;
+					    ReleasesViewModel.loadMoreTags(instanceToken, owner, repo , page, getContext(), tagsAdapter);
+				    });
 				    if(tagsAdapter.getItemCount() > 0) {
 					    mRecyclerView.setAdapter(tagsAdapter);
 					    noDataReleases.setVisibility(View.GONE);

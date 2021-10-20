@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import org.gitnex.tea4j.models.GitTag;
 import org.gitnex.tea4j.models.Releases;
+import org.mian.gitnex.adapters.TagsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import java.util.List;
 import retrofit2.Call;
@@ -72,7 +73,7 @@ public class ReleasesViewModel extends ViewModel {
 
 		Call<List<GitTag>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getTags(token, owner, repo, 0, 50);
+			.getTags(token, owner, repo, 1, 50);
 
 		call.enqueue(new Callback<List<GitTag>>() {
 
@@ -85,6 +86,38 @@ public class ReleasesViewModel extends ViewModel {
 					Log.i("onResponse", String.valueOf(response.code()));
 				}
 
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<GitTag>> call, @NonNull Throwable t) {
+				Log.i("onFailure", t.toString());
+			}
+
+		});
+	}
+	public static void loadMoreTags(String token, String owner, String repo, int page, Context ctx, TagsAdapter adapter) {
+
+		Call<List<GitTag>> call = RetrofitClient
+			.getApiInterface(ctx)
+			.getTags(token, owner, repo, page, 50);
+
+		call.enqueue(new Callback<List<GitTag>>() {
+
+			@Override
+			public void onResponse(@NonNull Call<List<GitTag>> call, @NonNull Response<List<GitTag>> response) {
+				if (response.isSuccessful()) {
+					List<GitTag> list = tagsList.getValue();
+					assert list != null;
+					assert response.body() != null;
+					if(response.body().size() != 0) {
+						list.addAll(response.body());
+						adapter.updateList(list);
+					} else {
+						adapter.setMoreDataAvailable(false);
+					}
+				} else {
+					Log.i("onResponse", String.valueOf(response.code()));
+				}
 			}
 
 			@Override

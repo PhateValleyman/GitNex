@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.GitTag;
+import org.gitnex.tea4j.models.Issues;
 import org.mian.gitnex.R;
 import org.mian.gitnex.helpers.Markdown;
 import java.util.List;
@@ -22,8 +23,11 @@ import java.util.List;
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder> {
 
-    private final List<GitTag> tags;
+    private List<GitTag> tags;
     private final Context context;
+
+	private OnLoadMoreListener loadMoreListener;
+	private boolean isLoading = false, isMoreDataAvailable = true;
 
 	static class TagsViewHolder extends RecyclerView.ViewHolder {
 
@@ -97,11 +101,38 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
         holder.releaseTarDownload.setText(
                 HtmlCompat.fromHtml("<a href='" + currentItem.getTarballUrl() + "'>" + context.getResources().getString(R.string.tarArchiveDownloadReleasesTab) + "</a> ", HtmlCompat.FROM_HTML_MODE_LEGACY));
         holder.releaseTarDownload.setMovementMethod(LinkMovementMethod.getInstance());
+
+	    if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
+		    isLoading = true;
+		    loadMoreListener.onLoadMore();
+	    }
     }
 
     @Override
     public int getItemCount() {
         return tags.size();
     }
+
+	public void setMoreDataAvailable(boolean moreDataAvailable) {
+		isMoreDataAvailable = moreDataAvailable;
+	}
+
+	public void notifyDataChanged() {
+		notifyDataSetChanged();
+		isLoading = false;
+	}
+
+	public interface OnLoadMoreListener {
+		void onLoadMore();
+	}
+
+	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+		this.loadMoreListener = loadMoreListener;
+	}
+
+	public void updateList(List<GitTag> list) {
+		tags = list;
+		notifyDataSetChanged();
+	}
 
 }
