@@ -187,26 +187,23 @@ public class ReleasesFragment extends Fragment {
             }
         });
 
-	    releasesModel.getTagsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), new Observer<List<GitTag>>() {
-		    @Override
-		    public void onChanged(@Nullable List<GitTag> tagList) {
-		    	if(viewTypeIsTags) {
-				    tagsAdapter = new TagsAdapter(getContext(), tagList);
-				    tagsAdapter.setLoadMoreListener(() -> {
-					    page += 1;
-					    ReleasesViewModel.loadMoreTags(instanceToken, owner, repo , page, getContext(), tagsAdapter);
-				    });
-				    if(tagsAdapter.getItemCount() > 0) {
-					    mRecyclerView.setAdapter(tagsAdapter);
-					    noDataReleases.setVisibility(View.GONE);
-				    }
-				    else {
-					    tagsAdapter.notifyDataSetChanged();
-					    mRecyclerView.setAdapter(tagsAdapter);
-					    noDataReleases.setVisibility(View.VISIBLE);
-				    }
-				    mProgressBar.setVisibility(View.GONE);
+	    releasesModel.getTagsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), tagList -> {
+		    if(viewTypeIsTags) {
+			    tagsAdapter = new TagsAdapter(getContext(), tagList, owner, repo);
+			    tagsAdapter.setLoadMoreListener(() -> {
+				    page += 1;
+				    ReleasesViewModel.loadMoreTags(instanceToken, owner, repo , page, getContext(), tagsAdapter);
+			    });
+			    if(tagsAdapter.getItemCount() > 0) {
+				    mRecyclerView.setAdapter(tagsAdapter);
+				    noDataReleases.setVisibility(View.GONE);
 			    }
+			    else {
+				    tagsAdapter.notifyDataSetChanged();
+				    mRecyclerView.setAdapter(tagsAdapter);
+				    noDataReleases.setVisibility(View.VISIBLE);
+			    }
+			    mProgressBar.setVisibility(View.GONE);
 		    }
 	    });
 

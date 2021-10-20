@@ -1,6 +1,8 @@
 package org.mian.gitnex.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +13,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.gitnex.tea4j.models.GitTag;
 import org.gitnex.tea4j.models.Issues;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.CreateLabelActivity;
+import org.mian.gitnex.activities.RepoDetailActivity;
+import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Markdown;
+import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
 
 /**
@@ -25,6 +32,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
     private List<GitTag> tags;
     private final Context context;
+    private final String repo;
+    private final String owner;
 
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
@@ -38,6 +47,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
         private final TextView releaseZipDownload;
 	    private final TextView releaseTarDownload;
 	    private final ImageView downloadDropdownIcon;
+	    private final ImageView options;
 
         private TagsViewHolder(View itemView) {
 
@@ -50,12 +60,15 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 	        releaseZipDownload = itemView.findViewById(R.id.releaseZipDownload);
 	        releaseTarDownload = itemView.findViewById(R.id.releaseTarDownload);
 	        downloadDropdownIcon = itemView.findViewById(R.id.downloadDropdownIcon);
+	        options = itemView.findViewById(R.id.tagsOptionsMenu);
         }
     }
 
-    public TagsAdapter(Context ctx, List<GitTag> releasesMain) {
+    public TagsAdapter(Context ctx, List<GitTag> releasesMain, String repoOwner, String repoName) {
         this.context = ctx;
         this.tags = releasesMain;
+        owner = repoOwner;
+        repo = repoName;
     }
 
     @NonNull
@@ -93,6 +106,29 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 		    }
 
 	    });
+
+        if(!TinyDB.getInstance(context).getBoolean("canPush")) {
+        	holder.options.setVisibility(View.GONE);
+        }
+
+        holder.options.setOnClickListener(v -> {
+	        final Context context = v.getContext();
+
+	        @SuppressLint("InflateParams")
+	        View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_tag_in_list, null);
+
+	        TextView delete = view.findViewById(R.id.tagMenuDelete);
+
+	        BottomSheetDialog dialog = new BottomSheetDialog(context);
+	        dialog.setContentView(view);
+	        dialog.show();
+
+	        delete.setOnClickListener(v1 -> {
+		        AlertDialogs.tagDeleteDialog(context, currentItem.getName(), owner, repo);
+	            dialog.dismiss();
+	        });
+
+        });
 
         holder.releaseZipDownload.setText(
                 HtmlCompat.fromHtml("<a href='" + currentItem.getZipballUrl() + "'>" + context.getResources().getString(R.string.zipArchiveDownloadReleasesTab) + "</a> ", HtmlCompat.FROM_HTML_MODE_LEGACY));
