@@ -771,4 +771,6 @@
     <string name="selectUpdateStrategy">Select Update Strategy</string>
     <string name="tags">Tags</string>
     <string name="releasesTags">Releases/Tags</string>
+    <string name="create_tag">Create Tag</string>
+    <string name="tagCreated">Tag created</string>
 </resources>
