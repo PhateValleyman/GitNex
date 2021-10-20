@@ -76,7 +76,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 	        Markdown.render(context, currentItem.getMessage(), holder.tagBody);
         }
         else {
-	        holder.tagBody.setText(R.string.noReleaseBodyContent);
+	        holder.tagBody.setVisibility(View.GONE);
         }
 
 	    holder.downloadFrame.setOnClickListener(v -> {
