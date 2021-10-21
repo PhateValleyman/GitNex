@@ -44,7 +44,7 @@ import retrofit2.Response;
 
 public class OrganizationDetailActivity extends BaseActivity implements BottomSheetOrganizationFragment.BottomSheetListener {
 
-	private  OrgPermissions permissions;
+	public OrgPermissions permissions;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
