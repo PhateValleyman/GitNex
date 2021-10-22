@@ -1,7 +1,6 @@
 package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,7 +21,6 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
 import io.mikael.urlbuilder.UrlBuilder;
 
@@ -37,14 +33,12 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 	private static DrawerLayout drawer;
 	private final List<UserAccount> userAccountsList;
 	private final Context context;
-	private final TextView toolbarTitle;
 
-	public UserAccountsNavAdapter(Context ctx, List<UserAccount> userAccountsListMain, DrawerLayout drawerLayout, TextView toolbarTitle) {
+	public UserAccountsNavAdapter(Context ctx, List<UserAccount> userAccountsListMain, DrawerLayout drawerLayout) {
 
 		this.context = ctx;
 		this.userAccountsList = userAccountsListMain;
 		drawer = drawerLayout;
-		this.toolbarTitle = toolbarTitle;
 	}
 
 	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
