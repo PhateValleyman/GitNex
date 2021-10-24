@@ -4,7 +4,7 @@ name: "Feature"
 about: "A new feature or an enhancement to an existing feature"
 labels:
 
-- Enhancement
+- Feature
 
 ---
 
