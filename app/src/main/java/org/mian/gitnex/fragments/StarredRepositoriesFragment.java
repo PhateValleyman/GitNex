@@ -79,8 +79,6 @@ public class StarredRepositoriesFragment extends Fragment {
 
         final SwipeRefreshLayout swipeRefresh = fragmentStarredRepositoriesBinding.pullToRefresh;
 
-	    ((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navStarredRepos));
-
         noData = fragmentStarredRepositoriesBinding.noData;
         mProgressBar = fragmentStarredRepositoriesBinding.progressBar;
         mRecyclerView = fragmentStarredRepositoriesBinding.recyclerView;

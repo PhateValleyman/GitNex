@@ -88,8 +88,6 @@ public class MyRepositoriesFragment extends Fragment {
 
         final SwipeRefreshLayout swipeRefresh = fragmentMyRepositoriesBinding.pullToRefresh;
 
-	    ((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navMyRepos));
-
         noDataMyRepo = fragmentMyRepositoriesBinding.noDataMyRepo;
         mProgressBar = fragmentMyRepositoriesBinding.progressBar;
         mRecyclerView = fragmentMyRepositoriesBinding.recyclerView;

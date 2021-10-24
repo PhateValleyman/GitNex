@@ -49,8 +49,6 @@ public class MyProfileFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         setHasOptionsMenu(true);
 
-	    ((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navProfile));
-
         TinyDB tinyDb = TinyDB.getInstance(getContext());
 
         TextView userFullName = v.findViewById(R.id.userFullName);

@@ -35,14 +35,12 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 	private static DrawerLayout drawer;
 	private final List<UserAccount> userAccountsList;
 	private final Context context;
-	private final TextView toolbarTitle;
 
-	public UserAccountsNavAdapter(Context ctx, List<UserAccount> userAccountsListMain, DrawerLayout drawerLayout, TextView toolbarTitle) {
+	public UserAccountsNavAdapter(Context ctx, List<UserAccount> userAccountsListMain, DrawerLayout drawerLayout) {
 
 		this.context = ctx;
 		this.userAccountsList = userAccountsListMain;
 		drawer = drawerLayout;
-		this.toolbarTitle = toolbarTitle;
 	}
 
 	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
@@ -112,8 +110,6 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 		}
 
 		manageAccounts.setOnClickListener(item -> {
-
-			toolbarTitle.setText(context.getResources().getString(R.string.pageTitleUserAccounts));
 			AppCompatActivity activity = (AppCompatActivity) context;
 			activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserAccountsFragment()).commit();
 			dialog.dismiss();

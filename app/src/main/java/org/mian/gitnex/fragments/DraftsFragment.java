@@ -55,8 +55,6 @@ public class DraftsFragment extends Fragment {
 	    ctx = getContext();
         setHasOptionsMenu(true);
 
-	    ((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.titleDrafts));
-
         TinyDB tinyDb = TinyDB.getInstance(ctx);
 
 	    draftsList_ = new ArrayList<>();

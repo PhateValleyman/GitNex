@@ -46,8 +46,6 @@ public class UserAccountsFragment extends Fragment {
 		ctx = getContext();
 		setHasOptionsMenu(true);
 
-		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.pageTitleUserAccounts));
-
 		userAccountsList = new ArrayList<>();
 		userAccountsApi = BaseApi.getInstance(ctx, UserAccountsApi.class);
 

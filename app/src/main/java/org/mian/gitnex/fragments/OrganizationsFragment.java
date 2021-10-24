@@ -52,8 +52,6 @@ public class OrganizationsFragment extends Fragment {
 
         final SwipeRefreshLayout swipeRefresh = fragmentOrganizationsBinding.pullToRefresh;
 
-	    ((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navOrg));
-
         mProgressBar = fragmentOrganizationsBinding.progressBar;
         noDataOrg = fragmentOrganizationsBinding.noDataOrg;
         mRecyclerView = fragmentOrganizationsBinding.recyclerView;

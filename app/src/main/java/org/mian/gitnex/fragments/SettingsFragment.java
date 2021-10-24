@@ -49,8 +49,6 @@ public class SettingsFragment extends Fragment {
 		tinyDB = TinyDB.getInstance(ctx);
 		aboutAppDialog = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
-		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navSettings));
-
 		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
 
 			fragmentSettingsBinding.notificationsFrame.setVisibility(View.VISIBLE);

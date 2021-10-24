@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="org.mian.gitnex.fragments.MyRepositoriesFragment"
+        android:label="@string/navMyRepos"
+        tools:layout="@layout/fragment_my_repositories" />
+
+    <fragment
+        android:id="@+id/nav_starred_repos"
+        android:name="org.mian.gitnex.fragments.StarredRepositoriesFragment"
+        android:label="@string/navStarredRepos"
+        tools:layout="@layout/fragment_starred_repositories" />
+
+    <fragment
+        android:id="@+id/nav_organizations"
+        android:name="org.mian.gitnex.fragments.OrganizationsFragment"
+        android:label="@string/navOrg"
+        tools:layout="@layout/fragment_organizations" />
+
+    <fragment
+        android:id="@+id/nav_repositories"
+        android:name="org.mian.gitnex.fragments.RepositoriesFragment"
+        android:label="@string/navRepos"
+        tools:layout="@layout/fragment_repositories" />
+
+    <fragment
+        android:id="@+id/nav_notifications"
+        android:name="org.mian.gitnex.fragments.NotificationsFragment"
+        android:label="@string/pageTitleNotifications"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/nav_explore"
+        android:name="org.mian.gitnex.fragments.ExploreFragment"
+        android:label="@string/pageTitleExplore"
+        tools:layout="@layout/fragment_explore" />
+
+    <fragment
+        android:id="@+id/nav_comments_draft"
+        android:name="org.mian.gitnex.fragments.DraftsFragment"
+        android:label="@string/titleDrafts"
+        tools:layout="@layout/fragment_drafts" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="org.mian.gitnex.fragments.MyProfileFragment"
+        android:label="@string/navProfile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/nav_administration"
+        android:name="org.mian.gitnex.fragments.AdministrationFragment"
+        android:label="@string/navAdministration"
+        tools:layout="@layout/fragment_administration" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="org.mian.gitnex.fragments.SettingsFragment"
+        android:label="@string/navSettings"
+        tools:layout="@layout/fragment_repositories" />
+
+</navigation>
