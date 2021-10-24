@@ -104,6 +104,7 @@ public class ReleasesFragment extends Fragment {
 	        } else {
 		        ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repoOwner, repoName, getContext());
 	        }
+	        mProgressBar.setVisibility(View.VISIBLE);
 
         }, 50));
 
@@ -118,6 +119,7 @@ public class ReleasesFragment extends Fragment {
 		    } else {
 			    ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repoOwner, repoName, getContext());
 		    }
+		    mProgressBar.setVisibility(View.VISIBLE);
 	    });
 
         return fragmentReleasesBinding.getRoot();
@@ -136,7 +138,8 @@ public class ReleasesFragment extends Fragment {
 	        } else {
 		        ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repoOwner, repoName, getContext());
 	        }
-            tinyDb.putBoolean("updateReleases", false);
+	        mProgressBar.setVisibility(View.VISIBLE);
+	        tinyDb.putBoolean("updateReleases", false);
         }
 
     }
@@ -190,9 +193,19 @@ public class ReleasesFragment extends Fragment {
 	    releasesModel.getTagsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), tagList -> {
 		    if(viewTypeIsTags) {
 			    tagsAdapter = new TagsAdapter(getContext(), tagList, owner, repo);
-			    tagsAdapter.setLoadMoreListener(() -> {
-				    page += 1;
-				    ReleasesViewModel.loadMoreTags(instanceToken, owner, repo , page, getContext(), tagsAdapter);
+			    tagsAdapter.setLoadMoreListener(new TagsAdapter.OnLoadMoreListener() {
+
+				    @Override
+				    public void onLoadMore() {
+					    page += 1;
+					    ReleasesViewModel.loadMoreTags(instanceToken, owner, repo , page, getContext(), tagsAdapter);
+					    mProgressBar.setVisibility(View.VISIBLE);
+				    }
+
+				    @Override
+				    public void onLoadFinished() {
+					    mProgressBar.setVisibility(View.GONE);
+				    }
 			    });
 			    if(tagsAdapter.getItemCount() > 0) {
 				    mRecyclerView.setAdapter(tagsAdapter);

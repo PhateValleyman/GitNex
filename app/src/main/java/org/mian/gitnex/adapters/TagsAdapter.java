@@ -151,15 +151,21 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
 		isMoreDataAvailable = moreDataAvailable;
+		if(!isMoreDataAvailable) {
+			loadMoreListener.onLoadFinished();
+		}
 	}
 
 	public void notifyDataChanged() {
 		notifyDataSetChanged();
 		isLoading = false;
+		loadMoreListener.onLoadFinished();
 	}
 
 	public interface OnLoadMoreListener {
 		void onLoadMore();
+
+		void onLoadFinished();
 	}
 
 	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
