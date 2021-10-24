@@ -107,9 +107,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
 	    });
 
-        if(!TinyDB.getInstance(context).getBoolean("canPush")) {
-        	holder.options.setVisibility(View.GONE);
-        }
+        //if(!TinyDB.getInstance(context).getBoolean("canPush")) {
+        holder.options.setVisibility(View.GONE);
+        //}
 
         holder.options.setOnClickListener(v -> {
 	        final Context context = v.getContext();
