@@ -51,6 +51,7 @@ public class ReleasesFragment extends Fragment {
     private String releaseTag;
     private boolean viewTypeIsTags = false;
     private int page = 1;
+    private int pageReleases = 1;
 
     private OnFragmentInteractionListener mListener;
 
@@ -114,6 +115,7 @@ public class ReleasesFragment extends Fragment {
 	    ((RepoDetailActivity) requireActivity()).setFragmentRefreshListenerReleases(type -> {
 			viewTypeIsTags = type.equals("tags");
 			page = 1;
+			pageReleases = 1;
 		    if(viewTypeIsTags) {
 			    ReleasesViewModel.loadTagsList(Authorization.get(getContext()), repoOwner, repoName, getContext());
 		    } else {
@@ -169,6 +171,20 @@ public class ReleasesFragment extends Fragment {
             public void onChanged(@Nullable List<Releases> releasesListMain) {
             	if(!viewTypeIsTags) {
 		            adapter = new ReleasesAdapter(getContext(), releasesListMain);
+		            adapter.setLoadMoreListener(new ReleasesAdapter.OnLoadMoreListener() {
+
+			            @Override
+			            public void onLoadMore() {
+				            pageReleases += 1;
+				            ReleasesViewModel.loadMoreReleases(instanceToken, owner, repo , pageReleases, getContext(), adapter);
+				            mProgressBar.setVisibility(View.VISIBLE);
+			            }
+
+			            @Override
+			            public void onLoadFinished() {
+				            mProgressBar.setVisibility(View.GONE);
+			            }
+		            });
 		            if(adapter.getItemCount() > 0) {
 			            mRecyclerView.setAdapter(adapter);
 			            if(releasesListMain != null && releaseTag != null) {
