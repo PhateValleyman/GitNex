@@ -20,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,6 +50,7 @@ import org.mian.gitnex.helpers.Version;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -115,6 +117,16 @@ public class MainActivity extends BaseActivity implements BottomSheetDraftsFragm
 
 
 		setSupportActionBar(binding.toolbar);
+		for (int i = 0; i < binding.toolbar.getChildCount(); i++) {
+			View view = binding.toolbar.getChildAt(i);
+			if (view instanceof TextView) {
+				TextView tv = (TextView) view;
+				if (tv.getText().equals(binding.toolbar.getTitle())) {
+					tv.setTypeface(myTypeface);
+					break;
+				}
+			}
+		}
 		DrawerLayout drawer = binding.drawerLayout;
 		NavigationView navigationView = binding.navView;
 		View hView = navigationView.getHeaderView(0);
@@ -123,7 +135,12 @@ public class MainActivity extends BaseActivity implements BottomSheetDraftsFragm
 		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_starred_repos, R.id.nav_organizations, R.id.nav_repositories,
 			R.id.nav_notifications, R.id.nav_explore, R.id.nav_comments_draft, R.id.nav_profile, R.id.nav_administration, R.id.nav_settings)
 			.setOpenableLayout(drawer).build();
-		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_launcher);
+		NavHostFragment navHostFragment =
+			(NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_launcher);
+		assert navHostFragment != null;
+		NavController navController = navHostFragment.getNavController();
+
+		//NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_launcher);
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
 
@@ -138,14 +155,10 @@ public class MainActivity extends BaseActivity implements BottomSheetDraftsFragm
 
 		getNotificationsCount(instanceToken);
 
-		menu.findItem(R.id.nav_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				logout(MainActivity.this, ctx);
-				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-				return false;
-			}
+		menu.findItem(R.id.nav_logout).setOnMenuItemClickListener(item -> {
+			logout(MainActivity.this, ctx);
+			overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+			return false;
 		});
 
 		drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -370,7 +383,10 @@ public class MainActivity extends BaseActivity implements BottomSheetDraftsFragm
 	@Override
 	public boolean onSupportNavigateUp() {
 
-		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_launcher);
+		NavHostFragment navHostFragment =
+			(NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_launcher);
+		assert navHostFragment != null;
+		NavController navController = navHostFragment.getNavController();
 		return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
 	}
 
