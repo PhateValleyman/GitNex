@@ -3,43 +3,60 @@ package org.mian.gitnex.helpers;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Spanned;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TableBlock;
 import org.commonmark.node.FencedCodeBlock;
 import org.commonmark.node.Image;
+import org.commonmark.node.Link;
 import org.commonmark.node.Node;
+import org.commonmark.parser.InlineParserFactory;
+import org.commonmark.parser.Parser;
+import org.mian.gitnex.BuildConfig;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.core.MainGrammarLocator;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
+import io.noties.markwon.MarkwonConfiguration;
+import io.noties.markwon.RenderProps;
+import io.noties.markwon.SpanFactory;
 import io.noties.markwon.core.CorePlugin;
 import io.noties.markwon.core.MarkwonTheme;
+import io.noties.markwon.core.spans.LinkSpan;
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
 import io.noties.markwon.ext.tables.TableAwareMovementMethod;
 import io.noties.markwon.ext.tables.TablePlugin;
 import io.noties.markwon.ext.tasklist.TaskListPlugin;
 import io.noties.markwon.html.HtmlPlugin;
 import io.noties.markwon.image.picasso.PicassoImagesPlugin;
+import io.noties.markwon.inlineparser.InlineProcessor;
+import io.noties.markwon.inlineparser.MarkwonInlineParser;
 import io.noties.markwon.linkify.LinkifyPlugin;
 import io.noties.markwon.movement.MovementMethodPlugin;
 import io.noties.markwon.recycler.MarkwonAdapter;
 import io.noties.markwon.recycler.SimpleEntry;
 import io.noties.markwon.recycler.table.TableEntry;
 import io.noties.markwon.recycler.table.TableEntryPlugin;
+import io.noties.markwon.simple.ext.SimpleExtPlugin;
 import io.noties.markwon.syntax.Prism4jTheme;
 import io.noties.markwon.syntax.Prism4jThemeDarkula;
 import io.noties.markwon.syntax.Prism4jThemeDefault;
@@ -243,6 +260,11 @@ public class Markdown {
 				Prism4jThemeDarkula.create() :
 				Prism4jThemeDefault.create();
 
+			final InlineParserFactory inlineParserFactory = MarkwonInlineParser.factoryBuilder()
+				.addInlineProcessor(new IssueInlineProcessor(context))
+				.addInlineProcessor(new UserInlineProcessor(context))
+				.build();
+
 			Markwon.Builder builder = Markwon.builder(context)
 				.usePlugin(CorePlugin.create())
 				.usePlugin(HtmlPlugin.create())
@@ -256,6 +278,11 @@ public class Markdown {
 				.usePlugin(new AbstractMarkwonPlugin() {
 
 					@Override
+					public void configureParser(@NonNull Parser.Builder builder) {
+						builder.inlineParserFactory(inlineParserFactory);
+					}
+
+					@Override
 					public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
 						builder.codeBlockTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf"));
 						builder.codeBlockMargin((int) (context.getResources().getDisplayMetrics().density * 10));
@@ -264,7 +291,20 @@ public class Markdown {
 						builder.codeTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf"));
 						builder.linkColor(ResourcesCompat.getColor(context.getResources(), R.color.lightBlue, null));
 					}
-				});
+				})
+				.usePlugin(SimpleExtPlugin.create(plugin -> {
+					/*plugin.addExtension(1, '#', ' ', (configuration, props) -> new ClickableSpan() {
+
+						@Override
+						public void onClick(@NonNull View widget) {
+							try {
+								System.out.println(((TextView) widget).getText());
+							} catch(Exception e) {
+								System.out.printf("Error while parsing: %s", e.getMessage());
+							}
+						}
+					});*/
+				}));
 
 			markwon = builder.build();
 		}
@@ -281,7 +321,7 @@ public class Markdown {
 		public void setParameters(Context context, String markdown, RecyclerView recyclerView) {
 
 			this.context = context;
-			this.markdown = markdown.replace("\n", "<br/>");
+			this.markdown = markdown;
 			this.recyclerView = recyclerView;
 		}
 
@@ -327,6 +367,80 @@ public class Markdown {
 
 		public void expire() {
 			slot.expire(this);
+		}
+	}
+
+	private static class IssueInlineProcessor extends InlineProcessor {
+
+		private final Context context;
+
+		public IssueInlineProcessor(Context context) {
+			this.context = context;
+		}
+
+		private static final Pattern RE = Pattern.compile("\\d+");
+
+		@Override
+		public char specialCharacter() {
+			return '#';
+		}
+
+		@Override
+		protected Node parse() {
+			final String id = match(RE);
+			if (id != null) {
+				final Link link = new Link(createIssueOrPullRequestLinkDestination(id, context), null);
+				link.appendChild(text("#" + id));
+				return link;
+			}
+			return null;
+		}
+
+		@NonNull
+		private static String createIssueOrPullRequestLinkDestination(@NonNull String id, Context context) {
+			String instanceUrl = TinyDB.getInstance(context).getString("instanceUrl");
+			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
+			instanceUrl = instanceUrl.replace("http://", "gitnex://");
+			instanceUrl = instanceUrl.replace("https://", "gitnex://");
+
+			return instanceUrl + TinyDB.getInstance(context).getString("repoFullName") + "/issues/" + id;
+		}
+	}
+
+	private static class UserInlineProcessor extends InlineProcessor {
+
+		private final Context context;
+
+		public UserInlineProcessor(Context context) {
+			this.context = context;
+		}
+
+		private static final Pattern RE = Pattern.compile("\\w+");
+
+		@Override
+		public char specialCharacter() {
+			return '@';
+		}
+
+		@Override
+		protected Node parse() {
+			final String user = match(RE);
+			if (user != null) {
+				final Link link = new Link(createUserLinkDestination(user, context), null);
+				link.appendChild(text("@" + user));
+				return link;
+			}
+			return null;
+		}
+
+		@NonNull
+		private static String createUserLinkDestination(@NonNull String user, Context context) {
+			String instanceUrl = TinyDB.getInstance(context).getString("instanceUrl");
+			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
+			instanceUrl = instanceUrl.replace("http://", "gitnex://");
+			instanceUrl = instanceUrl.replace("https://", "gitnex://");
+
+			return instanceUrl + user;
 		}
 	}
 }
