@@ -265,7 +265,7 @@ public class Markdown {
 			final InlineParserFactory inlineParserFactory = MarkwonInlineParser.factoryBuilder()
 				.addInlineProcessor(new IssueInlineProcessor(context))
 				.addInlineProcessor(new UserInlineProcessor(context))
-				.build(); // TODO instance switching will render links to old accoutns instacne
+				.build();
 
 			Markwon.Builder builder = Markwon.builder(context)
 				.usePlugin(CorePlugin.create())
@@ -312,7 +312,7 @@ public class Markdown {
 			String instanceUrl = tinyDB.getString("instanceUrl");
 			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
 
-			Pattern patternLocalRepo = Pattern.compile(instanceUrl + tinyDB.getString("repoFullName") + "/(issues|pulls)/\\d+(/|)"); // TODO ending / and pulls
+			Pattern patternLocalRepo = Pattern.compile(instanceUrl + tinyDB.getString("repoFullName") + "/(issues|pulls)/(\\d+)(/|)"); // TODO comment links
 			ArrayList<String> mdParts = new ArrayList<>();
 			for(String mdPart : markdown.split(" ")) {
 				mdParts.addAll(Arrays.asList(mdPart.split("\n")));
