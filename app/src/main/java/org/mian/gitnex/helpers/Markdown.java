@@ -291,20 +291,7 @@ public class Markdown {
 						builder.codeTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf"));
 						builder.linkColor(ResourcesCompat.getColor(context.getResources(), R.color.lightBlue, null));
 					}
-				})
-				.usePlugin(SimpleExtPlugin.create(plugin -> {
-					/*plugin.addExtension(1, '#', ' ', (configuration, props) -> new ClickableSpan() {
-
-						@Override
-						public void onClick(@NonNull View widget) {
-							try {
-								System.out.println(((TextView) widget).getText());
-							} catch(Exception e) {
-								System.out.printf("Error while parsing: %s", e.getMessage());
-							}
-						}
-					});*/
-				}));
+				});
 
 			markwon = builder.build();
 		}
@@ -361,7 +348,7 @@ public class Markdown {
 
 			context = null;
 			markdown = null;
-			recyclerView = null; // TODO md is cached
+			recyclerView = null;
 			adapter = null;
 
 			slot.release(this);
