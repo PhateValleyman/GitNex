@@ -312,18 +312,16 @@ public class Markdown {
 			String instanceUrl = tinyDB.getString("instanceUrl");
 			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
 
-			Pattern patternLocalRepo = Pattern.compile(instanceUrl + tinyDB.getString("repoFullName") + "/issues/\\d+");
+			Pattern patternLocalRepo = Pattern.compile(instanceUrl + tinyDB.getString("repoFullName") + "/(issues|pulls)/\\d+(/|)"); // TODO ending / and pulls
 			ArrayList<String> mdParts = new ArrayList<>();
 			for(String mdPart : markdown.split(" ")) {
 				mdParts.addAll(Arrays.asList(mdPart.split("\n")));
 			}
 			for(String mdPart : mdParts) {
 				if(patternLocalRepo.matcher(mdPart).matches()) {
-					if(mdPart.endsWith("/")) {
-						mdPart = mdPart.substring(0, instanceUrl.lastIndexOf("/"));
-					}
 					int lenSplit = mdPart.split("/").length;
 					String index = mdPart.split("/")[lenSplit - 1];
+
 					markdown = markdown.replace(mdPart, "#" + index);
 				}
 			}
