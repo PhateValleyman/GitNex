@@ -85,6 +85,15 @@
                     android:textIsSelectable="true"
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/markdownTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textIsSelectable="true"
+                    android:visibility="gone"
+                    android:textSize="14sp" />
+
             </LinearLayout>
 
             <org.mian.gitnex.helpers.views.SyntaxHighlightedArea

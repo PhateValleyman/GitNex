@@ -245,7 +245,7 @@ public class Markdown {
 			Markwon.Builder builder = Markwon.builder(context)
 				.usePlugin(CorePlugin.create())
 				.usePlugin(HtmlPlugin.create())
-				.usePlugin(LinkifyPlugin.create(true))
+				.usePlugin(LinkifyPlugin.create(true)) // TODO not working
 				.usePlugin(TableEntryPlugin.create(context))
 				.usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
 				.usePlugin(TaskListPlugin.create(context))
