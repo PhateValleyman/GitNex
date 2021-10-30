@@ -37,6 +37,7 @@ import io.noties.markwon.image.picasso.PicassoImagesPlugin;
 import io.noties.markwon.linkify.LinkifyPlugin;
 import io.noties.markwon.movement.MovementMethodPlugin;
 import io.noties.markwon.recycler.MarkwonAdapter;
+import io.noties.markwon.recycler.SimpleEntry;
 import io.noties.markwon.recycler.table.TableEntry;
 import io.noties.markwon.recycler.table.TableEntryPlugin;
 import io.noties.markwon.syntax.Prism4jTheme;
@@ -183,7 +184,7 @@ public class Markdown {
 		public void setParameters(Context context, String markdown, TextView textView) {
 
 			this.context = context;
-			this.markdown = markdown;
+			this.markdown = markdown.replace("\n", "<br/>");
 			this.textView = textView;
 		}
 
@@ -273,13 +274,14 @@ public class Markdown {
 				.include(TableBlock.class, TableEntry.create(builder2 -> builder2
 					.tableLayout(R.layout.custom_markdown_table, R.id.table_layout)
 					.textLayoutIsRoot(R.layout.custom_markdown_adapter)))
+				.include(FencedCodeBlock.class, SimpleEntry.create(R.layout.custom_markdown_code_block, R.id.textCodeBlock))
 				.build();
 		}
 
 		public void setParameters(Context context, String markdown, RecyclerView recyclerView) {
 
 			this.context = context;
-			this.markdown = markdown;
+			this.markdown = markdown.replace("\n", "<br/>");
 			this.recyclerView = recyclerView;
 		}
 

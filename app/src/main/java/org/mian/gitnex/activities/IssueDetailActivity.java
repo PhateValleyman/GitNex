@@ -590,7 +590,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					String issueNumber_ = "<font color='" + ResourcesCompat.getColor(getResources(), R.color.lightGray, null) + "'>" + appCtx.getResources()
 						.getString(R.string.hash) + singleIssue.getNumber() + "</font>";
 					viewBinding.issueTitle.setText(HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(singleIssue.getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
-					String cleanIssueDescription = singleIssue.getBody().trim().replace("\n", "<br/>");
+					String cleanIssueDescription = singleIssue.getBody().trim();
 
 					viewBinding.assigneeAvatar.setOnClickListener(loginId -> {
 						Intent intent = new Intent(ctx, ProfileActivity.class);
