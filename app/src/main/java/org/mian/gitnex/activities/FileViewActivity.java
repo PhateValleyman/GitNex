@@ -174,15 +174,15 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 								binding.contents.setVisibility(View.GONE);
 
 								binding.markdownFrame.setVisibility(View.VISIBLE);
-								binding.markdown.setText(getString(R.string.excludeFilesInFileViewer));
-								binding.markdown.setGravity(Gravity.CENTER);
-								binding.markdown.setTypeface(null, Typeface.BOLD);
+								//TODO binding.markdown.setText(getString(R.string.excludeFilesInFileViewer));
+								//binding.markdown.setGravity(Gravity.CENTER);
+								//binding.markdown.setTypeface(null, Typeface.BOLD);
 							});
 						}
 					} else {
 
 						runOnUiThread(() -> {
-							binding.markdown.setText("");
+							//binding.markdown.setText("");
 							binding.progressBar.setVisibility(View.GONE);
 						});
 					}
