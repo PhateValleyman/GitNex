@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
@@ -310,21 +311,31 @@ public class Markdown {
 		public void setParameters(Context context, String markdown, RecyclerView recyclerView) {
 			TinyDB tinyDB = TinyDB.getInstance(context);
 			String instanceUrl = tinyDB.getString("instanceUrl");
-			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
+			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/")).replaceAll("\\.", "\\.");
 
-			Pattern patternLocalRepo = Pattern.compile(instanceUrl + tinyDB.getString("repoFullName") + "/(issues|pulls)/(\\d+)(/|)"); // TODO comment links
-			ArrayList<String> mdParts = new ArrayList<>();
-			for(String mdPart : markdown.split(" ")) {
-				mdParts.addAll(Arrays.asList(mdPart.split("\n")));
-			}
-			for(String mdPart : mdParts) {
-				if(patternLocalRepo.matcher(mdPart).matches()) {
-					int lenSplit = mdPart.split("/").length;
-					String index = mdPart.split("/")[lenSplit - 1];
+			// first step: replace comment urls with {url without comment} (comment)
+			final Pattern patternComment = Pattern.compile("((?<!\\]\\()" + instanceUrl + "[^\\/]+/[^\\/]+/(?:issues|pulls)/\\d+)(?:/#|#)issuecomment-(\\d+)", Pattern.MULTILINE);
+			final Matcher matcherComment = patternComment.matcher(markdown);
+			markdown = matcherComment.replaceAll("$1 ([" + context.getString(R.string.commentButtonText) + "]($1#issuecomment-$2))");// TODO mv to res
 
-					markdown = markdown.replace(mdPart, "#" + index);
-				}
-			}
+			// second step: remove links to issue descriptions
+			final Pattern patternIssueDesc = Pattern.compile("((?<!\\]\\()" + instanceUrl + "[^\\/]+/[^\\/]+/(?:issues|pulls)/\\d+)(?:/#|#)issue-(\\d+)", Pattern.MULTILINE);
+			final Matcher matcherIssueDesc = patternIssueDesc.matcher(markdown);
+			markdown = matcherIssueDesc.replaceAll("$1");
+
+			// third step: replace issue links from the same repo
+			String subst = "#$1";
+			final Pattern pattern = Pattern.compile("(?<!\\]\\()" + instanceUrl + tinyDB.getString("repoFullName") + "/(?:issues|pulls)/(\\d+)", Pattern.MULTILINE);
+			final Matcher matcher = pattern.matcher(markdown);
+			markdown = matcher.replaceAll(subst);
+
+			// fourth step: replace issue links from other repos
+			String substOtherRepo =
+				"[$2/$3#$4](" + instanceUrl.replace("http://", "gitnex://").replace("http://", "gitnex://") + "$1)";
+			final Pattern patternOtherRepo = Pattern.compile("(?<!\\]\\()" + instanceUrl + "(([^\\/]+)/([^\\/]+)/(?:issues|pulls)/(\\d+))", Pattern.MULTILINE);
+			final Matcher matcherOtherRepo = patternOtherRepo.matcher(markdown);
+
+			markdown = matcherOtherRepo.replaceAll(substOtherRepo);
 
 			this.context = context;
 			this.markdown = markdown;
