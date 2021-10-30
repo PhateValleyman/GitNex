@@ -27,7 +27,9 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.core.MainGrammarLocator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -263,7 +265,7 @@ public class Markdown {
 			final InlineParserFactory inlineParserFactory = MarkwonInlineParser.factoryBuilder()
 				.addInlineProcessor(new IssueInlineProcessor(context))
 				.addInlineProcessor(new UserInlineProcessor(context))
-				.build();
+				.build(); // TODO instance switching will render links to old accoutns instacne
 
 			Markwon.Builder builder = Markwon.builder(context)
 				.usePlugin(CorePlugin.create())
@@ -306,6 +308,25 @@ public class Markdown {
 		}
 
 		public void setParameters(Context context, String markdown, RecyclerView recyclerView) {
+			TinyDB tinyDB = TinyDB.getInstance(context);
+			String instanceUrl = tinyDB.getString("instanceUrl");
+			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
+
+			Pattern patternLocalRepo = Pattern.compile(instanceUrl + tinyDB.getString("repoFullName") + "/issues/\\d+");
+			ArrayList<String> mdParts = new ArrayList<>();
+			for(String mdPart : markdown.split(" ")) {
+				mdParts.addAll(Arrays.asList(mdPart.split("\n")));
+			}
+			for(String mdPart : mdParts) {
+				if(patternLocalRepo.matcher(mdPart).matches()) {
+					if(mdPart.endsWith("/")) {
+						mdPart = mdPart.substring(0, instanceUrl.lastIndexOf("/"));
+					}
+					int lenSplit = mdPart.split("/").length;
+					String index = mdPart.split("/")[lenSplit - 1];
+					markdown = markdown.replace(mdPart, "#" + index);
+				}
+			}
 
 			this.context = context;
 			this.markdown = markdown;
