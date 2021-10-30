@@ -296,7 +296,12 @@ public class Markdown {
 			RecyclerView localReference = recyclerView;
 			String localMd = markdown;
 			localReference.post(() -> {
-				localReference.setLayoutManager(new LinearLayoutManager(context));
+				localReference.setLayoutManager(new LinearLayoutManager(context) {
+					@Override
+					public boolean canScrollVertically() {
+						return false; // disable RecyclerView scrolling, handeled by seperate ScrollViews
+					}
+				});
 				localReference.setAdapter(adapter);
 
 				adapter.setMarkdown(markwon, localMd);

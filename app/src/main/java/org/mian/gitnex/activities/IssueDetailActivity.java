@@ -23,6 +23,7 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -142,7 +143,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-			viewBinding.scrollViewComments.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+			viewBinding.scrollViewComments.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
 				if((scrollY - oldScrollY) > 0 && viewBinding.addNewComment.isShown()) {
 					viewBinding.addNewComment.setVisibility(View.GONE);
