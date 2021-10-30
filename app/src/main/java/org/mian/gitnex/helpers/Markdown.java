@@ -333,10 +333,12 @@ public class Markdown {
 			Objects.requireNonNull(recyclerView);
 
 			if(markwon == null) setup();
-			if(adapter == null) setupAdapter();
+
+			setupAdapter();
 
 			RecyclerView localReference = recyclerView;
 			String localMd = markdown;
+			MarkwonAdapter localAdapter = adapter;
 			localReference.post(() -> {
 				localReference.setLayoutManager(new LinearLayoutManager(context) {
 					@Override
@@ -344,10 +346,10 @@ public class Markdown {
 						return false; // disable RecyclerView scrolling, handeled by seperate ScrollViews
 					}
 				});
-				localReference.setAdapter(adapter);
+				localReference.setAdapter(localAdapter);
 
-				adapter.setMarkdown(markwon, localMd);
-				adapter.notifyDataSetChanged();
+				localAdapter.setMarkdown(markwon, localMd);
+				localAdapter.notifyDataSetChanged();
 			});
 
 			release();
@@ -359,7 +361,8 @@ public class Markdown {
 
 			context = null;
 			markdown = null;
-			recyclerView = null;
+			recyclerView = null; // TODO md is cached
+			adapter = null;
 
 			slot.release(this);
 
