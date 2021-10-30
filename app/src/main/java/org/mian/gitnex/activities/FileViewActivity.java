@@ -257,7 +257,9 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 		} else if(id == R.id.markdown) {
 
 			if(!tinyDB.getBoolean("enableMarkdownInFileView")) {
-				Markdown.render(ctx, EmojiParser.parseToUnicode(binding.contents.getContent()), binding.markdown);
+				if(binding.markdown.getAdapter() == null) {
+					Markdown.render(ctx, EmojiParser.parseToUnicode(binding.contents.getContent()), binding.markdown);
+				}
 
 				binding.contents.setVisibility(View.GONE);
 				binding.markdownFrame.setVisibility(View.VISIBLE);
