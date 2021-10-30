@@ -180,6 +180,7 @@ public class Markdown {
 				.usePlugin(CorePlugin.create())
 				.usePlugin(HtmlPlugin.create())
 				.usePlugin(LinkifyPlugin.create(true))
+				.usePlugin(SoftBreakAddsNewLinePlugin.create())
 				.usePlugin(TablePlugin.create(context))
 				.usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
 				.usePlugin(TaskListPlugin.create(context))
@@ -205,7 +206,7 @@ public class Markdown {
 		public void setParameters(Context context, String markdown, TextView textView) {
 
 			this.context = context;
-			this.markdown = markdown.replace("\n", "<br/>");
+			this.markdown = markdown;
 			this.textView = textView;
 		}
 
