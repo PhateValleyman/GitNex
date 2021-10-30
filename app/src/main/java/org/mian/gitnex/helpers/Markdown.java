@@ -41,6 +41,7 @@ import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.MarkwonConfiguration;
 import io.noties.markwon.RenderProps;
+import io.noties.markwon.SoftBreakAddsNewLinePlugin;
 import io.noties.markwon.SpanFactory;
 import io.noties.markwon.core.CorePlugin;
 import io.noties.markwon.core.MarkwonTheme;
@@ -272,6 +273,7 @@ public class Markdown {
 				.usePlugin(CorePlugin.create())
 				.usePlugin(HtmlPlugin.create())
 				.usePlugin(LinkifyPlugin.create(true)) // TODO not working
+				.usePlugin(SoftBreakAddsNewLinePlugin.create())
 				.usePlugin(TableEntryPlugin.create(context))
 				.usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
 				.usePlugin(TaskListPlugin.create(context))
