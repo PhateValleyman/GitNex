@@ -383,7 +383,7 @@ public class Markdown {
 			this.context = context;
 		}
 
-		private static final Pattern RE = Pattern.compile("\\d+");
+		private static final Pattern RE = Pattern.compile("(?<=#)\\d+");
 
 		@Override
 		public char specialCharacter() {
