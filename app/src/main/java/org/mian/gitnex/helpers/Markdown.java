@@ -171,6 +171,29 @@ public class Markdown {
 				.usePlugin(SyntaxHighlightPlugin.create(new Prism4j(MainGrammarLocator.getInstance()), prism4jTheme, MainGrammarLocator.DEFAULT_FALLBACK_LANGUAGE))
 				.usePlugin(new AbstractMarkwonPlugin() {
 
+					private Typeface tf;
+
+					private void setupTf(Context context) {
+						switch(TinyDB.getInstance(context).getInt("customFontId", -1)) {
+							case 0:
+								tf = Typeface.createFromAsset(context.getAssets(), "fonts/roboto.ttf");
+								break;
+							case 2:
+								tf = Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf");
+								break;
+							default:
+								tf = Typeface.createFromAsset(context.getAssets(), "fonts/manroperegular.ttf");
+								break;
+						}
+					}
+
+					@Override
+					public void beforeSetText(@NonNull TextView textView, @NonNull Spanned markdown) {
+						if(tf == null) setupTf(textView.getContext());
+						textView.setTypeface(tf);
+						super.beforeSetText(textView, markdown);
+					}
+
 					@Override
 					public void configureTheme(@NonNull MarkwonTheme.Builder builder) {
 						builder.codeBlockTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf"));
@@ -179,6 +202,9 @@ public class Markdown {
 						builder.codeTextSize((int) (context.getResources().getDisplayMetrics().scaledDensity * 13));
 						builder.codeTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf"));
 						builder.linkColor(ResourcesCompat.getColor(context.getResources(), R.color.lightBlue, null));
+
+						if(tf == null) setupTf(context);
+						builder.headingTypeface(tf);
 					}
 				});
 
