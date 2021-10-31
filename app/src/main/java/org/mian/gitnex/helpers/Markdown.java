@@ -331,7 +331,7 @@ public class Markdown {
 						builder.linkColor(ResourcesCompat.getColor(context.getResources(), R.color.lightBlue, null));
 
 						if(tf == null) setupTf(context);
-						builder.headingTypeface(tf);
+						builder.headingTypeface(Typeface.create(tf, Typeface.BOLD));
 					}
 				});
 
