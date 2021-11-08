@@ -283,7 +283,6 @@
 
     <string name="noDataLabelsTab">No labels found</string>
     <string name="labelMenuContentDesc">Desc</string>
-    <string name="labelMenuDelete">Delete</string>
     <string name="labelDeleteText">Label deleted</string>
     <string name="labelDeleteErrorText">Something went wrong, please try again</string>
 
