@@ -53,12 +53,10 @@
     <!-- page titles -->
 
     <string name="repoName">Demo repo</string>
-    <string name="repoFullName">Repo with ORG</string>
     <string name="repoDescription">Demo description</string>
     <string name="noData">No repositories found</string>
 
     <string name="orgName">Demo organization</string>
-    <string name="orgDescription">Demo description</string>
     <string name="noDataOrg">No organizations found</string>
 
     <string name="newCreateButtonCopy">Create</string>
@@ -285,7 +283,6 @@
 
     <string name="noDataLabelsTab">No labels found</string>
     <string name="labelMenuContentDesc">Desc</string>
-    <string name="labelMenuEdit">Edit</string>
     <string name="labelMenuDelete">Delete</string>
     <string name="labelDeleteText">Label deleted</string>
     <string name="labelDeleteErrorText">Something went wrong, please try again</string>
@@ -345,7 +342,6 @@
 
     <!-- issue comments -->
     <string name="editCommentTitle">Edit Comment</string>
-    <string name="editCommentButtonText">Edit</string>
     <string name="editCommentUpdatedText">Comment updated</string>
     <string name="issueCommentShare">Share Comment</string>
     <string name="deleteCommentSuccess">Comment deleted successfully</string>
