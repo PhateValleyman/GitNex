@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		Fragment fragmentById = fm.findFragmentById(R.id.fragment_container);
 
 		if(fragmentById instanceof SettingsFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
+			toolbarTitle.setText(getResources().getString(R.string.navSettings));
 		}
 		else if(fragmentById instanceof MyRepositoriesFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.navMyRepos));
@@ -538,7 +538,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if(id == R.id.nav_settings) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
+			toolbarTitle.setText(getResources().getString(R.string.navSettings));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
 		}
 		else if(id == R.id.nav_logout) {

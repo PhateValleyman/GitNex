@@ -34,7 +34,6 @@
     <!-- page titles -->
     <string name="pageTitleNewRepo">New Repository</string>
     <string name="pageTitleIssues">Issues</string>
-    <string name="pageTitleSettings">Settings</string>
     <string name="pageTitleCreateOrganization">New Organization</string>
     <string name="pageTitleCreateMilestone">New Milestone</string>
     <string name="pageTitleCreateNewIssue">New Issue</string>
@@ -42,7 +41,6 @@
     <string name="pageTitleCredits">Credits</string>
     <string name="pageTitleChooseBranch">Select Branch</string>
     <string name="pageTitleLabelUpdate">Update Label</string>
-    <string name="pageTitleSponsors">Donators</string>
     <string name="pageTitleStarredRepos">Starred Repositories</string>
     <string name="pageTitleCreateTeam">New Team</string>
     <string name="pageTitleAddEmail">Add Email Address</string>
