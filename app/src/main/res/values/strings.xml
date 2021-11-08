@@ -296,7 +296,6 @@
     <string name="alertDialogTokenRevokedCopyPositiveButton">Logout</string>
     <string name="labelDeleteTitle">Delete\u0020</string>
     <string name="labelDeleteMessage">Do you really want to delete this label?</string>
-    <string name="labelDeletePositiveButton">OK</string>
     <string name="labelDeleteNegativeButton">Cancel</string>
 
     <!-- org tabbed layout str -->
