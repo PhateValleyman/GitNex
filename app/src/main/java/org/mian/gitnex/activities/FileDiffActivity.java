@@ -110,7 +110,7 @@ public class FileDiffActivity extends BaseActivity {
 							getString(R.string.alertDialogTokenRevokedTitle),
 							getString(R.string.alertDialogTokenRevokedMessage),
 							getString(R.string.cancelButton),
-							getString(R.string.alertDialogTokenRevokedCopyPositiveButton)));
+							getString(R.string.navLogout)));
 						break;
 
 					case 403:

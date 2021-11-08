@@ -222,7 +222,7 @@ public class MergePullRequestActivity extends BaseActivity {
 				else if(response.code() == 401) {
 
 					enableProcessButton();
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton), getResources().getString(R.string.navLogout));
 				}
 				else if(response.code() == 404) {
 
