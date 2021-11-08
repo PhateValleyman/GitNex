@@ -45,7 +45,7 @@
         <item>@string/pageTitleStarredRepos</item>
         <item>@string/pageTitleOrganizations</item>
         <item>@string/navRepos</item>
-        <item>@string/pageTitleProfile</item>
+        <item>@string/navProfile</item>
         <item>@string/pageTitleExplore</item>
         <item>@string/titleDrafts</item>
     </string-array>
@@ -55,7 +55,7 @@
         <item>@string/pageTitleStarredRepos</item>
         <item>@string/pageTitleOrganizations</item>
         <item>@string/navRepos</item>
-        <item>@string/pageTitleProfile</item>
+        <item>@string/navProfile</item>
         <item>@string/pageTitleExplore</item>
         <item>@string/titleDrafts</item>
         <item>@string/pageTitleNotifications</item>

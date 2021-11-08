@@ -164,7 +164,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			toolbarTitle.setText(R.string.pageTitleNotifications);
 		}
 		else if(fragmentById instanceof MyProfileFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+			toolbarTitle.setText(getResources().getString(R.string.navProfile));
 		}
 		else if(fragmentById instanceof DraftsFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
@@ -268,7 +268,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				userAvatar.setOnClickListener(v -> {
 
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+					toolbarTitle.setText(getResources().getString(R.string.navProfile));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProfileFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_profile);
 					drawer.closeDrawers();
@@ -390,7 +390,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					break;
 
 				case 4:
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+					toolbarTitle.setText(getResources().getString(R.string.navProfile));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProfileFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_profile);
 					break;
@@ -528,7 +528,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if(id == R.id.nav_profile) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+			toolbarTitle.setText(getResources().getString(R.string.navProfile));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProfileFragment()).commit();
 		}
 		else if(id == R.id.nav_repositories) {
