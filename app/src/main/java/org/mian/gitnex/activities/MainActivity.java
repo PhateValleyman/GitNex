@@ -384,7 +384,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					break;
 
 				case 3:
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
+					toolbarTitle.setText(getResources().getString(R.string.navRepos));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_repositories);
 					break;
@@ -533,7 +533,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if(id == R.id.nav_repositories) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
+			toolbarTitle.setText(getResources().getString(R.string.navRepos));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
 		}
 		else if(id == R.id.nav_settings) {
