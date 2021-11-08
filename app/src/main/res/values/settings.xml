@@ -43,7 +43,7 @@
     <string-array name="appDefaultHomeScreen">
         <item>@string/navMyRepos</item>
         <item>@string/pageTitleStarredRepos</item>
-        <item>@string/pageTitleOrganizations</item>
+        <item>@string/navOrg</item>
         <item>@string/navRepos</item>
         <item>@string/navProfile</item>
         <item>@string/pageTitleExplore</item>
@@ -53,7 +53,7 @@
     <string-array name="appDefaultHomeScreenNew">
         <item>@string/navMyRepos</item>
         <item>@string/pageTitleStarredRepos</item>
-        <item>@string/pageTitleOrganizations</item>
+        <item>@string/navOrg</item>
         <item>@string/navRepos</item>
         <item>@string/navProfile</item>
         <item>@string/pageTitleExplore</item>

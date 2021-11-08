@@ -63,7 +63,7 @@ public class SettingsGeneralActivity extends BaseActivity {
 		}
 		else if(homeScreenSelectedChoice == 2) {
 
-			viewBinding.homeScreenSelected.setText(getResources().getString(R.string.pageTitleOrganizations));
+			viewBinding.homeScreenSelected.setText(getResources().getString(R.string.navOrg));
 		}
 		else if(homeScreenSelectedChoice == 3) {
 

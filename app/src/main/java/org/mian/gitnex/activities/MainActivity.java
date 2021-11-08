@@ -155,7 +155,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
 		}
 		else if(fragmentById instanceof OrganizationsFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
+			toolbarTitle.setText(getResources().getString(R.string.navOrg));
 		}
 		else if(fragmentById instanceof ExploreFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
@@ -378,7 +378,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					break;
 
 				case 2:
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
+					toolbarTitle.setText(getResources().getString(R.string.navOrg));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_organizations);
 					break;
@@ -523,7 +523,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if(id == R.id.nav_organizations) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
+			toolbarTitle.setText(getResources().getString(R.string.navOrg));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
 		}
 		else if(id == R.id.nav_profile) {
