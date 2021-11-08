@@ -362,7 +362,6 @@
     <string name="profileTabFollowers">Followers</string>
     <string name="profileTabFollowing">Following</string>
     <string name="profileCreateNewEmailAddress">Add Email Address</string>
-    <string name="profileEmailButton">Save</string>
     <string name="profileEmailTitle">Email Address</string>
     <string name="emailAddedText">New email added successfully</string>
     <string name="emailErrorEmpty">Email address is empty</string>
