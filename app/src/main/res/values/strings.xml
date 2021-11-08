@@ -33,7 +33,6 @@
 
     <!-- page titles -->
     <string name="pageTitleAbout">About</string>
-    <string name="navProfile">Profile</string>
     <string name="pageTitleNewRepo">New Repository</string>
     <string name="pageTitleOrganizations">Organizations</string>
     <string name="pageTitleIssues">Issues</string>
