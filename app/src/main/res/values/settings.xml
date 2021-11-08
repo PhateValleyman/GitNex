@@ -41,7 +41,7 @@
     </string-array>
 
     <string-array name="appDefaultHomeScreen">
-        <item>@string/pageTitleMyRepos</item>
+        <item>@string/navMyRepos</item>
         <item>@string/pageTitleStarredRepos</item>
         <item>@string/pageTitleOrganizations</item>
         <item>@string/pageTitleRepositories</item>
@@ -51,7 +51,7 @@
     </string-array>
 
     <string-array name="appDefaultHomeScreenNew">
-        <item>@string/pageTitleMyRepos</item>
+        <item>@string/navMyRepos</item>
         <item>@string/pageTitleStarredRepos</item>
         <item>@string/pageTitleOrganizations</item>
         <item>@string/pageTitleRepositories</item>

@@ -149,7 +149,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
 		}
 		else if(fragmentById instanceof MyRepositoriesFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
+			toolbarTitle.setText(getResources().getString(R.string.navMyRepos));
 		}
 		else if(fragmentById instanceof StarredRepositoriesFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
@@ -414,7 +414,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					break;
 
 				default:
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
+					toolbarTitle.setText(getResources().getString(R.string.navMyRepos));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_home);
 					break;
@@ -518,7 +518,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		if(id == R.id.nav_home) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
+			toolbarTitle.setText(getResources().getString(R.string.navMyRepos));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
 		}
 		else if(id == R.id.nav_organizations) {

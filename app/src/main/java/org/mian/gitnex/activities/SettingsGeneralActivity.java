@@ -54,7 +54,7 @@ public class SettingsGeneralActivity extends BaseActivity {
 		if(homeScreenSelectedChoice == 0) {
 
 			homeScreenSelectedChoice = tinyDB.getInt("homeScreenId");
-			viewBinding.homeScreenSelected.setText(getResources().getString(R.string.pageTitleMyRepos));
+			viewBinding.homeScreenSelected.setText(getResources().getString(R.string.navMyRepos));
 		}
 
 		if(homeScreenSelectedChoice == 1) {
