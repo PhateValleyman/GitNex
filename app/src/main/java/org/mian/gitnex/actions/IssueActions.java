@@ -51,7 +51,7 @@ public class IssueActions {
 
 					case 401:
 						actionResult.finish(ActionResult.Status.FAILED, response);
-						AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle), context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle), context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.cancelButton), context.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 						break;
 
 					default:
@@ -117,7 +117,7 @@ public class IssueActions {
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
 				}
 				else if(response.code() == 403) {
@@ -190,7 +190,7 @@ public class IssueActions {
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
 				}
 				else {
@@ -249,7 +249,7 @@ public class IssueActions {
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton), ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
 				}
 				else {
@@ -303,7 +303,7 @@ public class IssueActions {
 
 					AlertDialogs.authorizationTokenRevokedDialog(context, context.getString(R.string.alertDialogTokenRevokedTitle),
 						context.getString(R.string.alertDialogTokenRevokedMessage),
-						context.getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+						context.getString(R.string.cancelButton),
 						context.getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
 				}

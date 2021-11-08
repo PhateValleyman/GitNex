@@ -51,7 +51,7 @@ public class AdminCronTasksViewModel extends ViewModel {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
 						ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-						ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+						ctx.getResources().getString(R.string.cancelButton),
 						ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 				}
 				else if(response.code() == 403) {

@@ -194,7 +194,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetFileVie
 							runOnUiThread(() -> AlertDialogs.authorizationTokenRevokedDialog(ctx,
 								getResources().getString(R.string.alertDialogTokenRevokedTitle),
 								getResources().getString(R.string.alertDialogTokenRevokedMessage),
-								getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+								getResources().getString(R.string.cancelButton),
 								getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton)));
 							break;
 

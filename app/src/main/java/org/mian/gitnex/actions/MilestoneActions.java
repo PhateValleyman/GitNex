@@ -53,7 +53,7 @@ public class MilestoneActions {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
 							ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-							ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+							ctx.getResources().getString(R.string.cancelButton),
 							ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
 				}
@@ -109,7 +109,7 @@ public class MilestoneActions {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
 							ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-							ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
+							ctx.getResources().getString(R.string.cancelButton),
 							ctx.getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
 
 				}
