@@ -486,7 +486,7 @@ public class Markdown {
 			this.context = context;
 		}
 
-		private static final Pattern RE = Pattern.compile("\\w+");
+		private static final Pattern RE = Pattern.compile("(?<!\\S)(?<=@)\\w+");
 
 		@Override
 		public char specialCharacter() {
