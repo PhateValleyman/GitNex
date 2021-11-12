@@ -353,31 +353,31 @@ public class Markdown {
 			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/")).replaceAll("\\.", "\\.");
 
 			// first step: replace comment urls with {url without comment} (comment)
-			final Pattern patternComment = Pattern.compile("((?<!\\]\\(|`)" + instanceUrl + "[^\\/]+/[^\\/]+/(?:issues|pulls)/\\d+)(?:/#|#)issuecomment-(\\d+)(?!`|\\))", Pattern.MULTILINE);
+			final Pattern patternComment = Pattern.compile("((?<!]\\(|`)" + instanceUrl + "[^/]+/[^/]+/(?:issues|pulls)/\\d+)(?:/#|#)issuecomment-(\\d+)(?!`|\\))", Pattern.MULTILINE);
 			final Matcher matcherComment = patternComment.matcher(markdown);
 			markdown = matcherComment.replaceAll("$1 ([" + context.getString(R.string.commentButtonText) + "]($1#issuecomment-$2))");// TODO mv to res
 
 			// second step: remove links to issue descriptions
-			final Pattern patternIssueDesc = Pattern.compile("((?<!\\]\\(|`)" + instanceUrl + "[^\\/]+/[^\\/]+/(?:issues|pulls)/\\d+)(?:/#|#)issue-(\\d+)(?!`|\\))", Pattern.MULTILINE);
+			final Pattern patternIssueDesc = Pattern.compile("((?<!]\\(|`)" + instanceUrl + "[^/]+/[^/]+/(?:issues|pulls)/\\d+)(?:/#|#)issue-(\\d+)(?!`|\\))", Pattern.MULTILINE);
 			final Matcher matcherIssueDesc = patternIssueDesc.matcher(markdown);
 			markdown = matcherIssueDesc.replaceAll("$1");
 
 			// third step: replace issue links from the same repo
-			final Pattern pattern = Pattern.compile("(?<!\\]\\(|`)" + instanceUrl + tinyDB.getString("repoFullName") + "/(?:issues|pulls)/(\\d+)(?!`|\\))", Pattern.MULTILINE);
+			final Pattern pattern = Pattern.compile("(?<!]\\(|`)" + instanceUrl + tinyDB.getString("repoFullName") + "/(?:issues|pulls)/(\\d+)(?!`|\\))", Pattern.MULTILINE);
 			final Matcher matcher = pattern.matcher(markdown);
 			markdown = matcher.replaceAll("#$1");
 
 			// fourth step: replace issue links from other repos
 			String substOtherRepo =
 				"[$2/$3#$4](" + instanceUrl.replace("http://", "gitnex://").replace("http://", "gitnex://") + "$1)";
-			final Pattern patternOtherRepo = Pattern.compile("(?<!\\]\\(|`)" + instanceUrl + "(([^\\/]+)/([^\\/]+)/(?:issues|pulls)/(\\d+))(?!`|\\))", Pattern.MULTILINE);
+			final Pattern patternOtherRepo = Pattern.compile("(?<!]\\(|`)" + instanceUrl + "(([^/]+)/([^/]+)/(?:issues|pulls)/(\\d+))(?!`|\\))", Pattern.MULTILINE);
 			final Matcher matcherOtherRepo = patternOtherRepo.matcher(markdown);
 			markdown = matcherOtherRepo.replaceAll(substOtherRepo);
 
 			// fifth step: render commit links
 			String substCommit =
 				"[$2](" + instanceUrl.replace("http://", "gitnex://").replace("http://", "gitnex://") + "$1)";
-			final Pattern patternCommit = Pattern.compile("(?<!\\]\\(|`)" + instanceUrl + "([^\\/]+/[^\\/]+/commit/([a-z0-9_]+))(?!`|\\))", Pattern.MULTILINE);
+			final Pattern patternCommit = Pattern.compile("(?<!]\\(|`)" + instanceUrl + "([^/]+/[^/]+/commit/([a-z0-9_]+))(?!`|\\))", Pattern.MULTILINE);
 			final Matcher matcherCommit = patternCommit.matcher(markdown);
 			markdown = matcherCommit.replaceAll(substCommit);
 
