@@ -363,18 +363,24 @@ public class Markdown {
 			markdown = matcherIssueDesc.replaceAll("$1");
 
 			// third step: replace issue links from the same repo
-			String subst = "#$1";
 			final Pattern pattern = Pattern.compile("(?<!\\]\\()" + instanceUrl + tinyDB.getString("repoFullName") + "/(?:issues|pulls)/(\\d+)", Pattern.MULTILINE);
 			final Matcher matcher = pattern.matcher(markdown);
-			markdown = matcher.replaceAll(subst);
+			markdown = matcher.replaceAll("#$1");
 
 			// fourth step: replace issue links from other repos
 			String substOtherRepo =
 				"[$2/$3#$4](" + instanceUrl.replace("http://", "gitnex://").replace("http://", "gitnex://") + "$1)";
 			final Pattern patternOtherRepo = Pattern.compile("(?<!\\]\\()" + instanceUrl + "(([^\\/]+)/([^\\/]+)/(?:issues|pulls)/(\\d+))", Pattern.MULTILINE);
 			final Matcher matcherOtherRepo = patternOtherRepo.matcher(markdown);
-
 			markdown = matcherOtherRepo.replaceAll(substOtherRepo);
+
+			// fifth step: render commit links
+			String substCommit =
+				"[$2](" + instanceUrl.replace("http://", "gitnex://").replace("http://", "gitnex://") + "$1)";
+			final Pattern patternCommit = Pattern.compile("(?<!\\]\\()" + instanceUrl + "([^\\/]+/[^\\/]+/commit/([a-z0-9_]+))", Pattern.MULTILINE);
+			System.out.println(patternCommit.pattern());
+			final Matcher matcherCommit = patternCommit.matcher(markdown);
+			markdown = matcherCommit.replaceAll(substCommit);
 
 			this.context = context;
 			this.markdown = markdown;
