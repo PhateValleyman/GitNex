@@ -355,7 +355,7 @@ public class Markdown {
 			// first step: replace comment urls with {url without comment} (comment)
 			final Pattern patternComment = Pattern.compile("((?<!]\\(|`)" + instanceUrl + "[^/]+/[^/]+/(?:issues|pulls)/\\d+)(?:/#|#)issuecomment-(\\d+)(?!`|\\))", Pattern.MULTILINE);
 			final Matcher matcherComment = patternComment.matcher(markdown);
-			markdown = matcherComment.replaceAll("$1 ([" + context.getString(R.string.commentButtonText) + "]($1#issuecomment-$2))");// TODO mv to res
+			markdown = matcherComment.replaceAll("$1 ([" + context.getString(R.string.commentButtonText) + "]($1#issuecomment-$2))");
 
 			// second step: remove links to issue descriptions
 			final Pattern patternIssueDesc = Pattern.compile("((?<!]\\(|`)" + instanceUrl + "[^/]+/[^/]+/(?:issues|pulls)/\\d+)(?:/#|#)issue-(\\d+)(?!`|\\))", Pattern.MULTILINE);
@@ -380,6 +380,13 @@ public class Markdown {
 			final Pattern patternCommit = Pattern.compile("(?<!]\\(|`)" + instanceUrl + "([^/]+/[^/]+/commit/([a-z0-9_]+))(?!`|\\))", Pattern.MULTILINE);
 			final Matcher matcherCommit = patternCommit.matcher(markdown);
 			markdown = matcherCommit.replaceAll(substCommit);
+
+			// sixth step: replace relative attachment links
+			String substAttachments =
+				instanceUrl + tinyDB.getString("repoFullName") + "/$1";
+			final Pattern patternAttachments = Pattern.compile("(?<=\\()/(attachments/\\S+)(?=\\))", Pattern.MULTILINE); // TODO code block ``
+			final Matcher matcherAttachments = patternAttachments.matcher(markdown);
+			markdown = matcherAttachments.replaceAll(substAttachments);
 
 			this.context = context;
 			this.markdown = markdown;
