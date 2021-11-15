@@ -283,6 +283,7 @@ public class RepoInfoFragment extends Fragment {
 								tinyDb.putBoolean("hasPullRequests", false);
 							}
 
+							tinyDb.putBoolean("isArchived", repoInfo.isArchived());
 							if(repoInfo.isArchived()) {
 								binding.repoIsArchived.setVisibility(View.VISIBLE);
 							}

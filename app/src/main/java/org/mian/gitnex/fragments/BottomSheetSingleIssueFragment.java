@@ -54,6 +54,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		boolean userIsCreator = issueCreator.equals(tinyDB.getString("loginUid"));
 		boolean isRepoAdmin = tinyDB.getBoolean("isRepoAdmin");
 		boolean canPush = tinyDB.getBoolean("canPush");
+		boolean archived = tinyDB.getBoolean("isArchived");
 
 		TextView editIssue = bottomSheetSingleIssueBinding.editIssue;
 		TextView editLabels = bottomSheetSingleIssueBinding.editLabels;
@@ -286,6 +287,18 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		else {
 			subscribeIssue.setVisibility(View.VISIBLE);
 			unsubscribeIssue.setVisibility(View.GONE);
+		}
+
+		if(archived) {
+			subscribeIssue.setVisibility(View.GONE);
+			unsubscribeIssue.setVisibility(View.GONE);
+			editIssue.setVisibility(View.GONE);
+			editLabels.setVisibility(View.GONE);
+			closeIssue.setVisibility(View.GONE);
+			closeReopenDivider.setVisibility(View.GONE);
+			addRemoveAssignees.setVisibility(View.GONE);
+			linearLayout.setVisibility(View.GONE);
+			bottomSheetSingleIssueBinding.shareDivider.setVisibility(View.GONE);
 		}
 
 		return bottomSheetSingleIssueBinding.getRoot();

@@ -874,6 +874,10 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			public void onResponse(@NonNull Call<UserRepositories> call, @NonNull Response<UserRepositories> response) {
 				if(response.isSuccessful()) {
 					assert response.body() != null;
+					tinyDB.putBoolean("isArchived", response.body().isArchived());
+					if(response.body().isArchived()) {
+						viewBinding.addNewComment.setVisibility(View.GONE);
+					}
 					tinyDB.putBoolean("isRepoAdmin", response.body().getPermissions().isAdmin());
 					tinyDB.putBoolean("canPush", response.body().getPermissions().canPush());
 				}

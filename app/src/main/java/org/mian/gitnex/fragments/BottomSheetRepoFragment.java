@@ -54,13 +54,24 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
 		    newFile.setVisibility(View.GONE);
 	    }
 
+	    boolean archived = tinyDb.getBoolean("isArchived");
+	    if(archived) {
+	    	createIssue.setVisibility(View.GONE);
+	    	createPullRequest.setVisibility(View.GONE);
+		    createMilestone.setVisibility(View.GONE);
+		    createLabel.setVisibility(View.GONE);
+		    createRelease.setVisibility(View.GONE);
+		    newFile.setVisibility(View.GONE);
+		    bottomSheetRepoBinding.createDivider.setVisibility(View.GONE);
+	    }
+
         createLabel.setOnClickListener(v112 -> {
 
             bmListener.onButtonClicked("label");
             dismiss();
         });
 
-        if(tinyDb.getBoolean("hasIssues")) {
+        if(tinyDb.getBoolean("hasIssues") && !archived) {
 
             createIssue.setVisibility(View.VISIBLE);
             createIssue.setOnClickListener(v12 -> {
@@ -74,7 +85,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             createIssue.setVisibility(View.GONE);
         }
 
-	    if(tinyDb.getBoolean("hasPullRequests")) {
+	    if(tinyDb.getBoolean("hasPullRequests") && !archived) {
 
 		    createPullRequest.setVisibility(View.VISIBLE);
 		    createPullRequest.setOnClickListener(vPr -> {
