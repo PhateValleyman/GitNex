@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.models.Files;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.DeepLinksActivity;
 import org.mian.gitnex.activities.FileViewActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.FilesAdapter;
@@ -183,12 +184,23 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				break;
 
 			case "file":
+			case "symlink":
 				Intent intent = new Intent(getContext(), FileViewActivity.class);
 				intent.putExtra("file", file);
 
 				requireContext().startActivity(intent);
 				break;
 
+			case "submodule":
+				String url = file.getSubmodule_git_url();
+				if(url == null) {
+					return;
+				}
+
+				Intent iLink = new Intent(requireContext(), DeepLinksActivity.class);
+				iLink.setData(Uri.parse(url));
+				startActivity(iLink);
+				break;
 		}
 	}
 
@@ -229,7 +241,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 		FilesViewModel filesModel = new ViewModelProvider(this).get(FilesViewModel.class);
 
-		filesModel.getFilesList2(instanceToken, owner, repo, filesDir, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(this, filesListMain2 -> {
+		filesModel.getFilesList2(instanceToken, owner, repo, filesDir, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(getViewLifecycleOwner(), filesListMain2 -> {
 
 			filesAdapter.getOriginalFiles().clear();
 			filesAdapter.getOriginalFiles().addAll(filesListMain2);
