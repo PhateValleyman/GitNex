@@ -41,7 +41,7 @@ public class ExploreUsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 	public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		if(viewType == TYPE_LOAD) {
-			return new ExploreUsersAdapter.UsersHolder(inflater.inflate(R.layout.list_explore_users, parent, false));
+			return new ExploreUsersAdapter.UsersHolder(inflater.inflate(R.layout.list_users, parent, false));
 		}
 		else {
 			return new ExploreUsersAdapter.LoadHolder(inflater.inflate(R.layout.row_load, parent, false));

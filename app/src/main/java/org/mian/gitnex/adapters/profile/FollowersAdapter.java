@@ -43,7 +43,7 @@ public class FollowersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 		LayoutInflater inflater = LayoutInflater.from(context);
 
 		if(viewType == TYPE_LOAD) {
-			return new UsersHolder(inflater.inflate(R.layout.list_profile_followers_following, parent, false));
+			return new UsersHolder(inflater.inflate(R.layout.list_users, parent, false));
 		}
 		else {
 			return new LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
