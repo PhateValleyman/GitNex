@@ -18,6 +18,7 @@ import org.mian.gitnex.databinding.ActivityOrgTeamMembersBinding;
 import org.mian.gitnex.fragments.BottomSheetOrganizationTeamsFragment;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.viewmodels.TeamMembersByOrgViewModel;
 import java.util.Objects;
 
@@ -25,7 +26,7 @@ import java.util.Objects;
  * Author M M Arif
  */
 
-public class OrganizationTeamMembersActivity extends BaseActivity implements BottomSheetOrganizationTeamsFragment.BottomSheetListener {
+public class OrganizationTeamMembersActivity extends BaseActivity implements BottomSheetListener {
 
     private TextView noDataMembers;
     private View.OnClickListener onClickListener;
