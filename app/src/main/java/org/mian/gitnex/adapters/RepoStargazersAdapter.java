@@ -36,8 +36,8 @@ public class RepoStargazersAdapter extends BaseAdapter {
         private final TextView memberName;
 
         ViewHolder(View v) {
-            memberAvatar  = v.findViewById(R.id.memberAvatar);
-            memberName  = v.findViewById(R.id.memberName);
+            memberAvatar  = v.findViewById(R.id.userAvatarImageView);
+            memberName  = v.findViewById(R.id.userNameTv);
 
 	        memberAvatar.setOnClickListener(loginId -> {
 		        Intent intent = new Intent(context, ProfileActivity.class);
@@ -79,7 +79,7 @@ public class RepoStargazersAdapter extends BaseAdapter {
         RepoStargazersAdapter.ViewHolder viewHolder;
 
         if (finalView == null) {
-            finalView = LayoutInflater.from(context).inflate(R.layout.list_repo_stargazers, null);
+            finalView = LayoutInflater.from(context).inflate(R.layout.list_users_grid, null);
             viewHolder = new ViewHolder(finalView);
             finalView.setTag(viewHolder);
         }

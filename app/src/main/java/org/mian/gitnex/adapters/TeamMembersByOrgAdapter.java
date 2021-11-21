@@ -38,8 +38,8 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
 
         ViewHolder(View v) {
 
-            memberAvatar  = v.findViewById(R.id.memberAvatar);
-            memberName  = v.findViewById(R.id.memberName);
+            memberAvatar  = v.findViewById(R.id.userAvatarImageView);
+            memberName  = v.findViewById(R.id.userNameTv);
 
 	        memberAvatar.setOnClickListener(loginId -> {
 		        Intent intent = new Intent(context, ProfileActivity.class);
@@ -83,7 +83,7 @@ public class TeamMembersByOrgAdapter extends BaseAdapter {
 
         if (finalView == null) {
 
-            finalView = LayoutInflater.from(context).inflate(R.layout.list_members_by_team_by_org, null);
+            finalView = LayoutInflater.from(context).inflate(R.layout.list_users_grid, null);
             viewHolder = new ViewHolder(finalView);
             finalView.setTag(viewHolder);
         }
