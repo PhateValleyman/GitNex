@@ -13,7 +13,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import org.mian.gitnex.R;
-import org.mian.gitnex.adapters.TeamMembersByOrgAdapter;
+import org.mian.gitnex.adapters.UserGridAdapter;
 import org.mian.gitnex.databinding.ActivityOrgTeamMembersBinding;
 import org.mian.gitnex.fragments.BottomSheetOrganizationTeamsFragment;
 import org.mian.gitnex.helpers.Authorization;
@@ -30,7 +30,7 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
 
     private TextView noDataMembers;
     private View.OnClickListener onClickListener;
-    private TeamMembersByOrgAdapter adapter;
+    private UserGridAdapter adapter;
     private GridView mGridView;
 	private ProgressBar progressBar;
 
@@ -97,7 +97,7 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
 
         teamMembersModel.getMembersByOrgList(instanceToken, teamId, ctx).observe(this, teamMembersListMain -> {
 
-            adapter = new TeamMembersByOrgAdapter(ctx, teamMembersListMain);
+            adapter = new UserGridAdapter(ctx, teamMembersListMain);
 
             if(adapter.getCount() > 0) {
 

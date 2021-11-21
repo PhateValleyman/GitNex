@@ -25,7 +25,7 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
+public class UserGridAdapter extends BaseAdapter implements Filterable {
 
     private final List<UserInfo> membersList;
     private final Context context;
@@ -56,7 +56,7 @@ public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
         }
     }
 
-    public MembersByOrgAdapter(Context ctx, List<UserInfo> membersListMain) {
+    public UserGridAdapter(Context ctx, List<UserInfo> membersListMain) {
 
         this.context = ctx;
         this.membersList = membersListMain;
@@ -82,7 +82,7 @@ public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
     @Override
     public View getView(int position, View finalView, ViewGroup parent) {
 
-        MembersByOrgAdapter.ViewHolder viewHolder = null;
+        UserGridAdapter.ViewHolder viewHolder = null;
 
         if (finalView == null) {
 
@@ -92,14 +92,14 @@ public class MembersByOrgAdapter extends BaseAdapter implements Filterable {
         }
         else {
 
-            viewHolder = (MembersByOrgAdapter.ViewHolder) finalView.getTag();
+            viewHolder = (UserGridAdapter.ViewHolder) finalView.getTag();
         }
 
         initData(viewHolder, position);
         return finalView;
     }
 
-    private void initData(MembersByOrgAdapter.ViewHolder viewHolder, int position) {
+    private void initData(UserGridAdapter.ViewHolder viewHolder, int position) {
 
         UserInfo currentItem = membersList.get(position);
 	    int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
