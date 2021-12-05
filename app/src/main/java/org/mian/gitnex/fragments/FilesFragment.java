@@ -23,6 +23,9 @@ import org.mian.gitnex.activities.DeepLinksActivity;
 import org.mian.gitnex.activities.FileViewActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.FilesAdapter;
+import org.mian.gitnex.database.api.BaseApi;
+import org.mian.gitnex.database.api.UserAccountsApi;
+import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.FragmentFilesBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
@@ -30,6 +33,8 @@ import org.mian.gitnex.helpers.Path;
 import org.mian.gitnex.viewmodels.FilesViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import moe.feng.common.view.breadcrumbs.DefaultBreadcrumbsCallback;
 import moe.feng.common.view.breadcrumbs.model.BreadcrumbItem;
 
@@ -197,9 +202,29 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 					return;
 				}
 
-				Intent iLink = new Intent(requireContext(), DeepLinksActivity.class);
-				iLink.setData(Uri.parse(url));
-				startActivity(iLink);
+				UserAccountsApi userAccountsApi = BaseApi.getInstance(requireContext(), UserAccountsApi.class);
+				List<UserAccount> userAccounts = userAccountsApi.usersAccounts();
+				boolean accountFound = false;
+
+				for(UserAccount userAccount : userAccounts) {
+					String hostUri = userAccount.getInstanceUrl();
+					if(hostUri.toLowerCase().contains(Objects.requireNonNull(Uri.parse(url).getHost().toLowerCase()))) {
+						accountFound = true;
+						break;
+					}
+				}
+
+				if(accountFound) {
+					Intent iLink = new Intent(requireContext(), DeepLinksActivity.class);
+					iLink.setData(Uri.parse(url));
+					startActivity(iLink);
+				} else {
+					Intent intentBrowser = new Intent();
+					intentBrowser.setAction(Intent.ACTION_VIEW);
+					intentBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
+					intentBrowser.setData(Uri.parse(url));
+					startActivity(intentBrowser);
+				}
 				break;
 		}
 	}
