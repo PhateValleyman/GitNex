@@ -40,16 +40,16 @@ public class UserGridAdapter extends BaseAdapter implements Filterable {
 
         ViewHolder(View v) {
 
-            memberAvatar  = v.findViewById(R.id.userAvatarImageView);
-            memberName  = v.findViewById(R.id.userNameTv);
+            memberAvatar = v.findViewById(R.id.userAvatarImageView);
+            memberName = v.findViewById(R.id.userNameTv);
 
-	        memberAvatar.setOnClickListener(loginId -> {
+	        v.setOnClickListener(loginId -> {
 		        Intent intent = new Intent(context, ProfileActivity.class);
 		        intent.putExtra("username", userLoginId);
 		        context.startActivity(intent);
 	        });
 
-	        memberAvatar.setOnLongClickListener(loginId -> {
+	        v.setOnLongClickListener(loginId -> {
 		        AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
 		        return true;
 	        });
