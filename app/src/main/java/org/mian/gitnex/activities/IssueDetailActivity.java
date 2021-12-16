@@ -23,6 +23,7 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -59,6 +60,7 @@ import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.viewmodels.IssueCommentsViewModel;
 import org.mian.gitnex.views.ReactionList;
 import java.text.DateFormat;
@@ -77,7 +79,7 @@ import retrofit2.Response;
  * Author M M Arif
  */
 
-public class IssueDetailActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener, AssigneesListAdapter.AssigneesListAdapterListener, BottomSheetSingleIssueFragment.BottomSheetListener {
+public class IssueDetailActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener, AssigneesListAdapter.AssigneesListAdapterListener, BottomSheetListener {
 
 	private IssueCommentsAdapter adapter;
 
@@ -142,7 +144,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-			viewBinding.scrollViewComments.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+			viewBinding.scrollViewComments.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
 				if((scrollY - oldScrollY) > 0 && viewBinding.addNewComment.isShown()) {
 					viewBinding.addNewComment.setVisibility(View.GONE);
@@ -343,8 +345,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
 						getResources().getString(R.string.alertDialogTokenRevokedMessage),
-						getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-						getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						getResources().getString(R.string.cancelButton),
+						getResources().getString(R.string.navLogout));
 				}
 				else if(response2.code() == 403) {
 
@@ -397,8 +399,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
 						getResources().getString(R.string.alertDialogTokenRevokedMessage),
-						getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-						getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						getResources().getString(R.string.cancelButton),
+						getResources().getString(R.string.navLogout));
 				}
 				else if(response.code() == 403) {
 
@@ -589,7 +591,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					String issueNumber_ = "<font color='" + ResourcesCompat.getColor(getResources(), R.color.lightGray, null) + "'>" + appCtx.getResources()
 						.getString(R.string.hash) + singleIssue.getNumber() + "</font>";
 					viewBinding.issueTitle.setText(HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(singleIssue.getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
-					String cleanIssueDescription = singleIssue.getBody().trim().replace("\n", "<br/>");
+					String cleanIssueDescription = singleIssue.getBody().trim();
 
 					viewBinding.assigneeAvatar.setOnClickListener(loginId -> {
 						Intent intent = new Intent(ctx, ProfileActivity.class);
@@ -800,8 +802,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
 						getResources().getString(R.string.alertDialogTokenRevokedMessage),
-						getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-						getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+						getResources().getString(R.string.cancelButton),
+						getResources().getString(R.string.navLogout));
 
 				}
 				else if(response.code() == 404) {
