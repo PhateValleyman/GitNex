@@ -50,6 +50,7 @@ import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.structs.BottomSheetListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,8 +62,7 @@ import retrofit2.Response;
  * Author M M Arif
  */
 
-public class RepoDetailActivity extends BaseActivity implements BottomSheetRepoFragment.BottomSheetListener, BottomSheetIssuesFilterFragment.BottomSheetListener,
-		BottomSheetPullRequestFilterFragment.BottomSheetListener, BottomSheetMilestonesFilterFragment.BottomSheetListener, BottomSheetReleasesTagsFragment.BottomSheetListener {
+public class RepoDetailActivity extends BaseActivity implements BottomSheetListener {
 
 	private TextView textViewBadgeIssue;
 	private TextView textViewBadgePull;

@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.databinding.BottomSheetNotificationsFilterBinding;
 import org.mian.gitnex.databinding.BottomSheetReleasesTagsBinding;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.structs.BottomSheetListener;
 
 /**
  * Author opyale
@@ -18,7 +19,7 @@ import org.mian.gitnex.helpers.TinyDB;
 
 public class BottomSheetReleasesTagsFragment extends BottomSheetDialogFragment {
 
-	private BottomSheetReleasesTagsFragment.BottomSheetListener bmListener;
+	private BottomSheetListener bmListener;
 
 	@Override
 	public void onAttach(@NonNull Context context) {
@@ -56,10 +57,6 @@ public class BottomSheetReleasesTagsFragment extends BottomSheetDialogFragment {
 
 		return binding.getRoot();
 
-	}
-
-	public interface BottomSheetListener {
-		void onButtonClicked(String text);
 	}
 
 }
