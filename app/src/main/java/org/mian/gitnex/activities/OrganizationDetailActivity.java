@@ -30,6 +30,7 @@ import org.mian.gitnex.fragments.RepositoriesByOrgFragment;
 import org.mian.gitnex.fragments.TeamsByOrgFragment;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.helpers.Version;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +43,7 @@ import retrofit2.Response;
  * Author M M Arif
  */
 
-public class OrganizationDetailActivity extends BaseActivity implements BottomSheetOrganizationFragment.BottomSheetListener {
+public class OrganizationDetailActivity extends BaseActivity implements BottomSheetListener {
 
 	public OrgPermissions permissions;
 

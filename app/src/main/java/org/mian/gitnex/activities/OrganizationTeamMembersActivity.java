@@ -14,11 +14,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import org.gitnex.tea4j.models.OrgPermissions;
 import org.mian.gitnex.R;
-import org.mian.gitnex.adapters.TeamMembersByOrgAdapter;
+import org.mian.gitnex.adapters.UserGridAdapter;
 import org.mian.gitnex.databinding.ActivityOrgTeamMembersBinding;
 import org.mian.gitnex.fragments.BottomSheetOrganizationTeamsFragment;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.viewmodels.TeamMembersByOrgViewModel;
 import java.util.Objects;
 
@@ -26,11 +27,11 @@ import java.util.Objects;
  * Author M M Arif
  */
 
-public class OrganizationTeamMembersActivity extends BaseActivity implements BottomSheetOrganizationTeamsFragment.BottomSheetListener {
+public class OrganizationTeamMembersActivity extends BaseActivity implements BottomSheetListener {
 
     private TextView noDataMembers;
     private View.OnClickListener onClickListener;
-    private TeamMembersByOrgAdapter adapter;
+    private UserGridAdapter adapter;
     private GridView mGridView;
 	private ProgressBar progressBar;
 
@@ -97,7 +98,7 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
 
         teamMembersModel.getMembersByOrgList(instanceToken, teamId, ctx, noDataMembers, progressBar).observe(this, teamMembersListMain -> {
 
-            adapter = new TeamMembersByOrgAdapter(ctx, teamMembersListMain);
+            adapter = new UserGridAdapter(ctx, teamMembersListMain);
 
             if(adapter.getCount() > 0) {
 

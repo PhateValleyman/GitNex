@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
-import org.mian.gitnex.adapters.profile.FollowersAdapter;
+import org.mian.gitnex.adapters.UsersAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentProfileFollowersFollowingBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -42,7 +42,7 @@ public class FollowersFragment extends Fragment {
 	private FragmentProfileFollowersFollowingBinding fragmentProfileFollowersFollowingBinding;
 
 	private List<UserInfo> usersList;
-	private FollowersAdapter adapter;
+	private UsersAdapter adapter;
 
 	private int pageSize;
 	private int resultLimit;
@@ -85,7 +85,7 @@ public class FollowersFragment extends Fragment {
 			adapter.notifyDataChanged();
 		}, 200));
 
-		adapter = new FollowersAdapter(context, usersList);
+		adapter = new UsersAdapter(usersList, context);
 		adapter.setLoadMoreListener(() -> fragmentProfileFollowersFollowingBinding.recyclerView.post(() -> {
 			if(usersList.size() == resultLimit || pageSize == resultLimit) {
 				int page = (usersList.size() + resultLimit) / resultLimit;
@@ -135,8 +135,8 @@ public class FollowersFragment extends Fragment {
 
 						case 401:
 							AlertDialogs.authorizationTokenRevokedDialog(context, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-								getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-								getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+								getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton),
+								getResources().getString(R.string.navLogout));
 							break;
 
 						case 403:
@@ -195,8 +195,8 @@ public class FollowersFragment extends Fragment {
 
 						case 401:
 							AlertDialogs.authorizationTokenRevokedDialog(context, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-								getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton),
-								getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+								getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton),
+								getResources().getString(R.string.navLogout));
 							break;
 
 						case 403:

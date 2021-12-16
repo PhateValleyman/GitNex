@@ -56,6 +56,7 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.structs.BottomSheetListener;
 import java.util.ArrayList;
 import java.util.List;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
@@ -66,7 +67,7 @@ import retrofit2.Callback;
  * Author M M Arif
  */
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomSheetDraftsFragment.BottomSheetListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomSheetListener {
 
 	private DrawerLayout drawer;
 	private TextView toolbarTitle;
@@ -117,7 +118,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		if(tinyDB.getInt("currentActiveAccountId", -1) <= 0) {
 			AlertDialogs.forceLogoutDialog(ctx,
 				getResources().getString(R.string.forceLogoutDialogHeader),
-				getResources().getString(R.string.forceLogoutDialogDescription), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+				getResources().getString(R.string.forceLogoutDialogDescription), getResources().getString(R.string.navLogout));
 		}
 
 		Toolbar toolbar = activityMainBinding.toolbar;
@@ -146,16 +147,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		Fragment fragmentById = fm.findFragmentById(R.id.fragment_container);
 
 		if(fragmentById instanceof SettingsFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
+			toolbarTitle.setText(getResources().getString(R.string.navSettings));
 		}
 		else if(fragmentById instanceof MyRepositoriesFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
+			toolbarTitle.setText(getResources().getString(R.string.navMyRepos));
 		}
 		else if(fragmentById instanceof StarredRepositoriesFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));
 		}
 		else if(fragmentById instanceof OrganizationsFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
+			toolbarTitle.setText(getResources().getString(R.string.navOrg));
 		}
 		else if(fragmentById instanceof ExploreFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
@@ -164,7 +165,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			toolbarTitle.setText(R.string.pageTitleNotifications);
 		}
 		else if(fragmentById instanceof MyProfileFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+			toolbarTitle.setText(getResources().getString(R.string.navProfile));
 		}
 		else if(fragmentById instanceof DraftsFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
@@ -268,7 +269,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				userAvatar.setOnClickListener(v -> {
 
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+					toolbarTitle.setText(getResources().getString(R.string.navProfile));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProfileFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_profile);
 					drawer.closeDrawers();
@@ -378,19 +379,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					break;
 
 				case 2:
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
+					toolbarTitle.setText(getResources().getString(R.string.navOrg));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_organizations);
 					break;
 
 				case 3:
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
+					toolbarTitle.setText(getResources().getString(R.string.navRepos));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_repositories);
 					break;
 
 				case 4:
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+					toolbarTitle.setText(getResources().getString(R.string.navProfile));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProfileFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_profile);
 					break;
@@ -414,7 +415,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					break;
 
 				default:
-					toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
+					toolbarTitle.setText(getResources().getString(R.string.navMyRepos));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_home);
 					break;
@@ -518,27 +519,27 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		if(id == R.id.nav_home) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleMyRepos));
+			toolbarTitle.setText(getResources().getString(R.string.navMyRepos));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyRepositoriesFragment()).commit();
 		}
 		else if(id == R.id.nav_organizations) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleOrganizations));
+			toolbarTitle.setText(getResources().getString(R.string.navOrg));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
 		}
 		else if(id == R.id.nav_profile) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleProfile));
+			toolbarTitle.setText(getResources().getString(R.string.navProfile));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProfileFragment()).commit();
 		}
 		else if(id == R.id.nav_repositories) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleRepositories));
+			toolbarTitle.setText(getResources().getString(R.string.navRepos));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RepositoriesFragment()).commit();
 		}
 		else if(id == R.id.nav_settings) {
 
-			toolbarTitle.setText(getResources().getString(R.string.pageTitleSettings));
+			toolbarTitle.setText(getResources().getString(R.string.navSettings));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
 		}
 		else if(id == R.id.nav_logout) {
@@ -677,7 +678,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.alertDialogTokenRevokedCopyNegativeButton), getResources().getString(R.string.alertDialogTokenRevokedCopyPositiveButton));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton), getResources().getString(R.string.navLogout));
 				}
 				else {
 

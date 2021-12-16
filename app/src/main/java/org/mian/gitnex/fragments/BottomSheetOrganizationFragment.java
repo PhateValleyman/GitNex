@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.gitnex.tea4j.models.OrgPermissions;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.BottomSheetOrganizationBinding;
+import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Version;
@@ -25,7 +26,7 @@ import retrofit2.Response;
 
 public class BottomSheetOrganizationFragment extends BottomSheetDialogFragment {
 
-    private BottomSheetOrganizationFragment.BottomSheetListener bmListener;
+    private BottomSheetListener bmListener;
     private final OrgPermissions permissions;
 
     public BottomSheetOrganizationFragment(OrgPermissions org) {
@@ -75,18 +76,13 @@ public class BottomSheetOrganizationFragment extends BottomSheetDialogFragment {
         return bottomSheetOrganizationBinding.getRoot();
     }
 
-    public interface BottomSheetListener {
-
-        void onButtonClicked(String text);
-    }
-
     @Override
     public void onAttach(@NonNull Context context) {
 
         super.onAttach(context);
 
         try {
-            bmListener = (BottomSheetOrganizationFragment.BottomSheetListener) context;
+            bmListener = (BottomSheetListener) context;
         }
         catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement BottomSheetListener");

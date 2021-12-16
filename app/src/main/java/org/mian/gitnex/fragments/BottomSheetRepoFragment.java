@@ -12,6 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.actions.RepositoryActions;
 import org.mian.gitnex.databinding.BottomSheetRepoBinding;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.structs.BottomSheetListener;
 
 /**
  * Author M M Arif
@@ -207,10 +208,6 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
         }
 
         return bottomSheetRepoBinding.getRoot();
-    }
-
-    public interface BottomSheetListener {
-        void onButtonClicked(String text);
     }
 
     @Override
