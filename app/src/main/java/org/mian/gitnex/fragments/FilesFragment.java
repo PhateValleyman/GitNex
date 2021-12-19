@@ -219,11 +219,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 					iLink.setData(Uri.parse(url));
 					startActivity(iLink);
 				} else {
-					Intent intentBrowser = new Intent();
-					intentBrowser.setAction(Intent.ACTION_VIEW);
-					intentBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
-					intentBrowser.setData(Uri.parse(url));
-					startActivity(intentBrowser);
+					AppUtil.openUrlInBrowser(requireContext(), url);
 				}
 				break;
 		}
