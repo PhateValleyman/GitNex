@@ -29,6 +29,7 @@ import org.mian.gitnex.adapters.TagsAdapter;
 import org.mian.gitnex.databinding.FragmentReleasesBinding;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.viewmodels.ReleasesViewModel;
 import java.util.List;
 
@@ -249,6 +250,8 @@ public class ReleasesFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    	if(new Version(TinyDB.getInstance(requireContext()).getString("giteaVersion")).less("1.15.0"))
+    		return;
 		inflater.inflate(R.menu.filter_menu_releases, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}

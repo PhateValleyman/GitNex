@@ -49,6 +49,7 @@ import org.mian.gitnex.fragments.ReleasesFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.structs.BottomSheetListener;
@@ -387,7 +388,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			ctx.startActivity(intent);
 			return true;
 		}
-		else if(id == R.id.filterReleases) {
+		else if(id == R.id.filterReleases && new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.15.0")) {
 			BottomSheetReleasesTagsFragment bottomSheetReleasesTagsFragment = new BottomSheetReleasesTagsFragment();
 			bottomSheetReleasesTagsFragment.show(getSupportFragmentManager(), "repoFilterReleasesMenuBottomSheet");
 			return true;
