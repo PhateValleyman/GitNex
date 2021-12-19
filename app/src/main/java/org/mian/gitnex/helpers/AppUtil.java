@@ -1,5 +1,6 @@
 package org.mian.gitnex.helpers;
 
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -27,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -370,9 +373,33 @@ public class AppUtil {
 				i.addCategory(Intent.CATEGORY_BROWSABLE);
 				context.startActivity(i);
 			}
-		} catch(Exception e) {
+		} catch(ActivityNotFoundException e) {
+			Toasty.error(context, context.getString(R.string.browserOpenFailed));
+		} catch (Exception e) {
 			Toasty.error(context, context.getString(R.string.genericError));
 		}
+	}
+
+	public static String getHostFromGitUrl(String url) {
+		String host = Uri.parse(url).getHost();
+		if(host != null) {
+			return host;
+		}
+		// must be a SSH URL now
+		return parseSSHUrl(url);
+	}
+
+	public static String parseSSHUrl(String url) {
+		if(!url.startsWith("ssh://")) {
+			url = "ssh://" + url;
+		}
+		String[] authorityPath = url.split(":"); // for a full URL this should be ["ssh", "//user@host.tld", "path"]
+		String authority = authorityPath[1];
+		String[] userHost = authority.split("@"); // for a full URL this should be ["//user", "host.tld"]
+		if(userHost.length < 2) {
+			return userHost[0].replace("//", "");
+		}
+		return userHost[1];
 	}
 
 }

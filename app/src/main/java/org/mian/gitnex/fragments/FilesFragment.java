@@ -208,7 +208,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 				for(UserAccount userAccount : userAccounts) {
 					String hostUri = userAccount.getInstanceUrl();
-					if(hostUri.toLowerCase().contains(Objects.requireNonNull(Uri.parse(url).getHost().toLowerCase()))) {
+					if(hostUri.toLowerCase().contains(AppUtil.getHostFromGitUrl(url))) {
 						accountFound = true;
 						break;
 					}
