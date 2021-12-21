@@ -386,10 +386,10 @@ public class AppUtil {
 			return host;
 		}
 		// must be a SSH URL now
-		return parseSSHUrl(url);
+		return getHostFromSSHUrl(url);
 	}
 
-	public static String parseSSHUrl(String url) {
+	public static String getHostFromSSHUrl(String url) {
 		if(!url.startsWith("ssh://")) {
 			url = "ssh://" + url;
 		}

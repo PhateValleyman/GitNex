@@ -36,12 +36,12 @@ public class AppUtilTest {
 
 	@Test
 	public void parseSSHUrl() {
-		assertEquals("codeberg.org", AppUtil.parseSSHUrl("ssh://git@codeberg.org:gitnex/GitNex"));
-		assertEquals("codeberg.org", AppUtil.parseSSHUrl("codeberg.org:gitnex/GitNex"));
+		assertEquals("codeberg.org", AppUtil.getHostFromSSHUrl("ssh://git@codeberg.org:gitnex/GitNex"));
+		assertEquals("codeberg.org", AppUtil.getHostFromSSHUrl("codeberg.org:gitnex/GitNex"));
 		// this would fail because it does not return the host, but with this scheme Uri.parse(url).getHost() returns the correct value
-		assertEquals("codeberg.org/gitnex/GitNex", AppUtil.parseSSHUrl("ssh://git@codeberg.org/gitnex/GitNex"));
-		assertEquals("codeberg.org", AppUtil.parseSSHUrl("ssh://git@codeberg.org:gitnex/GitNex.git"));
-		assertEquals("codeberg.org", AppUtil.parseSSHUrl("codeberg.org:gitnex/GitNex.git"));
+		assertEquals("codeberg.org/gitnex/GitNex", AppUtil.getHostFromSSHUrl("ssh://git@codeberg.org/gitnex/GitNex"));
+		assertEquals("codeberg.org", AppUtil.getHostFromSSHUrl("ssh://git@codeberg.org:gitnex/GitNex.git"));
+		assertEquals("codeberg.org", AppUtil.getHostFromSSHUrl("codeberg.org:gitnex/GitNex.git"));
 	}
 
 }
