@@ -1,6 +1,7 @@
 package org.mian.gitnex.helpers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.Spanned;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import org.commonmark.node.Node;
 import org.commonmark.parser.InlineParserFactory;
 import org.commonmark.parser.Parser;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.IssueDetailActivity;
+import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.core.MainGrammarLocator;
 import java.util.Objects;
@@ -26,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
+import io.noties.markwon.MarkwonConfiguration;
 import io.noties.markwon.SoftBreakAddsNewLinePlugin;
 import io.noties.markwon.core.CorePlugin;
 import io.noties.markwon.core.MarkwonTheme;
@@ -84,11 +88,11 @@ public class Markdown {
 		config.setAllocator(new Allocator<Renderer>() {
 
 			@Override
-			public Renderer allocate(Slot slot) throws Exception {
+			public Renderer allocate(Slot slot) {
 				return new Renderer(slot);
 			}
 
-			@Override public void deallocate(Renderer poolable) throws Exception {}
+			@Override public void deallocate(Renderer poolable) {}
 
 		});
 
@@ -276,8 +280,8 @@ public class Markdown {
 				Prism4jThemeDefault.create();
 
 			final InlineParserFactory inlineParserFactory = MarkwonInlineParser.factoryBuilder()
-				.addInlineProcessor(new IssueInlineProcessor(context))
-				.addInlineProcessor(new UserInlineProcessor(context))
+				.addInlineProcessor(new IssueInlineProcessor())
+				.addInlineProcessor(new UserInlineProcessor())
 				.build();
 
 			Markwon.Builder builder = Markwon.builder(context)
@@ -332,6 +336,28 @@ public class Markdown {
 
 						if(tf == null) setupTf(context);
 						builder.headingTypeface(Typeface.create(tf, Typeface.BOLD));
+					}
+
+					@Override
+					public void configureConfiguration(@NonNull MarkwonConfiguration.Builder builder) {
+						builder.linkResolver((view, link) -> {
+							if(link.startsWith("gitnexuser://")) {
+								Intent i = new Intent(view.getContext(), ProfileActivity.class);
+								i.putExtra("username", link.substring(13));
+								view.getContext().startActivity(i);
+							} else if(link.startsWith("gitnexissue://")) {
+								Intent i = new Intent(view.getContext(), IssueDetailActivity.class);
+								TinyDB tinyDB = TinyDB.getInstance(context);
+								tinyDB.putString("issueNumber", link.substring(14));
+								i.putExtra("issueNumber", link.substring(14));
+								System.out.println(link.substring(14));
+								i.putExtra("openedFromLink", "true");
+								view.getContext().startActivity(i);
+							} else {
+								AppUtil.openUrlInBrowser(view.getContext(), link);
+							}
+						});
+						super.configureConfiguration(builder);
 					}
 				});
 
@@ -443,13 +469,7 @@ public class Markdown {
 
 	private static class IssueInlineProcessor extends InlineProcessor {
 
-		private final Context context;
-
-		public IssueInlineProcessor(Context context) {
-			this.context = context;
-		}
-
-		private static final Pattern RE = Pattern.compile("(?<=#)\\d+");
+		private static final Pattern RE = Pattern.compile("(?<!\\w)(?<=#)\\d+");
 
 		@Override
 		public char specialCharacter() {
@@ -460,7 +480,7 @@ public class Markdown {
 		protected Node parse() {
 			final String id = match(RE);
 			if (id != null) {
-				final Link link = new Link(createIssueOrPullRequestLinkDestination(id, context), null);
+				final Link link = new Link(createIssueOrPullRequestLinkDestination(id), null);
 				link.appendChild(text("#" + id));
 				return link;
 			}
@@ -468,25 +488,14 @@ public class Markdown {
 		}
 
 		@NonNull
-		private static String createIssueOrPullRequestLinkDestination(@NonNull String id, Context context) {
-			String instanceUrl = TinyDB.getInstance(context).getString("instanceUrl");
-			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
-			instanceUrl = instanceUrl.replace("http://", "gitnex://");
-			instanceUrl = instanceUrl.replace("https://", "gitnex://");
-
-			return instanceUrl + TinyDB.getInstance(context).getString("repoFullName") + "/issues/" + id;
+		private static String createIssueOrPullRequestLinkDestination(@NonNull String id) {
+			return "gitnexissue://" + id;
 		}
 	}
 
 	private static class UserInlineProcessor extends InlineProcessor {
 
-		private final Context context;
-
-		public UserInlineProcessor(Context context) {
-			this.context = context;
-		}
-
-		private static final Pattern RE = Pattern.compile("(?<!\\S)(?<=@)\\w+");
+		private static final Pattern RE = Pattern.compile("(?<!\\w)(?<=@)\\w+");
 
 		@Override
 		public char specialCharacter() {
@@ -497,7 +506,7 @@ public class Markdown {
 		protected Node parse() {
 			final String user = match(RE);
 			if (user != null) {
-				final Link link = new Link(createUserLinkDestination(user, context), null);
+				final Link link = new Link(createUserLinkDestination(user), null);
 				link.appendChild(text("@" + user));
 				return link;
 			}
@@ -505,13 +514,8 @@ public class Markdown {
 		}
 
 		@NonNull
-		private static String createUserLinkDestination(@NonNull String user, Context context) {
-			String instanceUrl = TinyDB.getInstance(context).getString("instanceUrl");
-			instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
-			instanceUrl = instanceUrl.replace("http://", "gitnex://");
-			instanceUrl = instanceUrl.replace("https://", "gitnex://");
-
-			return instanceUrl + user;
+		private static String createUserLinkDestination(@NonNull String user) {
+			return "gitnexuser://" + user;
 		}
 	}
 }
