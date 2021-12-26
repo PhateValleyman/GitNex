@@ -88,8 +88,10 @@ public class DeepLinksActivity extends BaseActivity {
 
 			currentInstance = userAccount.getInstanceUrl();
 			instanceToken = userAccount.getToken();
+			String host = data.getHost();
+			if (host == null) host = "";
 
-			if(hostUri.toLowerCase().contains(Objects.requireNonNull(data.getHost().toLowerCase()))) {
+			if(hostUri.toLowerCase().contains(host.toLowerCase())) {
 
 				accountFound = true;
 

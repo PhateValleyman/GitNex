@@ -9,7 +9,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.DisplayMetrics;
@@ -28,8 +27,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -380,26 +377,38 @@ public class AppUtil {
 		}
 	}
 
-	public static String getHostFromGitUrl(String url) {
-		String host = Uri.parse(url).getHost();
+	public static Uri getUriFromGitUrl(String url) {
+		Uri uri = Uri.parse(url);
+		String host = uri.getHost();
 		if(host != null) {
-			return host;
+			return uri;
 		}
 		// must be a SSH URL now
-		return getHostFromSSHUrl(url);
+		return Uri.parse(getUriHostFromSSHUrl(url));
 	}
 
-	public static String getHostFromSSHUrl(String url) {
-		if(!url.startsWith("ssh://")) {
-			url = "ssh://" + url;
+	public static String getUriHostFromSSHUrl(String url) {
+		int scheme = url.indexOf("://");
+		if (scheme >= 0) {
+			url = url.substring(scheme+3);
 		}
-		String[] authorityPath = url.split(":"); // for a full URL this should be ["ssh", "//user@host.tld", "path"]
-		String authority = authorityPath[1];
-		String[] userHost = authority.split("@"); // for a full URL this should be ["//user", "host.tld"]
+
+		String result = "";
+		String[] userHost = url.split("@"); // for a full URL this should be ["//user", "host.tld"]
 		if(userHost.length < 2) {
-			return userHost[0].replace("//", "");
+			result = userHost[0].replace("//", "");
+		} else {
+			result = userHost[1];
 		}
-		return userHost[1];
+		return "https://" + result.replace(":", "/");
 	}
 
+	public static Uri changeScheme(Uri origin, String scheme) {
+		String raw = origin.toString();
+		int schemeIndex = raw.indexOf("://");
+		if (schemeIndex >= 0) {
+			raw = raw.substring(schemeIndex);
+		}
+		return Uri.parse(scheme+raw);
+	}
 }

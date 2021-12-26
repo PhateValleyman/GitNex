@@ -34,7 +34,6 @@ import org.mian.gitnex.viewmodels.FilesViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import moe.feng.common.view.breadcrumbs.DefaultBreadcrumbsCallback;
 import moe.feng.common.view.breadcrumbs.model.BreadcrumbItem;
 
@@ -197,29 +196,36 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				break;
 
 			case "submodule":
-				String url = file.getSubmodule_git_url();
-				if(url == null) {
+				String rawUrl = file.getSubmodule_git_url();
+				if(rawUrl == null) {
 					return;
 				}
+				Uri url = AppUtil.getUriFromGitUrl(rawUrl);
+				String host = url.getHost();
+
 
 				UserAccountsApi userAccountsApi = BaseApi.getInstance(requireContext(), UserAccountsApi.class);
 				List<UserAccount> userAccounts = userAccountsApi.usersAccounts();
 				boolean accountFound = false;
 
 				for(UserAccount userAccount : userAccounts) {
-					String hostUri = userAccount.getInstanceUrl();
-					if(hostUri.toLowerCase().contains(AppUtil.getHostFromGitUrl(url))) {
+					Uri instanceUri = Uri.parse(userAccount.getInstanceUrl());
+					if(instanceUri.getHost().toLowerCase().equals(host)) {
 						accountFound = true;
+						// if scheme is wrong fix it
+						if (!url.getScheme().equals(instanceUri.getScheme())) {
+							url = AppUtil.changeScheme(url,instanceUri.getScheme());
+						}
 						break;
 					}
 				}
 
 				if(accountFound) {
 					Intent iLink = new Intent(requireContext(), DeepLinksActivity.class);
-					iLink.setData(Uri.parse(url));
+					iLink.setData(url);
 					startActivity(iLink);
 				} else {
-					AppUtil.openUrlInBrowser(requireContext(), url);
+					AppUtil.openUrlInBrowser(requireContext(), url.toString());
 				}
 				break;
 		}
