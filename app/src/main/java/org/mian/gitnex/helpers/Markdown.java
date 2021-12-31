@@ -469,7 +469,7 @@ public class Markdown {
 
 	private static class IssueInlineProcessor extends InlineProcessor {
 
-		private static final Pattern RE = Pattern.compile("(?<!\\w)(?<=#)\\d+");
+		private static final Pattern RE = Pattern.compile("(?<!\\w)#\\d+");
 
 		@Override
 		public char specialCharacter() {
@@ -480,8 +480,8 @@ public class Markdown {
 		protected Node parse() {
 			final String id = match(RE);
 			if (id != null) {
-				final Link link = new Link(createIssueOrPullRequestLinkDestination(id), null);
-				link.appendChild(text("#" + id));
+				final Link link = new Link(createIssueOrPullRequestLinkDestination(id.substring(1/*remove #*/)), null);
+				link.appendChild(text(id));
 				return link;
 			}
 			return null;
@@ -495,7 +495,7 @@ public class Markdown {
 
 	private static class UserInlineProcessor extends InlineProcessor {
 
-		private static final Pattern RE = Pattern.compile("(?<!\\w)(?<=@)\\w+");
+		private static final Pattern RE = Pattern.compile("(?<!\\w)@\\w+");
 
 		@Override
 		public char specialCharacter() {
@@ -506,8 +506,8 @@ public class Markdown {
 		protected Node parse() {
 			final String user = match(RE);
 			if (user != null) {
-				final Link link = new Link(createUserLinkDestination(user), null);
-				link.appendChild(text("@" + user));
+				final Link link = new Link(createUserLinkDestination(user.substring(1/*remove @*/)), null);
+				link.appendChild(text(user));
 				return link;
 			}
 			return null;
