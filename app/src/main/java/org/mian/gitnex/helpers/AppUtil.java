@@ -1,5 +1,6 @@
 package org.mian.gitnex.helpers;
 
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -8,7 +9,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.DisplayMetrics;
@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 public class AppUtil {
 
-	public enum FileType { IMAGE, AUDIO, VIDEO, DOCUMENT, TEXT, EXECUTABLE, UNKNOWN }
+	public enum FileType { IMAGE, AUDIO, VIDEO, DOCUMENT, TEXT, EXECUTABLE, FONT, UNKNOWN }
 
 	private static final HashMap<String[], FileType> extensions = new HashMap<>();
 
@@ -56,7 +56,7 @@ public class AppUtil {
 		extensions.put(new String[]{"doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "odg", "otg", "odp", "otp", "bin", "psd", "xcf", "pdf"}, FileType.DOCUMENT);
 		extensions.put(new String[]{"exe", "msi", "jar", "dmg", "deb", "apk"}, FileType.EXECUTABLE);
 		extensions.put(new String[]{"txt", "md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv", "python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs", "lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl", "wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf", "gitignore", "gradle", "txt", "properties", "bat", "twig", "cvs", "cmake", "in", "info", "spec", "m4", "am", "dist", "pam", "hx", "ts", "kt", "kts"}, FileType.TEXT);
-
+		extensions.put(new String[]{"ttf", "otf", "woff", "woff2", "ttc", "eot"}, FileType.FONT);
 	}
 
 	public static FileType getFileType(String extension) {
@@ -370,9 +370,45 @@ public class AppUtil {
 				i.addCategory(Intent.CATEGORY_BROWSABLE);
 				context.startActivity(i);
 			}
-		} catch(Exception e) {
+		} catch(ActivityNotFoundException e) {
+			Toasty.error(context, context.getString(R.string.browserOpenFailed));
+		} catch (Exception e) {
 			Toasty.error(context, context.getString(R.string.genericError));
 		}
 	}
 
+	public static Uri getUriFromGitUrl(String url) {
+		Uri uri = Uri.parse(url);
+		String host = uri.getHost();
+		if(host != null) {
+			return uri;
+		}
+		// must be a SSH URL now
+		return Uri.parse(getUriHostFromSSHUrl(url));
+	}
+
+	public static String getUriHostFromSSHUrl(String url) {
+		int scheme = url.indexOf("://");
+		if (scheme >= 0) {
+			url = url.substring(scheme+3);
+		}
+
+		String result = "";
+		String[] userHost = url.split("@"); // for a full URL this should be ["//user", "host.tld"]
+		if(userHost.length < 2) {
+			result = userHost[0].replace("//", "");
+		} else {
+			result = userHost[1];
+		}
+		return "https://" + result.replace(":", "/");
+	}
+
+	public static Uri changeScheme(Uri origin, String scheme) {
+		String raw = origin.toString();
+		int schemeIndex = raw.indexOf("://");
+		if (schemeIndex >= 0) {
+			raw = raw.substring(schemeIndex);
+		}
+		return Uri.parse(scheme+raw);
+	}
 }
