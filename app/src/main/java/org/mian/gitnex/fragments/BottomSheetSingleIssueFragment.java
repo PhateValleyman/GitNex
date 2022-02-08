@@ -46,8 +46,6 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		final Context ctx = getContext();
 		final TinyDB tinyDB = TinyDB.getInstance(ctx);
 
-		Bundle bundle1 = new Bundle();
-
 		String repoFullName = tinyDB.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
 
@@ -63,7 +61,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		loadReactions.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 160));
 		binding.commentReactionButtons.addView(loadReactions);
 
-		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle1);
+		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle);
 		reactionSpinner.setOnInteractedListener(() -> {
 
 			tinyDB.putBoolean("singleIssueUpdate", true);
