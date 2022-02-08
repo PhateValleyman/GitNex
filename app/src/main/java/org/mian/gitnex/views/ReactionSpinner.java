@@ -1,6 +1,7 @@
 package org.mian.gitnex.views;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -38,6 +39,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 	private enum ReactionAction { REMOVE, ADD }
 
 	private OnInteractedListener onInteractedListener;
+	private Runnable onLoadingFinishedListener;
 
 	public ReactionSpinner(Context context, Bundle bundle) {
 
@@ -126,7 +128,9 @@ public class ReactionSpinner extends HorizontalScrollView {
 					this.post(() -> setVisibility(GONE));
 				}
 			} catch(IOException ignored) {}
-
+			if(onLoadingFinishedListener != null) {
+				((Activity) context).runOnUiThread(() -> onLoadingFinishedListener.run());
+			}
 		}).start();
 
 	}
@@ -238,5 +242,9 @@ public class ReactionSpinner extends HorizontalScrollView {
 	}
 
 	public interface OnInteractedListener { void onInteracted(); }
+
+	public void setOnLoadingFinishedListener(Runnable onLoadingFinishedListener) {
+		this.onLoadingFinishedListener = onLoadingFinishedListener;
+	}
 
 }

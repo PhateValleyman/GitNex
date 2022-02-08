@@ -5,7 +5,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +57,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		TextView loadReactions = new TextView(ctx);
 		loadReactions.setText(Objects.requireNonNull(ctx).getString(R.string.genericWaitFor));
 		loadReactions.setGravity(Gravity.CENTER);
-		loadReactions.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 160));
+		loadReactions.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80));
 		binding.commentReactionButtons.addView(loadReactions);
 
 		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle);
@@ -69,13 +68,11 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			bmListener.onButtonClicked("onResume");
 			dismiss();
 		});
-
-		Handler handler = new Handler();
-		handler.postDelayed(() -> {
-			binding.commentReactionButtons.removeView(loadReactions);
+		reactionSpinner.setOnLoadingFinishedListener(() -> {
 			reactionSpinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 160));
+			binding.commentReactionButtons.removeView(loadReactions);
 			binding.commentReactionButtons.addView(reactionSpinner);
-		}, 2500);
+		});
 
 		if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
 
