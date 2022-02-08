@@ -133,7 +133,7 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 			Locale locale = context.getResources().getConfiguration().locale;
-			String timeFormat = tinyDb.getString("dateFormat");
+			String timeFormat = tinyDb.getString("dateFormat", "pretty");
 			this.userRepositories = forksModel;
 			orgName.setText(forksModel.getFullName().split("/")[0]);
 			repoName.setText(forksModel.getFullName().split("/")[1]);

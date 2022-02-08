@@ -186,7 +186,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 							Toasty.success(getContext(), getString(R.string.commentSuccess));
 
-							if(draftId != 0 && tinyDB.getBoolean("draftsCommentsDeletionEnabled")) {
+							if(draftId != 0 && tinyDB.getBoolean("draftsCommentsDeletionEnabled", true)) {
 								draftsApi.deleteSingleDraft((int) draftId);
 							}
 
@@ -214,7 +214,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 						if(status == ActionResult.Status.SUCCESS) {
 
-							if(draftId != 0 && tinyDB.getBoolean("draftsCommentsDeletionEnabled")) {
+							if(draftId != 0 && tinyDB.getBoolean("draftsCommentsDeletionEnabled", true)) {
 								draftsApi.deleteSingleDraft((int) draftId);
 							}
 

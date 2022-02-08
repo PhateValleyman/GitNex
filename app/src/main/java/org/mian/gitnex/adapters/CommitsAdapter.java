@@ -106,7 +106,7 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             final TinyDB tinyDb = TinyDB.getInstance(context);
 	        Locale locale = context.getResources().getConfiguration().locale;
-            final String timeFormat = tinyDb.getString("dateFormat");
+            final String timeFormat = tinyDb.getString("dateFormat", "pretty");
 
             commitTitle.setText(EmojiParser.parseToUnicode(commitsModel.getCommit().getMessage()));
             commitCommitter.setText(context.getString(R.string.commitCommittedBy, commitsModel.getCommit().getCommitter().getName()));

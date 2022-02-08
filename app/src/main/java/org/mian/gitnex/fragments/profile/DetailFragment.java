@@ -89,7 +89,7 @@ public class DetailFragment extends Fragment {
 							String email = !response.body().getEmail().isEmpty() ? response.body().getEmail() : "";
 
 							int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
-							String timeFormat = tinyDb.getString("dateFormat");
+							String timeFormat = tinyDb.getString("dateFormat", "pretty");
 
 							binding.userFullName.setText(username);
 							binding.userLogin.setText(getString(R.string.usernameWithAt, response.body().getLogin()));

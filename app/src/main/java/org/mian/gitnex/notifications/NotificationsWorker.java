@@ -76,7 +76,7 @@ public class NotificationsWorker extends Worker {
 	 */
 	private void pollingLoops() {
 		int notificationLoops = tinyDB.getInt("pollingDelayMinutes", Constants.defaultPollingDelay) < 15 ?
-			Math.min(15 - tinyDB.getInt("pollingDelayMinutes"), 10) : 1;
+			Math.min(15 - tinyDB.getInt("pollingDelayMinutes", Constants.defaultPollingDelay), 10) : 1;
 
 		for(int i = 0; i < notificationLoops; i++) {
 			long startPollingTime = System.currentTimeMillis();

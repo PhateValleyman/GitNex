@@ -581,7 +581,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 					TinyDB tinyDb = TinyDB.getInstance(appCtx);
 					final Locale locale = getResources().getConfiguration().locale;
-					final String timeFormat = tinyDb.getString("dateFormat");
+					final String timeFormat = tinyDb.getString("dateFormat", "pretty");
 					tinyDb.putString("issueState", singleIssue.getState());
 					tinyDb.putString("issueTitle", singleIssue.getTitle());
 					tinyDb.putString("singleIssueHtmlUrl", singleIssue.getHtml_url());

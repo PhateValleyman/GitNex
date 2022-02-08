@@ -115,7 +115,7 @@ public class StarredRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 			Locale locale = context.getResources().getConfiguration().locale;
-			String timeFormat = tinyDb.getString("dateFormat");
+			String timeFormat = tinyDb.getString("dateFormat", "pretty");
 
 			orgName.setText(userRepositories.getFullName().split("/")[0]);
 			repoName.setText(userRepositories.getFullName().split("/")[1]);

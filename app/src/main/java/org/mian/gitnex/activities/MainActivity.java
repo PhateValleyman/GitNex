@@ -361,12 +361,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		if(savedInstanceState == null) {
 
 			if(!new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
-				if(tinyDB.getInt("homeScreenId") == 7) {
+				if(tinyDB.getInt("homeScreenId", 0) == 7) {
 					tinyDB.putInt("homeScreenId", 0);
 				}
 			}
 
-			switch(tinyDB.getInt("homeScreenId")) {
+			switch(tinyDB.getInt("homeScreenId", 0)) {
 
 				case 1:
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleStarredRepos));

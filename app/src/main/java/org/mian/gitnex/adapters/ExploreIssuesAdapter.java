@@ -155,7 +155,7 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 			Locale locale = context.getResources().getConfiguration().locale;
-			String timeFormat = tinyDb.getString("dateFormat");
+			String timeFormat = tinyDb.getString("dateFormat", "pretty");
 
 			PicassoService.getInstance(context).get()
 				.load(issue.getUser().getAvatar_url())

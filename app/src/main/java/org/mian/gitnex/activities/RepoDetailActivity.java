@@ -174,7 +174,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-		if(tinyDB.getBoolean("enableCounterBadges")) {
+		if(tinyDB.getBoolean("enableCounterBadges", true)) {
 
 			@SuppressLint("InflateParams") View tabHeader2 = LayoutInflater.from(this).inflate(R.layout.badge_issue, null);
 			textViewBadgeIssue = tabHeader2.findViewById(R.id.counterBadgeIssue);
@@ -325,10 +325,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		super.onResume();
 
-		if(tinyDB.getBoolean("enableCounterIssueBadge")) {
-
-			getRepoInfo(Authorization.get(ctx), repositoryOwner, repositoryName);
-		}
+		getRepoInfo(Authorization.get(ctx), repositoryOwner, repositoryName);
 	}
 
 	@Override
@@ -684,7 +681,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 				if(response.code() == 200) {
 
-					if(tinyDB.getBoolean("enableCounterBadges")) {
+					if(tinyDB.getBoolean("enableCounterBadges", true)) {
 
 						assert repoInfo != null;
 

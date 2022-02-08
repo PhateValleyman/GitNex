@@ -69,11 +69,15 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		if(darkMinute.length() == 1) darkMinute = "0" + darkMinute;
 		if(darkHour.length() == 1) darkHour = "0" + darkHour;
 
+		timeSelectedChoice = tinyDB.getInt("timeId");
+		customFontSelectedChoice = tinyDB.getInt("customFontId", 1);
+		themeSelectedChoice = tinyDB.getInt("themeId");
+
 		activitySettingsAppearanceBinding.lightThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, lightHour,
 			lightMinute));
 		activitySettingsAppearanceBinding.darkThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, darkHour,
 			darkMinute));
-		activitySettingsAppearanceBinding.tvDateTimeSelected.setText(tinyDB.getString("timeStr"));
+		activitySettingsAppearanceBinding.tvDateTimeSelected.setText(themeList[themeSelectedChoice]);
 		activitySettingsAppearanceBinding.customFontSelected.setText(tinyDB.getString("customFontStr", "Manrope"));
 		activitySettingsAppearanceBinding.themeSelected.setText(tinyDB.getString("themeStr", "Dark"));
 
@@ -86,11 +90,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			lightTimeFrame.setVisibility(View.GONE);
 		}
 
-		timeSelectedChoice = tinyDB.getInt("timeId");
-		customFontSelectedChoice = tinyDB.getInt("customFontId", 1);
-		themeSelectedChoice = tinyDB.getInt("themeId");
-
-		counterBadgesSwitch.setChecked(tinyDB.getBoolean("enableCounterBadges"));
+		counterBadgesSwitch.setChecked(tinyDB.getBoolean("enableCounterBadges", true));
 
 		// counter badge switcher
 		counterBadgesSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -112,7 +112,6 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 				themeSelectedChoice = i;
 				activitySettingsAppearanceBinding.themeSelected.setText(themeList[i]);
-				tinyDB.putString("themeStr", themeList[i]);
 				tinyDB.putInt("themeId", i);
 
 				tinyDB.putBoolean("refreshParent", true);

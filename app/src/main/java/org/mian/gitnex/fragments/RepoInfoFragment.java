@@ -83,7 +83,7 @@ public class RepoInfoFragment extends Fragment {
 
 		binding.repoMetaFrame.setVisibility(View.GONE);
 
-		getRepoInfo(Authorization.get(getContext()), repoOwner, repoName, locale, tinyDb.getString("dateFormat"));
+		getRepoInfo(Authorization.get(getContext()), repoOwner, repoName, locale, tinyDb.getString("dateFormat", "pretty"));
 		getFileContents(Authorization.get(getContext()), repoOwner, repoName, getResources().getString(R.string.defaultFilename));
 
 		if(isExpandViewVisible()) {

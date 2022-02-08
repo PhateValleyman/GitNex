@@ -42,7 +42,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 				break;
 			case 2:
 
-				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour"), tinyDB.getInt("lightThemeTimeHour"), tinyDB.getInt("darkThemeTimeMinute"), tinyDB.getInt("lightThemeTimeMinute"))) {
+				if(TimeHelper.timeBetweenHours(
+					tinyDB.getInt("darkThemeTimeHour", 18),
+					tinyDB.getInt("lightThemeTimeHour", 6),
+					tinyDB.getInt("darkThemeTimeMinute", 0),
+					tinyDB.getInt("lightThemeTimeMinute", 0))
+				) {
 
 					tinyDB.putString("currentTheme", "dark");
 					setTheme(R.style.AppTheme);
@@ -59,7 +64,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 				setTheme(R.style.AppThemeRetro);
 				break;
 			case 4:
-				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour"), tinyDB.getInt("lightThemeTimeHour"), tinyDB.getInt("darkThemeTimeMinute"), tinyDB.getInt("lightThemeTimeMinute"))) {
+				if(TimeHelper.timeBetweenHours(
+					tinyDB.getInt("darkThemeTimeHour", 18),
+					tinyDB.getInt("lightThemeTimeHour", 6),
+					tinyDB.getInt("darkThemeTimeMinute", 0),
+					tinyDB.getInt("lightThemeTimeMinute", 0))
+				) {
 
 					tinyDB.putString("currentTheme", "dark");
 					setTheme(R.style.AppTheme);
@@ -96,7 +106,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 	public void onResume() {
 		super.onResume();
 
-		if(tinyDB.getBoolean("biometricStatus") && !tinyDB.getBoolean("biometricLifeCycle")) {
+		if(tinyDB.getBoolean("biometricStatus", false) && !tinyDB.getBoolean("biometricLifeCycle")) {
 
 			Executor executor = ContextCompat.getMainExecutor(this);
 

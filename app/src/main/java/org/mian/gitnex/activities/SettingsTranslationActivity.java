@@ -54,9 +54,8 @@ public class SettingsTranslationActivity extends BaseActivity {
 			AppUtil.openUrlInBrowser(this, getResources().getString(R.string.crowdInLink));
 		});
 
-		tvLanguageSelected.setText(tinyDB.getString("localeStr"));
-
 		langSelectedChoice = tinyDB.getInt("langId");
+		tvLanguageSelected.setText(langs.get(langs.keySet().toArray(new String[0])[langSelectedChoice]));
 
 		// language dialog
 		langFrame.setOnClickListener(view -> {
@@ -69,7 +68,6 @@ public class SettingsTranslationActivity extends BaseActivity {
 			lBuilder.setSingleChoiceItems(langs.values().toArray(new String[0]), langSelectedChoice, (dialogInterface, i) -> {
 
 				String selectedLanguage = langs.keySet().toArray(new String[0])[i];
-				tinyDB.putString("localeStr", langs.get(selectedLanguage));
 				tinyDB.putInt("langId", i);
 				tinyDB.putString("locale", selectedLanguage);
 

@@ -64,15 +64,8 @@ public class SettingsSecurityActivity extends BaseActivity {
 		cacheSizeDataList = getResources().getStringArray(R.array.cacheSizeList);
 		cacheSizeImagesList = getResources().getStringArray(R.array.cacheSizeList);
 
-		if(!tinyDB.getString("cacheSizeStr").isEmpty()) {
-
-			cacheSizeDataSelected.setText(tinyDB.getString("cacheSizeStr"));
-		}
-
-		if(!tinyDB.getString("cacheSizeImagesStr").isEmpty()) {
-
-			cacheSizeImagesSelected.setText(tinyDB.getString("cacheSizeImagesStr"));
-		}
+		cacheSizeDataSelected.setText(tinyDB.getString("cacheSizeStr", getString(R.string.cacheSizeDataSelectionSelectedText)));
+		cacheSizeImagesSelected.setText(tinyDB.getString("cacheSizeImagesStr", getString(R.string.cacheSizeImagesSelectionSelectedText)));
 
 		if(cacheSizeDataSelectedChoice == 0) {
 
@@ -84,7 +77,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 			cacheSizeImagesSelectedChoice = tinyDB.getInt("cacheSizeImagesId");
 		}
 
-		switchBiometric.setChecked(tinyDB.getBoolean("biometricStatus"));
+		switchBiometric.setChecked(tinyDB.getBoolean("biometricStatus", false));
 
 		// biometric switcher
 		switchBiometric.setOnCheckedChangeListener((buttonView, isChecked) -> {

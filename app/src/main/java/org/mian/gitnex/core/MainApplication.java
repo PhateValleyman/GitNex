@@ -47,8 +47,6 @@ public class MainApplication extends Application {
 
 		tinyDB.putBoolean("biometricLifeCycle", false);
 
-		setDefaults();
-
 		switch(tinyDB.getInt("customFontId", -1)) {
 
 			case 0:
@@ -83,7 +81,7 @@ public class MainApplication extends Application {
 
 		tinyDB = TinyDB.getInstance(context);
 
-		if(tinyDB.getBoolean("crashReportingEnabled")) {
+		if(tinyDB.getBoolean("crashReportingEnabled", true)) {
 
 			CoreConfigurationBuilder ACRABuilder = new CoreConfigurationBuilder(this);
 
@@ -93,81 +91,6 @@ public class MainApplication extends Application {
 			ACRABuilder.getPluginConfigurationBuilder(LimiterConfigurationBuilder.class).setEnabled(true);
 
 			ACRA.init(this, ACRABuilder);
-		}
-	}
-
-	private void setDefaults() {
-
-		// enabling counter badges by default
-		if(tinyDB.getString("enableCounterBadgesInit").isEmpty()) {
-			tinyDB.putBoolean("enableCounterBadges", true);
-			tinyDB.putString("enableCounterBadgesInit", "yes");
-		}
-
-		// enable crash reports by default
-		if(tinyDB.getString("crashReportingEnabledInit").isEmpty()) {
-			tinyDB.putBoolean("crashReportingEnabled", true);
-			tinyDB.putString("crashReportingEnabledInit", "yes");
-		}
-
-		// default cache setter
-		if(tinyDB.getString("cacheSizeStr").isEmpty()) {
-			tinyDB.putString("cacheSizeStr", getResources().getString(R.string.cacheSizeDataSelectionSelectedText));
-		}
-		if(tinyDB.getString("cacheSizeImagesStr").isEmpty()) {
-			tinyDB.putString("cacheSizeImagesStr", getResources().getString(R.string.cacheSizeImagesSelectionSelectedText));
-		}
-
-		// enable comment drafts by default
-		if(tinyDB.getString("draftsCommentsDeletionEnabledInit").isEmpty()) {
-			tinyDB.putBoolean("draftsCommentsDeletionEnabled", true);
-			tinyDB.putString("draftsCommentsDeletionEnabledInit", "yes");
-		}
-
-		// setting default polling delay
-		if(tinyDB.getInt("pollingDelayMinutes", 0) <= 0) {
-			tinyDB.putInt("pollingDelayMinutes", Constants.defaultPollingDelay);
-		}
-
-		// disable biometric by default
-		if(tinyDB.getString("biometricStatusInit").isEmpty()) {
-			tinyDB.putBoolean("biometricStatus", false);
-			tinyDB.putString("biometricStatusInit", "yes");
-		}
-
-		// set default date format
-		if(tinyDB.getString("dateFormat").isEmpty()) {
-			tinyDB.putString("dateFormat", "pretty");
-		}
-
-		if(tinyDB.getString("codeBlockStr").isEmpty()) {
-			tinyDB.putInt("codeBlockColor", ResourcesCompat.getColor(getResources(), R.color.colorLightGreen, null));
-			tinyDB.putInt("codeBlockBackground", ResourcesCompat.getColor(getResources(), R.color.black, null));
-		}
-
-		if(tinyDB.getString("enableCounterIssueBadgeInit").isEmpty()) {
-			tinyDB.putBoolean("enableCounterIssueBadge", true);
-		}
-
-		if(tinyDB.getString("homeScreenStr").isEmpty()) {
-			tinyDB.putString("homeScreenStr", "yes");
-			tinyDB.putInt("homeScreenId", 0);
-		}
-
-		if(tinyDB.getString("localeStr").isEmpty()) {
-			tinyDB.putString("localeStr", getString(R.string.settingsLanguageSystem));
-			tinyDB.putInt("langId", 0);
-		}
-
-		if(tinyDB.getInt("darkThemeTimeHour", 100) == 100) {
-			tinyDB.putInt("lightThemeTimeHour", 6);
-			tinyDB.putInt("lightThemeTimeMinute", 0);
-			tinyDB.putInt("darkThemeTimeHour", 18);
-			tinyDB.putInt("darkThemeTimeMinute", 0);
-		}
-
-		if(tinyDB.getString("timeStr").isEmpty()) {
-			tinyDB.putString("timeStr", getString(R.string.settingsDateTimeHeaderDefault));
 		}
 	}
 }

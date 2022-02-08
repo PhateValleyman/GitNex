@@ -312,7 +312,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 	@Override
 	public void onBindViewHolder(@NonNull IssueCommentsAdapter.IssueCommentViewHolder holder, int position) {
 
-		String timeFormat = tinyDB.getString("dateFormat");
+		String timeFormat = tinyDB.getString("dateFormat", "pretty");
 		IssueComments issueComment = issuesComments.get(position);
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 

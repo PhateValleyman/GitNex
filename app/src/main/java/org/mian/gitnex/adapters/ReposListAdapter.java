@@ -192,7 +192,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.Repo
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 		Locale locale = context.getResources().getConfiguration().locale;
-		String timeFormat = tinyDb.getString("dateFormat");
+		String timeFormat = tinyDb.getString("dateFormat", "pretty");
 		holder.userRepositories = currentItem;
 		holder.orgName.setText(currentItem.getFullName().split("/")[0]);
 		holder.repoName.setText(currentItem.getFullName().split("/")[1]);
