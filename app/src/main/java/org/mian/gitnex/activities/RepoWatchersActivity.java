@@ -11,6 +11,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserGridAdapter;
 import org.mian.gitnex.databinding.ActivityRepoWatchersBinding;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.RepoWatchersViewModel;
 
 /**
@@ -39,10 +40,9 @@ public class RepoWatchersActivity extends BaseActivity {
         mGridView = activityRepoWatchersBinding.gridView;
         mProgressBar = activityRepoWatchersBinding.progressBar;
 
-        String repoFullNameForWatchers = getIntent().getStringExtra("repoFullNameForWatchers");
-        String[] parts = repoFullNameForWatchers.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+        RepositoryContext repository = RepositoryContext.fromIntent(getIntent());
+        final String repoOwner = repository.getOwner();
+        final String repoName = repository.getName();
 
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);

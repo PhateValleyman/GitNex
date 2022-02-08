@@ -35,6 +35,7 @@ public class LabelsFragment extends Fragment {
     private static String repoNameF = "param2";
     private static String repoOwnerF = "param1";
     private final String type = "repo";
+    // TODO fix with orgs?
 
     private String repoName;
     private String repoOwner;

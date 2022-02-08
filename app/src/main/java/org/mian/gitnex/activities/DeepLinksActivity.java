@@ -459,11 +459,9 @@ public class DeepLinksActivity extends BaseActivity {
 
 			@Override
 			public void onResponse(@NonNull Call<UserRepositories> call, @NonNull retrofit2.Response<UserRepositories> response) {
-
 				UserRepositories repoInfo = response.body();
 
 				if (response.code() == 200) {
-
 					assert repoInfo != null;
 
 					repoIntent.putExtra("repoFullName", repoInfo.getFullName());
@@ -472,11 +470,9 @@ public class DeepLinksActivity extends BaseActivity {
 
 					tinyDB.putString("repoFullName", repoInfo.getFullName());
 					if(repoInfo.getPrivateFlag()) {
-
 						tinyDB.putString("repoType", getResources().getString(R.string.strPrivate));
 					}
 					else {
-
 						tinyDB.putString("repoType", getResources().getString(R.string.strPublic));
 					}
 					tinyDB.putBoolean("isRepoAdmin", repoInfo.getPermissions().isAdmin());
@@ -488,22 +484,17 @@ public class DeepLinksActivity extends BaseActivity {
 					Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
 					if(count == 0) {
-
 						long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
 						tinyDB.putLong("repositoryId", id);
 					}
 					else {
-
 						Repository data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
 						tinyDB.putLong("repositoryId", data.getRepositoryId());
 					}
 
 					ctx.startActivity(repoIntent);
 					finish();
-				}
-
-				else {
-
+				} else {
 					ctx.startActivity(mainIntent);
 					finish();
 					Log.e("onFailure-goToRepo", String.valueOf(response.code()));

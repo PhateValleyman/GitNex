@@ -168,7 +168,7 @@ public class CreateReleaseActivity extends BaseActivity {
 
                 if (response.code() == 201) {
 
-                    tinyDB.putBoolean("updateReleases", true);
+                    tinyDB.putBoolean("updateReleases", true); // TODO dont use tinydb
                     Toasty.success(ctx, getString(R.string.releaseCreatedText));
                     enableProcessButton();
                     finish();

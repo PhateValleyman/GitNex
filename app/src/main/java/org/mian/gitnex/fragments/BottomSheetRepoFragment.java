@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.actions.RepositoryActions;
 import org.mian.gitnex.databinding.BottomSheetRepoBinding;
-import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.structs.BottomSheetListener;
 
 /**
@@ -21,16 +21,19 @@ import org.mian.gitnex.structs.BottomSheetListener;
 public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
 
     private BottomSheetListener bmListener;
+    private final RepositoryContext repository;
 
-    @Nullable
+	public BottomSheetRepoFragment(RepositoryContext repository) {
+		this.repository = repository;
+	}
+
+	@Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 	    BottomSheetRepoBinding bottomSheetRepoBinding = BottomSheetRepoBinding.inflate(inflater, container, false);
 
-        final TinyDB tinyDb = TinyDB.getInstance(getContext());
-
-        TextView createLabel = bottomSheetRepoBinding.createLabel;
+		TextView createLabel = bottomSheetRepoBinding.createLabel;
         TextView createIssue = bottomSheetRepoBinding.createNewIssue;
         TextView createMilestone = bottomSheetRepoBinding.createNewMilestone;
         TextView addCollaborator = bottomSheetRepoBinding.addCollaborator;
@@ -53,7 +56,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        if(tinyDb.getBoolean("hasIssues")) {
+        if(repository.getRepository().getHas_issues()) {
 
             createIssue.setVisibility(View.VISIBLE);
             createIssue.setOnClickListener(v12 -> {
@@ -67,7 +70,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             createIssue.setVisibility(View.GONE);
         }
 
-	    if(tinyDb.getBoolean("hasPullRequests")) {
+	    if(repository.getRepository().isHas_pull_requests()) {
 
 		    createPullRequest.setVisibility(View.VISIBLE);
 		    createPullRequest.setOnClickListener(vPr -> {
@@ -87,7 +90,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             dismiss();
         });
 
-		if (tinyDb.getBoolean("isRepoAdmin")) {
+		if (repository.getPermissions().isAdmin()) {
 
 			repoSettings.setOnClickListener(repoSettingsView -> {
 
@@ -138,50 +141,48 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        if(tinyDb.getInt("repositoryStarStatus") == 204) { // star a repo
+        if(repository.isStarred()) { // star a repo
 
             starRepository.setVisibility(View.GONE);
             unStarRepository.setOnClickListener(v18 -> {
 
                 RepositoryActions.unStarRepository(getContext());
-                tinyDb.putInt("repositoryStarStatus", 404);
+                repository.setStarred(true);
                 dismiss();
 
             });
 
-        }
-        else if(tinyDb.getInt("repositoryStarStatus") == 404) {
+        } else {
 
             unStarRepository.setVisibility(View.GONE);
             starRepository.setOnClickListener(v19 -> {
 
                 RepositoryActions.starRepository(getContext());
-                tinyDb.putInt("repositoryStarStatus", 204);
+                repository.setStarred(true); // TODO send repoctx back to activity
                 dismiss();
 
             });
 
         }
 
-        if(tinyDb.getBoolean("repositoryWatchStatus")) { // watch a repo
+        if(repository.isWatched()) { // watch a repo
 
             watchRepository.setVisibility(View.GONE);
             unWatchRepository.setOnClickListener(v110 -> {
 
                 RepositoryActions.unWatchRepository(getContext());
-                tinyDb.putBoolean("repositoryWatchStatus", false);
+                repository.setWatched(false);
                 dismiss();
 
             });
 
-        }
-        else {
+        } else {
 
             unWatchRepository.setVisibility(View.GONE);
             watchRepository.setOnClickListener(v111 -> {
 
                 RepositoryActions.watchRepository(getContext());
-                tinyDb.putBoolean("repositoryWatchStatus", true);
+	            repository.setWatched(true);
                 dismiss();
 
             });

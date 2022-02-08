@@ -11,6 +11,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserGridAdapter;
 import org.mian.gitnex.databinding.ActivityRepoStargazersBinding;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.RepoStargazersViewModel;
 
 /**
@@ -39,10 +40,9 @@ public class RepoStargazersActivity extends BaseActivity {
         mGridView = activityRepoStargazersBinding.gridView;
         mProgressBar = activityRepoStargazersBinding.progressBar;
 
-        String repoFullNameForStars = getIntent().getStringExtra("repoFullNameForStars");
-        String[] parts = repoFullNameForStars.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+	    RepositoryContext repository = RepositoryContext.fromIntent(getIntent());
+        final String repoOwner = repository.getOwner();
+        final String repoName = repository.getName();
 
         initCloseListener();
         closeActivity.setOnClickListener(onClickListener);

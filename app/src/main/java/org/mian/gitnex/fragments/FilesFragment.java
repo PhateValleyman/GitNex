@@ -30,6 +30,7 @@ import org.mian.gitnex.databinding.FragmentFilesBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Path;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.FilesViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,13 +46,8 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 	private FragmentFilesBinding binding;
 
-	private static final String repoNameF = "param2";
-	private static final String repoOwnerF = "param1";
-	private static final String repoRefF = "param3";
-
-	private String repoName;
-	private String repoOwner;
-	private String ref;
+	private RepositoryContext repository;
+	// TODO find a way to make a change to `repository` also to every fragment like here
 
 	private final Path path = new Path();
 
@@ -61,30 +57,18 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 	public FilesFragment() {}
 
-	public static FilesFragment newInstance(String param1, String param2, String param3) {
+	public static FilesFragment newInstance(RepositoryContext repository) {
 
 		FilesFragment fragment = new FilesFragment();
-
-		Bundle args = new Bundle();
-		args.putString(repoOwnerF, param1);
-		args.putString(repoNameF, param2);
-		args.putString(repoRefF, param3);
-
-		fragment.setArguments(args);
+		fragment.setArguments(repository.getBundle());
 
 		return fragment;
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
+		repository = RepositoryContext.fromBundle(requireArguments());
 		super.onCreate(savedInstanceState);
-
-		if(getArguments() != null) {
-			repoName = getArguments().getString(repoNameF);
-			repoOwner = getArguments().getString(repoOwnerF);
-			ref = getArguments().getString(repoRefF);
-		}
 	}
 
 	@Override
@@ -102,7 +86,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		binding.recyclerView.addItemDecoration(dividerItemDecoration);
 
-		binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + ref))));
+		binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
 		// noinspection unchecked
 		binding.breadcrumbsView.setCallback(new DefaultBreadcrumbsCallback<BreadcrumbItem>() {
 
@@ -113,13 +97,13 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				if(position == 0) {
 
 					path.clear();
-					fetchDataAsync(Authorization.get(getContext()), repoOwner, repoName, ref);
+					fetchDataAsync(Authorization.get(getContext()), repository.getName(), repository.getName(), repository.getBranchRef());
 					return;
 
 				}
 
 				path.pop(path.size() - position);
-				fetchDataAsyncSub(Authorization.get(getContext()), repoOwner, repoName, path.toString(), ref);
+				fetchDataAsyncSub(Authorization.get(getContext()), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
 
 			}
 
@@ -138,9 +122,9 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				path.remove(path.size() - 1);
 				binding.breadcrumbsView.removeLastItem();
 				if(path.size() == 0) {
-					fetchDataAsync(Authorization.get(getContext()), repoOwner, repoName, ref);
+					fetchDataAsync(Authorization.get(getContext()), repository.getName(), repository.getName(), repository.getBranchRef());
 				} else {
-					fetchDataAsyncSub(Authorization.get(getContext()), repoOwner, repoName, path.toString(), ref);
+					fetchDataAsyncSub(Authorization.get(getContext()), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
 				}
 			}
 		});
@@ -148,22 +132,21 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		((RepoDetailActivity) requireActivity()).setFragmentRefreshListenerFiles(repoBranch -> {
 
 			path.clear();
-			ref = repoBranch;
-			binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + ref))));
-			fetchDataAsync(Authorization.get(getContext()), repoOwner, repoName, repoBranch);
+			binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
+			fetchDataAsync(Authorization.get(getContext()), repository.getName(), repository.getName(), repoBranch);
 
 		});
 
 		String dir = requireActivity().getIntent().getStringExtra("dir");
 		if(dir != null) {
-			fetchDataAsyncSub(Authorization.get(getContext()), repoOwner, repoName, dir, ref);
+			fetchDataAsyncSub(Authorization.get(getContext()), repository.getName(), repository.getName(), dir, repository.getBranchRef());
 			for(String segment: dir.split("/")) {
 				binding.breadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(segment)));
 				path.add(segment);
 			}
 		}
 		else {
-			fetchDataAsync(Authorization.get(getContext()), repoOwner, repoName, ref);
+			fetchDataAsync(Authorization.get(getContext()), repository.getName(), repository.getName(), repository.getBranchRef());
 		}
 
 		return binding.getRoot();
@@ -184,7 +167,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				path.add(file.getName());
 				binding.breadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(file.getName())));
 
-				fetchDataAsyncSub(Authorization.get(getContext()), repoOwner, repoName, path.toString(), ref);
+				fetchDataAsyncSub(Authorization.get(getContext()), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
 				break;
 
 			case "file":

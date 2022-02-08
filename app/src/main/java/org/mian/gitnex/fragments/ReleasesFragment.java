@@ -23,6 +23,7 @@ import org.mian.gitnex.adapters.ReleasesAdapter;
 import org.mian.gitnex.databinding.FragmentReleasesBinding;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.ReleasesViewModel;
 import java.util.List;
 
@@ -36,11 +37,8 @@ public class ReleasesFragment extends Fragment {
     private ReleasesAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataReleases;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
 
-    private String repoName;
-    private String repoOwner;
+    private RepositoryContext repository;
     private String releaseTag;
 
     private OnFragmentInteractionListener mListener;
@@ -48,22 +46,16 @@ public class ReleasesFragment extends Fragment {
     public ReleasesFragment() {
     }
 
-    public static ReleasesFragment newInstance(String param1, String param2) {
+    public static ReleasesFragment newInstance(RepositoryContext repository) {
         ReleasesFragment fragment = new ReleasesFragment();
-        Bundle args = new Bundle();
-        args.putString(repoOwnerF, param1);
-        args.putString(repoNameF, param2);
-        fragment.setArguments(args);
+        fragment.setArguments(repository.getBundle());
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            repoName = getArguments().getString(repoNameF);
-            repoOwner = getArguments().getString(repoOwnerF);
-        }
+        repository = RepositoryContext.fromBundle(requireArguments());
         releaseTag = requireActivity().getIntent().getStringExtra("releaseTagName");
     }
 
@@ -90,11 +82,11 @@ public class ReleasesFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repoOwner, repoName, getContext());
+            ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repository.getOwner(), repository.getName(), getContext());
 
         }, 50));
 
-        fetchDataAsync(Authorization.get(getContext()), repoOwner, repoName);
+        fetchDataAsync(Authorization.get(getContext()), repository.getOwner(), repository.getName());
 
         return fragmentReleasesBinding.getRoot();
 
@@ -107,7 +99,7 @@ public class ReleasesFragment extends Fragment {
         TinyDB tinyDb = TinyDB.getInstance(getContext());
 
         if(tinyDb.getBoolean("updateReleases")) {
-            ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repoOwner, repoName, getContext());
+            ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repository.getOwner(), repository.getName(), getContext());
             tinyDb.putBoolean("updateReleases", false);
         }
 

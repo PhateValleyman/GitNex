@@ -30,6 +30,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentNotificationsBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -85,7 +86,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		instanceToken = "token " + tinyDB.getString(loginUid + "-token");
 
 		resultLimit = Constants.getCurrentResultLimit(context);
-		tinyDB.putString("notificationsFilterState", currentFilterMode);
 
 		notificationThreads = new ArrayList<>();
 		notificationsActions = new NotificationsActions(context);
@@ -166,7 +166,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		notificationsAdapter.notifyDataChanged();
 		viewBinding.progressBar.setVisibility(View.VISIBLE);
 		notificationThreads.clear();
-		String[] filter = tinyDB.getString("notificationsFilterState").equals("read") ?
+		String[] filter = currentFilterMode.equals("read") ?
 			new String[]{"pinned", "read"} :
 			new String[]{"pinned", "unread"};
 		viewBinding.pullToRefresh.setRefreshing(false);
@@ -304,9 +304,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 			BottomSheetNotificationsFilterFragment bottomSheetNotificationsFilterFragment = new BottomSheetNotificationsFilterFragment();
 			bottomSheetNotificationsFilterFragment.show(getChildFragmentManager(), "notificationsFilterBottomSheet");
-			bottomSheetNotificationsFilterFragment.setOnDismissedListener(() -> {
-
-				currentFilterMode = tinyDB.getString("notificationsFilterState");
+			bottomSheetNotificationsFilterFragment.setOnClickListener((text) -> {
+				currentFilterMode = text;
 				changeFilterMode();
 				loadInitial(resultLimit);
 			});
@@ -340,10 +339,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 			startActivity(intent);
 		} else if(notificationThread.getSubject().getType().equalsIgnoreCase("repository")) {
-			Intent intent = new Intent(context, RepoDetailActivity.class);
-			tinyDB.putString("repoFullName", notificationThread.getRepository().getFullName());
-
-			startActivity(intent);
+			startActivity(new RepositoryContext(notificationThread.getRepository()).getIntent(context, RepoDetailActivity.class));
 		}
 	}
 

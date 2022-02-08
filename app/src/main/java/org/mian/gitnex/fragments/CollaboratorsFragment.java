@@ -17,6 +17,7 @@ import org.gitnex.tea4j.models.Collaborators;
 import org.mian.gitnex.adapters.CollaboratorsAdapter;
 import org.mian.gitnex.databinding.FragmentCollaboratorsBinding;
 import org.mian.gitnex.helpers.Authorization;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.CollaboratorsViewModel;
 import java.util.List;
 
@@ -30,33 +31,24 @@ public class CollaboratorsFragment extends Fragment {
     private CollaboratorsAdapter adapter;
     private GridView mGridView;
     private TextView noDataCollaborators;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
 
-    private String repoName;
-    private String repoOwner;
+    private RepositoryContext repository;
 
     private OnFragmentInteractionListener mListener;
 
     public CollaboratorsFragment() {
     }
 
-    public static CollaboratorsFragment newInstance(String param1, String param2) {
+    public static CollaboratorsFragment newInstance(RepositoryContext repository) {
         CollaboratorsFragment fragment = new CollaboratorsFragment();
-        Bundle args = new Bundle();
-        args.putString(repoOwnerF, param1);
-        args.putString(repoNameF, param2);
-        fragment.setArguments(args);
+        fragment.setArguments(repository.getBundle());
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            repoName = getArguments().getString(repoNameF);
-            repoOwner = getArguments().getString(repoOwnerF);
-        }
+        repository = RepositoryContext.fromBundle(requireArguments());
     }
 
     @Override
@@ -69,7 +61,7 @@ public class CollaboratorsFragment extends Fragment {
         mProgressBar = fragmentCollaboratorsBinding.progressBar;
         mGridView = fragmentCollaboratorsBinding.gridView;
 
-        fetchDataAsync(Authorization.get(getContext()), repoOwner, repoName);
+        fetchDataAsync(Authorization.get(getContext()), repository.getOwner(), repository.getName());
         return fragmentCollaboratorsBinding.getRoot();
 
     }
