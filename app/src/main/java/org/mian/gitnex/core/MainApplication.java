@@ -18,6 +18,7 @@ import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.AccountContext;
 import org.mian.gitnex.notifications.Notifications;
 
 /**
@@ -36,6 +37,7 @@ import org.mian.gitnex.notifications.Notifications;
 public class MainApplication extends Application {
 
 	private TinyDB tinyDB;
+	public AccountContext currentAccount;
 
 	@Override
 	public void onCreate() {
@@ -44,6 +46,8 @@ public class MainApplication extends Application {
 
 		Context appCtx = getApplicationContext();
 		tinyDB = TinyDB.getInstance(appCtx);
+
+		currentAccount = AccountContext.fromId(tinyDB.getInt("currentAccountId", 0), appCtx);
 
 		tinyDB.putBoolean("biometricLifeCycle", false);
 

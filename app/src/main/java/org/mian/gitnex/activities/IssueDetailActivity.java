@@ -59,7 +59,7 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.viewmodels.IssueCommentsViewModel;
 import org.mian.gitnex.views.ReactionList;
@@ -86,6 +86,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private String repoOwner;
 	private String repoName;
 	private int issueIndex;
+	private IssueContext issue;
 
 	private LabelsListAdapter labelsAdapter;
 	private AssigneesListAdapter assigneesAdapter;
@@ -112,11 +113,10 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		viewBinding = ActivityIssueDetailBinding.inflate(getLayoutInflater());
 		setContentView(viewBinding.getRoot());
 
-		String repoFullName = tinyDB.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		repoOwner = parts[0];
-		repoName = parts[1];
-		issueIndex = Integer.parseInt(tinyDB.getString("issueNumber"));
+		issue = IssueContext.fromIntent(getIntent());
+		repoOwner = issue.getRepository().getOwner();
+		repoName = issue.getRepository().getName();
+		issueIndex = issue.getIssueIndex();
 
 		setSupportActionBar(viewBinding.toolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle(repoName);
@@ -450,7 +450,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		}
 		else if(id == R.id.genericMenu) {
 
-			BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment();
+			BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment(issue);
 			bottomSheet.show(getSupportFragmentManager(), "singleIssueBottomSheet");
 			return true;
 		}
@@ -542,6 +542,11 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	}
 
 	private void getSingleIssue(String repoOwner, String repoName, int issueIndex) {
+		if(issue.hasIssue()) {
+			getSubscribed();
+			initWithIssue();
+			return;
+		}
 
 		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 		Call<Issues> call = RetrofitClient.getApiInterface(ctx)
@@ -551,252 +556,15 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			@Override
 			public void onResponse(@NonNull Call<Issues> call, @NonNull Response<Issues> response) {
+				viewBinding.progressBar.setVisibility(View.GONE);
 
 				if(response.code() == 200) {
 
 					Issues singleIssue = response.body();
 					assert singleIssue != null;
 
-					viewBinding.issuePrState.setVisibility(View.VISIBLE);
-
-					if(singleIssue.getPull_request() != null) {
-
-						if(singleIssue.getPull_request().isMerged()) { // merged
-
-							viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_merged);
-						}
-						else if(!singleIssue.getPull_request().isMerged() && singleIssue.getState().equals("closed")) { // closed
-
-							viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_closed);
-						}
-						else { // open
-
-							viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request);
-						}
-					}
-					else if(singleIssue.getState().equals("closed")) { // issue closed
-
-						viewBinding.issuePrState.setImageResource(R.drawable.ic_issue_closed_red);
-					}
-
-					TinyDB tinyDb = TinyDB.getInstance(appCtx);
-					final Locale locale = getResources().getConfiguration().locale;
-					final String timeFormat = tinyDb.getString("dateFormat", "pretty");
-					tinyDb.putString("issueState", singleIssue.getState());
-					tinyDb.putString("issueTitle", singleIssue.getTitle());
-					tinyDb.putString("singleIssueHtmlUrl", singleIssue.getHtml_url());
-
-					PicassoService.getInstance(ctx).get().load(singleIssue.getUser().getAvatar_url()).placeholder(R.drawable.loader_animated)
-						.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewBinding.assigneeAvatar);
-					String issueNumber_ = "<font color='" + ResourcesCompat.getColor(getResources(), R.color.lightGray, null) + "'>" + appCtx.getResources()
-						.getString(R.string.hash) + singleIssue.getNumber() + "</font>";
-					viewBinding.issueTitle.setText(HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(singleIssue.getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
-					String cleanIssueDescription = singleIssue.getBody().trim();
-
-					viewBinding.assigneeAvatar.setOnClickListener(loginId -> {
-						Intent intent = new Intent(ctx, ProfileActivity.class);
-						intent.putExtra("username", singleIssue.getUser().getLogin());
-						ctx.startActivity(intent);
-					});
-
-					viewBinding.assigneeAvatar.setOnLongClickListener(loginId -> {
-						AppUtil.copyToClipboard(ctx, singleIssue.getUser().getLogin(), ctx.getString(R.string.copyLoginIdToClipBoard, singleIssue.getUser().getLogin()));
-						return true;
-					});
-
-					Markdown.render(ctx, EmojiParser.parseToUnicode(cleanIssueDescription), viewBinding.issueDescription);
-
-					RelativeLayout.LayoutParams paramsDesc = (RelativeLayout.LayoutParams) viewBinding.issueDescription.getLayoutParams();
-
-					LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(80, 80);
-					params1.setMargins(15, 0, 0, 0);
-
-					if(singleIssue.getAssignees() != null) {
-
-						viewBinding.assigneesScrollView.setVisibility(View.VISIBLE);
-
-						for(int i = 0; i < singleIssue.getAssignees().size(); i++) {
-
-							ImageView assigneesView = new ImageView(ctx);
-
-							PicassoService.getInstance(ctx).get().load(singleIssue.getAssignees().get(i).getAvatar_url())
-								.placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(100, 100).centerCrop()
-								.into(assigneesView);
-
-							viewBinding.frameAssignees.addView(assigneesView);
-							assigneesView.setLayoutParams(params1);
-
-							int finalI = i;
-							assigneesView.setOnClickListener(loginId -> {
-								Intent intent = new Intent(ctx, ProfileActivity.class);
-								intent.putExtra("username", singleIssue.getAssignees().get(finalI).getLogin());
-								ctx.startActivity(intent);
-							});
-
-							assigneesView.setOnLongClickListener(loginId -> {
-								AppUtil.copyToClipboard(ctx, singleIssue.getAssignees().get(finalI).getLogin(), ctx.getString(R.string.copyLoginIdToClipBoard, singleIssue.getAssignees().get(finalI).getLogin()));
-								return true;
-							});
-
-							/*if(!singleIssue.getAssignees().get(i).getFull_name().equals("")) {
-
-								assigneesView.setOnClickListener(
-									new ClickListener(getString(R.string.assignedTo, singleIssue.getAssignees().get(i).getFull_name()), ctx));
-							}
-							else {
-
-								assigneesView.setOnClickListener(
-									new ClickListener(getString(R.string.assignedTo, singleIssue.getAssignees().get(i).getLogin()), ctx));
-							}*/
-						}
-					}
-					else {
-
-						viewBinding.assigneesScrollView.setVisibility(View.GONE);
-					}
-
-					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-						LinearLayout.LayoutParams.WRAP_CONTENT);
-					params.setMargins(0, 0, 15, 0);
-
-					if(singleIssue.getLabels() != null) {
-
-						viewBinding.labelsScrollView.setVisibility(View.VISIBLE);
-
-						for(int i = 0; i < singleIssue.getLabels().size(); i++) {
-
-							String labelColor = singleIssue.getLabels().get(i).getColor();
-							String labelName = singleIssue.getLabels().get(i).getName();
-							int color = Color.parseColor("#" + labelColor);
-
-							ImageView labelsView = new ImageView(ctx);
-							viewBinding.frameLabels.setOrientation(LinearLayout.HORIZONTAL);
-							viewBinding.frameLabels.setGravity(Gravity.START | Gravity.TOP);
-							labelsView.setLayoutParams(params);
-
-							int height = AppUtil.getPixelsFromDensity(ctx, 25);
-							int textSize = AppUtil.getPixelsFromScaledDensity(ctx, 15);
-
-							TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT)
-								.textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize)
-								.width(LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize, AppUtil.getPixelsFromDensity(ctx, 10)))
-								.height(height).endConfig().buildRoundRect(labelName, color, AppUtil.getPixelsFromDensity(ctx, 5));
-
-							labelsView.setImageDrawable(drawable);
-							viewBinding.frameLabels.addView(labelsView);
-						}
-					}
-					else {
-
-						viewBinding.labelsScrollView.setVisibility(View.GONE);
-					}
-
-					if(singleIssue.getDue_date() != null) {
-
-						if(timeFormat.equals("normal") || timeFormat.equals("pretty")) {
-
-							DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", locale);
-							String dueDate = formatter.format(singleIssue.getDue_date());
-							viewBinding.issueDueDate.setText(dueDate);
-							viewBinding.issueDueDate
-								.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(singleIssue.getDue_date()), ctx));
-						}
-						else if(timeFormat.equals("normal1")) {
-
-							DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", locale);
-							String dueDate = formatter.format(singleIssue.getDue_date());
-							viewBinding.issueDueDate.setText(dueDate);
-						}
-					}
-					else {
-
-						viewBinding.issueDueDate.setVisibility(View.GONE);
-					}
-
-					String edited;
-
-					if(!singleIssue.getUpdated_at().equals(singleIssue.getCreated_at())) {
-
-						edited = getString(R.string.colorfulBulletSpan) + getString(R.string.modifiedText);
-						viewBinding.issueModified.setVisibility(View.VISIBLE);
-						viewBinding.issueModified.setText(edited);
-						viewBinding.issueModified
-							.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(singleIssue.getUpdated_at()), ctx));
-					}
-					else {
-
-						viewBinding.issueModified.setVisibility(View.INVISIBLE);
-					}
-
-					if((singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) && singleIssue.getAssignees() != null) {
-
-						paramsDesc.setMargins(0, 35, 0, 0);
-						viewBinding.issueDescription.setLayoutParams(paramsDesc);
-					}
-					else if(singleIssue.getDue_date() == null && singleIssue.getMilestone() == null) {
-
-						paramsDesc.setMargins(0, 55, 0, 0);
-						viewBinding.issueDescription.setLayoutParams(paramsDesc);
-					}
-					else if(singleIssue.getAssignees() == null) {
-
-						paramsDesc.setMargins(0, 35, 0, 0);
-						viewBinding.issueDescription.setLayoutParams(paramsDesc);
-					}
-					else {
-
-						paramsDesc.setMargins(0, 15, 0, 0);
-						viewBinding.issueDescription.setLayoutParams(paramsDesc);
-					}
-
-					viewBinding.issueCreatedTime.setText(TimeHelper.formatTime(singleIssue.getCreated_at(), locale, timeFormat, ctx));
-					viewBinding.issueCreatedTime.setVisibility(View.VISIBLE);
-
-					if(timeFormat.equals("pretty")) {
-
-						viewBinding.issueCreatedTime
-							.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(singleIssue.getCreated_at()), ctx));
-					}
-
-					Bundle bundle = new Bundle();
-					bundle.putString("repoOwner", repoOwner);
-					bundle.putString("repoName", repoName);
-					bundle.putInt("issueId", singleIssue.getNumber());
-
-					ReactionList reactionList = new ReactionList(ctx, bundle);
-
-					viewBinding.commentReactionBadges.removeAllViews();
-					viewBinding.commentReactionBadges.addView(reactionList);
-
-					reactionList.setOnReactionAddedListener(() -> {
-
-						if(viewBinding.commentReactionBadges.getVisibility() != View.VISIBLE) {
-							viewBinding.commentReactionBadges.post(() -> viewBinding.commentReactionBadges.setVisibility(View.VISIBLE));
-						}
-					});
-
-					if(singleIssue.getMilestone() != null) {
-
-						viewBinding.issueMilestone.setVisibility(View.VISIBLE);
-						viewBinding.issueMilestone.setText(getString(R.string.issueMilestone, singleIssue.getMilestone().getTitle()));
-					}
-					else {
-
-						viewBinding.issueMilestone.setVisibility(View.GONE);
-					}
-
-					/*if(!singleIssue.getUser().getFull_name().equals("")) {
-
-						viewBinding.assigneeAvatar.setOnClickListener(
-							new ClickListener(ctx.getResources().getString(R.string.issueCreator) + singleIssue.getUser().getFull_name(), ctx));
-					}
-					else {
-
-						viewBinding.assigneeAvatar.setOnClickListener(
-							new ClickListener(ctx.getResources().getString(R.string.issueCreator) + singleIssue.getUser().getLogin(), ctx));
-					}*/
-
-					viewBinding.progressBar.setVisibility(View.GONE);
+					issue.setIssue(singleIssue);
+					initWithIssue();
 				}
 				else if(response.code() == 401) {
 
@@ -808,11 +576,11 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				}
 				else if(response.code() == 404) {
 
-					if(tinyDb.getString("issueType").equals("Issue")) {
+					if(issue.getIssueType().equals("Issue")) {
 
 						Toasty.warning(ctx, getResources().getString(R.string.noDataIssueTab));
 					}
-					else if(tinyDb.getString("issueType").equals("Pull")) {
+					else if(issue.getIssueType().equals("Pull")) {
 
 						Toasty.warning(ctx, getResources().getString(R.string.noDataPullRequests));
 					}
@@ -831,37 +599,270 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		});
 
-		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+		getSubscribed();
 
-			Call<WatchInfo> call2 = RetrofitClient.getApiInterface(appCtx)
-				.checkIssueWatchStatus(Authorization.get(ctx), repoOwner, repoName, issueIndex);
+	}
 
-			call2.enqueue(new Callback<WatchInfo>() {
-
+	private void getSubscribed() {
+		RetrofitClient.getApiInterface(appCtx)
+			.checkIssueWatchStatus(Authorization.get(ctx), repoOwner, repoName, issueIndex)
+			.enqueue(new Callback<WatchInfo>() {
 				@Override
 				public void onResponse(@NonNull Call<WatchInfo> call, @NonNull Response<WatchInfo> response) {
-
 					if(response.isSuccessful()) {
-
 						assert response.body() != null;
-						tinyDb.putBoolean("issueSubscribed", response.body().getSubscribed());
-					}
-					else {
-
-						tinyDb.putBoolean("issueSubscribed", false);
+						issue.setSubscribed(response.body().getSubscribed());
+					} else {
+						issue.setSubscribed(false);
 					}
 				}
 
 				@Override
 				public void onFailure(@NonNull Call<WatchInfo> call, @NonNull Throwable t) {
-
-					tinyDb.putBoolean("issueSubscribed", false);
+					issue.setSubscribed(false);
 				}
-
 			});
+	}
 
+	private void initWithIssue() {
+		viewBinding.issuePrState.setVisibility(View.VISIBLE);
+
+		if(issue.getIssue().getPull_request() != null) {
+
+			if(issue.getIssue().getPull_request().isMerged()) { // merged
+
+				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_merged);
+			}
+			else if(!issue.getIssue().getPull_request().isMerged() && issue.getIssue().getState().equals("closed")) { // closed
+
+				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_closed);
+			}
+			else { // open
+
+				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request);
+			}
+		}
+		else if(issue.getIssue().getState().equals("closed")) { // issue closed
+
+			viewBinding.issuePrState.setImageResource(R.drawable.ic_issue_closed_red);
 		}
 
+		TinyDB tinyDb = TinyDB.getInstance(appCtx);
+		final Locale locale = getResources().getConfiguration().locale;
+		final String timeFormat = tinyDb.getString("dateFormat", "pretty");
+		tinyDb.putString("issueState", issue.getIssue().getState());
+		tinyDb.putString("issueTitle", issue.getIssue().getTitle());
+		tinyDb.putString("singleIssueHtmlUrl", issue.getIssue().getHtml_url());
+
+		PicassoService.getInstance(ctx).get().load(issue.getIssue().getUser().getAvatar_url()).placeholder(R.drawable.loader_animated)
+			.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewBinding.assigneeAvatar);
+		String issueNumber_ = "<font color='" + ResourcesCompat.getColor(getResources(), R.color.lightGray, null) + "'>" + appCtx.getResources()
+			.getString(R.string.hash) + issue.getIssue().getNumber() + "</font>";
+		viewBinding.issueTitle.setText(HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(issue.getIssue().getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+		String cleanIssueDescription = issue.getIssue().getBody().trim();
+
+		viewBinding.assigneeAvatar.setOnClickListener(loginId -> {
+			Intent intent = new Intent(ctx, ProfileActivity.class);
+			intent.putExtra("username", issue.getIssue().getUser().getLogin());
+			ctx.startActivity(intent);
+		});
+
+		viewBinding.assigneeAvatar.setOnLongClickListener(loginId -> {
+			AppUtil.copyToClipboard(ctx, issue.getIssue().getUser().getLogin(), ctx.getString(R.string.copyLoginIdToClipBoard, issue.getIssue().getUser().getLogin()));
+			return true;
+		});
+
+		Markdown.render(ctx, EmojiParser.parseToUnicode(cleanIssueDescription), viewBinding.issueDescription);
+
+		RelativeLayout.LayoutParams paramsDesc = (RelativeLayout.LayoutParams) viewBinding.issueDescription.getLayoutParams();
+
+		LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(80, 80);
+		params1.setMargins(15, 0, 0, 0);
+
+		if(issue.getIssue().getAssignees() != null) {
+
+			viewBinding.assigneesScrollView.setVisibility(View.VISIBLE);
+
+			for(int i = 0; i < issue.getIssue().getAssignees().size(); i++) {
+
+				ImageView assigneesView = new ImageView(ctx);
+
+				PicassoService.getInstance(ctx).get().load(issue.getIssue().getAssignees().get(i).getAvatar_url())
+					.placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(100, 100).centerCrop()
+					.into(assigneesView);
+
+				viewBinding.frameAssignees.addView(assigneesView);
+				assigneesView.setLayoutParams(params1);
+
+				int finalI = i;
+				assigneesView.setOnClickListener(loginId -> {
+					Intent intent = new Intent(ctx, ProfileActivity.class);
+					intent.putExtra("username", issue.getIssue().getAssignees().get(finalI).getLogin());
+					ctx.startActivity(intent);
+				});
+
+				assigneesView.setOnLongClickListener(loginId -> {
+					AppUtil.copyToClipboard(ctx, issue.getIssue().getAssignees().get(finalI).getLogin(), ctx.getString(R.string.copyLoginIdToClipBoard, issue.getIssue().getAssignees().get(finalI).getLogin()));
+					return true;
+				});
+
+				/*if(!issue.getIssue().getAssignees().get(i).getFull_name().equals("")) {
+
+					assigneesView.setOnClickListener(
+						new ClickListener(getString(R.string.assignedTo, issue.getIssue().getAssignees().get(i).getFull_name()), ctx));
+				}
+				else {
+
+					assigneesView.setOnClickListener(
+						new ClickListener(getString(R.string.assignedTo, issue.getIssue().getAssignees().get(i).getLogin()), ctx));
+				}*/
+			}
+		}
+		else {
+
+			viewBinding.assigneesScrollView.setVisibility(View.GONE);
+		}
+
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+			LinearLayout.LayoutParams.WRAP_CONTENT);
+		params.setMargins(0, 0, 15, 0);
+
+		if(issue.getIssue().getLabels() != null) {
+
+			viewBinding.labelsScrollView.setVisibility(View.VISIBLE);
+
+			for(int i = 0; i < issue.getIssue().getLabels().size(); i++) {
+
+				String labelColor = issue.getIssue().getLabels().get(i).getColor();
+				String labelName = issue.getIssue().getLabels().get(i).getName();
+				int color = Color.parseColor("#" + labelColor);
+
+				ImageView labelsView = new ImageView(ctx);
+				viewBinding.frameLabels.setOrientation(LinearLayout.HORIZONTAL);
+				viewBinding.frameLabels.setGravity(Gravity.START | Gravity.TOP);
+				labelsView.setLayoutParams(params);
+
+				int height = AppUtil.getPixelsFromDensity(ctx, 25);
+				int textSize = AppUtil.getPixelsFromScaledDensity(ctx, 15);
+
+				TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT)
+					.textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize)
+					.width(LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize, AppUtil.getPixelsFromDensity(ctx, 10)))
+					.height(height).endConfig().buildRoundRect(labelName, color, AppUtil.getPixelsFromDensity(ctx, 5));
+
+				labelsView.setImageDrawable(drawable);
+				viewBinding.frameLabels.addView(labelsView);
+			}
+		}
+		else {
+
+			viewBinding.labelsScrollView.setVisibility(View.GONE);
+		}
+
+		if(issue.getIssue().getDue_date() != null) {
+
+			if(timeFormat.equals("normal") || timeFormat.equals("pretty")) {
+
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", locale);
+				String dueDate = formatter.format(issue.getIssue().getDue_date());
+				viewBinding.issueDueDate.setText(dueDate);
+				viewBinding.issueDueDate
+					.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getDue_date()), ctx));
+			}
+			else if(timeFormat.equals("normal1")) {
+
+				DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", locale);
+				String dueDate = formatter.format(issue.getIssue().getDue_date());
+				viewBinding.issueDueDate.setText(dueDate);
+			}
+		}
+		else {
+
+			viewBinding.issueDueDate.setVisibility(View.GONE);
+		}
+
+		String edited;
+
+		if(!issue.getIssue().getUpdated_at().equals(issue.getIssue().getCreated_at())) {
+
+			edited = getString(R.string.colorfulBulletSpan) + getString(R.string.modifiedText);
+			viewBinding.issueModified.setVisibility(View.VISIBLE);
+			viewBinding.issueModified.setText(edited);
+			viewBinding.issueModified
+				.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getUpdated_at()), ctx));
+		}
+		else {
+
+			viewBinding.issueModified.setVisibility(View.INVISIBLE);
+		}
+
+		if((issue.getIssue().getDue_date() == null && issue.getIssue().getMilestone() == null) && issue.getIssue().getAssignees() != null) {
+
+			paramsDesc.setMargins(0, 35, 0, 0);
+			viewBinding.issueDescription.setLayoutParams(paramsDesc);
+		}
+		else if(issue.getIssue().getDue_date() == null && issue.getIssue().getMilestone() == null) {
+
+			paramsDesc.setMargins(0, 55, 0, 0);
+			viewBinding.issueDescription.setLayoutParams(paramsDesc);
+		}
+		else if(issue.getIssue().getAssignees() == null) {
+
+			paramsDesc.setMargins(0, 35, 0, 0);
+			viewBinding.issueDescription.setLayoutParams(paramsDesc);
+		}
+		else {
+
+			paramsDesc.setMargins(0, 15, 0, 0);
+			viewBinding.issueDescription.setLayoutParams(paramsDesc);
+		}
+
+		viewBinding.issueCreatedTime.setText(TimeHelper.formatTime(issue.getIssue().getCreated_at(), locale, timeFormat, ctx));
+		viewBinding.issueCreatedTime.setVisibility(View.VISIBLE);
+
+		if(timeFormat.equals("pretty")) {
+
+			viewBinding.issueCreatedTime
+				.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getCreated_at()), ctx));
+		}
+
+		Bundle bundle = new Bundle();
+		bundle.putString("repoOwner", repoOwner);
+		bundle.putString("repoName", repoName);
+		bundle.putInt("issueId", issue.getIssue().getNumber());
+
+		ReactionList reactionList = new ReactionList(ctx, bundle);
+
+		viewBinding.commentReactionBadges.removeAllViews();
+		viewBinding.commentReactionBadges.addView(reactionList);
+
+		reactionList.setOnReactionAddedListener(() -> {
+
+			if(viewBinding.commentReactionBadges.getVisibility() != View.VISIBLE) {
+				viewBinding.commentReactionBadges.post(() -> viewBinding.commentReactionBadges.setVisibility(View.VISIBLE));
+			}
+		});
+
+		if(issue.getIssue().getMilestone() != null) {
+
+			viewBinding.issueMilestone.setVisibility(View.VISIBLE);
+			viewBinding.issueMilestone.setText(getString(R.string.issueMilestone, issue.getIssue().getMilestone().getTitle()));
+		}
+		else {
+
+			viewBinding.issueMilestone.setVisibility(View.GONE);
+		}
+
+		/*if(!issue.getIssue().getUser().getFull_name().equals("")) {
+
+			viewBinding.assigneeAvatar.setOnClickListener(
+				new ClickListener(ctx.getResources().getString(R.string.issueCreator) + issue.getIssue().getUser().getFull_name(), ctx));
+		}
+		else {
+
+			viewBinding.assigneeAvatar.setOnClickListener(
+				new ClickListener(ctx.getResources().getString(R.string.issueCreator) + issue.getIssue().getUser().getLogin(), ctx));
+		}*/
 	}
 
 }

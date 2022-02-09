@@ -2,7 +2,6 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -22,8 +21,9 @@ import org.mian.gitnex.database.api.DraftsApi;
 import org.mian.gitnex.database.models.DraftWithRepository;
 import org.mian.gitnex.fragments.BottomSheetReplyFragment;
 import org.mian.gitnex.helpers.Markdown;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.IssueContext;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.List;
 
 /**
@@ -56,7 +56,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
             deleteDraft.setOnClickListener(itemDelete -> {
 
                 int getDraftId = draftWithRepository.getDraftId();
-                deleteDraft(getAdapterPosition());
+                deleteDraft(getBindingAdapterPosition());
 
 	            DraftsApi draftsApi = BaseApi.getInstance(context, DraftsApi.class);
 	            assert draftsApi != null;
@@ -79,14 +79,12 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 	                bundle.putString("commentAction", "edit");
                 }
 
-                TinyDB tinyDb = TinyDB.getInstance(context);
-                tinyDb.putString("issueNumber", String.valueOf(draftWithRepository.getIssueId()));
-                tinyDb.putLong("repositoryId", draftWithRepository.getRepositoryId());
-		        tinyDb.putString("issueType", draftWithRepository.getIssueType());
-		        tinyDb.putString("repoFullName", draftWithRepository.getRepositoryOwner() + "/" + draftWithRepository.getRepositoryName());
-
 		        BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle);
-		        bottomSheetReplyFragment.setOnInteractedListener(() -> context.startActivity(new Intent(context, IssueDetailActivity.class)));
+		        bottomSheetReplyFragment.setOnInteractedListener(() -> context.startActivity(new IssueContext(
+			        new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName()),
+			        draftWithRepository.getIssueId(),
+			        draftWithRepository.getIssueType()
+		        ).getIntent(context, IssueDetailActivity.class)));
 		        bottomSheetReplyFragment.show(fragmentManager, "replyBottomSheet");
             });
 

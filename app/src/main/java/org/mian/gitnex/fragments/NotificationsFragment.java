@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.gitnex.tea4j.models.NotificationThread;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.NotificationsActions;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.NotificationsAdapter;
@@ -30,10 +31,10 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentNotificationsBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
-import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.helpers.SnackBar;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.IssueContext;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,7 +57,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 	private Activity activity;
 	private Context context;
-	private TinyDB tinyDB;
 	private Menu menu;
 
 	private int resultLimit;
@@ -80,10 +80,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		activity = requireActivity();
 		context = getContext();
-		tinyDB = TinyDB.getInstance(context);
 
-		String loginUid = tinyDB.getString("loginUid");
-		instanceToken = "token " + tinyDB.getString(loginUid + "-token");
+		instanceToken = ((BaseActivity) requireActivity()).getAccount().getAuthorization();
 
 		resultLimit = Constants.getCurrentResultLimit(context);
 
@@ -212,7 +210,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 	private void loadMore(int resultLimit, int page) {
 
-		String[] filter = tinyDB.getString("notificationsFilterState").equals("read") ?
+		String[] filter = currentFilterMode.equals("read") ?
 			new String[]{"pinned", "read"} :
 			new String[]{"pinned", "unread"};
 
@@ -291,8 +289,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		this.menu = menu;
 		inflater.inflate(R.menu.filter_menu_notifications, menu);
-		currentFilterMode = tinyDB.getString("notificationsFilterState");
-		changeFilterMode();
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -330,13 +326,13 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		if(StringUtils.containsAny(notificationThread.getSubject().getType().toLowerCase(), "pull", "issue")) {
 
-			Intent intent = new Intent(context, IssueDetailActivity.class);
-			intent.putExtra("openedFromLink", "true");
 			String issueUrl = notificationThread.getSubject().getUrl();
-			tinyDB.putString("issueNumber", issueUrl.substring(issueUrl.lastIndexOf("/") + 1));
-			tinyDB.putString("issueType", notificationThread.getSubject().getType());
-			tinyDB.putString("repoFullName", notificationThread.getRepository().getFullName());
-
+			Intent intent = new IssueContext(
+				new RepositoryContext(notificationThread.getRepository()),
+				Integer.parseInt(issueUrl.substring(issueUrl.lastIndexOf("/") + 1)),
+				notificationThread.getSubject().getType()
+			).getIntent(context, IssueDetailActivity.class);
+			intent.putExtra("openedFromLink", "true");
 			startActivity(intent);
 		} else if(notificationThread.getSubject().getType().equalsIgnoreCase("repository")) {
 			startActivity(new RepositoryContext(notificationThread.getRepository()).getIntent(context, RepoDetailActivity.class));

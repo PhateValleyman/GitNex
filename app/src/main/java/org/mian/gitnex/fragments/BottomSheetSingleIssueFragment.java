@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.actions.PullRequestActions;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
@@ -26,6 +27,7 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.views.ReactionSpinner;
 import java.util.Objects;
@@ -37,6 +39,11 @@ import java.util.Objects;
 public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 	private BottomSheetListener bmListener;
+	private final IssueContext issue;
+
+	public BottomSheetSingleIssueFragment(IssueContext issue) {
+		this.issue = issue;
+	}
 
 	@Nullable
 	@Override
@@ -64,13 +71,9 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		LinearLayout linearLayout = bottomSheetSingleIssueBinding.commentReactionButtons;
 
 		Bundle bundle1 = new Bundle();
-
-		String repoFullName = tinyDB.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-
-		bundle1.putString("repoOwner", parts[0]);
-		bundle1.putString("repoName", parts[1]);
-		bundle1.putInt("issueId", Integer.parseInt(tinyDB.getString("issueNumber")));
+		bundle1.putString("repoOwner", issue.getRepository().getOwner());
+		bundle1.putString("repoName", issue.getRepository().getName());
+		bundle1.putInt("issueId", issue.getIssueIndex());
 
 		TextView loadReactions = new TextView(ctx);
 		loadReactions.setText(Objects.requireNonNull(ctx).getString(R.string.genericWaitFor));
@@ -81,6 +84,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle1);
 		reactionSpinner.setOnInteractedListener(() -> {
 
+			// TODO move to another way
 			tinyDB.putBoolean("singleIssueUpdate", true);
 
 			bmListener.onButtonClicked("onResume");
@@ -94,13 +98,13 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			linearLayout.addView(reactionSpinner);
 		}, 2500);
 
-		if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
+		if(issue.getIssueType().equalsIgnoreCase("Pull")) {
 
 			editIssue.setText(R.string.editPrText);
 			copyIssueUrl.setText(R.string.copyPrUrlText);
 			shareIssue.setText(R.string.sharePr);
 
-			if(tinyDB.getBoolean("prMerged") || tinyDB.getString("repoPrState").equals("closed")) {
+			if(issue.getPullRequest().isMerged() || issue.getIssue().getState().equals("closed")) {
 				updatePullRequest.setVisibility(View.GONE);
 				mergePullRequest.setVisibility(View.GONE);
 				deletePullRequestBranch.setVisibility(View.VISIBLE);
@@ -111,18 +115,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 				deletePullRequestBranch.setVisibility(View.GONE);
 			}
 
-			if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.13.0")) {
-				openFilesDiff.setVisibility(View.VISIBLE);
-			}
-			else if(tinyDB.getString("repoType").equals("public")) {
-				openFilesDiff.setVisibility(View.VISIBLE);
-			}
-			else {
-				openFilesDiff.setVisibility(View.GONE);
-			}
-
-		}
-		else {
+			openFilesDiff.setVisibility(View.VISIBLE);
+		} else {
 
 			updatePullRequest.setVisibility(View.GONE);
 			mergePullRequest.setVisibility(View.GONE);
@@ -130,11 +124,12 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		}
 
 		updatePullRequest.setOnClickListener(v -> {
-			if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.16.0")) {
-				AlertDialogs.selectPullUpdateStrategy(requireContext(), parts[0], parts[1], tinyDB.getString("issueNumber"));
-			}
-			else {
-				PullRequestActions.updatePr(requireContext(), parts[0], parts[1], tinyDB.getString("issueNumber"), null);
+			if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.16.0")) {
+				AlertDialogs.selectPullUpdateStrategy(requireContext(), issue.getRepository().getOwner(), issue.getRepository().getName(),
+					String.valueOf(issue.getIssueIndex()));
+			} else {
+				PullRequestActions.updatePr(requireContext(), issue.getRepository().getOwner(), issue.getRepository().getName(),
+					String.valueOf(issue.getIssueIndex()), null);
 			}
 			dismiss();
 		});
@@ -147,7 +142,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		deletePullRequestBranch.setOnClickListener(v -> {
 
-			PullRequestActions.deleteHeadBranch(ctx, parts[0], parts[1], tinyDB.getString("prHeadBranch"), true);
+			PullRequestActions.deleteHeadBranch(ctx, issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getPullRequest().getHead().getRef(), true);
 			dismiss();
 		});
 
@@ -199,22 +194,22 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			dismiss();
 		});
 
-		if(tinyDB.getString("issueType").equalsIgnoreCase("Issue")) {
+		if(issue.getIssueType().equalsIgnoreCase("Issue")) {
 
-			if(tinyDB.getString("issueState").equals("open")) { // close issue
+			if(issue.getIssue().getState().equals("open")) { // close issue
 
 				reOpenIssue.setVisibility(View.GONE);
 				closeIssue.setVisibility(View.VISIBLE);
 
 				closeIssue.setOnClickListener(closeSingleIssue -> {
 
-					IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "closed");
+					IssueActions.closeReopenIssue(ctx, issue.getIssueIndex(), "closed");
 					dismiss();
 
 				});
 
 			}
-			else if(tinyDB.getString("issueState").equals("closed")) {
+			else if(issue.getIssue().getState().equals("closed")) {
 
 				closeIssue.setVisibility(View.GONE);
 				reOpenIssue.setVisibility(View.VISIBLE);
@@ -245,14 +240,10 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		unsubscribeIssue.setOnClickListener(unsubscribeToIssue -> {
 
 			IssueActions.unsubscribe(ctx);
-			dismiss();
+			dismiss(); // TODO update values of issuectx
 		});
 
-		if(new Version(tinyDB.getString("giteaVersion")).less("1.12.0")) {
-			subscribeIssue.setVisibility(View.GONE);
-			unsubscribeIssue.setVisibility(View.GONE);
-		}
-		else if(tinyDB.getBoolean("issueSubscribed")) {
+		if(issue.isSubscribed()) {
 			subscribeIssue.setVisibility(View.GONE);
 			unsubscribeIssue.setVisibility(View.VISIBLE);
 		}
@@ -275,7 +266,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		}
 		catch(ClassCastException e) {
 
-			throw new ClassCastException(context.toString() + " must implement BottomSheetListener");
+			throw new ClassCastException(context + " must implement BottomSheetListener");
 		}
 	}
 }

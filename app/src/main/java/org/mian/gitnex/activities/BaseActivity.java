@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import org.mian.gitnex.R;
+import org.mian.gitnex.core.MainApplication;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.AccountContext;
 import org.mian.gitnex.notifications.Notifications;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -140,6 +142,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 			biometricPrompt.authenticate(biometricPromptBuilder);
 
 		}
+	}
+
+	public AccountContext getAccount() {
+		return ((MainApplication) getApplication()).currentAccount;
 	}
 }
 

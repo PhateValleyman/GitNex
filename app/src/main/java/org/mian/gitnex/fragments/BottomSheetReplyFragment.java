@@ -23,6 +23,7 @@ import com.vdurmont.emoji.EmojiParser;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.ActionResult;
 import org.mian.gitnex.actions.IssueActions;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.DraftsApi;
@@ -30,6 +31,7 @@ import org.mian.gitnex.databinding.BottomSheetReplyLayoutBinding;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.IssueContext;
 import java.util.Objects;
 
 /**
@@ -46,7 +48,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 	private int repositoryId;
 	private int currentActiveAccountId;
-	private int issueNumber;
+	private IssueContext issue;
 	private long draftId;
 
 	private OnInteractedListener onInteractedListener;
@@ -60,9 +62,9 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		tinyDB = TinyDB.getInstance(context);
 		draftsApi = BaseApi.getInstance(context, DraftsApi.class);
 
-		repositoryId = (int) tinyDB.getLong("repositoryId", 0);
-		currentActiveAccountId = tinyDB.getInt("currentActiveAccountId");
-		issueNumber = Integer.parseInt(tinyDB.getString("issueNumber"));
+		repositoryId = (int) requireArguments().getLong("repositoryId", 0);
+		currentActiveAccountId = ((BaseActivity) requireActivity()).getAccount().getAccount().getAccountId();
+		issue = IssueContext.fromBundle(requireArguments());
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -179,7 +181,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 			if(mode == Mode.SEND) {
 
 				IssueActions
-					.reply(getContext(), comment.getText().toString(), issueNumber)
+					.reply(getContext(), comment.getText().toString(), issue.getIssueIndex())
 					.accept((status, result) -> {
 
 						if(status == ActionResult.Status.SUCCESS) {
@@ -192,7 +194,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 							tinyDB.putBoolean("commentPosted", true);
 							tinyDB.putBoolean("resumeIssues", true);
-							tinyDB.putBoolean("resumePullRequests", true);
+							tinyDB.putBoolean("resumePullRequests", true); // TODO move this away from tinydb
 
 							if(onInteractedListener != null) {
 								onInteractedListener.onInteracted();
@@ -218,7 +220,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 								draftsApi.deleteSingleDraft((int) draftId);
 							}
 
-							tinyDB.putBoolean("commentEdited", true);
+							tinyDB.putBoolean("commentEdited", true); // TODO move this away from tinydb
 
 							if(onInteractedListener != null) {
 								onInteractedListener.onInteracted();
@@ -263,11 +265,11 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		else {
 
 			String draftType;
-			if(tinyDB.getString("issueType").equalsIgnoreCase("Issue")) {
+			if(issue.getIssueType().equalsIgnoreCase("Issue")) {
 
 				draftType = Constants.draftTypeIssue;
 			}
-			else if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
+			else if(issue.getIssueType().equalsIgnoreCase("Pull")) {
 
 				draftType = Constants.draftTypePull;
 			}
@@ -278,7 +280,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 			if(draftId == 0) {
 
-				draftId = draftsApi.insertDraft(repositoryId, currentActiveAccountId, issueNumber, text, draftType, "TODO", tinyDB.getString("issueType"));
+				draftId = draftsApi.insertDraft(repositoryId, currentActiveAccountId, issue.getIssueIndex(), text, draftType, "TODO", issue.getIssueType());
 			}
 			else {
 

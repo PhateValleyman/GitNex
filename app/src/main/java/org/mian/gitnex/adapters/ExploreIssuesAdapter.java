@@ -14,6 +14,7 @@ import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.Issues;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
@@ -25,6 +26,8 @@ import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.IssueContext;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.ocpsoft.prettytime.PrettyTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -104,20 +107,17 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 			issueCreatedTime = itemView.findViewById(R.id.issueCreatedTime);
 
 			itemView.setOnClickListener(v -> {
-				Intent intent = new Intent(context, IssueDetailActivity.class);
-				intent.putExtra("issueNumber", issue.getNumber());
-				intent.putExtra("openedFromLink", "true");
-
-				tinyDb.putString("issueNumber", String.valueOf(issue.getNumber()));
-				tinyDb.putString("issueType", "Issue");
-
-				tinyDb.putString("repoFullName", issue.getRepository().getFull_name());
-
 				String[] parts = issue.getRepository().getFull_name().split("/");
 				final String repoOwner = parts[0];
 				final String repoName = parts[1];
 
-				int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
+				Intent intent = new IssueContext(
+					issue,
+					new RepositoryContext(repoOwner, repoName)
+				).getIntent(context, IssueDetailActivity.class);
+				intent.putExtra("openedFromLink", "true");
+
+				int currentActiveAccountId = ((BaseActivity) context).getAccount().getAccount().getAccountId();
 				RepositoriesApi repositoryData = BaseApi.getInstance(context, RepositoriesApi.class);
 
 				assert repositoryData != null;
@@ -126,7 +126,7 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 				if(count == 0) {
 
 					long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
-					tinyDb.putLong("repositoryId", id);
+					tinyDb.putLong("repositoryId", id); // TODO restore if changed? add new method to get this (eg to repoctx)
 				}
 				else {
 

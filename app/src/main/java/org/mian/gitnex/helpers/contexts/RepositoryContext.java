@@ -16,19 +16,6 @@ public class RepositoryContext implements Serializable {
 
 	public static final String INTENT_EXTRA = "repository";
 
-	public static RepositoryContext fromOwnerAndRepo(Context context, String owner, String repo) {
-		try {
-			Response<UserRepositories> r = RetrofitClient.getApiInterface(context).getUserRepository(Authorization.get(context), owner, repo).execute();
-			if(!r.isSuccessful() || r.body() == null) {
-				return null;
-			}
-			return new RepositoryContext(r.body());
-		}
-		catch(IOException e) {
-			return null;
-		}
-	}
-
 	public static RepositoryContext fromIntent(Intent intent) {
 		return (RepositoryContext) intent.getSerializableExtra(INTENT_EXTRA);
 	}
