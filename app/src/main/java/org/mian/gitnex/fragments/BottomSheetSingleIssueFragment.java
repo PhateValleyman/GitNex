@@ -153,7 +153,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		editIssue.setOnClickListener(v15 -> {
 
-			startActivity(issue.getIntent(ctx, EditIssueActivity.class));
+			((IssueDetailActivity) requireActivity()).editIssueLauncher.launch(issue.getIntent(ctx, EditIssueActivity.class));
 			dismiss();
 		});
 

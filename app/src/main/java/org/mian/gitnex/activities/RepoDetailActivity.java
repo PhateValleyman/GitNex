@@ -76,7 +76,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	private FragmentRefreshListener fragmentRefreshListenerFiles;
 	private FragmentRefreshListener fragmentRefreshListenerFilterIssuesByMilestone;
 
-	public static ViewPager mViewPager;
+	public ViewPager mViewPager;
 	private int tabsCount;
 
 	public RepositoryContext repository;
@@ -616,11 +616,11 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			switch(goToSectionType) {
 				case "branchesList":
-					RepoDetailActivity.mViewPager.setCurrentItem(1);
+					mViewPager.setCurrentItem(1);
 					chooseBranch();
 					break;
 				case "branch":
-					RepoDetailActivity.mViewPager.setCurrentItem(1);
+					mViewPager.setCurrentItem(1);
 					String selectedBranch = mainIntent.getStringExtra("selectedBranch");
 					repository.setBranchRef(selectedBranch);
 					if(getFragmentRefreshListenerFiles() != null) {
@@ -628,7 +628,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					}
 					break;
 				case "file":
-					RepoDetailActivity.mViewPager.setCurrentItem(1);
+					mViewPager.setCurrentItem(1);
 					String branch1 = mainIntent.getStringExtra("branch");
 					repository.setBranchRef(branch1);
 					if(getFragmentRefreshListenerFiles() != null) {
@@ -639,7 +639,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					startActivity(intent);
 					break;
 				case "dir":
-					RepoDetailActivity.mViewPager.setCurrentItem(1);
+					mViewPager.setCurrentItem(1);
 					String branch2 = mainIntent.getStringExtra("branch");
 					repository.setBranchRef(branch2);
 					if(getFragmentRefreshListenerFiles() != null) {
@@ -648,7 +648,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					//((SectionsPagerAdapter) Objects.requireNonNull(RepoDetailActivity.mViewPager.getAdapter())).getItem(1);
 					break;
 				case "commitsList":
-					RepoDetailActivity.mViewPager.setCurrentItem(1);
+					mViewPager.setCurrentItem(1);
 					String branch = mainIntent.getStringExtra("branchName");
 					repository.setBranchRef(branch);
 					if(getFragmentRefreshListenerFiles() != null) {
@@ -659,35 +659,35 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					ctx.startActivity(intent1);
 					break;
 				case "issue":
-					RepoDetailActivity.mViewPager.setCurrentItem(2);
+					mViewPager.setCurrentItem(2);
 					break;
 				case "issueNew":
-					RepoDetailActivity.mViewPager.setCurrentItem(2);
+					mViewPager.setCurrentItem(2);
 					startActivity(repository.getIntent(ctx, CreateIssueActivity.class));
 					break;
 				case "pull":
-					RepoDetailActivity.mViewPager.setCurrentItem(3);
+					mViewPager.setCurrentItem(3);
 					break;
 				case "pullNew":
-					RepoDetailActivity.mViewPager.setCurrentItem(3);
+					mViewPager.setCurrentItem(3);
 					startActivity(repository.getIntent(ctx, CreatePullRequestActivity.class));
 					break;
 				case "releases":
-					RepoDetailActivity.mViewPager.setCurrentItem(4);
+					mViewPager.setCurrentItem(4);
 					break;
 				case "newRelease":
-					RepoDetailActivity.mViewPager.setCurrentItem(4);
+					mViewPager.setCurrentItem(4);
 					startActivity(repository.getIntent(ctx, CreateReleaseActivity.class));
 					break;
 				case "milestones":
-					RepoDetailActivity.mViewPager.setCurrentItem(5);
+					mViewPager.setCurrentItem(5);
 					break;
 				case "milestonesNew":
-					RepoDetailActivity.mViewPager.setCurrentItem(5);
+					mViewPager.setCurrentItem(5);
 					startActivity(repository.getIntent(ctx, CreateMilestoneActivity.class));
 					break;
 				case "labels":
-					RepoDetailActivity.mViewPager.setCurrentItem(6);
+					mViewPager.setCurrentItem(6);
 					break;
 				case "settings":
 					startActivity(repository.getIntent(ctx, RepositorySettingsActivity.class));
@@ -704,7 +704,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			@Override
 			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
 
-				repository.setStarred(response.code() == 204); // TODO verify codes
+				repository.setStarred(response.code() == 204);
 			}
 
 			@Override

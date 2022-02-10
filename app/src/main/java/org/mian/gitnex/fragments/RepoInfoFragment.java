@@ -93,7 +93,7 @@ public class RepoInfoFragment extends Fragment {
 
 		binding.repoMetaWatchersFrame.setOnClickListener(metaWatchers -> ctx.startActivity(repository.getIntent(ctx, RepoWatchersActivity.class)));
 
-		binding.repoMetaPullRequestsFrame.setOnClickListener(metaPR -> RepoDetailActivity.mViewPager.setCurrentItem(3));
+		binding.repoMetaPullRequestsFrame.setOnClickListener(metaPR -> ((RepoDetailActivity) requireActivity()).mViewPager.setCurrentItem(3));
 
 		return binding.getRoot();
 	}
@@ -241,7 +241,6 @@ public class RepoInfoFragment extends Fragment {
 				binding.repoIsArchived.setVisibility(View.GONE);
 			}
 
-			binding.progressBar.setVisibility(View.GONE);
 			pageContent.setVisibility(View.VISIBLE);
 
 		}

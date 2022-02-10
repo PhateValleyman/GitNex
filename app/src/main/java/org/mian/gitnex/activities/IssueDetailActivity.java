@@ -118,16 +118,13 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	public boolean commentEdited = false;
 	public boolean commentPosted = false;
 
-	public ActivityResultLauncher<Intent> editIssueLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-
-		@Override
-		public void onActivityResult(ActivityResult result) {
+	public ActivityResultLauncher<Intent> editIssueLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+		result -> {
 			if(result.getResultCode() == 200) {
 				assert result.getData() != null;
 				issueEdited = result.getData().getBooleanExtra("issueEdited", false);
 			}
-		}
-	});
+		});
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

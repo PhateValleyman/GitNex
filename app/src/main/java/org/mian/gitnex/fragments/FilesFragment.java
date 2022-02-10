@@ -115,7 +115,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 			@Override
 			public void handleOnBackPressed() {
-				if(path.size() == 0 || RepoDetailActivity.mViewPager.getCurrentItem() != 1) {
+				if(path.size() == 0 || ((RepoDetailActivity) requireActivity()).mViewPager.getCurrentItem() != 1) {
 					requireActivity().finish();
 					return;
 				}
