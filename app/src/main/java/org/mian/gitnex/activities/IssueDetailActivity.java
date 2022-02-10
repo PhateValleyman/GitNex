@@ -20,7 +20,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.ActivityResultRegistry;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.core.widget.NestedScrollView;
@@ -104,6 +112,22 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private CustomLabelsSelectionDialogBinding labelsBinding;
 	private CustomAssigneesSelectionDialogBinding assigneesBinding;
 	private ActivityIssueDetailBinding viewBinding;
+
+	public boolean singleIssueUpdate = false;
+	public boolean issueEdited = false;
+	public boolean commentEdited = false;
+	public boolean commentPosted = false;
+
+	public ActivityResultLauncher<Intent> editIssueLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+
+		@Override
+		public void onActivityResult(ActivityResult result) {
+			if(result.getResultCode() == 200) {
+				assert result.getData() != null;
+				issueEdited = result.getData().getBooleanExtra("issueEdited", false);
+			}
+		}
+	});
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -465,7 +489,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		super.onResume();
 
-		if(tinyDB.getBoolean("commentPosted")) {
+		if(commentPosted) {
 
 			viewBinding.scrollViewComments.post(() -> {
 
@@ -473,43 +497,45 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					.loadIssueComments(Authorization.get(ctx), repoOwner, repoName, issueIndex,
 						ctx);
 
+				// TODO do this once loading is finished (not after 1 sec)
 				new Handler(Looper.getMainLooper()).postDelayed(() -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN), 1000);
 
-				tinyDB.putBoolean("commentPosted", false);
+				commentPosted = false;
 			});
 		}
 
-		if(tinyDB.getBoolean("commentEdited")) {
+		if(commentEdited) {
 
 			viewBinding.scrollViewComments.post(() -> {
 
 				IssueCommentsViewModel
 					.loadIssueComments(Authorization.get(ctx), repoOwner, repoName, issueIndex,
 						ctx);
-				tinyDB.putBoolean("commentEdited", false);
+				commentEdited = false;
 			});
 		}
 
-		if(tinyDB.getBoolean("singleIssueUpdate")) {
+		if(singleIssueUpdate) {
 
 			new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 				viewBinding.frameAssignees.removeAllViews();
 				viewBinding.frameLabels.removeAllViews();
 				getSingleIssue(repoOwner, repoName, issueIndex);
-				tinyDB.putBoolean("singleIssueUpdate", false);
+				singleIssueUpdate = false;
 
 			}, 500);
 		}
 
-		if(tinyDB.getBoolean("issueEdited")) {
+		if(issueEdited) {
 
 			new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 				viewBinding.frameAssignees.removeAllViews();
 				viewBinding.frameLabels.removeAllViews();
+				issue.setIssue(null);
 				getSingleIssue(repoOwner, repoName, issueIndex);
-				tinyDB.putBoolean("issueEdited", false);
+				issueEdited = false;
 
 			}, 500);
 		}
@@ -650,9 +676,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		TinyDB tinyDb = TinyDB.getInstance(appCtx);
 		final Locale locale = getResources().getConfiguration().locale;
 		final String timeFormat = tinyDb.getString("dateFormat", "pretty");
-		tinyDb.putString("issueState", issue.getIssue().getState());
-		tinyDb.putString("issueTitle", issue.getIssue().getTitle());
-		tinyDb.putString("singleIssueHtmlUrl", issue.getIssue().getHtml_url());
 
 		PicassoService.getInstance(ctx).get().load(issue.getIssue().getUser().getAvatar_url()).placeholder(R.drawable.loader_animated)
 			.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewBinding.assigneeAvatar);

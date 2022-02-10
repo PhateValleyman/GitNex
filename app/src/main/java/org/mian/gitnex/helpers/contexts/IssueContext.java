@@ -127,13 +127,14 @@ public class IssueContext implements Serializable {
 	}
 
 	public void setIssue(Issues issue) {
-		if(issue.getPull_request() == null && issueType.equals("Pull") ||
-			issue.getPull_request() != null && issueType.equals("Issue")) {
+		if(issue != null && (issue.getPull_request() == null && issueType.equals("Pull") ||
+			issue.getPull_request() != null && issueType.equals("Issue"))) {
 			throw new IllegalArgumentException("issueType and issue's type does not match");
 		}
 		this.issue = issue;
-		this.issueType = issue.getPull_request() == null ?
-			"Issue" : "Pull";
+		if(issue != null) {
+			this.issueType = issue.getPull_request() == null ? "Issue" : "Pull";
+		}
 	}
 
 	public String getIssueType() {

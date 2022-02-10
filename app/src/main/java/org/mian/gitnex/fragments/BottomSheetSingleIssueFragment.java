@@ -21,12 +21,12 @@ import org.mian.gitnex.actions.PullRequestActions;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.EditIssueActivity;
 import org.mian.gitnex.activities.FileDiffActivity;
+import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
 import org.mian.gitnex.databinding.BottomSheetSingleIssueBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.views.ReactionSpinner;
@@ -84,8 +84,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle1);
 		reactionSpinner.setOnInteractedListener(() -> {
 
-			// TODO move to another way
-			tinyDB.putBoolean("singleIssueUpdate", true);
+			((IssueDetailActivity) requireActivity()).singleIssueUpdate = true;
 
 			bmListener.onButtonClicked("onResume");
 			dismiss();
@@ -154,7 +153,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		editIssue.setOnClickListener(v15 -> {
 
-			startActivity(new Intent(ctx, EditIssueActivity.class));
+			startActivity(issue.getIntent(ctx, EditIssueActivity.class));
 			dismiss();
 		});
 
@@ -174,9 +173,9 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 			sharingIntent.setType("text/plain");
-			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.hash) + tinyDB.getString("issueNumber") + " " + tinyDB.getString("issueTitle"));
+			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.hash) + issue.getIssueIndex() + " " + issue.getIssue().getTitle());
 			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, tinyDB.getString("singleIssueHtmlUrl"));
-			startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.hash) + tinyDB.getString("issueNumber") + " " + tinyDB.getString("issueTitle")));
+			startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.hash) + issue.getIssueIndex() + " " + issue.getIssue().getTitle()));
 
 			dismiss();
 		});
@@ -185,7 +184,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 			// copy to clipboard
 			ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
-			ClipData clip = ClipData.newPlainText("issueUrl", tinyDB.getString("singleIssueHtmlUrl"));
+			ClipData clip = ClipData.newPlainText("issueUrl", issue.getIssue().getHtml_url());
 			assert clipboard != null;
 			clipboard.setPrimaryClip(clip);
 
@@ -216,7 +215,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 				reOpenIssue.setOnClickListener(reOpenSingleIssue -> {
 
-					IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "open");
+					IssueActions.closeReopenIssue(ctx, issue.getIssueIndex(), "open");
 					dismiss();
 
 				});
