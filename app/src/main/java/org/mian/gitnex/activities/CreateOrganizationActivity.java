@@ -17,7 +17,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateOrganizationBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import retrofit2.Call;
@@ -124,7 +123,7 @@ public class CreateOrganizationActivity extends BaseActivity {
         else {
 
             disableProcessButton();
-            createNewOrganization(Authorization.get(ctx), newOrgName, newOrgDesc);
+            createNewOrganization(getAccount().getAuthorization(), newOrgName, newOrgDesc);
         }
 
     }

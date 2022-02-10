@@ -16,7 +16,6 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserGridAdapter;
 import org.mian.gitnex.databinding.ActivityOrgTeamMembersBinding;
 import org.mian.gitnex.fragments.BottomSheetOrganizationTeamsFragment;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.viewmodels.TeamMembersByOrgViewModel;
@@ -75,7 +74,7 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
         }
 
         assert teamId != null;
-        fetchDataAsync(Authorization.get(ctx), Integer.parseInt(teamId));
+        fetchDataAsync(getAccount().getAuthorization(), Integer.parseInt(teamId));
     }
 
     @Override
@@ -86,7 +85,7 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
 
         if(tinyDb.getBoolean("teamActionFlag")) {
 
-            fetchDataAsync(Authorization.get(ctx), Integer.parseInt(teamId));
+            fetchDataAsync(getAccount().getAuthorization(), Integer.parseInt(teamId));
             tinyDb.putBoolean("teamActionFlag", false);
         }
     }

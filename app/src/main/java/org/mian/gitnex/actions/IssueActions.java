@@ -7,9 +7,9 @@ import org.gitnex.tea4j.models.IssueComments;
 import org.gitnex.tea4j.models.Issues;
 import org.gitnex.tea4j.models.UpdateIssueState;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import retrofit2.Call;
@@ -36,7 +36,7 @@ public class IssueActions {
 
 		Call<IssueComments> call = RetrofitClient
 			.getApiInterface(context)
-			.patchIssueComment(Authorization.get(context), repoOwner, repoName, commentId, new IssueComments(comment));
+			.patchIssueComment(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, commentId, new IssueComments(comment));
 
 		call.enqueue(new Callback<IssueComments>() {
 
@@ -87,7 +87,7 @@ public class IssueActions {
 
 		call = RetrofitClient
 			.getApiInterface(ctx)
-			.closeReopenIssue(Authorization.get(ctx), repoOwner, repoName, issueIndex, issueStatJson);
+			.closeReopenIssue(((BaseActivity) ctx).getAccount().getAuthorization(), repoOwner, repoName, issueIndex, issueStatJson);
 
 		call.enqueue(new Callback<JsonElement>() {
 
@@ -283,7 +283,7 @@ public class IssueActions {
 
 		Call<Issues> call = RetrofitClient
 			.getApiInterface(context)
-			.replyCommentToIssue(Authorization.get(context), repoOwner, repoName, issueIndex, issueComment);
+			.replyCommentToIssue(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, issueIndex, issueComment);
 
 		call.enqueue(new Callback<Issues>() {
 

@@ -48,7 +48,6 @@ import org.mian.gitnex.fragments.SettingsFragment;
 import org.mian.gitnex.fragments.StarredRepositoriesFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.ChangeLog;
 import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.RoundedTransformation;
@@ -103,8 +102,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		tinyDB.putBoolean("noConnection", false);
 
-		loginUid = tinyDB.getString("loginUid");
-		instanceToken = "token " + tinyDB.getString(loginUid + "-token");
+		instanceToken = getAccount().getAuthorization();
 
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
@@ -602,7 +600,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	private void giteaVersion() {
 
-		Call<GiteaVersion> callVersion = RetrofitClient.getApiInterface(ctx).getGiteaVersionWithToken(Authorization.get(ctx));
+		Call<GiteaVersion> callVersion = RetrofitClient.getApiInterface(ctx).getGiteaVersionWithToken(getAccount().getAuthorization());
 		callVersion.enqueue(new Callback<GiteaVersion>() {
 
 			@Override
@@ -627,7 +625,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
-		Call<UserInfo> call = RetrofitClient.getApiInterface(ctx).getUserInfo(Authorization.get(ctx));
+		Call<UserInfo> call = RetrofitClient.getApiInterface(ctx).getUserInfo(getAccount().getAuthorization());
 
 		call.enqueue(new Callback<UserInfo>() {
 

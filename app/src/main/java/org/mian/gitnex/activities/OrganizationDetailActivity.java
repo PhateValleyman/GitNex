@@ -157,7 +157,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
                 break;
 	        case "copyOrgUrl":
 
-		        String url = UrlBuilder.fromString(tinyDB.getString("instanceUrl"))
+		        String url = UrlBuilder.fromString(getAccount().getAccount().getInstanceUrl())
 			        .withPath("/")
 			        .toString();
 		        ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);

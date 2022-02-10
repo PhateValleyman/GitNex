@@ -23,7 +23,6 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.CommitsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCommitsBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
@@ -94,7 +93,7 @@ public class CommitsActivity extends BaseActivity {
 		swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 			swipeRefresh.setRefreshing(false);
-			loadInitial(Authorization.get(ctx), repoOwner, repoName, branchName, resultLimit);
+			loadInitial(getAccount().getAuthorization(), repoOwner, repoName, branchName, resultLimit);
 			adapter.notifyDataChanged();
 		}, 200));
 
@@ -104,7 +103,7 @@ public class CommitsActivity extends BaseActivity {
 			if(commitsList.size() == resultLimit || pageSize == resultLimit) {
 
 				int page = (commitsList.size() + resultLimit) / resultLimit;
-				loadMore(Authorization.get(ctx), repoOwner, repoName, page, branchName, resultLimit);
+				loadMore(getAccount().getAuthorization(), repoOwner, repoName, page, branchName, resultLimit);
 			}
 		}));
 
@@ -112,7 +111,7 @@ public class CommitsActivity extends BaseActivity {
 		recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 		recyclerView.setAdapter(adapter);
 
-		loadInitial(Authorization.get(ctx), repoOwner, repoName, branchName, resultLimit);
+		loadInitial(getAccount().getAuthorization(), repoOwner, repoName, branchName, resultLimit);
 	}
 
 	private void loadInitial(String token, String repoOwner, String repoName, String branchName, int resultLimit) {

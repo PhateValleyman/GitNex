@@ -18,7 +18,6 @@ import org.gitnex.tea4j.models.UserSearch;
 import org.mian.gitnex.adapters.UserSearchAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityAddCollaboratorToRepositoryBinding;
-import org.mian.gitnex.helpers.Authorization;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -81,7 +80,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
         Call<UserSearch> call = RetrofitClient
                 .getApiInterface(appCtx)
-                .getUserBySearch(Authorization.get(ctx), searchKeyword, 10, 1);
+                .getUserBySearch(getAccount().getAuthorization(), searchKeyword, 10, 1);
 
         call.enqueue(new Callback<UserSearch>() {
 

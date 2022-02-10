@@ -8,10 +8,10 @@ import androidx.annotation.NonNull;
 import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.Issues;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
@@ -28,7 +28,7 @@ public class AssigneesActions {
 
 		Call<Issues> callSingleIssueLabels = RetrofitClient
 			.getApiInterface(ctx)
-			.getIssueByIndex(Authorization.get(ctx), repoOwner, repoName, issueIndex);
+			.getIssueByIndex(((BaseActivity) ctx).getAccount().getAuthorization(), repoOwner, repoName, issueIndex);
 
 		callSingleIssueLabels.enqueue(new Callback<Issues>() {
 
@@ -68,7 +68,7 @@ public class AssigneesActions {
 
 		Call<List<Collaborators>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getCollaborators(Authorization.get(ctx), repoOwner, repoName);
+			.getCollaborators(((BaseActivity) ctx).getAccount().getAuthorization(), repoOwner, repoName);
 
 		call.enqueue(new Callback<List<Collaborators>>() {
 

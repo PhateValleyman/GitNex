@@ -1,7 +1,6 @@
 package org.mian.gitnex.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,13 +15,13 @@ import androidx.fragment.app.Fragment;
 import org.apache.commons.io.FileUtils;
 import org.gitnex.tea4j.models.UserRepositories;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.activities.RepoStargazersActivity;
 import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentRepoInfoBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.Markdown;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -76,7 +75,7 @@ public class RepoInfoFragment extends Fragment {
 		binding.repoMetaFrame.setVisibility(View.GONE);
 
 		setRepoInfo(locale, tinyDb.getString("dateFormat", "pretty"));
-		getFileContents(Authorization.get(getContext()), repository.getOwner(), repository.getName(), getResources().getString(R.string.defaultFilename));
+		getFileContents(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getResources().getString(R.string.defaultFilename));
 
 		if(isExpandViewVisible()) {
 			toggleExpandView();

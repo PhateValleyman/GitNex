@@ -20,7 +20,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateLabelBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.viewmodels.LabelsViewModel;
@@ -215,11 +214,11 @@ public class CreateLabelActivity extends BaseActivity {
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-	    	call = RetrofitClient.getApiInterface(ctx).createOrganizationLabel(Authorization.get(ctx), getIntent().getStringExtra("orgName"), createLabelFunc);
+	    	call = RetrofitClient.getApiInterface(ctx).createOrganizationLabel(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), createLabelFunc);
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(ctx).createLabel(Authorization.get(ctx), repoOwner, repoName, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(ctx).createLabel(getAccount().getAuthorization(), repoOwner, repoName, createLabelFunc);
 	    }
 
         call.enqueue(new Callback<CreateLabel>() {
@@ -269,11 +268,11 @@ public class CreateLabelActivity extends BaseActivity {
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-		    call = RetrofitClient.getApiInterface(ctx).patchOrganizationLabel(Authorization.get(ctx), getIntent().getStringExtra("orgName"), labelId, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(ctx).patchOrganizationLabel(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), labelId, createLabelFunc);
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(appCtx).patchLabel(Authorization.get(ctx), repoOwner, repoName, labelId, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(appCtx).patchLabel(getAccount().getAuthorization(), repoOwner, repoName, labelId, createLabelFunc);
 	    }
 
         call.enqueue(new Callback<CreateLabel>() {
@@ -345,11 +344,11 @@ public class CreateLabelActivity extends BaseActivity {
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-		    call = RetrofitClient.getApiInterface(appCtx).deleteOrganizationLabel(Authorization.get(ctx), getIntent().getStringExtra("orgName"), labelId);
+		    call = RetrofitClient.getApiInterface(appCtx).deleteOrganizationLabel(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), labelId);
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(appCtx).deleteLabel(Authorization.get(ctx), repoOwner, repoName, labelId);
+		    call = RetrofitClient.getApiInterface(appCtx).deleteLabel(getAccount().getAuthorization(), repoOwner, repoName, labelId);
 	    }
 
         call.enqueue(new Callback<Labels>() {
@@ -364,11 +363,11 @@ public class CreateLabelActivity extends BaseActivity {
                         Toasty.success(ctx, getString(R.string.labelDeleteText));
 	                    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-	                    	OrganizationLabelsViewModel.loadOrgLabelsList(Authorization.get(ctx), getIntent().getStringExtra("orgName"), ctx, null, null);
+	                    	OrganizationLabelsViewModel.loadOrgLabelsList(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), ctx, null, null);
 	                    }
 	                    else {
 
-		                    LabelsViewModel.loadLabelsList(Authorization.get(ctx), repoOwner, repoName, ctx);
+		                    LabelsViewModel.loadLabelsList(getAccount().getAuthorization(), repoOwner, repoName, ctx);
 	                    }
                         getIntent().removeExtra("labelAction");
                         getIntent().removeExtra("labelId");

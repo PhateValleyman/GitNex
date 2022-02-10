@@ -18,7 +18,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateMilestoneBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
@@ -138,7 +137,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         }
 
         disableProcessButton();
-        createNewMilestone(Authorization.get(ctx), repoOwner, repoName, newMilestoneTitle, newMilestoneDescription, finalMilestoneDueDate);
+        createNewMilestone(getAccount().getAuthorization(), repoOwner, repoName, newMilestoneTitle, newMilestoneDescription, finalMilestoneDueDate);
     }
 
     private void createNewMilestone(final String token, String repoOwner, String repoName, String newMilestoneTitle, String newMilestoneDescription, String newMilestoneDueDate) {

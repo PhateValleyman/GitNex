@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.gitnex.tea4j.models.Releases;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.ReleasesAdapter;
 import org.mian.gitnex.databinding.FragmentReleasesBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.ReleasesViewModel;
@@ -82,11 +82,11 @@ public class ReleasesFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repository.getOwner(), repository.getName(), getContext());
+            ReleasesViewModel.loadReleasesList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
 
         }, 50));
 
-        fetchDataAsync(Authorization.get(getContext()), repository.getOwner(), repository.getName());
+        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
         return fragmentReleasesBinding.getRoot();
 
@@ -99,7 +99,7 @@ public class ReleasesFragment extends Fragment {
         TinyDB tinyDb = TinyDB.getInstance(getContext());
 
         if(tinyDb.getBoolean("updateReleases")) { // TODO wait for tags pr
-            ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repository.getOwner(), repository.getName(), getContext());
+            ReleasesViewModel.loadReleasesList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
             tinyDb.putBoolean("updateReleases", false);
         }
 

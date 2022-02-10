@@ -17,12 +17,12 @@ import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.CollaboratorActions;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
@@ -149,7 +149,7 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Us
 
             Call<Collaborators> call = RetrofitClient
                     .getApiInterface(context)
-                    .checkRepoCollaborator(Authorization.get(context), repoOwner, repoName, currentItem.getUsername());
+                    .checkRepoCollaborator(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, currentItem.getUsername());
 
             call.enqueue(new Callback<Collaborators>() {
 

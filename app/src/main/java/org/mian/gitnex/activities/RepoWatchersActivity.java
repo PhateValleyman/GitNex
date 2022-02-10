@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserGridAdapter;
 import org.mian.gitnex.databinding.ActivityRepoWatchersBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.RepoWatchersViewModel;
 
@@ -49,7 +48,7 @@ public class RepoWatchersActivity extends BaseActivity {
 
         toolbarTitle.setText(R.string.repoWatchersInMenu);
 
-        fetchDataAsync(Authorization.get(ctx), repoOwner, repoName);
+        fetchDataAsync(getAccount().getAuthorization(), repoOwner, repoName);
     }
 
     private void fetchDataAsync(String instanceToken, String repoOwner, String repoName) {

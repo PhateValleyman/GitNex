@@ -24,14 +24,11 @@ import org.gitnex.tea4j.models.Issues;
 import org.gitnex.tea4j.models.Milestones;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.core.MainApplication;
 import org.mian.gitnex.databinding.ActivityEditIssueBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -169,7 +166,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         Call<JsonElement> call = RetrofitClient
                 .getApiInterface(ctx)
-                .patchIssue(Authorization.get(ctx), repoOwner, repoName, issueIndex, issueData);
+                .patchIssue(getAccount().getAuthorization(), repoOwner, repoName, issueIndex, issueData);
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -243,7 +240,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         Call<Issues> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getIssueByIndex(Authorization.get(ctx), repoOwner, repoName, issueIndex);
+                .getIssueByIndex(getAccount().getAuthorization(), repoOwner, repoName, issueIndex);
 
         call.enqueue(new Callback<Issues>() {
 
@@ -267,7 +264,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
                         Call<List<Milestones>> call_ = RetrofitClient
                                 .getApiInterface(ctx)
-                                .getMilestones(Authorization.get(ctx), repoOwner, repoName, 1, resultLimit, msState);
+                                .getMilestones(getAccount().getAuthorization(), repoOwner, repoName, 1, resultLimit, msState);
 
 	                    int checkMilestoneId = currentMilestoneId;
 

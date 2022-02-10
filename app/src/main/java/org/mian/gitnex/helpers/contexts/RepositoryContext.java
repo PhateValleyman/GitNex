@@ -6,11 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.models.UserRepositories;
 import org.mian.gitnex.activities.BaseActivity;
-import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.helpers.Authorization;
-import java.io.IOException;
 import java.io.Serializable;
-import retrofit2.Response;
 
 public class RepositoryContext implements Serializable {
 

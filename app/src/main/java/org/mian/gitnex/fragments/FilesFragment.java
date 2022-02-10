@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.models.Files;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.DeepLinksActivity;
 import org.mian.gitnex.activities.FileViewActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
@@ -28,7 +29,6 @@ import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.FragmentFilesBinding;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Path;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.FilesViewModel;
@@ -97,13 +97,13 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				if(position == 0) {
 
 					path.clear();
-					fetchDataAsync(Authorization.get(getContext()), repository.getName(), repository.getName(), repository.getBranchRef());
+					fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), repository.getBranchRef());
 					return;
 
 				}
 
 				path.pop(path.size() - position);
-				fetchDataAsyncSub(Authorization.get(getContext()), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
+				fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
 
 			}
 
@@ -122,9 +122,9 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				path.remove(path.size() - 1);
 				binding.breadcrumbsView.removeLastItem();
 				if(path.size() == 0) {
-					fetchDataAsync(Authorization.get(getContext()), repository.getName(), repository.getName(), repository.getBranchRef());
+					fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), repository.getBranchRef());
 				} else {
-					fetchDataAsyncSub(Authorization.get(getContext()), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
+					fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
 				}
 			}
 		});
@@ -133,20 +133,20 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 			path.clear();
 			binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
-			fetchDataAsync(Authorization.get(getContext()), repository.getName(), repository.getName(), repoBranch);
+			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), repoBranch);
 
 		});
 
 		String dir = requireActivity().getIntent().getStringExtra("dir");
 		if(dir != null) {
-			fetchDataAsyncSub(Authorization.get(getContext()), repository.getName(), repository.getName(), dir, repository.getBranchRef());
+			fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), dir, repository.getBranchRef());
 			for(String segment: dir.split("/")) {
 				binding.breadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(segment)));
 				path.add(segment);
 			}
 		}
 		else {
-			fetchDataAsync(Authorization.get(getContext()), repository.getName(), repository.getName(), repository.getBranchRef());
+			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), repository.getBranchRef());
 		}
 
 		return binding.getRoot();
@@ -167,7 +167,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				path.add(file.getName());
 				binding.breadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(file.getName())));
 
-				fetchDataAsyncSub(Authorization.get(getContext()), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
+				fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
 				break;
 
 			case "file":

@@ -19,6 +19,7 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.pm.PackageInfoCompat;
 import org.mian.gitnex.R;
+import org.mian.gitnex.core.MainApplication;
 import org.mian.gitnex.database.models.UserAccount;
 import java.io.IOException;
 import java.io.InputStream;
@@ -330,23 +331,7 @@ public class AppUtil {
 	}
 
 	public static boolean switchToAccount(Context context, UserAccount userAccount) {
-
-		TinyDB tinyDB = TinyDB.getInstance(context);
-
-		if(tinyDB.getInt("currentActiveAccountId") != userAccount.getAccountId()) {
-
-			tinyDB.putString("loginUid", userAccount.getUserName());
-			tinyDB.putString("userLogin", userAccount.getUserName());
-			tinyDB.putString(userAccount.getUserName() + "-token", userAccount.getToken());
-			tinyDB.putString("instanceUrl", userAccount.getInstanceUrl());
-			tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
-
-			return true;
-
-		}
-
-		return false;
-
+		return ((MainApplication) context).switchToAccount(userAccount);
 	}
 
 	public static void openUrlInBrowser(Context context, String url) {

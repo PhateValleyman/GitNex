@@ -7,9 +7,9 @@ import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.Permission;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.AddCollaboratorToRepositoryActivity;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
@@ -34,7 +34,7 @@ public class CollaboratorActions {
 
         Call<Collaborators> call = RetrofitClient
                 .getApiInterface(context)
-                .deleteCollaborator(Authorization.get(context), repoOwner, repoName, userName);
+                .deleteCollaborator(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, userName);
 
         call.enqueue(new Callback<Collaborators>() {
 
@@ -100,7 +100,7 @@ public class CollaboratorActions {
 
         Call<Permission> call = RetrofitClient
                 .getApiInterface(context)
-                .addCollaborator(Authorization.get(context), repoOwner, repoName, userName, permissionString);
+                .addCollaborator(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, userName, permissionString);
 
         call.enqueue(new Callback<Permission>() {
 
@@ -164,7 +164,7 @@ public class CollaboratorActions {
 
 		Call<List<Collaborators>> call = RetrofitClient
 			.getApiInterface(context)
-			.getCollaborators(Authorization.get(context), repoOwner, repoName);
+			.getCollaborators(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
 
 		call.enqueue(new Callback<List<Collaborators>>() {
 

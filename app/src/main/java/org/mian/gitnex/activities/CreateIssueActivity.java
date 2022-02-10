@@ -29,7 +29,6 @@ import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -242,7 +241,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
         call3 = RetrofitClient
                 .getApiInterface(ctx)
-                .createNewIssue(Authorization.get(ctx), repoOwner, repoName, createNewIssueJson);
+                .createNewIssue(getAccount().getAuthorization(), repoOwner, repoName, createNewIssueJson);
 
         call3.enqueue(new Callback<JsonElement>() {
 
@@ -294,7 +293,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
         String msState = "open";
         Call<List<Milestones>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getMilestones(Authorization.get(ctx), repoOwner, repoName, 1, resultLimit, msState);
+                .getMilestones(getAccount().getAuthorization(), repoOwner, repoName, 1, resultLimit, msState);
 
         call.enqueue(new Callback<List<Milestones>>() {
 

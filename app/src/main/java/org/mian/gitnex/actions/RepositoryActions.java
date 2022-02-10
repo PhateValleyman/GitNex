@@ -5,9 +5,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import retrofit2.Call;
@@ -32,7 +32,7 @@ public class RepositoryActions {
 
         call = RetrofitClient
                 .getApiInterface(context)
-                .starRepository(Authorization.get(context), repoOwner, repoName);
+                .starRepository(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -94,7 +94,7 @@ public class RepositoryActions {
 
         call = RetrofitClient
                 .getApiInterface(context)
-                .unStarRepository(Authorization.get(context), repoOwner, repoName);
+                .unStarRepository(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -156,7 +156,7 @@ public class RepositoryActions {
 
         call = RetrofitClient
                 .getApiInterface(context)
-                .watchRepository(Authorization.get(context), repoOwner, repoName);
+                .watchRepository(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -218,7 +218,7 @@ public class RepositoryActions {
 
         call = RetrofitClient
                 .getApiInterface(context)
-                .unWatchRepository(Authorization.get(context), repoOwner, repoName);
+                .unWatchRepository(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
 
         call.enqueue(new Callback<JsonElement>() {
 

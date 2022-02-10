@@ -17,7 +17,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityProfileEmailBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
@@ -97,7 +96,7 @@ public class MyProfileEmailActivity extends BaseActivity {
         List<String> newEmailList = new ArrayList<>(Arrays.asList(newUserEmail.split(",")));
 
         disableProcessButton();
-        addNewEmail(Authorization.get(ctx), newEmailList);
+        addNewEmail(getAccount().getAuthorization(), newEmailList);
     }
 
     private void addNewEmail(final String token, List<String> newUserEmail) {

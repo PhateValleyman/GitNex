@@ -14,9 +14,9 @@ import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
 import org.gitnex.tea4j.models.IssueReaction;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,14 +79,14 @@ public class ReactionList extends HorizontalScrollView {
 					case ISSUE:
 						response = RetrofitClient
 							.getApiInterface(context)
-							.getIssueReactions(Authorization.get(context), repoOwner, repoName, id)
+							.getIssueReactions(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, id)
 							.execute();
 						break;
 
 					case COMMENT:
 						response = RetrofitClient
 							.getApiInterface(context)
-							.getIssueCommentReactions(Authorization.get(context), repoOwner, repoName, id)
+							.getIssueCommentReactions(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, id)
 							.execute();
 						break;
 

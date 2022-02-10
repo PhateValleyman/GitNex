@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.models.Organization;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.ExplorePublicOrganizationsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentOrganizationsBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.helpers.TinyDB;
@@ -68,7 +68,7 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 		adapter.setLoadMoreListener(() -> fragmentPublicOrgBinding.recyclerView.post(() -> {
 			if(organizationsList.size() == resultLimit || pageSize == resultLimit) {
 				int page = (organizationsList.size() + resultLimit) / resultLimit;
-				loadMore(Authorization.get(getContext()), page, resultLimit);
+				loadMore(((BaseActivity) requireActivity()).getAccount().getAuthorization(), page, resultLimit);
 			}
 		}));
 
@@ -78,7 +78,7 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 		fragmentPublicOrgBinding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 		fragmentPublicOrgBinding.recyclerView.setAdapter(adapter);
 
-		loadInitial(Authorization.get(getContext()), resultLimit);
+		loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), resultLimit);
 
 		return fragmentPublicOrgBinding.getRoot();
 	}

@@ -23,11 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.CreateOrganizationActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.OrganizationsListAdapter;
 import org.mian.gitnex.databinding.FragmentOrganizationsBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.OrganizationListViewModel;
 
@@ -91,11 +91,11 @@ public class OrganizationsFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            OrganizationListViewModel.loadOrgsList(Authorization.get(getContext()), getContext());
+            OrganizationListViewModel.loadOrgsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
 
         }, 50));
 
-        fetchDataAsync(Authorization.get(getContext()));
+        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization());
 
         return fragmentOrganizationsBinding.getRoot();
 
@@ -109,7 +109,7 @@ public class OrganizationsFragment extends Fragment {
         final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
         if(tinyDb.getBoolean("orgCreated")) {
-            OrganizationListViewModel.loadOrgsList(Authorization.get(getContext()), getContext());
+            OrganizationListViewModel.loadOrgsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
             tinyDb.putBoolean("orgCreated", false);
         }
     }

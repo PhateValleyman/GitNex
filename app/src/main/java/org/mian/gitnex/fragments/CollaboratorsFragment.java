@@ -14,9 +14,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import org.gitnex.tea4j.models.Collaborators;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.CollaboratorsAdapter;
 import org.mian.gitnex.databinding.FragmentCollaboratorsBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.CollaboratorsViewModel;
 import java.util.List;
@@ -61,7 +61,7 @@ public class CollaboratorsFragment extends Fragment {
         mProgressBar = fragmentCollaboratorsBinding.progressBar;
         mGridView = fragmentCollaboratorsBinding.gridView;
 
-        fetchDataAsync(Authorization.get(getContext()), repository.getOwner(), repository.getName());
+        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
         return fragmentCollaboratorsBinding.getRoot();
 
     }

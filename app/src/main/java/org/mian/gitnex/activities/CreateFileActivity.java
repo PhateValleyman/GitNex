@@ -21,7 +21,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateFileBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.NetworkStatusObserver;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
@@ -182,7 +181,7 @@ public class CreateFileActivity extends BaseActivity {
 
         Call<JsonElement> call = RetrofitClient
                 .getApiInterface(ctx)
-                .createNewFile(Authorization.get(ctx), repoOwner, repoName, fileName, createNewFileJsonStr);
+                .createNewFile(getAccount().getAuthorization(), repoOwner, repoName, fileName, createNewFileJsonStr);
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -237,7 +236,7 @@ public class CreateFileActivity extends BaseActivity {
 
 		Call<JsonElement> call = RetrofitClient
 			.getApiInterface(ctx)
-			.deleteFile(Authorization.get(ctx), repoOwner, repoName, fileName, deleteFileJsonStr);
+			.deleteFile(getAccount().getAuthorization(), repoOwner, repoName, fileName, deleteFileJsonStr);
 
 		call.enqueue(new Callback<JsonElement>() {
 
@@ -294,7 +293,7 @@ public class CreateFileActivity extends BaseActivity {
 
 		Call<JsonElement> call = RetrofitClient
 			.getApiInterface(ctx)
-			.editFile(Authorization.get(ctx), repoOwner, repoName, fileName, editFileJsonStr);
+			.editFile(getAccount().getAuthorization(), repoOwner, repoName, fileName, editFileJsonStr);
 
 		call.enqueue(new Callback<JsonElement>() {
 
@@ -351,7 +350,7 @@ public class CreateFileActivity extends BaseActivity {
 
         Call<List<Branches>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getBranches(Authorization.get(ctx), repoOwner, repoName);
+                .getBranches(getAccount().getAuthorization(), repoOwner, repoName);
 
         call.enqueue(new Callback<List<Branches>>() {
 

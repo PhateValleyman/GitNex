@@ -19,7 +19,6 @@ import org.gitnex.tea4j.models.UserSearch;
 import org.mian.gitnex.adapters.UserSearchForTeamMemberAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityAddNewTeamMemberBinding;
-import org.mian.gitnex.helpers.Authorization;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -110,7 +109,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 	public void loadUserSearchList(String searchKeyword, String teamId) {
 
-		Call<UserSearch> call = RetrofitClient.getApiInterface(ctx).getUserBySearch(Authorization.get(ctx), searchKeyword, 10, 1);
+		Call<UserSearch> call = RetrofitClient.getApiInterface(ctx).getUserBySearch(getAccount().getAuthorization(), searchKeyword, 10, 1);
 
 		mProgressBar.setVisibility(View.VISIBLE);
 

@@ -13,7 +13,6 @@ import org.mian.gitnex.adapters.FilesDiffAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityFileDiffBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.ParseDiff;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -77,8 +76,8 @@ public class FileDiffActivity extends BaseActivity {
 		Thread thread = new Thread(() -> {
 
 			Call<ResponseBody> call = apiCall ?
-				RetrofitClient.getApiInterface(ctx).getPullDiffContent(Authorization.get(ctx), owner, repo, pullIndex) :
-				RetrofitClient.getWebInterface(ctx).getPullDiffContent(Authorization.getWeb(ctx), owner, repo, pullIndex);
+				RetrofitClient.getApiInterface(ctx).getPullDiffContent(getAccount().getAuthorization(), owner, repo, pullIndex) :
+				RetrofitClient.getWebInterface(ctx).getPullDiffContent(getAccount().getWebAuthorization(), owner, repo, pullIndex);
 
 			try {
 

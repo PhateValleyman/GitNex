@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.models.Milestones;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.MilestonesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentMilestonesBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Version;
@@ -95,7 +95,7 @@ public class MilestonesFragment extends Fragment {
 			    if(dataList.size() == resultLimit || pageSize == resultLimit) {
 
 				    int page = (dataList.size() + resultLimit) / resultLimit;
-				    loadMore(Authorization.get(getContext()), repository.getOwner(), repository.getName(), page, resultLimit, repository.getMilestoneState().toString());
+				    loadMore(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), page, resultLimit, repository.getMilestoneState().toString());
 
 			    }
 
@@ -113,7 +113,7 @@ public class MilestonesFragment extends Fragment {
 
             dataList.clear();
             viewBinding.pullToRefresh.setRefreshing(false);
-            loadInitial(Authorization.get(getContext()), repository.getOwner(), repository.getName(), resultLimit, tinyDb.getString("milestoneState"));
+            loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, tinyDb.getString("milestoneState"));
             adapter.updateList(dataList);
 
         }, 50));
@@ -138,7 +138,7 @@ public class MilestonesFragment extends Fragment {
 			        if(dataList.size() == resultLimit || pageSize == resultLimit) {
 
 				        int page = (dataList.size() + resultLimit) / resultLimit;
-				        loadMore(Authorization.get(getContext()), repository.getOwner(), repository.getName(), page, resultLimit, milestoneState);
+				        loadMore(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), page, resultLimit, milestoneState);
 
 			        }
 
@@ -151,12 +151,12 @@ public class MilestonesFragment extends Fragment {
             viewBinding.progressBar.setVisibility(View.VISIBLE);
             viewBinding.noDataMilestone.setVisibility(View.GONE);
 
-            loadInitial(Authorization.get(getContext()), repository.getOwner(), repository.getName(), resultLimit, milestoneState);
+            loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, milestoneState);
             viewBinding.recyclerView.setAdapter(adapter);
 
         });
 
-        loadInitial(Authorization.get(getContext()), repository.getOwner(), repository.getName(), resultLimit, tinyDb.getString("milestoneState"));
+        loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, tinyDb.getString("milestoneState"));
 
         return viewBinding.getRoot();
 
@@ -169,7 +169,7 @@ public class MilestonesFragment extends Fragment {
         TinyDB tinyDb = TinyDB.getInstance(getContext());
         if(tinyDb.getBoolean("milestoneCreated")) { // TODO use another way than tinydb
 
-            loadInitial(Authorization.get(getContext()), repository.getOwner(), repository.getName(), resultLimit, tinyDb.getString("milestoneState"));
+            loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, tinyDb.getString("milestoneState"));
             tinyDb.putBoolean("milestoneCreated", false);
 
         }

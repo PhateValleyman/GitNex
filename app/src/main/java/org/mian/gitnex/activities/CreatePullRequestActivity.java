@@ -23,7 +23,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreatePrBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.Version;
@@ -74,7 +73,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		String[] parts = repoFullName.split("/");
 		repoOwner = parts[0];
 		repoName = parts[1];
-		instanceToken = "token " + tinyDB.getString(loginUid + "-token");
+		instanceToken = getAccount().getAuthorization();
 
 		// require gitea 1.12 or higher
 		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.0")) {
@@ -243,7 +242,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 		Call<List<Branches>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getBranches(Authorization.get(ctx), repoOwner, repoName);
+			.getBranches(getAccount().getAuthorization(), repoOwner, repoName);
 
 		call.enqueue(new Callback<List<Branches>>() {
 
@@ -292,7 +291,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		String msState = "open";
 		Call<List<Milestones>> call = RetrofitClient
 			.getApiInterface(appCtx)
-			.getMilestones(Authorization.get(ctx), repoOwner, repoName, 1, resultLimit, msState);
+			.getMilestones(getAccount().getAuthorization(), repoOwner, repoName, 1, resultLimit, msState);
 
 		call.enqueue(new Callback<List<Milestones>>() {
 

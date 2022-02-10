@@ -23,11 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.CreateRepoActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.ReposListAdapter;
 import org.mian.gitnex.databinding.FragmentMyRepositoriesBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.MyRepositoriesViewModel;
 
@@ -128,11 +128,11 @@ public class MyRepositoriesFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            MyRepositoriesViewModel.loadMyReposList(Authorization.get(getContext()), userLogin, getContext(),  pageSize, resultLimit);
+            MyRepositoriesViewModel.loadMyReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), userLogin, getContext(),  pageSize, resultLimit);
 
         }, 50));
 
-        fetchDataAsync(Authorization.get(getContext()), userLogin, pageSize, resultLimit);
+        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), userLogin, pageSize, resultLimit);
 
         return fragmentMyRepositoriesBinding.getRoot();
 
@@ -145,7 +145,7 @@ public class MyRepositoriesFragment extends Fragment {
         final String userLogin =  tinyDb.getString("userLogin");
 
         if(tinyDb.getBoolean("repoCreated")) {
-            MyRepositoriesViewModel.loadMyReposList(Authorization.get(getContext()), userLogin, getContext(),  pageSize, resultLimit);
+            MyRepositoriesViewModel.loadMyReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), userLogin, getContext(),  pageSize, resultLimit);
             tinyDb.putBoolean("repoCreated", false);
         }
 

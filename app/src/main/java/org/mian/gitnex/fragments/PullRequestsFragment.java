@@ -20,11 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.gitnex.tea4j.models.PullRequests;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.PullRequestsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentPullRequestsBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -82,7 +82,7 @@ public class PullRequestsFragment extends Fragment {
 
 			if(prList.size() == resultLimit || pageSize == resultLimit) {
 				int page = (prList.size() + resultLimit) / resultLimit;
-				loadMore(Authorization.get(getContext()), repoOwner, repoName, page, tinyDb.getString("repoPrState"), resultLimit);
+				loadMore(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, page, tinyDb.getString("repoPrState"), resultLimit);
 			}
 
 		}));
@@ -109,7 +109,7 @@ public class PullRequestsFragment extends Fragment {
 
 				if(prList.size() == resultLimit || pageSize == resultLimit) {
 					int page = (prList.size() + resultLimit) / resultLimit;
-					loadMore(Authorization.get(getContext()), repoOwner, repoName, page, tinyDb.getString("repoPrState"), resultLimit);
+					loadMore(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, page, tinyDb.getString("repoPrState"), resultLimit);
 				}
 
 			}));
@@ -119,11 +119,11 @@ public class PullRequestsFragment extends Fragment {
 			fragmentPullRequestsBinding.progressBar.setVisibility(View.VISIBLE);
 			fragmentPullRequestsBinding.noData.setVisibility(View.GONE);
 
-			loadInitial(Authorization.get(context), repoOwner, repoName, pageSize, prState, resultLimit);
+			loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, pageSize, prState, resultLimit);
 			fragmentPullRequestsBinding.recyclerView.setAdapter(adapter);
 		});
 
-		loadInitial(Authorization.get(getContext()), repoOwner, repoName, pageSize, tinyDb.getString("repoPrState"), resultLimit);
+		loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, pageSize, tinyDb.getString("repoPrState"), resultLimit);
 
 		return fragmentPullRequestsBinding.getRoot();
 	}
@@ -140,7 +140,7 @@ public class PullRequestsFragment extends Fragment {
 		final String repoName = parts[1];
 
 		if(tinyDb.getBoolean("resumePullRequests")) {
-			loadInitial(Authorization.get(getContext()), repoOwner, repoName, pageSize, tinyDb.getString("repoPrState"), resultLimit);
+			loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, pageSize, tinyDb.getString("repoPrState"), resultLimit);
 			tinyDb.putBoolean("resumePullRequests", false);
 			tinyDb.putBoolean("prMerged", false);
 		}

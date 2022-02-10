@@ -20,15 +20,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.ActivityResultRegistry;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.core.widget.NestedScrollView;
@@ -58,7 +52,6 @@ import org.mian.gitnex.fragments.BottomSheetReplyFragment;
 import org.mian.gitnex.fragments.BottomSheetSingleIssueFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.LabelWidthCalculator;
@@ -198,7 +191,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			viewBinding.pullToRefresh.setRefreshing(false);
 			IssueCommentsViewModel
-				.loadIssueComments(Authorization.get(ctx), repoOwner, repoName, issueIndex,
+				.loadIssueComments(getAccount().getAuthorization(), repoOwner, repoName, issueIndex,
 					ctx);
 
 		}, 500));
@@ -351,7 +344,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		call3 = RetrofitClient
 			.getApiInterface(ctx)
-			.patchIssueAssignees(Authorization.get(ctx), repoOwner, repoName, issueIndex, updateAssigneeJson);
+			.patchIssueAssignees(getAccount().getAuthorization(), repoOwner, repoName, issueIndex, updateAssigneeJson);
 
 		call3.enqueue(new Callback<JsonElement>() {
 
@@ -406,7 +399,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		Call<JsonElement> call = RetrofitClient
 			.getApiInterface(ctx)
-			.updateIssueLabels(Authorization.get(ctx), repoOwner, repoName, issueIndex, patchIssueLabels);
+			.updateIssueLabels(getAccount().getAuthorization(), repoOwner, repoName, issueIndex, patchIssueLabels);
 
 		call.enqueue(new Callback<JsonElement>() {
 
@@ -499,7 +492,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			viewBinding.scrollViewComments.post(() -> {
 
 				IssueCommentsViewModel
-					.loadIssueComments(Authorization.get(ctx), repoOwner, repoName, issueIndex,
+					.loadIssueComments(getAccount().getAuthorization(), repoOwner, repoName, issueIndex,
 						ctx);
 
 				// TODO do this once loading is finished (not after 1 sec)
@@ -514,7 +507,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			viewBinding.scrollViewComments.post(() -> {
 
 				IssueCommentsViewModel
-					.loadIssueComments(Authorization.get(ctx), repoOwner, repoName, issueIndex,
+					.loadIssueComments(getAccount().getAuthorization(), repoOwner, repoName, issueIndex,
 						ctx);
 				commentEdited = false;
 			});
@@ -537,7 +530,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		IssueCommentsViewModel issueCommentsModel = new ViewModelProvider(this).get(IssueCommentsViewModel.class);
 
-		issueCommentsModel.getIssueCommentList(Authorization.get(ctx), owner, repo, index, ctx)
+		issueCommentsModel.getIssueCommentList(getAccount().getAuthorization(), owner, repo, index, ctx)
 			.observe(this, issueCommentsMain -> {
 
 				assert issueCommentsMain != null;
@@ -568,7 +561,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 		Call<Issues> call = RetrofitClient.getApiInterface(ctx)
-			.getIssueByIndex(Authorization.get(ctx), repoOwner, repoName, issueIndex);
+			.getIssueByIndex(getAccount().getAuthorization(), repoOwner, repoName, issueIndex);
 
 		call.enqueue(new Callback<Issues>() {
 
@@ -623,7 +616,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 	private void getSubscribed() {
 		RetrofitClient.getApiInterface(appCtx)
-			.checkIssueWatchStatus(Authorization.get(ctx), repoOwner, repoName, issueIndex)
+			.checkIssueWatchStatus(getAccount().getAuthorization(), repoOwner, repoName, issueIndex)
 			.enqueue(new Callback<WatchInfo>() {
 				@Override
 				public void onResponse(@NonNull Call<WatchInfo> call, @NonNull Response<WatchInfo> response) {

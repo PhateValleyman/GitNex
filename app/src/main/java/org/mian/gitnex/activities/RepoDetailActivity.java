@@ -49,7 +49,6 @@ import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.fragments.ReleasesFragment;
 import org.mian.gitnex.fragments.RepoInfoFragment;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.structs.BottomSheetListener;
@@ -130,10 +129,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		toolbarTitle.setTypeface(myTypeface);
 
-		getRepoInfo(Authorization.get(ctx), repository.getOwner(), repository.getName());
+		getRepoInfo(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
-		checkRepositoryStarStatus(Authorization.get(ctx), repository.getOwner(), repository.getName());
-		checkRepositoryWatchStatus(Authorization.get(ctx), repository.getOwner(), repository.getName());
+		checkRepositoryStarStatus(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+		checkRepositoryWatchStatus(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 	}
 
 	@Override
@@ -141,7 +140,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		super.onResume();
 
-		getRepoInfo(Authorization.get(ctx), repository.getOwner(), repository.getName());
+		getRepoInfo(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 	}
 
 	@Override
@@ -319,7 +318,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		Call<List<Milestones>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getMilestones(Authorization.get(ctx), repository.getOwner(), repository.getName(), 1, 50, "open");
+			.getMilestones(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), 1, 50, "open");
 
 		call.enqueue(new Callback<List<Milestones>>() {
 
@@ -381,7 +380,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		Call<List<Branches>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getBranches(Authorization.get(ctx), repository.getOwner(), repository.getName());
+			.getBranches(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
 		call.enqueue(new Callback<List<Branches>>() {
 

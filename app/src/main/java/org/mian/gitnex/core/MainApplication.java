@@ -14,6 +14,7 @@ import org.acra.config.LimiterConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
 import org.acra.data.StringFormat;
 import org.mian.gitnex.R;
+import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.FontsOverride;
@@ -47,7 +48,7 @@ public class MainApplication extends Application {
 		Context appCtx = getApplicationContext();
 		tinyDB = TinyDB.getInstance(appCtx);
 
-		currentAccount = AccountContext.fromId(tinyDB.getInt("currentAccountId", 0), appCtx);
+		currentAccount = AccountContext.fromId(tinyDB.getInt("currentActiveAccountId", 0), appCtx);
 
 		tinyDB.putBoolean("biometricLifeCycle", false);
 
@@ -96,5 +97,15 @@ public class MainApplication extends Application {
 
 			ACRA.init(this, ACRABuilder);
 		}
+	}
+
+	public boolean switchToAccount(UserAccount userAccount) {
+		if(tinyDB.getInt("currentActiveAccountId") != userAccount.getAccountId()) {
+			currentAccount = new AccountContext(userAccount);
+			tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
+			return true;
+		}
+
+		return false;
 	}
 }

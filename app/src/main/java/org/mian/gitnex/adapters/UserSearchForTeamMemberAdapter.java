@@ -12,12 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
@@ -130,7 +130,7 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 
 			Call<UserInfo> call = RetrofitClient
 					.getApiInterface(context)
-					.checkTeamMember(Authorization.get(context), teamId, currentItem.getLogin());
+					.checkTeamMember(((BaseActivity) context).getAccount().getAuthorization(), teamId, currentItem.getLogin());
 
 			call.enqueue(new Callback<UserInfo>() {
 

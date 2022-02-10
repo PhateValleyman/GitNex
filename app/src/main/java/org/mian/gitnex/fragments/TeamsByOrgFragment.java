@@ -24,9 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.gitnex.tea4j.models.Teams;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.TeamsByOrgAdapter;
 import org.mian.gitnex.databinding.FragmentTeamsByOrgBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.TeamsByOrgViewModel;
 import java.util.List;
@@ -89,11 +89,11 @@ public class TeamsByOrgFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            TeamsByOrgViewModel.loadTeamsByOrgList(Authorization.get(getContext()), orgName, getContext());
+            TeamsByOrgViewModel.loadTeamsByOrgList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), orgName, getContext());
 
         }, 200));
 
-        fetchDataAsync(Authorization.get(getContext()), orgName);
+        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), orgName);
 
         return fragmentTeamsByOrgBinding.getRoot();
     }
@@ -104,7 +104,7 @@ public class TeamsByOrgFragment extends Fragment {
         TinyDB tinyDb = TinyDB.getInstance(getContext());
 
         if(tinyDb.getBoolean("resumeTeams")) {
-            TeamsByOrgViewModel.loadTeamsByOrgList(Authorization.get(getContext()), orgName, getContext());
+            TeamsByOrgViewModel.loadTeamsByOrgList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), orgName, getContext());
             tinyDb.putBoolean("resumeTeams", false);
         }
     }

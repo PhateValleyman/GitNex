@@ -4,9 +4,9 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,7 +21,7 @@ public class PullRequestActions {
 	public static void deleteHeadBranch(Context context, String repoOwner, String repoName, String headBranch, boolean showToasts) {
 		Call<JsonElement> call = RetrofitClient
 				.getApiInterface(context)
-				.deleteBranch(Authorization.get(context), repoOwner, repoName, headBranch);
+				.deleteBranch(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, headBranch);
 
 		call.enqueue(new Callback<JsonElement>() {
 
@@ -71,7 +71,7 @@ public class PullRequestActions {
 		else {
 			strategy = "rebase";
 		}
-		RetrofitClient.getApiInterface(context).updatePullRequest(Authorization.get(context), repoOwner, repoName, Integer.parseInt(index), strategy)
+		RetrofitClient.getApiInterface(context).updatePullRequest(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, Integer.parseInt(index), strategy)
 			.enqueue(new Callback<Void>() {
 
 			@Override

@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.LabelsAdapter;
 import org.mian.gitnex.databinding.FragmentLabelsBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.LabelsViewModel;
 
@@ -89,10 +89,10 @@ public class LabelsFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            LabelsViewModel.loadLabelsList(Authorization.get(getContext()), repoOwner, repoName, getContext());
+            LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, getContext());
         }, 200));
 
-        fetchDataAsync(Authorization.get(getContext()), repoOwner, repoName);
+        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName);
 
         return fragmentLabelsBinding.getRoot();
     }
@@ -110,7 +110,7 @@ public class LabelsFragment extends Fragment {
 
         if(tinyDb.getBoolean("labelsRefresh")) {
 
-            LabelsViewModel.loadLabelsList(Authorization.get(getContext()), repoOwner, repoName, getContext());
+            LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, getContext());
             tinyDb.putBoolean("labelsRefresh", false);
         }
     }

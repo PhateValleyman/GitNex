@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Gravity;
 import android.view.Menu;
@@ -26,7 +24,6 @@ import org.mian.gitnex.databinding.ActivityFileViewBinding;
 import org.mian.gitnex.fragments.BottomSheetFileViewerFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Images;
 import org.mian.gitnex.helpers.Markdown;
@@ -89,7 +86,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 
 			Call<ResponseBody> call = RetrofitClient
 				.getWebInterface(ctx)
-				.getFileContents(Authorization.getWeb(ctx), owner, repo, ref, filename);
+				.getFileContents(getAccount().getWebAuthorization(), owner, repo, ref, filename);
 
 			try {
 
@@ -354,7 +351,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 
 						Call<ResponseBody> call = RetrofitClient
 							.getWebInterface(ctx)
-							.getFileContents(Authorization.getWeb(ctx), repoOwner, repoName, repoBranch, file.getPath());
+							.getFileContents(getAccount().getWebAuthorization(), repoOwner, repoName, repoBranch, file.getPath());
 
 						Response<ResponseBody> response = call.execute();
 

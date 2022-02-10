@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserGridAdapter;
 import org.mian.gitnex.databinding.ActivityRepoStargazersBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.RepoStargazersViewModel;
 
@@ -49,7 +48,7 @@ public class RepoStargazersActivity extends BaseActivity {
 
         toolbarTitle.setText(R.string.repoStargazersInMenu);
 
-        fetchDataAsync(Authorization.get(ctx), repoOwner, repoName);
+        fetchDataAsync(getAccount().getAuthorization(), repoOwner, repoName);
     }
 
     private void fetchDataAsync(String instanceToken, String repoOwner, String repoName) {

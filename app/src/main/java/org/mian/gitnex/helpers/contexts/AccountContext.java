@@ -49,7 +49,7 @@ public class AccountContext {
 	}
 
 	public boolean requiresVersion(String version) {
-		return getServerVersion().higherOrEqual("1.13.0");
+		return getServerVersion().higherOrEqual(version);
 	}
 
 }

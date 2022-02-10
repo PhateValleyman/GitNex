@@ -5,9 +5,9 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.AddNewTeamMemberActivity;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import retrofit2.Call;
@@ -27,7 +27,7 @@ public class TeamActions {
 
 		call = RetrofitClient
 				.getApiInterface(context)
-				.removeTeamMember(Authorization.get(context), teamId, userName);
+				.removeTeamMember(((BaseActivity) context).getAccount().getAuthorization(), teamId, userName);
 
 		call.enqueue(new Callback<JsonElement>() {
 
@@ -87,7 +87,7 @@ public class TeamActions {
 
 		Call<JsonElement> call = RetrofitClient
 				.getApiInterface(context)
-				.addTeamMember(Authorization.get(context), teamId, userName);
+				.addTeamMember(((BaseActivity) context).getAccount().getAuthorization(), teamId, userName);
 
 		call.enqueue(new Callback<JsonElement>() {
 

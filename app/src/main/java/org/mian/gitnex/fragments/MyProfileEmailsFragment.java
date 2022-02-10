@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.gitnex.tea4j.models.Emails;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.MyProfileEmailsAdapter;
 import org.mian.gitnex.databinding.FragmentProfileEmailsBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.viewmodels.ProfileEmailsViewModel;
 import java.util.List;
 
@@ -85,11 +85,11 @@ public class MyProfileEmailsFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            ProfileEmailsViewModel.loadEmailsList(Authorization.get(getContext()), getContext());
+            ProfileEmailsViewModel.loadEmailsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
 
         }, 200));
 
-        fetchDataAsync(Authorization.get(getContext()));
+        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization());
 
         return fragmentProfileEmailsBinding.getRoot();
 

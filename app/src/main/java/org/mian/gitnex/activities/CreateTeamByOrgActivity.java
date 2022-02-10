@@ -18,7 +18,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateTeamByOrgBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
@@ -292,7 +291,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 
         call3 = RetrofitClient
                 .getApiInterface(ctx)
-                .createTeamsByOrg(Authorization.get(ctx), orgName, createNewTeamJson);
+                .createTeamsByOrg(getAccount().getAuthorization(), orgName, createNewTeamJson);
 
         call3.enqueue(new Callback<Teams>() {
 

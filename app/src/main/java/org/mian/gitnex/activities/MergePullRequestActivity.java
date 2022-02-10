@@ -17,9 +17,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityMergePullRequestBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -165,7 +163,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 		MergePullRequest mergePR = new MergePullRequest(Do, mergePRDT, mergeTitle);
 
-		Call<Void> call = RetrofitClient.getApiInterface(ctx).mergePullRequest(Authorization.get(ctx), issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getIssueIndex(), mergePR);
+		Call<Void> call = RetrofitClient.getApiInterface(ctx).mergePullRequest(getAccount().getAuthorization(), issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getIssueIndex(), mergePR);
 
 		call.enqueue(new Callback<Void>() {
 

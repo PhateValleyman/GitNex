@@ -21,7 +21,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateRepoBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
@@ -84,7 +83,7 @@ public class CreateRepoActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         spinner = activityCreateRepoBinding.ownerSpinner;
-        getOrganizations(Authorization.get(ctx), userLogin);
+        getOrganizations(getAccount().getAuthorization(), userLogin);
 
         createRepo = activityCreateRepoBinding.createNewRepoButton;
         disableProcessButton();
@@ -147,7 +146,7 @@ public class CreateRepoActivity extends BaseActivity {
         else {
 
             disableProcessButton();
-            createNewRepository(Authorization.get(ctx), loginUid, newRepoName, newRepoDesc, selectedOwner, newRepoAccess);
+            createNewRepository(getAccount().getAuthorization(), loginUid, newRepoName, newRepoDesc, selectedOwner, newRepoAccess);
         }
     }
 
