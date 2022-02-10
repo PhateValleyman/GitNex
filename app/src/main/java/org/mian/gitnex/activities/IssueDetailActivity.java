@@ -114,7 +114,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private ActivityIssueDetailBinding viewBinding;
 
 	public boolean singleIssueUpdate = false;
-	public boolean issueEdited = false;
 	public boolean commentEdited = false;
 	public boolean commentPosted = false;
 
@@ -122,7 +121,16 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		result -> {
 			if(result.getResultCode() == 200) {
 				assert result.getData() != null;
-				issueEdited = result.getData().getBooleanExtra("issueEdited", false);
+				if(result.getData().getBooleanExtra("issueEdited", false)) {
+					new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+						viewBinding.frameAssignees.removeAllViews();
+						viewBinding.frameLabels.removeAllViews();
+						issue.setIssue(null);
+						getSingleIssue(repoOwner, repoName, issueIndex);
+
+					}, 500);
+				}
 			}
 		});
 
@@ -520,19 +528,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				viewBinding.frameLabels.removeAllViews();
 				getSingleIssue(repoOwner, repoName, issueIndex);
 				singleIssueUpdate = false;
-
-			}, 500);
-		}
-
-		if(issueEdited) {
-
-			new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-				viewBinding.frameAssignees.removeAllViews();
-				viewBinding.frameLabels.removeAllViews();
-				issue.setIssue(null);
-				getSingleIssue(repoOwner, repoName, issueIndex);
-				issueEdited = false;
 
 			}, 500);
 		}

@@ -172,7 +172,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 			case "file":
 			case "symlink":
-				Intent intent = new Intent(getContext(), FileViewActivity.class);
+				Intent intent = repository.getIntent(getContext(), FileViewActivity.class);
 				intent.putExtra("file", file);
 
 				requireContext().startActivity(intent);

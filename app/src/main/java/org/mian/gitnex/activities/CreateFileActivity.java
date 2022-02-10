@@ -2,6 +2,7 @@ package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.NetworkStatusObserver;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -47,8 +49,7 @@ public class CreateFileActivity extends BaseActivity {
 
     private final List<String> branches = new ArrayList<>();
 
-	private String repoOwner;
-	private String repoName;
+	private RepositoryContext repository;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -59,10 +60,7 @@ public class CreateFileActivity extends BaseActivity {
         binding = ActivityCreateFileBinding.inflate(getLayoutInflater());
 	    setContentView(binding.getRoot());
 
-        String repoFullName = tinyDB.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        repoOwner = parts[0];
-        repoName = parts[1];
+	    repository = RepositoryContext.fromIntent(getIntent());
 
 	    TextView toolbarTitle = binding.toolbarTitle;
 
@@ -119,7 +117,7 @@ public class CreateFileActivity extends BaseActivity {
 
 	    }
 
-        getBranches(repoOwner, repoName);
+        getBranches(repository.getOwner(), repository.getName());
 
         disableProcessButton();
 
@@ -162,15 +160,15 @@ public class CreateFileActivity extends BaseActivity {
         switch(fileAction) {
 
             case FILE_ACTION_CREATE:
-	            createNewFile(repoOwner, repoName, newFileName, AppUtil.encodeBase64(newFileContent), newFileCommitMessage, newFileBranchName);
+	            createNewFile(repository.getOwner(), repository.getName(), newFileName, AppUtil.encodeBase64(newFileContent), newFileCommitMessage, newFileBranchName);
 	            break;
 
             case FILE_ACTION_DELETE:
-	            deleteFile(repoOwner, repoName, filePath, newFileCommitMessage, newFileBranchName, fileSha);
+	            deleteFile(repository.getOwner(), repository.getName(), filePath, newFileCommitMessage, newFileBranchName, fileSha);
 	            break;
 
             case FILE_ACTION_EDIT:
-	            editFile(repoOwner, repoName, filePath, AppUtil.encodeBase64(newFileContent), newFileCommitMessage, newFileBranchName, fileSha);
+	            editFile(repository.getOwner(), repository.getName(), filePath, AppUtil.encodeBase64(newFileContent), newFileCommitMessage, newFileBranchName, fileSha);
                 break;
 
         }
@@ -250,7 +248,7 @@ public class CreateFileActivity extends BaseActivity {
 
 					case 200:
 						enableProcessButton();
-						Toasty.info(ctx, getString(R.string.deleteFileMessage, tinyDB.getString("repoBranch")));
+						Toasty.info(ctx, getString(R.string.deleteFileMessage, repository.getBranchRef()));
 						getIntent().removeExtra("filePath");
 						getIntent().removeExtra("fileSha");
 						getIntent().removeExtra("fileContents");
@@ -311,7 +309,9 @@ public class CreateFileActivity extends BaseActivity {
 						getIntent().removeExtra("filePath");
 						getIntent().removeExtra("fileSha");
 						getIntent().removeExtra("fileContents");
-						tinyDB.putBoolean("fileModified", true);
+						Intent result = new Intent();
+						result.putExtra("fileModified", true);
+						setResult(200, result);
 						finish();
 						break;
 
@@ -366,7 +366,7 @@ public class CreateFileActivity extends BaseActivity {
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateFileActivity.this, R.layout.list_spinner_items, branches);
 
 	                binding.newFileBranches.setAdapter(adapter);
-	                binding.newFileBranches.setText(tinyDB.getString("repoBranch"), false);
+	                binding.newFileBranches.setText(repository.getBranchRef(), false);
 
 	                enableProcessButton();
 

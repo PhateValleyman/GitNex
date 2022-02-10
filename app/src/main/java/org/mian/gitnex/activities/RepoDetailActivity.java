@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -80,6 +82,17 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	private int tabsCount;
 
 	public RepositoryContext repository;
+
+	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+		result -> {
+			if(result.getResultCode() == 201) {
+				assert result.getData() != null;
+				if(result.getData().getBooleanExtra("updateReleases", false)) {
+					// TODO update releases (wait for tags pr)
+				}
+			}
+		});
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -217,7 +230,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				break;
 			case "createRelease":
 
-				startActivity(repository.getIntent(ctx, CreateReleaseActivity.class));
+				createReleaseLauncher.launch(repository.getIntent(ctx, CreateReleaseActivity.class));
 				break;
 			case "openWebRepo":
 				AppUtil.openUrlInBrowser(this, repository.getRepository().getHtml_url());
@@ -240,7 +253,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				break;
 			case "newFile":
 
-				startActivity(repository.getIntent(ctx, CreateFileActivity.class));
+				startActivity(repository.getIntent(ctx, CreateFileActivity.class)); // TODO reload files?
 				break;
 			case "filterByMilestone":
 				filterIssuesByMilestone();
@@ -634,7 +647,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					if(getFragmentRefreshListenerFiles() != null) {
 						getFragmentRefreshListenerFiles().onRefresh(branch1);
 					}
-					Intent intent = new Intent(ctx, FileViewActivity.class);
+					Intent intent = repository.getIntent(ctx, FileViewActivity.class);
 					intent.putExtra("file", mainIntent.getSerializableExtra("file"));
 					startActivity(intent);
 					break;
@@ -677,7 +690,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					break;
 				case "newRelease":
 					mViewPager.setCurrentItem(4);
-					startActivity(repository.getIntent(ctx, CreateReleaseActivity.class));
+					createReleaseLauncher.launch(repository.getIntent(ctx, CreateReleaseActivity.class));
 					break;
 				case "milestones":
 					mViewPager.setCurrentItem(5);

@@ -2,6 +2,7 @@ package org.mian.gitnex.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -45,8 +47,7 @@ public class CreateReleaseActivity extends BaseActivity {
     private Button createNewRelease;
     private String selectedBranch;
 
-	private String repoOwner;
-	private String repoName;
+	private RepositoryContext repository;
 
     List<Branches> branchesList = new ArrayList<>();
 
@@ -63,10 +64,7 @@ public class CreateReleaseActivity extends BaseActivity {
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        String repoFullName = tinyDB.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        repoOwner = parts[0];
-        repoName = parts[1];
+        repository = RepositoryContext.fromIntent(getIntent());
 
         closeActivity = activityCreateReleaseBinding.close;
         releaseTagName = activityCreateReleaseBinding.releaseTagName;
@@ -94,7 +92,7 @@ public class CreateReleaseActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         releaseBranch = activityCreateReleaseBinding.releaseBranch;
-        getBranches(Authorization.get(ctx), repoOwner, repoName);
+        getBranches(Authorization.get(ctx), repository.getOwner(), repository.getName());
 
         createNewRelease = activityCreateReleaseBinding.createNewRelease;
         disableProcessButton();
@@ -148,7 +146,7 @@ public class CreateReleaseActivity extends BaseActivity {
 	    }
 
         disableProcessButton();
-        createNewReleaseFunc(Authorization.get(ctx), repoOwner, repoName, newReleaseTagName, newReleaseTitle, newReleaseContent, selectedBranch, newReleaseType, newReleaseDraft);
+        createNewReleaseFunc(Authorization.get(ctx), repository.getOwner(), repository.getName(), newReleaseTagName, newReleaseTitle, newReleaseContent, selectedBranch, newReleaseType, newReleaseDraft);
     }
 
     private void createNewReleaseFunc(final String token, String repoOwner, String repoName, String newReleaseTagName, String newReleaseTitle, String newReleaseContent, String selectedBranch, boolean newReleaseType, boolean newReleaseDraft) {
@@ -168,9 +166,10 @@ public class CreateReleaseActivity extends BaseActivity {
 
                 if (response.code() == 201) {
 
-                    tinyDB.putBoolean("updateReleases", true); // TODO dont use tinydb
+                    Intent result = new Intent();
+	                result.putExtra("updateReleases", true);
+	                setResult(201, result);
                     Toasty.success(ctx, getString(R.string.releaseCreatedText));
-                    enableProcessButton();
                     finish();
                 }
                 else if(response.code() == 401) {

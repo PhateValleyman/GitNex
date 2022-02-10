@@ -113,7 +113,8 @@ public class IssueContext implements Serializable {
 
 		return issueIndex != 0 ?
 			issueIndex :
-			issue.getNumber();
+			issue != null ?
+			issue.getNumber() : pullRequest.getNumber();
 	}
 
 	public boolean isSubscribed() {

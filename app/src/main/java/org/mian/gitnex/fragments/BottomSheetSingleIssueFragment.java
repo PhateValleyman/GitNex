@@ -25,7 +25,6 @@ import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
 import org.mian.gitnex.databinding.BottomSheetSingleIssueBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.structs.BottomSheetListener;
@@ -52,7 +51,6 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		BottomSheetSingleIssueBinding bottomSheetSingleIssueBinding = BottomSheetSingleIssueBinding.inflate(inflater, container, false);
 
 		final Context ctx = getContext();
-		final TinyDB tinyDB = TinyDB.getInstance(ctx);
 
 		TextView editIssue = bottomSheetSingleIssueBinding.editIssue;
 		TextView editLabels = bottomSheetSingleIssueBinding.editLabels;
@@ -135,7 +133,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		mergePullRequest.setOnClickListener(v13 -> {
 
-			startActivity(new Intent(ctx, MergePullRequestActivity.class));
+			startActivity(issue.getIntent(ctx, MergePullRequestActivity.class));
 			dismiss();
 		});
 
@@ -174,7 +172,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 			sharingIntent.setType("text/plain");
 			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.hash) + issue.getIssueIndex() + " " + issue.getIssue().getTitle());
-			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, tinyDB.getString("singleIssueHtmlUrl"));
+			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, issue.getIssue().getHtml_url());
 			startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.hash) + issue.getIssueIndex() + " " + issue.getIssue().getTitle()));
 
 			dismiss();

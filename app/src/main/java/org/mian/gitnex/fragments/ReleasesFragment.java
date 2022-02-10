@@ -98,7 +98,7 @@ public class ReleasesFragment extends Fragment {
         super.onResume();
         TinyDB tinyDb = TinyDB.getInstance(getContext());
 
-        if(tinyDb.getBoolean("updateReleases")) {
+        if(tinyDb.getBoolean("updateReleases")) { // TODO wait for tags pr
             ReleasesViewModel.loadReleasesList(Authorization.get(getContext()), repository.getOwner(), repository.getName(), getContext());
             tinyDb.putBoolean("updateReleases", false);
         }
