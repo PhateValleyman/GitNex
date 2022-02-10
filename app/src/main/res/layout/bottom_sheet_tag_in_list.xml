@@ -28,7 +28,7 @@
                 android:clickable="true"
                 android:drawablePadding="24dp"
                 android:padding="12dp"
-                android:text="@string/labelMenuDelete"
+                android:text="@string/menuDeleteText"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
                 app:drawableStartCompat="@drawable/ic_delete" />
