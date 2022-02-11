@@ -111,6 +111,11 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		viewBinding.prLabels.setOnClickListener(prLabels -> showLabels());
 
 		viewBinding.createPr.setOnClickListener(createPr -> processPullRequest());
+
+		if(!tinyDB.getBoolean("canPush")) {
+			viewBinding.prDueDateLayout.setVisibility(View.GONE);
+			viewBinding.prLabelsLayout.setVisibility(View.GONE);
+		}
 	}
 
 	private void processPullRequest() {

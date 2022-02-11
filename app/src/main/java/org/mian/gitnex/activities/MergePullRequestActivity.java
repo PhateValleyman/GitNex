@@ -102,6 +102,11 @@ public class MergePullRequestActivity extends BaseActivity {
 			viewBinding.mergeButton.setOnClickListener(mergePullRequest);
 		}
 
+		if(!tinyDB.getBoolean("canPushPullSource")) {
+			viewBinding.deleteBranch.setVisibility(View.GONE);
+			viewBinding.deleteBranchForkInfo.setVisibility(View.GONE);
+		}
+
 	}
 
 	private void setMergeAdapter() {

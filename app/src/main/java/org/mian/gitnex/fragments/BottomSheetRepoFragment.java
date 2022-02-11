@@ -50,13 +50,32 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
 	    TextView repoSettings = bottomSheetRepoBinding.repoSettings;
 	    TextView createPullRequest = bottomSheetRepoBinding.createPullRequest;
 
+	    boolean canPush = repository.getPermissions().canPush();
+	    if(!canPush) {
+		    createMilestone.setVisibility(View.GONE);
+		    createLabel.setVisibility(View.GONE);
+		    createRelease.setVisibility(View.GONE);
+		    newFile.setVisibility(View.GONE);
+	    }
+
+	    boolean archived = repository.getRepository().isArchived();
+	    if(archived) {
+	    	createIssue.setVisibility(View.GONE);
+	    	createPullRequest.setVisibility(View.GONE);
+		    createMilestone.setVisibility(View.GONE);
+		    createLabel.setVisibility(View.GONE);
+		    createRelease.setVisibility(View.GONE);
+		    newFile.setVisibility(View.GONE);
+		    bottomSheetRepoBinding.createDivider.setVisibility(View.GONE);
+	    }
+
         createLabel.setOnClickListener(v112 -> {
 
             bmListener.onButtonClicked("label");
             dismiss();
         });
 
-        if(repository.getRepository().getHas_issues()) {
+        if(repository.getRepository().getHas_issues() && !archived) {
 
             createIssue.setVisibility(View.VISIBLE);
             createIssue.setOnClickListener(v12 -> {
@@ -70,7 +89,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             createIssue.setVisibility(View.GONE);
         }
 
-	    if(repository.getRepository().isHas_pull_requests()) {
+	    if(repository.getRepository().isHas_pull_requests() && !archived) {
 
 		    createPullRequest.setVisibility(View.VISIBLE);
 		    createPullRequest.setOnClickListener(vPr -> {

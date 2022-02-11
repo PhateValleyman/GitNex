@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.models.Files;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
-import org.mian.gitnex.activities.DeepLinksActivity;
 import org.mian.gitnex.activities.FileViewActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.FilesAdapter;
@@ -31,6 +30,7 @@ import org.mian.gitnex.databinding.FragmentFilesBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Path;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.FilesViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -186,27 +186,35 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				Uri url = AppUtil.getUriFromGitUrl(rawUrl);
 				String host = url.getHost();
 
-
 				UserAccountsApi userAccountsApi = BaseApi.getInstance(requireContext(), UserAccountsApi.class);
 				List<UserAccount> userAccounts = userAccountsApi.usersAccounts();
-				boolean accountFound = false;
+				UserAccount account = null;
 
 				for(UserAccount userAccount : userAccounts) {
 					Uri instanceUri = Uri.parse(userAccount.getInstanceUrl());
 					if(instanceUri.getHost().toLowerCase().equals(host)) {
-						accountFound = true;
+						account = userAccount;
 						// if scheme is wrong fix it
 						if (!url.getScheme().equals(instanceUri.getScheme())) {
-							url = AppUtil.changeScheme(url,instanceUri.getScheme());
+							url = AppUtil.changeScheme(url, instanceUri.getScheme());
 						}
 						break;
 					}
 				}
 
-				if(accountFound) {
-					Intent iLink = new Intent(requireContext(), DeepLinksActivity.class);
-					iLink.setData(url);
-					startActivity(iLink);
+				if(account != null) {
+					AppUtil.switchToAccount(requireContext(), account); // TODO switch back
+					List<String> splittedUrl = url.getPathSegments();
+					if(splittedUrl.size() < 2) {
+						AppUtil.openUrlInBrowser(requireContext(), url.toString());
+					}
+					String owner = splittedUrl.get(splittedUrl.size() - 2);
+					String repo = splittedUrl.get(splittedUrl.size() - 1);
+					if (repo.endsWith(".git")) { // Git clone URL
+						repo = repo.substring(0, repo.length() - 4);
+					}
+
+					startActivity(new RepositoryContext(owner, repo).getIntent(requireContext(), RepoDetailActivity.class));
 				} else {
 					AppUtil.openUrlInBrowser(requireContext(), url.toString());
 				}

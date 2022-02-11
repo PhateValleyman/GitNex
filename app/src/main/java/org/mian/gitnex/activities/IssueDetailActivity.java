@@ -35,7 +35,9 @@ import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.Issues;
 import org.gitnex.tea4j.models.Labels;
+import org.gitnex.tea4j.models.PullRequests;
 import org.gitnex.tea4j.models.UpdateIssueAssignees;
+import org.gitnex.tea4j.models.UserRepositories;
 import org.gitnex.tea4j.models.WatchInfo;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.AssigneesActions;
@@ -87,6 +89,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private String repoOwner;
 	private String repoName;
 	private int issueIndex;
+	private String issueCreator;
 	private IssueContext issue;
 
 	private LabelsListAdapter labelsAdapter;
@@ -472,7 +475,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		}
 		else if(id == R.id.genericMenu) {
 
-			BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment(issue);
+			BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment(issue, issueCreator);
 			bottomSheet.show(getSupportFragmentManager(), "singleIssueBottomSheet");
 			return true;
 		}
@@ -639,7 +642,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		viewBinding.issuePrState.setVisibility(View.VISIBLE);
 
 		if(issue.getIssue().getPull_request() != null) {
-
+			getPullSourceRepo();
 			if(issue.getIssue().getPull_request().isMerged()) { // merged
 
 				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_merged);
@@ -661,6 +664,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		TinyDB tinyDb = TinyDB.getInstance(appCtx);
 		final Locale locale = getResources().getConfiguration().locale;
 		final String timeFormat = tinyDb.getString("dateFormat", "pretty");
+		issueCreator = issue.getIssue().getUser().getLogin();
 
 		PicassoService.getInstance(ctx).get().load(issue.getIssue().getUser().getAvatar_url()).placeholder(R.drawable.loader_animated)
 			.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewBinding.assigneeAvatar);
@@ -871,6 +875,23 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			viewBinding.assigneeAvatar.setOnClickListener(
 				new ClickListener(ctx.getResources().getString(R.string.issueCreator) + issue.getIssue().getUser().getLogin(), ctx));
 		}*/
+	}
+
+	private void getPullSourceRepo() {
+		RetrofitClient.getApiInterface(this).getPullRequestByIndex(getAccount().getAuthorization(), repoOwner, repoName, issueIndex).enqueue(new Callback<PullRequests>() {
+
+			@Override
+			public void onResponse(@NonNull Call<PullRequests> call, @NonNull Response<PullRequests> response) {
+				if(response.isSuccessful() && response.body() != null) {
+					issue.setPullRequest(response.body());
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<PullRequests> call, @NonNull Throwable t) {
+
+			}
+		});
 	}
 
 }

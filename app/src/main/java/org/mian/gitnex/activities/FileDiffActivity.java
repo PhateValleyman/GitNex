@@ -113,11 +113,17 @@ public class FileDiffActivity extends BaseActivity {
 						break;
 
 					case 403:
-						runOnUiThread(() -> Toasty.error(ctx, ctx.getString(R.string.authorizeError)));
+						runOnUiThread(() -> {
+							Toasty.error(ctx, ctx.getString(R.string.authorizeError));
+							finish();
+						});
 						break;
 
 					case 404:
-						runOnUiThread(() -> Toasty.warning(ctx, ctx.getString(R.string.apiNotFound)));
+						runOnUiThread(() -> {
+							Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
+							finish();
+						});
 						break;
 
 					default:

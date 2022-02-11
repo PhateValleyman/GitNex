@@ -120,6 +120,11 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         disableProcessButton();
         getIssue(issue.getRepository().getOwner(), issue.getRepository().getOwner(), issue.getIssueIndex(), resultLimit);
+
+        if(!tinyDB.getBoolean("canPush")) { // TODO move to repoctx
+			findViewById(R.id.editIssueMilestoneSpinnerLayout).setVisibility(View.GONE);
+			findViewById(R.id.editIssueDueDateLayout).setVisibility(View.GONE);
+        }
     }
 
     private void initCloseListener() {

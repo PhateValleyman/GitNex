@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import org.gitnex.tea4j.models.OrgPermissions;
 import org.mian.gitnex.databinding.BottomSheetOrganizationBinding;
 import org.mian.gitnex.structs.BottomSheetListener;
 
@@ -18,12 +19,27 @@ import org.mian.gitnex.structs.BottomSheetListener;
 public class BottomSheetOrganizationFragment extends BottomSheetDialogFragment {
 
     private BottomSheetListener bmListener;
+    private final OrgPermissions permissions;
+
+    public BottomSheetOrganizationFragment(OrgPermissions org) {
+    	permissions = org;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 	    BottomSheetOrganizationBinding bottomSheetOrganizationBinding = BottomSheetOrganizationBinding.inflate(inflater, container, false);
+
+	    if(permissions != null) {
+		    if(!permissions.canCreateRepositories()) {
+			    bottomSheetOrganizationBinding.createRepository.setVisibility(View.GONE);
+		    }
+		    if(!permissions.isOwner()) {
+			    bottomSheetOrganizationBinding.createLabel.setVisibility(View.GONE);
+			    bottomSheetOrganizationBinding.createTeam.setVisibility(View.GONE);
+		    }
+	    }
 
 	    bottomSheetOrganizationBinding.createTeam.setOnClickListener(v1 -> {
 
