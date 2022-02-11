@@ -25,8 +25,6 @@ import org.mian.gitnex.adapters.MilestonesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentMilestonesBinding;
 import org.mian.gitnex.helpers.Constants;
-import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +70,6 @@ public class MilestonesFragment extends Fragment {
         setHasOptionsMenu(true);
         ctx = getContext();
 
-        TinyDB tinyDb = TinyDB.getInstance(getContext());
-
 		milestoneId = requireActivity().getIntent().getStringExtra("milestoneId");
         requireActivity().getIntent().removeExtra("milestoneId");
 
@@ -81,14 +77,14 @@ public class MilestonesFragment extends Fragment {
         viewBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // if gitea is 1.12 or higher use the new limit
-        if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+        if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.12.0")) {
             resultLimit = Constants.resultLimitNewGiteaInstances;
         }
 
         dataList = new ArrayList<>();
         adapter = new MilestonesAdapter(ctx, dataList);
 
-	    if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+	    if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.12.0")) {
 
 		    adapter.setLoadMoreListener(() -> viewBinding.recyclerView.post(() -> {
 
@@ -113,7 +109,7 @@ public class MilestonesFragment extends Fragment {
 
             dataList.clear();
             viewBinding.pullToRefresh.setRefreshing(false);
-            loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, tinyDb.getString("milestoneState"));
+            loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, repository.getMilestoneState().toString());
             adapter.updateList(dataList);
 
         }, 50));
@@ -131,7 +127,7 @@ public class MilestonesFragment extends Fragment {
 
             adapter = new MilestonesAdapter(ctx, dataList);
 
-	        if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12.0")) {
+	        if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.12.0")) {
 
 		        adapter.setLoadMoreListener(() -> viewBinding.recyclerView.post(() -> {
 
@@ -146,8 +142,6 @@ public class MilestonesFragment extends Fragment {
 
 	        }
 
-            tinyDb.putString("milestoneState", milestoneState);
-
             viewBinding.progressBar.setVisibility(View.VISIBLE);
             viewBinding.noDataMilestone.setVisibility(View.GONE);
 
@@ -156,23 +150,8 @@ public class MilestonesFragment extends Fragment {
 
         });
 
-        loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, tinyDb.getString("milestoneState"));
-
+        loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, repository.getMilestoneState().toString());
         return viewBinding.getRoot();
-
-    }
-
-    @Override
-    public void onResume() {
-
-        super.onResume();
-        TinyDB tinyDb = TinyDB.getInstance(getContext());
-        if(tinyDb.getBoolean("milestoneCreated")) { // TODO use another way than tinydb
-
-            loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, tinyDb.getString("milestoneState"));
-            tinyDb.putBoolean("milestoneCreated", false);
-
-        }
 
     }
 

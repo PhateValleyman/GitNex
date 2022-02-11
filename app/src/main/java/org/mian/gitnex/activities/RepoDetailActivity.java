@@ -92,6 +92,16 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 		});
 
+	private final ActivityResultLauncher<Intent> createMilestoneLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+		result -> {
+			if(result.getResultCode() == 201) {
+				assert result.getData() != null;
+				if(result.getData().getBooleanExtra("milestoneCreated", false)) {
+					if(fragmentRefreshListenerMilestone != null) fragmentRefreshListener.onRefresh(repository.getMilestoneState().toString());
+				}
+			}
+		});
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -217,7 +227,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				break;
 			case "newMilestone":
 
-				startActivity(repository.getIntent(ctx, CreateMilestoneActivity.class));
+				createMilestoneLauncher.launch(repository.getIntent(ctx, CreateMilestoneActivity.class));
 				break;
 			case "addCollaborator":
 
@@ -657,7 +667,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					if(getFragmentRefreshListenerFiles() != null) {
 						getFragmentRefreshListenerFiles().onRefresh(branch2);
 					}
-					//((SectionsPagerAdapter) Objects.requireNonNull(RepoDetailActivity.mViewPager.getAdapter())).getItem(1);
 					break;
 				case "commitsList":
 					mViewPager.setCurrentItem(1);
@@ -696,7 +705,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					break;
 				case "milestonesNew":
 					mViewPager.setCurrentItem(5);
-					startActivity(repository.getIntent(ctx, CreateMilestoneActivity.class));
+					createMilestoneLauncher.launch(repository.getIntent(ctx, CreateMilestoneActivity.class));
 					break;
 				case "labels":
 					mViewPager.setCurrentItem(6);
