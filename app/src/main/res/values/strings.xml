@@ -749,6 +749,9 @@
     <string name="updateStrategyMerge">Merge</string>
     <string name="updateStrategyRebase">Rebase</string>
     <string name="selectUpdateStrategy">Select Update Strategy</string>
+
+    <string name="closePr">Close Pull Request</string>
+    <string name="reopenPr">Reopen Pull Request</string>
     <string name="userAvatar">Avatar</string>
     <string name="tags">Tags</string>
     <string name="releasesTags">Releases/Tags</string>
