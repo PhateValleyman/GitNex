@@ -98,7 +98,8 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	if(!((OrgPermissions) getIntent().getSerializableExtra("permissions")).isOwner()) {
+    	OrgPermissions permissions = (OrgPermissions) getIntent().getSerializableExtra("permissions");
+    	if(permissions == null || permissions.isOwner()) {
 		    MenuInflater inflater = getMenuInflater();
 		    inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
 	    }
