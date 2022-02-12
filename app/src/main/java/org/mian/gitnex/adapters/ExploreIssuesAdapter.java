@@ -111,11 +111,7 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 				final String repoOwner = parts[0];
 				final String repoName = parts[1];
 
-				Intent intent = new IssueContext(
-					issue,
-					new RepositoryContext(repoOwner, repoName)
-				).getIntent(context, IssueDetailActivity.class);
-				intent.putExtra("openedFromLink", "true");
+
 
 				int currentActiveAccountId = ((BaseActivity) context).getAccount().getAccount().getAccountId();
 				RepositoriesApi repositoryData = BaseApi.getInstance(context, RepositoriesApi.class);
@@ -123,17 +119,22 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 				assert repositoryData != null;
 				Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
-				if(count == 0) {
+				RepositoryContext repo = new RepositoryContext(repoOwner, repoName);
 
+				if(count == 0) {
 					long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
-					tinyDb.putLong("repositoryId", id); // TODO restore if changed? add new method to get this (eg to repoctx)
+					repo.setRepositoryId((int) id);
 				}
 				else {
-
 					Repository data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
-					tinyDb.putLong("repositoryId", data.getRepositoryId());
+					repo.setRepositoryId(data.getRepositoryId());
 				}
 
+				Intent intent = new IssueContext(
+					issue,
+					repo
+				).getIntent(context, IssueDetailActivity.class);
+				intent.putExtra("openedFromLink", "true");
 				context.startActivity(intent);
 			});
 

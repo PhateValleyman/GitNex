@@ -6,7 +6,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.models.UserRepositories;
 import org.mian.gitnex.activities.BaseActivity;
+import org.mian.gitnex.database.api.BaseApi;
+import org.mian.gitnex.database.api.RepositoriesApi;
+import org.mian.gitnex.database.models.Repository;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class RepositoryContext implements Serializable {
 
@@ -48,6 +52,9 @@ public class RepositoryContext implements Serializable {
 
 	private boolean starred = false;
 	private boolean watched = false;
+
+	private int repositoryId = 0;
+	private Repository repositoryModel = null;
 
 	public RepositoryContext(UserRepositories repository) {
 		this.repository = repository;
@@ -172,6 +179,31 @@ public class RepositoryContext implements Serializable {
 	public void setWatched(boolean watched) {
 
 		this.watched = watched;
+	}
+
+	public int getRepositoryId() {
+
+		return repositoryId;
+	}
+
+	public void setRepositoryId(int repositoryId) {
+
+		this.repositoryId = repositoryId;
+	}
+
+	public Repository getRepositoryModel() {
+
+		return repositoryModel;
+	}
+
+	public void setRepositoryModel(Repository repositoryModel) {
+
+		this.repositoryModel = repositoryModel;
+	}
+
+	public Repository loadRepositoryModel(Context context) {
+		repositoryModel = Objects.requireNonNull(BaseApi.getInstance(context, RepositoriesApi.class)).fetchRepositoryById(repositoryId);
+		return repositoryModel;
 	}
 
 }

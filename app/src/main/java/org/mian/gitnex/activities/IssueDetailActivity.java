@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.gson.JsonElement;
 import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Collaborators;
@@ -639,10 +640,14 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	}
 
 	private void initWithIssue() {
+		if(!issue.getRepository().hasRepository()) {
+			getRepoInfo();
+		}
+
 		viewBinding.issuePrState.setVisibility(View.VISIBLE);
 
 		if(issue.getIssue().getPull_request() != null) {
-			getPullSourceRepo();
+			getPullRequest();
 			if(issue.getIssue().getPull_request().isMerged()) { // merged
 
 				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_merged);
@@ -877,7 +882,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		}*/
 	}
 
-	private void getPullSourceRepo() {
+	private void getPullRequest() {
 		RetrofitClient.getApiInterface(this).getPullRequestByIndex(getAccount().getAuthorization(), repoOwner, repoName, issueIndex).enqueue(new Callback<PullRequests>() {
 
 			@Override
@@ -892,6 +897,38 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			}
 		});
+	}
+
+	private void getRepoInfo() {
+		LinearProgressIndicator loading = findViewById(R.id.loadingIndicator);
+
+		Call<UserRepositories> call = RetrofitClient.getApiInterface(ctx).getUserRepository(getAccount().getAuthorization(), issue.getRepository().getOwner(), issue.getRepository().getName());
+		call.enqueue(new Callback<UserRepositories>() {
+
+			@Override
+			public void onResponse(@NonNull Call<UserRepositories> call, @NonNull retrofit2.Response<UserRepositories> response) {
+
+				UserRepositories repoInfo = response.body();
+				loading.setVisibility(View.GONE);
+
+				if(response.code() == 200) {
+					assert repoInfo != null;
+					issue.getRepository().setRepository(repoInfo); // TODO is this working? getter->setter
+				}
+				else {
+					Toasty.error(ctx, getString(R.string.genericError));
+					Log.e("onFailure", String.valueOf(response.code()));
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<UserRepositories> call, @NonNull Throwable t) {
+				Toasty.error(ctx, getString(R.string.genericError));
+				Log.e("onFailure", t.toString());
+			}
+
+		});
+
 	}
 
 }

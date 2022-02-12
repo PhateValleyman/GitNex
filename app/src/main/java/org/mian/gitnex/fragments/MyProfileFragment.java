@@ -176,7 +176,7 @@ public class MyProfileFragment extends Fragment {
                     return new MyProfileFollowingFragment();
 
                 case 2: // emails
-                    return MyProfileEmailsFragment.newInstance("repoOwner", "repoName");
+                    return new MyProfileEmailsFragment();
 
             }
 

@@ -28,10 +28,14 @@ import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.NotificationsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.database.api.BaseApi;
+import org.mian.gitnex.database.api.RepositoriesApi;
+import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.databinding.FragmentNotificationsBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.SnackBar;
+import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
@@ -326,7 +330,23 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		if(StringUtils.containsAny(notificationThread.getSubject().getType().toLowerCase(), "pull", "issue")) {
 
+			RepositoryContext repo = new RepositoryContext(notificationThread.getRepository());
 			String issueUrl = notificationThread.getSubject().getUrl();
+
+			int currentActiveAccountId = TinyDB.getInstance(requireContext()).getInt("currentActiveAccountId");
+			RepositoriesApi repositoryData = BaseApi.getInstance(context, RepositoriesApi.class);
+
+			Integer count = repositoryData.checkRepository(currentActiveAccountId, repo.getOwner(), repo.getName());
+
+			if(count == 0) {
+				long id = repositoryData.insertRepository(currentActiveAccountId, repo.getOwner(), repo.getName());
+				repo.setRepositoryId((int) id);
+			}
+			else {
+				Repository data = repositoryData.getRepository(currentActiveAccountId, repo.getOwner(), repo.getName());
+				repo.setRepositoryId(data.getRepositoryId());
+			}
+
 			Intent intent = new IssueContext(
 				new RepositoryContext(notificationThread.getRepository()),
 				Integer.parseInt(issueUrl.substring(issueUrl.lastIndexOf("/") + 1)),

@@ -91,11 +91,6 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 				Context context = v.getContext();
 				Intent intent = new Intent(context, OrganizationDetailActivity.class);
 				intent.putExtra("orgName", organization.getUsername());
-
-				TinyDB tinyDb = TinyDB.getInstance(context);
-				tinyDb.putString("orgName", organization.getUsername());
-				tinyDb.putString("organizationId", String.valueOf(organization.getId()));
-				tinyDb.putBoolean("organizationAction", true);
 				context.startActivity(intent);
 			});
 		}

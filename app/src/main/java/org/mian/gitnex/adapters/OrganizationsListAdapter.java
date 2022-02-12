@@ -47,15 +47,9 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
             image = itemView.findViewById(R.id.imageAvatar);
 
             itemView.setOnClickListener(v -> {
-
                 Context context = v.getContext();
                 Intent intent = new Intent(context, OrganizationDetailActivity.class);
                 intent.putExtra("orgName", userOrganizations.getUsername());
-
-                TinyDB tinyDb = TinyDB.getInstance(context);
-                tinyDb.putString("orgName", userOrganizations.getUsername());
-                tinyDb.putString("organizationId", String.valueOf(userOrganizations.getId()));
-                tinyDb.putBoolean("organizationAction", true);
                 context.startActivity(intent);
             });
         }

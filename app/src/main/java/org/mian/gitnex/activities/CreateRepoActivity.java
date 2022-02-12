@@ -21,7 +21,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateRepoBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,8 +64,8 @@ public class CreateRepoActivity extends BaseActivity {
 
         boolean connToInternet = AppUtil.hasNetworkConnection(ctx);
 
-        loginUid = tinyDB.getString("loginUid");
-        userLogin = tinyDB.getString("userLogin");
+        loginUid = getAccount().getAccount().getUserName();
+        userLogin = getAccount().getAccount().getUserName();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -175,8 +174,7 @@ public class CreateRepoActivity extends BaseActivity {
 
                 if(response.code() == 201) {
 
-                    TinyDB tinyDb = TinyDB.getInstance(appCtx);
-                    tinyDb.putBoolean("repoCreated", true);
+                    tinyDB.putBoolean("repoCreated", true);
                     Toasty.success(ctx, getString(R.string.repoCreated));
                     enableProcessButton();
                     finish();
@@ -234,9 +232,8 @@ public class CreateRepoActivity extends BaseActivity {
 
 			            for(int i = 0; i < organizationsList_.size(); i++) {
 
-				            if(!tinyDB.getString("organizationId").isEmpty()) {
-
-					            if(Integer.parseInt(tinyDB.getString("organizationId")) == organizationsList_.get(i).getId()) {
+				            if(getIntent().getIntExtra("organizationId", 0) != 0) {
+					            if(getIntent().getIntExtra("organizationId", 0) == organizationsList_.get(i).getId()) {
 						            organizationId = i + 1;
 					            }
 				            }
@@ -252,7 +249,7 @@ public class CreateRepoActivity extends BaseActivity {
 
 		            spinner.setOnItemClickListener ((parent, view, position, id) -> selectedOwner = organizationsList.get(position).getUsername());
 
-		            if(tinyDB.getBoolean("organizationAction") & organizationId != 0) {
+		            if(getIntent().getBooleanExtra("organizationAction", false) && organizationId != 0) {
 
 			            int selectOwnerById = organizationId;
 			            new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -261,7 +258,7 @@ public class CreateRepoActivity extends BaseActivity {
 				            selectedOwner = organizationsList.get(selectOwnerById).getUsername();
 			            }, 500);
 
-			            tinyDB.putBoolean("organizationAction", false);
+			            getIntent().putExtra("organizationAction", false); // TODO is this working?
 		            }
 
 		            enableProcessButton();

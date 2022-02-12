@@ -191,12 +191,10 @@ public class DeepLinksActivity extends BaseActivity {
 						Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
 						if(count == 0) {
-
 							long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
 							tinyDB.putLong("repositoryId", id);
 						}
 						else {
-
 							Repository dataRepo = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
 							tinyDB.putLong("repositoryId", dataRepo.getRepositoryId());
 						}
@@ -526,12 +524,8 @@ public class DeepLinksActivity extends BaseActivity {
 				else if(response.code() == 200) { // org
 					assert response.body() != null;
 					orgIntent.putExtra("orgName", response.body().getUsername());
-
-
-					TinyDB tinyDb = TinyDB.getInstance(ctx);
-					tinyDb.putString("orgName", response.body().getUsername());
-					tinyDb.putString("organizationId", String.valueOf(response.body().getId()));
-					tinyDb.putBoolean("organizationAction", true);
+					orgIntent.putExtra("organizationId", response.body().getId());
+					orgIntent.putExtra("organizationAction", true);
 					ctx.startActivity(orgIntent);
 					finish();
 				}

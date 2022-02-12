@@ -176,28 +176,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 					break;
 			}
 
-			frame.setOnClickListener(v -> {
-
-				onNotificationClickedListener.onNotificationClicked(notificationThread);
-
-				String[] parts = notificationThread.getRepository().getFullName().split("/");
-				final String repoOwner = parts[0];
-				final String repoName = parts[1];
-
-				int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
-				RepositoriesApi repositoryData = BaseApi.getInstance(context, RepositoriesApi.class);
-
-				Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
-
-				if(count == 0) {
-					long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
-					tinyDb.putLong("repositoryId", id);
-				}
-				else {
-					Repository data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
-					tinyDb.putLong("repositoryId", data.getRepositoryId());
-				}
-			});
+			frame.setOnClickListener(v -> onNotificationClickedListener.onNotificationClicked(notificationThread));
 
 			more.setOnClickListener(v -> onMoreClickedListener.onMoreClicked(notificationThread));
 		}

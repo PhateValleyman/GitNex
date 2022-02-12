@@ -29,7 +29,6 @@ import org.mian.gitnex.fragments.OrganizationLabelsFragment;
 import org.mian.gitnex.fragments.RepositoriesByOrgFragment;
 import org.mian.gitnex.fragments.TeamsByOrgFragment;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.structs.BottomSheetListener;
 import java.util.Objects;
 import io.mikael.urlbuilder.UrlBuilder;
@@ -52,7 +51,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
 	    setContentView(R.layout.activity_org_detail);
 
-	    String orgName = tinyDB.getString("orgName");
+	    String orgName = getIntent().getStringExtra("orgName");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
@@ -171,9 +170,11 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 
         switch (text) {
             case "repository":
-
-                tinyDB.putBoolean("organizationAction", true);
-                startActivity(new Intent(OrganizationDetailActivity.this, CreateRepoActivity.class));
+            	Intent intentRepo = new Intent(this, CreateRepoActivity.class);
+                intentRepo.putExtra("organizationAction", true);
+                intentRepo.putExtra("orgName", getIntent().getStringExtra("orgName"));
+                intentRepo.putExtras(getIntent().getExtras());
+                startActivity(intentRepo);
                 break;
 	        case "label":
 
@@ -183,8 +184,9 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 		        ctx.startActivity(intent);
 		        break;
             case "team":
-
-                startActivity(new Intent(OrganizationDetailActivity.this, CreateTeamByOrgActivity.class));
+				Intent intentTeam = new Intent(OrganizationDetailActivity.this, CreateTeamByOrgActivity.class);
+				intentTeam.putExtras(getIntent().getExtras());
+                startActivity(intentTeam);
                 break;
 	        case "copyOrgUrl":
 

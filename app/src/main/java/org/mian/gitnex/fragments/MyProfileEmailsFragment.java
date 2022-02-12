@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -34,37 +35,14 @@ public class MyProfileEmailsFragment extends Fragment {
     private MyProfileEmailsAdapter adapter;
     private RecyclerView mRecyclerView;
     private TextView noDataEmails;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
-
-    private String repoName;
-    private String repoOwner;
 
     private OnFragmentInteractionListener mListener;
 
     public MyProfileEmailsFragment() {
     }
 
-    public static MyProfileEmailsFragment newInstance(String param1, String param2) {
-        MyProfileEmailsFragment fragment = new MyProfileEmailsFragment();
-        Bundle args = new Bundle();
-        args.putString(repoOwnerF, param1);
-        args.putString(repoNameF, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            repoName = getArguments().getString(repoNameF);
-            repoOwner = getArguments().getString(repoOwnerF);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 	    FragmentProfileEmailsBinding fragmentProfileEmailsBinding = FragmentProfileEmailsBinding.inflate(inflater, container, false);
@@ -99,21 +77,18 @@ public class MyProfileEmailsFragment extends Fragment {
 
         ProfileEmailsViewModel profileEmailModel = new ViewModelProvider(this).get(ProfileEmailsViewModel.class);
 
-        profileEmailModel.getEmailsList(instanceToken, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Emails>>() {
-            @Override
-            public void onChanged(@Nullable List<Emails> emailsListMain) {
-                adapter = new MyProfileEmailsAdapter(getContext(), emailsListMain);
-                if(adapter.getItemCount() > 0) {
-                    mRecyclerView.setAdapter(adapter);
-                    noDataEmails.setVisibility(View.GONE);
-                }
-                else {
-                    adapter.notifyDataSetChanged();
-                    mRecyclerView.setAdapter(adapter);
-                    noDataEmails.setVisibility(View.VISIBLE);
-                }
-                mProgressBar.setVisibility(View.GONE);
+        profileEmailModel.getEmailsList(instanceToken, getContext()).observe(getViewLifecycleOwner(), emailsListMain -> {
+            adapter = new MyProfileEmailsAdapter(getContext(), emailsListMain);
+            if(adapter.getItemCount() > 0) {
+                mRecyclerView.setAdapter(adapter);
+                noDataEmails.setVisibility(View.GONE);
             }
+            else {
+                adapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(adapter);
+                noDataEmails.setVisibility(View.VISIBLE);
+            }
+            mProgressBar.setVisibility(View.GONE);
         });
 
     }
