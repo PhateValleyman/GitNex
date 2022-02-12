@@ -212,15 +212,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
         @Override
         public Fragment getItem(int position) {
 
-            String orgName;
-            if(getIntent().getStringExtra("orgName") != null || !Objects.equals(getIntent().getStringExtra("orgName"), "")) {
-
-                orgName = getIntent().getStringExtra("orgName");
-            }
-            else {
-
-                orgName = tinyDB.getString("orgName");
-            }
+            String orgName = getIntent().getStringExtra("orgName");
 
             Fragment fragment = null;
             switch (position) {

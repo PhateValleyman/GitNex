@@ -21,7 +21,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentOrganizationsBinding;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.SnackBar;
-import org.mian.gitnex.helpers.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -49,10 +48,6 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 		fragmentPublicOrgBinding = FragmentOrganizationsBinding.inflate(inflater, container, false);
 		context = getContext();
 
-		TinyDB tinyDb = TinyDB.getInstance(getContext());
-		final String loginUid = tinyDb.getString("loginUid");
-		final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-
 		resultLimit = Constants.getCurrentResultLimit(context);
 
 		fragmentPublicOrgBinding.addNewOrganization.setVisibility(View.GONE);
@@ -60,7 +55,7 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 
 		fragmentPublicOrgBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 			fragmentPublicOrgBinding.pullToRefresh.setRefreshing(false);
-			loadInitial(instanceToken, resultLimit);
+			loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), resultLimit);
 			adapter.notifyDataChanged();
 		}, 200));
 

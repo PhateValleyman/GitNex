@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.activities.SettingsAppearanceActivity;
 import org.mian.gitnex.activities.SettingsDraftsActivity;
@@ -51,7 +52,7 @@ public class SettingsFragment extends Fragment {
 
 		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navSettings));
 
-		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
+		if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.12.3")) {
 
 			fragmentSettingsBinding.notificationsFrame.setVisibility(View.VISIBLE);
 		}
@@ -88,7 +89,7 @@ public class SettingsFragment extends Fragment {
 		aboutAppDialog.setContentView(view);
 
 		aboutAppDialogBinding.appVersionBuild.setText(getString(R.string.appVersionBuild, AppUtil.getAppVersion(ctx), AppUtil.getAppBuildNo(ctx)));
-		aboutAppDialogBinding.userServerVersion.setText(tinyDB.getString("giteaVersion"));
+		aboutAppDialogBinding.userServerVersion.setText(((BaseActivity) requireActivity()).getAccount().getServerVersion().toString());
 
 		aboutAppDialogBinding.donationLinkPatreon.setOnClickListener(v12 -> {
 			AppUtil.openUrlInBrowser(requireContext(), getResources().getString(R.string.supportLinkPatreon));

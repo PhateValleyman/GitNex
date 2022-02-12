@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.Issues;
+import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.AssigneesListAdapter;
@@ -14,6 +15,7 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.AccountContext;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -87,7 +89,8 @@ public class AssigneesActions {
 
 					if(assigneesList_.size() > 0) {
 
-						assigneesList.add(new Collaborators(tinyDB.getString("userFullname"), tinyDB.getString("loginUid"), tinyDB.getString("userAvatar")));
+						AccountContext userInfo = ((BaseActivity) ctx).getAccount();
+						assigneesList.add(new Collaborators(userInfo.getFullName(), userInfo.getAccount().getUserName(), userInfo.getUserInfo().getAvatar()));
 						assigneesList.addAll(assigneesList_);
 					}
 					else {

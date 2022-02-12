@@ -64,7 +64,7 @@ public class AdminCronTasksActivity extends BaseActivity {
 
 		cronTasksViewModel.getCronTasksList(ctx, instanceToken, PAGE, LIMIT).observe(this, cronTasksListMain -> {
 
-			adapter = new AdminCronTasksAdapter(ctx, cronTasksListMain);
+			adapter = new AdminCronTasksAdapter(cronTasksListMain);
 
 			if(adapter.getItemCount() > 0) {
 

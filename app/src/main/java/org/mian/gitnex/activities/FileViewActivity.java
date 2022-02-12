@@ -49,7 +49,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 	private RepositoryContext repository;
 	private boolean renderMd = false;
 
-	public ActivityResultLauncher<Intent> editIssueLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+	public ActivityResultLauncher<Intent> editFileLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
 		result -> {
 			if(result.getResultCode() == 200) {
 				assert result.getData() != null;
@@ -239,6 +239,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 		} else if(id == R.id.genericMenu) {
 
 			BottomSheetFileViewerFragment bottomSheet = new BottomSheetFileViewerFragment();
+			bottomSheet.setArguments(repository.getBundle());
 			bottomSheet.show(getSupportFragmentManager(), "fileViewerBottomSheet");
 			return true;
 
@@ -280,7 +281,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 			intent.putExtra("filePath", file.getPath());
 			intent.putExtra("fileSha", file.getSha());
 
-			ctx.startActivity(intent);
+			editFileLauncher.launch(intent);
 		}
 
 		if("editFile".equals(text)) {

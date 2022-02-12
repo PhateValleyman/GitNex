@@ -106,8 +106,6 @@ public class RepositoriesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         TinyDB tinyDb = TinyDB.getInstance(getContext());
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
         if(tinyDb.getBoolean("repoCreated")) {
             RepositoriesListViewModel.loadReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext(), pageSize, resultLimit);

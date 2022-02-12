@@ -1,6 +1,7 @@
 package org.mian.gitnex.helpers.contexts;
 
 import android.content.Context;
+import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.helpers.Version;
@@ -9,7 +10,8 @@ import okhttp3.Credentials;
 
 public class AccountContext {
 
-	private final UserAccount account;
+	private UserAccount account;
+	private UserInfo userInfo;
 
 	private boolean isBasicAuth = false;
 	private String basicAuthPassword = "";
@@ -25,6 +27,11 @@ public class AccountContext {
 	public UserAccount getAccount() {
 
 		return account;
+	}
+
+	public void setAccount(UserAccount account) {
+
+		this.account = account;
 	}
 
 	public String getAuthorization() {
@@ -50,6 +57,21 @@ public class AccountContext {
 
 	public boolean requiresVersion(String version) {
 		return getServerVersion().higherOrEqual(version);
+	}
+
+	public UserInfo getUserInfo() {
+
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+
+		this.userInfo = userInfo;
+	}
+
+	public String getFullName() {
+		return userInfo != null ? !userInfo.getFullname().equals("") ?
+			userInfo.getFullname() : userInfo.getLogin() : account.getUserName();
 	}
 
 }

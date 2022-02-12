@@ -48,7 +48,7 @@ public class RepositoryContext implements Serializable {
 	private State milestoneState = State.OPEN;
 
 	private String branchRef;
-	private int issueMilestoneFilterId;
+	private String issueMilestoneFilterName;
 
 	private boolean starred = false;
 	private boolean watched = false;
@@ -124,14 +124,14 @@ public class RepositoryContext implements Serializable {
 		return bundle;
 	}
 
-	public int getIssueMilestoneFilterId() {
+	public String getIssueMilestoneFilterName() {
 
-		return issueMilestoneFilterId;
+		return issueMilestoneFilterName;
 	}
 
-	public void setIssueMilestoneFilterId(int issueMilestoneFilterId) {
+	public void setIssueMilestoneFilterName(String issueMilestoneFilterName) {
 
-		this.issueMilestoneFilterId = issueMilestoneFilterId;
+		this.issueMilestoneFilterName = issueMilestoneFilterName;
 	}
 
 	public String getOwner() {

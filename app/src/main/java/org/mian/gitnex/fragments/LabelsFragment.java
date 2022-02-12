@@ -20,6 +20,7 @@ import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.LabelsAdapter;
 import org.mian.gitnex.databinding.FragmentLabelsBinding;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.LabelsViewModel;
 
 /**
@@ -32,39 +33,25 @@ public class LabelsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private LabelsAdapter adapter;
     private TextView noData;
-    private static String repoNameF = "param2";
-    private static String repoOwnerF = "param1";
-    private final String type = "repo";
-    // TODO fix with orgs?
 
-    private String repoName;
-    private String repoOwner;
+    private RepositoryContext repository;
 
     private OnFragmentInteractionListener mListener;
 
     public LabelsFragment() {
     }
 
-    public static LabelsFragment newInstance(String param1, String param2) {
+    public static LabelsFragment newInstance(RepositoryContext repository) {
 
         LabelsFragment fragment = new LabelsFragment();
-        Bundle args = new Bundle();
-        args.putString(repoOwnerF, param1);
-        args.putString(repoNameF, param2);
-        fragment.setArguments(args);
+        fragment.setArguments(repository.getBundle());
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-
-            repoName = getArguments().getString(repoNameF);
-            repoOwner = getArguments().getString(repoOwnerF);
-        }
+        repository = RepositoryContext.fromBundle(requireArguments());
     }
 
     @Override
@@ -89,10 +76,10 @@ public class LabelsFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, getContext());
+            LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
         }, 200));
 
-        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName);
+        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
         return fragmentLabelsBinding.getRoot();
     }
@@ -103,14 +90,9 @@ public class LabelsFragment extends Fragment {
         super.onResume();
         final TinyDB tinyDb = TinyDB.getInstance(getContext());
 
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+        if(tinyDb.getBoolean("labelsRefresh")) { // TODO no tinydb
 
-        if(tinyDb.getBoolean("labelsRefresh")) {
-
-            LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, getContext());
+            LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
             tinyDb.putBoolean("labelsRefresh", false);
         }
     }
@@ -141,7 +123,7 @@ public class LabelsFragment extends Fragment {
 
         labelsModel.getLabelsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), labelsListMain -> {
 
-            adapter = new LabelsAdapter(getContext(), labelsListMain, type, owner);
+            adapter = new LabelsAdapter(getContext(), labelsListMain, "repo", owner);
 
             if(adapter.getItemCount() > 0) {
 

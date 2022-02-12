@@ -44,6 +44,10 @@ public class UserAccountsApi extends BaseApi {
 		executorService.execute(() -> userAccountsDao.updateAccountTokenByAccountName(accountName, token));
 	}
 
+	public void updateUsername(final int accountId, final String newName) {
+		executorService.execute(() -> userAccountsDao.updateUserName(newName, accountId));
+	}
+
 	public UserAccount getAccountByName(String accountName) {
 		return userAccountsDao.getAccountByName(accountName);
 	}

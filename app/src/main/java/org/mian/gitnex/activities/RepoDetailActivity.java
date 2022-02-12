@@ -271,42 +271,41 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				filterIssuesByMilestone();
 				break;
 			case "openIssues":
-
+				repository.setIssueState(RepositoryContext.State.OPEN);
 				if(getFragmentRefreshListener() != null) {
 
 					getFragmentRefreshListener().onRefresh("open");
 				}
 				break;
 			case "closedIssues":
-
+				repository.setIssueState(RepositoryContext.State.CLOSED);
 				if(getFragmentRefreshListener() != null) {
 
 					getFragmentRefreshListener().onRefresh("closed");
 				}
 				break;
 			case "openPr":
-
+				repository.setPrState(RepositoryContext.State.OPEN);
 				if(getFragmentRefreshListenerPr() != null) {
-
 					getFragmentRefreshListenerPr().onRefresh("open");
 				}
 				break;
 			case "closedPr":
-
+				repository.setPrState(RepositoryContext.State.CLOSED);
 				if(getFragmentRefreshListenerPr() != null) {
 
 					getFragmentRefreshListenerPr().onRefresh("closed");
 				}
 				break;
 			case "openMilestone":
-
+				repository.setMilestoneState(RepositoryContext.State.OPEN);
 				if(getFragmentRefreshListenerMilestone() != null) {
 
 					getFragmentRefreshListenerMilestone().onRefresh("open");
 				}
 				break;
 			case "closedMilestone":
-
+				repository.setMilestoneState(RepositoryContext.State.CLOSED);
 				if(getFragmentRefreshListenerMilestone() != null) {
 
 					getFragmentRefreshListenerMilestone().onRefresh("closed");
@@ -350,11 +349,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					for(int i = 0; i < response.body().size(); i++) {
 						milestones = response.body().get(i);
 						milestonesList.add(milestones.getTitle());
-					}
-
-					for(int j = 0; j < milestonesList.size(); j++) {
-						if(tinyDB.getString("issueMilestoneFilterId").equals(milestonesList.get(j))) {
-							selectedMilestone = j;
+						if(repository.getIssueMilestoneFilterName().equals(milestones.getTitle())) {
+							selectedMilestone = i;
 						}
 					}
 
@@ -363,7 +359,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 					pBuilder.setSingleChoiceItems(milestonesList.toArray(new String[0]), selectedMilestone, (dialogInterface, i) -> {
 
-						tinyDB.putString("issueMilestoneFilterId", milestonesList.get(i));
+						repository.setIssueMilestoneFilterName(response.body().get(i).getTitle());
 
 						if(getFragmentRefreshListenerFilterIssuesByMilestone() != null) {
 							getFragmentRefreshListenerFilterIssuesByMilestone().onRefresh(milestonesList.get(i));
@@ -464,11 +460,11 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					return FilesFragment.newInstance(repository);
 				case 2: // Issues
 
-					fragment = new IssuesFragment();
+					fragment = IssuesFragment.newInstance(repository);
 					break;
 				case 3: // Pull requests
 
-					fragment = new PullRequestsFragment();
+					fragment = PullRequestsFragment.newInstance(repository);
 					break;
 				case 4: // Releases
 
@@ -479,7 +475,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					break;
 				case 6: // Labels
 
-					return LabelsFragment.newInstance(repository.getOwner(), repository.getName());
+					return LabelsFragment.newInstance(repository);
 				case 7: // Collaborators
 
 					return CollaboratorsFragment.newInstance(repository);

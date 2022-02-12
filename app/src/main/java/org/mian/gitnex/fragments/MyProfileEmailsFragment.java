@@ -10,20 +10,16 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import org.gitnex.tea4j.models.Emails;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.MyProfileEmailsAdapter;
 import org.mian.gitnex.databinding.FragmentProfileEmailsBinding;
 import org.mian.gitnex.viewmodels.ProfileEmailsViewModel;
-import java.util.List;
 
 /**
  * Author M M Arif

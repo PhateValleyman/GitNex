@@ -97,9 +97,9 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 			draftId = Long.parseLong(arguments.getString("draftId"));
 		}
 
-		if(!tinyDB.getString("issueTitle").isEmpty()) {
+		if(!issue.getIssue().getTitle().isEmpty()) {
 
-			toolbarTitle.setText(EmojiParser.parseToUnicode(tinyDB.getString("issueTitle")));
+			toolbarTitle.setText(EmojiParser.parseToUnicode(issue.getIssue().getTitle()));
 		}
 		else if(arguments.getString("draftTitle") != null) {
 

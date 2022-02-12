@@ -49,7 +49,6 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 	private FragmentExploreRepoBinding viewBinding;
 	private Context context;
-	private TinyDB tinyDb;
 
 	private int pageSize;
 	private final boolean repoTypeInclude = true;
@@ -63,6 +62,11 @@ public class ExploreRepositoriesFragment extends Fragment {
 	private Dialog dialogFilterOptions;
 	private CustomExploreRepositoriesDialogBinding filterBinding;
 
+	private boolean includeTopic = false;
+	private boolean includeDescription = false;
+	private boolean includeTemplate = false;
+	private boolean onlyArchived = false;
+
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -70,15 +74,8 @@ public class ExploreRepositoriesFragment extends Fragment {
 		setHasOptionsMenu(true);
 
 		context = getContext();
-		tinyDb = TinyDB.getInstance(getContext());
-
 		dataList = new ArrayList<>();
 		adapter = new ExploreRepositoriesAdapter(dataList, context);
-
-		tinyDb.putBoolean("exploreRepoIncludeTopic", false);
-		tinyDb.putBoolean("exploreRepoIncludeDescription", false);
-		tinyDb.putBoolean("exploreRepoIncludeTemplate", false);
-		tinyDb.putBoolean("exploreRepoOnlyArchived", false);
 
 		resultLimit = Constants.getCurrentResultLimit(context);
 
@@ -89,12 +86,12 @@ public class ExploreRepositoriesFragment extends Fragment {
 					imm.hideSoftInputFromWindow(viewBinding.searchKeyword.getWindowToken(), 0);
 
 					viewBinding.progressBar.setVisibility(View.VISIBLE);
-					loadInitial(String.valueOf(viewBinding.searchKeyword.getText()), tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit);
+					loadInitial(String.valueOf(viewBinding.searchKeyword.getText()), resultLimit);
 
 					adapter.setLoadMoreListener(() -> viewBinding.recyclerViewReposSearch.post(() -> {
 						if(dataList.size() == resultLimit || pageSize == resultLimit) {
 							int page = (dataList.size() + resultLimit) / resultLimit;
-							loadMore(String.valueOf(viewBinding.searchKeyword.getText()), tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit, page);
+							loadMore(String.valueOf(viewBinding.searchKeyword.getText()), resultLimit, page);
 						}
 					}));
 				}
@@ -104,14 +101,14 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 		viewBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 			viewBinding.pullToRefresh.setRefreshing(false);
-			loadInitial("", tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit);
+			loadInitial("", resultLimit);
 			adapter.notifyDataChanged();
 		}, 200));
 
 		adapter.setLoadMoreListener(() -> viewBinding.recyclerViewReposSearch.post(() -> {
 			if(dataList.size() == resultLimit || pageSize == resultLimit) {
 				int page = (dataList.size() + resultLimit) / resultLimit;
-				loadMore(String.valueOf(viewBinding.searchKeyword.getText()), tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit, page);
+				loadMore(String.valueOf(viewBinding.searchKeyword.getText()), resultLimit, page);
 			}
 		}));
 
@@ -121,15 +118,15 @@ public class ExploreRepositoriesFragment extends Fragment {
 		viewBinding.recyclerViewReposSearch.setLayoutManager(new LinearLayoutManager(context));
 		viewBinding.recyclerViewReposSearch.setAdapter(adapter);
 
-		loadInitial("", tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit);
+		loadInitial("", resultLimit);
 
 		return viewBinding.getRoot();
 	}
 
-	private void loadInitial(String searchKeyword, boolean exploreRepoIncludeTopic, boolean exploreRepoIncludeDescription, boolean exploreRepoIncludeTemplate, boolean exploreRepoOnlyArchived, int resultLimit) {
+	private void loadInitial(String searchKeyword, int resultLimit) {
 
 		Call<ExploreRepositories> call = RetrofitClient
-			.getApiInterface(context).queryRepos(((BaseActivity) requireActivity()).getAccount().getAuthorization(), searchKeyword, repoTypeInclude, sort, order, exploreRepoIncludeTopic, exploreRepoIncludeDescription, exploreRepoIncludeTemplate, exploreRepoOnlyArchived, resultLimit, 1);
+			.getApiInterface(context).queryRepos(((BaseActivity) requireActivity()).getAccount().getAuthorization(), searchKeyword, repoTypeInclude, sort, order, includeTopic, includeDescription, includeTemplate, onlyArchived, resultLimit, 1);
 		call.enqueue(new Callback<ExploreRepositories>() {
 			@Override
 			public void onResponse(@NonNull Call<ExploreRepositories> call, @NonNull Response<ExploreRepositories> response) {
@@ -163,11 +160,11 @@ public class ExploreRepositoriesFragment extends Fragment {
 		});
 	}
 
-	private void loadMore(String searchKeyword, boolean exploreRepoIncludeTopic, boolean exploreRepoIncludeDescription, boolean exploreRepoIncludeTemplate, boolean exploreRepoOnlyArchived, int resultLimit, int page) {
+	private void loadMore(String searchKeyword, int resultLimit, int page) {
 
 		viewBinding.progressBar.setVisibility(View.VISIBLE);
 		Call<ExploreRepositories> call = RetrofitClient.getApiInterface(context)
-			.queryRepos(((BaseActivity) requireActivity()).getAccount().getAuthorization(), searchKeyword, repoTypeInclude, sort, order, exploreRepoIncludeTopic, exploreRepoIncludeDescription, exploreRepoIncludeTemplate, exploreRepoOnlyArchived, resultLimit, page);
+			.queryRepos(((BaseActivity) requireActivity()).getAccount().getAuthorization(), searchKeyword, repoTypeInclude, sort, order, includeTopic, includeDescription, includeTemplate, onlyArchived, resultLimit, page);
 		call.enqueue(new Callback<ExploreRepositories>() {
 			@Override
 			public void onResponse(@NonNull Call<ExploreRepositories> call, @NonNull Response<ExploreRepositories> response) {
@@ -225,37 +222,22 @@ public class ExploreRepositoriesFragment extends Fragment {
 		View view = filterBinding.getRoot();
 		dialogFilterOptions.setContentView(view);
 
-		filterBinding.includeTopic.setOnClickListener(includeTopic -> {
-			tinyDb.putBoolean("exploreRepoIncludeTopic", filterBinding.includeTopic.isChecked());
-		});
+		filterBinding.includeTopic.setOnClickListener(includeTopic -> this.includeTopic = filterBinding.includeTopic.isChecked());
 
-		filterBinding.includeDesc.setOnClickListener(includeDesc -> {
-			tinyDb.putBoolean("exploreRepoIncludeDescription", filterBinding.includeDesc.isChecked());
-		});
+		filterBinding.includeDesc.setOnClickListener(includeDesc -> this.includeDescription = filterBinding.includeDesc.isChecked());
 
-		filterBinding.includeTemplate.setOnClickListener(includeTemplate -> {
-			tinyDb.putBoolean("exploreRepoIncludeTemplate", filterBinding.includeTemplate.isChecked());
-		});
+		filterBinding.includeTemplate.setOnClickListener(includeTemplate -> this.includeTemplate = filterBinding.includeTemplate.isChecked());
 
-		filterBinding.onlyArchived.setOnClickListener(onlyArchived -> {
-			tinyDb.putBoolean("exploreRepoOnlyArchived", filterBinding.onlyArchived.isChecked());
-		});
+		filterBinding.onlyArchived.setOnClickListener(onlyArchived -> this.onlyArchived = filterBinding.onlyArchived.isChecked());
 
-		filterBinding.includeTopic.setChecked(tinyDb.getBoolean("exploreRepoIncludeTopic"));
-		filterBinding.includeDesc.setChecked(tinyDb.getBoolean("exploreRepoIncludeDescription"));
-		filterBinding.includeTemplate.setChecked(tinyDb.getBoolean("exploreRepoIncludeTemplate"));
-		filterBinding.onlyArchived.setChecked(tinyDb.getBoolean("exploreRepoOnlyArchived"));
+		filterBinding.includeTopic.setChecked(includeTopic);
+		filterBinding.includeDesc.setChecked(includeDescription);
+		filterBinding.includeTemplate.setChecked(includeTemplate);
+		filterBinding.onlyArchived.setChecked(onlyArchived);
 
-		filterBinding.cancel.setOnClickListener(editProperties -> {
-			dialogFilterOptions.dismiss();
-		});
+		filterBinding.cancel.setOnClickListener(editProperties -> dialogFilterOptions.dismiss());
 
 		dialogFilterOptions.show();
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
 	}
 
 	public interface OnFragmentInteractionListener {

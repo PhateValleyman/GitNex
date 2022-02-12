@@ -105,10 +105,8 @@ public class OrganizationsFragment extends Fragment {
     public void onResume(){
         super.onResume();
         TinyDB tinyDb = TinyDB.getInstance(getContext());
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
 
-        if(tinyDb.getBoolean("orgCreated")) {
+	    if(tinyDb.getBoolean("orgCreated")) {
             OrganizationListViewModel.loadOrgsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
             tinyDb.putBoolean("orgCreated", false);
         }

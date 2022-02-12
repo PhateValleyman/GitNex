@@ -45,6 +45,7 @@ public class FileDiffActivity extends BaseActivity {
 		Toolbar toolbar = activityFileDiffBinding.toolbar;
 		setSupportActionBar(toolbar);
 
+		// TODO wait for opyale enhancements
 		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 		String repoFullName = tinyDb.getString("repoFullName");
 		String[] parts = repoFullName.split("/");

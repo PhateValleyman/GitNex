@@ -37,8 +37,6 @@ import org.mian.gitnex.viewmodels.MyRepositoriesViewModel;
 
 public class MyRepositoriesFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
     private ReposListAdapter adapter;
@@ -48,30 +46,11 @@ public class MyRepositoriesFragment extends Fragment {
     private int pageSize = 1;
     private int resultLimit = 50;
 
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-
-    public MyRepositoriesFragment() {
-    }
-
-    public static MyRepositoriesFragment newInstance(String param1, String param2) {
-        MyRepositoriesFragment fragment = new MyRepositoriesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -82,9 +61,7 @@ public class MyRepositoriesFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        TinyDB tinyDb = TinyDB.getInstance(getContext());
-        final String userLogin =  tinyDb.getString("userLogin");
-        tinyDb.putBoolean("isRepoAdmin", true);
+        final String userLogin =  ((BaseActivity) requireActivity()).getAccount().getAccount().getUserName();
 
         final SwipeRefreshLayout swipeRefresh = fragmentMyRepositoriesBinding.pullToRefresh;
 
@@ -142,7 +119,7 @@ public class MyRepositoriesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         TinyDB tinyDb = TinyDB.getInstance(getContext());
-        final String userLogin =  tinyDb.getString("userLogin");
+        final String userLogin =  ((BaseActivity) requireActivity()).getAccount().getAccount().getUserName();
 
         if(tinyDb.getBoolean("repoCreated")) {
             MyRepositoriesViewModel.loadMyReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), userLogin, getContext(),  pageSize, resultLimit);

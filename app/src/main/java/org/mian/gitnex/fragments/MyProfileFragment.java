@@ -23,12 +23,14 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Callback;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.AccountContext;
 import java.util.Locale;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 
@@ -61,35 +63,35 @@ public class MyProfileFragment extends Fragment {
         TextView userLanguage = v.findViewById(R.id.userLanguage);
         ImageView userLanguageIcon = v.findViewById(R.id.userLanguageIcon);
 
-	    String[] userLanguageCodes = tinyDb.getString("userLang").split("-");
+	    AccountContext account = ((BaseActivity) requireActivity()).getAccount();
+	    String[] userLanguageCodes = account.getUserInfo().getLang() != null ? account.getUserInfo().getLang().split("-") : new String[]{""};
 
 	    if(userLanguageCodes.length >= 2) {
 		    Locale locale = new Locale(userLanguageCodes[0], userLanguageCodes[1]);
 		    userLanguage.setText(locale.getDisplayLanguage());
-	    }
-	    else {
+	    }else {
 	    	userLanguage.setText(getResources().getConfiguration().locale.getDisplayLanguage());
 	    }
 
 	    userAvatar.setOnClickListener(loginId ->
 		    AppUtil.copyToClipboard(ctx,
-			    tinyDb.getString("userLogin"),
-			    ctx.getString(R.string.copyLoginIdToClipBoard, tinyDb.getString("userLogin"))));
+			    account.getAccount().getUserName(),
+			    ctx.getString(R.string.copyLoginIdToClipBoard, account.getAccount().getUserName())));
 
-	    userFullName.setText(Html.fromHtml(tinyDb.getString("userFullname")));
-	    userLogin.setText(getString(R.string.usernameWithAt, tinyDb.getString("userLogin")));
+	    userFullName.setText(Html.fromHtml(account.getFullName()));
+	    userLogin.setText(getString(R.string.usernameWithAt, account.getAccount().getUserName()));
 
 	    int avatarRadius = AppUtil.getPixelsFromDensity(ctx, 3);
 
 	    PicassoService.getInstance(ctx).get()
-		    .load(tinyDb.getString("userAvatar"))
+		    .load(account.getUserInfo().getAvatar())
 		    .transform(new RoundedTransformation(avatarRadius, 0))
 		    .placeholder(R.drawable.loader_animated)
 		    .resize(120, 120)
 		    .centerCrop().into(userAvatar);
 
 	    PicassoService.getInstance(ctx).get()
-		    .load(tinyDb.getString("userAvatar"))
+		    .load(account.getUserInfo().getAvatar())
 		    .transform(new BlurTransformation(ctx))
 		    .into(userAvatarBackground, new Callback() {
 

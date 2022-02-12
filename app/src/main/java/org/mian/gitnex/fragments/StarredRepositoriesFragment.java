@@ -28,7 +28,6 @@ import org.mian.gitnex.activities.CreateRepoActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.ReposListAdapter;
 import org.mian.gitnex.databinding.FragmentStarredRepositoriesBinding;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.StarredRepositoriesViewModel;
 
 /**
@@ -37,8 +36,6 @@ import org.mian.gitnex.viewmodels.StarredRepositoriesViewModel;
 
 public class StarredRepositoriesFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
     private ReposListAdapter adapter;
@@ -48,27 +45,6 @@ public class StarredRepositoriesFragment extends Fragment {
     private int resultLimit = 50;
 
     private OnFragmentInteractionListener mListener;
-
-    public StarredRepositoriesFragment() {
-    }
-
-    public static StarredRepositoriesFragment newInstance(String param1, String param2) {
-        StarredRepositoriesFragment fragment = new StarredRepositoriesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            String mParam1 = getArguments().getString(ARG_PARAM1);
-            String mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -126,20 +102,6 @@ public class StarredRepositoriesFragment extends Fragment {
         fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), pageSize, resultLimit);
 
         return fragmentStarredRepositoriesBinding.getRoot();
-    }
-
-    @Override
-    public void onResume() {
-
-        super.onResume();
-        TinyDB tinyDb = TinyDB.getInstance(getContext());
-        final String loginUid = tinyDb.getString("loginUid");
-        final String instanceToken = "token " + tinyDb.getString(loginUid + "-token");
-
-        if(tinyDb.getBoolean("repoCreated")) {
-            StarredRepositoriesViewModel.loadStarredReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext(), pageSize, resultLimit);
-            tinyDb.putBoolean("repoCreated", false);
-        }
     }
 
     private void fetchDataAsync(String instanceToken, int pageSize, int resultLimit) {
