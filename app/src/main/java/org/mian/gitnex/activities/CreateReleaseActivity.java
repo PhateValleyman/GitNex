@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.models.Branches;
+import org.gitnex.tea4j.models.CreateTagOptions;
+import org.gitnex.tea4j.models.GitTag;
 import org.gitnex.tea4j.models.Releases;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -45,6 +47,7 @@ public class CreateReleaseActivity extends BaseActivity {
     private CheckBox releaseDraft;
     private Button createNewRelease;
     private String selectedBranch;
+    private Button createNewTag;
 
 	private RepositoryContext repository;
 
@@ -94,6 +97,7 @@ public class CreateReleaseActivity extends BaseActivity {
         getBranches(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
         createNewRelease = activityCreateReleaseBinding.createNewRelease;
+        createNewTag = activityCreateReleaseBinding.createNewTag;
         disableProcessButton();
 
         if(!connToInternet) {
@@ -104,6 +108,79 @@ public class CreateReleaseActivity extends BaseActivity {
 
             createNewRelease.setOnClickListener(createReleaseListener);
         }
+
+        createNewTag.setOnClickListener(v -> createNewTag());
+
+    }
+
+    private void createNewTag() {
+    	boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
+
+	    String tagName = releaseTagName.getText().toString();
+	    String message = releaseTitle.getText().toString() + "\n\n" + releaseContent.getText().toString();
+
+	    if(!connToInternet) {
+		    Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
+		    return;
+	    }
+
+	    if(tagName.equals("")) {
+		    Toasty.error(ctx, getString(R.string.tagNameErrorEmpty));
+		    return;
+	    }
+
+	    if(selectedBranch == null) {
+		    Toasty.error(ctx, getString(R.string.selectBranchError));
+		    return;
+	    }
+
+	    disableProcessButton();
+
+	    CreateTagOptions createReleaseJson = new CreateTagOptions(message, tagName, selectedBranch);
+
+	    Call<GitTag> call = RetrofitClient
+		    .getApiInterface(ctx)
+		    .createTag(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), createReleaseJson);
+
+	    call.enqueue(new Callback<GitTag>() {
+
+		    @Override
+		    public void onResponse(@NonNull Call<GitTag> call, @NonNull retrofit2.Response<GitTag> response) {
+
+			    if (response.code() == 201) {
+				    tinyDB.putBoolean("updateReleases", true);
+				    Toasty.success(ctx, getString(R.string.tagCreated));
+				    finish();
+			    }
+			    else if(response.code() == 401) {
+				    enableProcessButton();
+				    AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+					    ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+					    ctx.getResources().getString(R.string.cancelButton),
+					    ctx.getResources().getString(R.string.navLogout));
+			    }
+			    else if(response.code() == 403) {
+				    enableProcessButton();
+				    Toasty.error(ctx, ctx.getString(R.string.authorizeError));
+			    }
+			    else if(response.code() == 404) {
+				    enableProcessButton();
+				    Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
+			    }
+			    else {
+				    enableProcessButton();
+				    Toasty.error(ctx, ctx.getString(R.string.genericError));
+			    }
+		    }
+
+		    @Override
+		    public void onFailure(@NonNull Call<GitTag> call, @NonNull Throwable t) {
+			    Log.e("onFailure", t.toString());
+			    enableProcessButton();
+		    }
+	    });
+
+
 
     }
 
@@ -266,12 +343,12 @@ public class CreateReleaseActivity extends BaseActivity {
     }
 
     private void disableProcessButton() {
-
+		createNewTag.setEnabled(false);
         createNewRelease.setEnabled(false);
     }
 
     private void enableProcessButton() {
-
+	    createNewTag.setEnabled(true);
         createNewRelease.setEnabled(true);
     }
 
