@@ -8,11 +8,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.google.android.material.tabs.TabLayoutMediator;
+import org.gitnex.tea4j.models.OrgPermissions;
 import org.gitnex.tea4j.models.Teams;
-import org.jetbrains.annotations.Nullable;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivityOrgTeamInfoBinding;
 import org.mian.gitnex.fragments.BottomSheetOrganizationTeamsFragment;
@@ -51,7 +52,7 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 
 	    binding.close.setOnClickListener(view -> finish());
 	    binding.pager.setAdapter(new FragmentStateAdapter(getSupportFragmentManager(), getLifecycle()) {
-		    @Nullable
+		    @NonNull
 		    @Override
 		    public Fragment createFragment(int position) {
 			    switch(position) {
@@ -97,8 +98,10 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
+    	if(!((OrgPermissions) getIntent().getSerializableExtra("permissions")).isOwner()) {
+		    MenuInflater inflater = getMenuInflater();
+		    inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
+	    }
         return true;
     }
 

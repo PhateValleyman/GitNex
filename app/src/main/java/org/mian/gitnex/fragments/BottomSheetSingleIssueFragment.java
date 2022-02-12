@@ -35,6 +35,11 @@ import java.util.Objects;
 public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 	private BottomSheetListener bmListener;
+	private final String issueCreator;
+
+	public BottomSheetSingleIssueFragment(String username) {
+		issueCreator = username;
+	}
 
 	@Nullable
 	@Override
@@ -44,6 +49,11 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		final Context ctx = getContext();
 		final TinyDB tinyDB = TinyDB.getInstance(ctx);
+
+		boolean userIsCreator = issueCreator.equals(tinyDB.getString("loginUid"));
+		boolean isRepoAdmin = tinyDB.getBoolean("isRepoAdmin");
+		boolean canPush = tinyDB.getBoolean("canPush");
+		boolean archived = tinyDB.getBoolean("isArchived");
 
 		String repoFullName = tinyDB.getString("repoFullName");
 		String[] parts = repoFullName.split("/");
@@ -80,16 +90,36 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			binding.copyIssueUrl.setText(R.string.copyPrUrlText);
 			binding.shareIssue.setText(R.string.sharePr);
 
+			boolean canPushPullSource = tinyDB.getBoolean("canPushPullSource");
 			if(tinyDB.getBoolean("prMerged") || tinyDB.getString("repoPrState").equals("closed")) {
-				binding.mergePullRequest.setVisibility(View.GONE);
 				binding.updatePullRequest.setVisibility(View.GONE);
 				binding.mergePullRequest.setVisibility(View.GONE);
-				binding.deletePrHeadBranch.setVisibility(View.VISIBLE);
+				if(canPushPullSource) {
+					binding.deletePrHeadBranch.setVisibility(View.VISIBLE);
+				}
+				else {
+					if(!canPush) {
+						binding.editIssue.setVisibility(View.GONE);
+					}
+					binding.deletePrHeadBranch.setVisibility(View.GONE);
+				}
 			}
 			else {
-				binding.mergePullRequest.setVisibility(View.VISIBLE);
-				binding.updatePullRequest.setVisibility(View.VISIBLE);
-				binding.mergePullRequest.setVisibility(View.VISIBLE);
+				if(canPushPullSource) {
+					binding.updatePullRequest.setVisibility(View.VISIBLE);
+				}
+				else {
+					binding.updatePullRequest.setVisibility(View.GONE);
+				}
+				if(!userIsCreator && !canPush) {
+					binding.editIssue.setVisibility(View.GONE);
+				}
+				if(canPush && !tinyDB.getString("prMergeable").equals("false")) {
+					binding.mergePullRequest.setVisibility(View.VISIBLE);
+				}
+				else {
+					binding.mergePullRequest.setVisibility(View.GONE);
+				}
 				binding.deletePrHeadBranch.setVisibility(View.GONE);
 			}
 
@@ -105,8 +135,9 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		}
 		else {
-
-			binding.mergePullRequest.setVisibility(View.GONE);
+			if(!userIsCreator && !canPush) {
+				binding.editIssue.setVisibility(View.GONE);
+			}
 			binding.updatePullRequest.setVisibility(View.GONE);
 			binding.mergePullRequest.setVisibility(View.GONE);
 			binding.deletePrHeadBranch.setVisibility(View.GONE);
@@ -179,41 +210,36 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			dismiss();
 		});
 
-		if(tinyDB.getString("issueType").equalsIgnoreCase("Issue")) {
-
-			if(tinyDB.getString("issueState").equals("open")) { // close issue
-
-				binding.reOpenIssue.setVisibility(View.GONE);
-				binding.closeIssue.setVisibility(View.VISIBLE);
-
-				binding.closeIssue.setOnClickListener(closeSingleIssue -> {
-
-					IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "closed");
-					dismiss();
-
-				});
-
-			}
-			else if(tinyDB.getString("issueState").equals("closed")) {
-
+		if(tinyDB.getString("issueState").equals("open")) { // close issue
+			if(!userIsCreator && !canPush) {
 				binding.closeIssue.setVisibility(View.GONE);
-				binding.reOpenIssue.setVisibility(View.VISIBLE);
-
-				binding.reOpenIssue.setOnClickListener(reOpenSingleIssue -> {
-
-					IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "open");
-					dismiss();
-
-				});
-
+				binding.dividerCloseReopenIssue.setVisibility(View.GONE);
 			}
-
+			else if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
+				binding.closeIssue.setText(R.string.closePr);
+			}
+			binding.closeIssue.setOnClickListener(closeSingleIssue -> {
+				IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "closed");
+				dismiss();
+			});
 		}
-		else {
-
-			binding.reOpenIssue.setVisibility(View.GONE);
-			binding.closeIssue.setVisibility(View.GONE);
-
+		else if(tinyDB.getString("issueState").equals("closed")) {
+			if(userIsCreator || canPush) {
+				if(tinyDB.getString("issueType").equalsIgnoreCase("Pull")) {
+					binding.closeIssue.setText(R.string.reopenPr);
+				}
+				else {
+					binding.closeIssue.setText(R.string.reOpenIssue);
+				}
+			}
+			else {
+				binding.closeIssue.setVisibility(View.GONE);
+				binding.dividerCloseReopenIssue.setVisibility(View.GONE);
+			}
+			binding.closeIssue.setOnClickListener(closeSingleIssue -> {
+				IssueActions.closeReopenIssue(ctx, Integer.parseInt(tinyDB.getString("issueNumber")), "open");
+				dismiss();
+			});
 		}
 
 		binding.subscribeIssue.setOnClickListener(subscribeToIssue -> {
@@ -239,6 +265,18 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		else {
 			binding.subscribeIssue.setVisibility(View.VISIBLE);
 			binding.unsubscribeIssue.setVisibility(View.GONE);
+		}
+
+		if(archived) {
+			binding.subscribeIssue.setVisibility(View.GONE);
+			binding.unsubscribeIssue.setVisibility(View.GONE);
+			binding.editIssue.setVisibility(View.GONE);
+			binding.editLabels.setVisibility(View.GONE);
+			binding.closeIssue.setVisibility(View.GONE);
+			binding.dividerCloseReopenIssue.setVisibility(View.GONE);
+			binding.addRemoveAssignees.setVisibility(View.GONE);
+			binding.commentReactionButtons.setVisibility(View.GONE);
+			binding.shareDivider.setVisibility(View.GONE);
 		}
 
 		return binding.getRoot();

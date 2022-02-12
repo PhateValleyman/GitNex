@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import org.gitnex.tea4j.models.OrgPermissions;
 import org.gitnex.tea4j.models.Teams;
 import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
@@ -34,11 +35,13 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
     private final List<Teams> teamList;
     private final Context context;
     private final List<Teams> teamListFull;
+    private final OrgPermissions permissions;
 
     static class OrgTeamsViewHolder extends RecyclerView.ViewHolder {
 
     	private Teams team;
 
+    	private OrgPermissions permissions;
         private final TextView teamTitle;
         private final TextView teamDescription;
         private final LinearLayout membersPreviewFrame;
@@ -66,14 +69,16 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
 
                 Intent intent = new Intent(context, OrganizationTeamInfoActivity.class);
                 intent.putExtra("team", team);
+                intent.putExtra("permissions", permissions);
                 context.startActivity(intent);
             });
         }
     }
 
-    public TeamsByOrgAdapter(Context ctx, List<Teams> teamListMain) {
+    public TeamsByOrgAdapter(Context ctx, List<Teams> teamListMain, OrgPermissions permissions) {
         this.context = ctx;
         this.teamList = teamListMain;
+        this.permissions = permissions;
         teamListFull = new ArrayList<>(teamList);
     }
 
@@ -91,6 +96,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
 
         holder.team = currentItem;
         holder.teamTitle.setText(currentItem.getName());
+        holder.permissions = permissions;
 
 	    holder.membersPreviewFrame.setVisibility(View.GONE);
 	    holder.userInfos.clear();
