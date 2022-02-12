@@ -165,7 +165,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             starRepository.setVisibility(View.GONE);
             unStarRepository.setOnClickListener(v18 -> {
 
-                RepositoryActions.unStarRepository(getContext());
+                RepositoryActions.unStarRepository(getContext(), repository);
                 repository.setStarred(true);
                 dismiss();
 
@@ -176,7 +176,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             unStarRepository.setVisibility(View.GONE);
             starRepository.setOnClickListener(v19 -> {
 
-                RepositoryActions.starRepository(getContext());
+                RepositoryActions.starRepository(getContext(), repository);
                 repository.setStarred(true); // TODO send repoctx back to activity
                 dismiss();
 
@@ -189,7 +189,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             watchRepository.setVisibility(View.GONE);
             unWatchRepository.setOnClickListener(v110 -> {
 
-                RepositoryActions.unWatchRepository(getContext());
+                RepositoryActions.unWatchRepository(getContext(), repository);
                 repository.setWatched(false);
                 dismiss();
 
@@ -200,7 +200,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             unWatchRepository.setVisibility(View.GONE);
             watchRepository.setOnClickListener(v111 -> {
 
-                RepositoryActions.watchRepository(getContext());
+                RepositoryActions.watchRepository(getContext(), repository);
 	            repository.setWatched(true);
                 dismiss();
 
@@ -219,7 +219,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             bmListener = (BottomSheetListener) context;
         }
         catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement BottomSheetListener");
+            throw new ClassCastException(context + " must implement BottomSheetListener");
         }
     }
 

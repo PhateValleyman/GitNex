@@ -291,7 +291,7 @@
     <string name="addCollaboratorTitle">Gérer les collaborateurs</string>
     <string name="addCollaboratorSearchHint">Rechercher des utilisateurs</string>
     <string name="addCollaboratorViewUserDesc">Nom d’utilisateur</string>
-    <string name="removeCollaboratorTitle">Supprimer\u0020</string>
+    <string name="removeCollaboratorTitle">Supprimer %s</string>
     <string name="removeCollaboratorMessage">Supprimer cet utilisateur du dépôt ?</string>
     <string name="removeCollaboratorToastText">Utilisateur supprimé du dépôt</string>
     <string name="addCollaboratorToastText">Utilisateur ajouté au dépôt</string>

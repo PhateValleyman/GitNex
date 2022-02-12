@@ -7,13 +7,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.Issues;
-import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.AccountContext;
 import java.util.List;
@@ -65,8 +63,6 @@ public class AssigneesActions {
 	}
 
 	public static void getRepositoryAssignees(Context ctx, String repoOwner, String repoName, List<Collaborators> assigneesList, Dialog dialogAssignees, AssigneesListAdapter assigneesAdapter, CustomAssigneesSelectionDialogBinding assigneesBinding) {
-
-		TinyDB tinyDB = TinyDB.getInstance(ctx);
 
 		Call<List<Collaborators>> call = RetrofitClient
 			.getApiInterface(ctx)

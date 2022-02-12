@@ -291,7 +291,7 @@
     <string name="addCollaboratorTitle">Додај или уклони сарадника</string>
     <string name="addCollaboratorSearchHint">Претражи кориснике</string>
     <string name="addCollaboratorViewUserDesc">Корисничко име</string>
-    <string name="removeCollaboratorTitle">Уклони\u0020</string>
+    <string name="removeCollaboratorTitle">Уклони %s</string>
     <string name="removeCollaboratorMessage">Да ли желиш да уклониш корисника?</string>
     <string name="removeCollaboratorToastText">Корисник је уклоњен</string>
     <string name="addCollaboratorToastText">Корисник је додат</string>

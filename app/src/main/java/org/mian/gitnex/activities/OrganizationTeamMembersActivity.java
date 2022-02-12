@@ -28,6 +28,10 @@ import java.util.Objects;
 
 public class OrganizationTeamMembersActivity extends BaseActivity implements BottomSheetListener {
 
+	// we can use a public and static here because you can't have multiple activities 'on top'
+	// these values are only changed if the activity should really get reloaded - not if another instance of this activity should be reloaded
+	public static boolean reloadTeams = false;
+
     private TextView noDataMembers;
     private View.OnClickListener onClickListener;
     private UserGridAdapter adapter;
@@ -80,14 +84,10 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
 
     @Override
     public void onResume() {
-
         super.onResume();
-        TinyDB tinyDb = TinyDB.getInstance(appCtx);
-
-        if(tinyDb.getBoolean("teamActionFlag")) {
-
+        if(reloadTeams) {
             fetchDataAsync(getAccount().getAuthorization(), Integer.parseInt(teamId));
-            tinyDb.putBoolean("teamActionFlag", false);
+            reloadTeams = false;
         }
     }
 

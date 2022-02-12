@@ -15,9 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.models.UserInfo;
 import org.gitnex.tea4j.models.UserSearch;
-import org.mian.gitnex.adapters.UserSearchAdapter;
+import org.mian.gitnex.adapters.CollaboratorSearchAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityAddCollaboratorToRepositoryBinding;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +36,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
     private ProgressBar mProgressBar;
 
     private RecyclerView mRecyclerView;
+    private RepositoryContext repository;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
         mRecyclerView = activityAddCollaboratorToRepositoryBinding.recyclerViewUserSearch;
         mProgressBar = activityAddCollaboratorToRepositoryBinding.progressBar;
         noData = activityAddCollaboratorToRepositoryBinding.noData;
+
+        repository = RepositoryContext.fromIntent(getIntent());
 
         addCollaboratorSearch.requestFocus();
         assert imm != null;
@@ -111,7 +115,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
     private void getUsersList(List<UserInfo> dataList, Context context) {
 
-        UserSearchAdapter adapter = new UserSearchAdapter(dataList, context);
+        CollaboratorSearchAdapter adapter = new CollaboratorSearchAdapter(dataList, context, repository);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));

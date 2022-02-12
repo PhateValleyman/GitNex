@@ -82,7 +82,7 @@ public class MilestonesFragment extends Fragment {
         }
 
         dataList = new ArrayList<>();
-        adapter = new MilestonesAdapter(ctx, dataList);
+        adapter = new MilestonesAdapter(ctx, dataList, repository);
 
 	    if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.12.0")) {
 
@@ -125,7 +125,7 @@ public class MilestonesFragment extends Fragment {
 
             dataList.clear();
 
-            adapter = new MilestonesAdapter(ctx, dataList);
+            adapter = new MilestonesAdapter(ctx, dataList, repository);
 
 	        if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.12.0")) {
 

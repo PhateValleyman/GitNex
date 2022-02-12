@@ -129,7 +129,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             teamList.clear();
-            teamList.addAll((List) results.values);
+            teamList.addAll((List<Teams>) results.values);
             notifyDataSetChanged();
         }
     };

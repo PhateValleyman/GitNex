@@ -40,6 +40,8 @@ import retrofit2.Response;
 
 public class IssuesFragment extends Fragment {
 
+	public static boolean resumeIssues = false;
+
 	private FragmentIssuesBinding fragmentIssuesBinding;
 	private Context context;
 
@@ -151,13 +153,10 @@ public class IssuesFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-
 		super.onResume();
-		TinyDB tinyDb = TinyDB.getInstance(context);
-
-		if(tinyDb.getBoolean("resumeIssues")) {
+		if(resumeIssues) {
 			loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName());
-			tinyDb.putBoolean("resumeIssues", false);
+			resumeIssues = false;
 		}
 	}
 

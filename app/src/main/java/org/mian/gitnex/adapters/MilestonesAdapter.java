@@ -22,6 +22,7 @@ import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Markdown;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,9 +42,10 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false;
 	private boolean isMoreDataAvailable = true;
+	private final RepositoryContext repository;
 
-	public MilestonesAdapter(Context ctx, List<Milestones> dataListMain) {
-
+	public MilestonesAdapter(Context ctx, List<Milestones> dataListMain, RepositoryContext repository) {
+		this.repository = repository;
 		this.context = ctx;
 		this.dataList = dataListMain;
 	}
@@ -130,14 +132,14 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 				closeMilestone.setOnClickListener(v12 -> {
 
-					MilestoneActions.closeMilestone(ctx, milestoneId_);
+					MilestoneActions.closeMilestone(ctx, milestoneId_, repository);
 					dialog.dismiss();
 					updateAdapter(getAdapterPosition());
 				});
 
 				openMilestone.setOnClickListener(v12 -> {
 
-					MilestoneActions.openMilestone(ctx, milestoneId_);
+					MilestoneActions.openMilestone(ctx, milestoneId_, repository);
 					dialog.dismiss();
 					updateAdapter(getAdapterPosition());
 				});

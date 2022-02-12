@@ -10,8 +10,8 @@ import org.mian.gitnex.activities.AddCollaboratorToRepositoryActivity;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,18 +23,11 @@ import retrofit2.Response;
 
 public class CollaboratorActions {
 
-    public static void deleteCollaborator(final Context context, final String searchKeyword, String userName) {
-
-        final TinyDB tinyDb = TinyDB.getInstance(context);
-
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+    public static void deleteCollaborator(final Context context, String userName, RepositoryContext repository) {
 
         Call<Collaborators> call = RetrofitClient
                 .getApiInterface(context)
-                .deleteCollaborator(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, userName);
+                .deleteCollaborator(((BaseActivity) context).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), userName);
 
         call.enqueue(new Callback<Collaborators>() {
 
@@ -87,20 +80,13 @@ public class CollaboratorActions {
 
     }
 
-    public static void addCollaborator(final Context context, String permission, String userName) {
-
-        final TinyDB tinyDb = TinyDB.getInstance(context);
-
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+    public static void addCollaborator(final Context context, String permission, String userName, RepositoryContext repository) {
 
         Permission permissionString = new Permission(permission);
 
         Call<Permission> call = RetrofitClient
                 .getApiInterface(context)
-                .addCollaborator(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName, userName, permissionString);
+                .addCollaborator(((BaseActivity) context).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), userName, permissionString);
 
         call.enqueue(new Callback<Permission>() {
 
@@ -152,19 +138,13 @@ public class CollaboratorActions {
 
     }
 
-	public static ActionResult<List<Collaborators>> getCollaborators(Context context) {
+	public static ActionResult<List<Collaborators>> getCollaborators(Context context, RepositoryContext repository) {
 
 		ActionResult<List<Collaborators>> actionResult = new ActionResult<>();
-		TinyDB tinyDb = TinyDB.getInstance(context);
-
-		String repoFullName = tinyDb.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		String repoOwner = parts[0];
-		String repoName = parts[1];
 
 		Call<List<Collaborators>> call = RetrofitClient
 			.getApiInterface(context)
-			.getCollaborators(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
+			.getCollaborators(((BaseActivity) context).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
 		call.enqueue(new Callback<List<Collaborators>>() {
 

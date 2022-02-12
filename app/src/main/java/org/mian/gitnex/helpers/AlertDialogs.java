@@ -13,6 +13,7 @@ import org.mian.gitnex.actions.PullRequestActions;
 import org.mian.gitnex.actions.TeamActions;
 import org.mian.gitnex.activities.CreateLabelActivity;
 import org.mian.gitnex.activities.LoginActivity;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 
 /**
  * Author M M Arif
@@ -87,13 +88,13 @@ public class AlertDialogs {
 
     }
 
-    public static void collaboratorRemoveDialog(final Context context, final String userNameMain, String title, String message, String positiveButton, String negativeButton, final String searchKeyword) {
+    public static void collaboratorRemoveDialog(final Context context, final String userNameMain, RepositoryContext repository) {
 
         new AlertDialog.Builder(context)
-                .setTitle(title + userNameMain)
-                .setMessage(message)
-                .setPositiveButton(positiveButton, (dialog, whichButton) -> CollaboratorActions.deleteCollaborator(context,  searchKeyword, userNameMain))
-                .setNeutralButton(negativeButton, null).show();
+                .setTitle(context.getString(R.string.removeCollaboratorTitle, userNameMain))
+                .setMessage(R.string.removeCollaboratorMessage)
+                .setPositiveButton(R.string.removeButton, (dialog, whichButton) -> CollaboratorActions.deleteCollaborator(context, userNameMain, repository))
+                .setNeutralButton(R.string.cancelButton, null).show();
 
     }
 

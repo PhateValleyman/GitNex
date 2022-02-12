@@ -181,7 +181,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 			if(mode == Mode.SEND) {
 
 				IssueActions
-					.reply(getContext(), comment.getText().toString(), issue.getIssueIndex())
+					.reply(getContext(), comment.getText().toString(), issue)
 					.accept((status, result) -> {
 
 						if(status == ActionResult.Status.SUCCESS) {
@@ -192,9 +192,8 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 								draftsApi.deleteSingleDraft((int) draftId);
 							}
 
-							tinyDB.putBoolean("commentPosted", true);
-							tinyDB.putBoolean("resumeIssues", true);
-							tinyDB.putBoolean("resumePullRequests", true); // TODO move this away from tinydb
+							IssuesFragment.resumeIssues = issue.getIssue().getPull_request() == null;
+							PullRequestsFragment.resumePullRequests = issue.getIssue().getPull_request() != null;
 
 							if(onInteractedListener != null) {
 								onInteractedListener.onInteracted();
@@ -211,7 +210,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 			} else {
 
 				IssueActions
-					.edit(getContext(), comment.getText().toString(), arguments.getInt("commentId"))
+					.edit(getContext(), comment.getText().toString(), arguments.getInt("commentId"), issue)
 					.accept((status, result) -> {
 
 						if(status == ActionResult.Status.SUCCESS) {
@@ -219,8 +218,6 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 							if(draftId != 0 && tinyDB.getBoolean("draftsCommentsDeletionEnabled", true)) {
 								draftsApi.deleteSingleDraft((int) draftId);
 							}
-
-							tinyDB.putBoolean("commentEdited", true); // TODO move this away from tinydb
 
 							if(onInteractedListener != null) {
 								onInteractedListener.onInteracted();

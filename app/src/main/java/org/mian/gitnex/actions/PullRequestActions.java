@@ -13,7 +13,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Author qwerty287
+ * @author qwerty287
  */
 
 public class PullRequestActions {

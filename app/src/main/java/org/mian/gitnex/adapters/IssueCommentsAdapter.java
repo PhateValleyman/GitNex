@@ -134,8 +134,6 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 				ReactionSpinner reactionSpinner = new ReactionSpinner(context, bundle1);
 				reactionSpinner.setOnInteractedListener(() -> {
-					tinyDB.putBoolean("commentEdited", true);
-
 					onInteractedListener.onInteracted();
 					dialog.dismiss();
 				});

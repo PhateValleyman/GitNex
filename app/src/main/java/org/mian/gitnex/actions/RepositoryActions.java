@@ -8,8 +8,8 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -19,20 +19,15 @@ import retrofit2.Callback;
 
 public class RepositoryActions {
 
-    public static void starRepository(final Context context) {
+	// TODO class: update mainactivity star list
 
-        final TinyDB tinyDb = TinyDB.getInstance(context);
-
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+    public static void starRepository(final Context context, RepositoryContext repository) {
 
         Call<JsonElement> call;
 
         call = RetrofitClient
                 .getApiInterface(context)
-                .starRepository(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
+                .starRepository(((BaseActivity) context).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -42,7 +37,6 @@ public class RepositoryActions {
                 if(response.isSuccessful()) {
                     if(response.code() == 204) {
 
-                        tinyDb.putBoolean("repoCreated", true);
                         Toasty.success(context, context.getString(R.string.starRepositorySuccess));
 
                     }
@@ -81,20 +75,13 @@ public class RepositoryActions {
 
     }
 
-    public static void unStarRepository(final Context context) {
-
-        final TinyDB tinyDb = TinyDB.getInstance(context);
-
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+    public static void unStarRepository(final Context context, RepositoryContext repository) {
 
         Call<JsonElement> call;
 
         call = RetrofitClient
                 .getApiInterface(context)
-                .unStarRepository(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
+                .unStarRepository(((BaseActivity) context).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -104,7 +91,6 @@ public class RepositoryActions {
                 if(response.isSuccessful()) {
                     if(response.code() == 204) {
 
-                        tinyDb.putBoolean("repoCreated", true);
                         Toasty.success(context, context.getString(R.string.unStarRepositorySuccess));
 
                     }
@@ -143,20 +129,13 @@ public class RepositoryActions {
 
     }
 
-    public static void watchRepository(final Context context) {
-
-        final TinyDB tinyDb = TinyDB.getInstance(context);
-
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+    public static void watchRepository(final Context context, RepositoryContext repository) {
 
         Call<JsonElement> call;
 
         call = RetrofitClient
                 .getApiInterface(context)
-                .watchRepository(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
+                .watchRepository(((BaseActivity) context).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -166,7 +145,6 @@ public class RepositoryActions {
                 if(response.isSuccessful()) {
                     if(response.code() == 200) {
 
-                        tinyDb.putBoolean("repoCreated", true);
                         Toasty.success(context, context.getString(R.string.watchRepositorySuccess));
 
                     }
@@ -205,20 +183,13 @@ public class RepositoryActions {
 
     }
 
-    public static void unWatchRepository(final Context context) {
-
-        final TinyDB tinyDb = TinyDB.getInstance(context);
-
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+    public static void unWatchRepository(final Context context, RepositoryContext repository) {
 
         Call<JsonElement> call;
 
         call = RetrofitClient
                 .getApiInterface(context)
-                .unWatchRepository(((BaseActivity) context).getAccount().getAuthorization(), repoOwner, repoName);
+                .unWatchRepository(((BaseActivity) context).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 
         call.enqueue(new Callback<JsonElement>() {
 
@@ -227,7 +198,6 @@ public class RepositoryActions {
 
                 if(response.code() == 204) {
 
-                    tinyDb.putBoolean("repoCreated", true);
                     Toasty.success(context, context.getString(R.string.unWatchRepositorySuccess));
 
                 }

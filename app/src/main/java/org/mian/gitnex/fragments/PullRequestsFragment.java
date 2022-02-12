@@ -41,6 +41,8 @@ import retrofit2.Response;
 
 public class PullRequestsFragment extends Fragment {
 
+	public static boolean resumePullRequests = false;
+
 	private FragmentPullRequestsBinding fragmentPullRequestsBinding;
 	private Menu menu;
 
@@ -134,7 +136,7 @@ public class PullRequestsFragment extends Fragment {
 		super.onResume();
 		TinyDB tinyDb = TinyDB.getInstance(getContext());
 
-		if(tinyDb.getBoolean("resumePullRequests")) {
+		if(resumePullRequests) {
 			loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), pageSize, repository.getPrState().toString(), resultLimit);
 			tinyDb.putBoolean("resumePullRequests", false);
 			tinyDb.putBoolean("prMerged", false);
