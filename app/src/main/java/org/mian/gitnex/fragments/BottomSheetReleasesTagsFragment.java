@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import org.mian.gitnex.databinding.BottomSheetNotificationsFilterBinding;
 import org.mian.gitnex.databinding.BottomSheetReleasesTagsBinding;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.structs.BottomSheetListener;
 
 /**
@@ -32,7 +30,6 @@ public class BottomSheetReleasesTagsFragment extends BottomSheetDialogFragment {
 		catch(ClassCastException e) {
 			throw new ClassCastException(context.toString() + " must implement BottomSheetListener");
 		}
-
 	}
 
 	@Nullable
@@ -45,18 +42,14 @@ public class BottomSheetReleasesTagsFragment extends BottomSheetDialogFragment {
 
 			bmListener.onButtonClicked("tags");
 			dismiss();
-
 		});
 
 		binding.releases.setOnClickListener(v12 -> {
 
 			bmListener.onButtonClicked("releases");
 			dismiss();
-
 		});
 
 		return binding.getRoot();
-
 	}
-
 }

@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import org.gitnex.tea4j.models.GitTag;
 import org.gitnex.tea4j.models.Releases;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.RepoDetailActivity;
@@ -144,7 +143,6 @@ public class ReleasesFragment extends Fragment {
 	        mProgressBar.setVisibility(View.VISIBLE);
 	        tinyDb.putBoolean("updateReleases", false);
         }
-
     }
 
     public void onButtonPressed(Uri uri) {
@@ -255,5 +253,4 @@ public class ReleasesFragment extends Fragment {
 		inflater.inflate(R.menu.filter_menu_releases, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
-
 }

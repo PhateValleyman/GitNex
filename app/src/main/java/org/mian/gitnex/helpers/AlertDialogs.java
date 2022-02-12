@@ -97,15 +97,17 @@ public class AlertDialogs {
 			.setTitle(String.format(context.getString(R.string.deleteTagTitle), tagName))
 			.setMessage(R.string.deleteTagConfirmation)
 			.setIcon(R.drawable.ic_delete)
-			.setPositiveButton(R.string.labelDeleteTitle, (dialog, whichButton) -> RetrofitClient.getApiInterface(context).deleteTag(Authorization.get(context), owner, repo, tagName).enqueue(new Callback<Void>() {
+			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient.getApiInterface(context).deleteTag(Authorization.get(context), owner, repo, tagName).enqueue(new Callback<Void>() {
 
 				@Override
 				public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
 					if(response.isSuccessful()) {
 						Toasty.success(context, context.getString(R.string.tagDeleted));
-					} else if(response.code() == 403) {
+					}
+					else if(response.code() == 403) {
 						Toasty.error(context, context.getString(R.string.authorizeError));
-					} else {
+					}
+					else {
 						Toasty.error(context, context.getString(R.string.genericError));
 					}
 				}
@@ -116,7 +118,6 @@ public class AlertDialogs {
 				}
 			}))
 			.setNeutralButton(R.string.cancelButton, null).show();
-
 	}
 
     public static void collaboratorRemoveDialog(final Context context, final String userNameMain, String title, String message, String positiveButton, String negativeButton, final String searchKeyword) {

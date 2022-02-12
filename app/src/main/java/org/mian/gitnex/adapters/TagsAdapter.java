@@ -2,7 +2,6 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +14,7 @@ import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.gitnex.tea4j.models.GitTag;
-import org.gitnex.tea4j.models.Issues;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.CreateLabelActivity;
-import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Markdown;
 import org.mian.gitnex.helpers.TinyDB;
@@ -34,6 +30,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
     private final Context context;
     private final String repo;
     private final String owner;
+	private Context ctx;
 
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
@@ -104,12 +101,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 			    holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_right);
 			    holder.downloads.setVisibility(View.GONE);
 		    }
-
 	    });
 
-        //if(!TinyDB.getInstance(context).getBoolean("canPush")) {
-        holder.options.setVisibility(View.GONE);
-        //}
+	    if(!TinyDB.getInstance(ctx).getBoolean("isRepoAdmin")) {
+            holder.options.setVisibility(View.GONE);
+        }
 
         holder.options.setOnClickListener(v -> {
 	        final Context context = v.getContext();
@@ -127,7 +123,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 		        AlertDialogs.tagDeleteDialog(context, currentItem.getName(), owner, repo);
 	            dialog.dismiss();
 	        });
-
         });
 
         holder.releaseZipDownload.setText(
@@ -164,7 +159,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
 	public interface OnLoadMoreListener {
 		void onLoadMore();
-
 		void onLoadFinished();
 	}
 

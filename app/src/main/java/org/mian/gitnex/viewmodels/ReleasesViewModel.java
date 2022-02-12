@@ -1,8 +1,6 @@
 package org.mian.gitnex.viewmodels;
 
 import android.content.Context;
-import android.nfc.Tag;
-import android.support.v4.os.IResultReceiver;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -57,17 +55,16 @@ public class ReleasesViewModel extends ViewModel {
 
                 if (response.isSuccessful()) {
                     releasesList.postValue(response.body());
-                } else {
+                }
+                else {
                     Log.i("onResponse", String.valueOf(response.code()));
                 }
-
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Releases>> call, Throwable t) {
                 Log.i("onFailure", t.toString());
             }
-
         });
     }
 
@@ -81,17 +78,21 @@ public class ReleasesViewModel extends ViewModel {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Releases>> call, @NonNull Response<List<Releases>> response) {
+
 				if (response.isSuccessful()) {
 					List<Releases> list = releasesList.getValue();
 					assert list != null;
 					assert response.body() != null;
+
 					if(response.body().size() != 0) {
 						list.addAll(response.body());
 						adapter.updateList(list);
-					} else {
+					}
+					else {
 						adapter.setMoreDataAvailable(false);
 					}
-				} else {
+				}
+				else {
 					Log.i("onResponse", String.valueOf(response.code()));
 				}
 			}
@@ -100,7 +101,6 @@ public class ReleasesViewModel extends ViewModel {
 			public void onFailure(@NonNull Call<List<Releases>> call, @NonNull Throwable t) {
 				Log.i("onFailure", t.toString());
 			}
-
 		});
 	}
 
@@ -133,17 +133,16 @@ public class ReleasesViewModel extends ViewModel {
 
 				if (response.isSuccessful()) {
 					tagsList.postValue(response.body());
-				} else {
+				}
+				else {
 					Log.i("onResponse", String.valueOf(response.code()));
 				}
-
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<List<GitTag>> call, @NonNull Throwable t) {
 				Log.i("onFailure", t.toString());
 			}
-
 		});
 	}
 	public static void loadMoreTags(String token, String owner, String repo, int page, Context ctx, TagsAdapter adapter) {
@@ -156,17 +155,22 @@ public class ReleasesViewModel extends ViewModel {
 
 			@Override
 			public void onResponse(@NonNull Call<List<GitTag>> call, @NonNull Response<List<GitTag>> response) {
+
 				if (response.isSuccessful()) {
+
 					List<GitTag> list = tagsList.getValue();
 					assert list != null;
 					assert response.body() != null;
+
 					if(response.body().size() != 0) {
 						list.addAll(response.body());
 						adapter.updateList(list);
-					} else {
+					}
+					else {
 						adapter.setMoreDataAvailable(false);
 					}
-				} else {
+				}
+				else {
 					Log.i("onResponse", String.valueOf(response.code()));
 				}
 			}
@@ -175,8 +179,6 @@ public class ReleasesViewModel extends ViewModel {
 			public void onFailure(@NonNull Call<List<GitTag>> call, @NonNull Throwable t) {
 				Log.i("onFailure", t.toString());
 			}
-
 		});
 	}
-
 }

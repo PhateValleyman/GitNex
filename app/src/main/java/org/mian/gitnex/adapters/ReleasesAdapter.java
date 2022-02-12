@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import org.gitnex.tea4j.models.GitTag;
 import org.gitnex.tea4j.models.Releases;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ProfileActivity;
