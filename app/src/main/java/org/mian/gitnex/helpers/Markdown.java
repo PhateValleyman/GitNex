@@ -387,7 +387,7 @@ public class Markdown {
 									index = link.substring(1);
 								}
 								String[] repo = link.split("#")[0].split("/");
-								Intent i = new IssueContext(new RepositoryContext(repo[0], repo[1]), Integer.parseInt(index), null)
+								Intent i = new IssueContext(new RepositoryContext(repo[0], repo[1], context), Integer.parseInt(index), null)
 									.getIntent(context, IssueDetailActivity.class);
 
 								if (link.contains("/")) {

@@ -202,7 +202,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				}
 
 				if(account != null) {
-					AppUtil.switchToAccount(requireContext(), account); // TODO switch back
+					AppUtil.switchToAccount(requireContext(), account, true); // TODO switch back
 					List<String> splittedUrl = url.getPathSegments();
 					if(splittedUrl.size() < 2) {
 						AppUtil.openUrlInBrowser(requireContext(), url.toString());
@@ -213,7 +213,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 						repo = repo.substring(0, repo.length() - 4);
 					}
 
-					startActivity(new RepositoryContext(owner, repo).getIntent(requireContext(), RepoDetailActivity.class));
+					startActivity(new RepositoryContext(owner, repo, requireContext()).getIntent(requireContext(), RepoDetailActivity.class));
 				} else {
 					AppUtil.openUrlInBrowser(requireContext(), url.toString());
 				}

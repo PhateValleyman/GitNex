@@ -490,6 +490,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	public void onResume() {
 
 		super.onResume();
+		issue.getRepository().checkAccountSwitch(this);
 
 		if(commentPosted) {
 

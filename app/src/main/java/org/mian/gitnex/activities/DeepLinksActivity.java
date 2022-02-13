@@ -95,7 +95,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 				accountFound = true;
 
-				AppUtil.switchToAccount(ctx, userAccount);
+				AppUtil.switchToAccount(ctx, userAccount, true);
 				break;
 
 			}
@@ -179,7 +179,7 @@ public class DeepLinksActivity extends BaseActivity {
 						}
 
 						IssueContext issue = new IssueContext(
-							new RepositoryContext(data.getPathSegments().get(0), data.getPathSegments().get(1)),
+							new RepositoryContext(data.getPathSegments().get(0), data.getPathSegments().get(1), ctx),
 							Integer.parseInt(data.getLastPathSegment()),
 							"Issue"
 						);
@@ -385,7 +385,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 					issueIntent.putExtra("openedFromLink", "true");
 
-					IssueContext issue = new IssueContext(prInfo, new RepositoryContext(repoOwner, repoName));
+					IssueContext issue = new IssueContext(prInfo, new RepositoryContext(repoOwner, repoName, ctx));
 
 					int currentActiveAccountId = tinyDB.getInt("currentActiveAccountId");
 					RepositoriesApi repositoryData = BaseApi.getInstance(ctx, RepositoriesApi.class);
@@ -440,7 +440,7 @@ public class DeepLinksActivity extends BaseActivity {
 				if (response.code() == 200) {
 					assert repoInfo != null;
 
-					RepositoryContext repo = new RepositoryContext(repoInfo);
+					RepositoryContext repo = new RepositoryContext(repoInfo, ctx);
 
 					repoIntent.putExtra("goToSection", "yes");
 					repoIntent.putExtra("goToSectionType", type);

@@ -9,6 +9,8 @@ import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.database.models.Repository;
+import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.TinyDB;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -39,6 +41,7 @@ public class RepositoryContext implements Serializable {
 		}
 	}
 
+	private final AccountContext account;
 	private UserRepositories repository;
 	private final String owner;
 	private final String name;
@@ -56,13 +59,15 @@ public class RepositoryContext implements Serializable {
 	private int repositoryId = 0;
 	private Repository repositoryModel = null;
 
-	public RepositoryContext(UserRepositories repository) {
+	public RepositoryContext(UserRepositories repository, Context context) {
+		this.account = ((BaseActivity) context).getAccount();
 		this.repository = repository;
 		this.name = getName();
 		this.owner = repository.getFullName().split("/")[0];
 	}
 
-	public RepositoryContext(String owner, String name) {
+	public RepositoryContext(String owner, String name, Context context) {
+		this.account = ((BaseActivity) context).getAccount();
 		this.owner = owner;
 		this.name = name;
 	}
@@ -204,6 +209,14 @@ public class RepositoryContext implements Serializable {
 	public Repository loadRepositoryModel(Context context) {
 		repositoryModel = Objects.requireNonNull(BaseApi.getInstance(context, RepositoriesApi.class)).fetchRepositoryById(repositoryId);
 		return repositoryModel;
+	}
+
+	public void checkAccountSwitch(Context context) {
+		if(((BaseActivity) context).getAccount().getAccount().getAccountId() != account.getAccount().getAccountId() &&
+			account.getAccount().getAccountId() == TinyDB.getInstance(context).getInt("currentActiveAccountId")) {
+			// user changed account using a deep link or a submodule
+			AppUtil.switchToAccount(context, account.getAccount());
+		}
 	}
 
 }

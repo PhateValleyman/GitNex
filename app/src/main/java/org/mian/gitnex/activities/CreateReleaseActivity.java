@@ -351,4 +351,10 @@ public class CreateReleaseActivity extends BaseActivity {
         createNewRelease.setEnabled(true);
     }
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+	}
+
 }

@@ -377,4 +377,11 @@ public class CreateLabelActivity extends BaseActivity {
         createLabelButton.setEnabled(true);
     }
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		if(repository == null) return;
+		repository.checkAccountSwitch(this);
+	}
+
 }

@@ -384,4 +384,10 @@ public class CreateFileActivity extends BaseActivity {
     private void disableProcessButton() { binding.newFileCreate.setEnabled(false); }
     private void enableProcessButton() { binding.newFileCreate.setEnabled(true); }
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+	}
+
 }

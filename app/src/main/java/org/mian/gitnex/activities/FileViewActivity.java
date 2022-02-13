@@ -382,4 +382,10 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 
 	});
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+	}
+
 }

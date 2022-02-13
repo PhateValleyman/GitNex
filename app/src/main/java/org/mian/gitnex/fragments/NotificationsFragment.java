@@ -330,7 +330,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		if(StringUtils.containsAny(notificationThread.getSubject().getType().toLowerCase(), "pull", "issue")) {
 
-			RepositoryContext repo = new RepositoryContext(notificationThread.getRepository());
+			RepositoryContext repo = new RepositoryContext(notificationThread.getRepository(), context);
 			String issueUrl = notificationThread.getSubject().getUrl();
 
 			int currentActiveAccountId = TinyDB.getInstance(requireContext()).getInt("currentActiveAccountId");
@@ -348,14 +348,14 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 			}
 
 			Intent intent = new IssueContext(
-				new RepositoryContext(notificationThread.getRepository()),
+				new RepositoryContext(notificationThread.getRepository(), context),
 				Integer.parseInt(issueUrl.substring(issueUrl.lastIndexOf("/") + 1)),
 				notificationThread.getSubject().getType()
 			).getIntent(context, IssueDetailActivity.class);
 			intent.putExtra("openedFromLink", "true");
 			startActivity(intent);
 		} else if(notificationThread.getSubject().getType().equalsIgnoreCase("repository")) {
-			startActivity(new RepositoryContext(notificationThread.getRepository()).getIntent(context, RepoDetailActivity.class));
+			startActivity(new RepositoryContext(notificationThread.getRepository(), context).getIntent(context, RepoDetailActivity.class));
 		}
 	}
 

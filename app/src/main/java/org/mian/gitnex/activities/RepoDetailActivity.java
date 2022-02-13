@@ -156,6 +156,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		super.onResume();
 
 		getRepoInfo(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+		repository.checkAccountSwitch(this);
 	}
 
 	@Override

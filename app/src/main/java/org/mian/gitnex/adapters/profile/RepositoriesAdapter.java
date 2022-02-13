@@ -114,7 +114,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 			itemView.setOnClickListener(v -> {
 				Context context = v.getContext();
-				RepositoryContext repo = new RepositoryContext(userRepositories);
+				RepositoryContext repo = new RepositoryContext(userRepositories, context);
 				Intent intent = repo.getIntent(context, RepoDetailActivity.class);
 
 				int currentActiveAccountId = TinyDB.getInstance(context).getInt("currentActiveAccountId");

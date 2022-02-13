@@ -378,4 +378,10 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
 	    viewBinding.createNewIssueButton.setEnabled(true);
     }
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+	}
 }

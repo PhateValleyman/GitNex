@@ -148,4 +148,10 @@ public class FileDiffActivity extends BaseActivity {
 		};
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		// TODO wait for opyale PR repository.checkAccountSwitch(this);
+	}
+
 }

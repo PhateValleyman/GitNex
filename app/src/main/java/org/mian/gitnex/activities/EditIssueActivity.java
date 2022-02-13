@@ -368,4 +368,10 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         editIssueButton.setEnabled(true);
     }
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		issue.getRepository().checkAccountSwitch(this);
+	}
+
 }

@@ -25,6 +25,8 @@ public class RepoStargazersActivity extends BaseActivity {
     private GridView mGridView;
     private ProgressBar mProgressBar;
 
+    private RepositoryContext repository;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -39,7 +41,7 @@ public class RepoStargazersActivity extends BaseActivity {
         mGridView = activityRepoStargazersBinding.gridView;
         mProgressBar = activityRepoStargazersBinding.progressBar;
 
-	    RepositoryContext repository = RepositoryContext.fromIntent(getIntent());
+	    repository = RepositoryContext.fromIntent(getIntent());
         final String repoOwner = repository.getOwner();
         final String repoName = repository.getName();
 
@@ -80,5 +82,11 @@ public class RepoStargazersActivity extends BaseActivity {
 
         onClickListener = view -> finish();
     }
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+	}
 
 }

@@ -350,7 +350,11 @@ public class AppUtil {
 	}
 
 	public static boolean switchToAccount(Context context, UserAccount userAccount) {
-		return ((MainApplication) context).switchToAccount(userAccount);
+		return ((MainApplication) context).switchToAccount(userAccount, false);
+	}
+
+	public static boolean switchToAccount(Context context, UserAccount userAccount, boolean tmp) {
+		return ((MainApplication) context).switchToAccount(userAccount, tmp);
 	}
 
 	public static void openUrlInBrowser(Context context, String url) {

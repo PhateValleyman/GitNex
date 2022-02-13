@@ -119,7 +119,7 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 				assert repositoryData != null;
 				Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
 
-				RepositoryContext repo = new RepositoryContext(repoOwner, repoName);
+				RepositoryContext repo = new RepositoryContext(repoOwner, repoName, context);
 
 				if(count == 0) {
 					long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);

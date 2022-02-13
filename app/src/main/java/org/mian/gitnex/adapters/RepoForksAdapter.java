@@ -208,7 +208,7 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 				String[] parts = userRepositories.getFullName().split("/");
 				final String repoOwner = parts[0];
 				final String repoName = parts[1];
-				RepositoryContext repo = new RepositoryContext(userRepositories);
+				RepositoryContext repo = new RepositoryContext(userRepositories, context);
 				Intent intent = repo.getIntent(context, RepoDetailActivity.class);
 
 				int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");

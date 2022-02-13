@@ -57,20 +57,20 @@ public class IssueContext implements Serializable {
 		this.repository = repository;
 	}
 
-	public IssueContext(Issues issue, PullRequests pullRequest, UserRepositories repository) {
+	public IssueContext(Issues issue, PullRequests pullRequest, UserRepositories repository, Context context) {
 		this.issue = issue;
 		this.issueType = issue.getPull_request() == null ?
 			"Issue" : "Pull";
 		this.pullRequest = pullRequest;
 
-		this.repository = new RepositoryContext(repository);
+		this.repository = new RepositoryContext(repository, context);
 	}
 
-	public IssueContext(Issues issue, UserRepositories repository) {
+	public IssueContext(Issues issue, UserRepositories repository, Context context) {
 		this.issue = issue;
 		this.issueType = issue.getPull_request() == null ?
 			"Issue" : "Pull";
-		this.repository = new RepositoryContext(repository);
+		this.repository = new RepositoryContext(repository, context);
 	}
 
 	public PullRequests getPullRequest() {

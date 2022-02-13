@@ -366,4 +366,10 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 		viewBinding.createPr.setEnabled(true);
 	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+	}
 }

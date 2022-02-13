@@ -109,7 +109,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			itemView.setOnClickListener(v -> {
 				Intent intent = new IssueContext(
 					pullRequest,
-					new RepositoryContext(pullRequest.getBase().getRepo().getFull_name().split("/")[0], pullRequest.getBase().getRepo().getName())
+					new RepositoryContext(pullRequest.getBase().getRepo().getFull_name().split("/")[0], pullRequest.getBase().getRepo().getName(), context)
 				)
 					.getIntent(context, IssueDetailActivity.class);
 

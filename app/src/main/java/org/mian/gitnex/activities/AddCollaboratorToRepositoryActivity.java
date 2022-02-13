@@ -142,4 +142,10 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
         onClickListener = view -> finish();
     }
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+	}
+
 }

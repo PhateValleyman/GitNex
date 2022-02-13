@@ -244,4 +244,10 @@ public class MergePullRequestActivity extends BaseActivity {
 		viewBinding.mergeButton.setEnabled(true);
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		issue.getRepository().checkAccountSwitch(this);
+	}
+
 }

@@ -66,7 +66,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
 	        itemView.setOnClickListener(itemEdit -> {
 
-	        	RepositoryContext repository = new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName());
+	        	RepositoryContext repository = new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName(), context);
 	        	repository.setRepositoryId(draftWithRepository.getRepositoryId());
 	        	IssueContext issue = new IssueContext(repository, draftWithRepository.getIssueId(), draftWithRepository.getIssueType());
 		        Bundle bundle = issue.getBundle();
@@ -83,7 +83,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
 		        BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle);
 		        bottomSheetReplyFragment.setOnInteractedListener(() -> context.startActivity(new IssueContext(
-			        new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName()),
+			        new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName(), context),
 			        draftWithRepository.getIssueId(),
 			        draftWithRepository.getIssueType()
 		        ).getIntent(context, IssueDetailActivity.class)));

@@ -99,10 +99,10 @@ public class MainApplication extends Application {
 		}
 	}
 
-	public boolean switchToAccount(UserAccount userAccount) {
+	public boolean switchToAccount(UserAccount userAccount, boolean tmp) {
 		if(tinyDB.getInt("currentActiveAccountId") != userAccount.getAccountId()) {
 			currentAccount = new AccountContext(userAccount);
-			tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
+			if(!tmp) tinyDB.putInt("currentActiveAccountId", userAccount.getAccountId());
 			return true;
 		}
 

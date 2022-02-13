@@ -220,4 +220,10 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         createNewMilestoneButton.setEnabled(true);
     }
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+	}
+
 }

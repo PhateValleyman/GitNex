@@ -263,6 +263,12 @@ public class CommitsActivity extends BaseActivity {
 		};
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+	}
+
 }
 
 
