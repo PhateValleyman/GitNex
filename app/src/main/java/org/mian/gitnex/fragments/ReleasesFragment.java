@@ -43,7 +43,6 @@ public class ReleasesFragment extends Fragment {
 
     private RepositoryContext repository;
     private String releaseTag;
-    private boolean viewTypeIsTags = false;
     private int page = 1;
     private int pageReleases = 1;
 
@@ -88,7 +87,7 @@ public class ReleasesFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-	        if(viewTypeIsTags) {
+	        if(repository.isReleasesViewTypeIsTag()) {
 		        ReleasesViewModel.loadTagsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
 	        } else {
 		        ReleasesViewModel.loadReleasesList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
@@ -101,10 +100,10 @@ public class ReleasesFragment extends Fragment {
 
         setHasOptionsMenu(true);
 	    ((RepoDetailActivity) requireActivity()).setFragmentRefreshListenerReleases(type -> {
-			if(type != null) viewTypeIsTags = type.equals("tags");
+			if(type != null) repository.setReleasesViewTypeIsTag(type.equals("tags"));
 			page = 1;
 			pageReleases = 1;
-		    if(viewTypeIsTags) {
+		    if(repository.isReleasesViewTypeIsTag()) {
 			    ReleasesViewModel.loadTagsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
 		    } else {
 			    ReleasesViewModel.loadReleasesList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
@@ -137,7 +136,7 @@ public class ReleasesFragment extends Fragment {
         ReleasesViewModel releasesModel = new ViewModelProvider(this).get(ReleasesViewModel.class);
 
         releasesModel.getReleasesList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), releasesListMain -> {
-	        if(!viewTypeIsTags) {
+	        if(!repository.isReleasesViewTypeIsTag()) {
 		        adapter = new ReleasesAdapter(getContext(), releasesListMain);
 		        adapter.setLoadMoreListener(new ReleasesAdapter.OnLoadMoreListener() {
 
@@ -174,7 +173,7 @@ public class ReleasesFragment extends Fragment {
         });
 
 	    releasesModel.getTagsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), tagList -> {
-		    if(viewTypeIsTags) {
+		    if(repository.isReleasesViewTypeIsTag()) {
 			    tagsAdapter = new TagsAdapter(getContext(), tagList, owner, repo);
 			    tagsAdapter.setLoadMoreListener(new TagsAdapter.OnLoadMoreListener() {
 

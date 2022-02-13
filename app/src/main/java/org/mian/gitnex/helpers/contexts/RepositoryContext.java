@@ -49,6 +49,7 @@ public class RepositoryContext implements Serializable {
 	private State issueState = State.OPEN;
 	private State prState = State.OPEN;
 	private State milestoneState = State.OPEN;
+	private boolean releasesViewTypeIsTag = false;
 
 	private String branchRef;
 	private String issueMilestoneFilterName;
@@ -217,6 +218,16 @@ public class RepositoryContext implements Serializable {
 			// user changed account using a deep link or a submodule
 			AppUtil.switchToAccount(context, account.getAccount());
 		}
+	}
+
+	public boolean isReleasesViewTypeIsTag() {
+
+		return releasesViewTypeIsTag;
+	}
+
+	public void setReleasesViewTypeIsTag(boolean releasesViewTypeIsTag) {
+
+		this.releasesViewTypeIsTag = releasesViewTypeIsTag;
 	}
 
 }
