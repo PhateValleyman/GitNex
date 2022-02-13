@@ -51,6 +51,14 @@ public class AddNewAccountActivity extends BaseActivity {
 		initCloseListener();
 		viewBinding.close.setOnClickListener(onClickListener);
 		viewBinding.instanceUrl.setText(getIntent().getStringExtra("instanceUrl"));
+		viewBinding.loginToken.setText(getIntent().getStringExtra("token"));
+		if(getIntent().getStringExtra("scheme").equals("http")) {
+			viewBinding.protocolSpinner.setText(Protocol.HTTP.toString());
+			spinnerSelectedValue = Protocol.HTTP.toString();
+		} else if(getIntent().getStringExtra("scheme").equals("https")) {
+			viewBinding.protocolSpinner.setText(Protocol.HTTPS.toString());
+			spinnerSelectedValue = Protocol.HTTPS.toString();
+		}
 
 		ArrayAdapter<Protocol> adapterProtocols = new ArrayAdapter<>(ctx, R.layout.list_spinner_items, Protocol.values());
 
@@ -218,8 +226,16 @@ public class AddNewAccountActivity extends BaseActivity {
 
 						}
 						else {
-
-							Toasty.warning(ctx, getResources().getString(R.string.accountAlreadyExistsError));
+							UserAccount account = userAccountsApi.getAccountByName(accountName);
+							if(account.isLoggedIn()) {
+								Toasty.warning(ctx, getResources().getString(R.string.accountAlreadyExistsError));
+								AppUtil.switchToAccount(ctx, account);
+							} else {
+								userAccountsApi.updateTokenByAccountName(accountName, loginToken);
+								userAccountsApi.login(account.getAccountId());
+								AppUtil.switchToAccount(AddNewAccountActivity.this, account);
+							}
+							finish();
 						}
 						break;
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.AddNewAccountActivity;
+import org.mian.gitnex.activities.LoginActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.UserAccountsApi;
@@ -80,8 +83,32 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 				UserAccount userAccount = userAccountsApi.getAccountByName(accountName);
 
 				if(!userAccount.isLoggedIn()) {
-					// TODO open login activity
+					UrlBuilder url = UrlBuilder.fromString(userAccount.getInstanceUrl())
+						.withPath("/");
+
+					String host;
+					if(url.scheme.equals("http")) {
+						if(url.port == 80 || url.port == 0) {
+							host = url.hostName;
+						} else {
+							host = url.hostName + ":" + url.port;
+						}
+					} else {
+						if(url.port == 443 || url.port == 0) {
+							host = url.hostName;
+						} else {
+							host = url.hostName + ":" + url.port;
+						}
+					}
+
 					Toasty.warning(context, context.getString(R.string.logInAgain));
+					dialog.dismiss();
+
+					Intent i = new Intent(context, AddNewAccountActivity.class);
+					i.putExtra("instanceUrl", host);
+					i.putExtra("scheme", url.scheme);
+					i.putExtra("token", userAccount.getToken());
+					context.startActivity(i);
 					return;
 				}
 
