@@ -46,7 +46,6 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 	private FragmentFilesBinding binding;
 
 	private RepositoryContext repository;
-	// TODO find a way to make a change to `repository` also to every fragment like here
 
 	private final Path path = new Path();
 
@@ -96,13 +95,13 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				if(position == 0) {
 
 					path.clear();
-					fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), repository.getBranchRef());
+					fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef());
 					return;
 
 				}
 
 				path.pop(path.size() - position);
-				fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
+				fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
 
 			}
 
@@ -121,9 +120,9 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				path.remove(path.size() - 1);
 				binding.breadcrumbsView.removeLastItem();
 				if(path.size() == 0) {
-					fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), repository.getBranchRef());
+					fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef());
 				} else {
-					fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
+					fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
 				}
 			}
 		});
@@ -132,20 +131,20 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 			path.clear();
 			binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
-			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), repoBranch);
+			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repoBranch);
 
 		});
 
 		String dir = requireActivity().getIntent().getStringExtra("dir");
 		if(dir != null) {
-			fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), dir, repository.getBranchRef());
+			fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), dir, repository.getBranchRef());
 			for(String segment: dir.split("/")) {
 				binding.breadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(segment)));
 				path.add(segment);
 			}
 		}
 		else {
-			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), repository.getBranchRef());
+			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef());
 		}
 
 		return binding.getRoot();
@@ -166,7 +165,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				path.add(file.getName());
 				binding.breadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(file.getName())));
 
-				fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getName(), repository.getName(), path.toString(), repository.getBranchRef());
+				fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
 				break;
 
 			case "file":
@@ -186,7 +185,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				String host = url.getHost();
 
 				UserAccountsApi userAccountsApi = BaseApi.getInstance(requireContext(), UserAccountsApi.class);
-				List<UserAccount> userAccounts = userAccountsApi.usersAccounts();
+				List<UserAccount> userAccounts = userAccountsApi.loggedInUserAccounts();
 				UserAccount account = null;
 
 				for(UserAccount userAccount : userAccounts) {

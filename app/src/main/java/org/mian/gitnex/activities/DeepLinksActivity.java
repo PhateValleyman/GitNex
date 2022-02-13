@@ -80,7 +80,7 @@ public class DeepLinksActivity extends BaseActivity {
 
 		// check for the links(URI) to be in the db
 		UserAccountsApi userAccountsApi = BaseApi.getInstance(ctx, UserAccountsApi.class);
-		List<UserAccount> userAccounts = userAccountsApi.usersAccounts();
+		List<UserAccount> userAccounts = userAccountsApi.loggedInUserAccounts();
 
 		for(UserAccount userAccount : userAccounts) {
 

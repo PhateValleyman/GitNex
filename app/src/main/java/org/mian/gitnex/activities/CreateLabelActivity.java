@@ -42,8 +42,8 @@ public class CreateLabelActivity extends BaseActivity {
     private Button createLabelButton;
 
     private RepositoryContext repository;
-    private String labelColor;
-    private String labelColorDefault;
+    private String labelColor = "";
+    private String labelColorDefault = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -212,6 +212,7 @@ public class CreateLabelActivity extends BaseActivity {
 		    call = RetrofitClient.getApiInterface(ctx).createLabel(getAccount().getAuthorization(), repoOwner, repoName, createLabelFunc);
 	    }
 
+	    System.out.println(call.request().url());
         call.enqueue(new Callback<CreateLabel>() {
 
             @Override

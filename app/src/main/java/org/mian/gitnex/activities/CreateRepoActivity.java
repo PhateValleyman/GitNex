@@ -44,7 +44,6 @@ public class CreateRepoActivity extends BaseActivity {
     private CheckBox repoAccess;
 
 	private String loginUid;
-	private String userLogin;
 
 	private String selectedOwner;
 
@@ -65,7 +64,6 @@ public class CreateRepoActivity extends BaseActivity {
         boolean connToInternet = AppUtil.hasNetworkConnection(ctx);
 
         loginUid = getAccount().getAccount().getUserName();
-        userLogin = getAccount().getAccount().getUserName();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -82,7 +80,7 @@ public class CreateRepoActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         spinner = activityCreateRepoBinding.ownerSpinner;
-        getOrganizations(getAccount().getAuthorization(), userLogin);
+        getOrganizations(getAccount().getAuthorization(), loginUid);
 
         createRepo = activityCreateRepoBinding.createNewRepoButton;
         disableProcessButton();
@@ -232,8 +230,8 @@ public class CreateRepoActivity extends BaseActivity {
 
 			            for(int i = 0; i < organizationsList_.size(); i++) {
 
-				            if(getIntent().getIntExtra("organizationId", 0) != 0) {
-					            if(getIntent().getIntExtra("organizationId", 0) == organizationsList_.get(i).getId()) {
+				            if(!getIntent().getStringExtra("orgName").equals("")) {
+					            if(getIntent().getStringExtra("orgName").equals(organizationsList_.get(i).getUsername())) {
 						            organizationId = i + 1;
 					            }
 				            }
@@ -257,8 +255,7 @@ public class CreateRepoActivity extends BaseActivity {
 				            spinner.setText(organizationsList.get(selectOwnerById).getUsername(), false);
 				            selectedOwner = organizationsList.get(selectOwnerById).getUsername();
 			            }, 500);
-
-			            getIntent().putExtra("organizationAction", false); // TODO is this working?
+			            getIntent().removeExtra("organizationAction");
 		            }
 
 		            enableProcessButton();

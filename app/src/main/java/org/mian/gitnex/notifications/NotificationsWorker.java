@@ -50,7 +50,7 @@ public class NotificationsWorker extends Worker {
 		this.tinyDB = TinyDB.getInstance(context);
 		this.userAccounts = new HashMap<>(userAccountsApi.getCount());
 
-		for(UserAccount userAccount : userAccountsApi.usersAccounts()) {
+		for(UserAccount userAccount : userAccountsApi.loggedInUserAccounts()) {
 
 			// We do also accept empty values, since the server version was not saved properly in the beginning.
 			if(userAccount.getServerVersion() == null || userAccount.getServerVersion().isEmpty() ||

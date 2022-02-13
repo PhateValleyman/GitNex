@@ -24,6 +24,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.actions.ActionResult;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.activities.BaseActivity;
+import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.DraftsApi;
@@ -95,7 +96,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 			draftId = Long.parseLong(arguments.getString("draftId"));
 		}
 
-		if(!issue.getIssue().getTitle().isEmpty()) {
+		if(issue.getIssue() != null && !issue.getIssue().getTitle().isEmpty()) {
 
 			toolbarTitle.setText(EmojiParser.parseToUnicode(issue.getIssue().getTitle()));
 		}
@@ -184,6 +185,8 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 						if(status == ActionResult.Status.SUCCESS) {
 
+							((IssueDetailActivity) requireActivity()).commentPosted = true;
+
 							Toasty.success(getContext(), getString(R.string.commentSuccess));
 
 							if(draftId != 0 && tinyDB.getBoolean("draftsCommentsDeletionEnabled", true)) {
@@ -210,6 +213,8 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 				IssueActions
 					.edit(getContext(), comment.getText().toString(), arguments.getInt("commentId"), issue)
 					.accept((status, result) -> {
+
+						((IssueDetailActivity) requireActivity()).commentEdited = true;
 
 						if(status == ActionResult.Status.SUCCESS) {
 
@@ -287,9 +292,10 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		}
 	}
 
-	public static BottomSheetReplyFragment newInstance(Bundle bundle) {
+	public static BottomSheetReplyFragment newInstance(Bundle bundle, IssueContext issue) {
 
 		BottomSheetReplyFragment fragment = new BottomSheetReplyFragment();
+		bundle.putSerializable(IssueContext.INTENT_EXTRA, issue);
 		fragment.setArguments(bundle);
 
 		return fragment;

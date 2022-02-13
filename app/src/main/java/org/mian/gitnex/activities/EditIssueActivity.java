@@ -119,7 +119,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         }
 
         disableProcessButton();
-        getIssue(issue.getRepository().getOwner(), issue.getRepository().getOwner(), issue.getIssueIndex(), resultLimit);
+        getIssue(issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getIssueIndex(), resultLimit);
 
         if(!issue.getRepository().getPermissions().canPush()) {
 			findViewById(R.id.editIssueMilestoneSpinnerLayout).setVisibility(View.GONE);
@@ -162,7 +162,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
         }
 
         disableProcessButton();
-        editIssue(issue.getRepository().getOwner(), issue.getRepository().getOwner(), issue.getIssueIndex(), editIssueTitleForm, editIssueDescriptionForm, editIssueDueDateForm, milestoneId);
+        editIssue(issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getIssueIndex(), editIssueTitleForm, editIssueDescriptionForm, editIssueDueDateForm, milestoneId);
     }
 
     private void editIssue(String repoOwner, String repoName, int issueIndex, String title, String description, String dueDate, int milestoneId) {

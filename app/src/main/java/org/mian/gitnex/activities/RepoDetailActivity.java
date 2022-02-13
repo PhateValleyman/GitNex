@@ -152,10 +152,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 	@Override
 	public void onResume() {
-
 		super.onResume();
-
-		getRepoInfo(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 		repository.checkAccountSwitch(this);
 	}
 
@@ -512,12 +509,12 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 	private void getRepoInfo(String token, final String owner, String repo) {
 
+		LinearProgressIndicator loading = findViewById(R.id.loadingIndicator);
 		if(repository.hasRepository()) {
+			loading.setVisibility(View.GONE);
 			initWithRepo();
 			return;
 		}
-
-		LinearProgressIndicator loading = findViewById(R.id.loadingIndicator);
 
 		Call<UserRepositories> call = RetrofitClient.getApiInterface(ctx).getUserRepository(token, owner, repo);
 		call.enqueue(new Callback<UserRepositories>() {
@@ -552,6 +549,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	}
 
 	private void initWithRepo() {
+		repository.setBranchRef(repository.getRepository().getDefault_branch());
+
 		ImageView repoTypeToolbar = findViewById(R.id.repoTypeToolbar);
 		if(repository.getRepository().isPrivateFlag()) {
 			repoTypeToolbar.setVisibility(View.VISIBLE);
@@ -600,9 +599,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			@SuppressLint("InflateParams") View tabHeader6 = LayoutInflater.from(ctx).inflate(R.layout.badge_release, null);
 			textViewBadgeRelease = tabHeader6.findViewById(R.id.counterBadgeRelease);
 
-			textViewBadgeIssue.setVisibility(View.GONE);
-			textViewBadgePull.setVisibility(View.GONE);
-			textViewBadgeRelease.setVisibility(View.GONE);
 			ColorStateList textColor = tabLayout.getTabTextColors();
 
 			if(repository.getRepository().getOpen_issues_count() != null) {
@@ -610,8 +606,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				textViewBadgeIssue.setText(repository.getRepository().getOpen_issues_count());
 
 				TabLayout.Tab tabOpenIssues = tabLayout.getTabAt(2);
-				Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tabHeader2);
-				assert tabOpenIssues != null; // FIXME This should be cleaned up
+				assert tabOpenIssues != null;
+
+				tabOpenIssues.setCustomView(tabHeader2);
 				TextView openIssueTabView = Objects.requireNonNull(tabOpenIssues.getCustomView()).findViewById(R.id.counterBadgeIssueText);
 				openIssueTabView.setTextColor(textColor);
 			} else {
@@ -780,19 +777,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 		});
 
-	}
-
-	@Override
-	protected void onDestroy() {
-		if(!isFinishing()) {
-			return;
-		}
-		if(getIntent().getBooleanExtra("switchAccountBackOnFinish", false)) {
-			UserAccount a = BaseApi.getInstance(this, UserAccountsApi.class)
-				.getAccountById(getIntent().getIntExtra("oldAccountId", 0));
-			AppUtil.switchToAccount(this, a);
-		}
-		super.onDestroy();
 	}
 
 	// Issues milestone filter interface

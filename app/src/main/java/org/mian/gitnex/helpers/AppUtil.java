@@ -11,15 +11,22 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.pm.PackageInfoCompat;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.LoginActivity;
 import org.mian.gitnex.core.MainApplication;
 import org.mian.gitnex.database.api.BaseApi;
@@ -52,8 +59,10 @@ public class AppUtil {
 		UserAccountsApi api = BaseApi.getInstance(ctx, UserAccountsApi.class);
 		assert api != null;
 
+		api.logout(tinyDB.getInt("currentActiveAccountId"));
 		if (api.getCount() >= 1) {
-			switchToAccount(ctx, api.getAllAccounts().getValue().get(0));
+			switchToAccount(ctx, api.loggedInUserAccounts().get(0));
+			((Activity) ctx).recreate();
 		} else {
 			tinyDB.putInt("currentActiveAccountId", -2);
 			((Activity) ctx).finish(); // TODO finish ALL activities
@@ -207,7 +216,11 @@ public class AppUtil {
 		TinyDB tinyDB = TinyDB.getInstance(context);
 		Locale locale = new Locale(tinyDB.getString("locale"));
 
-		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", locale).format(date);
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", locale).format(date);
+		} else {
+			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", locale).format(date);
+		}
 
 	}
 
@@ -350,11 +363,11 @@ public class AppUtil {
 	}
 
 	public static boolean switchToAccount(Context context, UserAccount userAccount) {
-		return ((MainApplication) context).switchToAccount(userAccount, false);
+		return ((MainApplication) context.getApplicationContext()).switchToAccount(userAccount, false);
 	}
 
 	public static boolean switchToAccount(Context context, UserAccount userAccount, boolean tmp) {
-		return ((MainApplication) context).switchToAccount(userAccount, tmp);
+		return ((MainApplication) context.getApplicationContext()).switchToAccount(userAccount, tmp);
 	}
 
 	public static void openUrlInBrowser(Context context, String url) {

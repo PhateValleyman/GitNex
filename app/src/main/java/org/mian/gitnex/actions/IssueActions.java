@@ -1,13 +1,16 @@
 package org.mian.gitnex.actions;
 
+import android.app.Activity;
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.JsonElement;
 import org.gitnex.tea4j.models.IssueComments;
 import org.gitnex.tea4j.models.Issues;
 import org.gitnex.tea4j.models.UpdateIssueState;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
+import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.IssuesFragment;
 import org.mian.gitnex.fragments.PullRequestsFragment;
@@ -94,6 +97,8 @@ public class IssueActions {
 							Toasty.success(ctx, ctx.getString(R.string.issueStateReopened));
 						}
 
+						((IssueDetailActivity) ctx).singleIssueUpdate = true;
+						((IssueDetailActivity) ctx).onResume();
 					}
 				}
 				else if(response.code() == 401) {

@@ -74,8 +74,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private boolean noConnection = false;
 
 	private View hView;
+	private NavigationView navigationView;
 	private MenuItem navNotifications;
 	private TextView notificationCounter;
+
+	private BottomSheetListener profileInitListener;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -102,9 +105,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		instanceToken = getAccount().getAuthorization();
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
-		if(tinyDB.getInt("currentActiveAccountId", -1) != -2) {
+		if(tinyDB.getInt("currentActiveAccountId", -1) <= 0) {
 			AppUtil.logout(ctx);
-			return;
 		}
 
 		if(tinyDB.getInt("currentActiveAccountId", -1) <= 0) {
@@ -169,7 +171,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		getNotificationsCount(instanceToken);
 
 		drawer = activityMainBinding.drawerLayout;
-		NavigationView navigationView = activityMainBinding.navView;
+		navigationView = activityMainBinding.navView;
 		navigationView.setNavigationItemSelectedListener(this);
 		hView = navigationView.getHeaderView(0);
 
@@ -205,7 +207,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				adapterUserAccounts = new UserAccountsNavAdapter(ctx, userAccountsList, drawer);
 
-				userAccountsApi.getAllAccounts().observe((AppCompatActivity) ctx, userAccounts -> {
+				userAccountsApi.getAllLoggedInAccounts().observe((AppCompatActivity) ctx, userAccounts -> {
 					if(userAccounts.size() > 0) {
 						userAccountsList.addAll(userAccounts);
 						navRecyclerViewUserAccounts.setAdapter(adapterUserAccounts);
@@ -219,7 +221,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				if (getAccount().getUserInfo() != null) {
 					String userEmailNav = getAccount().getUserInfo().getEmail();
-					String userFullNameNav = getAccount().getUserInfo().getFullname();
+					String userFullNameNav = getAccount().getFullName();
 					String userAvatarNav = getAccount().getUserInfo().getAvatar();
 
 					if(!userEmailNav.equals("")) {
@@ -515,7 +517,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrganizationsFragment()).commit();
 		}
 		else if(id == R.id.nav_profile) {
-
 			toolbarTitle.setText(getResources().getString(R.string.navProfile));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProfileFragment()).commit();
 		}
@@ -619,6 +620,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						assert userDetails != null;
 
 						getAccount().setUserInfo(userDetails);
+						navigationView.getMenu().findItem(R.id.nav_administration).setVisible(userDetails.getIs_admin());
 						if(!getAccount().getAccount().getUserName().equals(userDetails.getUsername())) {
 							// user changed it's name -> update database
 							int accountId = getAccount().getAccount().getAccountId();
@@ -626,6 +628,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 								userDetails.getUsername());
 							getAccount().setAccount(BaseApi.getInstance(MainActivity.this, UserAccountsApi.class).getAccountById(accountId));
 						}
+						if(profileInitListener != null) profileInitListener.onButtonClicked(null);
 					}
 				}
 				else if(response.code() == 401) {
@@ -673,6 +676,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				Log.e("onFailure-notification", t.toString());
 			}
 		});
+	}
+
+	public void setProfileInitListener(BottomSheetListener profileInitListener) {
+
+		this.profileInitListener = profileInitListener;
 	}
 
 }

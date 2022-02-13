@@ -360,6 +360,7 @@ public class LoginActivity extends BaseActivity {
 						}
 						else {
 							userAccountsApi.updateTokenByAccountName(accountName, loginToken);
+							userAccountsApi.login(userAccountsApi.getAccountByName(accountName).getAccountId());
 							account = userAccountsApi.getAccountByName(accountName);
 						}
 

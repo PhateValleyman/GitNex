@@ -204,7 +204,7 @@ public class FilesDiffAdapter extends BaseAdapter {
 								bundle.putString("commentBody", stringBuilder.toString());
 								bundle.putBoolean("cursorToEnd", true);
 
-								BottomSheetReplyFragment.newInstance(bundle).show(fragmentManager, "replyBottomSheet");
+								BottomSheetReplyFragment.newInstance(bundle, null /* TODO */).show(fragmentManager, "replyBottomSheet");
 							}
 
 							return true;

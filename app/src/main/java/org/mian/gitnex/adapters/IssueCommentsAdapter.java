@@ -156,7 +156,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 					bundle.putString("commentAction", "edit");
 					bundle.putString("commentBody", issueComment.getBody());
 
-					BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle);
+					BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle, issue);
 					bottomSheetReplyFragment.setOnInteractedListener(onInteractedListener);
 					bottomSheetReplyFragment.show(fragmentManager, "replyBottomSheet");
 
@@ -213,7 +213,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 					bundle.putBoolean("cursorToEnd", true);
 
 					dialog.dismiss();
-					BottomSheetReplyFragment.newInstance(bundle).show(fragmentManager, "replyBottomSheet");
+					BottomSheetReplyFragment.newInstance(bundle, issue).show(fragmentManager, "replyBottomSheet");
 				});
 
 				commentMenuCopy.setOnClickListener(v1 -> {

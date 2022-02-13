@@ -81,7 +81,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 	                bundle.putString("commentAction", "edit");
                 }
 
-		        BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle);
+		        BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle, issue);
 		        bottomSheetReplyFragment.setOnInteractedListener(() -> context.startActivity(new IssueContext(
 			        new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName(), context),
 			        draftWithRepository.getIssueId(),

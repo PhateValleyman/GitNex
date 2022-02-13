@@ -23,6 +23,7 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
+import java.util.Objects;
 import io.mikael.urlbuilder.UrlBuilder;
 
 /**
@@ -33,7 +34,6 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 
 	private final List<UserAccount> userAccountsList;
 	private final Context context;
-	private TinyDB tinyDB;
 	private final Dialog dialog;
 
 	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
@@ -79,6 +79,12 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 				assert userAccountsApi != null;
 				UserAccount userAccount = userAccountsApi.getAccountByName(accountName);
 
+				if(!userAccount.isLoggedIn()) {
+					// TODO open login activity
+					Toasty.warning(context, context.getString(R.string.logInAgain));
+					return;
+				}
+
 				if(AppUtil.switchToAccount(context, userAccount)) {
 
 					String url = UrlBuilder.fromString(userAccount.getInstanceUrl())
@@ -96,10 +102,10 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 
 	}
 
-	public UserAccountsAdapter(Context ctx, List<UserAccount> userAccountsListMain, Dialog dialog) {
+	public UserAccountsAdapter(Context ctx, Dialog dialog) {
 		this.dialog = dialog;
 		this.context = ctx;
-		this.userAccountsList = userAccountsListMain;
+		this.userAccountsList = Objects.requireNonNull(BaseApi.getInstance(context, UserAccountsApi.class)).usersAccounts();
 	}
 
 	private void updateLayoutByPosition(int position) {
@@ -123,7 +129,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 	public void onBindViewHolder(@NonNull UserAccountsAdapter.UserAccountsViewHolder holder, int position) {
 
 		UserAccount currentItem = userAccountsList.get(position);
-		tinyDB = TinyDB.getInstance(context);
+		TinyDB tinyDB = TinyDB.getInstance(context);
 
 		String url = UrlBuilder.fromString(currentItem.getInstanceUrl())
 			.withPath("/")
@@ -133,7 +139,11 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		holder.accountName = currentItem.getAccountName();
 
 		holder.userId.setText(currentItem.getUserName());
-		holder.accountUrl.setText(url);
+		if(currentItem.isLoggedIn()) {
+			holder.accountUrl.setText(url);
+		} else {
+			holder.accountUrl.setText(context.getString(R.string.notLoggedIn, url));
+		}
 
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 

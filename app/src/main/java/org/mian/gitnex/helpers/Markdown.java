@@ -370,7 +370,7 @@ public class Markdown {
 
 					@Override
 					public void configureConfiguration(@NonNull MarkwonConfiguration.Builder builder) {
-
+						RepositoryContext repoLocal = repository;
 						builder.linkResolver((view, link) -> {
 							if(link.startsWith("gitnexuser://")) {
 								Intent i = new Intent(view.getContext(), ProfileActivity.class);
@@ -386,7 +386,12 @@ public class Markdown {
 								else {
 									index = link.substring(1);
 								}
-								String[] repo = link.split("#")[0].split("/");
+								String[] repo;
+								if(link.contains("/")) {
+									repo = link.split("#")[0].split("/");
+								} else {
+									repo = new String[]{repoLocal.getOwner(), repoLocal.getName()};
+								}
 								Intent i = new IssueContext(new RepositoryContext(repo[0], repo[1], context), Integer.parseInt(index), null)
 									.getIntent(context, IssueDetailActivity.class);
 
@@ -542,10 +547,12 @@ public class Markdown {
 			private final String commentText;
 			private String instanceUrl;
 			private String fullRepoName;
+			private final Context context;
 
 			public LinkPostProcessor(String commentText) {
 
 				this.commentText = commentText;
+				this.context = RecyclerViewRenderer.this.context;
 				init();
 			}
 

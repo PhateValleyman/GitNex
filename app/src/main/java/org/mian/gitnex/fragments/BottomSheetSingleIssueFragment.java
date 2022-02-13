@@ -237,7 +237,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		}
 		else if(issue.getIssue().getState().equals("closed")) {
 			if(userIsCreator || canPush) {
-				if(issue.getIssue().getState().equalsIgnoreCase("Pull")) {
+				if(issue.getIssueType().equalsIgnoreCase("Pull")) {
 					closeIssue.setText(R.string.reopenPr);
 				}
 				else {
@@ -250,7 +250,6 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			}
 			closeIssue.setOnClickListener(closeSingleIssue -> {
 				IssueActions.closeReopenIssue(ctx, "open", issue);
-				// TODO update issuectx values
 				dismiss();
 			});
 		}
@@ -258,13 +257,15 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		subscribeIssue.setOnClickListener(subscribeToIssue -> {
 
 			IssueActions.subscribe(ctx, issue);
+			issue.setSubscribed(true);
 			dismiss();
 		});
 
 		unsubscribeIssue.setOnClickListener(unsubscribeToIssue -> {
 
 			IssueActions.unsubscribe(ctx, issue);
-			dismiss(); // TODO update values of issuectx
+			issue.setSubscribed(false);
+			dismiss();
 		});
 
 		if(issue.isSubscribed()) {

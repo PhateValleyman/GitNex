@@ -2,6 +2,7 @@ package org.mian.gitnex.database.api;
 
 import android.content.Context;
 import androidx.lifecycle.LiveData;
+import androidx.room.Query;
 import org.mian.gitnex.database.dao.UserAccountsDao;
 import org.mian.gitnex.database.models.UserAccount;
 import java.util.List;
@@ -27,6 +28,7 @@ public class UserAccountsApi extends BaseApi {
 		userAccount.setUserName(userName);
 		userAccount.setToken(token);
 		userAccount.setServerVersion(serverVersion);
+		userAccount.setLoggedIn(true);
 
 		return userAccountsDao.createAccount(userAccount);
 
@@ -68,12 +70,28 @@ public class UserAccountsApi extends BaseApi {
 		return userAccountsDao.getAllAccounts();
 	}
 
+	public LiveData<List<UserAccount>> getAllLoggedInAccounts() {
+		return userAccountsDao.getAllLoggedInAccounts();
+	}
+
 	public List<UserAccount> usersAccounts() {
 		return userAccountsDao.userAccounts();
 	}
 
+	public List<UserAccount> loggedInUserAccounts() {
+		return userAccountsDao.loggedInUserAccounts();
+	}
+
 	public void deleteAccount(final int accountId) {
 		executorService.execute(() -> userAccountsDao.deleteAccount(accountId));
+	}
+
+	public void logout(int accountId) {
+		userAccountsDao.logout(accountId);
+	}
+
+	public void login(int accountId) {
+		executorService.execute(() -> userAccountsDao.login(accountId));
 	}
 
 }

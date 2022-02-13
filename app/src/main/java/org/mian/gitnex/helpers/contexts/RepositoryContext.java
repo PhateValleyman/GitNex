@@ -62,7 +62,7 @@ public class RepositoryContext implements Serializable {
 	public RepositoryContext(UserRepositories repository, Context context) {
 		this.account = ((BaseActivity) context).getAccount();
 		this.repository = repository;
-		this.name = getName();
+		this.name = repository.getName();
 		this.owner = repository.getFullName().split("/")[0];
 	}
 

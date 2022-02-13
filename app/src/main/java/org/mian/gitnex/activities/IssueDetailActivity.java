@@ -157,7 +157,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		viewBinding.addNewComment.setOnClickListener(v -> {
 
-			BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(new Bundle());
+			BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(new Bundle(), issue);
 			bottomSheetReplyFragment.setOnInteractedListener(this::onResume);
 			bottomSheetReplyFragment.show(getSupportFragmentManager(), "replyBottomSheet");
 
@@ -363,6 +363,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 					viewBinding.frameAssignees.removeAllViews();
 					viewBinding.frameLabels.removeAllViews();
+					issue.setIssue(null);
 					getSingleIssue(repoOwner, repoName, issueIndex);
 					currentAssignees.clear();
 					new Handler(Looper.getMainLooper()).postDelayed(() -> AssigneesActions.getCurrentIssueAssignees(ctx, repoOwner, repoName, issueIndex, currentAssignees), 1000);
@@ -417,6 +418,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 					viewBinding.frameAssignees.removeAllViews();
 					viewBinding.frameLabels.removeAllViews();
+					issue.setIssue(null);
 					getSingleIssue(repoOwner, repoName, issueIndex);
 					currentLabelsIds.clear();
 					new Handler(Looper.getMainLooper()).postDelayed(() -> LabelsActions.getCurrentIssueLabels(ctx, repoOwner, repoName, issueIndex, currentLabelsIds), 1000);
@@ -524,6 +526,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 				viewBinding.frameAssignees.removeAllViews();
 				viewBinding.frameLabels.removeAllViews();
+				issue.setIssue(null);
 				getSingleIssue(repoOwner, repoName, issueIndex);
 				singleIssueUpdate = false;
 
@@ -559,6 +562,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 	private void getSingleIssue(String repoOwner, String repoName, int issueIndex) {
 		if(issue.hasIssue()) {
+			viewBinding.progressBar.setVisibility(View.GONE);
 			getSubscribed();
 			initWithIssue();
 			return;
@@ -591,24 +595,19 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				}
 				else if(response.code() == 404) {
 
-					if(issue.getIssueType().equals("Issue")) {
-
-						Toasty.warning(ctx, getResources().getString(R.string.noDataIssueTab));
-					}
-					else if(issue.getIssueType().equals("Pull")) {
-
+					if("Pull".equals(issue.getIssueType())) {
 						Toasty.warning(ctx, getResources().getString(R.string.noDataPullRequests));
 					}
-
-					Intent mainIntent = new Intent(ctx, MainActivity.class);
-					ctx.startActivity(mainIntent);
+					else {
+						Toasty.warning(ctx, getResources().getString(R.string.noDataIssueTab));
+					}
 					finish();
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
-
+				viewBinding.progressBar.setVisibility(View.GONE);
 				Log.e("onFailure", t.toString());
 			}
 
@@ -619,7 +618,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	}
 
 	private void getSubscribed() {
-		RetrofitClient.getApiInterface(appCtx)
+		RetrofitClient.getApiInterface(ctx)
 			.checkIssueWatchStatus(getAccount().getAuthorization(), repoOwner, repoName, issueIndex)
 			.enqueue(new Callback<WatchInfo>() {
 				@Override
@@ -900,8 +899,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	}
 
 	private void getRepoInfo() {
-		LinearProgressIndicator loading = findViewById(R.id.loadingIndicator);
-
 		Call<UserRepositories> call = RetrofitClient.getApiInterface(ctx).getUserRepository(getAccount().getAuthorization(), issue.getRepository().getOwner(), issue.getRepository().getName());
 		call.enqueue(new Callback<UserRepositories>() {
 
@@ -909,7 +906,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			public void onResponse(@NonNull Call<UserRepositories> call, @NonNull retrofit2.Response<UserRepositories> response) {
 
 				UserRepositories repoInfo = response.body();
-				loading.setVisibility(View.GONE);
 
 				if(response.code() == 200) {
 					assert repoInfo != null;

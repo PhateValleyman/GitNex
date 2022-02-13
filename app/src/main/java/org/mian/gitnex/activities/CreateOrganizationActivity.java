@@ -133,7 +133,7 @@ public class CreateOrganizationActivity extends BaseActivity {
         UserOrganizations createOrganization = new UserOrganizations(orgName, null, orgDesc, null, null);
 
         Call<UserOrganizations> call = RetrofitClient
-            .getApiInterface(appCtx)
+            .getApiInterface(ctx)
             .createNewOrganization(token, createOrganization);
 
         call.enqueue(new Callback<UserOrganizations>() {

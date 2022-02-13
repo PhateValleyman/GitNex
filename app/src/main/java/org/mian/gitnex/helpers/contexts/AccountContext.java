@@ -5,10 +5,11 @@ import org.gitnex.tea4j.models.UserInfo;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.helpers.Version;
+import java.io.Serializable;
 import java.util.Objects;
 import okhttp3.Credentials;
 
-public class AccountContext {
+public class AccountContext implements Serializable {
 
 	private UserAccount account;
 	private UserInfo userInfo;
