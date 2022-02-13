@@ -176,7 +176,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		openFilesDiff.setOnClickListener(v14 -> {
 
-			startActivity(new Intent(ctx, FileDiffActivity.class));
+			startActivity(issue.getIntent(ctx, FileDiffActivity.class));
 			dismiss();
 		});
 

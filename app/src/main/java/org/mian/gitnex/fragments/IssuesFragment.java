@@ -26,7 +26,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentIssuesBinding;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.SnackBar;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.ArrayList;
 import java.util.List;

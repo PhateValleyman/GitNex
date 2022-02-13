@@ -17,6 +17,7 @@ import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Milestones;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.MilestoneActions;
+import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Markdown;
@@ -102,7 +103,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 			msProgress = itemView.findViewById(R.id.milestoneProgress);
 			ImageView milestonesMenu = itemView.findViewById(R.id.milestonesMenu);
 
-			if(!TinyDB.getInstance(itemView.getContext()).getBoolean("isRepoAdmin")) {
+			if(!((RepoDetailActivity) itemView.getContext()).repository.getPermissions().canPush()) {
 				milestonesMenu.setVisibility(View.GONE);
 			}
 			milestonesMenu.setOnClickListener(v -> {

@@ -34,12 +34,14 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 
 	private final List<UserInfo> usersSearchList;
 	private final Context context;
-	private static int teamId;
+	private final int teamId;
+	private final String orgName;
 
-	public UserSearchForTeamMemberAdapter(List<UserInfo> dataList, Context ctx, int teamId) {
+	public UserSearchForTeamMemberAdapter(List<UserInfo> dataList, Context ctx, int teamId, String orgName) {
 		this.context = ctx;
 		this.usersSearchList = dataList;
-		UserSearchForTeamMemberAdapter.teamId = teamId;
+		this.teamId = teamId;
+		this.orgName = orgName;
 	}
 
 	class UserSearchViewHolder extends RecyclerView.ViewHolder {
@@ -122,11 +124,7 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 
 		if(getItemCount() > 0) {
 
-			TinyDB tinyDb = TinyDB.getInstance(context);
-			final String loginUid = tinyDb.getString("loginUid");
-			String repoFullName = tinyDb.getString("repoFullName");
-			String[] parts = repoFullName.split("/");
-			final String repoOwner = parts[0];
+			final String loginUid = ((BaseActivity) context).getAccount().getAccount().getUserName();
 
 			Call<UserInfo> call = RetrofitClient
 					.getApiInterface(context)
@@ -139,7 +137,7 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 
 					if(response.code() == 200) {
 
-						if(!currentItem.getLogin().equals(loginUid) && !currentItem.getLogin().equals(repoOwner)) {
+						if(!currentItem.getLogin().equals(loginUid)) {
 							holder.addMemberButtonRemove.setVisibility(View.VISIBLE);
 						}
 						else {
@@ -149,7 +147,7 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 					}
 					else if(response.code() == 404) {
 
-						if(!currentItem.getLogin().equals(loginUid) && !currentItem.getLogin().equals(repoOwner)) {
+						if(!currentItem.getLogin().equals(loginUid)) {
 							holder.addMemberButtonAdd.setVisibility(View.VISIBLE);
 						}
 						else {

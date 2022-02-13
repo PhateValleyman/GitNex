@@ -261,7 +261,7 @@ public class RepoInfoFragment extends Fragment {
 					switch(response.code()) {
 
 						case 200:
-							Markdown.render(ctx, response.body(), binding.repoFileContents);
+							Markdown.render(ctx, response.body(), binding.repoFileContents, repository);
 							break;
 
 						case 401:

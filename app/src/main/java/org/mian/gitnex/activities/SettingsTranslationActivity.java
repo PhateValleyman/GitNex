@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsTranslationBinding;
+import org.mian.gitnex.fragments.SettingsFragment;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.LinkedHashMap;
@@ -71,7 +72,7 @@ public class SettingsTranslationActivity extends BaseActivity {
 				tinyDB.putInt("langId", i);
 				tinyDB.putString("locale", selectedLanguage);
 
-				tinyDB.putBoolean("refreshParent", true);
+				SettingsFragment.refreshParent = true;
 				this.overridePendingTransition(0, 0);
 				dialogInterface.dismiss();
 				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));

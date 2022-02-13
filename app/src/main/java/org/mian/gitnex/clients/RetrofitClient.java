@@ -5,6 +5,7 @@ import android.util.Log;
 import org.gitnex.tea4j.ApiInterface;
 import org.gitnex.tea4j.WebInterface;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.FilesData;
 import org.mian.gitnex.helpers.TinyDB;
@@ -86,13 +87,12 @@ public class RetrofitClient {
 	}
 
 	public static ApiInterface getApiInterface(Context context) {
-
-		return getApiInterface(context, TinyDB.getInstance(context).getString("instanceUrl"));
+		return getApiInterface(context, ((BaseActivity) context).getAccount().getAccount().getInstanceUrl());
 	}
 
 	public static WebInterface getWebInterface(Context context) {
 
-		String instanceUrl = TinyDB.getInstance(context).getString("instanceUrl");
+		String instanceUrl = ((BaseActivity) context).getAccount().getAccount().getInstanceUrl();
 		instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
 
 		return getWebInterface(context, instanceUrl);

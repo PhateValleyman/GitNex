@@ -194,7 +194,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 			        .withPath("/")
 			        .toString();
 		        ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
-		        ClipData clip = ClipData.newPlainText("orgUrl", url + tinyDB.getString("orgName"));
+		        ClipData clip = ClipData.newPlainText("orgUrl", url + getIntent().getStringExtra("orgName"));
 		        assert clipboard != null;
 		        clipboard.setPrimaryClip(clip);
 		        Toasty.info(ctx, ctx.getString(R.string.copyIssueUrlToastMsg));

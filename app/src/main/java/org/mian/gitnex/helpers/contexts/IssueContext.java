@@ -6,6 +6,7 @@ import android.os.Bundle;
 import org.gitnex.tea4j.models.Issues;
 import org.gitnex.tea4j.models.PullRequests;
 import org.gitnex.tea4j.models.UserRepositories;
+import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import java.io.Serializable;
 
@@ -128,10 +129,6 @@ public class IssueContext implements Serializable {
 	}
 
 	public void setIssue(Issues issue) {
-		if(issue != null && (issue.getPull_request() == null && issueType.equals("Pull") ||
-			issue.getPull_request() != null && issueType.equals("Issue"))) {
-			throw new IllegalArgumentException("issueType and issue's type does not match");
-		}
 		this.issue = issue;
 		if(issue != null) {
 			this.issueType = issue.getPull_request() == null ? "Issue" : "Pull";
@@ -141,6 +138,16 @@ public class IssueContext implements Serializable {
 	public String getIssueType() {
 
 		return issueType;
+	}
+
+	public boolean prIsFork() {
+		if(pullRequest.getHead().getRepo() != null) {
+			return !pullRequest.getHead().getRepo().getFull_name().equals(getRepository().getFullName());
+		}
+		else {
+			// pull was done from a deleted fork
+			return true;
+		}
 	}
 
 }

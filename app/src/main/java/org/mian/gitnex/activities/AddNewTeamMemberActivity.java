@@ -90,8 +90,8 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 				if(!addNewTeamMember.getText().toString().equals("") && addNewTeamMember.getText().toString().length() > 1) {
 
-					adapter = new UserSearchForTeamMemberAdapter(dataList, ctx, Integer.parseInt(teamId));
-					loadUserSearchList(addNewTeamMember.getText().toString(), teamId);
+					adapter = new UserSearchForTeamMemberAdapter(dataList, ctx, Integer.parseInt(teamId), getIntent().getStringExtra("orgName"));
+					loadUserSearchList(addNewTeamMember.getText().toString());
 				}
 			}
 
@@ -107,7 +107,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 	}
 
-	public void loadUserSearchList(String searchKeyword, String teamId) {
+	public void loadUserSearchList(String searchKeyword) {
 
 		Call<UserSearch> call = RetrofitClient.getApiInterface(ctx).getUserBySearch(getAccount().getAuthorization(), searchKeyword, 10, 1);
 

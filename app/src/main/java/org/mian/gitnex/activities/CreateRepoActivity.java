@@ -174,7 +174,7 @@ public class CreateRepoActivity extends BaseActivity {
 
                 if(response.code() == 201) {
 
-                    tinyDB.putBoolean("repoCreated", true);
+                    MainActivity.repoCreated = true;
                     Toasty.success(ctx, getString(R.string.repoCreated));
                     enableProcessButton();
                     finish();

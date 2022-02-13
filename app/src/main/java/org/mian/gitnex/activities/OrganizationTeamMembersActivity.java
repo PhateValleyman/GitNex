@@ -153,6 +153,7 @@ public class OrganizationTeamMembersActivity extends BaseActivity implements Bot
 
             Intent intent = new Intent(OrganizationTeamMembersActivity.this, AddNewTeamMemberActivity.class);
             intent.putExtra("teamId", teamId);
+            intent.putExtra("orgName", getIntent().getStringExtra("orgName"));
             startActivity(intent);
         }
     }

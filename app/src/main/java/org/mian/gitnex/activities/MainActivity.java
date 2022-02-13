@@ -1,7 +1,5 @@
 package org.mian.gitnex.activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -51,7 +49,6 @@ import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ChangeLog;
 import org.mian.gitnex.helpers.ColorInverter;
 import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.structs.BottomSheetListener;
 import java.util.ArrayList;
@@ -66,6 +63,8 @@ import retrofit2.Callback;
 
 @SuppressWarnings("ConstantConditions")
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomSheetListener {
+
+	public static boolean repoCreated = false;
 
 	private DrawerLayout drawer;
 	private TextView toolbarTitle;
@@ -103,9 +102,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		instanceToken = getAccount().getAuthorization();
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
-		if(!tinyDB.getBoolean("loggedInMode")) {
-
-			logout(this, ctx);
+		if(tinyDB.getInt("currentActiveAccountId", -1) != -2) {
+			AppUtil.logout(ctx);
 			return;
 		}
 
@@ -533,7 +531,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		else if(id == R.id.nav_logout) {
 
-			logout(this, ctx);
+			AppUtil.logout(ctx);
 			overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 		}
 		else if(id == R.id.nav_starred_repos) {
@@ -564,18 +562,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		drawer.closeDrawer(GravityCompat.START);
 		return true;
-	}
-
-	public static void logout(Activity activity, Context ctx) {
-
-		TinyDB tinyDB = TinyDB.getInstance(ctx);
-
-		tinyDB.putBoolean("loggedInMode", false);
-		tinyDB.remove("basicAuthPassword");
-		tinyDB.putBoolean("basicAuthFlag", false);
-		//tinyDb.clear();
-		activity.finish();
-		ctx.startActivity(new Intent(ctx, LoginActivity.class));
 	}
 
 	@Override

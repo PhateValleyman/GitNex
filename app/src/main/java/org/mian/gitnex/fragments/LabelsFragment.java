@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.mian.gitnex.activities.BaseActivity;
+import org.mian.gitnex.activities.CreateLabelActivity;
 import org.mian.gitnex.adapters.LabelsAdapter;
 import org.mian.gitnex.databinding.FragmentLabelsBinding;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.LabelsViewModel;
 
@@ -88,12 +88,11 @@ public class LabelsFragment extends Fragment {
     public void onResume() {
 
         super.onResume();
-        final TinyDB tinyDb = TinyDB.getInstance(getContext());
 
-        if(tinyDb.getBoolean("labelsRefresh")) { // TODO no tinydb
+	    if(CreateLabelActivity.refreshLabels) {
 
             LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
-            tinyDb.putBoolean("labelsRefresh", false);
+	        CreateLabelActivity.refreshLabels = false;
         }
     }
 

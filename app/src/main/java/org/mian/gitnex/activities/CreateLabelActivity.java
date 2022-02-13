@@ -20,8 +20,8 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateLabelBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.LabelsViewModel;
 import org.mian.gitnex.viewmodels.OrganizationLabelsViewModel;
 import java.util.Objects;
@@ -34,11 +34,16 @@ import retrofit2.Callback;
 
 public class CreateLabelActivity extends BaseActivity {
 
+	public static boolean refreshLabels = false;
+
     private View.OnClickListener onClickListener;
     private TextView colorPicker;
     private EditText labelName;
     private Button createLabelButton;
-    private TinyDB tinyDB;
+
+    private RepositoryContext repository;
+    private String labelColor;
+    private String labelColorDefault;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,15 +55,11 @@ public class CreateLabelActivity extends BaseActivity {
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        tinyDB = TinyDB.getInstance(appCtx);
-        String repoFullName = tinyDB.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+        repository = RepositoryContext.fromIntent(getIntent());
 
         if(getIntent().getStringExtra("labelAction") != null && Objects.requireNonNull(getIntent().getStringExtra("labelAction")).equals("delete")) {
 
-            deleteLabel(repoOwner, repoName, Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("labelId"))));
+            deleteLabel(Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("labelId"))));
             finish();
             return;
         }
@@ -84,7 +85,7 @@ public class CreateLabelActivity extends BaseActivity {
 
             //Log.i("#Hex no alpha", String.format("#%06X", (0xFFFFFF & color)));
             colorPicker.setBackgroundColor(color);
-	        tinyDB.putString("labelColor", String.format("#%06X", (0xFFFFFF & color)));
+	        labelColor = String.format("#%06X", (0xFFFFFF & color));
             cp.dismiss();
         });
 
@@ -93,7 +94,7 @@ public class CreateLabelActivity extends BaseActivity {
             labelName.setText(getIntent().getStringExtra("labelTitle"));
             int labelColor_ = Color.parseColor("#" + getIntent().getStringExtra("labelColor"));
             colorPicker.setBackgroundColor(labelColor_);
-	        tinyDB.putString("labelColorDefault", "#" + getIntent().getStringExtra("labelColor"));
+	        labelColorDefault = "#" + getIntent().getStringExtra("labelColor");
 
             TextView toolbar_title = activityCreateLabelBinding.toolbarTitle;
             toolbar_title.setText(getResources().getString(R.string.pageTitleLabelUpdate));
@@ -122,21 +123,16 @@ public class CreateLabelActivity extends BaseActivity {
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
-        String repoFullName = tinyDB.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-
         String updateLabelName = labelName.getText().toString();
 
         String updateLabelColor;
-        if(tinyDB.getString("labelColor").isEmpty()) {
+        if(labelColor.isEmpty()) {
 
-            updateLabelColor = tinyDB.getString("labelColorDefault");
+            updateLabelColor = labelColorDefault;
         }
         else {
 
-            updateLabelColor = tinyDB.getString("labelColor");
+            updateLabelColor = labelColor;
         }
 
         if(!connToInternet) {
@@ -158,7 +154,7 @@ public class CreateLabelActivity extends BaseActivity {
         }
 
         disableProcessButton();
-        patchLabel(repoOwner, repoName, updateLabelName, updateLabelColor, Integer.parseInt(
+        patchLabel(repository.getOwner(), repository.getName(), updateLabelName, updateLabelColor, Integer.parseInt(
 	        Objects.requireNonNull(getIntent().getStringExtra("labelId"))));
 
     }
@@ -167,21 +163,16 @@ public class CreateLabelActivity extends BaseActivity {
 
         boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
 
-        String repoFullName = tinyDB.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
-
         String newLabelName = labelName.getText().toString();
         String newLabelColor;
 
-        if(tinyDB.getString("labelColor").isEmpty()) {
+        if(labelColor.isEmpty()) {
 
             newLabelColor = String.format("#%06X", (0xFFFFFF & ContextCompat.getColor(ctx, R.color.releasePre)));
         }
         else {
 
-            newLabelColor = tinyDB.getString("labelColor");
+            newLabelColor = labelColor;
         }
 
         if(!connToInternet) {
@@ -203,7 +194,7 @@ public class CreateLabelActivity extends BaseActivity {
         }
 
         disableProcessButton();
-        createNewLabel(repoOwner, repoName, newLabelName, newLabelColor);
+        createNewLabel(repository.getOwner(), repository.getName(), newLabelName, newLabelColor);
     }
 
     private void createNewLabel(String repoOwner, String repoName, String newLabelName, String newLabelColor) {
@@ -229,8 +220,7 @@ public class CreateLabelActivity extends BaseActivity {
                 if(response.code() == 201) {
 
                     Toasty.success(ctx, getString(R.string.labelCreated));
-	                tinyDB.putString("labelColor", "");
-	                tinyDB.putBoolean("labelsRefresh", true);
+	                refreshLabels = true;
                     finish();
                 }
                 else if(response.code() == 401) {
@@ -244,7 +234,7 @@ public class CreateLabelActivity extends BaseActivity {
                 else {
 
                     enableProcessButton();
-	                tinyDB.putString("labelColor", "");
+	                labelColor = "";
                     Toasty.error(ctx, getString(R.string.labelGeneralError));
                 }
             }
@@ -252,7 +242,7 @@ public class CreateLabelActivity extends BaseActivity {
             @Override
             public void onFailure(@NonNull Call<CreateLabel> call, @NonNull Throwable t) {
 
-	            tinyDB.putString("labelColor", "");
+	            labelColor = "";
                 Log.e("onFailure", t.toString());
                 enableProcessButton();
             }
@@ -285,14 +275,7 @@ public class CreateLabelActivity extends BaseActivity {
                     if(response.code() == 200) {
 
                         Toasty.success(ctx, getString(R.string.labelUpdated));
-	                    tinyDB.putString("labelColor", "");
-	                    tinyDB.putBoolean("labelsRefresh", true);
-	                    tinyDB.putString("labelColorDefault", "");
-                        getIntent().removeExtra("labelAction");
-                        getIntent().removeExtra("labelId");
-                        getIntent().removeExtra("labelTitle");
-                        getIntent().removeExtra("labelColor");
-	                    getIntent().removeExtra("type");
+	                    refreshLabels = true;
                         finish();
                     }
                 }
@@ -307,8 +290,8 @@ public class CreateLabelActivity extends BaseActivity {
                 else {
 
                     enableProcessButton();
-	                tinyDB.putString("labelColor", "");
-	                tinyDB.putString("labelColorDefault", "");
+	                labelColor = "";
+	                labelColorDefault = "";
                     Toasty.error(ctx, getString(R.string.labelGeneralError));
                 }
             }
@@ -316,8 +299,8 @@ public class CreateLabelActivity extends BaseActivity {
             @Override
             public void onFailure(@NonNull Call<CreateLabel> call, @NonNull Throwable t) {
 
-	            tinyDB.putString("labelColor", "");
-	            tinyDB.putString("labelColorDefault", "");
+	            labelColor = "";
+	            labelColorDefault = "";
                 Log.e("onFailure", t.toString());
                 enableProcessButton();
             }
@@ -327,18 +310,10 @@ public class CreateLabelActivity extends BaseActivity {
 
     private void initCloseListener() {
 
-        onClickListener = view -> {
-
-            getIntent().removeExtra("labelAction");
-            getIntent().removeExtra("labelId");
-            getIntent().removeExtra("labelTitle");
-            getIntent().removeExtra("labelColor");
-	        getIntent().removeExtra("type");
-            finish();
-        };
+        onClickListener = view -> finish();
     }
 
-    private void deleteLabel(final String repoOwner, final String repoName, int labelId) {
+    private void deleteLabel(int labelId) {
 
         Call<Labels> call;
 
@@ -348,7 +323,7 @@ public class CreateLabelActivity extends BaseActivity {
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(appCtx).deleteLabel(getAccount().getAuthorization(), repoOwner, repoName, labelId);
+		    call = RetrofitClient.getApiInterface(appCtx).deleteLabel(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), labelId);
 	    }
 
         call.enqueue(new Callback<Labels>() {
@@ -367,11 +342,8 @@ public class CreateLabelActivity extends BaseActivity {
 	                    }
 	                    else {
 
-		                    LabelsViewModel.loadLabelsList(getAccount().getAuthorization(), repoOwner, repoName, ctx);
+		                    LabelsViewModel.loadLabelsList(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), ctx);
 	                    }
-                        getIntent().removeExtra("labelAction");
-                        getIntent().removeExtra("labelId");
-	                    getIntent().removeExtra("type");
                     }
                 }
                 else if(response.code() == 401) {

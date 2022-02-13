@@ -15,9 +15,9 @@ import org.gitnex.tea4j.models.AddEmail;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityProfileEmailBinding;
+import org.mian.gitnex.fragments.MyProfileEmailsFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,7 +102,6 @@ public class MyProfileEmailActivity extends BaseActivity {
     private void addNewEmail(final String token, List<String> newUserEmail) {
 
         AddEmail addEmailFunc = new AddEmail(newUserEmail);
-        final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 
         Call<JsonElement> call;
 
@@ -118,7 +117,7 @@ public class MyProfileEmailActivity extends BaseActivity {
                 if(response.code() == 201) {
 
                     Toasty.success(ctx, getString(R.string.emailAddedText));
-                    tinyDb.putBoolean("emailsRefresh", true);
+	                MyProfileEmailsFragment.refreshEmails = true;
                     enableProcessButton();
                     finish();
                 }

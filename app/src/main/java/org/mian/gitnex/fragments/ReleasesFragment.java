@@ -12,9 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,14 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.gitnex.tea4j.models.Releases;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.activities.BaseActivity;
+import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.ReleasesAdapter;
 import org.mian.gitnex.adapters.TagsAdapter;
 import org.mian.gitnex.databinding.FragmentReleasesBinding;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
-import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.viewmodels.ReleasesViewModel;
 import java.util.List;
 
@@ -105,7 +101,7 @@ public class ReleasesFragment extends Fragment {
 
         setHasOptionsMenu(true);
 	    ((RepoDetailActivity) requireActivity()).setFragmentRefreshListenerReleases(type -> {
-			viewTypeIsTags = type.equals("tags");
+			if(type != null) viewTypeIsTags = type.equals("tags");
 			page = 1;
 			pageReleases = 1;
 		    if(viewTypeIsTags) {
@@ -118,23 +114,6 @@ public class ReleasesFragment extends Fragment {
 
         return fragmentReleasesBinding.getRoot();
 
-    }
-
-    @Override
-    public void onResume() {
-
-        super.onResume();
-        TinyDB tinyDb = TinyDB.getInstance(getContext());
-
-        if(tinyDb.getBoolean("updateReleases")) {
-        	if(viewTypeIsTags) {
-        		ReleasesViewModel.loadTagsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
-	        } else {
-		        ReleasesViewModel.loadReleasesList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
-	        }
-	        mProgressBar.setVisibility(View.VISIBLE);
-	        tinyDb.putBoolean("updateReleases", false);
-        }
     }
 
     public void onButtonPressed(Uri uri) {
@@ -157,44 +136,41 @@ public class ReleasesFragment extends Fragment {
 
         ReleasesViewModel releasesModel = new ViewModelProvider(this).get(ReleasesViewModel.class);
 
-        releasesModel.getReleasesList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Releases>>() {
-            @Override
-            public void onChanged(@Nullable List<Releases> releasesListMain) {
-            	if(!viewTypeIsTags) {
-		            adapter = new ReleasesAdapter(getContext(), releasesListMain);
-		            adapter.setLoadMoreListener(new ReleasesAdapter.OnLoadMoreListener() {
+        releasesModel.getReleasesList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), releasesListMain -> {
+	        if(!viewTypeIsTags) {
+		        adapter = new ReleasesAdapter(getContext(), releasesListMain);
+		        adapter.setLoadMoreListener(new ReleasesAdapter.OnLoadMoreListener() {
 
-			            @Override
-			            public void onLoadMore() {
-				            pageReleases += 1;
-				            ReleasesViewModel.loadMoreReleases(instanceToken, owner, repo , pageReleases, getContext(), adapter);
-				            mProgressBar.setVisibility(View.VISIBLE);
-			            }
+			        @Override
+			        public void onLoadMore() {
+				        pageReleases += 1;
+				        ReleasesViewModel.loadMoreReleases(instanceToken, owner, repo, pageReleases, getContext(), adapter);
+				        mProgressBar.setVisibility(View.VISIBLE);
+			        }
 
-			            @Override
-			            public void onLoadFinished() {
-				            mProgressBar.setVisibility(View.GONE);
-			            }
-		            });
-		            if(adapter.getItemCount() > 0) {
-			            mRecyclerView.setAdapter(adapter);
-			            if(releasesListMain != null && releaseTag != null) {
-				            int index = getReleaseIndex(releaseTag, releasesListMain);
-				            releaseTag = null;
-				            if(index != -1) {
-					            mRecyclerView.scrollToPosition(index);
-				            }
-			            }
-			            noDataReleases.setVisibility(View.GONE);
-		            }
-		            else {
-			            adapter.notifyDataSetChanged();
-			            mRecyclerView.setAdapter(adapter);
-			            noDataReleases.setVisibility(View.VISIBLE);
-		            }
-		            mProgressBar.setVisibility(View.GONE);
-	            }
-            }
+			        @Override
+			        public void onLoadFinished() {
+				        mProgressBar.setVisibility(View.GONE);
+			        }
+		        });
+		        if(adapter.getItemCount() > 0) {
+			        mRecyclerView.setAdapter(adapter);
+			        if(releasesListMain != null && releaseTag != null) {
+				        int index = getReleaseIndex(releaseTag, releasesListMain);
+				        releaseTag = null;
+				        if(index != -1) {
+					        mRecyclerView.scrollToPosition(index);
+				        }
+			        }
+			        noDataReleases.setVisibility(View.GONE);
+		        }
+		        else {
+			        adapter.notifyDataSetChanged();
+			        mRecyclerView.setAdapter(adapter);
+			        noDataReleases.setVisibility(View.VISIBLE);
+		        }
+		        mProgressBar.setVisibility(View.GONE);
+	        }
         });
 
 	    releasesModel.getTagsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), tagList -> {
@@ -240,7 +216,7 @@ public class ReleasesFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-    	if(new Version(TinyDB.getInstance(requireContext()).getString("giteaVersion")).less("1.15.0"))
+    	if(!((BaseActivity) requireActivity()).getAccount().requiresVersion("1.15.0"))
     		return;
 		inflater.inflate(R.menu.filter_menu_releases, menu);
 		super.onCreateOptionsMenu(menu, inflater);

@@ -1,5 +1,6 @@
 package org.mian.gitnex.helpers;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -36,15 +37,8 @@ public class AlertDialogs {
             .setIcon(R.drawable.ic_warning)
             .setNeutralButton(copyNegativeButton, (dialog, which) -> dialog.dismiss())
             .setPositiveButton(copyPositiveButton, (dialog, which) -> {
-
-                final TinyDB tinyDb = TinyDB.getInstance(context);
-                tinyDb.putBoolean("loggedInMode", false);
-                tinyDb.remove("basicAuthPassword");
-                tinyDb.putBoolean("basicAuthFlag", false);
-                Intent intent = new Intent(context, LoginActivity.class);
-                context.startActivity(intent);
+                AppUtil.logout(context);
                 dialog.dismiss();
-
             });
 
         alertDialogBuilder.create().show();
@@ -59,14 +53,7 @@ public class AlertDialogs {
 		    .setCancelable(false)
 		    .setIcon(R.drawable.ic_info)
 		    .setPositiveButton(copyPositiveButton, (dialog, which) -> {
-
-			    final TinyDB tinyDb = TinyDB.getInstance(context);
-			    tinyDb.putBoolean("loggedInMode", false);
-			    tinyDb.remove("basicAuthPassword");
-			    tinyDb.putBoolean("basicAuthFlag", false);
-
-			    Intent intent = new Intent(context, LoginActivity.class);
-			    context.startActivity(intent);
+		    	AppUtil.logout(context);
 			    dialog.dismiss();
 
 		    });
@@ -74,23 +61,25 @@ public class AlertDialogs {
 	    alertDialogBuilder.create().show();
     }
 
-    public static void labelDeleteDialog(final Context context, final String labelTitle, final String labelId, String title, String message, String positiveButton, String negativeButton, String type, String orgName) {
+    public static void labelDeleteDialog(final Context context, final String labelTitle, final String labelId, String type, String orgName,
+	    RepositoryContext repository) {
 
         new AlertDialog.Builder(context)
-            .setTitle(String.format(title, labelTitle))
-            .setMessage(message)
+            .setTitle(context.getString(R.string.deleteLabelTitle, labelTitle))
+            .setMessage(R.string.labelDeleteMessage)
             .setIcon(R.drawable.ic_delete)
-            .setPositiveButton(positiveButton, (dialog, whichButton) -> {
+            .setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> {
 
                 Intent intent = new Intent(context, CreateLabelActivity.class);
                 intent.putExtra("labelId", labelId);
                 intent.putExtra("labelAction", "delete");
 	            intent.putExtra("type", type);
 	            intent.putExtra("orgName", orgName);
+	            intent.putExtra(RepositoryContext.INTENT_EXTRA, repository);
                 context.startActivity(intent);
 
             })
-            .setNeutralButton(negativeButton, null).show();
+            .setNeutralButton(R.string.cancelButton, null).show();
 
     }
 

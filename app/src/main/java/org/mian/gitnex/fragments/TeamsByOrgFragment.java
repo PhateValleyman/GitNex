@@ -14,29 +14,26 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.gitnex.tea4j.models.OrgPermissions;
-import org.gitnex.tea4j.models.Teams;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.TeamsByOrgAdapter;
 import org.mian.gitnex.databinding.FragmentTeamsByOrgBinding;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.TeamsByOrgViewModel;
-import java.util.List;
 
 /**
  * Author M M Arif
  */
 
 public class TeamsByOrgFragment extends Fragment {
+
+	public static boolean resumeTeams = false;
 
     private RepositoriesByOrgFragment.OnFragmentInteractionListener mListener;
 
@@ -105,11 +102,9 @@ public class TeamsByOrgFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        TinyDB tinyDb = TinyDB.getInstance(getContext());
-
-        if(tinyDb.getBoolean("resumeTeams")) {
+        if(resumeTeams) {
             TeamsByOrgViewModel.loadTeamsByOrgList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), orgName, getContext(), noDataTeams, mProgressBar);
-            tinyDb.putBoolean("resumeTeams", false);
+	        resumeTeams = false;
         }
     }
 
@@ -117,21 +112,18 @@ public class TeamsByOrgFragment extends Fragment {
 
         TeamsByOrgViewModel teamModel = new ViewModelProvider(this).get(TeamsByOrgViewModel.class);
 
-        teamModel.getTeamsByOrg(instanceToken, owner, getContext(), noDataTeams, mProgressBar).observe(getViewLifecycleOwner(), new Observer<List<Teams>>() {
-            @Override
-            public void onChanged(@Nullable List<Teams> orgTeamsListMain) {
-                adapter = new TeamsByOrgAdapter(getContext(), orgTeamsListMain, permissions);
-                if(adapter.getItemCount() > 0) {
-                    mRecyclerView.setAdapter(adapter);
-                    noDataTeams.setVisibility(View.GONE);
-                }
-                else {
-                    adapter.notifyDataSetChanged();
-                    mRecyclerView.setAdapter(adapter);
-                    noDataTeams.setVisibility(View.VISIBLE);
-                }
-                mProgressBar.setVisibility(View.GONE);
+        teamModel.getTeamsByOrg(instanceToken, owner, getContext(), noDataTeams, mProgressBar).observe(getViewLifecycleOwner(), orgTeamsListMain -> {
+            adapter = new TeamsByOrgAdapter(getContext(), orgTeamsListMain, permissions, orgName);
+            if(adapter.getItemCount() > 0) {
+                mRecyclerView.setAdapter(adapter);
+                noDataTeams.setVisibility(View.GONE);
             }
+            else {
+                adapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(adapter);
+                noDataTeams.setVisibility(View.VISIBLE);
+            }
+            mProgressBar.setVisibility(View.GONE);
         });
 
     }

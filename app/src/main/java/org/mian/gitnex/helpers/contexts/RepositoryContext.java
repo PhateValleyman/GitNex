@@ -147,7 +147,7 @@ public class RepositoryContext implements Serializable {
 	}
 
 	public UserRepositories.permissionsObject getPermissions() {
-		return repository.getPermissions();
+		return repository != null ? repository.getPermissions() : new UserRepositories.permissionsObject();
 	}
 
 	public void setRepository(UserRepositories repository) {

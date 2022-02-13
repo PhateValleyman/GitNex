@@ -225,7 +225,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		fetchDataAsync(repoOwner, repoName, issueIndex);
 
 		if(getIntent().getStringExtra("openPrDiff") != null && getIntent().getStringExtra("openPrDiff").equals("true")) {
-			startActivity(new Intent(ctx, FileDiffActivity.class));
+			startActivity(issue.getIntent(ctx, FileDiffActivity.class));
 		}
 
 	}
@@ -549,7 +549,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				bundle.putString("repoName", repoName);
 				bundle.putInt("issueNumber", issueIndex);
 
-				adapter = new IssueCommentsAdapter(ctx, bundle, issueCommentsMain, getSupportFragmentManager(), this::onResume);
+				adapter = new IssueCommentsAdapter(ctx, bundle, issueCommentsMain, getSupportFragmentManager(), this::onResume, issue);
 
 				viewBinding.recyclerView.setAdapter(adapter);
 
@@ -563,7 +563,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			return;
 		}
 
-		final TinyDB tinyDb = TinyDB.getInstance(appCtx);
 		Call<Issues> call = RetrofitClient.getApiInterface(ctx)
 			.getIssueByIndex(getAccount().getAuthorization(), repoOwner, repoName, issueIndex);
 
@@ -689,7 +688,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			return true;
 		});
 
-		Markdown.render(ctx, EmojiParser.parseToUnicode(cleanIssueDescription), viewBinding.issueDescription);
+		Markdown.render(ctx, EmojiParser.parseToUnicode(cleanIssueDescription), viewBinding.issueDescription, issue.getRepository());
 
 		RelativeLayout.LayoutParams paramsDesc = (RelativeLayout.LayoutParams) viewBinding.issueDescription.getLayoutParams();
 

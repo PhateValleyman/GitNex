@@ -14,6 +14,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.UserAccountsApi;
+import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityAddNewAccountBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.PathsHelper;
@@ -134,7 +135,6 @@ public class AddNewAccountActivity extends BaseActivity {
 						return;
 					}
 
-					tinyDB.putString("giteaVersion", version.getVersion());
 					Version giteaVersion = new Version(version.getVersion());
 
 					if(giteaVersion.less(getString(R.string.versionLow))) {
@@ -210,7 +210,9 @@ public class AddNewAccountActivity extends BaseActivity {
 
 						if(!userAccountExists) {
 
-							userAccountsApi.createNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
+							long id = userAccountsApi.createNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
+							UserAccount account = userAccountsApi.getAccountById((int) id);
+							AppUtil.switchToAccount(AddNewAccountActivity.this, account);
 							Toasty.success(ctx, getResources().getString(R.string.accountAddedMessage));
 							finish();
 

@@ -27,8 +27,6 @@ import org.mian.gitnex.activities.SettingsTranslationActivity;
 import org.mian.gitnex.databinding.CustomAboutDialogBinding;
 import org.mian.gitnex.databinding.FragmentSettingsBinding;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.helpers.Version;
 
 /**
  * Author M M Arif
@@ -36,8 +34,9 @@ import org.mian.gitnex.helpers.Version;
 
 public class SettingsFragment extends Fragment {
 
+	public static boolean refreshParent = false;
+
 	private Context ctx;
-	private TinyDB tinyDB;
 	private Dialog aboutAppDialog;
 
 	@Nullable
@@ -47,7 +46,6 @@ public class SettingsFragment extends Fragment {
 		FragmentSettingsBinding fragmentSettingsBinding = FragmentSettingsBinding.inflate(inflater, container, false);
 
 		ctx = getContext();
-		tinyDB = TinyDB.getInstance(ctx);
 		aboutAppDialog = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
 		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navSettings));
@@ -127,10 +125,10 @@ public class SettingsFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 
-		if(tinyDB.getBoolean("refreshParent")) {
+		if(refreshParent) {
 			requireActivity().recreate();
 			requireActivity().overridePendingTransition(0, 0);
-			tinyDB.putBoolean("refreshParent", false);
+			refreshParent = false;
 		}
 	}
 }

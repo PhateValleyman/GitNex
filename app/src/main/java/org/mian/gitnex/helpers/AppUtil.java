@@ -1,5 +1,6 @@
 package org.mian.gitnex.helpers;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -19,7 +20,10 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.pm.PackageInfoCompat;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.LoginActivity;
 import org.mian.gitnex.core.MainApplication;
+import org.mian.gitnex.database.api.BaseApi;
+import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +45,21 @@ import java.util.regex.Pattern;
  */
 
 public class AppUtil {
+
+	public static void logout(Context ctx) {
+		TinyDB tinyDB = TinyDB.getInstance(ctx);
+
+		UserAccountsApi api = BaseApi.getInstance(ctx, UserAccountsApi.class);
+		assert api != null;
+
+		if (api.getCount() >= 1) {
+			switchToAccount(ctx, api.getAllAccounts().getValue().get(0));
+		} else {
+			tinyDB.putInt("currentActiveAccountId", -2);
+			((Activity) ctx).finish(); // TODO finish ALL activities
+			ctx.startActivity(new Intent(ctx, LoginActivity.class));
+		}
+	}
 
 	public enum FileType { IMAGE, AUDIO, VIDEO, DOCUMENT, TEXT, EXECUTABLE, FONT, UNKNOWN }
 
@@ -351,7 +370,7 @@ public class AppUtil {
 					.build()
 					.launchUrl(context, Uri.parse(url));
 			} else {
-				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(tinyDB.getString("repoHtmlUrl")));
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				i.addCategory(Intent.CATEGORY_BROWSABLE);
 				context.startActivity(i);
 			}

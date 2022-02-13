@@ -46,7 +46,6 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 	private TinyDB tinyDB;
 	private DraftsApi draftsApi;
 
-	private int repositoryId;
 	private int currentActiveAccountId;
 	private IssueContext issue;
 	private long draftId;
@@ -62,7 +61,6 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		tinyDB = TinyDB.getInstance(context);
 		draftsApi = BaseApi.getInstance(context, DraftsApi.class);
 
-		repositoryId = (int) requireArguments().getLong("repositoryId", 0);
 		currentActiveAccountId = ((BaseActivity) requireActivity()).getAccount().getAccount().getAccountId();
 		issue = IssueContext.fromBundle(requireArguments());
 	}
@@ -277,7 +275,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 			if(draftId == 0) {
 
-				draftId = draftsApi.insertDraft(repositoryId, currentActiveAccountId, issue.getIssueIndex(), text, draftType, "TODO", issue.getIssueType());
+				draftId = draftsApi.insertDraft(issue.getRepository().getRepositoryId(), currentActiveAccountId, issue.getIssueIndex(), text, draftType, "TODO", issue.getIssueType());
 			}
 			else {
 

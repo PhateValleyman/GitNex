@@ -148,7 +148,6 @@ public class CreateReleaseActivity extends BaseActivity {
 		    public void onResponse(@NonNull Call<GitTag> call, @NonNull retrofit2.Response<GitTag> response) {
 
 			    if (response.code() == 201) {
-				    tinyDB.putBoolean("updateReleases", true);
 				    Toasty.success(ctx, getString(R.string.tagCreated));
 				    finish();
 			    }

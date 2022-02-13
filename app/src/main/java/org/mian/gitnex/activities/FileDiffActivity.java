@@ -16,7 +16,6 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.ParseDiff;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
 import java.io.IOException;
 import java.util.List;
 import okhttp3.ResponseBody;
@@ -67,7 +66,7 @@ public class FileDiffActivity extends BaseActivity {
 
 		String pullIndex = tinyDb.getString("issueNumber");
 
-		boolean apiCall = !new Version(tinyDb.getString("giteaVersion")).less("1.13.0");
+		boolean apiCall = getAccount().requiresVersion("1.13.0");
 		getPullDiffContent(repoOwner, repoName, pullIndex, apiCall);
 
 	}

@@ -140,7 +140,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 									binding.contents.setContent(text, fileExtension);
 
 									if(renderMd) {
-										Markdown.render(ctx, EmojiParser.parseToUnicode(text), binding.markdown);
+										Markdown.render(ctx, EmojiParser.parseToUnicode(text), binding.markdown, repository);
 
 										binding.contents.setVisibility(View.GONE);
 										binding.markdownFrame.setVisibility(View.VISIBLE);
@@ -247,7 +247,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 
 			if(!renderMd) {
 				if(binding.markdown.getAdapter() == null) {
-					Markdown.render(ctx, EmojiParser.parseToUnicode(binding.contents.getContent()), binding.markdown);
+					Markdown.render(ctx, EmojiParser.parseToUnicode(binding.contents.getContent()), binding.markdown, repository);
 				}
 
 				binding.contents.setVisibility(View.GONE);
@@ -340,19 +340,13 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);;
 				notificationManager.notify(notificationId, builder.build());
 
-				String repoFullName = tinyDB.getString("repoFullName");
-				String repoBranch = tinyDB.getString("repoBranch");
-				String[] parts = repoFullName.split("/");
-				String repoOwner = parts[0];
-				String repoName = parts[1];
-
 				Thread thread = new Thread(() -> {
 
 					try {
 
 						Call<ResponseBody> call = RetrofitClient
 							.getWebInterface(ctx)
-							.getFileContents(getAccount().getWebAuthorization(), repoOwner, repoName, repoBranch, file.getPath());
+							.getFileContents(getAccount().getWebAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef(), file.getPath());
 
 						Response<ResponseBody> response = call.execute();
 

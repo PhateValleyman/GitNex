@@ -113,21 +113,6 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 				)
 					.getIntent(context, IssueDetailActivity.class);
 
-				TinyDB tinyDb = TinyDB.getInstance(context);
-				tinyDb.putString("prMergeable", String.valueOf(pullRequest.isMergeable())); // TODO move fields to bundles
-				tinyDb.putString("prHeadBranch", pullRequest.getHead().getRef());
-
-				// TODO mv to repoctx
-				if(pullRequest.getHead() != null && pullRequest.getHead().getRepo() != null) {
-					tinyDb.putString("prIsFork", String.valueOf(pullRequest.getHead().getRepo().isFork()));
-					tinyDb.putString("prForkFullName", pullRequest.getHead().getRepo().getFull_name());
-				}
-				else {
-					// pull was done from a deleted fork
-					tinyDb.putString("prIsFork", "true");
-					tinyDb.putString("prForkFullName", context.getString(R.string.prDeletedFork));
-				}
-
 				context.startActivity(intent);
 
 			});

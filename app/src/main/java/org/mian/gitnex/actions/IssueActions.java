@@ -12,7 +12,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.IssuesFragment;
 import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import retrofit2.Call;

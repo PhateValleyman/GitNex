@@ -92,7 +92,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			if(result.getResultCode() == 201) {
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("updateReleases", false)) {
-					// TODO update releases (wait for tags pr)
+					fragmentRefreshListenerReleases.onRefresh(null);
 				}
 			}
 		});
@@ -425,7 +425,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 						Branches branches = response.body().get(i);
 						branchesList.add(branches.getName());
 
-						if(tinyDB.getString("repoBranch").equals(branches.getName())) {
+						if(repository.getBranchRef().equals(branches.getName())) {
 							selectedBranch = i;
 						}
 					}
@@ -435,7 +435,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 					pBuilder.setSingleChoiceItems(branchesList.toArray(new String[0]), selectedBranch, (dialogInterface, i) -> {
 
-						tinyDB.putString("repoBranch", branchesList.get(i));
+						repository.setBranchRef(branchesList.get(i));
 
 						if(getFragmentRefreshListenerFiles() != null) {
 							getFragmentRefreshListenerFiles().onRefresh(branchesList.get(i));

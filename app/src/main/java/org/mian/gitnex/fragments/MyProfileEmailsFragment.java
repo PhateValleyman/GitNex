@@ -27,6 +27,8 @@ import org.mian.gitnex.viewmodels.ProfileEmailsViewModel;
 
 public class MyProfileEmailsFragment extends Fragment {
 
+	public static boolean refreshEmails = false;
+
     private ProgressBar mProgressBar;
     private MyProfileEmailsAdapter adapter;
     private RecyclerView mRecyclerView;
@@ -104,4 +106,16 @@ public class MyProfileEmailsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+
+	@Override
+	public void onResume() {
+
+		super.onResume();
+
+		if(refreshEmails) {
+			ProfileEmailsViewModel.loadEmailsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
+			refreshEmails = false;
+		}
+	}
+
 }

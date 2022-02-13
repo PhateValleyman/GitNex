@@ -26,7 +26,6 @@ import org.mian.gitnex.adapters.PullRequestsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentPullRequestsBinding;
 import org.mian.gitnex.helpers.Constants;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.ArrayList;
@@ -134,12 +133,10 @@ public class PullRequestsFragment extends Fragment {
 	public void onResume() {
 
 		super.onResume();
-		TinyDB tinyDb = TinyDB.getInstance(getContext());
 
 		if(resumePullRequests) {
 			loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), pageSize, repository.getPrState().toString(), resultLimit);
-			tinyDb.putBoolean("resumePullRequests", false);
-			tinyDb.putBoolean("prMerged", false);
+			resumePullRequests = false;
 		}
 	}
 

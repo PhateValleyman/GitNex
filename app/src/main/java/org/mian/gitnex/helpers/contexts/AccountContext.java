@@ -13,9 +13,6 @@ public class AccountContext {
 	private UserAccount account;
 	private UserInfo userInfo;
 
-	private boolean isBasicAuth = false;
-	private String basicAuthPassword = "";
-
 	public static AccountContext fromId(int id, Context context) {
 		return new AccountContext(Objects.requireNonNull(UserAccountsApi.getInstance(context, UserAccountsApi.class)).getAccountById(id));
 	}
@@ -35,15 +32,6 @@ public class AccountContext {
 	}
 
 	public String getAuthorization() {
-		String loginUid = account.getUserName();
-
-		// TODO
-		if(isBasicAuth &&
-			!basicAuthPassword.isEmpty()) {
-
-			return Credentials.basic(loginUid, basicAuthPassword);
-		}
-
 		return  "token " + account.getToken();
 	}
 

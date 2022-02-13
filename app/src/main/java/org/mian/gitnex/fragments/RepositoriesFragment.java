@@ -28,7 +28,6 @@ import org.mian.gitnex.activities.CreateRepoActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.ReposListAdapter;
 import org.mian.gitnex.databinding.FragmentRepositoriesBinding;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.RepositoriesListViewModel;
 
 /**
@@ -105,11 +104,10 @@ public class RepositoriesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        TinyDB tinyDb = TinyDB.getInstance(getContext());
 
-        if(tinyDb.getBoolean("repoCreated")) {
+        if(MainActivity.repoCreated) {
             RepositoriesListViewModel.loadReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext(), pageSize, resultLimit);
-            tinyDb.putBoolean("repoCreated", false);
+	        MainActivity.repoCreated = false;
         }
     }
 

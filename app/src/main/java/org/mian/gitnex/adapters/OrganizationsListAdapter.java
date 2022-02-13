@@ -18,7 +18,6 @@ import org.mian.gitnex.activities.OrganizationDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 

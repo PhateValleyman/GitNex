@@ -28,7 +28,6 @@ import org.mian.gitnex.activities.CreateOrganizationActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.OrganizationsListAdapter;
 import org.mian.gitnex.databinding.FragmentOrganizationsBinding;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.viewmodels.OrganizationListViewModel;
 
 /**
@@ -36,6 +35,8 @@ import org.mian.gitnex.viewmodels.OrganizationListViewModel;
  */
 
 public class OrganizationsFragment extends Fragment {
+
+	public static boolean orgCreated = false;
 
     private ProgressBar mProgressBar;
     private OrganizationsListAdapter adapter;
@@ -104,11 +105,10 @@ public class OrganizationsFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        TinyDB tinyDb = TinyDB.getInstance(getContext());
 
-	    if(tinyDb.getBoolean("orgCreated")) {
+	    if(orgCreated) {
             OrganizationListViewModel.loadOrgsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
-            tinyDb.putBoolean("orgCreated", false);
+            orgCreated = false;
         }
     }
 

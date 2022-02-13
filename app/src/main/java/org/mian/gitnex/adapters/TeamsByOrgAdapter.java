@@ -27,6 +27,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
     private final Context context;
     private final List<Teams> teamListFull;
     private final OrgPermissions permissions;
+    private final String orgName;
 
     static class OrgTeamsViewHolder extends RecyclerView.ViewHolder {
 
@@ -36,6 +37,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
         private final TextView teamTitle;
         private final TextView teamDescription;
         private final TextView teamPermission;
+        private String orgName;
 
         private OrgTeamsViewHolder(View itemView) {
 
@@ -52,6 +54,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
                 intent.putExtra("teamTitle", teams.getName());
                 intent.putExtra("teamId", String.valueOf(teams.getId()));
                 intent.putExtra("permissions", permissions);
+                intent.putExtra("orgName", orgName);
                 context.startActivity(intent);
             });
 
@@ -59,11 +62,12 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
 
     }
 
-    public TeamsByOrgAdapter(Context ctx, List<Teams> teamListMain, OrgPermissions permissions) {
+    public TeamsByOrgAdapter(Context ctx, List<Teams> teamListMain, OrgPermissions permissions, String orgName) {
         this.context = ctx;
         this.teamList = teamListMain;
         this.permissions = permissions;
         teamListFull = new ArrayList<>(teamList);
+        this.orgName = orgName;
     }
 
     @NonNull
@@ -81,6 +85,7 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
         holder.teams = currentItem;
         holder.teamTitle.setText(currentItem.getName());
         holder.permissions = permissions;
+        holder.orgName = orgName;
 
         if (!currentItem.getDescription().equals("")) {
             holder.teamDescription.setVisibility(View.VISIBLE);

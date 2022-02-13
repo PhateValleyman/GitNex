@@ -15,6 +15,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.actions.PullRequestActions;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityMergePullRequestBinding;
+import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Toasty;
@@ -84,7 +85,7 @@ public class MergePullRequestActivity extends BaseActivity {
 			viewBinding.mergeInfoDisabledMessage.setVisibility(View.GONE);
 		}
 
-		if(tinyDB.getString("prIsFork").equals("true")) {
+		if(issue.prIsFork()) {
 
 			viewBinding.deleteBranchForkInfo.setVisibility(View.VISIBLE);
 		}
@@ -102,7 +103,7 @@ public class MergePullRequestActivity extends BaseActivity {
 			viewBinding.mergeButton.setOnClickListener(mergePullRequest);
 		}
 
-		if(!tinyDB.getBoolean("canPushPullSource")) {
+		if(!issue.getPullRequest().getHead().getRepo().getPermissions().isPush()) {
 			viewBinding.deleteBranch.setVisibility(View.GONE);
 			viewBinding.deleteBranchForkInfo.setVisibility(View.GONE);
 		}
@@ -179,7 +180,7 @@ public class MergePullRequestActivity extends BaseActivity {
 
 					if(deleteBranch) {
 
-						if(tinyDB.getString("prIsFork").equals("true")) {
+						if(issue.prIsFork()) {
 							String repoFullName = issue.getPullRequest().getHead().getRepo().getFull_name();
 							String[] parts = repoFullName.split("/");
 							final String repoOwner = parts[0];
@@ -194,8 +195,7 @@ public class MergePullRequestActivity extends BaseActivity {
 					}
 					Toasty.success(ctx, getString(R.string.mergePRSuccessMsg));
 					Intent result = new Intent();
-					result.putExtra("prMerged", true); // TODO fix usage of tinydb
-					result.putExtra("resumePullRequests", true);
+					PullRequestsFragment.resumePullRequests = true;
 					setResult(200, result);
 					finish();
 

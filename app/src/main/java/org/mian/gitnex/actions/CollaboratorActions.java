@@ -40,7 +40,6 @@ public class CollaboratorActions {
                         Toasty.success(context, context.getString(R.string.removeCollaboratorToastText));
                         ((AddCollaboratorToRepositoryActivity)context).finish();
                         //Log.i("addCollaboratorSearch", addCollaboratorSearch.getText().toString());
-                        //tinyDb.putBoolean("updateDataSet", true);
                         //AddCollaboratorToRepositoryActivity usersSearchData = new AddCollaboratorToRepositoryActivity();
                         //usersSearchData.loadUserSearchList(instanceToken, searchKeyword, context);
 

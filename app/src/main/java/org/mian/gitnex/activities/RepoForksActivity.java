@@ -27,8 +27,6 @@ import org.mian.gitnex.adapters.RepoForksAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityRepoForksBinding;
 import org.mian.gitnex.helpers.Constants;
-import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.helpers.Version;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -65,8 +63,6 @@ public class RepoForksActivity extends BaseActivity {
 		Toolbar toolbar = activityRepoForksBinding.toolbar;
 		setSupportActionBar(toolbar);
 
-		TinyDB tinyDb = TinyDB.getInstance(appCtx);
-
 		String repoFullNameForForks = getIntent().getStringExtra("repoFullNameForForks");
 		assert repoFullNameForForks != null;
 		String[] parts = repoFullNameForForks.split("/");
@@ -87,7 +83,7 @@ public class RepoForksActivity extends BaseActivity {
 		closeActivity.setOnClickListener(onClickListener);
 
 		// if gitea is 1.12 or higher use the new limit (resultLimitNewGiteaInstances)
-		if(new Version(tinyDb.getString("giteaVersion")).higherOrEqual("1.12")) {
+		if(getAccount().requiresVersion("1.12")) {
 
 			resultLimit = Constants.resultLimitNewGiteaInstances;
 		}

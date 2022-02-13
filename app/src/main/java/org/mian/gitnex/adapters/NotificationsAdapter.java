@@ -15,10 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.apache.commons.lang3.StringUtils;
 import org.gitnex.tea4j.models.NotificationThread;
 import org.mian.gitnex.R;
-import org.mian.gitnex.database.api.BaseApi;
-import org.mian.gitnex.database.api.RepositoriesApi;
-import org.mian.gitnex.database.models.Repository;
-import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
 
 /**
@@ -35,10 +31,9 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 	private final OnNotificationClickedListener onNotificationClickedListener;
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
-	private final TinyDB tinyDb;
 
 	public NotificationsAdapter(Context context, List<NotificationThread> notificationThreads, OnMoreClickedListener onMoreClickedListener, OnNotificationClickedListener onNotificationClickedListener) {
-		this.tinyDb = TinyDB.getInstance(context);
+
 		this.context = context;
 		this.notificationThreads = notificationThreads;
 		this.onMoreClickedListener = onMoreClickedListener;

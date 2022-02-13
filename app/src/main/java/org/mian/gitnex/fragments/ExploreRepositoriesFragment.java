@@ -31,7 +31,6 @@ import org.mian.gitnex.databinding.CustomExploreRepositoriesDialogBinding;
 import org.mian.gitnex.databinding.FragmentExploreRepoBinding;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.SnackBar;
-import org.mian.gitnex.helpers.TinyDB;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

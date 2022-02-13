@@ -44,7 +44,7 @@ public class SettingsGeneralActivity extends BaseActivity {
 
 		String[] appHomeDefaultScreenNew = getResources().getStringArray(R.array.appDefaultHomeScreenNew);
 
-		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
+		if(getAccount().requiresVersion("1.12.3")) {
 
 			appHomeDefaultScreen = appHomeDefaultScreenNew;
 		}

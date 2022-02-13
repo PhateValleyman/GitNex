@@ -66,11 +66,13 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
 	        itemView.setOnClickListener(itemEdit -> {
 
-		        Bundle bundle = new Bundle();
+	        	RepositoryContext repository = new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName());
+	        	repository.setRepositoryId(draftWithRepository.getRepositoryId());
+	        	IssueContext issue = new IssueContext(repository, draftWithRepository.getIssueId(), draftWithRepository.getIssueType());
+		        Bundle bundle = issue.getBundle();
 
                 bundle.putString("commentBody", draftWithRepository.getDraftText());
                 bundle.putString("issueNumber", String.valueOf(draftWithRepository.getIssueId()));
-                bundle.putString("repositoryId", String.valueOf(draftWithRepository.getRepositoryId()));
                 bundle.putString("draftTitle", repoInfo.getText().toString());
 		        bundle.putString("commentId", draftWithRepository.getCommentId());
 		        bundle.putString("draftId", String.valueOf(draftWithRepository.getDraftId()));

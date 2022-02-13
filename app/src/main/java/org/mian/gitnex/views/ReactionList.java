@@ -17,7 +17,6 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.TinyDB;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,9 +50,7 @@ public class ReactionList extends HorizontalScrollView {
 		addView(root);
 		setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-		TinyDB tinyDB = TinyDB.getInstance(context);
-
-		String loginUid = tinyDB.getString("loginUid");
+		String loginUid = ((BaseActivity) context).getAccount().getAccount().getUserName();
 		String repoOwner = bundle.getString("repoOwner");
 		String repoName = bundle.getString("repoName");
 

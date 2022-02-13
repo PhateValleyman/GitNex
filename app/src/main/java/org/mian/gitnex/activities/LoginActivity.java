@@ -28,6 +28,7 @@ import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.UrlHelper;
 import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.helpers.contexts.AccountContext;
 import org.mian.gitnex.structs.Protocol;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -52,6 +53,9 @@ public class LoginActivity extends BaseActivity {
 	private RadioGroup loginMethod;
 	private String device_id = "token";
 	private String selectedProtocol;
+
+	private URI instanceUrl;
+	private Version giteaVersion;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -163,12 +167,12 @@ public class LoginActivity extends BaseActivity {
 
 			URI rawInstanceUrl = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET.getText().toString(), "http")).toUri();
 
-			URI instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(selectedProtocol.toLowerCase()).withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/"))
+			instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(selectedProtocol.toLowerCase()).withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/"))
 				.toUri();
 
+			// cache values to make them available the next time the user wants to log in
 			tinyDB.putString("loginType", loginType.name().toLowerCase());
 			tinyDB.putString("instanceUrlRaw", instanceUrlET.getText().toString());
-			tinyDB.putString("instanceUrl", instanceUrl.toString());
 
 			if(instanceUrlET.getText().toString().equals("")) {
 
@@ -186,28 +190,19 @@ public class LoginActivity extends BaseActivity {
 					return;
 				}
 
-				if(rawInstanceUrl.getUserInfo() != null) {
-
-					tinyDB.putString("basicAuthPassword", loginPass);
-					tinyDB.putBoolean("basicAuthFlag", true);
-				}
-
 				if(loginUid.equals("")) {
-
 					Toasty.error(ctx, getResources().getString(R.string.emptyFieldUsername));
 					enableProcessButton();
 					return;
 				}
 
 				if(loginPass.equals("")) {
-
 					Toasty.error(ctx, getResources().getString(R.string.emptyFieldPassword));
 					enableProcessButton();
 					return;
 				}
 
 				int loginOTP = (otpCode.length() > 0) ? Integer.parseInt(otpCode.getText().toString().trim()) : 0;
-				tinyDB.putString("loginUid", loginUid);
 
 				versionCheck(loginUid, loginPass, loginOTP, loginToken, loginType);
 
@@ -268,10 +263,9 @@ public class LoginActivity extends BaseActivity {
 						return;
 					}
 
-					tinyDB.putString("giteaVersion", version.getVersion());
-					Version gitea_version = new Version(version.getVersion());
+					giteaVersion = new Version(version.getVersion());
 
-					if(gitea_version.less(getString(R.string.versionLow))) {
+					if(giteaVersion.less(getString(R.string.versionLow))) {
 
 						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx)
 							.setTitle(getString(R.string.versionAlertDialogHeader))
@@ -294,7 +288,7 @@ public class LoginActivity extends BaseActivity {
 						alertDialogBuilder.create().show();
 
 					}
-					else if(gitea_version.lessOrEqual(getString(R.string.versionHigh))) {
+					else if(giteaVersion.lessOrEqual(getString(R.string.versionHigh))) {
 
 						login(loginType, loginUid, loginPass, loginOTP, loginToken);
 					}
@@ -353,28 +347,23 @@ public class LoginActivity extends BaseActivity {
 					case 200:
 
 						assert userDetails != null;
-						tinyDB.putBoolean("loggedInMode", true);
-						tinyDB.putString(userDetails.getLogin() + "-token", loginToken);
-						tinyDB.putString("loginUid", userDetails.getLogin());
-						tinyDB.putString("userLogin", userDetails.getUsername());
 
 						// insert new account to db if does not exist
-						String accountName = userDetails.getUsername() + "@" + TinyDB.getInstance(ctx).getString("instanceUrl");
+						String accountName = userDetails.getUsername() + "@" + instanceUrl;
 						UserAccountsApi userAccountsApi = BaseApi.getInstance(ctx, UserAccountsApi.class);
+						assert userAccountsApi != null;
 						boolean userAccountExists = userAccountsApi.userAccountExists(accountName);
-						long accountId;
-
+						UserAccount account;
 						if(!userAccountExists) {
-
-							accountId = userAccountsApi.createNewAccount(accountName, TinyDB.getInstance(ctx).getString("instanceUrl"), userDetails.getUsername(), loginToken, "");
-							tinyDB.putInt("currentActiveAccountId", (int) accountId);
+							long accountId = userAccountsApi.createNewAccount(accountName, instanceUrl.toString(), userDetails.getUsername(), loginToken, giteaVersion.toString());
+							account = userAccountsApi.getAccountById((int) accountId);
 						}
 						else {
-
 							userAccountsApi.updateTokenByAccountName(accountName, loginToken);
-							UserAccount data = userAccountsApi.getAccountByName(accountName);
-							tinyDB.putInt("currentActiveAccountId", data.getAccountId());
+							account = userAccountsApi.getAccountByName(accountName);
 						}
+
+						AppUtil.switchToAccount(LoginActivity.this, account);
 
 						enableProcessButton();
 						startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -540,30 +529,25 @@ public class LoginActivity extends BaseActivity {
 									case 200:
 
 										assert userDetails != null;
-										tinyDB.remove("loginPass");
-										tinyDB.putBoolean("loggedInMode", true);
-										tinyDB.putString("userLogin", userDetails.getUsername());
-										tinyDB.putString(loginUid + "-token", newToken.getSha1());
-										tinyDB.putString(loginUid + "-token-last-eight", newToken.getToken_last_eight());
 
 										// insert new account to db if does not exist
-										String accountName = userDetails.getUsername() + "@" + TinyDB.getInstance(ctx).getString("instanceUrl");
+										String accountName = userDetails.getUsername() + "@" + instanceUrl;
 										UserAccountsApi userAccountsApi = BaseApi.getInstance(ctx, UserAccountsApi.class);
+										assert userAccountsApi != null;
 										boolean userAccountExists = userAccountsApi.userAccountExists(accountName);
-										long accountId;
 
+										UserAccount account;
 										if(!userAccountExists) {
-
-											accountId = userAccountsApi
-												.createNewAccount(accountName, TinyDB.getInstance(ctx).getString("instanceUrl"), userDetails.getUsername(), newToken.getSha1(), "");
-											tinyDB.putInt("currentActiveAccountId", (int) accountId);
+											long accountId = userAccountsApi
+												.createNewAccount(accountName, instanceUrl.toString(), userDetails.getUsername(), newToken.getSha1(), giteaVersion.toString());
+											account = userAccountsApi.getAccountById((int) accountId);
 										}
 										else {
-
 											userAccountsApi.updateTokenByAccountName(accountName, newToken.getSha1());
-											UserAccount data = userAccountsApi.getAccountByName(accountName);
-											tinyDB.putInt("currentActiveAccountId", data.getAccountId());
+											account = userAccountsApi.getAccountByName(accountName);
 										}
+
+										AppUtil.switchToAccount(LoginActivity.this, account);
 
 										startActivity(new Intent(LoginActivity.this, MainActivity.class));
 										finish();
@@ -622,19 +606,12 @@ public class LoginActivity extends BaseActivity {
 			instanceUrlET.setText(tinyDB.getString("instanceUrlRaw"));
 		}
 
-		if(!tinyDB.getString("loginUid").equals("")) {
+		if(getAccount() != null) {
 
-			loginUidET.setText(tinyDB.getString("loginUid"));
-		}
-
-		if(tinyDB.getBoolean("loggedInMode")) {
-
-			startActivity(new Intent(LoginActivity.this, MainActivity.class));
-			finish();
+			loginUidET.setText(getAccount().getAccount().getUserName());
 		}
 
 		if(!tinyDB.getString("uniqueAppId").isEmpty()) {
-
 			device_id = tinyDB.getString("uniqueAppId");
 		}
 		else {
