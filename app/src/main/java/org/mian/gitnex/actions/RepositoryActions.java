@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
+import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
@@ -18,8 +19,6 @@ import retrofit2.Callback;
  */
 
 public class RepositoryActions {
-
-	// TODO class: update mainactivity star list
 
     public static void starRepository(final Context context, RepositoryContext repository) {
 
@@ -37,6 +36,7 @@ public class RepositoryActions {
                 if(response.isSuccessful()) {
                     if(response.code() == 204) {
 
+	                    MainActivity.repoCreated = true;
                         Toasty.success(context, context.getString(R.string.starRepositorySuccess));
 
                     }
@@ -91,6 +91,7 @@ public class RepositoryActions {
                 if(response.isSuccessful()) {
                     if(response.code() == 204) {
 
+	                    MainActivity.repoCreated = true;
                         Toasty.success(context, context.getString(R.string.unStarRepositorySuccess));
 
                     }

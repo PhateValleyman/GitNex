@@ -28,6 +28,7 @@ import org.mian.gitnex.activities.CreateRepoActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.ReposListAdapter;
 import org.mian.gitnex.databinding.FragmentStarredRepositoriesBinding;
+import org.mian.gitnex.viewmodels.MyRepositoriesViewModel;
 import org.mian.gitnex.viewmodels.StarredRepositoriesViewModel;
 
 /**
@@ -173,4 +174,15 @@ public class StarredRepositoriesFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		if(MainActivity.repoCreated) {
+			StarredRepositoriesViewModel.loadStarredReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext(), pageSize, resultLimit);
+			MainActivity.repoCreated = false;
+		}
+
+	}
 }
