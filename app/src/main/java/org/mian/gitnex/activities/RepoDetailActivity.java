@@ -117,6 +117,17 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 		});
 
+	private final ActivityResultLauncher<Intent> settingsLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+		result -> {
+			if(result.getResultCode() == 200) {
+				assert result.getData() != null;
+				if(result.getData().getBooleanExtra("nameChanged", false)) {
+					recreate();
+				}
+			}
+		});
+
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -328,7 +339,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				break;
 			case "repoSettings":
 
-				startActivity(repository.getIntent(ctx, RepositorySettingsActivity.class));
+				settingsLauncher.launch(repository.getIntent(ctx, RepositorySettingsActivity.class));
 				break;
 			case "newPullRequest":
 
@@ -734,7 +745,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					mViewPager.setCurrentItem(6);
 					break;
 				case "settings":
-					startActivity(repository.getIntent(ctx, RepositorySettingsActivity.class));
+					settingsLauncher.launch(repository.getIntent(ctx, RepositorySettingsActivity.class));
 					break;
 			}
 		}

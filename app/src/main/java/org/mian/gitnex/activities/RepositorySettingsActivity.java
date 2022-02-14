@@ -344,10 +344,11 @@ public class RepositorySettingsActivity extends BaseActivity {
 					repository.setRepository(response.body());
 
 					if(!repository.getName().equals(repoName)) {
-						finish();
 						BaseApi.getInstance(ctx, RepositoriesApi.class).updateRepositoryOwnerAndName(repository.getOwner(), repoName, repository.getRepositoryId());
-						Intent intent = repository.getIntent(RepositorySettingsActivity.this, MainActivity.class); // TODO duplicated activities?
-						startActivity(intent);
+						Intent result = new Intent();
+						result.putExtra("nameChanged", true);
+						setResult(200, result);
+						finish();
 					}
 				}
 				else {
