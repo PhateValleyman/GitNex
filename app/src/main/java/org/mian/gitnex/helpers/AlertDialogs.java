@@ -114,7 +114,7 @@ public class AlertDialogs {
     public static void collaboratorRemoveDialog(final Context context, final String userNameMain, RepositoryContext repository) {
 
         new AlertDialog.Builder(context)
-                .setTitle(context.getString(R.string.removeCollaboratorTitle, userNameMain))
+                .setTitle(context.getString(R.string.removeCollaboratorDialogTitle, userNameMain))
                 .setMessage(R.string.removeCollaboratorMessage)
                 .setPositiveButton(R.string.removeButton, (dialog, whichButton) -> CollaboratorActions.deleteCollaborator(context, userNameMain, repository))
                 .setNeutralButton(R.string.cancelButton, null).show();

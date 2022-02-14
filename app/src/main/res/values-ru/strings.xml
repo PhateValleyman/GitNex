@@ -291,7 +291,7 @@
     <string name="addCollaboratorTitle">Добавить сотрудника</string>
     <string name="addCollaboratorSearchHint">Поиск</string>
     <string name="addCollaboratorViewUserDesc">Имя пользователя</string>
-    <string name="removeCollaboratorTitle">Удалить %s?</string>
+    <string name="removeCollaboratorTitle">Удалить\u0020</string>
     <string name="removeCollaboratorMessage">Вы точно хотите снять права сотрудника с этого пользователя?</string>
     <string name="removeCollaboratorToastText">С пользователя были сняты права сотрудника.</string>
     <string name="addCollaboratorToastText">Пользователь получает права сотрудника!</string>

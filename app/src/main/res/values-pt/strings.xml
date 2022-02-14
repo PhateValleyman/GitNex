@@ -291,7 +291,7 @@
     <string name="addCollaboratorTitle">Adicionar/Remover colaborador</string>
     <string name="addCollaboratorSearchHint">Pesquisar usuários</string>
     <string name="addCollaboratorViewUserDesc">Usuário</string>
-    <string name="removeCollaboratorTitle">Remover %s</string>
+    <string name="removeCollaboratorTitle">Remover\u0020</string>
     <string name="removeCollaboratorMessage">Você quer remover este usuário do repositório?</string>
     <string name="removeCollaboratorToastText">Usuário removido do repositório.</string>
     <string name="addCollaboratorToastText">Usuário adicionado ao repositório.</string>

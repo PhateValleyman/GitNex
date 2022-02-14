@@ -294,7 +294,7 @@
     <string name="addCollaboratorTitle">افزودن / حذف همکار</string>
     <string name="addCollaboratorSearchHint">جستجوی کاربران</string>
     <string name="addCollaboratorViewUserDesc">نام کاربری</string>
-    <string name="removeCollaboratorTitle">حذف %s</string>
+    <string name="removeCollaboratorTitle">حذف\u0020</string>
     <string name="removeCollaboratorMessage">آیا مایلید که این کاربر را از مخزن حذف کنید؟</string>
     <string name="removeCollaboratorToastText">کاربر از مخزن حذف شد.</string>
     <string name="addCollaboratorToastText">کاربر به مخزن اضافه شد.</string>

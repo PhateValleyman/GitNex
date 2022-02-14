@@ -291,7 +291,7 @@
     <string name="addCollaboratorTitle">İşbirlikçi Ekle / Kaldır</string>
     <string name="addCollaboratorSearchHint">Kullanıcıları ara</string>
     <string name="addCollaboratorViewUserDesc">Kullanıcı Adı</string>
-    <string name="removeCollaboratorTitle">Kaldır %s</string>
+    <string name="removeCollaboratorTitle">Kaldır\u0020</string>
     <string name="removeCollaboratorMessage">Bu kullanıcıyı depodan kaldırmak istiyor musunuz?</string>
     <string name="removeCollaboratorToastText">Kullanıcı depodan kaldırıldı.</string>
     <string name="addCollaboratorToastText">Kullanıcı depoya eklendi.</string>

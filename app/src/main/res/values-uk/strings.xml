@@ -291,7 +291,7 @@
     <string name="addCollaboratorTitle">Додати / Вилучити співавтора</string>
     <string name="addCollaboratorSearchHint">Знайти користувачів</string>
     <string name="addCollaboratorViewUserDesc">Ім\'я користувача</string>
-    <string name="removeCollaboratorTitle">Вилучити %s</string>
+    <string name="removeCollaboratorTitle">Вилучити\u0020</string>
     <string name="removeCollaboratorMessage">Ви хочете вилучити користувача з репозиторія?</string>
     <string name="removeCollaboratorToastText">Користувача вилучено із співавторів репозиторія.</string>
     <string name="addCollaboratorToastText">Користувача додано до співавторів репозиторія.</string>

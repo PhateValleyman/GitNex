@@ -291,7 +291,7 @@
     <string name="addCollaboratorTitle">添加/删除协作者</string>
     <string name="addCollaboratorSearchHint">搜索用户</string>
     <string name="addCollaboratorViewUserDesc">用户名</string>
-    <string name="removeCollaboratorTitle">删除 %s</string>
+    <string name="removeCollaboratorTitle">删除\u0020</string>
     <string name="removeCollaboratorMessage">您想要从资源库中删除此用户吗？</string>
     <string name="removeCollaboratorToastText">用户已从仓库中删除。</string>
     <string name="addCollaboratorToastText">用户已添加到仓库中。</string>
