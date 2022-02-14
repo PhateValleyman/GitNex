@@ -377,7 +377,7 @@ public class LoginActivity extends BaseActivity {
 						break;
 					default:
 
-						Toasty.error(ctx, getResources().getString(R.string.genericApiStatusError) + response.code());
+						Toasty.error(ctx, getResources().getString(R.string.genericApiError, response.code()));
 						enableProcessButton();
 				}
 			}
@@ -448,7 +448,7 @@ public class LoginActivity extends BaseActivity {
 									}
 									else {
 
-										Toasty.error(ctx, getResources().getString(R.string.genericApiStatusError) + response.code());
+										Toasty.error(ctx, getResources().getString(R.string.genericApiError, response.code()));
 										enableProcessButton();
 									}
 								}
@@ -469,7 +469,7 @@ public class LoginActivity extends BaseActivity {
 				}
 				else {
 
-					Toasty.error(ctx, getResources().getString(R.string.genericApiStatusError) + response.code());
+					Toasty.error(ctx, getResources().getString(R.string.genericApiError, response.code()));
 					enableProcessButton();
 				}
 			}
@@ -560,7 +560,7 @@ public class LoginActivity extends BaseActivity {
 										break;
 									default:
 
-										Toasty.error(ctx, getResources().getString(R.string.genericApiStatusError) + response.code());
+										Toasty.error(ctx, getResources().getString(R.string.genericApiError, response.code()));
 										enableProcessButton();
 								}
 							}
@@ -577,7 +577,7 @@ public class LoginActivity extends BaseActivity {
 				}
 				else if(responseCreate.code() == 500) {
 
-					Toasty.error(ctx, getResources().getString(R.string.genericApiStatusError) + responseCreate.code());
+					Toasty.error(ctx, getResources().getString(R.string.genericApiError, responseCreate.code()));
 					enableProcessButton();
 				}
 			}

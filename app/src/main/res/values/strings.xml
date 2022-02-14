@@ -122,7 +122,7 @@
     <string name="repoWatchers" translatable="false">98324</string>
     <string name="removeContent">Remove</string>
 
-    <string name="genericApiStatusError">Instance has returned an error. Code\u0020</string>
+    <string name="genericApiError">Instance has returned an error. Code %d</string>
     <string name="tabTextInfo">Details</string>
     <string name="tabTextFiles">Files</string>
     <string name="tabTextMl">Milestones</string>

@@ -637,7 +637,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				}
 				else {
 
-					String toastError = getResources().getString(R.string.genericApiStatusError) + response.code(); // TODO move this from + to %s
+					String toastError = getResources().getString(R.string.genericApiError, response.code());
 					Toasty.error(ctx, toastError);
 				}
 			}

@@ -246,7 +246,7 @@ public class AddNewAccountActivity extends BaseActivity {
 
 					default:
 
-						Toasty.error(ctx, getResources().getString(R.string.genericApiStatusError) + response.code());
+						Toasty.error(ctx, getResources().getString(R.string.genericApiError, response.code()));
 				}
 
 			}
