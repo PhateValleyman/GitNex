@@ -129,6 +129,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 		((RepoDetailActivity) requireActivity()).setFragmentRefreshListenerFiles(repoBranch -> {
 
+			repository.setBranchRef(repoBranch);
 			path.clear();
 			binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
 			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repoBranch);

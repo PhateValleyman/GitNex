@@ -66,8 +66,7 @@ public class CommitsActivity extends BaseActivity {
 		setSupportActionBar(toolbar);
 
 		repository = RepositoryContext.fromIntent(getIntent());
-
-		String branchName = getIntent().getStringExtra("branchName");
+		String branchName = repository.getBranchRef();
 
 		TextView toolbar_title = activityCommitsBinding.toolbarTitle;
 		toolbar_title.setMovementMethod(new ScrollingMovementMethod());
@@ -258,7 +257,6 @@ public class CommitsActivity extends BaseActivity {
 
 		onClickListener = view -> {
 
-			getIntent().removeExtra("branchName");
 			finish();
 		};
 	}

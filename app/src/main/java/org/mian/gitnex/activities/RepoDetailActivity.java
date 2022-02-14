@@ -92,7 +92,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			if(result.getResultCode() == 201) {
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("updateReleases", false)) {
-					fragmentRefreshListenerReleases.onRefresh(null);
+					if(fragmentRefreshListenerReleases != null) fragmentRefreshListenerReleases.onRefresh(null);
 				}
 			}
 		});
@@ -102,7 +102,17 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			if(result.getResultCode() == 201) {
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("milestoneCreated", false)) {
-					if(fragmentRefreshListenerMilestone != null) fragmentRefreshListener.onRefresh(repository.getMilestoneState().toString());
+					if(fragmentRefreshListenerMilestone != null) fragmentRefreshListenerMilestone.onRefresh(repository.getMilestoneState().toString());
+				}
+			}
+		});
+
+	private final ActivityResultLauncher<Intent> editFileLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+		result -> {
+			if(result.getResultCode() == 200) {
+				assert result.getData() != null;
+				if(result.getData().getBooleanExtra("fileModified", false)) {
+					if(fragmentRefreshListenerFiles != null) fragmentRefreshListenerFiles.onRefresh(repository.getBranchRef());
 				}
 			}
 		});
@@ -206,7 +216,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		else if(id == R.id.branchCommits) {
 
 			Intent intent = repository.getIntent(ctx, CommitsActivity.class);
-			intent.putExtra("branchName", repository.getBranchRef());
+
 			ctx.startActivity(intent);
 			return true;
 		}
@@ -270,7 +280,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				break;
 			case "newFile":
 
-				startActivity(repository.getIntent(ctx, CreateFileActivity.class)); // TODO reload files?
+				editFileLauncher.launch(repository.getIntent(ctx, CreateFileActivity.class));
 				break;
 			case "filterByMilestone":
 				filterIssuesByMilestone();
@@ -690,7 +700,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 						getFragmentRefreshListenerFiles().onRefresh(branch);
 					}
 					Intent intent1 = repository.getIntent(ctx, CommitsActivity.class);
-					intent1.putExtra("branchName", branch); // TODO move to RepositoryCtx.getIntent
 					ctx.startActivity(intent1);
 					break;
 				case "issue":
