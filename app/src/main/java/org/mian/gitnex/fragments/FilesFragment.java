@@ -202,7 +202,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				}
 
 				if(account != null) {
-					AppUtil.switchToAccount(requireContext(), account, true); // TODO switch back
+					AppUtil.switchToAccount(requireContext(), account, true);
 					List<String> splittedUrl = url.getPathSegments();
 					if(splittedUrl.size() < 2) {
 						AppUtil.openUrlInBrowser(requireContext(), url.toString());

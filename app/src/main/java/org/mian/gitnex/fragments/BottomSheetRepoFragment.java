@@ -177,7 +177,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             starRepository.setOnClickListener(v19 -> {
 
                 RepositoryActions.starRepository(getContext(), repository);
-                repository.setStarred(true); // TODO send repoctx back to activity
+                repository.setStarred(true);
                 dismiss();
 
             });

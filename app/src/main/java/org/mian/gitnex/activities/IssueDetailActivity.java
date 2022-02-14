@@ -909,7 +909,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 				if(response.code() == 200) {
 					assert repoInfo != null;
-					issue.getRepository().setRepository(repoInfo); // TODO is this working? getter->setter
+					issue.getRepository().setRepository(repoInfo);
 				}
 				else {
 					Toasty.error(ctx, getString(R.string.genericError));

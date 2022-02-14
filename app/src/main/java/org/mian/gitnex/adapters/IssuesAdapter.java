@@ -115,7 +115,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			itemView.setOnClickListener(layoutView -> {
 				Intent intent = new IssueContext(
 					issue,
-					((RepoDetailActivity) context).repository // TODO check moving more to this way?
+					((RepoDetailActivity) context).repository
 				).getIntent(context, IssueDetailActivity.class);
 				context.startActivity(intent);
 			});
