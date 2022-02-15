@@ -179,7 +179,7 @@ public class Markdown {
 		private void setup() {
 
 			Prism4jTheme prism4jTheme =
-				TinyDB.getInstance(context).getString("currentTheme").equals("dark") ? Prism4jThemeDarkula.create() : Prism4jThemeDefault.create();
+				AppUtil.getColorFromAttribute(context, R.attr.isDark) == 1 ? Prism4jThemeDarkula.create() : Prism4jThemeDefault.create();
 
 			Markwon.Builder builder = Markwon.builder(context).usePlugin(CorePlugin.create()).usePlugin(HtmlPlugin.create())
 				.usePlugin(LinkifyPlugin.create(true)).usePlugin(SoftBreakAddsNewLinePlugin.create()).usePlugin(TablePlugin.create(context))
@@ -303,7 +303,7 @@ public class Markdown {
 			Objects.requireNonNull(context);
 
 			Prism4jTheme prism4jTheme =
-				TinyDB.getInstance(context).getString("currentTheme").equals("dark") ? Prism4jThemeDarkula.create() : Prism4jThemeDefault.create();
+				AppUtil.getColorFromAttribute(context, R.attr.isDark) == 1 ? Prism4jThemeDarkula.create() : Prism4jThemeDefault.create();
 
 			final InlineParserFactory inlineParserFactory = MarkwonInlineParser.factoryBuilder().addInlineProcessor(new IssueInlineProcessor())
 				.addInlineProcessor(new UserInlineProcessor()).build();

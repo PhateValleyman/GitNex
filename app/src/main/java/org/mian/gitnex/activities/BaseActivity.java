@@ -39,7 +39,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 			case 1:
 
-				tinyDB.putString("currentTheme", "light");
 				setTheme(R.style.AppThemeLight);
 				break;
 			case 2:
@@ -51,18 +50,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 					tinyDB.getInt("lightThemeTimeMinute", 0))
 				) {
 
-					tinyDB.putString("currentTheme", "dark");
 					setTheme(R.style.AppTheme);
 				}
 				else {
 
-					tinyDB.putString("currentTheme", "light");
 					setTheme(R.style.AppThemeLight);
 				}
 				break;
 			case 3:
 
-				tinyDB.putString("currentTheme", "light");
 				setTheme(R.style.AppThemeRetro);
 				break;
 			case 4:
@@ -73,23 +69,19 @@ public abstract class BaseActivity extends AppCompatActivity {
 					tinyDB.getInt("lightThemeTimeMinute", 0))
 				) {
 
-					tinyDB.putString("currentTheme", "dark");
 					setTheme(R.style.AppTheme);
 				}
 				else {
 
-					tinyDB.putString("currentTheme", "light");
 					setTheme(R.style.AppThemeRetro);
 				}
 				break;
 			case 5:
 
-				tinyDB.putString("currentTheme", "dark");
 				setTheme(R.style.AppThemePitchBlack);
 				break;
 			default:
 
-				tinyDB.putString("currentTheme", "dark");
 				setTheme(R.style.AppTheme);
 
 		}
