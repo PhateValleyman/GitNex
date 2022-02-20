@@ -46,7 +46,8 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 
 	    if(team.getName() != null && !team.getName().isEmpty()) {
 		    binding.toolbarTitle.setText(team.getName());
-	    } else {
+	    }
+	    else {
 		    binding.toolbarTitle.setText(R.string.orgTeamMembers);
 	    }
 
@@ -75,7 +76,7 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 
 		    switch(position) {
 			    case 0:
-				    textView.setText(R.string.teamMembers);
+				    textView.setText(R.string.orgTabMembers);
 				    break;
 			    case 1:
 				    textView.setText(R.string.teamPermissions);
@@ -113,11 +114,13 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 	    if(id == android.R.id.home) {
 		    finish();
 		    return true;
-	    } else if(id == R.id.genericMenu) {
+	    }
+	    else if(id == R.id.genericMenu) {
 		    BottomSheetOrganizationTeamsFragment bottomSheet = new BottomSheetOrganizationTeamsFragment();
 		    bottomSheet.show(getSupportFragmentManager(), "orgTeamsBottomSheet");
 		    return true;
-	    } else {
+	    }
+	    else {
 		    return super.onOptionsItemSelected(item);
 	    }
     }
@@ -130,5 +133,4 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
             startActivity(intent);
         }
     }
-
 }

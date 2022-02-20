@@ -204,7 +204,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		if(getIntent().getStringExtra("openPrDiff") != null && getIntent().getStringExtra("openPrDiff").equals("true")) {
 			startActivity(new Intent(ctx, DiffActivity.class));
 		}
-
 	}
 
 	@Override
@@ -224,12 +223,10 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				showAssignees();
 				break;
 		}
-
 	}
 
 	@Override
-	public void labelsInterface(List<String> data) {
-	}
+	public void labelsInterface(List<String> data) { }
 
 	@Override
 	public void labelsIdsInterface(List<Integer> data) {

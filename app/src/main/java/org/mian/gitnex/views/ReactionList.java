@@ -2,11 +2,9 @@ package org.mian.gitnex.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -31,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import retrofit2.Response;
 
@@ -73,7 +70,8 @@ public class ReactionList extends HorizontalScrollView {
 		if(bundle.containsKey("commentId")) {
 			id = bundle.getInt("commentId");
 			reactionType = ReactionType.COMMENT;
-		} else {
+		}
+		else {
 			id = bundle.getInt("issueId");
 			reactionType = ReactionType.ISSUE;
 		}
@@ -99,7 +97,6 @@ public class ReactionList extends HorizontalScrollView {
 							.getIssueCommentReactions(Authorization.get(context), repoOwner, repoName, id)
 							.execute();
 						break;
-
 				}
 
 				if(response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
@@ -137,12 +134,12 @@ public class ReactionList extends HorizontalScrollView {
 
 						reactionBadge.setOnClickListener(v -> {
 
-							List<UserInfo> userInfos = issueReactions.stream().map(issueReaction -> {
+							List<UserInfo> userData = issueReactions.stream().map(issueReaction -> {
 								Gson gson = new Gson();
 								return gson.fromJson(gson.toJson(issueReaction.getUser()), UserInfo.class); // FIXME Remove when transitioned to tea4j-autodeploy
 							}).collect(Collectors.toList());
 
-							ReactionAuthorsAdapter adapter = new ReactionAuthorsAdapter(context, userInfos);
+							ReactionAuthorsAdapter adapter = new ReactionAuthorsAdapter(context, userData);
 
 							int paddingTop = AppUtil.getPixelsFromDensity(context, 10);
 
@@ -151,9 +148,10 @@ public class ReactionList extends HorizontalScrollView {
 							recyclerView.setLayoutManager(new LinearLayoutManager(context));
 							recyclerView.setAdapter(adapter);
 
+							assert emoji != null;
 							AlertDialog alertDialog = new AlertDialog.Builder(context)
 								.setView(recyclerView)
-								.setTitle(String.format(":%s:", content))
+								.setTitle(emoji.getUnicode())
 								.setPositiveButton(R.string.okButton, (dialog, which) -> dialog.cancel())
 								.setCancelable(true)
 								.create();
@@ -179,5 +177,4 @@ public class ReactionList extends HorizontalScrollView {
 	}
 
 	public interface OnReactionAddedListener { void reactionAdded(); }
-
 }

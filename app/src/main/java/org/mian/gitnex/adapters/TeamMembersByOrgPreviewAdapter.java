@@ -21,11 +21,11 @@ import java.util.List;
 public class TeamMembersByOrgPreviewAdapter extends RecyclerView.Adapter<TeamMembersByOrgPreviewAdapter.ViewHolder> {
 
 	private final Context context;
-	private final List<UserInfo> userInfos;
+	private final List<UserInfo> userData;
 
-	public TeamMembersByOrgPreviewAdapter(Context context, List<UserInfo> userInfos) {
+	public TeamMembersByOrgPreviewAdapter(Context context, List<UserInfo> userInfo) {
 		this.context = context;
-		this.userInfos = userInfos;
+		this.userData = userInfo;
 	}
 
 	@NonNull
@@ -37,7 +37,7 @@ public class TeamMembersByOrgPreviewAdapter extends RecyclerView.Adapter<TeamMem
 
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-		UserInfo userInfo = userInfos.get(position);
+		UserInfo userInfo = userData.get(position);
 
 		PicassoService.getInstance(context).get()
 			.load(userInfo.getAvatar())
@@ -49,7 +49,7 @@ public class TeamMembersByOrgPreviewAdapter extends RecyclerView.Adapter<TeamMem
 
 	@Override
 	public int getItemCount() {
-		return userInfos.size();
+		return userData.size();
 	}
 
 	static class ViewHolder extends RecyclerView.ViewHolder {
@@ -61,5 +61,4 @@ public class TeamMembersByOrgPreviewAdapter extends RecyclerView.Adapter<TeamMem
 			avatar = itemView.findViewById(R.id.avatar);
 		}
 	}
-
 }
