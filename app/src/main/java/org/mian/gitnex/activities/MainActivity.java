@@ -97,7 +97,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			mainIntent.removeExtra("switchAccountId");
 			recreate();
 			return;
-
 		}
 		// DO NOT MOVE
 
@@ -136,7 +135,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			default:
 				myTypeface = Typeface.createFromAsset(getAssets(), "fonts/manroperegular.ttf");
 				break;
-
 		}
 
 		toolbarTitle.setTypeface(myTypeface);
@@ -190,12 +188,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 			@Override
 			public void onDrawerOpened(@NonNull View drawerView) {
-
-				if(tinyDB.getBoolean("noConnection")) {
-
-					Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
-					tinyDB.putBoolean("noConnection", false);
-				}
 
 				String userEmailNav = tinyDB.getString("userEmail");
 				String userFullNameNav = tinyDB.getString("userFullname");
