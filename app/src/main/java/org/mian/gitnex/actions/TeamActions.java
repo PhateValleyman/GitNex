@@ -6,7 +6,6 @@ import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.AddNewTeamMemberActivity;
 import org.mian.gitnex.activities.BaseActivity;
-import org.mian.gitnex.activities.OrganizationTeamMembersActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
@@ -34,7 +33,6 @@ public class TeamActions {
 
 					if(response.code() == 204) {
 
-						OrganizationTeamMembersActivity.reloadTeams = true;
 						Toasty.success(context, context.getString(R.string.memberRemovedMessage));
 						((AddNewTeamMemberActivity)context).finish();
 
@@ -92,7 +90,6 @@ public class TeamActions {
 
 					if(response.code() == 204) {
 
-						OrganizationTeamMembersActivity.reloadTeams = true;
 						Toasty.success(context, context.getString(R.string.memberAddedMessage));
 						((AddNewTeamMemberActivity)context).finish();
 

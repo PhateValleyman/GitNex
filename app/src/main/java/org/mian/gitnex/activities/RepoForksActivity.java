@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,7 +38,6 @@ import retrofit2.Response;
 
 public class RepoForksActivity extends BaseActivity {
 
-	private View.OnClickListener onClickListener;
 	private TextView noData;
 	private ProgressBar progressBar;
 	private final String TAG = "RepositoryForks";
@@ -69,9 +67,7 @@ public class RepoForksActivity extends BaseActivity {
 		final String repoOwner = parts[0];
 		final String repoName = parts[1];
 
-		TextView toolbar_title = activityRepoForksBinding.toolbarTitle;
-		toolbar_title.setMovementMethod(new ScrollingMovementMethod());
-		toolbar_title.setText(String.format("%s : %s", ctx.getResources().getString(R.string.infoTabRepoForksCount), repoName));
+		activityRepoForksBinding.toolbarTitle.setText(ctx.getResources().getString(R.string.infoTabRepoForksCount));
 
 		ImageView closeActivity = activityRepoForksBinding.close;
 		noData = activityRepoForksBinding.noData;
@@ -79,8 +75,10 @@ public class RepoForksActivity extends BaseActivity {
 		progressBar = activityRepoForksBinding.progressBar;
 		SwipeRefreshLayout swipeRefresh = activityRepoForksBinding.pullToRefresh;
 
-		initCloseListener();
-		closeActivity.setOnClickListener(onClickListener);
+		closeActivity.setOnClickListener(v -> {
+			getIntent().removeExtra("repoFullNameForForks");
+			finish();
+		});
 
 		// if gitea is 1.12 or higher use the new limit (resultLimitNewGiteaInstances)
 		if(getAccount().requiresVersion("1.12")) {
@@ -91,9 +89,7 @@ public class RepoForksActivity extends BaseActivity {
 		recyclerView = activityRepoForksBinding.recyclerView;
 		forksList = new ArrayList<>();
 
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-			DividerItemDecoration.VERTICAL);
-		recyclerView.addItemDecoration(dividerItemDecoration);
+		recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
 		swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
@@ -136,30 +132,24 @@ public class RepoForksActivity extends BaseActivity {
 					assert response.body() != null;
 
 					if(response.body().size() > 0) {
-
 						forksList.clear();
 						forksList.addAll(response.body());
 						adapter.notifyDataChanged();
 						noData.setVisibility(View.GONE);
-					}
-					else {
-
+					} else {
 						forksList.clear();
 						adapter.notifyDataChanged();
 						noData.setVisibility(View.VISIBLE);
 					}
 
 					progressBar.setVisibility(View.GONE);
-				}
-				else {
-
+				} else {
 					Log.e(TAG, String.valueOf(response.code()));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<List<UserRepositories>> call, @NonNull Throwable t) {
-
 				Log.e(TAG, t.toString());
 			}
 		});
@@ -188,27 +178,21 @@ public class RepoForksActivity extends BaseActivity {
 					assert result != null;
 
 					if(result.size() > 0) {
-
 						pageSize = result.size();
 						forksList.addAll(result);
-					}
-					else {
-
+					} else {
 						adapter.setMoreDataAvailable(false);
 					}
 
 					adapter.notifyDataChanged();
 					progressLoadMore.setVisibility(View.GONE);
-				}
-				else {
-
+				} else {
 					Log.e(TAG, String.valueOf(response.code()));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<List<UserRepositories>> call, @NonNull Throwable t) {
-
 				Log.e(TAG, t.toString());
 			}
 
@@ -230,44 +214,31 @@ public class RepoForksActivity extends BaseActivity {
 
 			@Override
 			public boolean onQueryTextSubmit(String query) {
-
 				return false;
 			}
 
 			@Override
 			public boolean onQueryTextChange(String newText) {
-
 				filter(newText);
 				return true;
 			}
-
 		});
 
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	private void filter(String text) {
-
-		List<UserRepositories> arr = new ArrayList<>();
+		List<UserRepositories> userRepositories = new ArrayList<>();
 
 		for(UserRepositories d : forksList) {
+			if(d.getName().toLowerCase().contains(text) ||
+				d.getDescription().toLowerCase().contains(text)) {
 
-			if(d.getName().toLowerCase().contains(text) || d.getDescription().toLowerCase().contains(text)) {
-
-				arr.add(d);
+				userRepositories.add(d);
 			}
 		}
 
-		adapter.updateList(arr);
-	}
-
-	private void initCloseListener() {
-
-		onClickListener = view -> {
-
-			getIntent().removeExtra("repoFullNameForForks");
-			finish();
-		};
+		adapter.updateList(userRepositories);
 	}
 
 }

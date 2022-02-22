@@ -117,8 +117,7 @@ public class TeamsByOrgFragment extends Fragment {
             if(adapter.getItemCount() > 0) {
                 mRecyclerView.setAdapter(adapter);
                 noDataTeams.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 adapter.notifyDataSetChanged();
                 mRecyclerView.setAdapter(adapter);
                 noDataTeams.setVisibility(View.VISIBLE);

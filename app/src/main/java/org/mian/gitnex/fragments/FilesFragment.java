@@ -4,15 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -80,9 +76,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		binding.recyclerView.setHasFixedSize(true);
 		binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		binding.recyclerView.setAdapter(filesAdapter);
-
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-		binding.recyclerView.addItemDecoration(dividerItemDecoration);
+		binding.recyclerView.addItemDecoration(new DividerItemDecoration(binding.recyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
 		binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
 		// noinspection unchecked
@@ -93,16 +87,11 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 			public void onNavigateBack(BreadcrumbItem item, int position) {
 
 				if(position == 0) {
-
 					path.clear();
-					fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef());
-					return;
-
+				} else {
+					path.pop(path.size() - position);
 				}
-
-				path.pop(path.size() - position);
-				fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
-
+				refresh();
 			}
 
 			@Override public void onNavigateNewLocation(BreadcrumbItem newItem, int changedPosition) {}
@@ -127,34 +116,31 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 			}
 		});
 
+		binding.pullToRefresh.setOnRefreshListener(() -> {
+			refresh();
+			binding.pullToRefresh.setRefreshing(false);
+		});
+
 		((RepoDetailActivity) requireActivity()).setFragmentRefreshListenerFiles(repoBranch -> {
 
 			repository.setBranchRef(repoBranch);
 			path.clear();
 			binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
-			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repoBranch);
-
+			refresh();
 		});
+
 
 		String dir = requireActivity().getIntent().getStringExtra("dir");
 		if(dir != null) {
-			fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), dir, repository.getBranchRef());
 			for(String segment: dir.split("/")) {
 				binding.breadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(segment)));
 				path.add(segment);
 			}
 		}
-		else {
-			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef());
-		}
+		refresh();
 
 		return binding.getRoot();
-	}
 
-	@Override
-	public void onResume() {
-
-		super.onResume();
 	}
 
 	@Override
@@ -165,8 +151,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 			case "dir":
 				path.add(file.getName());
 				binding.breadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(file.getName())));
-
-				fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
+				refresh();
 				break;
 
 			case "file":
@@ -218,6 +203,14 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 					AppUtil.openUrlInBrowser(requireContext(), url.toString());
 				}
 				break;
+		}
+	}
+
+	public void refresh() {
+		if(path.size() > 0) {
+			fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
+		} else {
+			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef());
 		}
 	}
 
@@ -284,15 +277,17 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
 		menu.clear();
+
 		inflater.inflate(R.menu.search_menu, menu);
 		inflater.inflate(R.menu.files_switch_branches_menu, menu);
+
 		super.onCreateOptionsMenu(menu, inflater);
 
 		MenuItem searchItem = menu.findItem(R.id.action_search);
-		androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
-		searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
-		searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+		SearchView searchView = (SearchView) searchItem.getActionView();
+		searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
 			@Override
 			public boolean onQueryTextChange(String newText) {
@@ -320,7 +315,6 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 	@Override
 	public void onDetach() {
-
 		super.onDetach();
 		mListener = null;
 	}

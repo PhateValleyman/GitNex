@@ -3,6 +3,7 @@ package org.mian.gitnex.activities;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -89,6 +90,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		setContentView(activityMainBinding.getRoot());
 
 		Intent mainIntent = getIntent();
+		Handler handler = new Handler();
 
 		// DO NOT MOVE
 		if(mainIntent.hasExtra("switchAccountId") &&
@@ -98,12 +100,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			mainIntent.removeExtra("switchAccountId");
 			recreate();
 			return;
-
 		}
 		// DO NOT MOVE
 
 		instanceToken = getAccount().getAuthorization();
-		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
+		noConnection = false;
 
 		if(tinyDB.getInt("currentActiveAccountId", -1) <= 0) {
 			AppUtil.logout(ctx);
@@ -131,7 +132,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			default:
 				myTypeface = Typeface.createFromAsset(getAssets(), "fonts/manroperegular.ttf");
 				break;
-
 		}
 
 		toolbarTitle.setTypeface(myTypeface);
@@ -416,20 +416,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			}
 		}
 
-		if(!connToInternet) {
+		handler.postDelayed(() -> {
 
-			if(!noConnection) {
+			boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
+			if(!connToInternet) {
 
-				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
+				if(!noConnection) {
+					Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
+				}
+				noConnection = true;
 			}
-			noConnection = true;
-		}
-		else {
+			else {
 
-			loadUserInfo();
-			giteaVersion();
-			noConnection = false;
-		}
+				loadUserInfo();
+				giteaVersion();
+				noConnection = false;
+			}
+			Log.e("Network status is: ", String.valueOf(connToInternet));
+		}, 1500);
 
 		// Changelog popup
 		int versionCode = AppUtil.getAppBuildNo(appCtx);

@@ -29,7 +29,7 @@ import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -73,14 +73,13 @@ import stormpot.Timeout;
 
 public class Markdown {
 
-	private static final int MAX_POOL_SIZE = 45;
-	private static final int MAX_THREAD_KEEP_ALIVE_SECONDS = 120;
-	private static final int MAX_CLAIM_TIMEOUT_SECONDS = 120;
+	private static final int MAX_OBJECT_POOL_SIZE = 45;
+	private static final int MAX_THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
 
-	private static final Timeout timeout = new Timeout(MAX_CLAIM_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+	private static final Timeout OBJECT_POOL_CLAIM_TIMEOUT = new Timeout(240, TimeUnit.SECONDS);
 
-	private static final ExecutorService executorService = new ThreadPoolExecutor(MAX_POOL_SIZE / 2, MAX_POOL_SIZE, MAX_THREAD_KEEP_ALIVE_SECONDS,
-		TimeUnit.SECONDS, new SynchronousQueue<>());
+	private static final ExecutorService executorService =
+		new ThreadPoolExecutor(MAX_THREAD_POOL_SIZE, MAX_THREAD_POOL_SIZE, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
 	private static final Pool<Renderer> rendererPool;
 	private static final Pool<RecyclerViewRenderer> rvRendererPool;
@@ -91,19 +90,15 @@ public class Markdown {
 
 		config.setBackgroundExpirationEnabled(true);
 		config.setPreciseLeakDetectionEnabled(true);
-		config.setSize(MAX_POOL_SIZE);
+		config.setSize(MAX_OBJECT_POOL_SIZE);
 		config.setAllocator(new Allocator<Renderer>() {
 
 			@Override
 			public Renderer allocate(Slot slot) {
-
 				return new Renderer(slot);
 			}
 
-			@Override
-			public void deallocate(Renderer poolable) {
-
-			}
+			@Override public void deallocate(Renderer poolable) {}
 
 		});
 
@@ -113,7 +108,7 @@ public class Markdown {
 
 		configRv.setBackgroundExpirationEnabled(true);
 		configRv.setPreciseLeakDetectionEnabled(true);
-		configRv.setSize(MAX_POOL_SIZE);
+		configRv.setSize(MAX_OBJECT_POOL_SIZE);
 		configRv.setAllocator(new Allocator<RecyclerViewRenderer>() {
 
 			@Override
@@ -136,7 +131,7 @@ public class Markdown {
 	public static void render(Context context, String markdown, TextView textView) {
 
 		try {
-			Renderer renderer = rendererPool.claim(timeout);
+			Renderer renderer = rendererPool.claim(OBJECT_POOL_CLAIM_TIMEOUT);
 
 			if(renderer != null) {
 				renderer.setParameters(context, markdown, textView);
@@ -150,7 +145,7 @@ public class Markdown {
 	public static void render(Context context, String markdown, RecyclerView recyclerView, RepositoryContext repository) {
 
 		try {
-			RecyclerViewRenderer renderer = rvRendererPool.claim(timeout);
+			RecyclerViewRenderer renderer = rvRendererPool.claim(OBJECT_POOL_CLAIM_TIMEOUT);
 
 			if(renderer != null) {
 				renderer.setParameters(context, markdown, recyclerView, repository);
@@ -237,7 +232,6 @@ public class Markdown {
 		}
 
 		public void setParameters(Context context, String markdown, TextView textView) {
-
 			this.context = context;
 			this.markdown = markdown;
 			this.textView = textView;
@@ -245,7 +239,6 @@ public class Markdown {
 
 		@Override
 		public void run() {
-
 			Objects.requireNonNull(context);
 			Objects.requireNonNull(markdown);
 			Objects.requireNonNull(textView);
@@ -260,18 +253,15 @@ public class Markdown {
 			localReference.post(() -> localReference.setText(processedMarkdown));
 
 			release();
-
 		}
 
 		@Override
 		public void release() {
-
 			context = null;
 			markdown = null;
 			textView = null;
 
 			slot.release(this);
-
 		}
 
 		public void expire() {

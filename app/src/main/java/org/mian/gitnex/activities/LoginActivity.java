@@ -2,14 +2,9 @@ package org.mian.gitnex.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioGroup;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import org.gitnex.tea4j.models.GiteaVersion;
@@ -21,14 +16,7 @@ import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityLoginBinding;
-import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.NetworkStatusObserver;
-import org.mian.gitnex.helpers.PathsHelper;
-import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.UrlHelper;
-import org.mian.gitnex.helpers.Version;
-import org.mian.gitnex.helpers.contexts.AccountContext;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.structs.Protocol;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -89,60 +77,41 @@ public class LoginActivity extends BaseActivity {
 			selectedProtocol = String.valueOf(parent.getItemAtPosition(position));
 
 			if(selectedProtocol.equals(String.valueOf(Protocol.HTTP))) {
-
 				Toasty.warning(ctx, getResources().getString(R.string.protocolError));
 			}
 		});
 
 		if(R.id.loginToken == loginMethod.getCheckedRadioButtonId()) {
-
 			AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
 			findViewById(R.id.loginTokenCodeLayout).setVisibility(View.VISIBLE);
-		}
-		else {
-
+		} else {
 			AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
 			findViewById(R.id.loginTokenCodeLayout).setVisibility(View.GONE);
 		}
 
 		loginMethod.setOnCheckedChangeListener((group, checkedId) -> {
-
 			if(checkedId == R.id.loginToken) {
-
 				AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
 				findViewById(R.id.loginTokenCodeLayout).setVisibility(View.VISIBLE);
-			}
-			else {
-
+			} else {
 				AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
 				findViewById(R.id.loginTokenCodeLayout).setVisibility(View.GONE);
 			}
 		});
 
-		Handler handler = new Handler(getMainLooper());
-
-		networkStatusObserver.registerNetworkStatusListener(hasNetworkConnection -> {
-
-			handler.post(() -> {
-
-				if(hasNetworkConnection) {
-
-					enableProcessButton();
-				}
-				else {
-
-					disableProcessButton();
-					loginButton.setText(getResources().getString(R.string.btnLogin));
-					Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
-				}
-
-			});
-		});
+		networkStatusObserver.registerNetworkStatusListener(hasNetworkConnection -> runOnUiThread(() -> {
+			if(hasNetworkConnection) {
+				enableProcessButton();
+			} else {
+				disableProcessButton();
+				loginButton.setText(getResources().getString(R.string.btnLogin));
+				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
+			}
+		}));
 
 		loadDefaults();
 
 		loginButton.setOnClickListener(view -> {
-
 			disableProcessButton();
 			login();
 		});

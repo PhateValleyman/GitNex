@@ -5,12 +5,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,9 +16,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.IssueActions;
 import org.mian.gitnex.actions.PullRequestActions;
+import org.mian.gitnex.activities.DiffActivity;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.EditIssueActivity;
-import org.mian.gitnex.activities.FileDiffActivity;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.MergePullRequestActivity;
 import org.mian.gitnex.databinding.BottomSheetSingleIssueBinding;
@@ -50,7 +48,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		BottomSheetSingleIssueBinding bottomSheetSingleIssueBinding = BottomSheetSingleIssueBinding.inflate(inflater, container, false);
+		BottomSheetSingleIssueBinding binding = BottomSheetSingleIssueBinding.inflate(inflater, container, false);
 
 		final Context ctx = getContext();
 
@@ -59,34 +57,18 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		boolean canPush = issue.getRepository().getPermissions().canPush();
 		boolean archived = issue.getRepository().getRepository().isArchived();
 
-		TextView editIssue = bottomSheetSingleIssueBinding.editIssue;
-		TextView editLabels = bottomSheetSingleIssueBinding.editLabels;
-		TextView closeIssue = bottomSheetSingleIssueBinding.closeIssue;
-		TextView addRemoveAssignees = bottomSheetSingleIssueBinding.addRemoveAssignees;
-		TextView copyIssueUrl = bottomSheetSingleIssueBinding.copyIssueUrl;
-		TextView openFilesDiff = bottomSheetSingleIssueBinding.openFilesDiff;
-		TextView updatePullRequest = bottomSheetSingleIssueBinding.updatePullRequest;
-		TextView mergePullRequest = bottomSheetSingleIssueBinding.mergePullRequest;
-		TextView deletePullRequestBranch = bottomSheetSingleIssueBinding.deletePrHeadBranch;
-		TextView shareIssue = bottomSheetSingleIssueBinding.shareIssue;
-		TextView subscribeIssue = bottomSheetSingleIssueBinding.subscribeIssue;
-		TextView unsubscribeIssue = bottomSheetSingleIssueBinding.unsubscribeIssue;
-		View closeReopenDivider = bottomSheetSingleIssueBinding.dividerCloseReopenIssue;
-
-		LinearLayout linearLayout = bottomSheetSingleIssueBinding.commentReactionButtons;
-
-		Bundle bundle1 = new Bundle();
-		bundle1.putString("repoOwner", issue.getRepository().getOwner());
-		bundle1.putString("repoName", issue.getRepository().getName());
-		bundle1.putInt("issueId", issue.getIssueIndex());
+		Bundle bundle = new Bundle();
+		bundle.putString("repoOwner", issue.getRepository().getOwner());
+		bundle.putString("repoName", issue.getRepository().getName());
+		bundle.putInt("issueId", issue.getIssueIndex());
 
 		TextView loadReactions = new TextView(ctx);
 		loadReactions.setText(Objects.requireNonNull(ctx).getString(R.string.genericWaitFor));
 		loadReactions.setGravity(Gravity.CENTER);
-		loadReactions.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 160));
-		linearLayout.addView(loadReactions);
+		loadReactions.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80));
+		binding.commentReactionButtons.addView(loadReactions);
 
-		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle1);
+		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle);
 		reactionSpinner.setOnInteractedListener(() -> {
 
 			((IssueDetailActivity) requireActivity()).singleIssueUpdate = true;
@@ -94,64 +76,62 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			bmListener.onButtonClicked("onResume");
 			dismiss();
 		});
-
-		Handler handler = new Handler();
-		handler.postDelayed(() -> {
-			linearLayout.removeView(loadReactions);
+		reactionSpinner.setOnLoadingFinishedListener(() -> {
 			reactionSpinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 160));
-			linearLayout.addView(reactionSpinner);
-		}, 2500);
+			binding.commentReactionButtons.removeView(loadReactions);
+			binding.commentReactionButtons.addView(reactionSpinner);
+		});
 
 		if(issue.getIssueType().equalsIgnoreCase("Pull")) {
 
-			editIssue.setText(R.string.editPrText);
-			copyIssueUrl.setText(R.string.copyPrUrlText);
-			shareIssue.setText(R.string.sharePr);
+			binding.editIssue.setText(R.string.editPrText);
+			binding.copyIssueUrl.setText(R.string.copyPrUrlText);
+			binding.shareIssue.setText(R.string.sharePr);
 
 			boolean canPushPullSource = issue.getPullRequest().getHead().getRepo().getPermissions().isPush();
 			if(issue.getPullRequest().isMerged() || issue.getIssue().getState().equals("closed")) {
-				updatePullRequest.setVisibility(View.GONE);
-				mergePullRequest.setVisibility(View.GONE);
+				binding.updatePullRequest.setVisibility(View.GONE);
+				binding.mergePullRequest.setVisibility(View.GONE);
 				if(canPushPullSource) {
-					deletePullRequestBranch.setVisibility(View.VISIBLE);
+					binding.deletePrHeadBranch.setVisibility(View.VISIBLE);
 				}
 				else {
 					if(!canPush) {
-						editIssue.setVisibility(View.GONE);
+						binding.editIssue.setVisibility(View.GONE);
 					}
-					deletePullRequestBranch.setVisibility(View.GONE);
+					binding.deletePrHeadBranch.setVisibility(View.GONE);
 				}
 			}
 			else {
 				if(canPushPullSource) {
-					updatePullRequest.setVisibility(View.VISIBLE);
+					binding.updatePullRequest.setVisibility(View.VISIBLE);
 				}
 				else {
-					updatePullRequest.setVisibility(View.GONE);
+					binding.updatePullRequest.setVisibility(View.GONE);
 				}
 				if(!userIsCreator && !canPush) {
-					editIssue.setVisibility(View.GONE);
+					binding.editIssue.setVisibility(View.GONE);
 				}
 				if(canPush && !issue.getPullRequest().isMergeable()) {
-					mergePullRequest.setVisibility(View.VISIBLE);
+					binding.mergePullRequest.setVisibility(View.VISIBLE);
 				}
 				else {
-					mergePullRequest.setVisibility(View.GONE);
+					binding.mergePullRequest.setVisibility(View.GONE);
 				}
-				deletePullRequestBranch.setVisibility(View.GONE);
+				binding.deletePrHeadBranch.setVisibility(View.GONE);
 			}
 
-			openFilesDiff.setVisibility(View.VISIBLE);
+			binding.openFilesDiff.setVisibility(View.VISIBLE);
 		} else {
 			if(!userIsCreator && !canPush) {
-				editIssue.setVisibility(View.GONE);
+				binding.editIssue.setVisibility(View.GONE);
 			}
-			updatePullRequest.setVisibility(View.GONE);
-			mergePullRequest.setVisibility(View.GONE);
-			deletePullRequestBranch.setVisibility(View.GONE);
+			binding.updatePullRequest.setVisibility(View.GONE);
+			binding.mergePullRequest.setVisibility(View.GONE);
+			binding.deletePrHeadBranch.setVisibility(View.GONE);
 		}
 
-		updatePullRequest.setOnClickListener(v -> {
+		binding.updatePullRequest.setOnClickListener(v -> {
 			if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.16.0")) {
 				AlertDialogs.selectPullUpdateStrategy(requireContext(), issue.getRepository().getOwner(), issue.getRepository().getName(),
 					String.valueOf(issue.getIssueIndex()));
@@ -162,43 +142,39 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			dismiss();
 		});
 
-		mergePullRequest.setOnClickListener(v13 -> {
+		binding.mergePullRequest.setOnClickListener(v13 -> {
 
 			startActivity(issue.getIntent(ctx, MergePullRequestActivity.class));
 			dismiss();
 		});
 
-		deletePullRequestBranch.setOnClickListener(v -> {
+		binding.deletePrHeadBranch.setOnClickListener(v -> {
 
 			PullRequestActions.deleteHeadBranch(ctx, issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getPullRequest().getHead().getRef(), true);
 			dismiss();
 		});
 
-		openFilesDiff.setOnClickListener(v14 -> {
-
-			startActivity(issue.getIntent(ctx, FileDiffActivity.class));
+		binding.openFilesDiff.setOnClickListener(v14 -> {
+			startActivity(issue.getIntent(ctx, DiffActivity.class));
 			dismiss();
 		});
 
-		editIssue.setOnClickListener(v15 -> {
-
+		binding.editIssue.setOnClickListener(v15 -> {
 			((IssueDetailActivity) requireActivity()).editIssueLauncher.launch(issue.getIntent(ctx, EditIssueActivity.class));
 			dismiss();
 		});
 
-		editLabels.setOnClickListener(v16 -> {
-
+		binding.editLabels.setOnClickListener(v16 -> {
 			bmListener.onButtonClicked("showLabels");
 			dismiss();
 		});
 
-		addRemoveAssignees.setOnClickListener(v17 -> {
-
+		binding.addRemoveAssignees.setOnClickListener(v17 -> {
 			bmListener.onButtonClicked("showAssignees");
 			dismiss();
 		});
 
-		shareIssue.setOnClickListener(v1 -> {
+		binding.shareIssue.setOnClickListener(v1 -> {
 
 			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 			sharingIntent.setType("text/plain");
@@ -209,7 +185,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			dismiss();
 		});
 
-		copyIssueUrl.setOnClickListener(v12 -> {
+		binding.copyIssueUrl.setOnClickListener(v12 -> {
 
 			// copy to clipboard
 			ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
@@ -224,13 +200,13 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		if(issue.getIssue().getState().equals("open")) { // close issue
 			if(!userIsCreator && !canPush) {
-				closeIssue.setVisibility(View.GONE);
-				closeReopenDivider.setVisibility(View.GONE);
+				binding.closeIssue.setVisibility(View.GONE);
+				binding.dividerCloseReopenIssue.setVisibility(View.GONE);
 			}
 			else if(issue.getIssueType().equalsIgnoreCase("Pull")) {
-				closeIssue.setText(R.string.closePr);
+				binding.closeIssue.setText(R.string.closePr);
 			}
-			closeIssue.setOnClickListener(closeSingleIssue -> {
+			binding.closeIssue.setOnClickListener(closeSingleIssue -> {
 				IssueActions.closeReopenIssue(ctx, "closed", issue);
 				dismiss();
 			});
@@ -238,30 +214,30 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		else if(issue.getIssue().getState().equals("closed")) {
 			if(userIsCreator || canPush) {
 				if(issue.getIssueType().equalsIgnoreCase("Pull")) {
-					closeIssue.setText(R.string.reopenPr);
+					binding.closeIssue.setText(R.string.reopenPr);
 				}
 				else {
-					closeIssue.setText(R.string.reOpenIssue);
+					binding.closeIssue.setText(R.string.reOpenIssue);
 				}
 			}
 			else {
-				closeIssue.setVisibility(View.GONE);
-				closeReopenDivider.setVisibility(View.GONE);
+				binding.closeIssue.setVisibility(View.GONE);
+				binding.dividerCloseReopenIssue.setVisibility(View.GONE);
 			}
-			closeIssue.setOnClickListener(closeSingleIssue -> {
+			binding.closeIssue.setOnClickListener(closeSingleIssue -> {
 				IssueActions.closeReopenIssue(ctx, "open", issue);
 				dismiss();
 			});
 		}
 
-		subscribeIssue.setOnClickListener(subscribeToIssue -> {
+		binding.subscribeIssue.setOnClickListener(subscribeToIssue -> {
 
 			IssueActions.subscribe(ctx, issue);
 			issue.setSubscribed(true);
 			dismiss();
 		});
 
-		unsubscribeIssue.setOnClickListener(unsubscribeToIssue -> {
+		binding.unsubscribeIssue.setOnClickListener(unsubscribeToIssue -> {
 
 			IssueActions.unsubscribe(ctx, issue);
 			issue.setSubscribed(false);
@@ -269,27 +245,27 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		});
 
 		if(issue.isSubscribed()) {
-			subscribeIssue.setVisibility(View.GONE);
-			unsubscribeIssue.setVisibility(View.VISIBLE);
+			binding.subscribeIssue.setVisibility(View.GONE);
+			binding.unsubscribeIssue.setVisibility(View.VISIBLE);
 		}
 		else {
-			subscribeIssue.setVisibility(View.VISIBLE);
-			unsubscribeIssue.setVisibility(View.GONE);
+			binding.subscribeIssue.setVisibility(View.VISIBLE);
+			binding.unsubscribeIssue.setVisibility(View.GONE);
 		}
 
 		if(archived) {
-			subscribeIssue.setVisibility(View.GONE);
-			unsubscribeIssue.setVisibility(View.GONE);
-			editIssue.setVisibility(View.GONE);
-			editLabels.setVisibility(View.GONE);
-			closeIssue.setVisibility(View.GONE);
-			closeReopenDivider.setVisibility(View.GONE);
-			addRemoveAssignees.setVisibility(View.GONE);
-			linearLayout.setVisibility(View.GONE);
-			bottomSheetSingleIssueBinding.shareDivider.setVisibility(View.GONE);
+			binding.subscribeIssue.setVisibility(View.GONE);
+			binding.unsubscribeIssue.setVisibility(View.GONE);
+			binding.editIssue.setVisibility(View.GONE);
+			binding.editLabels.setVisibility(View.GONE);
+			binding.closeIssue.setVisibility(View.GONE);
+			binding.dividerCloseReopenIssue.setVisibility(View.GONE);
+			binding.addRemoveAssignees.setVisibility(View.GONE);
+			binding.commentReactionButtons.setVisibility(View.GONE);
+			binding.shareDivider.setVisibility(View.GONE);
 		}
 
-		return bottomSheetSingleIssueBinding.getRoot();
+		return binding.getRoot();
 	}
 
 	@Override

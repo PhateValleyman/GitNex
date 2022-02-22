@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.apache.commons.lang3.StringUtils;
 import org.gitnex.tea4j.models.NotificationThread;
 import org.mian.gitnex.R;
-import org.mian.gitnex.actions.NotificationsActions;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
@@ -34,18 +30,14 @@ import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.databinding.FragmentNotificationsBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
-import org.mian.gitnex.helpers.SnackBar;
+import org.mian.gitnex.helpers.SimpleCallback;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Author opyale
@@ -55,18 +47,16 @@ import retrofit2.Response;
 public class NotificationsFragment extends Fragment implements NotificationsAdapter.OnNotificationClickedListener, NotificationsAdapter.OnMoreClickedListener, BottomSheetNotificationsFragment.OnOptionSelectedListener {
 
 	private FragmentNotificationsBinding viewBinding;
-	private List<NotificationThread> notificationThreads;
+	private final List<NotificationThread> notificationThreads = new ArrayList<>();
 	private NotificationsAdapter notificationsAdapter;
-	private NotificationsActions notificationsActions;
 
 	private Activity activity;
 	private Context context;
 	private Menu menu;
 
-	private int resultLimit;
-	private int pageSize;
+	private int pageCurrentIndex = 1;
+	private int pageResultLimit;
 	private String currentFilterMode = "unread";
-	private final String TAG = Constants.tagNotifications;
 	private String instanceToken;
 
 	@Override
@@ -87,10 +77,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		instanceToken = ((BaseActivity) requireActivity()).getAccount().getAuthorization();
 
-		resultLimit = Constants.getCurrentResultLimit(context);
+		pageResultLimit = Constants.getCurrentResultLimit(context);
 
-		notificationThreads = new ArrayList<>();
-		notificationsActions = new NotificationsActions(context);
 		notificationsAdapter = new NotificationsAdapter(context, notificationThreads, this, this);
 
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
@@ -102,18 +90,10 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		viewBinding.notifications.setAdapter(notificationsAdapter);
 		viewBinding.notifications.addItemDecoration(dividerItemDecoration);
 
-		viewBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
-			viewBinding.pullToRefresh.setRefreshing(false);
-			loadInitial(resultLimit);
-			notificationsAdapter.notifyDataChanged();
-		}, 200));
-
-		notificationsAdapter.setLoadMoreListener(() -> viewBinding.notifications.post(() -> {
-			if(notificationThreads.size() == resultLimit || pageSize == resultLimit) {
-				int page = (notificationThreads.size() + resultLimit) / resultLimit;
-				loadMore(resultLimit, page);
-			}
-		}));
+		notificationsAdapter.setLoadMoreListener(() -> {
+			pageCurrentIndex++;
+			loadNotifications(true);
+		});
 
 		viewBinding.notifications.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -135,141 +115,76 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 			}
 		});
 
-		viewBinding.markAllAsRead.setOnClickListener(v1 -> {
+		viewBinding.markAllAsRead.setOnClickListener(v1 ->
+			RetrofitClient.getApiInterface(context)
+				.markNotificationThreadsAsRead(instanceToken, AppUtil.getTimestampFromDate(context, new Date()), true, new String[]{"unread", "pinned"}, "read")
+				.enqueue((SimpleCallback<Void>) (call, voidResponse) -> {
 
-			Thread thread = new Thread(() -> {
-				try {
-					if(notificationsActions.setAllNotificationsRead(new Date())) {
-						activity.runOnUiThread(() -> {
-							Toasty.success(context, getString(R.string.markedNotificationsAsRead));
-							loadInitial(resultLimit);
-						});
+					if(voidResponse.isPresent() && voidResponse.get().isSuccessful()) {
+						Toasty.success(context, getString(R.string.markedNotificationsAsRead));
+						pageCurrentIndex = 1;
+						loadNotifications(false);
+					} else {
+						activity.runOnUiThread(() -> Toasty.error(context, getString(R.string.genericError)));
 					}
-				}
-				catch(IOException e) {
-					activity.runOnUiThread(() -> Toasty.error(context, getString(R.string.genericError)));
-					Log.e("onError", e.toString());
-				}
-			});
-			thread.start();
-		});
+		}));
 
 		viewBinding.pullToRefresh.setOnRefreshListener(() -> {
-			loadInitial(resultLimit);
+			viewBinding.pullToRefresh.setRefreshing(false);
+			pageCurrentIndex = 1;
+			loadNotifications(false);
 		});
 
-		loadInitial(resultLimit);
+		loadNotifications(true);
 		return viewBinding.getRoot();
 	}
 
-	private void loadInitial(int resultLimit) {
+	private void loadNotifications(boolean append) {
 
-		notificationThreads.clear();
-		notificationsAdapter.notifyDataChanged();
+		viewBinding.noDataNotifications.setVisibility(View.GONE);
 		viewBinding.progressBar.setVisibility(View.VISIBLE);
-		notificationThreads.clear();
 		String[] filter = currentFilterMode.equals("read") ?
 			new String[]{"pinned", "read"} :
 			new String[]{"pinned", "unread"};
-		viewBinding.pullToRefresh.setRefreshing(false);
 
-		Call<List<NotificationThread>> call = RetrofitClient
+		RetrofitClient
 			.getApiInterface(context)
-			.getNotificationThreads(instanceToken, false, filter,
-				Constants.defaultOldestTimestamp, "",
-				1, resultLimit);
-		call.enqueue(new Callback<List<NotificationThread>>() {
-			@Override
-			public void onResponse(@NonNull Call<List<NotificationThread>> call, @NonNull Response<List<NotificationThread>> response) {
-				if(response.isSuccessful()) {
-					if(response.body() != null && response.body().size() > 0) {
-						notificationThreads.addAll(response.body());
-						notificationsAdapter.notifyDataChanged();
-						viewBinding.noDataNotifications.setVisibility(View.GONE);
+			.getNotificationThreads(instanceToken, false, filter, Constants.defaultOldestTimestamp, "", pageCurrentIndex, pageResultLimit)
+			.enqueue((SimpleCallback<List<NotificationThread>>) (call1, listResponse) -> {
+
+				if(listResponse.isPresent() && listResponse.get().isSuccessful() && listResponse.get().body() != null) {
+					if(!append) {
+						notificationThreads.clear();
+					}
+
+					if(listResponse.get().body().size() > 0) {
+						notificationThreads.addAll(listResponse.get().body());
+						notificationsAdapter.notifyDataSetChanged();
 					}
 					else {
-						notificationsAdapter.notifyDataChanged();
-						viewBinding.noDataNotifications.setVisibility(View.VISIBLE);
-					}
-					viewBinding.progressBar.setVisibility(View.GONE);
-				}
-				else if(response.code() == 404) {
-					viewBinding.noDataNotifications.setVisibility(View.VISIBLE);
-					viewBinding.progressBar.setVisibility(View.GONE);
-				}
-				else {
-					notificationsAdapter.notifyDataChanged();
-					Log.e(TAG, String.valueOf(response.code()));
-				}
-				onCleanup();
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<List<NotificationThread>> call, @NonNull Throwable t) {
-				Log.e(TAG, t.toString());
-				onCleanup();
-			}
-		});
-	}
-
-	private void loadMore(int resultLimit, int page) {
-
-		String[] filter = currentFilterMode.equals("read") ?
-			new String[]{"pinned", "read"} :
-			new String[]{"pinned", "unread"};
-
-		viewBinding.progressBar.setVisibility(View.VISIBLE);
-		Call<List<NotificationThread>> call = RetrofitClient.getApiInterface(context)
-			.getNotificationThreads(instanceToken, false, filter,
-				Constants.defaultOldestTimestamp, "",
-				page, resultLimit);
-		call.enqueue(new Callback<List<NotificationThread>>() {
-			@Override
-			public void onResponse(@NonNull Call<List<NotificationThread>> call, @NonNull Response<List<NotificationThread>> response) {
-				if(response.code() == 200) {
-					assert response.body() != null;
-					List<NotificationThread> result = response.body();
-
-					if(result.size() > 0) {
-						pageSize = result.size();
-						notificationThreads.addAll(result);
-					}
-					else {
-						SnackBar.info(context, viewBinding.getRoot(), getString(R.string.noMoreData));
 						notificationsAdapter.setMoreDataAvailable(false);
 					}
-					notificationsAdapter.notifyDataChanged();
-					viewBinding.progressBar.setVisibility(View.GONE);
+
+				}
+
+				AppUtil.setMultiVisibility(View.GONE, viewBinding.progressBar);
+
+				if(notificationThreads.isEmpty()) {
+					viewBinding.noDataNotifications.setVisibility(View.VISIBLE);
 				}
 				else {
-					Log.e(TAG, String.valueOf(response.code()));
+					viewBinding.noDataNotifications.setVisibility(View.GONE);
 				}
-				onCleanup();
-			}
 
-			@Override
-			public void onFailure(@NonNull Call<List<NotificationThread>> call, @NonNull Throwable t) {
-				Log.e(TAG, t.toString());
-				onCleanup();
-			}
-		});
-	}
-
-	private void onCleanup() {
-
-		AppUtil.setMultiVisibility(View.GONE, viewBinding.progressBar, viewBinding.progressBar);
-		viewBinding.pullToRefresh.setRefreshing(false);
-
-		if(currentFilterMode.equalsIgnoreCase("unread")) {
-
-			if(notificationThreads.isEmpty()) {
-				viewBinding.noDataNotifications.setVisibility(View.VISIBLE);
-				viewBinding.markAllAsRead.setVisibility(View.GONE);
-			}
-			else {
-				viewBinding.markAllAsRead.setVisibility(View.VISIBLE);
-			}
-		}
+				if(currentFilterMode.equalsIgnoreCase("unread")) {
+					if(notificationThreads.isEmpty()) {
+						viewBinding.markAllAsRead.setVisibility(View.GONE);
+					}
+					else {
+						viewBinding.markAllAsRead.setVisibility(View.VISIBLE);
+					}
+				}
+			});
 	}
 
 	private void changeFilterMode() {
@@ -282,8 +197,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		if(currentFilterMode.equalsIgnoreCase("read")) {
 			viewBinding.markAllAsRead.setVisibility(View.GONE);
-		}
-		else {
+		} else {
 			viewBinding.markAllAsRead.setVisibility(View.VISIBLE);
 		}
 	}
@@ -293,6 +207,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		this.menu = menu;
 		inflater.inflate(R.menu.filter_menu_notifications, menu);
+		changeFilterMode();
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -307,7 +222,9 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 			bottomSheetNotificationsFilterFragment.setOnClickListener((text) -> {
 				currentFilterMode = text;
 				changeFilterMode();
-				loadInitial(resultLimit);
+				pageCurrentIndex = 1;
+				loadNotifications(false);
+
 			});
 			return true;
 		}
@@ -317,16 +234,14 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 	@Override
 	public void onNotificationClicked(NotificationThread notificationThread) {
 
-		Thread thread = new Thread(() -> {
-			try {
-				if(notificationThread.isUnread()) {
-					notificationsActions.setNotificationStatus(notificationThread, NotificationsActions.NotificationStatus.READ);
-					activity.runOnUiThread(() -> loadInitial(resultLimit));
+		if(notificationThread.isUnread() && !notificationThread.isPinned()) {
+			RetrofitClient.getApiInterface(context).markNotificationThreadAsRead(instanceToken, notificationThread.getId(), "read").enqueue((SimpleCallback<Void>) (call, voidResponse) -> {
+				if(voidResponse.isPresent() && voidResponse.get().isSuccessful()) {
+					pageCurrentIndex = 1;
+					loadNotifications(false);
 				}
-			} catch(IOException ignored) {}
-		});
-
-		thread.start();
+			});
+		}
 
 		if(StringUtils.containsAny(notificationThread.getSubject().getType().toLowerCase(), "pull", "issue")) {
 
@@ -368,6 +283,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 	@Override
 	public void onSelected() {
-		loadInitial(resultLimit);
+		pageCurrentIndex = 1;
+		loadNotifications(false);
 	}
 }
