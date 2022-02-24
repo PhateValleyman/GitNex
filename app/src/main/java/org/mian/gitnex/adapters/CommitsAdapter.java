@@ -1,6 +1,7 @@
 package org.mian.gitnex.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Commits;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.CommitDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.fragments.CommitDetailFragment;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -83,7 +86,6 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     	View rootView;
 
         TextView commitSubject;
-        TextView commitBody;
 	    TextView commitAuthorAndCommitter;
 	    ImageView commitAuthorAvatar;
 	    ImageView commitCommitterAvatar;
@@ -96,7 +98,6 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             rootView = itemView;
 
             commitSubject = itemView.findViewById(R.id.commitSubject);
-            commitBody = itemView.findViewById(R.id.commitBody);
 	        commitAuthorAndCommitter = itemView.findViewById(R.id.commitAuthorAndCommitter);
 	        commitAuthorAvatar = itemView.findViewById(R.id.commitAuthorAvatar);
 	        commitCommitterAvatar = itemView.findViewById(R.id.commitCommitterAvatar);
@@ -108,14 +109,7 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             String[] commitMessageParts = commitsModel.getCommit().getMessage().split("(\r\n|\n)", 2);
 
-            if(commitMessageParts.length > 1 && !commitMessageParts[1].trim().isEmpty()) {
-	            commitBody.setVisibility(View.VISIBLE);
-	            commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
-	            commitBody.setText(EmojiParser.parseToUnicode(commitMessageParts[1].trim()));
-            } else {
-	            commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
-	            commitBody.setVisibility(View.GONE);
-            }
+            commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
 
             if(commitsModel.getCommitter().getId() != commitsModel.getAuthor().getId()) {
 	            commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(context
@@ -172,7 +166,11 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
 	        commitSha.setText(commitsModel.getSha().substring(0, Math.min(commitsModel.getSha().length(), 10)));
-            rootView.setOnClickListener(v -> AppUtil.openUrlInBrowser(context, commitsModel.getHtml_url()));
+            rootView.setOnClickListener(v -> {
+	            Intent intent = new Intent(context, CommitDetailActivity.class);
+				intent.putExtra("sha", commitsModel.getSha());
+				context.startActivity(intent);
+            });
 
         }
     }
