@@ -225,7 +225,7 @@ public class CommitDetailFragment extends Fragment {
 						ClipData clip = ClipData.newPlainText("commitSha", commitsModel.getSha());
 						assert clipboard != null;
 						clipboard.setPrimaryClip(clip);
-						Toasty.info(requireContext(), getString(R.string.copyShaToastMsg));
+						Toasty.success(requireContext(), getString(R.string.copyShaToastMsg));
 					});
 				}
 
