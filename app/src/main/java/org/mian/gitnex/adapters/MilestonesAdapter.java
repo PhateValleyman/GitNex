@@ -40,7 +40,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 	private final Context context;
 	private final int TYPE_LOAD = 0;
 	private List<Milestones> dataList;
-	private OnLoadMoreListener loadMoreListener;
+	private Runnable loadMoreListener;
 	private boolean isLoading = false;
 	private boolean isMoreDataAvailable = true;
 	private final RepositoryContext repository;
@@ -71,7 +71,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
 
 			isLoading = true;
-			loadMoreListener.onLoadMore();
+			loadMoreListener.run();
 		}
 
 		if(getItemViewType(position) == TYPE_LOAD) {
@@ -288,12 +288,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 		isLoading = false;
 	}
 
-	public interface OnLoadMoreListener {
-
-		void onLoadMore();
-	}
-
-	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+	public void setLoadMoreListener(Runnable loadMoreListener) {
 
 		this.loadMoreListener = loadMoreListener;
 	}

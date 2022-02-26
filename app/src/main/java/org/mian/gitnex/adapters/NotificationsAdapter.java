@@ -32,7 +32,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 	private List<NotificationThread> notificationThreads;
 	private final OnMoreClickedListener onMoreClickedListener;
 	private final OnNotificationClickedListener onNotificationClickedListener;
-	private OnLoadMoreListener loadMoreListener;
+	private Runnable loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
 	public NotificationsAdapter(Context context, List<NotificationThread> notificationThreads, OnMoreClickedListener onMoreClickedListener, OnNotificationClickedListener onNotificationClickedListener) {
@@ -59,7 +59,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 	public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
 			isLoading = true;
-			loadMoreListener.onLoadMore();
+			loadMoreListener.run();
 		}
 
 		if(getItemViewType(position) == TYPE_LOAD) {
@@ -186,11 +186,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 		isLoading = false;
 	}
 
-	public interface OnLoadMoreListener {
-		void onLoadMore();
-	}
-
-	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+	public void setLoadMoreListener(Runnable loadMoreListener) {
 		this.loadMoreListener = loadMoreListener;
 	}
 

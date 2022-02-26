@@ -38,7 +38,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 	private enum ReactionType { COMMENT, ISSUE }
 	private enum ReactionAction { REMOVE, ADD }
 
-	private OnInteractedListener onInteractedListener;
+	private Runnable onInteractedListener;
 	private Runnable onLoadingFinishedListener;
 
 	public ReactionSpinner(Context context, Bundle bundle) {
@@ -106,7 +106,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 									v.post(() -> {
 										((IssueDetailActivity) context).singleIssueUpdate = reactionType == ReactionType.ISSUE;
 										((IssueDetailActivity) context).commentEdited = reactionType == ReactionType.COMMENT;
-										onInteractedListener.onInteracted();
+										onInteractedListener.run();
 									});
 								}
 							} catch(IOException ignored) {}
@@ -239,11 +239,9 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 	}
 
-	public void setOnInteractedListener(OnInteractedListener onInteractedListener) {
+	public void setOnInteractedListener(Runnable onInteractedListener) {
 		this.onInteractedListener = onInteractedListener;
 	}
-
-	public interface OnInteractedListener { void onInteracted(); }
 
 	public void setOnLoadingFinishedListener(Runnable onLoadingFinishedListener) {
 		this.onLoadingFinishedListener = onLoadingFinishedListener;

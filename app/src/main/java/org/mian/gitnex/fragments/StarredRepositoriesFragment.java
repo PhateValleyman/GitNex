@@ -28,7 +28,6 @@ import org.mian.gitnex.activities.CreateRepoActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.ReposListAdapter;
 import org.mian.gitnex.databinding.FragmentStarredRepositoriesBinding;
-import org.mian.gitnex.viewmodels.MyRepositoriesViewModel;
 import org.mian.gitnex.viewmodels.StarredRepositoriesViewModel;
 
 /**
@@ -44,8 +43,6 @@ public class StarredRepositoriesFragment extends Fragment {
     private TextView noData;
     private int pageSize = 1;
     private int resultLimit = 50;
-
-    private OnFragmentInteractionListener mListener;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -157,22 +154,6 @@ public class StarredRepositoriesFragment extends Fragment {
             }
         });
 
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
 	@Override

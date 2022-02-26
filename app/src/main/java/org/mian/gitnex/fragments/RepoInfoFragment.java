@@ -45,8 +45,6 @@ public class RepoInfoFragment extends Fragment {
 
 	private RepositoryContext repository;
 
-	private OnFragmentInteractionListener mListener;
-
 	public RepoInfoFragment() {}
 
 	public static RepoInfoFragment newInstance(RepositoryContext repository) {
@@ -95,22 +93,6 @@ public class RepoInfoFragment extends Fragment {
 		binding.repoMetaPullRequestsFrame.setOnClickListener(metaPR -> ((RepoDetailActivity) requireActivity()).mViewPager.setCurrentItem(3));
 
 		return binding.getRoot();
-	}
-
-	public void onButtonPressed(Uri uri) {
-		if (mListener != null) {
-			mListener.onFragmentInteraction(uri);
-		}
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		mListener = null;
-	}
-
-	public interface OnFragmentInteractionListener {
-		void onFragmentInteraction(Uri uri);
 	}
 
 	private void toggleExpandView() {

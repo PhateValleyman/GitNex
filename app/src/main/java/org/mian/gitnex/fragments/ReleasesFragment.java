@@ -46,8 +46,6 @@ public class ReleasesFragment extends Fragment {
     private int page = 1;
     private int pageReleases = 1;
 
-    private OnFragmentInteractionListener mListener;
-
     public ReleasesFragment() {
     }
 
@@ -113,22 +111,6 @@ public class ReleasesFragment extends Fragment {
 
         return fragmentReleasesBinding.getRoot();
 
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
     private void fetchDataAsync(String instanceToken, String owner, String repo) {

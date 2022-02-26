@@ -35,8 +35,6 @@ public class TeamsByOrgFragment extends Fragment {
 
 	public static boolean resumeTeams = false;
 
-    private RepositoriesByOrgFragment.OnFragmentInteractionListener mListener;
-
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
     private TextView noDataTeams;
@@ -157,21 +155,5 @@ public class TeamsByOrgFragment extends Fragment {
             }
         });
 
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

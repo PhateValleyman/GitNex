@@ -27,7 +27,7 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 	private final Context context;
 	private final int TYPE_LOAD = 0;
 	private List<Organization> organizationsList;
-	private OnLoadMoreListener loadMoreListener;
+	private Runnable loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
 	public ExplorePublicOrganizationsAdapter(Context ctx, List<Organization> organizationsListMain) {
@@ -51,7 +51,7 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 	public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
 			isLoading = true;
-			loadMoreListener.onLoadMore();
+			loadMoreListener.run();
 		}
 
 		if(getItemViewType(position) == TYPE_LOAD) {
@@ -133,11 +133,7 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 		isLoading = false;
 	}
 
-	public interface OnLoadMoreListener {
-		void onLoadMore();
-	}
-
-	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+	public void setLoadMoreListener(Runnable loadMoreListener) {
 		this.loadMoreListener = loadMoreListener;
 	}
 

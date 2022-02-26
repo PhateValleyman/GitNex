@@ -51,7 +51,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 	private IssueContext issue;
 	private long draftId;
 
-	private OnInteractedListener onInteractedListener;
+	private Runnable onInteractedListener;
 	private TextView draftsHint;
 
 	@Override
@@ -197,7 +197,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 							PullRequestsFragment.resumePullRequests = issue.getIssue().getPull_request() != null;
 
 							if(onInteractedListener != null) {
-								onInteractedListener.onInteracted();
+								onInteractedListener.run();
 							}
 						}
 						else {
@@ -223,7 +223,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 							}
 
 							if(onInteractedListener != null) {
-								onInteractedListener.onInteracted();
+								onInteractedListener.run();
 							}
 						}
 						else {
@@ -301,11 +301,9 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		return fragment;
 	}
 
-	public void setOnInteractedListener(OnInteractedListener onInteractedListener) {
+	public void setOnInteractedListener(Runnable onInteractedListener) {
 
 		this.onInteractedListener = onInteractedListener;
 	}
-
-	public interface OnInteractedListener { void onInteracted(); }
 
 }

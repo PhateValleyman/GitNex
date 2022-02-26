@@ -34,8 +34,6 @@ public class MyProfileEmailsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private TextView noDataEmails;
 
-    private OnFragmentInteractionListener mListener;
-
     public MyProfileEmailsFragment() {
     }
 
@@ -89,22 +87,6 @@ public class MyProfileEmailsFragment extends Fragment {
             mProgressBar.setVisibility(View.GONE);
         });
 
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
 	@Override

@@ -36,8 +36,6 @@ public class LabelsFragment extends Fragment {
 
     private RepositoryContext repository;
 
-    private OnFragmentInteractionListener mListener;
-
     public LabelsFragment() {
     }
 
@@ -94,26 +92,6 @@ public class LabelsFragment extends Fragment {
             LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
 	        CreateLabelActivity.refreshLabels = false;
         }
-    }
-
-    public void onButtonPressed(Uri uri) {
-
-        if (mListener != null) {
-
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-
-        void onFragmentInteraction(Uri uri);
     }
 
     private void fetchDataAsync(String instanceToken, String owner, String repo) {

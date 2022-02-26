@@ -238,8 +238,4 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 		dialogFilterOptions.show();
 	}
-
-	public interface OnFragmentInteractionListener {
-		void onFragmentInteraction(Uri uri);
-	}
 }

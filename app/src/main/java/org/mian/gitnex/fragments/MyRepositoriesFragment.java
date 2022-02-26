@@ -45,8 +45,6 @@ public class MyRepositoriesFragment extends Fragment {
     private int pageSize = 1;
     private int resultLimit = 50;
 
-    private OnFragmentInteractionListener mListener;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,21 +176,5 @@ public class MyRepositoriesFragment extends Fragment {
             }
         });
 
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }
