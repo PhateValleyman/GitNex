@@ -1,6 +1,9 @@
 package org.mian.gitnex.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,6 +27,7 @@ import org.mian.gitnex.databinding.FragmentCommitDetailsBinding;
 import org.mian.gitnex.helpers.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -133,6 +137,9 @@ public class CommitDetailFragment extends Fragment {
 				public void onResponse(@NonNull Call<Commits> call, @NonNull Response<Commits> response) {
 					checkLoading();
 					CustomCommitHeaderBinding binding = CustomCommitHeaderBinding.inflate(getLayoutInflater());
+					binding.getRoot().setOnClickListener((v) -> {
+						// we need a ClickListener here to prevent that the ItemClickListener of the diffFiles ListView handles clicks for the header
+					});
 					CommitDetailFragment.this.binding.diffFiles.addHeaderView(binding.getRoot());
 					assert response.body() != null;
 					Commits commitsModel = response.body();
@@ -159,7 +166,6 @@ public class CommitDetailFragment extends Fragment {
 								TimeHelper
 									.formatTime(commitsModel.getCommit().getCommitter().getDate(), getResources().getConfiguration().locale, "pretty",
 										requireContext())), HtmlCompat.FROM_HTML_MODE_COMPACT));
-
 					}
 
 					if(commitsModel.getAuthor().getAvatar_url() != null &&
@@ -214,6 +220,13 @@ public class CommitDetailFragment extends Fragment {
 					}
 
 					binding.commitSha.setText(commitsModel.getSha().substring(0, Math.min(commitsModel.getSha().length(), 10)));
+					binding.commitSha.setOnClickListener((v) -> {
+						ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+						ClipData clip = ClipData.newPlainText("commitSha", commitsModel.getSha());
+						assert clipboard != null;
+						clipboard.setPrimaryClip(clip);
+						Toasty.info(requireContext(), getString(R.string.copyShaToastMsg));
+					});
 				}
 
 				@Override
