@@ -1,0 +1,17 @@
+pipeline:
+  unit-tests:
+    image: nextcloudci/android:android-49
+    group: checks
+    commands:
+      - ./gradlew test
+    when:
+      event: [ pull_request, push ]
+
+  lint:
+    image: imphinium/docker-intellij-16
+    #image: dlsniper/docker-intellij
+    commands:
+      - /opt/intellij/bin/idea.sh inspect . ./.idea/inspectionProfiles/CI.xml output.xml
+      - cat output.xml # TODO is this necessary? Check exit codes!
+    when:
+      event: [ pull_request ] # do not run on pushes becuase takes some time and pushes are always done via pull requests

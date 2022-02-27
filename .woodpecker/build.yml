@@ -1,0 +1,45 @@
+pipeline:
+  build:
+    image: nextcloudci/android:android-49
+    commands:
+      - ./gradlew assembleFreeRelease
+
+  sign:
+    image: nextcloudci/android8:android-61
+    environment:
+      OUTPUT: "signed.apk"
+      INSTANCE: "https://codeberg.org"
+      KS_FILE: "ci_keystore.jks"
+    commands:
+      - ./scripts/sign-build.sh
+    secrets: [ BOT_TOKEN, KS_PASS, KEY_PASS, KS_REPO ]
+    when:
+      event: [ push, tag ]
+      branch: main
+
+  latest:
+    image: curlimages/curl:7.77.0
+    only:
+      - main
+    environment:
+      WEBDAV_USERNAME: "GitNexBot"
+      PLUGIN_FILE: "signed.apk"
+      PLUGIN_DESTINATION: "https://cloud.swatian.com/remote.php/dav/files/GitNexBot/gitnex/builds/latest.apk"
+    commands:
+      - curl -T "$PLUGIN_FILE" -u "$WEBDAV_USERNAME":"$WEBDAV_PASSWORD" "$PLUGIN_DESTINATION"
+    secrets: [ WEBDAV_PASSWORD ]
+    when:
+      event: [ push, tag ]
+      branch: main
+
+  release:
+    image: curlimages/curl:7.77.0
+    environment:
+      WEBDAV_USERNAME: "GitNexBot"
+      PLUGIN_FILE: "signed.apk"
+    commands:
+      - "[[ $CI_COMMIT_REF_NAME == *'-rc'* ]] && echo 'Upload blocked. Build seems to be a release candidate.' && exit 0"
+      - curl -T "$PLUGIN_FILE" -u "$WEBDAV_USERNAME":"$WEBDAV_PASSWORD" 'https://cloud.swatian.com/remote.php/dav/files/GitNexBot/gitnex/releases/'"$CI_COMMIT_REF_NAME"'.apk'
+    secrets: [ WEBDAV_PASSWORD ]
+    when:
+      event: [ tag ]
