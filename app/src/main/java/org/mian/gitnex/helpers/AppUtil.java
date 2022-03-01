@@ -28,6 +28,7 @@ import androidx.lifecycle.LiveData;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.LoginActivity;
+import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.core.MainApplication;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.UserAccountsApi;
@@ -62,11 +63,20 @@ public class AppUtil {
 		api.logout(tinyDB.getInt("currentActiveAccountId"));
 		if (api.getCount() >= 1) {
 			switchToAccount(ctx, api.loggedInUserAccounts().get(0));
-			((Activity) ctx).recreate();
+			if(ctx instanceof MainActivity) {
+				((Activity) ctx).recreate();
+			} else { // if it's not a MainActivity, open MainActivity instead of current one
+				((Activity) ctx).finish();
+				Intent intent = new Intent(ctx, MainActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				ctx.startActivity(intent);
+			}
 		} else {
 			tinyDB.putInt("currentActiveAccountId", -2);
-			((Activity) ctx).finish(); // TODO finish ALL activities
-			ctx.startActivity(new Intent(ctx, LoginActivity.class));
+			((Activity) ctx).finish();
+			Intent intent = new Intent(ctx, LoginActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			ctx.startActivity(intent);
 		}
 	}
 
