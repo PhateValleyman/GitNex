@@ -110,12 +110,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			AppUtil.logout(ctx);
 		}
 
-		if(tinyDB.getInt("currentActiveAccountId", -1) <= 0) {
-			AlertDialogs.forceLogoutDialog(ctx,
-				getResources().getString(R.string.forceLogoutDialogHeader),
-				getResources().getString(R.string.forceLogoutDialogDescription), getResources().getString(R.string.navLogout));
-		}
-
 		Toolbar toolbar = activityMainBinding.toolbar;
 		toolbarTitle = activityMainBinding.toolbarTitle;
 
