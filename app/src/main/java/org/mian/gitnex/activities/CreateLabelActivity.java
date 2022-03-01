@@ -212,7 +212,6 @@ public class CreateLabelActivity extends BaseActivity {
 		    call = RetrofitClient.getApiInterface(ctx).createLabel(getAccount().getAuthorization(), repoOwner, repoName, createLabelFunc);
 	    }
 
-	    System.out.println(call.request().url());
         call.enqueue(new Callback<CreateLabel>() {
 
             @Override
