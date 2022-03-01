@@ -497,10 +497,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 				IssueCommentsViewModel
 					.loadIssueComments(getAccount().getAuthorization(), repoOwner, repoName, issueIndex,
-						ctx);
-
-				// TODO do this once loading is finished (not after 1 sec)
-				new Handler(Looper.getMainLooper()).postDelayed(() -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN), 1000);
+						ctx, () -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN));
 
 				commentPosted = false;
 			});
