@@ -160,7 +160,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		CreatePullRequest createPullRequest = new CreatePullRequest(prTitle, prDescription, getAccount().getAccount().getUserName(), mergeInto, pullFrom, milestoneId, dueDate, assignees, labelsIds);
 
 		Call<Void> transferCall = RetrofitClient
-			.getApiInterface(appCtx)
+			.getApiInterface(ctx)
 			.createPullRequest(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), createPullRequest);
 
 		transferCall.enqueue(new Callback<Void>() {
@@ -287,7 +287,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 		String msState = "open";
 		Call<List<Milestones>> call = RetrofitClient
-			.getApiInterface(appCtx)
+			.getApiInterface(ctx)
 			.getMilestones(getAccount().getAuthorization(), repoOwner, repoName, 1, resultLimit, msState);
 
 		call.enqueue(new Callback<List<Milestones>>() {

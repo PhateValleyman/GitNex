@@ -208,15 +208,15 @@ public class LoginActivity extends BaseActivity {
 
 		if(!loginToken.equals("")) {
 
-			callVersion = RetrofitClient.getApiInterface(appCtx).getGiteaVersionWithToken("token " + loginToken);
+			callVersion = RetrofitClient.getApiInterface(ctx).getGiteaVersionWithToken("token " + loginToken);
 		}
 		else {
 
 			String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
 
 			callVersion =
-				(loginOTP != 0) ? RetrofitClient.getApiInterface(appCtx).getGiteaVersionWithOTP(credential, loginOTP) :
-					RetrofitClient.getApiInterface(appCtx).getGiteaVersionWithBasic(credential);
+				(loginOTP != 0) ? RetrofitClient.getApiInterface(ctx).getGiteaVersionWithOTP(credential, loginOTP) :
+					RetrofitClient.getApiInterface(ctx).getGiteaVersionWithBasic(credential);
 		}
 
 		callVersion.enqueue(new Callback<GiteaVersion>() {
@@ -306,7 +306,7 @@ public class LoginActivity extends BaseActivity {
 
 	private void setupUsingExistingToken(final String loginToken) {
 
-		Call<UserInfo> call = RetrofitClient.getApiInterface(appCtx).getUserInfo("token " + loginToken);
+		Call<UserInfo> call = RetrofitClient.getApiInterface(ctx).getUserInfo("token " + loginToken);
 
 		call.enqueue(new Callback<UserInfo>() {
 
@@ -374,11 +374,11 @@ public class LoginActivity extends BaseActivity {
 		Call<List<UserTokens>> call;
 		if(loginOTP != 0) {
 
-			call = RetrofitClient.getApiInterface(appCtx).getUserTokensWithOTP(credential, loginOTP, loginUid);
+			call = RetrofitClient.getApiInterface(ctx).getUserTokensWithOTP(credential, loginOTP, loginUid);
 		}
 		else {
 
-			call = RetrofitClient.getApiInterface(appCtx).getUserTokens(credential, loginUid);
+			call = RetrofitClient.getApiInterface(ctx).getUserTokens(credential, loginUid);
 		}
 
 		call.enqueue(new Callback<List<UserTokens>>() {

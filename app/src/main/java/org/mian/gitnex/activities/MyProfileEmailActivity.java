@@ -106,7 +106,7 @@ public class MyProfileEmailActivity extends BaseActivity {
         Call<JsonElement> call;
 
         call = RetrofitClient
-                .getApiInterface(appCtx)
+                .getApiInterface(ctx)
                 .addNewEmail(token, addEmailFunc);
 
         call.enqueue(new Callback<JsonElement>() {

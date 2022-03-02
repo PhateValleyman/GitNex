@@ -143,7 +143,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
         Call<Milestones> call;
 
         call = RetrofitClient
-                .getApiInterface(appCtx)
+                .getApiInterface(ctx)
                 .createMilestone(token, repoOwner, repoName, createMilestone);
 
         call.enqueue(new Callback<Milestones>() {

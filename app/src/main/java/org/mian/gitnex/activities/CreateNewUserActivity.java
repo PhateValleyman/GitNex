@@ -119,7 +119,7 @@ public class CreateNewUserActivity extends BaseActivity {
         Call<UserInfo> call;
 
         call = RetrofitClient
-                .getApiInterface(appCtx)
+                .getApiInterface(ctx)
                 .createNewUser(instanceToken, createUser);
 
         call.enqueue(new Callback<UserInfo>() {

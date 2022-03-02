@@ -83,7 +83,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
     public void loadUserSearchList(String searchKeyword) {
 
         Call<UserSearch> call = RetrofitClient
-                .getApiInterface(appCtx)
+                .getApiInterface(ctx)
                 .getUserBySearch(getAccount().getAuthorization(), searchKeyword, 10, 1);
 
         call.enqueue(new Callback<UserSearch>() {

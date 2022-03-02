@@ -262,7 +262,7 @@ public class CreateLabelActivity extends BaseActivity {
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(appCtx).patchLabel(getAccount().getAuthorization(), repoOwner, repoName, labelId, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(ctx).patchLabel(getAccount().getAuthorization(), repoOwner, repoName, labelId, createLabelFunc);
 	    }
 
         call.enqueue(new Callback<CreateLabel>() {
@@ -319,11 +319,11 @@ public class CreateLabelActivity extends BaseActivity {
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-		    call = RetrofitClient.getApiInterface(appCtx).deleteOrganizationLabel(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), labelId);
+		    call = RetrofitClient.getApiInterface(ctx).deleteOrganizationLabel(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), labelId);
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(appCtx).deleteLabel(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), labelId);
+		    call = RetrofitClient.getApiInterface(ctx).deleteLabel(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), labelId);
 	    }
 
         call.enqueue(new Callback<Labels>() {
