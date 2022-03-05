@@ -167,7 +167,9 @@ public class RepoInfoFragment extends Fragment {
 			String website = (repoInfo.getWebsite().isEmpty()) ? getResources().getString(R.string.noDataWebsite) : repoInfo.getWebsite();
 			binding.repoMetaWebsite.setText(website);
 			binding.repoMetaWebsite.setLinksClickable(false);
-			binding.websiteFrame.setOnClickListener((v) -> AppUtil.openUrlInBrowser(requireContext(), repoInfo.getWebsite()));
+			binding.websiteFrame.setOnClickListener((v) -> {
+				if (!repoInfo.getWebsite().isEmpty()) AppUtil.openUrlInBrowser(requireContext(), repoInfo.getWebsite());
+			});
 
 			binding.repoAdditionalButton.setOnClickListener(v -> {
 
