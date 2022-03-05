@@ -155,19 +155,20 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 			.enqueue((SimpleCallback<List<NotificationThread>>) (call1, listResponse) -> {
 
 				if(listResponse.isPresent() && listResponse.get().isSuccessful() && listResponse.get().body() != null) {
-					System.out.println(listResponse.get().body());
 					if(!append) {
 						notificationThreads.clear();
 					}
 
 					if(listResponse.get().body().size() > 0) {
 						notificationThreads.addAll(listResponse.get().body());
-						notificationsAdapter.notifyDataSetChanged();
 					}
 					else {
 						notificationsAdapter.setMoreDataAvailable(false);
 					}
 
+					if(!append || listResponse.get().body().size() > 0) {
+						notificationsAdapter.notifyDataSetChanged();
+					}
 				}
 
 				AppUtil.setMultiVisibility(View.GONE, viewBinding.progressBar);
