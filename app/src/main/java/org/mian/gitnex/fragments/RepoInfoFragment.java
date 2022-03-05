@@ -21,12 +21,7 @@ import org.mian.gitnex.activities.RepoStargazersActivity;
 import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentRepoInfoBinding;
-import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.Markdown;
-import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.Locale;
 import retrofit2.Call;
@@ -171,6 +166,8 @@ public class RepoInfoFragment extends Fragment {
 
 			String website = (repoInfo.getWebsite().isEmpty()) ? getResources().getString(R.string.noDataWebsite) : repoInfo.getWebsite();
 			binding.repoMetaWebsite.setText(website);
+			binding.repoMetaWebsite.setLinksClickable(false);
+			binding.websiteFrame.setOnClickListener((v) -> AppUtil.openUrlInBrowser(requireContext(), repoInfo.getWebsite()));
 
 			binding.repoAdditionalButton.setOnClickListener(v -> {
 
