@@ -243,8 +243,10 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 			RetrofitClient.getApiInterface(context).markNotificationThreadAsRead(Authorization.get(context), notificationThread.getId(), "read").enqueue((SimpleCallback<Void>) (call, voidResponse) -> {
 				// reload without any checks, because Gitea returns a 205 and Java expects this to be empty
 				// but Gitea send a response -> results in a call of onFailure and no response is present
+				//if(voidResponse.isPresent() && voidResponse.get().isSuccessful()) {
 				pageCurrentIndex = 1;
 				loadNotifications(false);
+				//}
 			});
 		}
 
