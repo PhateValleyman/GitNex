@@ -249,8 +249,10 @@ public class IssueActions {
 				if(response.code() == 201) {
 					actionResult.finish(ActionResult.Status.SUCCESS);
 
-					IssuesFragment.resumeIssues = issue.getIssue().getPull_request() == null;
-					PullRequestsFragment.resumePullRequests = issue.getIssue().getPull_request() != null;
+					if (issue.hasIssue()) {
+						IssuesFragment.resumeIssues = issue.getIssue().getPull_request() == null;
+						PullRequestsFragment.resumePullRequests = issue.getIssue().getPull_request() != null;
+					}
 				}
 				else if(response.code() == 401) {
 

@@ -193,9 +193,6 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 								draftsApi.deleteSingleDraft((int) draftId);
 							}
 
-							IssuesFragment.resumeIssues = issue.getIssue().getPull_request() == null;
-							PullRequestsFragment.resumePullRequests = issue.getIssue().getPull_request() != null;
-
 							if(onInteractedListener != null) {
 								onInteractedListener.run();
 							}

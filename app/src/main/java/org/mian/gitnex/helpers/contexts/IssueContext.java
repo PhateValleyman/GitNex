@@ -145,7 +145,7 @@ public class IssueContext implements Serializable {
 			return !pullRequest.getHead().getRepo().getFull_name().equals(getRepository().getFullName());
 		}
 		else {
-			// pull was done from a deleted fork
+			// PR was done from a deleted fork
 			return true;
 		}
 	}
