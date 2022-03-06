@@ -68,6 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:textSize="12sp"
                     android:textColor="?attr/primaryTextColor"
                     tools:text="opyale authored and opyale committed" />
 
@@ -80,6 +81,8 @@
                 android:layout_weight="0"
                 android:alpha=".8"
                 android:drawablePadding="10dp"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
                 android:gravity="center_vertical"
                 android:textColor="?attr/primaryTextColor"
                 app:drawableLeftCompat="@drawable/ic_commit"

@@ -66,6 +66,8 @@ public class CommitDetailFragment extends Fragment {
 		getCommit();
 		getDiff();
 
+		binding.close.setOnClickListener((v) -> requireActivity().finish());
+
 		binding.diffFiles.setOnItemClickListener((parent, view, position, id) -> requireActivity().getSupportFragmentManager()
 			.beginTransaction()
 			.replace(R.id.fragment_container, DiffFragment.newInstance((FileDiffView) parent.getItemAtPosition(position), "commit"))
