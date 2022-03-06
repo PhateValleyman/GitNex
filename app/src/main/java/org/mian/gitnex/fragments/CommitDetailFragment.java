@@ -25,6 +25,7 @@ import org.mian.gitnex.databinding.FragmentCommitDetailsBinding;
 import org.mian.gitnex.helpers.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -151,21 +152,21 @@ public class CommitDetailFragment extends Fragment {
 						binding.commitBody.setVisibility(View.GONE);
 					}
 
-					if(commitsModel.getCommitter().getId() != commitsModel.getAuthor().getId()) {
+					if(!Objects.equals(commitsModel.getCommit().getCommitter().getEmail(), commitsModel.getCommit().getCommitter().getEmail())) {
 						binding.commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(CommitDetailFragment.this
-							.getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getAuthor().getUsername(), commitsModel.getCommitter().getUsername(),
+							.getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getCommit().getAuthor().getName(), commitsModel.getCommit().getCommitter().getName(),
 								TimeHelper
 									.formatTime(commitsModel.getCommit().getCommitter().getDate(), getResources().getConfiguration().locale, "pretty",
 										requireContext())), HtmlCompat.FROM_HTML_MODE_COMPACT));
 					} else {
 						binding.commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(CommitDetailFragment.this
-							.getString(R.string.commitCommittedByWhen, commitsModel.getCommitter().getUsername(),
+							.getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
 								TimeHelper
 									.formatTime(commitsModel.getCommit().getCommitter().getDate(), getResources().getConfiguration().locale, "pretty",
 										requireContext())), HtmlCompat.FROM_HTML_MODE_COMPACT));
 					}
 
-					if(commitsModel.getAuthor().getAvatar_url() != null &&
+					if(commitsModel.getAuthor() != null && commitsModel.getAuthor().getAvatar_url() != null &&
 						!commitsModel.getAuthor().getAvatar_url().isEmpty()) {
 
 						binding.commitAuthorAvatar.setVisibility(View.VISIBLE);
@@ -190,7 +191,8 @@ public class CommitDetailFragment extends Fragment {
 						binding.commitAuthorAvatar.setVisibility(View.GONE);
 					}
 
-					if(!commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin()) &&
+					if(commitsModel.getCommitter() != null &&
+						!commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin()) &&
 						commitsModel.getCommitter().getAvatar_url() != null &&
 						!commitsModel.getCommitter().getAvatar_url().isEmpty()) {
 

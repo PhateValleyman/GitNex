@@ -20,6 +20,7 @@ import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Author M M Arif
@@ -111,22 +112,22 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
 
-            if(commitsModel.getCommitter().getId() != commitsModel.getAuthor().getId()) {
+            if(!Objects.equals(commitsModel.getCommit().getCommitter().getEmail(), commitsModel.getCommit().getAuthor().getEmail())) {
 	            commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(context
-		            .getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getAuthor().getUsername(), commitsModel.getCommitter().getUsername(),
+		            .getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getCommit().getAuthor().getName(), commitsModel.getCommit().getCommitter().getName(),
 			            TimeHelper
 				            .formatTime(commitsModel.getCommit().getCommitter().getDate(), context.getResources().getConfiguration().locale, "pretty",
 					            context)), HtmlCompat.FROM_HTML_MODE_COMPACT));
             } else {
             	commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(context
-		            .getString(R.string.commitCommittedByWhen, commitsModel.getCommitter().getUsername(),
+		            .getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
 			            TimeHelper
 				            .formatTime(commitsModel.getCommit().getCommitter().getDate(), context.getResources().getConfiguration().locale, "pretty",
 					            context)), HtmlCompat.FROM_HTML_MODE_COMPACT));
 
             }
 
-	        if(commitsModel.getAuthor().getAvatar_url() != null &&
+	        if(commitsModel.getAuthor() != null && commitsModel.getAuthor().getAvatar_url() != null &&
 		        !commitsModel.getAuthor().getAvatar_url().isEmpty()) {
 
 		        commitAuthorAvatar.setVisibility(View.VISIBLE);
@@ -145,7 +146,8 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 		        commitAuthorAvatar.setVisibility(View.GONE);
 	        }
 
-            if(!commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin()) &&
+            if(commitsModel.getCommitter() != null &&
+				!commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin()) &&
 	            commitsModel.getCommitter().getAvatar_url() != null &&
 	            !commitsModel.getCommitter().getAvatar_url().isEmpty()) {
 
