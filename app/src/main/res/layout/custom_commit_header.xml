@@ -52,6 +52,7 @@
                     android:id="@+id/commitAuthorAvatar"
                     android:layout_width="@dimen/list_avatar_size"
                     android:layout_height="@dimen/list_avatar_size"
+                    android:layout_marginEnd="5dp"
                     android:contentDescription="@string/generalImgContentText"
                     tools:srcCompat="@tools:sample/avatars" />
 
@@ -59,7 +60,7 @@
                     android:id="@+id/commitCommitterAvatar"
                     android:layout_width="@dimen/list_avatar_size"
                     android:layout_height="@dimen/list_avatar_size"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:contentDescription="@string/generalImgContentText"
                     tools:srcCompat="@tools:sample/avatars" />
 
@@ -67,7 +68,7 @@
                     android:id="@+id/commitAuthorAndCommitter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:textSize="12sp"
                     android:textColor="?attr/primaryTextColor"
                     tools:text="opyale authored and opyale committed" />
