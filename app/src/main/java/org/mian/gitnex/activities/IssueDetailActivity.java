@@ -2,6 +2,7 @@ package org.mian.gitnex.activities;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -23,6 +24,7 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
+import androidx.core.widget.ImageViewCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -577,7 +579,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					}
 					else if(singleIssue.getState().equals("closed")) { // issue closed
 
-						viewBinding.issuePrState.setImageResource(R.drawable.ic_issue_closed_red);
+						viewBinding.issuePrState.setImageResource(R.drawable.ic_issue);
+						ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconIssuePrClosedColor)));
 					}
 
 					TinyDB tinyDb = TinyDB.getInstance(appCtx);
