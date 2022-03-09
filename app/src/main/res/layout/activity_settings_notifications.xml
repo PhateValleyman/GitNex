@@ -54,6 +54,7 @@
         android:id="@+id/enableNotificationsFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
         android:padding="15dp"
         android:layout_marginBottom="5dp">
@@ -117,6 +118,7 @@
         android:id="@+id/enableLightsFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
         android:padding="15dp"
         android:layout_marginBottom="5dp">
@@ -149,6 +151,7 @@
         android:id="@+id/chooseColorFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
         android:padding="15dp"
         android:layout_marginBottom="5dp">
@@ -180,6 +183,7 @@
         android:id="@+id/enableVibrationFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
         android:padding="15dp"
         android:layout_marginBottom="5dp">

@@ -482,7 +482,6 @@
     <string name="genericServerResponseError">We cannot reach the server at the moment, please check your server status and try again</string>
     <string name="genericCopyUrl">Copy URL</string>
     <string name="genericWaitFor">Hold on ☕</string>
-    <string name="createNew">Create New</string>
     <string name="file">File</string>
     <string name="issue">Issue</string>
     <string name="label">Label</string>

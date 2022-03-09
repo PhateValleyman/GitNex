@@ -52,6 +52,7 @@
         android:id="@+id/enableDraftsCommentsDeletion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
         android:padding="15dp"
         android:layout_marginBottom="5dp">
