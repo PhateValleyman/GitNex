@@ -52,10 +52,11 @@ public class AddNewAccountActivity extends BaseActivity {
 		viewBinding.close.setOnClickListener(onClickListener);
 		viewBinding.instanceUrl.setText(getIntent().getStringExtra("instanceUrl"));
 		viewBinding.loginToken.setText(getIntent().getStringExtra("token"));
-		if(getIntent().getStringExtra("scheme").equals("http")) {
+		String scheme = getIntent().getStringExtra("scheme");
+		if(scheme != null && scheme.equals("http"))  {
 			viewBinding.protocolSpinner.setText(Protocol.HTTP.toString());
 			spinnerSelectedValue = Protocol.HTTP.toString();
-		} else if(getIntent().getStringExtra("scheme").equals("https")) {
+		} else { // default is https
 			viewBinding.protocolSpinner.setText(Protocol.HTTPS.toString());
 			spinnerSelectedValue = Protocol.HTTPS.toString();
 		}
