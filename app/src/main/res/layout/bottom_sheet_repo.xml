@@ -45,7 +45,7 @@
 
                 <TextView
                     android:id="@+id/newFile"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -58,7 +58,7 @@
 
                 <TextView
                     android:id="@+id/createNewIssue"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -71,7 +71,7 @@
 
                 <TextView
                     android:id="@+id/createLabel"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -84,7 +84,7 @@
 
                 <TextView
                     android:id="@+id/createNewMilestone"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -97,7 +97,7 @@
 
                 <TextView
                     android:id="@+id/createRelease"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -110,7 +110,7 @@
 
                 <TextView
                     android:id="@+id/createPullRequest"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -123,7 +123,7 @@
 
                 <TextView
                     android:id="@+id/addCollaborator"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -169,7 +169,7 @@
 
                 <TextView
                     android:id="@+id/starRepository"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -182,7 +182,7 @@
 
                 <TextView
                     android:id="@+id/unStarRepository"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -195,7 +195,7 @@
 
                 <TextView
                     android:id="@+id/watchRepository"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -208,7 +208,7 @@
 
                 <TextView
                     android:id="@+id/unWatchRepository"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -221,7 +221,7 @@
 
                 <TextView
                     android:id="@+id/copyRepoUrl"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -234,7 +234,7 @@
 
                 <TextView
                     android:id="@+id/shareRepository"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -247,7 +247,7 @@
 
                 <TextView
                     android:id="@+id/openWebRepo"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"
@@ -260,7 +260,7 @@
 
                 <TextView
                     android:id="@+id/repoSettings"
-                    android:layout_width="95dp"
+                    android:layout_width="98dp"
                     android:layout_height="100dp"
                     android:padding="8dp"
                     android:background="?android:attr/selectableItemBackground"

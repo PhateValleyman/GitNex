@@ -271,7 +271,6 @@
     <!-- org tabbed layout str -->
     <string name="orgTabTeams">Teams</string>
     <string name="orgTabMembers">Members</string>
-    <string name="orgCreateTeam">New Team</string>
     <string name="teamTitle">Team name</string>
     <string name="teamDescription">Team desc</string>
     <string name="teamPermissions">Permissions</string>
@@ -493,6 +492,8 @@
     <string name="unwatch">Unwatch</string>
     <string name="share">Share</string>
     <string name="repository">Repository</string>
+    <string name="team">Team</string>
+    <string name="organization">Organization</string>
     <!-- generic copy -->
 
     <string name="exploreUsers">Explore users</string>
