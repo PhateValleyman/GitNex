@@ -815,11 +815,11 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 					if(tinyDb.getString("issueType").equals("Issue")) {
 
-						Toasty.warning(ctx, getResources().getString(R.string.noDataIssueTab));
+						Toasty.warning(ctx, getResources().getString(R.string.noDataFound));
 					}
 					else if(tinyDb.getString("issueType").equals("Pull")) {
 
-						Toasty.warning(ctx, getResources().getString(R.string.noDataPullRequests));
+						Toasty.warning(ctx, getResources().getString(R.string.noDataFound));
 					}
 
 					Intent mainIntent = new Intent(ctx, MainActivity.class);

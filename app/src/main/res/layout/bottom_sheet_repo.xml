@@ -29,7 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Create New"
+                    android:text="@string/createNew"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -51,7 +51,7 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_file"
-                    android:text="File"
+                    android:text="@string/file"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -64,7 +64,7 @@
                     app:layout_alignSelf="center"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_issue"
-                    android:text="Issue"
+                    android:text="@string/issue"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -77,7 +77,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_label"
-                    android:text="Label"
+                    android:text="@string/label"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -90,7 +90,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_milestone"
-                    android:text="Milestone"
+                    android:text="@string/newIssueMilestoneTitle"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -103,7 +103,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_release"
-                    android:text="Release"
+                    android:text="@string/release"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -116,7 +116,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_pull_request"
-                    android:text="Pull Request"
+                    android:text="@string/pr"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -129,7 +129,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_person_add"
-                    android:text="Collaborator"
+                    android:text="@string/collaborator"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -152,7 +152,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Repository"
+                    android:text="@string/repository"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -174,7 +174,7 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_star"
-                    android:text="Star"
+                    android:text="@string/starMember"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -186,7 +186,7 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_star_unfilled"
-                    android:text="Unstar"
+                    android:text="@string/unstar"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -199,7 +199,7 @@
                     app:layout_alignSelf="center"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_watchers"
-                    android:text="Watch"
+                    android:text="@string/watch"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -212,7 +212,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_unwatch"
-                    android:text="Unwatch"
+                    android:text="@string/unwatch"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -225,7 +225,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_copy"
-                    android:text="Copy URL"
+                    android:text="@string/genericCopyUrl"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -238,7 +238,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_share"
-                    android:text="Share"
+                    android:text="@string/share"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -251,7 +251,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_browser"
-                    android:text="Open"
+                    android:text="@string/isOpen"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 
@@ -264,7 +264,7 @@
                     app:layout_alignSelf="flex_end"
                     android:gravity="center"
                     app:drawableTopCompat="@drawable/ic_settings"
-                    android:text="Settings"
+                    android:text="@string/navSettings"
                     android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp" />
 

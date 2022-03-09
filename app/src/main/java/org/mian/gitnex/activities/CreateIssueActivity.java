@@ -275,7 +275,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 }
                 else {
 
-                    Toasty.error(ctx, getString(R.string.issueCreatedError));
+                    Toasty.error(ctx, getString(R.string.genericError));
                     enableProcessButton();
                 }
 

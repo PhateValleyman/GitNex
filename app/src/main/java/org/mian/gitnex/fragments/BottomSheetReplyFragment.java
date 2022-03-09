@@ -200,7 +200,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 						}
 						else {
 
-							Toasty.error(getContext(), getString(R.string.commentError));
+							Toasty.error(getContext(), getString(R.string.genericError));
 						}
 
 						dismiss();
