@@ -31,7 +31,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
     private final Context context;
     private final String repo;
     private final String owner;
-	private Context ctx;
 
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
@@ -104,7 +103,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 		    }
 	    });
 
-	    if(!((RepoDetailActivity) ctx).repository.getPermissions().canPush()) {
+	    if(!((RepoDetailActivity) context).repository.getPermissions().canPush()) {
             holder.options.setVisibility(View.GONE);
         }
 
