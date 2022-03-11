@@ -51,7 +51,7 @@ public class CommitsActivity extends BaseActivity {
 	private CommitsAdapter adapter;
 	private ProgressBar progressLoadMore;
 
-	private RepositoryContext repository;
+	public RepositoryContext repository;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

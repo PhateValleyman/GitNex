@@ -30,6 +30,7 @@ public class DiffAdapter extends BaseAdapter {
 
 	private final List<Integer> selectedLines;
 	private final Typeface typeface;
+	private final String type;
 
 	private static int COLOR_ADDED;
 	private static int COLOR_REMOVED;
@@ -37,12 +38,13 @@ public class DiffAdapter extends BaseAdapter {
 	private static int COLOR_SELECTED;
 	private static int COLOR_FONT;
 
-	public DiffAdapter(Context context, FragmentManager fragmentManager, List<String> lines, IssueContext issue) {
+	public DiffAdapter(Context context, FragmentManager fragmentManager, List<String> lines, IssueContext issue, String type) {
 
 		this.context = context;
 		this.fragmentManager = fragmentManager;
 		this.lines = lines;
 		this.issue = issue;
+		this.type = type;
 
 		selectedLines = new ArrayList<>();
 		typeface = Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf");
@@ -87,44 +89,47 @@ public class DiffAdapter extends BaseAdapter {
 
 		}
 
-		convertView.setOnClickListener(v -> {
+		if(type.equals("pull")) {
+			convertView.setOnClickListener(v -> {
 
-			if(selectedLines.contains(position)) {
+				if(selectedLines.contains(position)) {
 
-				selectedLines.remove((Object) position);
-				v.setBackgroundColor(getLineColor(lines.get(position)));
-			} else {
-
-				selectedLines.add(position);
-				v.setBackgroundColor(COLOR_SELECTED);
-			}
-		});
-
-		convertView.setOnLongClickListener(v -> {
-
-			if(selectedLines.contains(position)) {
-
-				StringBuilder stringBuilder = new StringBuilder();
-				stringBuilder.append("```\n");
-
-				for(Integer selectedLine : selectedLines.stream().sorted().collect(Collectors.toList())) {
-					stringBuilder.append(lines.get(selectedLine));
-					stringBuilder.append("\n");
+					selectedLines.remove((Object) position);
+					v.setBackgroundColor(getLineColor(lines.get(position)));
 				}
+				else {
 
-				stringBuilder.append("```\n\n");
-				selectedLines.clear();
+					selectedLines.add(position);
+					v.setBackgroundColor(COLOR_SELECTED);
+				}
+			});
 
-				Bundle bundle = new Bundle();
-				bundle.putString("commentBody", stringBuilder.toString());
-				bundle.putBoolean("cursorToEnd", true);
+			convertView.setOnLongClickListener(v -> {
+
+				if(selectedLines.contains(position)) {
+
+					StringBuilder stringBuilder = new StringBuilder();
+					stringBuilder.append("```\n");
+
+					for(Integer selectedLine : selectedLines.stream().sorted().collect(Collectors.toList())) {
+						stringBuilder.append(lines.get(selectedLine));
+						stringBuilder.append("\n");
+					}
+
+					stringBuilder.append("```\n\n");
+					selectedLines.clear();
+
+					Bundle bundle = new Bundle();
+					bundle.putString("commentBody", stringBuilder.toString());
+					bundle.putBoolean("cursorToEnd", true);
 
 				BottomSheetReplyFragment.newInstance(bundle, issue).show(fragmentManager, "replyBottomSheet");
 			}
 
-			return true;
+				return true;
 
-		});
+			});
+		}
 
 		String line = lines.get(position);
 
