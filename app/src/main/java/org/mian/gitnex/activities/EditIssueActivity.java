@@ -25,6 +25,8 @@ import org.gitnex.tea4j.models.Milestones;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityEditIssueBinding;
+import org.mian.gitnex.fragments.IssuesFragment;
+import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
@@ -191,8 +193,9 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
                     Intent result = new Intent();
                     result.putExtra("issueEdited", true);
-	                result.putExtra("resumeIssues", true); // make this have an effect
-	                setResult(200, result);
+	                IssuesFragment.resumeIssues = issue.getIssue().getPull_request() == null;
+	                PullRequestsFragment.resumePullRequests = issue.getIssue().getPull_request() != null;
+					setResult(200, result);
                     finish();
                 }
                 else if(response.code() == 401) {

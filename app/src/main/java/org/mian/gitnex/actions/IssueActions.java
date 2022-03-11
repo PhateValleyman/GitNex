@@ -90,6 +90,7 @@ public class IssueActions {
 					if(response.code() == 201) {
 
 						IssuesFragment.resumeIssues = true;
+						PullRequestsFragment.resumePullRequests = true;
 						if(issueState.equals("closed")) {
 							Toasty.success(ctx, ctx.getString(R.string.issueStateClosed));
 						}
