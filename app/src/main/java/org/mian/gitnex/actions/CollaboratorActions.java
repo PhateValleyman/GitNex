@@ -9,6 +9,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.AddCollaboratorToRepositoryActivity;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.fragments.CollaboratorsFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
@@ -37,6 +38,7 @@ public class CollaboratorActions {
                 if(response.isSuccessful()) {
                     if(response.code() == 204) {
 
+	                    CollaboratorsFragment.refreshCollaborators = true;
                         Toasty.success(context, context.getString(R.string.removeCollaboratorToastText));
                         ((AddCollaboratorToRepositoryActivity)context).finish();
                         //Log.i("addCollaboratorSearch", addCollaboratorSearch.getText().toString());
@@ -95,6 +97,7 @@ public class CollaboratorActions {
                 if(response.isSuccessful()) {
                     if(response.code() == 204) {
 
+	                    CollaboratorsFragment.refreshCollaborators = true;
                         Toasty.success(context, context.getString(R.string.addCollaboratorToastText));
                         ((AddCollaboratorToRepositoryActivity)context).finish();
                         //AddCollaboratorToRepositoryActivity usersSearchData = new AddCollaboratorToRepositoryActivity();

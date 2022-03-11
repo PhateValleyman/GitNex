@@ -27,6 +27,8 @@ import java.util.List;
 
 public class CollaboratorsFragment extends Fragment {
 
+	public static boolean refreshCollaborators = false;
+
     private ProgressBar mProgressBar;
     private CollaboratorsAdapter adapter;
     private GridView mGridView;
@@ -86,5 +88,15 @@ public class CollaboratorsFragment extends Fragment {
         });
 
     }
+
+	@Override
+	public void onResume() {
+
+		super.onResume();
+		if(refreshCollaborators) {
+			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+			refreshCollaborators = false;
+		}
+	}
 
 }
