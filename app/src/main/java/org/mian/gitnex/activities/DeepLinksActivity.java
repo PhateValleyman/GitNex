@@ -460,6 +460,7 @@ public class DeepLinksActivity extends BaseActivity {
 					}
 
 					repo.setRepositoryId(id);
+					repoIntent.putExtra(RepositoryContext.INTENT_EXTRA, repo);
 
 					ctx.startActivity(repoIntent);
 					finish();
