@@ -357,6 +357,18 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					getFragmentRefreshListenerReleases().onRefresh("releases");
 				}
 				break;
+			case "unwatch":
+				repository.setWatched(false);
+				break;
+			case "watch":
+				repository.setWatched(true);
+				break;
+			case "unstar":
+				repository.setStarred(false);
+				break;
+			case "star":
+				repository.setStarred(true);
+				break;
 		}
 	}
 

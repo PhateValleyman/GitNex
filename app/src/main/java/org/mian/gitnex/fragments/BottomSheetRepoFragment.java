@@ -160,13 +160,13 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        if(repository.isStarred()) { // star a repo
+        if(repository.isStarred()) {
 
             starRepository.setVisibility(View.GONE);
             unStarRepository.setOnClickListener(v18 -> {
 
                 RepositoryActions.unStarRepository(getContext(), repository);
-                repository.setStarred(true);
+	            bmListener.onButtonClicked("unstar");
                 dismiss();
 
             });
@@ -177,20 +177,20 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             starRepository.setOnClickListener(v19 -> {
 
                 RepositoryActions.starRepository(getContext(), repository);
-                repository.setStarred(true);
+	            bmListener.onButtonClicked("star");
                 dismiss();
 
             });
 
         }
 
-        if(repository.isWatched()) { // watch a repo
+        if(repository.isWatched()) {
 
             watchRepository.setVisibility(View.GONE);
             unWatchRepository.setOnClickListener(v110 -> {
 
                 RepositoryActions.unWatchRepository(getContext(), repository);
-                repository.setWatched(false);
+				bmListener.onButtonClicked("unwatch");
                 dismiss();
 
             });
@@ -201,7 +201,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             watchRepository.setOnClickListener(v111 -> {
 
                 RepositoryActions.watchRepository(getContext(), repository);
-	            repository.setWatched(true);
+	            bmListener.onButtonClicked("watch");
                 dismiss();
 
             });
