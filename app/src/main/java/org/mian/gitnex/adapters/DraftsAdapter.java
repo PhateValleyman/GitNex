@@ -2,6 +2,7 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -82,11 +83,19 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
                 }
 
 		        BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle, issue);
-		        bottomSheetReplyFragment.setOnInteractedListener(() -> context.startActivity(new IssueContext(
-			        new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName(), context),
-			        draftWithRepository.getIssueId(),
-			        draftWithRepository.getIssueType()
-		        ).getIntent(context, IssueDetailActivity.class)));
+		        bottomSheetReplyFragment.setOnInteractedListener(() -> {
+					Intent i = new IssueContext(
+						new RepositoryContext(
+							draftWithRepository.getRepositoryOwner(),
+							draftWithRepository.getRepositoryName(),
+							context
+						),
+						draftWithRepository.getIssueId(),
+				        draftWithRepository.getIssueType()
+					).getIntent(context, IssueDetailActivity.class);
+					i.putExtra("openedFromLink", "true");
+					context.startActivity(i);
+		        });
 		        bottomSheetReplyFragment.show(fragmentManager, "replyBottomSheet");
             });
 
