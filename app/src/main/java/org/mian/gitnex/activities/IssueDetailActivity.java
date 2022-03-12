@@ -657,6 +657,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		else if(issue.getIssue().getState().equals("closed")) { // issue closed
 
 			viewBinding.issuePrState.setImageResource(R.drawable.ic_issue_closed_red);
+		} else {
+			viewBinding.issuePrState.setImageResource(R.drawable.ic_issue);
 		}
 
 		TinyDB tinyDb = TinyDB.getInstance(appCtx);
