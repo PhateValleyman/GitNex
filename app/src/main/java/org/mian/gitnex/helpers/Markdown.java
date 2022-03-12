@@ -284,6 +284,8 @@ public class Markdown {
 		private MarkwonAdapter adapter;
 		private RepositoryContext repository;
 
+		private LinkPostProcessor linkPostProcessor;
+
 		public RecyclerViewRenderer(Slot slot) {
 
 			this.slot = slot;
@@ -292,6 +294,12 @@ public class Markdown {
 		private void setup() {
 
 			Objects.requireNonNull(context);
+			Objects.requireNonNull(repository);
+
+			if(linkPostProcessor == null) {
+				linkPostProcessor = new LinkPostProcessor(context.getString(R.string.commentButtonText));
+				linkPostProcessor.repository = repository;
+			}
 
 			Prism4jTheme prism4jTheme =
 				AppUtil.getColorFromAttribute(context, R.attr.isDark) == 1 ? Prism4jThemeDarkula.create() : Prism4jThemeDefault.create();
@@ -340,7 +348,7 @@ public class Markdown {
 					public void configureParser(@NonNull Parser.Builder builder) {
 
 						builder.inlineParserFactory(inlineParserFactory);
-						builder.postProcessor(new LinkPostProcessor(context.getString(R.string.commentButtonText)));
+						builder.postProcessor(linkPostProcessor);
 					}
 
 					@Override
@@ -361,8 +369,8 @@ public class Markdown {
 
 					@Override
 					public void configureConfiguration(@NonNull MarkwonConfiguration.Builder builder) {
-						RepositoryContext repoLocal = repository;
 						builder.linkResolver((view, link) -> {
+							RepositoryContext repoLocal = linkPostProcessor.repository;
 							if(link.startsWith("gitnexuser://")) {
 								Intent i = new Intent(view.getContext(), ProfileActivity.class);
 								i.putExtra("username", link.substring(13));
@@ -431,6 +439,8 @@ public class Markdown {
 			this.markdown = markdown;
 			this.recyclerView = recyclerView;
 			this.repository = repository;
+			if(linkPostProcessor != null)
+				linkPostProcessor.repository = repository;
 		}
 
 		@Override
@@ -476,6 +486,7 @@ public class Markdown {
 			markdown = null;
 			recyclerView = null;
 			adapter = null;
+			repository = null;
 
 			slot.release(this);
 
@@ -538,8 +549,8 @@ public class Markdown {
 
 			private final String commentText;
 			private String instanceUrl;
-			private String fullRepoName;
 			private final Context context;
+			private RepositoryContext repository;
 
 			public LinkPostProcessor(String commentText) {
 
@@ -559,7 +570,6 @@ public class Markdown {
 				String instanceUrl = ((BaseActivity) context).getAccount().getAccount().getInstanceUrl();
 				instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/")).replaceAll("\\.", "\\.");
 				this.instanceUrl = instanceUrl;
-				fullRepoName = repository.getFullName();
 			}
 
 			@Override
@@ -612,7 +622,7 @@ public class Markdown {
 							shortSha = shortSha.substring(0, 10);
 						}
 						String text;
-						if(matcherCommit.group(1).equals(fullRepoName)) {
+						if(matcherCommit.group(1).equals(repository.getFullName())) {
 							text = shortSha;
 						}
 						else {
@@ -632,7 +642,7 @@ public class Markdown {
 						}
 
 						String text;
-						if(matcherIssue.group(1).equals(fullRepoName)) {
+						if(matcherIssue.group(1).equals(repository.getFullName())) {
 							text = "#" + matcherIssue.group(2);
 						}
 						else {
@@ -673,7 +683,7 @@ public class Markdown {
 
 				final Matcher patternAttachments = Pattern.compile("(/attachments/\\S+)", Pattern.MULTILINE).matcher(node.getDestination());
 				if(patternAttachments.matches()) {
-					node.setDestination(instanceUrl + fullRepoName + patternAttachments.group(1));
+					node.setDestination(instanceUrl + repository.getFullName() + patternAttachments.group(1));
 				}
 			}
 
