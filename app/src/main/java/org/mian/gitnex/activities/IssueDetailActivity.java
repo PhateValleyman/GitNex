@@ -475,8 +475,10 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		}
 		else if(id == R.id.genericMenu) {
 
-			BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment(issue, issueCreator);
-			bottomSheet.show(getSupportFragmentManager(), "singleIssueBottomSheet");
+			if(issue.hasIssue()) {
+				BottomSheetSingleIssueFragment bottomSheet = new BottomSheetSingleIssueFragment(issue, issueCreator);
+				bottomSheet.show(getSupportFragmentManager(), "singleIssueBottomSheet");
+			}
 			return true;
 		}
 		else {

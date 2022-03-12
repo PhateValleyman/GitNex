@@ -197,8 +197,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		}
 		else if(id == R.id.repoMenu) {
 
-			BottomSheetRepoFragment bottomSheet = new BottomSheetRepoFragment(repository);
-			bottomSheet.show(getSupportFragmentManager(), "repoBottomSheet");
+			if(repository.hasRepository()) {
+				BottomSheetRepoFragment bottomSheet = new BottomSheetRepoFragment(repository);
+				bottomSheet.show(getSupportFragmentManager(), "repoBottomSheet");
+			}
 			return true;
 		}
 		else if(id == R.id.filter) {
