@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.vdurmont.emoji.EmojiParser;
@@ -185,7 +186,10 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 						if(status == ActionResult.Status.SUCCESS) {
 
-							((IssueDetailActivity) requireActivity()).commentPosted = true;
+							FragmentActivity activity = requireActivity();
+							if(activity instanceof IssueDetailActivity) {
+								((IssueDetailActivity) activity).commentPosted = true;
+							}
 
 							Toasty.success(getContext(), getString(R.string.commentSuccess));
 
@@ -211,7 +215,10 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 					.edit(getContext(), comment.getText().toString(), arguments.getInt("commentId"), issue)
 					.accept((status, result) -> {
 
-						((IssueDetailActivity) requireActivity()).commentEdited = true;
+						FragmentActivity activity = requireActivity();
+						if(activity instanceof IssueDetailActivity) {
+							((IssueDetailActivity) activity).commentEdited = true;
+						}
 
 						if(status == ActionResult.Status.SUCCESS) {
 
