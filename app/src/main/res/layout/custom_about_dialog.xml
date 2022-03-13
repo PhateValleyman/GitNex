@@ -194,7 +194,7 @@
                     android:layout_height="80dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:src="@mipmap/app_logo"
+                    android:src="@drawable/app_logo"
                     android:contentDescription="@string/appName" />
 
             </androidx.cardview.widget.CardView>
