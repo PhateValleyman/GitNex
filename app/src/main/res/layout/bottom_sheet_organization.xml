@@ -21,6 +21,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/orgCreate"
                 android:padding="8dp"
                 android:orientation="vertical">
 
@@ -38,6 +39,7 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:id="@+id/orgCreateSection"
                 app:flexWrap="wrap"
                 app:alignItems="stretch"
                 android:padding="8dp"
@@ -87,6 +89,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
+                android:id="@+id/orgDivider"
                 android:layout_marginBottom="16dp"
                 android:background="?attr/dividerColor" />
 
