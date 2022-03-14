@@ -580,7 +580,7 @@ public class LoginActivity extends BaseActivity {
 			instanceUrlET.setText(tinyDB.getString("instanceUrlRaw"));
 		}
 
-		if(getAccount() != null) {
+		if(getAccount() != null && getAccount().getAccount() != null) {
 
 			loginUidET.setText(getAccount().getAccount().getUserName());
 		}
