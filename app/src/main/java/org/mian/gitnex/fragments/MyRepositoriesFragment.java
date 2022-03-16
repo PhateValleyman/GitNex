@@ -1,7 +1,6 @@
 package org.mian.gitnex.fragments;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -102,11 +101,11 @@ public class MyRepositoriesFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            MyRepositoriesViewModel.loadMyReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), userLogin, getContext(),  pageSize, resultLimit);
+            MyRepositoriesViewModel.loadMyReposList(userLogin, getContext(),  pageSize, resultLimit);
 
         }, 50));
 
-        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), userLogin, pageSize, resultLimit);
+        fetchDataAsync(userLogin, pageSize, resultLimit);
 
         return fragmentMyRepositoriesBinding.getRoot();
 
@@ -118,17 +117,17 @@ public class MyRepositoriesFragment extends Fragment {
         final String userLogin = ((BaseActivity) requireActivity()).getAccount().getAccount().getUserName();
 
         if(MainActivity.repoCreated) {
-            MyRepositoriesViewModel.loadMyReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), userLogin, getContext(),  pageSize, resultLimit);
+            MyRepositoriesViewModel.loadMyReposList(userLogin, getContext(),  pageSize, resultLimit);
 	        MainActivity.repoCreated = false;
         }
 
     }
 
-    private void fetchDataAsync(String instanceToken, String userLogin, int  pageSize, int resultLimit) {
+    private void fetchDataAsync(String userLogin, int pageSize, int resultLimit) {
 
         MyRepositoriesViewModel myRepoModel = new ViewModelProvider(this).get(MyRepositoriesViewModel.class);
 
-        myRepoModel.getCurrentUserRepositories(instanceToken, userLogin, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(),
+        myRepoModel.getCurrentUserRepositories(userLogin, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(),
 	        myReposListMain -> {
 
 	            adapter = new ReposListAdapter(getContext(), myReposListMain);

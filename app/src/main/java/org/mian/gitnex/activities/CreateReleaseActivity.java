@@ -8,17 +8,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.*;
 import androidx.annotation.NonNull;
-import org.gitnex.tea4j.models.Branches;
-import org.gitnex.tea4j.models.CreateTagOptions;
-import org.gitnex.tea4j.models.GitTag;
-import org.gitnex.tea4j.models.Releases;
+import org.gitnex.tea4j.v2.models.*;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateReleaseBinding;
@@ -51,7 +43,7 @@ public class CreateReleaseActivity extends BaseActivity {
 
 	private RepositoryContext repository;
 
-    List<Branches> branchesList = new ArrayList<>();
+    List<Branch> branchesList = new ArrayList<>();
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -94,7 +86,7 @@ public class CreateReleaseActivity extends BaseActivity {
         closeActivity.setOnClickListener(onClickListener);
 
         releaseBranch = activityCreateReleaseBinding.releaseBranch;
-        getBranches(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+        getBranches(repository.getOwner(), repository.getName());
 
         createNewRelease = activityCreateReleaseBinding.createNewRelease;
         createNewTag = activityCreateReleaseBinding.createNewTag;
@@ -136,16 +128,19 @@ public class CreateReleaseActivity extends BaseActivity {
 
 	    disableProcessButton();
 
-	    CreateTagOptions createReleaseJson = new CreateTagOptions(message, tagName, selectedBranch);
+	    CreateTagOption createReleaseJson = new CreateTagOption();
+		createReleaseJson.setMessage(message);
+		createReleaseJson.setTagName(tagName);
+		createReleaseJson.setTarget(selectedBranch);
 
-	    Call<GitTag> call = RetrofitClient
+	    Call<Tag> call = RetrofitClient
 		    .getApiInterface(ctx)
-		    .createTag(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), createReleaseJson);
+		    .repoCreateTag(repository.getOwner(), repository.getName(), createReleaseJson);
 
-	    call.enqueue(new Callback<GitTag>() {
+	    call.enqueue(new Callback<Tag>() {
 
 		    @Override
-		    public void onResponse(@NonNull Call<GitTag> call, @NonNull retrofit2.Response<GitTag> response) {
+		    public void onResponse(@NonNull Call<Tag> call, @NonNull retrofit2.Response<Tag> response) {
 
 			    if (response.code() == 201) {
 				    Toasty.success(ctx, getString(R.string.tagCreated));
@@ -173,7 +168,7 @@ public class CreateReleaseActivity extends BaseActivity {
 		    }
 
 		    @Override
-		    public void onFailure(@NonNull Call<GitTag> call, @NonNull Throwable t) {
+		    public void onFailure(@NonNull Call<Tag> call, @NonNull Throwable t) {
 			    Log.e("onFailure", t.toString());
 			    enableProcessButton();
 		    }
@@ -221,23 +216,27 @@ public class CreateReleaseActivity extends BaseActivity {
 	    }
 
         disableProcessButton();
-        createNewReleaseFunc(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), newReleaseTagName, newReleaseTitle, newReleaseContent, selectedBranch, newReleaseType, newReleaseDraft);
+        createNewReleaseFunc(repository.getOwner(), repository.getName(), newReleaseTagName, newReleaseTitle, newReleaseContent, selectedBranch, newReleaseType, newReleaseDraft);
     }
 
-    private void createNewReleaseFunc(final String token, String repoOwner, String repoName, String newReleaseTagName, String newReleaseTitle, String newReleaseContent, String selectedBranch, boolean newReleaseType, boolean newReleaseDraft) {
+    private void createNewReleaseFunc(String repoOwner, String repoName, String newReleaseTagName, String newReleaseTitle, String newReleaseContent,
+	    String selectedBranch, boolean newReleaseType, boolean newReleaseDraft) {
 
-        Releases createReleaseJson = new Releases(newReleaseContent, newReleaseDraft, newReleaseTitle, newReleaseType, newReleaseTagName, selectedBranch);
+        CreateReleaseOption createReleaseJson = new CreateReleaseOption();
+		createReleaseJson.setTagName(newReleaseTagName);
+		createReleaseJson.setBody(newReleaseContent);
+		createReleaseJson.setDraft(newReleaseDraft);
+		createReleaseJson.setPrerelease(newReleaseType);
+		createReleaseJson.setTargetCommitish(selectedBranch);
 
-        Call<Releases> call;
-
-        call = RetrofitClient
+        Call<Release> call = RetrofitClient
                 .getApiInterface(ctx)
-                .createNewRelease(token, repoOwner, repoName, createReleaseJson);
+                .repoCreateRelease(repoOwner, repoName, createReleaseJson);
 
-        call.enqueue(new Callback<Releases>() {
+        call.enqueue(new Callback<Release>() {
 
             @Override
-            public void onResponse(@NonNull Call<Releases> call, @NonNull retrofit2.Response<Releases> response) {
+            public void onResponse(@NonNull Call<Release> call, @NonNull retrofit2.Response<Release> response) {
 
                 if (response.code() == 201) {
 
@@ -273,7 +272,7 @@ public class CreateReleaseActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<Releases> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<Release> call, @NonNull Throwable t) {
 
                 Log.e("onFailure", t.toString());
                 enableProcessButton();
@@ -282,22 +281,22 @@ public class CreateReleaseActivity extends BaseActivity {
 
     }
 
-    private void getBranches(String instanceToken, final String repoOwner, final String repoName) {
+    private void getBranches(final String repoOwner, final String repoName) {
 
-        Call<List<Branches>> call = RetrofitClient
+        Call<List<Branch>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getBranches(instanceToken, repoOwner, repoName);
+                .repoListBranches(repoOwner, repoName, null, null);
 
-        call.enqueue(new Callback<List<Branches>>() {
+        call.enqueue(new Callback<List<Branch>>() {
 
             @Override
-            public void onResponse(@NonNull Call<List<Branches>> call, @NonNull retrofit2.Response<List<Branches>> response) {
+            public void onResponse(@NonNull Call<List<Branch>> call, @NonNull retrofit2.Response<List<Branch>> response) {
 
                 if(response.isSuccessful()) {
 
                     if(response.code() == 200) {
 
-                        List<Branches> branchesList_ = response.body();
+                        List<Branch> branchesList_ = response.body();
 
                         assert branchesList_ != null;
                         if(branchesList_.size() > 0) {
@@ -305,7 +304,7 @@ public class CreateReleaseActivity extends BaseActivity {
 	                        branchesList.addAll(branchesList_);
                         }
 
-	                    ArrayAdapter<Branches> adapter = new ArrayAdapter<>(CreateReleaseActivity.this,
+	                    ArrayAdapter<Branch> adapter = new ArrayAdapter<>(CreateReleaseActivity.this,
 		                    R.layout.list_spinner_items, branchesList);
 
                         releaseBranch.setAdapter(adapter);
@@ -328,7 +327,7 @@ public class CreateReleaseActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Branch>> call, @NonNull Throwable t) {
 
                 Log.e("onFailure", t.toString());
             }

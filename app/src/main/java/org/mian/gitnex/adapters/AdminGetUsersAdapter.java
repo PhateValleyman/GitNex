@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
-import org.gitnex.tea4j.models.UserInfo;
+import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
@@ -29,9 +29,9 @@ import java.util.List;
 
 public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdapter.UsersViewHolder> implements Filterable {
 
-    private final List<UserInfo> usersList;
+    private final List<User> usersList;
     private final Context context;
-    private final List<UserInfo> usersListFull;
+    private final List<User> usersListFull;
 
     class UsersViewHolder extends RecyclerView.ViewHolder {
 
@@ -66,7 +66,7 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
         }
     }
 
-    public AdminGetUsersAdapter(Context ctx, List<UserInfo> usersListMain) {
+    public AdminGetUsersAdapter(Context ctx, List<User> usersListMain) {
 
         this.context = ctx;
         this.usersList = usersListMain;
@@ -84,19 +84,19 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
     @Override
     public void onBindViewHolder(@NonNull AdminGetUsersAdapter.UsersViewHolder holder, int position) {
 
-        UserInfo currentItem = usersList.get(position);
+	    User currentItem = usersList.get(position);
 	    int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 	    holder.userLoginId = currentItem.getLogin();
 
-        if(!currentItem.getFullname().equals("")) {
+        if(!currentItem.getFullName().equals("")) {
 
-            holder.userFullName.setText(Html.fromHtml(currentItem.getFullname()));
-            holder.userName.setText(context.getResources().getString(R.string.usernameWithAt, currentItem.getUsername()));
+            holder.userFullName.setText(Html.fromHtml(currentItem.getFullName()));
+            holder.userName.setText(context.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
         }
         else {
 
-            holder.userFullName.setText(context.getResources().getString(R.string.usernameWithAt, currentItem.getUsername()));
+            holder.userFullName.setText(context.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
             holder.userName.setVisibility(View.GONE);
         }
 
@@ -109,7 +109,7 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
             holder.userEmail.setVisibility(View.GONE);
         }
 
-        if(currentItem.getIs_admin()) {
+        if(currentItem.isIsAdmin()) {
 
             holder.userRole.setVisibility(View.VISIBLE);
             TextDrawable drawable = TextDrawable.builder()
@@ -127,7 +127,7 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
             holder.userRole.setVisibility(View.GONE);
         }
 
-        PicassoService.getInstance(context).get().load(currentItem.getAvatar()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
+        PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
     private final Filter usersFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<UserInfo> filteredList = new ArrayList<>();
+            List<User> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(usersListFull);
@@ -151,8 +151,8 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<AdminGetUsersAdap
             else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for (UserInfo item : usersListFull) {
-                    if (item.getEmail().toLowerCase().contains(filterPattern) || item.getFullname().toLowerCase().contains(filterPattern) || item.getUsername().toLowerCase().contains(filterPattern)) {
+                for (User item : usersListFull) {
+                    if (item.getEmail().toLowerCase().contains(filterPattern) || item.getFullName().toLowerCase().contains(filterPattern) || item.getLogin().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }

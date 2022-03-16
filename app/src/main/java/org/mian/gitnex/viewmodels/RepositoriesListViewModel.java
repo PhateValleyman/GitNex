@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import org.gitnex.tea4j.models.UserRepositories;
+import org.gitnex.tea4j.v2.models.Repository;
 import org.mian.gitnex.clients.RetrofitClient;
 import java.util.List;
 import retrofit2.Call;
@@ -19,28 +19,28 @@ import retrofit2.Response;
 
 public class RepositoriesListViewModel extends ViewModel {
 
-    private static MutableLiveData<List<UserRepositories>> reposList;
+    private static MutableLiveData<List<Repository>> reposList;
 
-    public LiveData<List<UserRepositories>> getUserRepositories(String token, Context ctx, int page, int limit) {
+    public LiveData<List<Repository>> getUserRepositories(String token, Context ctx, int page, int limit) {
 
         //if (reposList == null) {
-            reposList = new MutableLiveData<>();
-            loadReposList(token, ctx, page, limit);
+	    reposList = new MutableLiveData<>();
+		loadReposList(ctx, page, limit);
         //}
 
         return reposList;
     }
 
-    public static void loadReposList(String token, Context ctx, int page, int limit) {
+    public static void loadReposList(Context ctx, int page, int limit) {
 
-        Call<List<UserRepositories>> call = RetrofitClient
+        Call<List<Repository>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getUserRepositories(token, page, limit);
+                .userCurrentListRepos(page, limit);
 
-        call.enqueue(new Callback<List<UserRepositories>>() {
+        call.enqueue(new Callback<List<Repository>>() {
 
             @Override
-            public void onResponse(@NonNull Call<List<UserRepositories>> call, @NonNull Response<List<UserRepositories>> response) {
+            public void onResponse(@NonNull Call<List<Repository>> call, @NonNull Response<List<Repository>> response) {
 
                 if(response.isSuccessful()) {
                     if(response.code() == 200) {
@@ -52,7 +52,7 @@ public class RepositoriesListViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<UserRepositories>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Repository>> call, Throwable t) {
                 Log.i("onFailure", t.toString());
             }
 

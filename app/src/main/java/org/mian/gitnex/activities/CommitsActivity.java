@@ -18,14 +18,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import org.gitnex.tea4j.models.Commits;
+import org.gitnex.tea4j.v2.models.Commit;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.CommitsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCommitsBinding;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ public class CommitsActivity extends BaseActivity {
 	private int pageSize = 1;
 
 	private RecyclerView recyclerView;
-	private List<Commits> commitsList;
+	private List<Commit> commitsList;
 	private CommitsAdapter adapter;
 	private ProgressBar progressLoadMore;
 
@@ -116,12 +115,12 @@ public class CommitsActivity extends BaseActivity {
 
 	private void loadInitial(String token, String repoOwner, String repoName, String branchName, int resultLimit) {
 
-		Call<List<Commits>> call = RetrofitClient.getApiInterface(ctx).getRepositoryCommits(token, repoOwner, repoName, 1, branchName, resultLimit);
+		Call<List<Commit>> call = RetrofitClient.getApiInterface(ctx).repoGetAllCommits(repoOwner, repoName, branchName, null, 1, resultLimit);
 
-		call.enqueue(new Callback<List<Commits>>() {
+		call.enqueue(new Callback<List<Commit>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<Commits>> call, @NonNull Response<List<Commits>> response) {
+			public void onResponse(@NonNull Call<List<Commit>> call, @NonNull Response<List<Commit>> response) {
 
 				if(response.code() == 200) {
 
@@ -153,7 +152,7 @@ public class CommitsActivity extends BaseActivity {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Commits>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Commit>> call, @NonNull Throwable t) {
 
 				Toasty.error(ctx, getResources().getString(R.string.errorOnLogin));
 			}
@@ -166,16 +165,16 @@ public class CommitsActivity extends BaseActivity {
 
 		progressLoadMore.setVisibility(View.VISIBLE);
 
-		Call<List<Commits>> call = RetrofitClient.getApiInterface(ctx).getRepositoryCommits(token, repoOwner, repoName, page, branchName, resultLimit);
+		Call<List<Commit>> call = RetrofitClient.getApiInterface(ctx).repoGetAllCommits(repoOwner, repoName, branchName, null, page, resultLimit);
 
-		call.enqueue(new Callback<List<Commits>>() {
+		call.enqueue(new Callback<List<Commit>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<Commits>> call, @NonNull Response<List<Commits>> response) {
+			public void onResponse(@NonNull Call<List<Commit>> call, @NonNull Response<List<Commit>> response) {
 
 				if(response.isSuccessful()) {
 
-					List<Commits> result = response.body();
+					List<Commit> result = response.body();
 					assert result != null;
 
 					if(result.size() > 0) {
@@ -199,7 +198,7 @@ public class CommitsActivity extends BaseActivity {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Commits>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Commit>> call, @NonNull Throwable t) {
 
 				Toasty.error(ctx, getResources().getString(R.string.errorOnLogin));
 			}
@@ -240,9 +239,9 @@ public class CommitsActivity extends BaseActivity {
 
 	private void filter(String text) {
 
-		List<Commits> arr = new ArrayList<>();
+		List<Commit> arr = new ArrayList<>();
 
-		for(Commits d : commitsList) {
+		for(Commit d : commitsList) {
 
 			if(d.getCommit().getMessage().toLowerCase().contains(text) || d.getSha().toLowerCase().contains(text)) {
 
@@ -255,10 +254,7 @@ public class CommitsActivity extends BaseActivity {
 
 	private void initCloseListener() {
 
-		onClickListener = view -> {
-
-			finish();
-		};
+		onClickListener = view -> finish();
 	}
 
 	@Override

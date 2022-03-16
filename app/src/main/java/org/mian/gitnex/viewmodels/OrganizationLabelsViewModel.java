@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import org.gitnex.tea4j.models.Labels;
+import org.gitnex.tea4j.v2.models.Label;
 import org.mian.gitnex.clients.RetrofitClient;
 import java.util.List;
 import retrofit2.Call;
@@ -22,9 +22,9 @@ import retrofit2.Response;
 
 public class OrganizationLabelsViewModel extends ViewModel {
 
-	private static MutableLiveData<List<Labels>> orgLabelsList;
+	private static MutableLiveData<List<Label>> orgLabelsList;
 
-	public LiveData<List<Labels>> getOrgLabelsList(String token, String owner, Context ctx, ProgressBar progressBar, TextView noData) {
+	public LiveData<List<Label>> getOrgLabelsList(String token, String owner, Context ctx, ProgressBar progressBar, TextView noData) {
 
 		orgLabelsList = new MutableLiveData<>();
 		loadOrgLabelsList(token, owner, ctx, progressBar, noData);
@@ -34,14 +34,14 @@ public class OrganizationLabelsViewModel extends ViewModel {
 
 	public static void loadOrgLabelsList(String token, String owner, Context ctx, ProgressBar progressBar, TextView noData) {
 
-		Call<List<Labels>> call = RetrofitClient
+		Call<List<Label>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getOrganizationLabels(token, owner);
+			.orgListLabels(owner, null, null);
 
-		call.enqueue(new Callback<List<Labels>>() {
+		call.enqueue(new Callback<List<Label>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull Response<List<Labels>> response) {
+			public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> response) {
 
 				if(response.isSuccessful()) {
 
@@ -56,7 +56,7 @@ public class OrganizationLabelsViewModel extends ViewModel {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Label>> call, @NonNull Throwable t) {
 				Log.i("onFailure", t.toString());
 			}
 

@@ -13,7 +13,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.vdurmont.emoji.EmojiParser;
-import org.gitnex.tea4j.models.PullRequests;
+import org.gitnex.tea4j.v2.models.PullRequest;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.ProfileActivity;
@@ -36,11 +36,11 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 	private final Context context;
 	private final int TYPE_LOAD = 0;
-	private List<PullRequests> prList;
+	private List<PullRequest> prList;
 	private Runnable loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
-	public PullRequestsAdapter(Context context, List<PullRequests> prListMain) {
+	public PullRequestsAdapter(Context context, List<PullRequest> prListMain) {
 		this.context = context;
 		this.prList = prListMain;
 	}
@@ -91,7 +91,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 	class PullRequestsHolder extends RecyclerView.ViewHolder {
 
-		private PullRequests pullRequest;
+		private PullRequest pullRequest;
 
 		private final ImageView assigneeAvatar;
 		private final TextView prTitle;
@@ -109,7 +109,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			itemView.setOnClickListener(v -> {
 				Intent intent = new IssueContext(
 					pullRequest,
-					new RepositoryContext(pullRequest.getBase().getRepo().getFull_name().split("/")[0], pullRequest.getBase().getRepo().getName(), context)
+					new RepositoryContext(pullRequest.getBase().getRepo().getFullName().split("/")[0], pullRequest.getBase().getRepo().getName(), context)
 				)
 					.getIntent(context, IssueDetailActivity.class);
 
@@ -130,7 +130,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 		}
 
 		@SuppressLint("SetTextI18n")
-		void bindData(PullRequests pullRequest) {
+		void bindData(PullRequest pullRequest) {
 
 			TinyDB tinyDb = TinyDB.getInstance(context);
 			Locale locale = context.getResources().getConfiguration().locale;
@@ -138,7 +138,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 			PicassoService.getInstance(context).get()
-				.load(pullRequest.getUser().getAvatar_url())
+				.load(pullRequest.getUser().getAvatarUrl())
 				.placeholder(R.drawable.loader_animated)
 				.transform(new RoundedTransformation(imgRadius, 0))
 				.resize(120, 120)
@@ -151,10 +151,10 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 			this.prTitle.setText(HtmlCompat.fromHtml(prNumber_ + " " + EmojiParser.parseToUnicode(pullRequest.getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
 			this.prCommentsCount.setText(String.valueOf(pullRequest.getComments()));
-			this.prCreatedTime.setText(TimeHelper.formatTime(pullRequest.getCreated_at(), locale, timeFormat, context));
+			this.prCreatedTime.setText(TimeHelper.formatTime(pullRequest.getCreatedAt(), locale, timeFormat, context));
 
 			if(timeFormat.equals("pretty")) {
-				this.prCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(pullRequest.getCreated_at()), context));
+				this.prCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(pullRequest.getCreatedAt()), context));
 			}
 		}
 	}
@@ -180,7 +180,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 		this.loadMoreListener = loadMoreListener;
 	}
 
-	public void updateList(List<PullRequests> list) {
+	public void updateList(List<PullRequest> list) {
 		prList = list;
 		notifyDataSetChanged();
 	}

@@ -8,19 +8,15 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import org.gitnex.tea4j.models.GiteaVersion;
-import org.gitnex.tea4j.models.UserInfo;
+import org.gitnex.tea4j.v2.models.ServerVersion;
+import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityAddNewAccountBinding;
-import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.PathsHelper;
-import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.UrlHelper;
-import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.structs.Protocol;
 import java.net.URI;
 import io.mikael.urlbuilder.UrlBuilder;
@@ -125,16 +121,15 @@ public class AddNewAccountActivity extends BaseActivity {
 
 	private void versionCheck(final String instanceUrl, final String loginToken) {
 
-		Call<GiteaVersion> callVersion;
-		callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl).getGiteaVersionWithToken("token " + loginToken);
-		callVersion.enqueue(new Callback<GiteaVersion>() {
+		Call<ServerVersion> callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl, loginToken).getVersion();
+		callVersion.enqueue(new Callback<ServerVersion>() {
 
 			@Override
-			public void onResponse(@NonNull final Call<GiteaVersion> callVersion, @NonNull retrofit2.Response<GiteaVersion> responseVersion) {
+			public void onResponse(@NonNull final Call<ServerVersion> callVersion, @NonNull retrofit2.Response<ServerVersion> responseVersion) {
 
 				if(responseVersion.code() == 200) {
 
-					GiteaVersion version = responseVersion.body();
+					ServerVersion version = responseVersion.body();
 
 					assert version != null;
 
@@ -188,7 +183,7 @@ public class AddNewAccountActivity extends BaseActivity {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<GiteaVersion> callVersion, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<ServerVersion> callVersion, @NonNull Throwable t) {
 
 				Log.e("onFailure-versionCheck", t.toString());
 				Toasty.error(ctx, getResources().getString(R.string.errorOnLogin));
@@ -198,14 +193,14 @@ public class AddNewAccountActivity extends BaseActivity {
 
 	private void setupNewAccountWithToken(String instanceUrl, final String loginToken) {
 
-		Call<UserInfo> call = RetrofitClient.getApiInterface(ctx, instanceUrl).getUserInfo("token " + loginToken);
+		Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl, loginToken).userGetCurrent();
 
-		call.enqueue(new Callback<UserInfo>() {
+		call.enqueue(new Callback<User>() {
 
 			@Override
-			public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
+			public void onResponse(@NonNull Call<User> call, @NonNull retrofit2.Response<User> response) {
 
-				UserInfo userDetails = response.body();
+				User userDetails = response.body();
 
 				switch(response.code()) {
 
@@ -213,13 +208,13 @@ public class AddNewAccountActivity extends BaseActivity {
 
 						assert userDetails != null;
 						// insert new account to db if does not exist
-						String accountName = userDetails.getUsername() + "@" + instanceUrl;
+						String accountName = userDetails.getLogin() + "@" + instanceUrl;
 						UserAccountsApi userAccountsApi = BaseApi.getInstance(ctx, UserAccountsApi.class);
 						boolean userAccountExists = userAccountsApi.userAccountExists(accountName);
 
 						if(!userAccountExists) {
 
-							long id = userAccountsApi.createNewAccount(accountName, instanceUrl, userDetails.getUsername(), loginToken, "");
+							long id = userAccountsApi.createNewAccount(accountName, instanceUrl, userDetails.getLogin(), loginToken, "");
 							UserAccount account = userAccountsApi.getAccountById((int) id);
 							AppUtil.switchToAccount(AddNewAccountActivity.this, account);
 							Toasty.success(ctx, getResources().getString(R.string.accountAddedMessage));
@@ -253,7 +248,7 @@ public class AddNewAccountActivity extends BaseActivity {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
 
 				Log.e("onFailure", t.toString());
 				Toasty.error(ctx, getResources().getString(R.string.genericError));

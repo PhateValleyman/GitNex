@@ -14,18 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import org.gitnex.tea4j.models.UserRepositories;
+import org.gitnex.tea4j.v2.models.Repository;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.RepositoriesApi;
-import org.mian.gitnex.database.models.Repository;
-import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.List;
 import java.util.Locale;
@@ -38,11 +33,11 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 	private final Context context;
 	private final int TYPE_LOAD = 0;
-	private List<UserRepositories> reposList;
+	private List<Repository> reposList;
 	private Runnable loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
-	public RepositoriesAdapter(Context ctx, List<UserRepositories> reposListMain) {
+	public RepositoriesAdapter(Context ctx, List<Repository> reposListMain) {
 		this.context = ctx;
 		this.reposList = reposListMain;
 	}
@@ -91,7 +86,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 	class RepositoriesHolder extends RecyclerView.ViewHolder {
 
-		private UserRepositories userRepositories;
+		private Repository userRepositories;
 
 		private final ImageView avatar;
 		private final TextView repoName;
@@ -128,7 +123,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 					repo.setRepositoryId((int) id);
 				}
 				else {
-					Repository data = repositoryData.getRepository(currentActiveAccountId, repo.getOwner(), repo.getName());
+					org.mian.gitnex.database.models.Repository data = repositoryData.getRepository(currentActiveAccountId, repo.getOwner(), repo.getName());
 					repo.setRepositoryId(data.getRepositoryId());
 				}
 
@@ -138,7 +133,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 		}
 
 		@SuppressLint("SetTextI18n")
-		void bindData(UserRepositories userRepositories) {
+		void bindData(Repository userRepositories) {
 
 			this.userRepositories = userRepositories;
 			TinyDB tinyDb = TinyDB.getInstance(context);
@@ -149,7 +144,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 			orgName.setText(userRepositories.getFullName().split("/")[0]);
 			repoName.setText(userRepositories.getFullName().split("/")[1]);
-			repoStars.setText(userRepositories.getStars_count());
+			repoStars.setText(String.valueOf(userRepositories.getStarsCount()));
 
 			ColorGenerator generator = ColorGenerator.MATERIAL;
 			int color = generator.getColor(userRepositories.getName());
@@ -157,10 +152,10 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
 
-			if(userRepositories.getAvatar_url() != null) {
-				if(!userRepositories.getAvatar_url().equals("")) {
+			if(userRepositories.getAvatarUrl() != null) {
+				if(!userRepositories.getAvatarUrl().equals("")) {
 					PicassoService
-						.getInstance(context).get().load(userRepositories.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(avatar);
+						.getInstance(context).get().load(userRepositories.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(avatar);
 				}
 				else {
 					avatar.setImageDrawable(drawable);
@@ -170,11 +165,11 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 				avatar.setImageDrawable(drawable);
 			}
 
-			if(userRepositories.getUpdated_at() != null) {
+			if(userRepositories.getUpdatedAt() != null) {
 
-				repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, TimeHelper.formatTime(userRepositories.getUpdated_at(), locale, timeFormat, context)));
+				repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, TimeHelper.formatTime(userRepositories.getUpdatedAt(), locale, timeFormat, context)));
 				if(timeFormat.equals("pretty")) {
-					repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(userRepositories.getUpdated_at()), context));
+					repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(userRepositories.getUpdatedAt()), context));
 				}
 			}
 			else {
@@ -215,7 +210,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 		this.loadMoreListener = loadMoreListener;
 	}
 
-	public void updateList(List<UserRepositories> list) {
+	public void updateList(List<Repository> list) {
 		reposList = list;
 		notifyDataSetChanged();
 	}

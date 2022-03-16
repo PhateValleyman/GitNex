@@ -92,7 +92,7 @@ public class RepositoriesFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            RepositoriesListViewModel.loadReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext(), pageSize, resultLimit);
+            RepositoriesListViewModel.loadReposList(getContext(), pageSize, resultLimit);
 
         }, 50));
 
@@ -106,7 +106,7 @@ public class RepositoriesFragment extends Fragment {
         super.onResume();
 
         if(MainActivity.repoCreated) {
-            RepositoriesListViewModel.loadReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext(), pageSize, resultLimit);
+            RepositoriesListViewModel.loadReposList(getContext(), pageSize, resultLimit);
 	        MainActivity.repoCreated = false;
         }
     }

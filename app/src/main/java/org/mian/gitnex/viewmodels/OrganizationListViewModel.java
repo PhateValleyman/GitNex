@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import org.gitnex.tea4j.models.UserOrganizations;
+import org.gitnex.tea4j.v2.models.Organization;
 import org.mian.gitnex.clients.RetrofitClient;
 import java.util.List;
 import retrofit2.Call;
@@ -19,28 +19,28 @@ import retrofit2.Response;
 
 public class OrganizationListViewModel extends ViewModel {
 
-    private static MutableLiveData<List<UserOrganizations>> orgsList;
+    private static MutableLiveData<List<Organization>> orgsList;
 
-    public LiveData<List<UserOrganizations>> getUserOrgs(String token, Context ctx) {
+    public LiveData<List<Organization>> getUserOrgs(Context ctx) {
 
         //if (orgsList == null) {
             orgsList = new MutableLiveData<>();
-            loadOrgsList(token, ctx);
+            loadOrgsList(ctx);
         //}
 
         return orgsList;
     }
 
-    public static void loadOrgsList(String token, Context ctx) {
+    public static void loadOrgsList(Context ctx) {
 
-        Call<List<UserOrganizations>> call = RetrofitClient
+        Call<List<Organization>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getUserOrgs(token, 1, 50);
+                .orgListCurrentUserOrgs(1, 50);
 
-        call.enqueue(new Callback<List<UserOrganizations>>() {
+        call.enqueue(new Callback<List<Organization>>() {
 
             @Override
-            public void onResponse(@NonNull Call<List<UserOrganizations>> call, @NonNull Response<List<UserOrganizations>> response) {
+            public void onResponse(@NonNull Call<List<Organization>> call, @NonNull Response<List<Organization>> response) {
 
                 if(response.isSuccessful()) {
                     if(response.code() == 200) {
@@ -52,7 +52,7 @@ public class OrganizationListViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<UserOrganizations>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Organization>> call, Throwable t) {
                 Log.i("onFailure", t.toString());
             }
 

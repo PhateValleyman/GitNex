@@ -50,7 +50,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
 	    TextView repoSettings = bottomSheetRepoBinding.repoSettings;
 	    TextView createPullRequest = bottomSheetRepoBinding.createPullRequest;
 
-	    boolean canPush = repository.getPermissions().canPush();
+	    boolean canPush = repository.getPermissions().isPush();
 	    if(!canPush) {
 		    createMilestone.setVisibility(View.GONE);
 		    createLabel.setVisibility(View.GONE);
@@ -75,7 +75,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        if(repository.getRepository().getHas_issues() && !archived) {
+        if(repository.getRepository().isHasIssues() && !archived) {
 
             createIssue.setVisibility(View.VISIBLE);
             createIssue.setOnClickListener(v12 -> {
@@ -89,7 +89,7 @@ public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
             createIssue.setVisibility(View.GONE);
         }
 
-	    if(repository.getRepository().isHas_pull_requests() && !archived) {
+	    if(repository.getRepository().isHasPullRequests() && !archived) {
 
 		    createPullRequest.setVisibility(View.VISIBLE);
 		    createPullRequest.setOnClickListener(vPr -> {

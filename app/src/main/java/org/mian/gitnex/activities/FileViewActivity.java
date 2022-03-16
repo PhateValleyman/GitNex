@@ -7,27 +7,18 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.NotificationCompat;
 import com.vdurmont.emoji.EmojiParser;
 import org.apache.commons.io.FileUtils;
-import org.gitnex.tea4j.models.Files;
+import org.gitnex.tea4j.v2.models.ContentsResponse;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityFileViewBinding;
 import org.mian.gitnex.fragments.BottomSheetFileViewerFragment;
-import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Constants;
-import org.mian.gitnex.helpers.Images;
-import org.mian.gitnex.helpers.Markdown;
-import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.notifications.Notifications;
 import org.mian.gitnex.structs.BottomSheetListener;
@@ -45,7 +36,7 @@ import retrofit2.Response;
 public class FileViewActivity extends BaseActivity implements BottomSheetListener {
 
 	private ActivityFileViewBinding binding;
-	private Files file;
+	private ContentsResponse file;
 	private RepositoryContext repository;
 	private boolean renderMd = false;
 
@@ -70,7 +61,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 		setContentView(binding.getRoot());
 		setSupportActionBar(binding.toolbar);
 
-		file = (Files) getIntent().getSerializableExtra("file");
+		file = (ContentsResponse) getIntent().getSerializableExtra("file");
 
 		binding.close.setOnClickListener(view -> finish());
 
@@ -86,7 +77,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 
 			Call<ResponseBody> call = RetrofitClient
 				.getWebInterface(ctx)
-				.getFileContents(getAccount().getWebAuthorization(), owner, repo, ref, filename);
+				.getFileContents(owner, repo, ref, filename);
 
 			try {
 
@@ -346,7 +337,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 
 						Call<ResponseBody> call = RetrofitClient
 							.getWebInterface(ctx)
-							.getFileContents(getAccount().getWebAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef(), file.getPath());
+							.getFileContents(repository.getOwner(), repository.getName(), repository.getBranchRef(), file.getPath());
 
 						Response<ResponseBody> response = call.execute();
 

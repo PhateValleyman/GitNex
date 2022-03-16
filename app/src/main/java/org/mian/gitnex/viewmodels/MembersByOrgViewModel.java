@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import org.gitnex.tea4j.models.UserInfo;
+import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.clients.RetrofitClient;
 import java.util.List;
 import retrofit2.Call;
@@ -19,9 +19,9 @@ import retrofit2.Response;
 
 public class MembersByOrgViewModel extends ViewModel {
 
-    private static MutableLiveData<List<UserInfo>> membersList;
+    private static MutableLiveData<List<User>> membersList;
 
-    public LiveData<List<UserInfo>> getMembersList(String token, String owner, Context ctx) {
+    public LiveData<List<User>> getMembersList(String token, String owner, Context ctx) {
 
         membersList = new MutableLiveData<>();
         loadMembersList(token, owner, ctx);
@@ -31,14 +31,14 @@ public class MembersByOrgViewModel extends ViewModel {
 
     private static void loadMembersList(String token, String owner, Context ctx) {
 
-        Call<List<UserInfo>> call = RetrofitClient
+        Call<List<User>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getMembersByOrg(token, owner);
+                .orgListMembers(owner, null, null);
 
-        call.enqueue(new Callback<List<UserInfo>>() {
+        call.enqueue(new Callback<List<User>>() {
 
             @Override
-            public void onResponse(@NonNull Call<List<UserInfo>> call, @NonNull Response<List<UserInfo>> response) {
+            public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
 
                 if (response.isSuccessful()) {
                     membersList.postValue(response.body());
@@ -49,7 +49,7 @@ public class MembersByOrgViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<UserInfo>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<User>> call, Throwable t) {
                 Log.i("onFailure", t.toString());
             }
 

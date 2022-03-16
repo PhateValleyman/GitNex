@@ -51,7 +51,7 @@ public class AdminCronTasksActivity extends BaseActivity {
 		activityAdminCronTasksBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 			activityAdminCronTasksBinding.pullToRefresh.setRefreshing(false);
-			AdminCronTasksViewModel.loadCronTasksList(ctx, getAccount().getAuthorization(), PAGE, LIMIT);
+			AdminCronTasksViewModel.loadCronTasksList(ctx, PAGE, LIMIT);
 
 		}, 500));
 

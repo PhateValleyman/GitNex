@@ -93,20 +93,20 @@ public class StarredRepositoriesFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            StarredRepositoriesViewModel.loadStarredReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext(), pageSize, resultLimit);
+            StarredRepositoriesViewModel.loadStarredReposList(getContext(), pageSize, resultLimit);
 
         }, 50));
 
-        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), pageSize, resultLimit);
+        fetchDataAsync(pageSize, resultLimit);
 
         return fragmentStarredRepositoriesBinding.getRoot();
     }
 
-    private void fetchDataAsync(String instanceToken, int pageSize, int resultLimit) {
+    private void fetchDataAsync(int pageSize, int resultLimit) {
 
         StarredRepositoriesViewModel starredRepoModel = new ViewModelProvider(this).get(StarredRepositoriesViewModel.class);
 
-        starredRepoModel.getUserStarredRepositories(instanceToken, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(),
+        starredRepoModel.getUserStarredRepositories(getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(),
 	        starredReposListMain -> {
 
 	            adapter = new ReposListAdapter(getContext(), starredReposListMain);
@@ -161,7 +161,7 @@ public class StarredRepositoriesFragment extends Fragment {
 		super.onResume();
 
 		if(MainActivity.repoCreated) {
-			StarredRepositoriesViewModel.loadStarredReposList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext(), pageSize, resultLimit);
+			StarredRepositoriesViewModel.loadStarredReposList(getContext(), pageSize, resultLimit);
 			MainActivity.repoCreated = false;
 		}
 

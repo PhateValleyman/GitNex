@@ -8,9 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import org.gitnex.tea4j.models.Teams;
-import org.gitnex.tea4j.models.UserInfo;
-import org.mian.gitnex.activities.BaseActivity;
+import org.gitnex.tea4j.v2.models.Team;
+import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.adapters.UserGridAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentOrganizationTeamInfoMembersBinding;
@@ -29,14 +28,14 @@ public class OrganizationTeamInfoMembersFragment extends Fragment {
 	private Context ctx;
 
 	private FragmentOrganizationTeamInfoMembersBinding binding;
-	private Teams team;
+	private Team team;
 
 	private UserGridAdapter adapter;
-	private final List<UserInfo> teamUserInfo = new ArrayList<>();
+	private final List<User> teamUserInfo = new ArrayList<>();
 
 	public OrganizationTeamInfoMembersFragment() {}
 
-	public static OrganizationTeamInfoMembersFragment newInstance(Teams team) {
+	public static OrganizationTeamInfoMembersFragment newInstance(Team team) {
 		OrganizationTeamInfoMembersFragment fragment = new OrganizationTeamInfoMembersFragment();
 
 		Bundle bundle = new Bundle();
@@ -51,7 +50,7 @@ public class OrganizationTeamInfoMembersFragment extends Fragment {
 		binding = FragmentOrganizationTeamInfoMembersBinding.inflate(inflater, container, false);
 		ctx = getContext();
 
-		team = (Teams) requireArguments().getSerializable("team");
+		team = (Team) requireArguments().getSerializable("team");
 
 		adapter = new UserGridAdapter(ctx, teamUserInfo);
 		binding.members.setAdapter(adapter);
@@ -62,16 +61,16 @@ public class OrganizationTeamInfoMembersFragment extends Fragment {
 
 	private void fetchMembersAsync() {
 
-		Call<List<UserInfo>> call = RetrofitClient
+		Call<List<User>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getTeamMembersByOrg(((BaseActivity) requireActivity()).getAccount().getAuthorization(), team.getId());
+			.orgListTeamMembers(team.getId(), null, null);
 
 		binding.progressBar.setVisibility(View.VISIBLE);
 
-		call.enqueue(new Callback<List<UserInfo>>() {
+		call.enqueue(new Callback<List<User>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<UserInfo>> call, @NonNull Response<List<UserInfo>> response) {
+			public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
 				if(response.isSuccessful() && response.body() != null && response.body().size() > 0) {
 					teamUserInfo.clear();
 					teamUserInfo.addAll(response.body());
@@ -89,7 +88,7 @@ public class OrganizationTeamInfoMembersFragment extends Fragment {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<UserInfo>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
 				Log.i("onFailure", t.toString());
 			}
 

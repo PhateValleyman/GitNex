@@ -10,12 +10,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
@@ -29,32 +24,16 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.JsonElement;
-import org.gitnex.tea4j.models.Branches;
-import org.gitnex.tea4j.models.Milestones;
-import org.gitnex.tea4j.models.UserRepositories;
-import org.gitnex.tea4j.models.WatchInfo;
+import org.gitnex.tea4j.v2.models.Branch;
+import org.gitnex.tea4j.v2.models.Milestone;
+import org.gitnex.tea4j.v2.models.Repository;
+import org.gitnex.tea4j.v2.models.WatchInfo;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.database.api.BaseApi;
-import org.mian.gitnex.database.api.UserAccountsApi;
-import org.mian.gitnex.database.models.UserAccount;
-import org.mian.gitnex.fragments.BottomSheetIssuesFilterFragment;
-import org.mian.gitnex.fragments.BottomSheetMilestonesFilterFragment;
-import org.mian.gitnex.fragments.BottomSheetPullRequestFilterFragment;
-import org.mian.gitnex.fragments.BottomSheetReleasesTagsFragment;
-import org.mian.gitnex.fragments.BottomSheetRepoFragment;
-import org.mian.gitnex.fragments.CollaboratorsFragment;
-import org.mian.gitnex.fragments.FilesFragment;
-import org.mian.gitnex.fragments.IssuesFragment;
-import org.mian.gitnex.fragments.LabelsFragment;
-import org.mian.gitnex.fragments.MilestonesFragment;
-import org.mian.gitnex.fragments.PullRequestsFragment;
-import org.mian.gitnex.fragments.ReleasesFragment;
-import org.mian.gitnex.fragments.RepoInfoFragment;
+import org.mian.gitnex.fragments.*;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.structs.FragmentRefreshListener;
 import java.util.ArrayList;
@@ -165,7 +144,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		toolbarTitle.setTypeface(myTypeface);
 
-		getRepoInfo(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+		getRepoInfo(repository.getOwner(), repository.getName());
 
 		checkRepositoryStarStatus(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
 		checkRepositoryWatchStatus(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
@@ -273,20 +252,20 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				createReleaseLauncher.launch(repository.getIntent(ctx, CreateReleaseActivity.class));
 				break;
 			case "openWebRepo":
-				AppUtil.openUrlInBrowser(this, repository.getRepository().getHtml_url());
+				AppUtil.openUrlInBrowser(this, repository.getRepository().getHtmlUrl());
 				break;
 			case "shareRepo":
 
 				Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 				sharingIntent.setType("text/plain");
-				sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, repository.getRepository().getHtml_url());
-				sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, repository.getRepository().getHtml_url());
-				startActivity(Intent.createChooser(sharingIntent, repository.getRepository().getHtml_url()));
+				sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, repository.getRepository().getHtmlUrl());
+				sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, repository.getRepository().getHtmlUrl());
+				startActivity(Intent.createChooser(sharingIntent, repository.getRepository().getHtmlUrl()));
 				break;
 			case "copyRepoUrl":
 
 				ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
-				ClipData clip = ClipData.newPlainText("repoUrl", repository.getRepository().getHtml_url());
+				ClipData clip = ClipData.newPlainText("repoUrl", repository.getRepository().getHtmlUrl());
 				assert clipboard != null;
 				clipboard.setPrimaryClip(clip);
 				Toasty.info(ctx, ctx.getString(R.string.copyIssueUrlToastMsg));
@@ -378,26 +357,25 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		progressDialog.setContentView(R.layout.custom_progress_loader);
 		progressDialog.show();
 
-		Call<List<Milestones>> call = RetrofitClient
+		Call<List<Milestone>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getMilestones(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), 1, 50, "open");
+			.issueGetMilestonesList(repository.getOwner(), repository.getName(), "open", null, 1, 50);
 
-		call.enqueue(new Callback<List<Milestones>>() {
+		call.enqueue(new Callback<List<Milestone>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull Response<List<Milestones>> response) {
+			public void onResponse(@NonNull Call<List<Milestone>> call, @NonNull Response<List<Milestone>> response) {
 
 				progressDialog.hide();
 				if(response.code() == 200) {
 
-					Milestones milestones;
 					List<String> milestonesList = new ArrayList<>();
 					int selectedMilestone = 0;
 					assert response.body() != null;
 
 					milestonesList.add("All");
 					for(int i = 0; i < response.body().size(); i++) {
-						milestones = response.body().get(i);
+						Milestone milestones = response.body().get(i);
 						milestonesList.add(milestones.getTitle());
 						if(repository.getIssueMilestoneFilterName().equals(milestones.getTitle())) {
 							selectedMilestone = i;
@@ -423,7 +401,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Milestone>> call, @NonNull Throwable t) {
 				progressDialog.hide();
 				Log.e("onFailure", t.toString());
 			}
@@ -437,14 +415,14 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		progressDialog.setContentView(R.layout.custom_progress_loader);
 		progressDialog.show();
 
-		Call<List<Branches>> call = RetrofitClient
+		Call<List<Branch>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getBranches(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+			.repoListBranches(repository.getOwner(), repository.getName(), null, null);
 
-		call.enqueue(new Callback<List<Branches>>() {
+		call.enqueue(new Callback<List<Branch>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<Branches>> call, @NonNull Response<List<Branches>> response) {
+			public void onResponse(@NonNull Call<List<Branch>> call, @NonNull Response<List<Branch>> response) {
 
 				progressDialog.hide();
 				if(response.code() == 200) {
@@ -455,7 +433,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 					for(int i = 0; i < response.body().size(); i++) {
 
-						Branches branches = response.body().get(i);
+						Branch branches = response.body().get(i);
 						branchesList.add(branches.getName());
 
 						if(repository.getBranchRef().equals(branches.getName())) {
@@ -482,7 +460,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Branches>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Branch>> call, @NonNull Throwable t) {
 				progressDialog.hide();
 				Log.e("onFailure", t.toString());
 			}
@@ -542,7 +520,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		}
 	}
 
-	private void getRepoInfo(String token, final String owner, String repo) {
+	private void getRepoInfo(final String owner, String repo) {
 
 		LinearProgressIndicator loading = findViewById(R.id.loadingIndicator);
 		if(repository.hasRepository()) {
@@ -551,13 +529,13 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			return;
 		}
 
-		Call<UserRepositories> call = RetrofitClient.getApiInterface(ctx).getUserRepository(token, owner, repo);
-		call.enqueue(new Callback<UserRepositories>() {
+		Call<Repository> call = RetrofitClient.getApiInterface(ctx).repoGet(owner, repo);
+		call.enqueue(new Callback<Repository>() {
 
 			@Override
-			public void onResponse(@NonNull Call<UserRepositories> call, @NonNull retrofit2.Response<UserRepositories> response) {
+			public void onResponse(@NonNull Call<Repository> call, @NonNull retrofit2.Response<Repository> response) {
 
-				UserRepositories repoInfo = response.body();
+				Repository repoInfo = response.body();
 				loading.setVisibility(View.GONE);
 
 				if(response.code() == 200) {
@@ -573,7 +551,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<UserRepositories> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Repository> call, @NonNull Throwable t) {
 				Toasty.error(ctx, getString(R.string.genericError));
 				Log.e("onFailure", t.toString());
 				finish();
@@ -584,10 +562,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	}
 
 	private void initWithRepo() {
-		repository.setBranchRef(repository.getRepository().getDefault_branch());
+		repository.setBranchRef(repository.getRepository().getDefaultBranch());
 
 		ImageView repoTypeToolbar = findViewById(R.id.repoTypeToolbar);
-		if(repository.getRepository().isPrivateFlag()) {
+		if(repository.getRepository().isPrivate()) {
 			repoTypeToolbar.setVisibility(View.VISIBLE);
 		} else {
 			repoTypeToolbar.setVisibility(View.GONE);
@@ -636,9 +614,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			ColorStateList textColor = tabLayout.getTabTextColors();
 
-			if(repository.getRepository().getOpen_issues_count() != null) {
+			if(repository.getRepository().getOpenIssuesCount() != null) {
 				textViewBadgeIssue.setVisibility(View.VISIBLE);
-				textViewBadgeIssue.setText(repository.getRepository().getOpen_issues_count());
+				textViewBadgeIssue.setText(String.valueOf(repository.getRepository().getOpenIssuesCount()));
 
 				TabLayout.Tab tabOpenIssues = tabLayout.getTabAt(2);
 				assert tabOpenIssues != null;
@@ -650,9 +628,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				textViewBadgeIssue.setVisibility(View.GONE);
 			}
 
-			if(repository.getRepository().getOpen_pull_count() != null) {
+			if(repository.getRepository().getOpenPrCounter() != null) {
 				textViewBadgePull.setVisibility(View.VISIBLE);
-				textViewBadgePull.setText(repository.getRepository().getOpen_pull_count());
+				textViewBadgePull.setText(String.valueOf(repository.getRepository().getOpenPrCounter()));
 
 				Objects.requireNonNull(tabLayout.getTabAt(3)).setCustomView(tabHeader4);
 				TabLayout.Tab tabOpenPulls = tabLayout.getTabAt(3);
@@ -663,9 +641,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				textViewBadgePull.setVisibility(View.GONE);
 			}
 
-			if(repository.getRepository().getRelease_count() != null) {
+			if(repository.getRepository().getReleaseCounter() != null) {
 				textViewBadgeRelease.setVisibility(View.VISIBLE);
-				textViewBadgeRelease.setText(repository.getRepository().getRelease_count());
+				textViewBadgeRelease.setText(String.valueOf(repository.getRepository().getReleaseCounter()));
 
 				Objects.requireNonNull(tabLayout.getTabAt(4)).setCustomView(tabHeader6);
 				TabLayout.Tab tabOpenRelease = tabLayout.getTabAt(4);
@@ -767,17 +745,17 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 	private void checkRepositoryStarStatus(String instanceToken, final String owner, String repo) {
 
-		Call<JsonElement> call = RetrofitClient.getApiInterface(ctx).checkRepoStarStatus(instanceToken, owner, repo);
-		call.enqueue(new Callback<JsonElement>() {
+		Call<Void> call = RetrofitClient.getApiInterface(ctx).userCurrentCheckStarring(owner, repo);
+		call.enqueue(new Callback<Void>() {
 
 			@Override
-			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+			public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
 
 				repository.setStarred(response.code() == 204);
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
 				Log.e("onFailure", t.toString());
 			}
@@ -787,9 +765,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 	private void checkRepositoryWatchStatus(String instanceToken, final String owner, String repo) {
 
-		Call<WatchInfo> call;
-
-		call = RetrofitClient.getApiInterface(ctx).checkRepoWatchStatus(instanceToken, owner, repo);
+		Call<WatchInfo> call = RetrofitClient.getApiInterface(ctx).userCurrentCheckSubscription(owner, repo);
 		call.enqueue(new Callback<WatchInfo>() {
 
 			@Override
@@ -797,7 +773,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 				if(response.code() == 200) {
 					assert response.body() != null;
-					repository.setWatched(response.body().getSubscribed());
+					repository.setWatched(response.body().isSubscribed());
 				}
 				else {
 					repository.setWatched(false);

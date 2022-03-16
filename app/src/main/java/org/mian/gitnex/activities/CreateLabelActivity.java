@@ -13,8 +13,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
-import org.gitnex.tea4j.models.CreateLabel;
-import org.gitnex.tea4j.models.Labels;
+import org.gitnex.tea4j.v2.models.CreateLabelOption;
+import org.gitnex.tea4j.v2.models.EditLabelOption;
+import org.gitnex.tea4j.v2.models.Label;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreateLabelBinding;
@@ -199,23 +200,25 @@ public class CreateLabelActivity extends BaseActivity {
 
     private void createNewLabel(String repoOwner, String repoName, String newLabelName, String newLabelColor) {
 
-        CreateLabel createLabelFunc = new CreateLabel(newLabelName, newLabelColor);
+        CreateLabelOption createLabelFunc = new CreateLabelOption();
+		createLabelFunc.setColor(newLabelColor);
+		createLabelFunc.setName(newLabelName);
 
-        Call<CreateLabel> call;
+        Call<Label> call;
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-	    	call = RetrofitClient.getApiInterface(ctx).createOrganizationLabel(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), createLabelFunc);
+	    	call = RetrofitClient.getApiInterface(ctx).orgCreateLabel(getIntent().getStringExtra("orgName"), createLabelFunc);
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(ctx).createLabel(getAccount().getAuthorization(), repoOwner, repoName, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(ctx).issueCreateLabel(repoOwner, repoName, createLabelFunc);
 	    }
 
-        call.enqueue(new Callback<CreateLabel>() {
+        call.enqueue(new Callback<Label>() {
 
             @Override
-            public void onResponse(@NonNull Call<CreateLabel> call, @NonNull retrofit2.Response<CreateLabel> response) {
+            public void onResponse(@NonNull Call<Label> call, @NonNull retrofit2.Response<Label> response) {
 
                 if(response.code() == 201) {
 
@@ -240,7 +243,7 @@ public class CreateLabelActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<CreateLabel> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<Label> call, @NonNull Throwable t) {
 
 	            labelColor = "";
                 Log.e("onFailure", t.toString());
@@ -252,23 +255,25 @@ public class CreateLabelActivity extends BaseActivity {
 
     private void patchLabel(String repoOwner, String repoName, String updateLabelName, String updateLabelColor, int labelId) {
 
-        CreateLabel createLabelFunc = new CreateLabel(updateLabelName, updateLabelColor);
+        EditLabelOption createLabelFunc = new EditLabelOption();
+		createLabelFunc.setColor(updateLabelColor);
+		createLabelFunc.setName(updateLabelName);
 
-        Call<CreateLabel> call;
+        Call<Label> call;
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-		    call = RetrofitClient.getApiInterface(ctx).patchOrganizationLabel(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), labelId, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(ctx).orgEditLabel(getIntent().getStringExtra("orgName"), (long) labelId, createLabelFunc);
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(ctx).patchLabel(getAccount().getAuthorization(), repoOwner, repoName, labelId, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(ctx).issueEditLabel(repoOwner, repoName, (long) labelId, createLabelFunc);
 	    }
 
-        call.enqueue(new Callback<CreateLabel>() {
+        call.enqueue(new Callback<Label>() {
 
             @Override
-            public void onResponse(@NonNull Call<CreateLabel> call, @NonNull retrofit2.Response<CreateLabel> response) {
+            public void onResponse(@NonNull Call<Label> call, @NonNull retrofit2.Response<Label> response) {
 
                 if(response.isSuccessful()) {
 
@@ -297,7 +302,7 @@ public class CreateLabelActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<CreateLabel> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<Label> call, @NonNull Throwable t) {
 
 	            labelColor = "";
 	            labelColorDefault = "";
@@ -315,21 +320,21 @@ public class CreateLabelActivity extends BaseActivity {
 
     private void deleteLabel(int labelId) {
 
-        Call<Labels> call;
+        Call<Void> call;
 
 	    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-		    call = RetrofitClient.getApiInterface(ctx).deleteOrganizationLabel(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), labelId);
+		    call = RetrofitClient.getApiInterface(ctx).orgDeleteLabel(getIntent().getStringExtra("orgName"), (long) labelId);
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(ctx).deleteLabel(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), labelId);
+		    call = RetrofitClient.getApiInterface(ctx).issueDeleteLabel(repository.getOwner(), repository.getName(), (long) labelId);
 	    }
 
-        call.enqueue(new Callback<Labels>() {
+        call.enqueue(new Callback<Void>() {
 
             @Override
-            public void onResponse(@NonNull Call<Labels> call, @NonNull retrofit2.Response<Labels> response) {
+            public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
 
                 if(response.isSuccessful()) {
 
@@ -342,7 +347,7 @@ public class CreateLabelActivity extends BaseActivity {
 	                    }
 	                    else {
 
-		                    LabelsViewModel.loadLabelsList(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), ctx);
+		                    LabelsViewModel.loadLabelsList(repository.getOwner(), repository.getName(), ctx);
 	                    }
                     }
                 }
@@ -360,7 +365,7 @@ public class CreateLabelActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<Labels> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e("onFailure", t.toString());
             }
         });

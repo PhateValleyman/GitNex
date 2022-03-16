@@ -14,18 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import org.gitnex.tea4j.models.UserRepositories;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.RepositoriesApi;
 import org.mian.gitnex.database.models.Repository;
-import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.ocpsoft.prettytime.PrettyTime;
 import java.text.DateFormat;
@@ -41,12 +36,12 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 
 	private final Context context;
 	private final int TYPE_LOAD = 0;
-	private List<UserRepositories> reposList;
+	private List<org.gitnex.tea4j.v2.models.Repository> reposList;
 	private Runnable loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 	private final TinyDB tinyDb;
 
-	public ExploreRepositoriesAdapter(List<UserRepositories> dataList, Context ctx) {
+	public ExploreRepositoriesAdapter(List<org.gitnex.tea4j.v2.models.Repository> dataList, Context ctx) {
 		this.context = ctx;
 		this.reposList = dataList;
 		this.tinyDb = TinyDB.getInstance(context);
@@ -92,7 +87,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 	}
 
 	class RepositoriesHolder extends RecyclerView.ViewHolder {
-		private UserRepositories userRepositories;
+		private org.gitnex.tea4j.v2.models.Repository userRepositories;
 
 		private final ImageView image;
 		private final TextView repoName;
@@ -139,7 +134,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 		}
 
 		@SuppressLint("SetTextI18n")
-		void bindData(UserRepositories userRepositories) {
+		void bindData(org.gitnex.tea4j.v2.models.Repository userRepositories) {
 			this.userRepositories = userRepositories;
 
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
@@ -148,7 +143,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 
 			orgName.setText(userRepositories.getFullName().split("/")[0]);
 			repoName.setText(userRepositories.getFullName().split("/")[1]);
-			repoStars.setText(userRepositories.getStars_count());
+			repoStars.setText(String.valueOf(userRepositories.getStarsCount()));
 
 			ColorGenerator generator = ColorGenerator.MATERIAL;
 			int color = generator.getColor(userRepositories.getName());
@@ -156,9 +151,9 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 
 			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
 
-			if(userRepositories.getAvatar_url() != null) {
-				if(!userRepositories.getAvatar_url().equals("")) {
-					PicassoService.getInstance(context).get().load(userRepositories.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(image);
+			if(userRepositories.getAvatarUrl() != null) {
+				if(!userRepositories.getAvatarUrl().equals("")) {
+					PicassoService.getInstance(context).get().load(userRepositories.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(image);
 				}
 				else {
 					image.setImageDrawable(drawable);
@@ -168,25 +163,25 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 				image.setImageDrawable(drawable);
 			}
 
-			if(userRepositories.getUpdated_at() != null) {
+			if(userRepositories.getUpdatedAt() != null) {
 
 				switch(timeFormat) {
 					case "pretty": {
 						PrettyTime prettyTime = new PrettyTime(locale);
-						String createdTime = prettyTime.format(userRepositories.getUpdated_at());
+						String createdTime = prettyTime.format(userRepositories.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
-						repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(userRepositories.getUpdated_at()), context));
+						repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(userRepositories.getUpdatedAt()), context));
 						break;
 					}
 					case "normal": {
 						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
-						String createdTime = formatter.format(userRepositories.getUpdated_at());
+						String createdTime = formatter.format(userRepositories.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
 					}
 					case "normal1": {
 						DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
-						String createdTime = formatter.format(userRepositories.getUpdated_at());
+						String createdTime = formatter.format(userRepositories.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
 					}
@@ -233,7 +228,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 		this.loadMoreListener = loadMoreListener;
 	}
 
-	public void updateList(List<UserRepositories> list) {
+	public void updateList(List<org.gitnex.tea4j.v2.models.Repository> list) {
 		reposList = list;
 		notifyDataChanged();
 	}

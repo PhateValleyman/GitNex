@@ -57,7 +57,7 @@ public class RepoStargazersActivity extends BaseActivity {
 
         RepoStargazersViewModel repoStargazersModel = new ViewModelProvider(this).get(RepoStargazersViewModel.class);
 
-        repoStargazersModel.getRepoStargazers(instanceToken, repoOwner, repoName, ctx).observe(this, stargazersListMain -> {
+        repoStargazersModel.getRepoStargazers(repoOwner, repoName, ctx).observe(this, stargazersListMain -> {
 
             adapter = new UserGridAdapter(ctx, stargazersListMain);
 

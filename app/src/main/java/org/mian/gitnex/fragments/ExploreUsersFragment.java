@@ -14,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import org.gitnex.tea4j.models.UserInfo;
-import org.gitnex.tea4j.models.UserSearch;
+import org.gitnex.tea4j.v2.models.InlineResponse2001;
+import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.UsersAdapter;
@@ -39,7 +39,7 @@ public class ExploreUsersFragment extends Fragment {
 	private FragmentExploreUsersBinding viewBinding;
 	private Context context;
 
-	private List<UserInfo> usersList;
+	private List<User> usersList;
 	private UsersAdapter adapter;
 	private int pageSize;
 	private final String TAG = Constants.exploreUsers;
@@ -102,11 +102,11 @@ public class ExploreUsersFragment extends Fragment {
 
 	private void loadInitial(String token, String searchKeyword, int resultLimit) {
 
-		Call<UserSearch> call = RetrofitClient
-			.getApiInterface(context).getUserBySearch(token, searchKeyword, resultLimit, 1);
-		call.enqueue(new Callback<UserSearch>() {
+		Call<InlineResponse2001> call = RetrofitClient
+			.getApiInterface(context).userSearch(searchKeyword, null, resultLimit, 1);
+		call.enqueue(new Callback<InlineResponse2001>() {
 			@Override
-			public void onResponse(@NonNull Call<UserSearch> call, @NonNull Response<UserSearch> response) {
+			public void onResponse(@NonNull Call<InlineResponse2001> call, @NonNull Response<InlineResponse2001> response) {
 				if(response.isSuccessful()) {
 					if(response.body() != null && response.body().getData().size() > 0) {
 						usersList.clear();
@@ -131,7 +131,7 @@ public class ExploreUsersFragment extends Fragment {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<UserSearch> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<InlineResponse2001> call, @NonNull Throwable t) {
 				Log.e(TAG, t.toString());
 			}
 		});
@@ -140,13 +140,13 @@ public class ExploreUsersFragment extends Fragment {
 	private void loadMore(String token, String searchKeyword, int resultLimit, int page) {
 
 		viewBinding.progressBar.setVisibility(View.VISIBLE);
-		Call<UserSearch> call = RetrofitClient.getApiInterface(context).getUserBySearch(token, searchKeyword, resultLimit, page);
-		call.enqueue(new Callback<UserSearch>() {
+		Call<InlineResponse2001> call = RetrofitClient.getApiInterface(context).userSearch(searchKeyword, null, resultLimit, page);
+		call.enqueue(new Callback<InlineResponse2001>() {
 			@Override
-			public void onResponse(@NonNull Call<UserSearch> call, @NonNull Response<UserSearch> response) {
+			public void onResponse(@NonNull Call<InlineResponse2001> call, @NonNull Response<InlineResponse2001> response) {
 				if(response.isSuccessful()) {
 					assert response.body() != null;
-					List<UserInfo> result = response.body().getData();
+					List<User> result = response.body().getData();
 					if(result != null) {
 						if(result.size() > 0) {
 							pageSize = result.size();
@@ -166,7 +166,7 @@ public class ExploreUsersFragment extends Fragment {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<UserSearch> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<InlineResponse2001> call, @NonNull Throwable t) {
 				Log.e(TAG, t.toString());
 			}
 		});

@@ -118,10 +118,10 @@ public class ProfileActivity extends BaseActivity implements BottomSheetListener
 	}
 
 	private void checkFollowStatus() {
-		RetrofitClient.getApiInterface(this).checkFollowing(getAccount().getAuthorization(), username).enqueue(new Callback<JsonElement>() {
+		RetrofitClient.getApiInterface(this).userCurrentCheckFollowing(username).enqueue(new Callback<Void>() {
 
 			@Override
-			public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+			public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
 				if(response.code() == 204) {
 					following = true;
 				}
@@ -134,25 +134,25 @@ public class ProfileActivity extends BaseActivity implements BottomSheetListener
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 				following = false;
 			}
 		});
 	}
 
 	private void followUnfollow() {
-		Call<JsonElement> call;
+		Call<Void> call;
 		if (following) {
-			call = RetrofitClient.getApiInterface(this).unfollowUser(getAccount().getAuthorization(), username);
+			call = RetrofitClient.getApiInterface(this).userCurrentDeleteFollow(username);
 		}
 		else {
-			call = RetrofitClient.getApiInterface(this).followUser(getAccount().getAuthorization(), username);
+			call = RetrofitClient.getApiInterface(this).userCurrentPutFollow(username);
 		}
 
-		call.enqueue(new Callback<JsonElement>() {
+		call.enqueue(new Callback<Void>() {
 
 			@Override
-			public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+			public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
 				if (response.isSuccessful()) {
 					following = !following;
 					if (following) {
@@ -172,7 +172,7 @@ public class ProfileActivity extends BaseActivity implements BottomSheetListener
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 				if (following) {
 					Toasty.error(ProfileActivity.this, getString(R.string.unfollowingFailed));
 				}

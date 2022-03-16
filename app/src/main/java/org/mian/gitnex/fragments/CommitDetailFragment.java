@@ -13,8 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import com.vdurmont.emoji.EmojiParser;
-import org.gitnex.tea4j.models.Commits;
-import org.gitnex.tea4j.models.FileDiffView;
+import org.gitnex.tea4j.v2.models.Commit;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.ProfileActivity;
@@ -26,6 +25,7 @@ import org.mian.gitnex.databinding.FragmentCommitDetailsBinding;
 import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import okhttp3.ResponseBody;
@@ -78,26 +78,21 @@ public class CommitDetailFragment extends Fragment {
 	}
 
 	private void getDiff() {
-		Call<ResponseBody> call = new Version(TinyDB.getInstance(requireContext()).getString("giteaVersion")).higherOrEqual("1.16.0") ?
-			RetrofitClient.getApiInterface(requireContext()).getCommitDiff(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, sha) :
-			RetrofitClient.getWebInterface(requireContext()).getCommitDiff(((BaseActivity) requireActivity()).getAccount().getWebAuthorization(), repoOwner, repoName, sha);
+		Call<String> call = new Version(TinyDB.getInstance(requireContext()).getString("giteaVersion")).higherOrEqual("1.16.0") ?
+			RetrofitClient.getApiInterface(requireContext()).repoDownloadCommitDiffOrPatch(repoOwner, repoName, sha, "diff") :
+			RetrofitClient.getWebInterface(requireContext()).repoDownloadCommitDiffOrPatch( repoOwner, repoName, sha, "diff");
 
-		call.enqueue(new Callback<ResponseBody>() {
+		call.enqueue(new Callback<String>() {
 
 			@Override
-			public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+			public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
 				checkLoading();
 				assert response.body() != null;
 				switch(response.code()) {
 
 					case 200:
 						List<FileDiffView> fileDiffViews;
-						try {
-							fileDiffViews = ParseDiff.getFileDiffViewArray(response.body().string());
-						} catch(IOException e) {
-							onFailure(call, e);
-							return;
-						}
+						fileDiffViews = ParseDiff.getFileDiffViewArray(response.body());
 
 						DiffFilesAdapter adapter = new DiffFilesAdapter(requireContext(), fileDiffViews);
 						requireActivity().runOnUiThread(() -> binding.diffFiles.setAdapter(adapter));
@@ -122,7 +117,7 @@ public class CommitDetailFragment extends Fragment {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
 				checkLoading();
 				Toasty.error(requireContext(), getString(R.string.genericError));
 			}
@@ -131,11 +126,11 @@ public class CommitDetailFragment extends Fragment {
 
 	private void getCommit() {
 
-		RetrofitClient.getApiInterface(requireContext()).getCommit(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repoOwner, repoName, sha)
-			.enqueue(new Callback<Commits>() {
+		RetrofitClient.getApiInterface(requireContext()).repoGetSingleCommit(repoOwner, repoName, sha)
+			.enqueue(new Callback<Commit>() {
 
 				@Override
-				public void onResponse(@NonNull Call<Commits> call, @NonNull Response<Commits> response) {
+				public void onResponse(@NonNull Call<Commit> call, @NonNull Response<Commit> response) {
 					checkLoading();
 					CustomCommitHeaderBinding binding = CustomCommitHeaderBinding.inflate(getLayoutInflater());
 					binding.getRoot().setOnClickListener((v) -> {
@@ -143,7 +138,7 @@ public class CommitDetailFragment extends Fragment {
 					});
 					CommitDetailFragment.this.binding.diffFiles.addHeaderView(binding.getRoot());
 					assert response.body() != null;
-					Commits commitsModel = response.body();
+					Commit commitsModel = response.body();
 					String[] commitMessageParts = commitsModel.getCommit().getMessage().split("(\r\n|\n)", 2);
 
 					if(commitMessageParts.length > 1 && !commitMessageParts[1].trim().isEmpty()) {
@@ -159,25 +154,25 @@ public class CommitDetailFragment extends Fragment {
 						binding.commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(CommitDetailFragment.this
 							.getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getCommit().getAuthor().getName(), commitsModel.getCommit().getCommitter().getName(),
 								TimeHelper
-									.formatTime(commitsModel.getCommit().getCommitter().getDate(), getResources().getConfiguration().locale, "pretty",
+									.formatTime(new Date(commitsModel.getCommit().getCommitter().getDate()), getResources().getConfiguration().locale, "pretty",
 										requireContext())), HtmlCompat.FROM_HTML_MODE_COMPACT));
 					} else {
 						binding.commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(CommitDetailFragment.this
 							.getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
 								TimeHelper
-									.formatTime(commitsModel.getCommit().getCommitter().getDate(), getResources().getConfiguration().locale, "pretty",
+									.formatTime(new Date(commitsModel.getCommit().getCommitter().getDate()), getResources().getConfiguration().locale, "pretty",
 										requireContext())), HtmlCompat.FROM_HTML_MODE_COMPACT));
 					}
 
-					if(commitsModel.getAuthor() != null && commitsModel.getAuthor().getAvatar_url() != null &&
-						!commitsModel.getAuthor().getAvatar_url().isEmpty()) {
+					if(commitsModel.getAuthor() != null && commitsModel.getAuthor().getAvatarUrl() != null &&
+						!commitsModel.getAuthor().getAvatarUrl().isEmpty()) {
 
 						binding.commitAuthorAvatar.setVisibility(View.VISIBLE);
 
 						int imgRadius = AppUtil.getPixelsFromDensity(requireContext(), 3);
 
 						PicassoService.getInstance(requireContext()).get()
-							.load(commitsModel.getAuthor().getAvatar_url())
+							.load(commitsModel.getAuthor().getAvatarUrl())
 							.placeholder(R.drawable.loader_animated)
 							.transform(new RoundedTransformation(imgRadius, 0))
 							.resize(120, 120)
@@ -185,7 +180,7 @@ public class CommitDetailFragment extends Fragment {
 
 						binding.commitAuthorAvatar.setOnClickListener((v) -> {
 							Intent intent = new Intent(requireContext(), ProfileActivity.class);
-							intent.putExtra("username", commitsModel.getAuthor().getUsername());
+							intent.putExtra("username", commitsModel.getAuthor().getLogin());
 							startActivity(intent);
 						});
 
@@ -196,15 +191,15 @@ public class CommitDetailFragment extends Fragment {
 
 					if(commitsModel.getCommitter() != null &&
 						!commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin()) &&
-						commitsModel.getCommitter().getAvatar_url() != null &&
-						!commitsModel.getCommitter().getAvatar_url().isEmpty()) {
+						commitsModel.getCommitter().getAvatarUrl() != null &&
+						!commitsModel.getCommitter().getAvatarUrl().isEmpty()) {
 
 						binding.commitCommitterAvatar.setVisibility(View.VISIBLE);
 
 						int imgRadius = AppUtil.getPixelsFromDensity(requireContext(), 3);
 
 						PicassoService.getInstance(requireContext()).get()
-							.load(commitsModel.getCommitter().getAvatar_url())
+							.load(commitsModel.getCommitter().getAvatarUrl())
 							.placeholder(R.drawable.loader_animated)
 							.transform(new RoundedTransformation(imgRadius, 0))
 							.resize(120, 120)
@@ -212,7 +207,7 @@ public class CommitDetailFragment extends Fragment {
 
 						binding.commitCommitterAvatar.setOnClickListener((v) -> {
 							Intent intent = new Intent(requireContext(), ProfileActivity.class);
-							intent.putExtra("username", commitsModel.getCommitter().getUsername());
+							intent.putExtra("username", commitsModel.getCommitter().getLogin());
 							startActivity(intent);
 						});
 
@@ -232,7 +227,7 @@ public class CommitDetailFragment extends Fragment {
 				}
 
 				@Override
-				public void onFailure(@NonNull Call<Commits> call, @NonNull Throwable t) {
+				public void onFailure(@NonNull Call<Commit> call, @NonNull Throwable t) {
 
 					checkLoading();
 					Toasty.error(requireContext(), getString(R.string.genericError));

@@ -1,6 +1,5 @@
 package org.mian.gitnex.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,7 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import org.gitnex.tea4j.models.OrgPermissions;
+import org.gitnex.tea4j.v2.models.OrganizationPermissions;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.TeamsByOrgAdapter;
@@ -40,13 +39,13 @@ public class TeamsByOrgFragment extends Fragment {
     private TextView noDataTeams;
     private static String orgNameF = "param2";
     private String orgName;
-    private OrgPermissions permissions;
+    private OrganizationPermissions permissions;
     private TeamsByOrgAdapter adapter;
 
     public TeamsByOrgFragment() {
     }
 
-    public static TeamsByOrgFragment newInstance(String param1, OrgPermissions permissions) {
+    public static TeamsByOrgFragment newInstance(String param1, OrganizationPermissions permissions) {
         TeamsByOrgFragment fragment = new TeamsByOrgFragment();
         Bundle args = new Bundle();
         args.putString(orgNameF, param1);
@@ -60,7 +59,7 @@ public class TeamsByOrgFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             orgName = getArguments().getString(orgNameF);
-            permissions = (OrgPermissions) getArguments().getSerializable("permissions");
+            permissions = (OrganizationPermissions) getArguments().getSerializable("permissions");
         }
     }
 
@@ -88,7 +87,7 @@ public class TeamsByOrgFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            TeamsByOrgViewModel.loadTeamsByOrgList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), orgName, getContext(), noDataTeams, mProgressBar);
+            TeamsByOrgViewModel.loadTeamsByOrgList(orgName, getContext(), noDataTeams, mProgressBar);
 
         }, 200));
 
@@ -101,7 +100,7 @@ public class TeamsByOrgFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if(resumeTeams) {
-            TeamsByOrgViewModel.loadTeamsByOrgList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), orgName, getContext(), noDataTeams, mProgressBar);
+            TeamsByOrgViewModel.loadTeamsByOrgList(orgName, getContext(), noDataTeams, mProgressBar);
 	        resumeTeams = false;
         }
     }
@@ -110,7 +109,7 @@ public class TeamsByOrgFragment extends Fragment {
 
         TeamsByOrgViewModel teamModel = new ViewModelProvider(this).get(TeamsByOrgViewModel.class);
 
-        teamModel.getTeamsByOrg(instanceToken, owner, getContext(), noDataTeams, mProgressBar).observe(getViewLifecycleOwner(), orgTeamsListMain -> {
+        teamModel.getTeamsByOrg(owner, getContext(), noDataTeams, mProgressBar).observe(getViewLifecycleOwner(), orgTeamsListMain -> {
             adapter = new TeamsByOrgAdapter(getContext(), orgTeamsListMain, permissions, orgName);
             if(adapter.getItemCount() > 0) {
                 mRecyclerView.setAdapter(adapter);

@@ -92,7 +92,7 @@ public class OrganizationsFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            OrganizationListViewModel.loadOrgsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
+            OrganizationListViewModel.loadOrgsList(getContext());
 
         }, 50));
 
@@ -107,7 +107,7 @@ public class OrganizationsFragment extends Fragment {
         super.onResume();
 
 	    if(orgCreated) {
-            OrganizationListViewModel.loadOrgsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
+            OrganizationListViewModel.loadOrgsList(getContext());
             orgCreated = false;
         }
     }
@@ -116,7 +116,7 @@ public class OrganizationsFragment extends Fragment {
 
         OrganizationListViewModel orgModel = new ViewModelProvider(this).get(OrganizationListViewModel.class);
 
-        orgModel.getUserOrgs(instanceToken, getContext()).observe(getViewLifecycleOwner(), orgsListMain -> {
+        orgModel.getUserOrgs(getContext()).observe(getViewLifecycleOwner(), orgsListMain -> {
             adapter = new OrganizationsListAdapter(getContext(), orgsListMain);
 
             if(adapter.getItemCount() > 0) {

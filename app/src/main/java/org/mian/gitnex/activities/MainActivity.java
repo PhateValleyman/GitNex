@@ -23,9 +23,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
-import org.gitnex.tea4j.models.GiteaVersion;
-import org.gitnex.tea4j.models.NotificationCount;
-import org.gitnex.tea4j.models.UserInfo;
+import org.gitnex.tea4j.v2.models.NotificationCount;
+import org.gitnex.tea4j.v2.models.ServerVersion;
+import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserAccountsNavAdapter;
 import org.mian.gitnex.clients.PicassoService;
@@ -34,23 +34,8 @@ import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityMainBinding;
-import org.mian.gitnex.fragments.AdministrationFragment;
-import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
-import org.mian.gitnex.fragments.DraftsFragment;
-import org.mian.gitnex.fragments.ExploreFragment;
-import org.mian.gitnex.fragments.MyProfileFragment;
-import org.mian.gitnex.fragments.MyRepositoriesFragment;
-import org.mian.gitnex.fragments.NotificationsFragment;
-import org.mian.gitnex.fragments.OrganizationsFragment;
-import org.mian.gitnex.fragments.RepositoriesFragment;
-import org.mian.gitnex.fragments.SettingsFragment;
-import org.mian.gitnex.fragments.StarredRepositoriesFragment;
-import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.ChangeLog;
-import org.mian.gitnex.helpers.ColorInverter;
-import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.fragments.*;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.structs.BottomSheetListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +147,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
 		}
 
-		getNotificationsCount(instanceToken);
+		getNotificationsCount();
 
 		drawer = activityMainBinding.drawerLayout;
 		navigationView = activityMainBinding.navView;
@@ -215,7 +200,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				if (getAccount().getUserInfo() != null) {
 					String userEmailNav = getAccount().getUserInfo().getEmail();
 					String userFullNameNav = getAccount().getFullName();
-					String userAvatarNav = getAccount().getUserInfo().getAvatar();
+					String userAvatarNav = getAccount().getUserInfo().getAvatarUrl();
 
 					if(!userEmailNav.equals("")) {
 						userEmail.setText(userEmailNav);
@@ -260,14 +245,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				});
 
-				getNotificationsCount(instanceToken);
+				getNotificationsCount();
 			}
 
 			@Override
 			public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 
 				if (getAccount().getUserInfo() != null) {
-					navigationView.getMenu().findItem(R.id.nav_administration).setVisible(getAccount().getUserInfo().getIs_admin());
+					navigationView.getMenu().findItem(R.id.nav_administration).setVisible(getAccount().getUserInfo().isIsAdmin());
 				} else {
 					// hide first
 					navigationView.getMenu().findItem(R.id.nav_administration).setVisible(false);
@@ -579,11 +564,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	private void giteaVersion() {
 
-		Call<GiteaVersion> callVersion = RetrofitClient.getApiInterface(ctx).getGiteaVersionWithToken(getAccount().getAuthorization());
-		callVersion.enqueue(new Callback<GiteaVersion>() {
+		Call<ServerVersion> callVersion = RetrofitClient.getApiInterface(ctx).getVersion();
+		callVersion.enqueue(new Callback<ServerVersion>() {
 
 			@Override
-			public void onResponse(@NonNull final Call<GiteaVersion> callVersion, @NonNull retrofit2.Response<GiteaVersion> responseVersion) {
+			public void onResponse(@NonNull final Call<ServerVersion> callVersion, @NonNull retrofit2.Response<ServerVersion> responseVersion) {
 
 				if(responseVersion.code() == 200 && responseVersion.body() != null) {
 					String version = responseVersion.body().getVersion();
@@ -594,21 +579,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<GiteaVersion> callVersion, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<ServerVersion> callVersion, @NonNull Throwable t) {
 				Log.e("onFailure-version", t.toString());
 			}
 		});
 	}
 
 	private void loadUserInfo() {
-		Call<UserInfo> call = RetrofitClient.getApiInterface(ctx).getUserInfo(getAccount().getAuthorization());
+		Call<User> call = RetrofitClient.getApiInterface(ctx).userGetCurrent();
 
-		call.enqueue(new Callback<UserInfo>() {
+		call.enqueue(new Callback<User>() {
 
 			@Override
-			public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
+			public void onResponse(@NonNull Call<User> call, @NonNull retrofit2.Response<User> response) {
 
-				UserInfo userDetails = response.body();
+				User userDetails = response.body();
 
 				if(response.isSuccessful()) {
 
@@ -617,12 +602,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						assert userDetails != null;
 
 						getAccount().setUserInfo(userDetails);
-						navigationView.getMenu().findItem(R.id.nav_administration).setVisible(userDetails.getIs_admin());
-						if(!getAccount().getAccount().getUserName().equals(userDetails.getUsername())) {
+						navigationView.getMenu().findItem(R.id.nav_administration).setVisible(userDetails.isIsAdmin());
+						if(!getAccount().getAccount().getUserName().equals(userDetails.getLogin())) {
 							// user changed it's name -> update database
 							int accountId = getAccount().getAccount().getAccountId();
 							BaseApi.getInstance(MainActivity.this, UserAccountsApi.class).updateUsername(accountId,
-								userDetails.getUsername());
+								userDetails.getLogin());
 							getAccount().setAccount(BaseApi.getInstance(MainActivity.this, UserAccountsApi.class).getAccountById(accountId));
 						}
 						if(profileInitListener != null) profileInitListener.onButtonClicked(null);
@@ -640,7 +625,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
 
 				Log.e("onFailure", t.toString());
 			}
@@ -648,9 +633,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 	}
 
-	private void getNotificationsCount(String token) {
+	private void getNotificationsCount() {
 
-		Call<NotificationCount> call = RetrofitClient.getApiInterface(ctx).checkUnreadNotifications(token);
+		Call<NotificationCount> call = RetrofitClient.getApiInterface(ctx).notifyNewAvailable();
 
 		call.enqueue(new Callback<NotificationCount>() {
 
@@ -663,7 +648,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 					assert notificationCount != null;
 					notificationCounter = navNotifications.getActionView().findViewById(R.id.counterBadgeNotification);
-					notificationCounter.setText(String.valueOf(notificationCount.getCounter()));
+					notificationCounter.setText(String.valueOf(notificationCount.getNew()));
 				}
 			}
 

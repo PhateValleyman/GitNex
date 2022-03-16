@@ -13,17 +13,13 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.vdurmont.emoji.EmojiParser;
-import org.gitnex.tea4j.models.Issues;
+import org.gitnex.tea4j.v2.models.Issue;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
-import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.ocpsoft.prettytime.PrettyTime;
 import java.text.DateFormat;
@@ -39,11 +35,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	private final Context context;
 	private final int TYPE_LOAD = 0;
-	private List<Issues> issuesList;
+	private List<Issue> issuesList;
 	private Runnable loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
-	public IssuesAdapter(Context ctx, List<Issues> issuesListMain) {
+	public IssuesAdapter(Context ctx, List<Issue> issuesListMain) {
 
 		this.context = ctx;
 		this.issuesList = issuesListMain;
@@ -97,7 +93,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 	class IssuesHolder extends RecyclerView.ViewHolder {
 
-		private Issues issue;
+		private Issue issue;
 
 		private final ImageView issueAssigneeAvatar;
 		private final TextView issueTitle;
@@ -133,7 +129,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		}
 
 		@SuppressLint("SetTextI18n")
-		void bindData(Issues issue) {
+		void bindData(Issue issue) {
 
 			TinyDB tinyDb = TinyDB.getInstance(context);
 			Locale locale = context.getResources().getConfiguration().locale;
@@ -142,7 +138,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 			PicassoService.getInstance(context).get()
-				.load(issue.getUser().getAvatar_url())
+				.load(issue.getUser().getAvatarUrl())
 				.placeholder(R.drawable.loader_animated)
 				.transform(new RoundedTransformation(imgRadius, 0))
 				.resize(120, 120)
@@ -158,20 +154,20 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			switch(timeFormat) {
 				case "pretty": {
 					PrettyTime prettyTime = new PrettyTime(locale);
-					String createdTime = prettyTime.format(issue.getCreated_at());
+					String createdTime = prettyTime.format(issue.getCreatedAt());
 					this.issueCreatedTime.setText(createdTime);
-					this.issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getCreated_at()), context));
+					this.issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getCreatedAt()), context));
 					break;
 				}
 				case "normal": {
 					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
-					String createdTime = formatter.format(issue.getCreated_at());
+					String createdTime = formatter.format(issue.getCreatedAt());
 					this.issueCreatedTime.setText(createdTime);
 					break;
 				}
 				case "normal1": {
 					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
-					String createdTime = formatter.format(issue.getCreated_at());
+					String createdTime = formatter.format(issue.getCreatedAt());
 					this.issueCreatedTime.setText(createdTime);
 					break;
 				}
@@ -205,7 +201,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		this.loadMoreListener = loadMoreListener;
 	}
 
-	public void updateList(List<Issues> list) {
+	public void updateList(List<Issue> list) {
 
 		issuesList = list;
 		notifyDataSetChanged();

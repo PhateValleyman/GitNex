@@ -54,7 +54,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		boolean userIsCreator = issueCreator.equals(((BaseActivity) requireActivity()).getAccount().getAccount().getUserName());
 		boolean isRepoAdmin = issue.getRepository().getPermissions().isAdmin();
-		boolean canPush = issue.getRepository().getPermissions().canPush();
+		boolean canPush = issue.getRepository().getPermissions().isPush();
 		boolean archived = issue.getRepository().getRepository().isArchived();
 
 		Bundle bundle = new Bundle();
@@ -179,7 +179,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 			sharingIntent.setType("text/plain");
 			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.hash) + issue.getIssueIndex() + " " + issue.getIssue().getTitle());
-			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, issue.getIssue().getHtml_url());
+			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, issue.getIssue().getHtmlUrl());
 			startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.hash) + issue.getIssueIndex() + " " + issue.getIssue().getTitle()));
 
 			dismiss();
@@ -189,7 +189,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 			// copy to clipboard
 			ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(ctx).getSystemService(Context.CLIPBOARD_SERVICE);
-			ClipData clip = ClipData.newPlainText("issueUrl", issue.getIssue().getHtml_url());
+			ClipData clip = ClipData.newPlainText("issueUrl", issue.getIssue().getHtmlUrl());
 			assert clipboard != null;
 			clipboard.setPrimaryClip(clip);
 

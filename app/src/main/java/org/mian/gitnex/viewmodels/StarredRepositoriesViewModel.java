@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import org.gitnex.tea4j.models.UserRepositories;
+import org.gitnex.tea4j.v2.models.Repository;
 import org.mian.gitnex.clients.RetrofitClient;
 import java.util.List;
 import retrofit2.Call;
@@ -19,26 +19,26 @@ import retrofit2.Response;
 
 public class StarredRepositoriesViewModel extends ViewModel {
 
-    private static MutableLiveData<List<UserRepositories>> reposList;
+    private static MutableLiveData<List<Repository>> reposList;
 
-    public LiveData<List<UserRepositories>> getUserStarredRepositories(String token, Context ctx, int page, int limit) {
+    public LiveData<List<Repository>> getUserStarredRepositories(Context ctx, int page, int limit) {
 
         reposList = new MutableLiveData<>();
-        loadStarredReposList(token, ctx, page, limit);
+        loadStarredReposList(ctx, page, limit);
 
         return reposList;
     }
 
-    public static void loadStarredReposList(String token, Context ctx, int page, int limit) {
+    public static void loadStarredReposList(Context ctx, int page, int limit) {
 
-        Call<List<UserRepositories>> call = RetrofitClient
+        Call<List<Repository>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getUserStarredRepos(token, page, limit);
+                .userCurrentListStarred(page, limit);
 
-        call.enqueue(new Callback<List<UserRepositories>>() {
+        call.enqueue(new Callback<List<Repository>>() {
 
             @Override
-            public void onResponse(@NonNull Call<List<UserRepositories>> call, @NonNull Response<List<UserRepositories>> response) {
+            public void onResponse(@NonNull Call<List<Repository>> call, @NonNull Response<List<Repository>> response) {
 
                 if(response.isSuccessful()) {
                     if(response.code() == 200) {
@@ -50,7 +50,7 @@ public class StarredRepositoriesViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<UserRepositories>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Repository>> call, Throwable t) {
                 Log.i("onFailure", t.toString());
             }
 

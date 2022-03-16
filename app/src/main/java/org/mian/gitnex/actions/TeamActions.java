@@ -2,10 +2,8 @@ package org.mian.gitnex.actions;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import com.google.gson.JsonElement;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.AddNewTeamMemberActivity;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
@@ -20,14 +18,14 @@ public class TeamActions {
 
 	public static void removeTeamMember(final Context context, String userName, int teamId) {
 
-		Call<JsonElement> call = RetrofitClient
+		Call<Void> call = RetrofitClient
 				.getApiInterface(context)
-				.removeTeamMember(((BaseActivity) context).getAccount().getAuthorization(), teamId, userName);
+				.orgRemoveTeamMember((long) teamId, userName);
 
-		call.enqueue(new Callback<JsonElement>() {
+		call.enqueue(new Callback<Void>() {
 
 			@Override
-			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+			public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
 
 				if(response.isSuccessful()) {
 
@@ -66,7 +64,7 @@ public class TeamActions {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
 				Toasty.error(context, context.getResources().getString(R.string.genericServerResponseError));
 
@@ -77,14 +75,14 @@ public class TeamActions {
 
 	public static void addTeamMember(final Context context, String userName, int teamId) {
 
-		Call<JsonElement> call = RetrofitClient
+		Call<Void> call = RetrofitClient
 				.getApiInterface(context)
-				.addTeamMember(((BaseActivity) context).getAccount().getAuthorization(), teamId, userName);
+				.orgAddTeamMember((long) teamId, userName);
 
-		call.enqueue(new Callback<JsonElement>() {
+		call.enqueue(new Callback<Void>() {
 
 			@Override
-			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+			public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
 
 				if(response.isSuccessful()) {
 
@@ -123,7 +121,7 @@ public class TeamActions {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
 				Toasty.error(context, context.getResources().getString(R.string.genericServerResponseError));
 

@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import org.gitnex.tea4j.models.FileDiffView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.DiffFilesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentDiffFilesBinding;
@@ -62,13 +60,11 @@ public class DiffFilesFragment extends Fragment {
 
 		Thread thread = new Thread(() -> {
 
-			Call<ResponseBody> call = ((BaseActivity) ctx).getAccount().requiresVersion("1.13.0") ?
-				RetrofitClient.getApiInterface(ctx).getPullDiffContent(((BaseActivity) requireActivity()).getAccount().getAuthorization(), owner, repo, pullIndex) :
-				RetrofitClient.getWebInterface(ctx).getPullDiffContent(((BaseActivity) requireActivity()).getAccount().getWebAuthorization(), owner, repo, pullIndex);
+			Call<String> call = RetrofitClient.getApiInterface(ctx).repoDownloadPullDiffOrPatch(owner, repo, Long.valueOf(pullIndex), "diff", null);
 
 			try {
 
-				Response<ResponseBody> response = call.execute();
+				Response<String> response = call.execute();
 				if(response.body() == null) {
 					Toasty.error(requireContext(), getString(R.string.genericError));
 					requireActivity().finish();
@@ -78,7 +74,7 @@ public class DiffFilesFragment extends Fragment {
 				switch(response.code()) {
 
 					case 200:
-						List<FileDiffView> fileDiffViews = ParseDiff.getFileDiffViewArray(response.body().string());
+						List<FileDiffView> fileDiffViews = ParseDiff.getFileDiffViewArray(response.body());
 
 						int filesCount = fileDiffViews.size();
 

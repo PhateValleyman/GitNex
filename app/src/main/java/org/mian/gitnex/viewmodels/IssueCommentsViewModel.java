@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import org.gitnex.tea4j.models.IssueComments;
+import org.gitnex.tea4j.v2.models.Comment;
 import org.mian.gitnex.clients.RetrofitClient;
 import java.util.List;
 import retrofit2.Call;
@@ -19,9 +19,9 @@ import retrofit2.Response;
 
 public class IssueCommentsViewModel extends ViewModel {
 
-    private static MutableLiveData<List<IssueComments>> issueComments;
+    private static MutableLiveData<List<Comment>> issueComments;
 
-    public LiveData<List<IssueComments>> getIssueCommentList(String token, String owner, String repo, int index, Context ctx) {
+    public LiveData<List<Comment>> getIssueCommentList(String token, String owner, String repo, int index, Context ctx) {
 
         issueComments = new MutableLiveData<>();
         loadIssueComments(token, owner, repo, index, ctx);
@@ -35,14 +35,14 @@ public class IssueCommentsViewModel extends ViewModel {
 
     public static void loadIssueComments(String token, String owner, String repo, int index, Context ctx, Runnable onLoadingFinished) {
 
-        Call<List<IssueComments>> call = RetrofitClient
+        Call<List<Comment>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getIssueComments(token, owner, repo, index);
+                .issueGetComments(owner, repo, (long) index, null, null);
 
-        call.enqueue(new Callback<List<IssueComments>>() {
+        call.enqueue(new Callback<List<Comment>>() {
 
             @Override
-            public void onResponse(@NonNull Call<List<IssueComments>> call, @NonNull Response<List<IssueComments>> response) {
+            public void onResponse(@NonNull Call<List<Comment>> call, @NonNull Response<List<Comment>> response) {
 
                 if(response.isSuccessful()) {
 
@@ -59,7 +59,7 @@ public class IssueCommentsViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<IssueComments>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Comment>> call, Throwable t) {
                 Log.i("onFailure", t.toString());
             }
 

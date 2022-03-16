@@ -1,6 +1,5 @@
 package org.mian.gitnex.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,15 +13,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import org.gitnex.tea4j.models.UserRepositories;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.MainActivity;
@@ -30,7 +26,6 @@ import org.mian.gitnex.adapters.RepositoriesByOrgAdapter;
 import org.mian.gitnex.databinding.FragmentRepositoriesByOrgBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.viewmodels.RepositoriesByOrgViewModel;
-import java.util.List;
 
 /**
  * Author M M Arif
@@ -90,7 +85,7 @@ public class RepositoriesByOrgFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            RepositoriesByOrgViewModel.loadOrgRepos(((BaseActivity) requireActivity()).getAccount().getAuthorization(), orgName, getContext(), pageSize, resultLimit);
+            RepositoriesByOrgViewModel.loadOrgRepos(orgName, getContext(), pageSize, resultLimit);
 
         }, 200));
 
@@ -105,7 +100,7 @@ public class RepositoriesByOrgFragment extends Fragment {
         super.onResume();
 
         if(MainActivity.repoCreated) {
-            RepositoriesByOrgViewModel.loadOrgRepos(((BaseActivity) requireActivity()).getAccount().getAuthorization(), orgName, getContext(), pageSize, resultLimit);
+            RepositoriesByOrgViewModel.loadOrgRepos(orgName, getContext(), pageSize, resultLimit);
 	        MainActivity.repoCreated = false;
         }
 
@@ -115,22 +110,20 @@ public class RepositoriesByOrgFragment extends Fragment {
 
         RepositoriesByOrgViewModel orgRepoModel = new ViewModelProvider(this).get(RepositoriesByOrgViewModel.class);
 
-        orgRepoModel.getRepositoriesByOrg(instanceToken, owner, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(), new Observer<List<UserRepositories>>() {
-            @Override
-            public void onChanged(@Nullable List<UserRepositories> orgReposListMain) {
-                adapter = new RepositoriesByOrgAdapter(getContext(), orgReposListMain);
-                if(adapter.getItemCount() > 0) {
-                    mRecyclerView.setAdapter(adapter);
-                    noData.setVisibility(View.GONE);
-                }
-                else {
-                    adapter.notifyDataSetChanged();
-                    mRecyclerView.setAdapter(adapter);
-                    noData.setVisibility(View.VISIBLE);
-                }
-                mProgressBar.setVisibility(View.GONE);
-            }
-        });
+        orgRepoModel.getRepositoriesByOrg(owner, getContext(), pageSize, resultLimit).observe(getViewLifecycleOwner(),
+	        orgReposListMain -> {
+	            adapter = new RepositoriesByOrgAdapter(getContext(), orgReposListMain);
+	            if(adapter.getItemCount() > 0) {
+	                mRecyclerView.setAdapter(adapter);
+	                noData.setVisibility(View.GONE);
+	            }
+	            else {
+	                adapter.notifyDataSetChanged();
+	                mRecyclerView.setAdapter(adapter);
+	                noData.setVisibility(View.VISIBLE);
+	            }
+	            mProgressBar.setVisibility(View.GONE);
+	        });
 
     }
 

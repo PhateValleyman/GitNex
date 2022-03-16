@@ -2,7 +2,6 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +13,13 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.vdurmont.emoji.EmojiParser;
-import org.gitnex.tea4j.models.Milestones;
+import org.gitnex.tea4j.v2.models.Milestone;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.MilestoneActions;
 import org.mian.gitnex.activities.RepoDetailActivity;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.Constants;
-import org.mian.gitnex.helpers.Markdown;
-import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -39,13 +33,13 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 	private final Context context;
 	private final int TYPE_LOAD = 0;
-	private List<Milestones> dataList;
+	private List<Milestone> dataList;
 	private Runnable loadMoreListener;
 	private boolean isLoading = false;
 	private boolean isMoreDataAvailable = true;
 	private final RepositoryContext repository;
 
-	public MilestonesAdapter(Context ctx, List<Milestones> dataListMain, RepositoryContext repository) {
+	public MilestonesAdapter(Context ctx, List<Milestone> dataListMain, RepositoryContext repository) {
 		this.repository = repository;
 		this.context = ctx;
 		this.dataList = dataListMain;
@@ -82,7 +76,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 	class DataHolder extends RecyclerView.ViewHolder {
 
-		private Milestones milestones;
+		private Milestone milestones;
 
 		private final TextView msTitle;
 		private final TextView msDescription;
@@ -103,7 +97,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 			msProgress = itemView.findViewById(R.id.milestoneProgress);
 			ImageView milestonesMenu = itemView.findViewById(R.id.milestonesMenu);
 
-			if(!((RepoDetailActivity) itemView.getContext()).repository.getPermissions().canPush()) {
+			if(!((RepoDetailActivity) itemView.getContext()).repository.getPermissions().isPush()) {
 				milestonesMenu.setVisibility(View.GONE);
 			}
 			milestonesMenu.setOnClickListener(v -> {
@@ -150,7 +144,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 		}
 
 		@SuppressLint("SetTextI18n")
-		void bindData(Milestones dataModel) {
+		void bindData(Milestone dataModel) {
 
 			this.milestones = dataModel;
 			final TinyDB tinyDb = TinyDB.getInstance(context);
@@ -168,19 +162,19 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 				msDescription.setText(context.getString(R.string.milestoneNoDescription));
 			}
 
-			msOpenIssues.setText(context.getString(R.string.milestoneIssueStatusOpen, dataModel.getOpen_issues()));
-			msClosedIssues.setText(context.getString(R.string.milestoneIssueStatusClosed, dataModel.getClosed_issues()));
+			msOpenIssues.setText(context.getString(R.string.milestoneIssueStatusOpen, dataModel.getOpenIssues()));
+			msClosedIssues.setText(context.getString(R.string.milestoneIssueStatusClosed, dataModel.getClosedIssues()));
 
-			if((dataModel.getOpen_issues() + dataModel.getClosed_issues()) > 0) {
+			if((dataModel.getOpenIssues() + dataModel.getClosedIssues()) > 0) {
 
-				if(dataModel.getOpen_issues() == 0) {
+				if(dataModel.getOpenIssues() == 0) {
 
 					msProgress.setProgress(100);
 					msProgress.setOnClickListener(new ClickListener(context.getResources().getString(R.string.milestoneCompletion, 100), context));
 				}
 				else {
 
-					int msCompletion = 100 * dataModel.getClosed_issues() / (dataModel.getOpen_issues() + dataModel.getClosed_issues());
+					int msCompletion = (int) (100 * dataModel.getClosedIssues() / (dataModel.getOpenIssues() + dataModel.getClosedIssues()));
 					msProgress.setOnClickListener(new ClickListener(context.getResources().getString(R.string.milestoneCompletion, msCompletion), context));
 					msProgress.setProgress(msCompletion);
 				}
@@ -192,20 +186,13 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 				msProgress.setOnClickListener(new ClickListener(context.getResources().getString(R.string.milestoneCompletion, 0), context));
 			}
 
-			if(dataModel.getDue_on() != null) {
+			if(dataModel.getDueOn() != null) {
 
 				String TAG = Constants.tagMilestonesAdapter;
 				if(timeFormat.equals("normal") || timeFormat.equals("pretty")) {
 
 					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", new Locale(locale));
-					Date date = null;
-
-					try {
-						date = formatter.parse(dataModel.getDue_on());
-					}
-					catch(ParseException e) {
-						Log.e(TAG, e.toString());
-					}
+					Date date = dataModel.getDueOn();
 
 					assert date != null;
 					String dueDate = formatter.format(date);
@@ -215,20 +202,13 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 					}
 
 					msDueDate.setText(dueDate);
-					msDueDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToast(dataModel.getDue_on()), context));
+					msDueDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToast(dataModel.getDueOn().toString()), context));
 				}
 				else if(timeFormat.equals("normal1")) {
 
 					SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", new Locale(locale));
 
-					Date date1 = null;
-
-					try {
-						date1 = formatter.parse(dataModel.getDue_on());
-					}
-					catch(ParseException e) {
-						Log.e(TAG, e.toString());
-					}
+					Date date1 = dataModel.getDueOn();
 
 					assert date1 != null;
 					String dueDate = formatter.format(date1);
@@ -293,7 +273,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 		this.loadMoreListener = loadMoreListener;
 	}
 
-	public void updateList(List<Milestones> list) {
+	public void updateList(List<Milestone> list) {
 
 		dataList = list;
 		notifyDataSetChanged();

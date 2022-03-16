@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import org.gitnex.tea4j.models.UserOrganizations;
+import org.gitnex.tea4j.v2.models.Organization;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.OrganizationDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
@@ -27,13 +27,13 @@ import java.util.List;
 
 public class OrganizationsListAdapter extends RecyclerView.Adapter<OrganizationsListAdapter.OrganizationsViewHolder> implements Filterable {
 
-    private final List<UserOrganizations> orgList;
+    private final List<Organization> orgList;
     private final Context context;
-    private final List<UserOrganizations> orgListFull;
+    private final List<Organization> orgListFull;
 
     static class OrganizationsViewHolder extends RecyclerView.ViewHolder {
 
-    	private UserOrganizations userOrganizations;
+    	private Organization userOrganizations;
 
         private final ImageView image;
         private final TextView orgName;
@@ -54,7 +54,7 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
         }
     }
 
-    public OrganizationsListAdapter(Context ctx, List<UserOrganizations> orgsListMain) {
+    public OrganizationsListAdapter(Context ctx, List<Organization> orgsListMain) {
 
         this.context = ctx;
         this.orgList = orgsListMain;
@@ -73,13 +73,13 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
     @Override
     public void onBindViewHolder(@NonNull OrganizationsViewHolder holder, int position) {
 
-        UserOrganizations currentItem = orgList.get(position);
+	    Organization currentItem = orgList.get(position);
 	    int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 	    holder.userOrganizations = currentItem;
 	    holder.orgName.setText(currentItem.getUsername());
 
-        PicassoService.getInstance(context).get().load(currentItem.getAvatar_url()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.image);
+        PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.image);
 
 	    if(!currentItem.getDescription().equals("")) {
 		    holder.orgDescription.setVisibility(View.VISIBLE);
@@ -105,7 +105,7 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
 
-            List<UserOrganizations> filteredList = new ArrayList<>();
+            List<Organization> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
 
@@ -115,7 +115,7 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<Organizations
 
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for (UserOrganizations item : orgListFull) {
+                for (Organization item : orgListFull) {
                     if (item.getUsername().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }

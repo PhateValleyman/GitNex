@@ -1,6 +1,5 @@
 package org.mian.gitnex.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -59,21 +58,21 @@ public class MyProfileEmailsFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            ProfileEmailsViewModel.loadEmailsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
+            ProfileEmailsViewModel.loadEmailsList(getContext());
 
         }, 200));
 
-        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization());
+        fetchDataAsync();
 
         return fragmentProfileEmailsBinding.getRoot();
 
     }
 
-    private void fetchDataAsync(String instanceToken) {
+    private void fetchDataAsync() {
 
         ProfileEmailsViewModel profileEmailModel = new ViewModelProvider(this).get(ProfileEmailsViewModel.class);
 
-        profileEmailModel.getEmailsList(instanceToken, getContext()).observe(getViewLifecycleOwner(), emailsListMain -> {
+        profileEmailModel.getEmailsList(getContext()).observe(getViewLifecycleOwner(), emailsListMain -> {
             adapter = new MyProfileEmailsAdapter(getContext(), emailsListMain);
             if(adapter.getItemCount() > 0) {
                 mRecyclerView.setAdapter(adapter);
@@ -95,7 +94,7 @@ public class MyProfileEmailsFragment extends Fragment {
 		super.onResume();
 
 		if(refreshEmails) {
-			ProfileEmailsViewModel.loadEmailsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), getContext());
+			ProfileEmailsViewModel.loadEmailsList(getContext());
 			refreshEmails = false;
 		}
 	}

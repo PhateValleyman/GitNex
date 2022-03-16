@@ -8,17 +8,13 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import org.gitnex.tea4j.models.Collaborators;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.CollaboratorsAdapter;
 import org.mian.gitnex.databinding.FragmentCollaboratorsBinding;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.viewmodels.CollaboratorsViewModel;
-import java.util.List;
 
 /**
  * Author M M Arif
@@ -69,21 +65,18 @@ public class CollaboratorsFragment extends Fragment {
 
         CollaboratorsViewModel collaboratorsModel = new ViewModelProvider(this).get(CollaboratorsViewModel.class);
 
-        collaboratorsModel.getCollaboratorsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), new Observer<List<Collaborators>>() {
-            @Override
-            public void onChanged(@Nullable List<Collaborators> collaboratorsListMain) {
-                adapter = new CollaboratorsAdapter(getContext(), collaboratorsListMain);
-                if(adapter.getCount() > 0) {
-                    mGridView.setAdapter(adapter);
-                    noDataCollaborators.setVisibility(View.GONE);
-                }
-                else {
-                    adapter.notifyDataSetChanged();
-                    mGridView.setAdapter(adapter);
-                    noDataCollaborators.setVisibility(View.VISIBLE);
-                }
-                mProgressBar.setVisibility(View.GONE);
+        collaboratorsModel.getCollaboratorsList(owner, repo, getContext()).observe(getViewLifecycleOwner(), collaboratorsListMain -> {
+            adapter = new CollaboratorsAdapter(getContext(), collaboratorsListMain);
+            if(adapter.getCount() > 0) {
+                mGridView.setAdapter(adapter);
+                noDataCollaborators.setVisibility(View.GONE);
             }
+            else {
+                adapter.notifyDataSetChanged();
+                mGridView.setAdapter(adapter);
+                noDataCollaborators.setVisibility(View.VISIBLE);
+            }
+            mProgressBar.setVisibility(View.GONE);
         });
 
     }

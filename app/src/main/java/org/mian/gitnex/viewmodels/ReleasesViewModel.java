@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import org.gitnex.tea4j.models.GitTag;
-import org.gitnex.tea4j.models.Releases;
+import org.gitnex.tea4j.v2.models.Release;
+import org.gitnex.tea4j.v2.models.Tag;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.ReleasesAdapter;
 import org.mian.gitnex.adapters.TagsAdapter;
@@ -24,10 +24,10 @@ import retrofit2.Response;
 
 public class ReleasesViewModel extends ViewModel {
 
-    private static MutableLiveData<List<Releases>> releasesList;
+    private static MutableLiveData<List<Release>> releasesList;
 	private static int resultLimit = Constants.resultLimitOldGiteaInstances;
 
-    public LiveData<List<Releases>> getReleasesList(String token, String owner, String repo, Context ctx) {
+    public LiveData<List<Release>> getReleasesList(String owner, String repo, Context ctx) {
 
         releasesList = new MutableLiveData<>();
 
@@ -36,21 +36,21 @@ public class ReleasesViewModel extends ViewModel {
 		    resultLimit = Constants.resultLimitNewGiteaInstances;
 	    }
 
-        loadReleasesList(token, owner, repo, ctx);
+        loadReleasesList(owner, repo, ctx);
 
         return releasesList;
     }
 
-    public static void loadReleasesList(String token, String owner, String repo, Context ctx) {
+    public static void loadReleasesList(String owner, String repo, Context ctx) {
 
-        Call<List<Releases>> call = RetrofitClient
+        Call<List<Release>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .getReleases(token, owner, repo, 1, resultLimit);
+                .repoListReleases(owner, repo, null, null, null, 1, resultLimit);
 
-        call.enqueue(new Callback<List<Releases>>() {
+        call.enqueue(new Callback<List<Release>>() {
 
             @Override
-            public void onResponse(@NonNull Call<List<Releases>> call, @NonNull Response<List<Releases>> response) {
+            public void onResponse(@NonNull Call<List<Release>> call, @NonNull Response<List<Release>> response) {
 
                 if (response.isSuccessful()) {
                     releasesList.postValue(response.body());
@@ -61,25 +61,25 @@ public class ReleasesViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Releases>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Release>> call, Throwable t) {
                 Log.i("onFailure", t.toString());
             }
         });
     }
 
-	public static void loadMoreReleases(String token, String owner, String repo, int page, Context ctx, ReleasesAdapter adapter) {
+	public static void loadMoreReleases(String owner, String repo, int page, Context ctx, ReleasesAdapter adapter) {
 
-		Call<List<Releases>> call = RetrofitClient
+		Call<List<Release>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getReleases(token, owner, repo, page, resultLimit);
+			.repoListReleases(owner, repo, null, null, null, page, resultLimit);
 
-		call.enqueue(new Callback<List<Releases>>() {
+		call.enqueue(new Callback<List<Release>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<Releases>> call, @NonNull Response<List<Releases>> response) {
+			public void onResponse(@NonNull Call<List<Release>> call, @NonNull Response<List<Release>> response) {
 
 				if (response.isSuccessful()) {
-					List<Releases> list = releasesList.getValue();
+					List<Release> list = releasesList.getValue();
 					assert list != null;
 					assert response.body() != null;
 
@@ -97,15 +97,15 @@ public class ReleasesViewModel extends ViewModel {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Releases>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Release>> call, @NonNull Throwable t) {
 				Log.i("onFailure", t.toString());
 			}
 		});
 	}
 
-	private static MutableLiveData<List<GitTag>> tagsList;
+	private static MutableLiveData<List<Tag>> tagsList;
 
-	public LiveData<List<GitTag>> getTagsList(String token, String owner, String repo, Context ctx) {
+	public LiveData<List<Tag>> getTagsList(String owner, String repo, Context ctx) {
 
 		tagsList = new MutableLiveData<>();
 
@@ -114,21 +114,21 @@ public class ReleasesViewModel extends ViewModel {
 			resultLimit = Constants.resultLimitNewGiteaInstances;
 		}
 
-		loadTagsList(token, owner, repo, ctx);
+		loadTagsList(owner, repo, ctx);
 
 		return tagsList;
 	}
 
-	public static void loadTagsList(String token, String owner, String repo, Context ctx) {
+	public static void loadTagsList(String owner, String repo, Context ctx) {
 
-		Call<List<GitTag>> call = RetrofitClient
+		Call<List<Tag>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getTags(token, owner, repo, 1, resultLimit);
+			.repoListTags(owner, repo, 1, resultLimit);
 
-		call.enqueue(new Callback<List<GitTag>>() {
+		call.enqueue(new Callback<List<Tag>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<GitTag>> call, @NonNull Response<List<GitTag>> response) {
+			public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
 
 				if (response.isSuccessful()) {
 					tagsList.postValue(response.body());
@@ -139,25 +139,25 @@ public class ReleasesViewModel extends ViewModel {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<GitTag>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
 				Log.i("onFailure", t.toString());
 			}
 		});
 	}
-	public static void loadMoreTags(String token, String owner, String repo, int page, Context ctx, TagsAdapter adapter) {
+	public static void loadMoreTags(String owner, String repo, int page, Context ctx, TagsAdapter adapter) {
 
-		Call<List<GitTag>> call = RetrofitClient
+		Call<List<Tag>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getTags(token, owner, repo, page, resultLimit);
+			.repoListTags(owner, repo, page, resultLimit);
 
-		call.enqueue(new Callback<List<GitTag>>() {
+		call.enqueue(new Callback<List<Tag>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<GitTag>> call, @NonNull Response<List<GitTag>> response) {
+			public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
 
 				if (response.isSuccessful()) {
 
-					List<GitTag> list = tagsList.getValue();
+					List<Tag> list = tagsList.getValue();
 					assert list != null;
 					assert response.body() != null;
 
@@ -175,7 +175,7 @@ public class ReleasesViewModel extends ViewModel {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<GitTag>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
 				Log.i("onFailure", t.toString());
 			}
 		});

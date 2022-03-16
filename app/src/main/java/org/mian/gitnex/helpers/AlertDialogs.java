@@ -1,6 +1,5 @@
 package org.mian.gitnex.helpers;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,11 +12,9 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.actions.CollaboratorActions;
 import org.mian.gitnex.actions.PullRequestActions;
 import org.mian.gitnex.actions.TeamActions;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.CreateLabelActivity;
-import org.mian.gitnex.activities.LoginActivity;
-import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,7 +85,7 @@ public class AlertDialogs {
 			.setTitle(String.format(context.getString(R.string.deleteTagTitle), tagName))
 			.setMessage(R.string.deleteTagConfirmation)
 			.setIcon(R.drawable.ic_delete)
-			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient.getApiInterface(context).deleteTag(((BaseActivity) context).getAccount().getAuthorization(), owner, repo, tagName).enqueue(new Callback<Void>() {
+			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient.getApiInterface(context).repoDeleteTag(owner, repo, tagName).enqueue(new Callback<Void>() {
 
 				@Override
 				public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {

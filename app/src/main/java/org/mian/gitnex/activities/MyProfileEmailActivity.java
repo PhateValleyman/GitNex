@@ -10,8 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
-import com.google.gson.JsonElement;
-import org.gitnex.tea4j.models.AddEmail;
+import org.gitnex.tea4j.v2.models.CreateEmailOption;
+import org.gitnex.tea4j.v2.models.Email;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityProfileEmailBinding;
@@ -101,18 +101,17 @@ public class MyProfileEmailActivity extends BaseActivity {
 
     private void addNewEmail(final String token, List<String> newUserEmail) {
 
-        AddEmail addEmailFunc = new AddEmail(newUserEmail);
+        CreateEmailOption addEmailFunc = new CreateEmailOption();
+		addEmailFunc.setEmails(newUserEmail);
 
-        Call<JsonElement> call;
-
-        call = RetrofitClient
+        Call<List<Email>> call = RetrofitClient
                 .getApiInterface(ctx)
-                .addNewEmail(token, addEmailFunc);
+                .userAddEmail(addEmailFunc);
 
-        call.enqueue(new Callback<JsonElement>() {
+        call.enqueue(new Callback<List<Email>>() {
 
             @Override
-            public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+            public void onResponse(@NonNull Call<List<Email>> call, @NonNull retrofit2.Response<List<Email>> response) {
 
                 if(response.code() == 201) {
 
@@ -152,7 +151,7 @@ public class MyProfileEmailActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Email>> call, @NonNull Throwable t) {
 
                 Log.e("onFailure", t.toString());
                 enableProcessButton();

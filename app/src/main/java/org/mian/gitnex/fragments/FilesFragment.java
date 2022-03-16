@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import org.gitnex.tea4j.models.Files;
+import org.gitnex.tea4j.v2.models.ContentsResponse;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.FileViewActivity;
@@ -147,7 +147,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 	}
 
 	@Override
-	public void onClickFile(Files file) {
+	public void onClickFile(ContentsResponse file) {
 
 		switch(file.getType()) {
 
@@ -166,7 +166,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				break;
 
 			case "submodule":
-				String rawUrl = file.getSubmodule_git_url();
+				String rawUrl = file.getSubmoduleGitUrl();
 				if(rawUrl == null) {
 					return;
 				}
@@ -224,7 +224,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 		FilesViewModel filesModel = new ViewModelProvider(this).get(FilesViewModel.class);
 
-		filesModel.getFilesList(instanceToken, owner, repo, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(getViewLifecycleOwner(), filesListMain -> {
+		filesModel.getFilesList(owner, repo, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(getViewLifecycleOwner(), filesListMain -> {
 
 			filesAdapter.getOriginalFiles().clear();
 			filesAdapter.getOriginalFiles().addAll(filesListMain);
@@ -254,7 +254,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 		FilesViewModel filesModel = new ViewModelProvider(this).get(FilesViewModel.class);
 
-		filesModel.getFilesList2(instanceToken, owner, repo, filesDir, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(getViewLifecycleOwner(), filesListMain2 -> {
+		filesModel.getFilesList2(owner, repo, filesDir, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(getViewLifecycleOwner(), filesListMain2 -> {
 
 			filesAdapter.getOriginalFiles().clear();
 			filesAdapter.getOriginalFiles().addAll(filesListMain2);

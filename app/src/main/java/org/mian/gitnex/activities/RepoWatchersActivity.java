@@ -57,7 +57,7 @@ public class RepoWatchersActivity extends BaseActivity {
 
         RepoWatchersViewModel repoWatchersModel = new ViewModelProvider(this).get(RepoWatchersViewModel.class);
 
-        repoWatchersModel.getRepoWatchers(instanceToken, repoOwner, repoName, ctx).observe(this, watchersListMain -> {
+        repoWatchersModel.getRepoWatchers(repoOwner, repoName, ctx).observe(this, watchersListMain -> {
 
             adapter = new UserGridAdapter(ctx, watchersListMain);
 

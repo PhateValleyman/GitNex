@@ -14,9 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import org.gitnex.tea4j.models.Issues;
+import org.gitnex.tea4j.v2.models.Issue;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.ExploreIssuesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentSearchIssuesBinding;
@@ -38,7 +37,7 @@ public class ExploreIssuesFragment extends Fragment {
 	private FragmentSearchIssuesBinding viewBinding;
 	private Context context;
 
-	private List<Issues> dataList;
+	private List<Issue> dataList;
 	private ExploreIssuesAdapter adapter;
 	private int pageSize;
 	private final String TAG = Constants.exploreIssues;
@@ -99,11 +98,12 @@ public class ExploreIssuesFragment extends Fragment {
 
 	private void loadInitial(String searchKeyword, int resultLimit) {
 
-		Call<List<Issues>> call = RetrofitClient
-			.getApiInterface(context).queryIssues(((BaseActivity) requireActivity()).getAccount().getAuthorization(), searchKeyword, "issues", "open", resultLimit, 1);
-		call.enqueue(new Callback<List<Issues>>() {
+		Call<List<Issue>> call = RetrofitClient
+			.getApiInterface(context).issueSearchIssues("open", null, null, searchKeyword, null,
+				"issues", null, null, null, null, null, null, null, null, resultLimit, 1);
+		call.enqueue(new Callback<List<Issue>>() {
 			@Override
-			public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
+			public void onResponse(@NonNull Call<List<Issue>> call, @NonNull Response<List<Issue>> response) {
 				if(response.isSuccessful()) {
 					if(response.body() != null && response.body().size() > 0) {
 						dataList.clear();
@@ -128,7 +128,7 @@ public class ExploreIssuesFragment extends Fragment {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Issues>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Issue>> call, @NonNull Throwable t) {
 				Log.e(TAG, t.toString());
 			}
 		});
@@ -137,14 +137,15 @@ public class ExploreIssuesFragment extends Fragment {
 	private void loadMore(String searchKeyword, int resultLimit, int page) {
 
 		viewBinding.progressBar.setVisibility(View.VISIBLE);
-		Call<List<Issues>> call = RetrofitClient.getApiInterface(context)
-			.queryIssues(((BaseActivity) requireActivity()).getAccount().getAuthorization(), searchKeyword, "issues", "open", resultLimit, page);
-		call.enqueue(new Callback<List<Issues>>() {
+		Call<List<Issue>> call = RetrofitClient.getApiInterface(context)
+			.issueSearchIssues("open", null, null, searchKeyword, null,
+				"issues", null, null, null, null, null, null, null, null, resultLimit, page);
+		call.enqueue(new Callback<List<Issue>>() {
 			@Override
-			public void onResponse(@NonNull Call<List<Issues>> call, @NonNull Response<List<Issues>> response) {
+			public void onResponse(@NonNull Call<List<Issue>> call, @NonNull Response<List<Issue>> response) {
 				if(response.isSuccessful()) {
 					assert response.body() != null;
-					List<Issues> result = response.body();
+					List<Issue> result = response.body();
 					if(result.size() > 0) {
 						pageSize = result.size();
 						dataList.addAll(result);
@@ -162,7 +163,7 @@ public class ExploreIssuesFragment extends Fragment {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Issues>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Issue>> call, @NonNull Throwable t) {
 				Log.e(TAG, t.toString());
 			}
 		});

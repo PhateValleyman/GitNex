@@ -10,12 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,15 +25,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.google.gson.JsonElement;
 import com.vdurmont.emoji.EmojiParser;
-import org.gitnex.tea4j.models.Collaborators;
-import org.gitnex.tea4j.models.Issues;
-import org.gitnex.tea4j.models.Labels;
-import org.gitnex.tea4j.models.PullRequests;
-import org.gitnex.tea4j.models.UpdateIssueAssignees;
-import org.gitnex.tea4j.models.UserRepositories;
-import org.gitnex.tea4j.models.WatchInfo;
+import org.gitnex.tea4j.v2.models.*;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.AssigneesActions;
 import org.mian.gitnex.actions.LabelsActions;
@@ -52,28 +40,14 @@ import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
 import org.mian.gitnex.fragments.BottomSheetReplyFragment;
 import org.mian.gitnex.fragments.BottomSheetSingleIssueFragment;
-import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.ColorInverter;
-import org.mian.gitnex.helpers.LabelWidthCalculator;
-import org.mian.gitnex.helpers.Markdown;
-import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.structs.BottomSheetListener;
 import org.mian.gitnex.viewmodels.IssueCommentsViewModel;
 import org.mian.gitnex.views.ReactionList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -97,8 +71,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 	private List<Integer> currentLabelsIds = new ArrayList<>();
 	private List<Integer> labelsIds = new ArrayList<>();
-	private final List<Labels> labelsList = new ArrayList<>();
-	private final List<Collaborators> assigneesList = new ArrayList<>();
+	private final List<Label> labelsList = new ArrayList<>();
+	private final List<User> assigneesList = new ArrayList<>();
 	private List<String> assigneesListData = new ArrayList<>();
 	private List<String> currentAssignees = new ArrayList<>();
 
@@ -338,18 +312,16 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 	private void updateIssueAssignees() {
 
-		UpdateIssueAssignees updateAssigneeJson = new UpdateIssueAssignees(assigneesListData);
+		EditIssueOption updateAssigneeJson = new EditIssueOption().assignees(assigneesListData);
 
-		Call<JsonElement> call3;
-
-		call3 = RetrofitClient
+		Call<Issue> call3 = RetrofitClient
 			.getApiInterface(ctx)
-			.patchIssueAssignees(getAccount().getAuthorization(), repoOwner, repoName, issueIndex, updateAssigneeJson);
+			.issueEditIssue(repoOwner, repoName, (long) issueIndex, updateAssigneeJson);
 
-		call3.enqueue(new Callback<JsonElement>() {
+		call3.enqueue(new Callback<Issue>() {
 
 			@Override
-			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response2) {
+			public void onResponse(@NonNull Call<Issue> call, @NonNull retrofit2.Response<Issue> response2) {
 
 				if(response2.code() == 201) {
 
@@ -359,7 +331,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 					viewBinding.frameAssignees.removeAllViews();
 					viewBinding.frameLabels.removeAllViews();
-					issue.setIssue(null);
+					issue.setIssue(response2.body());
 					getSingleIssue(repoOwner, repoName, issueIndex);
 					currentAssignees.clear();
 					new Handler(Looper.getMainLooper()).postDelayed(() -> AssigneesActions.getCurrentIssueAssignees(ctx, repoOwner, repoName, issueIndex, currentAssignees), 1000);
@@ -387,7 +359,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Issue> call, @NonNull Throwable t) {
 				Log.e("onFailure", t.toString());
 			}
 		});
@@ -396,16 +368,22 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 	private void updateIssueLabels() {
 
-		Labels patchIssueLabels = new Labels(labelsIds);
+		ArrayList<Long> labelIds = new ArrayList<>();
+		for(Integer i : labelsIds) {
+			labelIds.add((long) i);
+		}
 
-		Call<JsonElement> call = RetrofitClient
+		IssueLabelsOption patchIssueLabels = new IssueLabelsOption();
+		patchIssueLabels.setLabels(labelIds);
+
+		Call<List<Label>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.updateIssueLabels(getAccount().getAuthorization(), repoOwner, repoName, issueIndex, patchIssueLabels);
+			.issueReplaceLabels(repoOwner, repoName, (long) issueIndex, patchIssueLabels);
 
-		call.enqueue(new Callback<JsonElement>() {
+		call.enqueue(new Callback<List<Label>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<JsonElement> call, @NonNull retrofit2.Response<JsonElement> response) {
+			public void onResponse(@NonNull Call<List<Label>> call, @NonNull retrofit2.Response<List<Label>> response) {
 
 				if(response.code() == 200) {
 
@@ -442,7 +420,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Label>> call, @NonNull Throwable t) {
 				Log.e("onFailure", t.toString());
 			}
 		});
@@ -563,18 +541,18 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			return;
 		}
 
-		Call<Issues> call = RetrofitClient.getApiInterface(ctx)
-			.getIssueByIndex(getAccount().getAuthorization(), repoOwner, repoName, issueIndex);
+		Call<Issue> call = RetrofitClient.getApiInterface(ctx)
+			.issueGetIssue(repoOwner, repoName, (long) issueIndex);
 
-		call.enqueue(new Callback<Issues>() {
+		call.enqueue(new Callback<Issue>() {
 
 			@Override
-			public void onResponse(@NonNull Call<Issues> call, @NonNull Response<Issues> response) {
+			public void onResponse(@NonNull Call<Issue> call, @NonNull Response<Issue> response) {
 				viewBinding.progressBar.setVisibility(View.GONE);
 
 				if(response.code() == 200) {
 
-					Issues singleIssue = response.body();
+					Issue singleIssue = response.body();
 					assert singleIssue != null;
 
 					issue.setIssue(singleIssue);
@@ -601,7 +579,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Issue> call, @NonNull Throwable t) {
 				viewBinding.progressBar.setVisibility(View.GONE);
 				Log.e("onFailure", t.toString());
 			}
@@ -614,13 +592,13 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 	private void getSubscribed() {
 		RetrofitClient.getApiInterface(ctx)
-			.checkIssueWatchStatus(getAccount().getAuthorization(), repoOwner, repoName, issueIndex)
+			.issueCheckSubscription(repoOwner, repoName, (long) issueIndex)
 			.enqueue(new Callback<WatchInfo>() {
 				@Override
 				public void onResponse(@NonNull Call<WatchInfo> call, @NonNull Response<WatchInfo> response) {
 					if(response.isSuccessful()) {
 						assert response.body() != null;
-						issue.setSubscribed(response.body().getSubscribed());
+						issue.setSubscribed(response.body().isSubscribed());
 					} else {
 						issue.setSubscribed(false);
 					}
@@ -640,13 +618,13 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		viewBinding.issuePrState.setVisibility(View.VISIBLE);
 
-		if(issue.getIssue().getPull_request() != null) {
+		if(issue.getIssue().getPullRequest() != null) {
 			getPullRequest();
-			if(issue.getIssue().getPull_request().isMerged()) { // merged
+			if(issue.getIssue().getPullRequest().isMerged()) { // merged
 
 				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_merged);
 			}
-			else if(!issue.getIssue().getPull_request().isMerged() && issue.getIssue().getState().equals("closed")) { // closed
+			else if(!issue.getIssue().getPullRequest().isMerged() && issue.getIssue().getState().equals("closed")) { // closed
 
 				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_closed);
 			}
@@ -667,7 +645,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		final String timeFormat = tinyDb.getString("dateFormat", "pretty");
 		issueCreator = issue.getIssue().getUser().getLogin();
 
-		PicassoService.getInstance(ctx).get().load(issue.getIssue().getUser().getAvatar_url()).placeholder(R.drawable.loader_animated)
+		PicassoService.getInstance(ctx).get().load(issue.getIssue().getUser().getAvatarUrl()).placeholder(R.drawable.loader_animated)
 			.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewBinding.assigneeAvatar);
 		String issueNumber_ = "<font color='" + ResourcesCompat.getColor(getResources(), R.color.lightGray, null) + "'>" + appCtx.getResources()
 			.getString(R.string.hash) + issue.getIssue().getNumber() + "</font>";
@@ -700,7 +678,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 				ImageView assigneesView = new ImageView(ctx);
 
-				PicassoService.getInstance(ctx).get().load(issue.getIssue().getAssignees().get(i).getAvatar_url())
+				PicassoService.getInstance(ctx).get().load(issue.getIssue().getAssignees().get(i).getAvatarUrl())
 					.placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(100, 100).centerCrop()
 					.into(assigneesView);
 
@@ -772,20 +750,20 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			viewBinding.labelsScrollView.setVisibility(View.GONE);
 		}
 
-		if(issue.getIssue().getDue_date() != null) {
+		if(issue.getIssue().getDueDate() != null) {
 
 			if(timeFormat.equals("normal") || timeFormat.equals("pretty")) {
 
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", locale);
-				String dueDate = formatter.format(issue.getIssue().getDue_date());
+				String dueDate = formatter.format(issue.getIssue().getDueDate());
 				viewBinding.issueDueDate.setText(dueDate);
 				viewBinding.issueDueDate
-					.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getDue_date()), ctx));
+					.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getDueDate()), ctx));
 			}
 			else if(timeFormat.equals("normal1")) {
 
 				DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", locale);
-				String dueDate = formatter.format(issue.getIssue().getDue_date());
+				String dueDate = formatter.format(issue.getIssue().getDueDate());
 				viewBinding.issueDueDate.setText(dueDate);
 			}
 		}
@@ -796,25 +774,25 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		String edited;
 
-		if(!issue.getIssue().getUpdated_at().equals(issue.getIssue().getCreated_at())) {
+		if(!issue.getIssue().getUpdatedAt().equals(issue.getIssue().getUpdatedAt())) {
 
 			edited = getString(R.string.colorfulBulletSpan) + getString(R.string.modifiedText);
 			viewBinding.issueModified.setVisibility(View.VISIBLE);
 			viewBinding.issueModified.setText(edited);
 			viewBinding.issueModified
-				.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getUpdated_at()), ctx));
+				.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getUpdatedAt()), ctx));
 		}
 		else {
 
 			viewBinding.issueModified.setVisibility(View.INVISIBLE);
 		}
 
-		if((issue.getIssue().getDue_date() == null && issue.getIssue().getMilestone() == null) && issue.getIssue().getAssignees() != null) {
+		if((issue.getIssue().getDueDate() == null && issue.getIssue().getMilestone() == null) && issue.getIssue().getAssignees() != null) {
 
 			paramsDesc.setMargins(0, 35, 0, 0);
 			viewBinding.issueDescription.setLayoutParams(paramsDesc);
 		}
-		else if(issue.getIssue().getDue_date() == null && issue.getIssue().getMilestone() == null) {
+		else if(issue.getIssue().getDueDate() == null && issue.getIssue().getMilestone() == null) {
 
 			paramsDesc.setMargins(0, 55, 0, 0);
 			viewBinding.issueDescription.setLayoutParams(paramsDesc);
@@ -830,19 +808,19 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			viewBinding.issueDescription.setLayoutParams(paramsDesc);
 		}
 
-		viewBinding.issueCreatedTime.setText(TimeHelper.formatTime(issue.getIssue().getCreated_at(), locale, timeFormat, ctx));
+		viewBinding.issueCreatedTime.setText(TimeHelper.formatTime(issue.getIssue().getCreatedAt(), locale, timeFormat, ctx));
 		viewBinding.issueCreatedTime.setVisibility(View.VISIBLE);
 
 		if(timeFormat.equals("pretty")) {
 
 			viewBinding.issueCreatedTime
-				.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getCreated_at()), ctx));
+				.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getCreatedAt()), ctx));
 		}
 
 		Bundle bundle = new Bundle();
 		bundle.putString("repoOwner", repoOwner);
 		bundle.putString("repoName", repoName);
-		bundle.putInt("issueId", issue.getIssue().getNumber());
+		bundle.putInt("issueId", Math.toIntExact(issue.getIssue().getNumber()));
 
 		ReactionList reactionList = new ReactionList(ctx, bundle);
 
@@ -879,30 +857,30 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	}
 
 	private void getPullRequest() {
-		RetrofitClient.getApiInterface(this).getPullRequestByIndex(getAccount().getAuthorization(), repoOwner, repoName, issueIndex).enqueue(new Callback<PullRequests>() {
+		RetrofitClient.getApiInterface(this).repoGetPullRequest(repoOwner, repoName, (long) issueIndex).enqueue(new Callback<PullRequest>() {
 
 			@Override
-			public void onResponse(@NonNull Call<PullRequests> call, @NonNull Response<PullRequests> response) {
+			public void onResponse(@NonNull Call<PullRequest> call, @NonNull Response<PullRequest> response) {
 				if(response.isSuccessful() && response.body() != null) {
 					issue.setPullRequest(response.body());
 				}
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<PullRequests> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<PullRequest> call, @NonNull Throwable t) {
 
 			}
 		});
 	}
 
 	private void getRepoInfo() {
-		Call<UserRepositories> call = RetrofitClient.getApiInterface(ctx).getUserRepository(getAccount().getAuthorization(), issue.getRepository().getOwner(), issue.getRepository().getName());
-		call.enqueue(new Callback<UserRepositories>() {
+		Call<Repository> call = RetrofitClient.getApiInterface(ctx).repoGet(issue.getRepository().getOwner(), issue.getRepository().getName());
+		call.enqueue(new Callback<Repository>() {
 
 			@Override
-			public void onResponse(@NonNull Call<UserRepositories> call, @NonNull retrofit2.Response<UserRepositories> response) {
+			public void onResponse(@NonNull Call<Repository> call, @NonNull retrofit2.Response<Repository> response) {
 
-				UserRepositories repoInfo = response.body();
+				Repository repoInfo = response.body();
 
 				if(response.code() == 200) {
 					assert repoInfo != null;
@@ -915,7 +893,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<UserRepositories> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<Repository> call, @NonNull Throwable t) {
 				Toasty.error(ctx, getString(R.string.genericError));
 				Log.e("onFailure", t.toString());
 			}

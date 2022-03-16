@@ -14,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import org.gitnex.tea4j.models.UserInfo;
-import org.gitnex.tea4j.models.UserSearch;
+import org.gitnex.tea4j.v2.models.InlineResponse2001;
+import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.adapters.UserSearchForTeamMemberAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityAddNewTeamMemberBinding;
@@ -38,7 +38,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	private ProgressBar mProgressBar;
 
 	private RecyclerView mRecyclerView;
-	private List<UserInfo> dataList;
+	private List<User> dataList;
 	private UserSearchForTeamMemberAdapter adapter;
 
 	private String teamId;
@@ -109,14 +109,14 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 	public void loadUserSearchList(String searchKeyword) {
 
-		Call<UserSearch> call = RetrofitClient.getApiInterface(ctx).getUserBySearch(getAccount().getAuthorization(), searchKeyword, 10, 1);
+		Call<InlineResponse2001> call = RetrofitClient.getApiInterface(ctx).userSearch(searchKeyword, null, 10, 1);
 
 		mProgressBar.setVisibility(View.VISIBLE);
 
-		call.enqueue(new Callback<UserSearch>() {
+		call.enqueue(new Callback<InlineResponse2001>() {
 
 			@Override
-			public void onResponse(@NonNull Call<UserSearch> call, @NonNull Response<UserSearch> response) {
+			public void onResponse(@NonNull Call<InlineResponse2001> call, @NonNull Response<InlineResponse2001> response) {
 
 				if(response.isSuccessful()) {
 
@@ -139,7 +139,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<UserSearch> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<InlineResponse2001> call, @NonNull Throwable t) {
 				Log.e("onFailure", t.toString());
 			}
 

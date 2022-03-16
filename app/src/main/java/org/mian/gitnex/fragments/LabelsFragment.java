@@ -1,6 +1,5 @@
 package org.mian.gitnex.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -74,7 +73,7 @@ public class LabelsFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             swipeRefresh.setRefreshing(false);
-            LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
+            LabelsViewModel.loadLabelsList(repository.getOwner(), repository.getName(), getContext());
         }, 200));
 
         fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
@@ -89,7 +88,7 @@ public class LabelsFragment extends Fragment {
 
 	    if(CreateLabelActivity.refreshLabels) {
 
-            LabelsViewModel.loadLabelsList(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), getContext());
+            LabelsViewModel.loadLabelsList(repository.getOwner(), repository.getName(), getContext());
 	        CreateLabelActivity.refreshLabels = false;
         }
     }
@@ -98,7 +97,7 @@ public class LabelsFragment extends Fragment {
 
         LabelsViewModel labelsModel = new ViewModelProvider(this).get(LabelsViewModel.class);
 
-        labelsModel.getLabelsList(instanceToken, owner, repo, getContext()).observe(getViewLifecycleOwner(), labelsListMain -> {
+        labelsModel.getLabelsList(owner, repo, getContext()).observe(getViewLifecycleOwner(), labelsListMain -> {
 
             adapter = new LabelsAdapter(getContext(), labelsListMain, "repo", owner);
 

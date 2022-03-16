@@ -7,20 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import org.gitnex.tea4j.models.UserInfo;
+import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentProfileDetailBinding;
-import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.ColorInverter;
-import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.TimeHelper;
-import org.mian.gitnex.helpers.TinyDB;
-import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.helpers.*;
 import java.util.Locale;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit2.Call;
@@ -73,19 +65,19 @@ public class DetailFragment extends Fragment {
 
 	public void getProfileDetail(String username) {
 
-		Call<UserInfo> call = RetrofitClient
+		Call<User> call = RetrofitClient
 			.getApiInterface(context)
-			.getUserProfile(((BaseActivity) requireActivity()).getAccount().getAuthorization(), username);
+			.userGet(username);
 
-		call.enqueue(new Callback<UserInfo>() {
+		call.enqueue(new Callback<User>() {
 			@Override
-			public void onResponse(@NonNull Call<UserInfo> call, @NonNull retrofit2.Response<UserInfo> response) {
+			public void onResponse(@NonNull Call<User> call, @NonNull retrofit2.Response<User> response) {
 
 				if(response.isSuccessful() && response.body() != null) {
 
 					switch(response.code()) {
 						case 200:
-							String username = !response.body().getFullname().isEmpty() ? response.body().getFullname() : response.body().getUsername();
+							String username = !response.body().getFullName().isEmpty() ? response.body().getFullName() : response.body().getLogin();
 							String email = !response.body().getEmail().isEmpty() ? response.body().getEmail() : "";
 
 							int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
@@ -95,7 +87,7 @@ public class DetailFragment extends Fragment {
 							binding.userLogin.setText(getString(R.string.usernameWithAt, response.body().getLogin()));
 							binding.userEmail.setText(email);
 
-							String[] userLanguageCodes = response.body().getLang().split("-");
+							String[] userLanguageCodes = response.body().getLanguage().split("-");
 
 							if(userLanguageCodes.length >= 2) {
 								Locale locale = new Locale(userLanguageCodes[0], userLanguageCodes[1]);
@@ -106,7 +98,7 @@ public class DetailFragment extends Fragment {
 							}
 
 							PicassoService.getInstance(context).get()
-								.load(response.body().getAvatar())
+								.load(response.body().getAvatarUrl())
 								.transform(new RoundedTransformation(imgRadius, 0))
 								.placeholder(R.drawable.loader_animated)
 								.resize(120, 120)
@@ -114,7 +106,7 @@ public class DetailFragment extends Fragment {
 								.into(binding.userAvatar);
 
 							PicassoService.getInstance(context).get()
-								.load(response.body().getAvatar())
+								.load(response.body().getAvatarUrl())
 								.transform(new BlurTransformation(context))
 								.into(binding.userAvatarBackground, new com.squareup.picasso.Callback() {
 
@@ -153,7 +145,7 @@ public class DetailFragment extends Fragment {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<UserInfo> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
 				Toasty.error(context, context.getResources().getString(R.string.genericError));
 			}
 		});

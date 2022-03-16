@@ -5,9 +5,8 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
-import org.gitnex.tea4j.models.Labels;
+import org.gitnex.tea4j.v2.models.Label;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
@@ -24,18 +23,18 @@ public class LabelsActions {
 
 	public static void getCurrentIssueLabels(Context ctx, String repoOwner, String repoName, int issueIndex, List<Integer> currentLabelsIds) {
 
-		Call<List<Labels>> callSingleIssueLabels = RetrofitClient
+		Call<List<Label>> callSingleIssueLabels = RetrofitClient
 			.getApiInterface(ctx)
-			.getIssueLabels(((BaseActivity) ctx).getAccount().getAuthorization(), repoOwner, repoName, issueIndex);
+			.issueGetLabels(repoOwner, repoName, (long) issueIndex);
 
-		callSingleIssueLabels.enqueue(new Callback<List<Labels>>() {
+		callSingleIssueLabels.enqueue(new Callback<List<Label>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
+			public void onResponse(@NonNull Call<List<Label>> call, @NonNull retrofit2.Response<List<Label>> response) {
 
 				if(response.code() == 200) {
 
-					List<Labels> issueLabelsList = response.body();
+					List<Label> issueLabelsList = response.body();
 
 					assert issueLabelsList != null;
 
@@ -43,7 +42,7 @@ public class LabelsActions {
 
 						for (int i = 0; i < issueLabelsList.size(); i++) {
 
-							currentLabelsIds.add(issueLabelsList.get(i).getId());
+							currentLabelsIds.add(Math.toIntExact(issueLabelsList.get(i).getId()));
 						}
 					}
 
@@ -51,7 +50,7 @@ public class LabelsActions {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Label>> call, @NonNull Throwable t) {
 
 				Log.e("onFailure", t.toString());
 			}
@@ -59,16 +58,16 @@ public class LabelsActions {
 		});
 	}
 
-	public static void getRepositoryLabels(Context ctx, String repoOwner, String repoName, List<Labels> labelsList, Dialog dialogLabels, LabelsListAdapter labelsAdapter, CustomLabelsSelectionDialogBinding labelsBinding) {
+	public static void getRepositoryLabels(Context ctx, String repoOwner, String repoName, List<Label> labelsList, Dialog dialogLabels, LabelsListAdapter labelsAdapter, CustomLabelsSelectionDialogBinding labelsBinding) {
 
-		Call<List<Labels>> call = RetrofitClient
+		Call<List<Label>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getLabels(((BaseActivity) ctx).getAccount().getAuthorization(), repoOwner, repoName);
+			.issueListLabels(repoOwner, repoName, null, null);
 
-		call.enqueue(new Callback<List<Labels>>() {
+		call.enqueue(new Callback<List<Label>>() {
 
 			@Override
-			public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> response) {
+			public void onResponse(@NonNull Call<List<Label>> call, @NonNull retrofit2.Response<List<Label>> response) {
 
 				labelsList.clear();
 
@@ -80,14 +79,14 @@ public class LabelsActions {
 					}
 
 					// Load organization labels
-					Call<List<Labels>> callOrgLabels = RetrofitClient
+					Call<List<Label>> callOrgLabels = RetrofitClient
 						.getApiInterface(ctx)
-						.getOrganizationLabels(((BaseActivity) ctx).getAccount().getAuthorization(), repoOwner);
+						.orgListLabels(repoOwner, null, null);
 
-					callOrgLabels.enqueue(new Callback<List<Labels>>() {
+					callOrgLabels.enqueue(new Callback<List<Label>>() {
 
 						@Override
-						public void onResponse(@NonNull Call<List<Labels>> call, @NonNull retrofit2.Response<List<Labels>> responseOrg) {
+						public void onResponse(@NonNull Call<List<Label>> call, @NonNull retrofit2.Response<List<Label>> responseOrg) {
 
 							labelsBinding.progressBar.setVisibility(View.GONE);
 							labelsBinding.dialogFrame.setVisibility(View.VISIBLE);
@@ -107,7 +106,7 @@ public class LabelsActions {
 							labelsBinding.labelsRecyclerView.setAdapter(labelsAdapter);
 						}
 
-						@Override public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {}
+						@Override public void onFailure(@NonNull Call<List<Label>> call, @NonNull Throwable t) {}
 
 					});
 
@@ -120,7 +119,7 @@ public class LabelsActions {
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Labels>> call, @NonNull Throwable t) {
+			public void onFailure(@NonNull Call<List<Label>> call, @NonNull Throwable t) {
 
 				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}

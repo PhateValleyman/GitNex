@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import org.gitnex.tea4j.models.Milestones;
+import org.gitnex.tea4j.v2.models.Milestone;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
@@ -41,7 +41,7 @@ public class MilestonesFragment extends Fragment {
     private FragmentMilestonesBinding viewBinding;
 
     private Menu menu;
-    private List<Milestones> dataList;
+    private List<Milestone> dataList;
     private MilestonesAdapter adapter;
     private Context ctx;
     private int pageSize = Constants.milestonesPageInit;
@@ -157,12 +157,12 @@ public class MilestonesFragment extends Fragment {
 
     private void loadInitial(String token, String repoOwner, String repoName, int resultLimit, String milestoneState) {
 
-        Call<List<Milestones>> call = RetrofitClient.getApiInterface(ctx).getMilestones(token, repoOwner, repoName, 1, resultLimit, milestoneState);
+        Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx).issueGetMilestonesList(repoOwner, repoName, milestoneState, null, 1, resultLimit);
 
-        call.enqueue(new Callback<List<Milestones>>() {
+        call.enqueue(new Callback<List<Milestone>>() {
 
             @Override
-            public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull Response<List<Milestones>> response) {
+            public void onResponse(@NonNull Call<List<Milestone>> call, @NonNull Response<List<Milestone>> response) {
 
                 if(response.code() == 200) {
 
@@ -197,7 +197,7 @@ public class MilestonesFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Milestone>> call, @NonNull Throwable t) {
 
                 Log.e(TAG, t.toString());
             }
@@ -206,8 +206,8 @@ public class MilestonesFragment extends Fragment {
 
     }
 
-	private static int getMilestoneIndex(int milestoneId, List<Milestones> milestones) {
-		for (Milestones milestone : milestones) {
+	private static int getMilestoneIndex(int milestoneId, List<Milestone> milestones) {
+		for (Milestone milestone : milestones) {
 			if(milestone.getId() == milestoneId) {
 				return milestones.indexOf(milestone);
 			}
@@ -219,19 +219,19 @@ public class MilestonesFragment extends Fragment {
 
     	viewBinding.progressLoadMore.setVisibility(View.VISIBLE);
 
-        Call<List<Milestones>> call = RetrofitClient.getApiInterface(ctx).getMilestones(token, repoOwner, repoName, page, resultLimit, milestoneState);
+        Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx).issueGetMilestonesList(repoOwner, repoName, milestoneState, null, page, resultLimit);
 
-        call.enqueue(new Callback<List<Milestones>>() {
+        call.enqueue(new Callback<List<Milestone>>() {
 
             @Override
-            public void onResponse(@NonNull Call<List<Milestones>> call, @NonNull Response<List<Milestones>> response) {
+            public void onResponse(@NonNull Call<List<Milestone>> call, @NonNull Response<List<Milestone>> response) {
 
 	            if(response.code() == 200) {
 
                     //remove loading view
                     dataList.remove(dataList.size() - 1);
 
-                    List<Milestones> result = response.body();
+                    List<Milestone> result = response.body();
 
                     assert result != null;
                     if(result.size() > 0) {
@@ -259,7 +259,7 @@ public class MilestonesFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Milestones>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Milestone>> call, @NonNull Throwable t) {
 
                 Log.e(TAG, t.toString());
 
@@ -308,9 +308,9 @@ public class MilestonesFragment extends Fragment {
 
     private void filter(String text) {
 
-        List<Milestones> arr = new ArrayList<>();
+        List<Milestone> arr = new ArrayList<>();
 
-        for(Milestones d : dataList) {
+        for(Milestone d : dataList) {
 	        if(d == null || d.getTitle() == null || d.getDescription() == null) {
 		        continue;
 	        }
