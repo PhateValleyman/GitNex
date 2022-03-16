@@ -592,12 +592,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				}
 				else if(response.code() == 404) {
 
-					if("Pull".equals(issue.getIssueType())) {
-						Toasty.warning(ctx, getResources().getString(R.string.noDataFound));
-					}
-					else {
-						Toasty.warning(ctx, getResources().getString(R.string.noDataFound));
-					}
+					Toasty.warning(ctx, getResources().getString(R.string.noDataFound));
 					finish();
 				}
 			}
@@ -646,11 +641,13 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			getPullRequest();
 			if(issue.getIssue().getPull_request().isMerged()) { // merged
 
-				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_merged);
+				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request);
+				ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconPrMergedColor)));
 			}
 			else if(!issue.getIssue().getPull_request().isMerged() && issue.getIssue().getState().equals("closed")) { // closed
 
-				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_closed);
+				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request);
+				ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconIssuePrClosedColor)));
 			}
 			else { // open
 
