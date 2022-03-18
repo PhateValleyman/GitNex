@@ -2,6 +2,7 @@ package org.mian.gitnex.activities;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -25,6 +26,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.text.HtmlCompat;
+import androidx.core.widget.ImageViewCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -266,7 +268,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		assigneesAdapter.updateList(currentAssignees);
 		dialogAssignees = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
-		dialogAssignees.setCancelable(false);
+		dialogAssignees.setCancelable(true);
 
 		if (dialogAssignees.getWindow() != null) {
 
@@ -278,7 +280,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		View view = assigneesBinding.getRoot();
 		dialogAssignees.setContentView(view);
 
-		assigneesBinding.cancel.setOnClickListener(assigneesBinding_ -> {
+		assigneesBinding.save.setOnClickListener(assigneesBinding_ -> {
 
 			currentAssignees = new ArrayList<>(new LinkedHashSet<>(currentAssignees));
 			assigneesListData = new ArrayList<>(new LinkedHashSet<>(assigneesListData));
@@ -303,7 +305,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		labelsAdapter.updateList(currentLabelsIds);
 		dialogLabels = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
-		dialogLabels.setCancelable(false);
+		dialogLabels.setCancelable(true);
 
 		if (dialogLabels.getWindow() != null) {
 
@@ -315,7 +317,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		View view = labelsBinding.getRoot();
 		dialogLabels.setContentView(view);
 
-		labelsBinding.cancel.setOnClickListener(labelsBinding_ -> {
+		labelsBinding.save.setOnClickListener(labelsBinding_ -> {
 
 			currentLabelsIds = new ArrayList<>(new LinkedHashSet<>(currentLabelsIds));
 			labelsIds = new ArrayList<>(new LinkedHashSet<>(labelsIds));
@@ -590,12 +592,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				}
 				else if(response.code() == 404) {
 
-					if("Pull".equals(issue.getIssueType())) {
-						Toasty.warning(ctx, getResources().getString(R.string.noDataPullRequests));
-					}
-					else {
-						Toasty.warning(ctx, getResources().getString(R.string.noDataIssueTab));
-					}
+					Toasty.warning(ctx, getResources().getString(R.string.noDataFound));
 					finish();
 				}
 			}
@@ -644,11 +641,13 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			getPullRequest();
 			if(issue.getIssue().getPull_request().isMerged()) { // merged
 
-				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_merged);
+				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request);
+				ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconPrMergedColor)));
 			}
 			else if(!issue.getIssue().getPull_request().isMerged() && issue.getIssue().getState().equals("closed")) { // closed
 
-				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request_closed);
+				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request);
+				ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconIssuePrClosedColor)));
 			}
 			else { // open
 
@@ -657,7 +656,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		}
 		else if(issue.getIssue().getState().equals("closed")) { // issue closed
 
-			viewBinding.issuePrState.setImageResource(R.drawable.ic_issue_closed_red);
+			viewBinding.issuePrState.setImageResource(R.drawable.ic_issue);
+			ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconIssuePrClosedColor)));
 		} else {
 			viewBinding.issuePrState.setImageResource(R.drawable.ic_issue);
 		}
