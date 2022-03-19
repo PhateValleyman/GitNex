@@ -56,8 +56,7 @@ public class RetrofitClient {
 			sslContext.init(null, new X509TrustManager[]{ memorizingTrustManager }, new SecureRandom());
 
 			ApiKeyAuth auth = new ApiKeyAuth("header", "Authorization");
-			// TODO support OTP
-			auth.setApiKey(token); // TODO allow custom token to use in LoginActivity and AddNewAccountActivity
+			auth.setApiKey(token);
 			OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder()
 //				.addInterceptor(logging)
 				.addInterceptor(auth)
