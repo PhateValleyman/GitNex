@@ -37,7 +37,7 @@ public class AccountContext implements Serializable {
 	}
 
 	public String getWebAuthorization() {
-		return Credentials.basic("", account.getUserName()); // FIXME this is not correct and will never work!
+		return Credentials.basic("", account.getToken());
 	}
 
 	public Version getServerVersion() {
