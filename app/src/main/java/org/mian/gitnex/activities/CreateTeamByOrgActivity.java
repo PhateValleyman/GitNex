@@ -331,7 +331,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
                 }
                 else {
 
-                    Toasty.error(ctx, getString(R.string.teamCreatedError));
+                    Toasty.error(ctx, getString(R.string.genericError));
                 }
             }
 

@@ -194,7 +194,7 @@ public class CreateRepoActivity extends BaseActivity {
                 else {
 
                     enableProcessButton();
-                    Toasty.error(ctx, getString(R.string.repoCreatedError));
+                    Toasty.error(ctx, getString(R.string.genericError));
                 }
             }
 

@@ -15,11 +15,18 @@ import org.apache.commons.io.FileUtils;
 import org.gitnex.tea4j.v2.models.Repository;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.RepoDetailActivity;
+import org.mian.gitnex.activities.RepoForksActivity;
 import org.mian.gitnex.activities.RepoStargazersActivity;
 import org.mian.gitnex.activities.RepoWatchersActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentRepoInfoBinding;
-import org.mian.gitnex.helpers.*;
+import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.ClickListener;
+import org.mian.gitnex.helpers.Markdown;
+import org.mian.gitnex.helpers.TimeHelper;
+import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.io.IOException;
 import java.util.Locale;
@@ -83,6 +90,8 @@ public class RepoInfoFragment extends Fragment {
 		binding.repoMetaStarsFrame.setOnClickListener(metaStars -> ctx.startActivity(repository.getIntent(ctx, RepoStargazersActivity.class)));
 
 		binding.repoMetaWatchersFrame.setOnClickListener(metaWatchers -> ctx.startActivity(repository.getIntent(ctx, RepoWatchersActivity.class)));
+
+		binding.repoMetaForksFrame.setOnClickListener(metaForks -> ctx.startActivity(repository.getIntent(ctx, RepoForksActivity.class)));
 
 		binding.repoMetaPullRequestsFrame.setOnClickListener(metaPR -> ((RepoDetailActivity) requireActivity()).mViewPager.setCurrentItem(3));
 

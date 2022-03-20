@@ -237,8 +237,8 @@ public class CreateLabelActivity extends BaseActivity {
                 else {
 
                     enableProcessButton();
-	                labelColor = "";
-                    Toasty.error(ctx, getString(R.string.labelGeneralError));
+	                tinyDB.putString("labelColor", "");
+                    Toasty.error(ctx, getString(R.string.genericError));
                 }
             }
 
@@ -295,9 +295,9 @@ public class CreateLabelActivity extends BaseActivity {
                 else {
 
                     enableProcessButton();
-	                labelColor = "";
-	                labelColorDefault = "";
-                    Toasty.error(ctx, getString(R.string.labelGeneralError));
+	                tinyDB.putString("labelColor", "");
+	                tinyDB.putString("labelColorDefault", "");
+                    Toasty.error(ctx, getString(R.string.genericError));
                 }
             }
 
@@ -360,7 +360,7 @@ public class CreateLabelActivity extends BaseActivity {
                 }
                 else {
 
-                    Toasty.error(ctx, getString(R.string.labelDeleteErrorText));
+                    Toasty.error(ctx, getString(R.string.genericError));
                 }
             }
 

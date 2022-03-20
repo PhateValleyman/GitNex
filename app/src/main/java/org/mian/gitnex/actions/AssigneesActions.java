@@ -13,7 +13,6 @@ import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.contexts.AccountContext;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,7 +65,7 @@ public class AssigneesActions {
 
 		Call<List<User>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.repoListCollaborators(repoOwner, repoName, null, null);
+			.repoGetAssignees(repoOwner, repoName);
 
 		call.enqueue(new Callback<List<User>>() {
 
@@ -85,8 +84,6 @@ public class AssigneesActions {
 
 					if(assigneesList_.size() > 0) {
 
-						AccountContext userInfo = ((BaseActivity) ctx).getAccount();
-						assigneesList.add(userInfo.getUserInfo());
 						assigneesList.addAll(assigneesList_);
 					}
 					else {

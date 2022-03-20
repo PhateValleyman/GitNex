@@ -146,7 +146,7 @@ public class MyProfileEmailActivity extends BaseActivity {
                 else {
 
                     enableProcessButton();
-                    Toasty.error(ctx, getString(R.string.labelGeneralError));
+                    Toasty.error(ctx, getString(R.string.genericError));
                 }
             }
 

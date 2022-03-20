@@ -178,7 +178,7 @@ public class CreateOrganizationActivity extends BaseActivity {
                     else {
 
                         enableProcessButton();
-                        Toasty.error(ctx, getString(R.string.orgCreatedError));
+                        Toasty.error(ctx, getString(R.string.genericError));
                     }
                 }
             }

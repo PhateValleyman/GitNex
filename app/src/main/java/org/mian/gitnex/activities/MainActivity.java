@@ -146,6 +146,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		else if(fragmentById instanceof AdministrationFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
 		}
+		else if(fragmentById instanceof MyIssuesFragment) {
+			toolbarTitle.setText(getResources().getString(R.string.navMyIssues));
+		}
 
 		getNotificationsCount();
 
@@ -195,7 +198,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 				userEmail.setTypeface(myTypeface);
 				userFullName.setTypeface(myTypeface);
-
 
 				if (getAccount().getUserInfo() != null) {
 					String userEmailNav = getAccount().getUserInfo().getEmail();
@@ -256,6 +258,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				} else {
 					// hide first
 					navigationView.getMenu().findItem(R.id.nav_administration).setVisible(false);
+				}
+
+				if(getAccount().requiresVersion("1.14.0")) {
+					navigationView.getMenu().findItem(R.id.nav_my_issues).setVisible(true);
 				}
 			}
 
@@ -384,6 +390,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					toolbarTitle.setText(getResources().getString(R.string.pageTitleNotifications));
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationsFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_notifications);
+					break;
+
+				case 8:
+					toolbarTitle.setText(getResources().getString(R.string.navMyIssues));
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyIssuesFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_my_issues);
 					break;
 
 				default:
@@ -541,6 +553,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleAdministration));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AdministrationFragment()).commit();
+		}
+		else if(id == R.id.nav_my_issues) {
+
+			toolbarTitle.setText(getResources().getString(R.string.navMyIssues));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyIssuesFragment()).commit();
 		}
 
 		drawer.closeDrawer(GravityCompat.START);
