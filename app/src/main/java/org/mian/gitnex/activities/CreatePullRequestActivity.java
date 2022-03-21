@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.v2.models.*;
 import org.mian.gitnex.R;
@@ -23,10 +24,7 @@ import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -49,8 +47,8 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 	private LabelsListAdapter labelsAdapter;
 
-	List<Milestone> milestonesList = new ArrayList<>();
-	List<Branch> branchesList = new ArrayList<>();
+	LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
+	List<String> branchesList = new ArrayList<>();
 	List<Label> labelsList = new ArrayList<>();
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -104,6 +102,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		if(!repository.getPermissions().isPush()) {
 			viewBinding.prDueDateLayout.setVisibility(View.GONE);
 			viewBinding.prLabelsLayout.setVisibility(View.GONE);
+			viewBinding.milestonesSpinnerLayout.setVisibility(View.GONE);
 		}
 	}
 
@@ -254,11 +253,11 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 						List<Branch> branchesList_ = response.body();
 						assert branchesList_ != null;
 
-						if(branchesList_.size() > 0) {
-							branchesList.addAll(branchesList_);
+						for(Branch i : branchesList_) {
+							branchesList.add(i.getName());
 						}
 
-						ArrayAdapter<Branch> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this,
+						ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this,
 							R.layout.list_spinner_items, branchesList);
 
 						viewBinding.mergeIntoBranchSpinner.setAdapter(adapter);
@@ -295,29 +294,35 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 					List<Milestone> milestonesList_ = response.body();
 
-					milestonesList.add(new Milestone().id(0L).title(getString(R.string.issueCreatedNoMilestone)));
+					milestonesList.put(getString(R.string.issueCreatedNoMilestone), new Milestone().id(0L).title(getString(R.string.issueCreatedNoMilestone)));
 					assert milestonesList_ != null;
 
 					if(milestonesList_.size() > 0) {
 
-						for (int i = 0; i < milestonesList_.size(); i++) {
+						for(Milestone milestone : milestonesList_) {
 
 							//Don't translate "open" is a enum
-							if(milestonesList_.get(i).getState().equals("open")) {
-								milestonesList.add(milestonesList_.get(i));
+							if(milestone.getState().equals("open")) {
+								milestonesList.put(milestone.getTitle(), milestone);
 							}
 						}
 					}
 
-					ArrayAdapter<Milestone> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this,
-						R.layout.list_spinner_items, milestonesList);
+					ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this,
+						R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
 
 					viewBinding.milestonesSpinner.setAdapter(adapter);
 					enableProcessButton();
 
-					viewBinding.milestonesSpinner.setOnItemClickListener ((parent, view, position, id) ->
-
-						milestoneId = Math.toIntExact(milestonesList.get(position).getId())
+					viewBinding.milestonesSpinner.setOnItemClickListener ((parent, view, position, id) -> {
+							if(position == 0) {
+								milestoneId = 0;
+							}
+							else if(view instanceof TextView) {
+								milestoneId = Math.toIntExact(
+									Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
+							}
+						}
 					);
 
 				}

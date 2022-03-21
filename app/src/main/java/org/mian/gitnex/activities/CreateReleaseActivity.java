@@ -43,7 +43,7 @@ public class CreateReleaseActivity extends BaseActivity {
 
 	private RepositoryContext repository;
 
-    List<Branch> branchesList = new ArrayList<>();
+    List<String> branchesList = new ArrayList<>();
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -299,20 +299,18 @@ public class CreateReleaseActivity extends BaseActivity {
                         List<Branch> branchesList_ = response.body();
 
                         assert branchesList_ != null;
-                        if(branchesList_.size() > 0) {
-
-	                        branchesList.addAll(branchesList_);
+                        for(Branch i : branchesList_) {
+	                        branchesList.add(i.getName());
                         }
 
-	                    ArrayAdapter<Branch> adapter = new ArrayAdapter<>(CreateReleaseActivity.this,
+	                    ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateReleaseActivity.this,
 		                    R.layout.list_spinner_items, branchesList);
 
                         releaseBranch.setAdapter(adapter);
                         enableProcessButton();
 
 	                    releaseBranch.setOnItemClickListener ((parent, view, position, id) ->
-
-		                    selectedBranch = branchesList.get(position).getName()
+		                    selectedBranch = branchesList.get(position)
 	                    );
                     }
                 }

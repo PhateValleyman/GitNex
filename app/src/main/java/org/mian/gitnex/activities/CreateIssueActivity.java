@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.v2.models.*;
 import org.mian.gitnex.R;
@@ -58,7 +59,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 
 	private List<Integer> labelsIds = new ArrayList<>();
 	private final List<Label> labelsList = new ArrayList<>();
-	private final List<Milestone> milestonesList = new ArrayList<>();
+	private final LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
 	private final List<User> assigneesList = new ArrayList<>();
 	private List<String> assigneesListData = new ArrayList<>();
 
@@ -303,30 +304,33 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 	                    Milestone ms = new Milestone();
 						ms.setId(0L);
 						ms.setTitle(getString(R.string.issueCreatedNoMilestone));
-                        milestonesList.add(ms);
+                        milestonesList.put(ms.getTitle(), ms);
                         assert milestonesList_ != null;
 
                         if(milestonesList_.size() > 0) {
 
-                            for (int i = 0; i < milestonesList_.size(); i++) {
+	                        for(Milestone milestone : milestonesList_) {
 
-                                //Don't translate "open" is a enum
-                                if(milestonesList_.get(i).getState().equals("open")) {
-                                    milestonesList.add(milestonesList_.get(i));
-                                }
-                            }
+		                        //Don't translate "open" is a enum
+		                        if(milestone.getState().equals("open")) {
+			                        milestonesList.put(milestone.getTitle(), milestone);
+		                        }
+	                        }
                         }
 
-                        ArrayAdapter<Milestone> adapter = new ArrayAdapter<>(CreateIssueActivity.this,
-                                R.layout.list_spinner_items, milestonesList);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateIssueActivity.this,
+                                R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
 
 	                    viewBinding.newIssueMilestoneSpinner.setAdapter(adapter);
                         enableProcessButton();
 
-	                    viewBinding.newIssueMilestoneSpinner.setOnItemClickListener ((parent, view, position, id) ->
-
-		                    milestoneId = Math.toIntExact(milestonesList.get(position).getId())
-	                    );
+	                    viewBinding.newIssueMilestoneSpinner.setOnItemClickListener ((parent, view, position, id) -> {
+							if(position == 0) {
+								milestoneId = 0;
+							} else if(view instanceof TextView) {
+			                    milestoneId = Math.toIntExact(Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
+		                    }
+						});
 
                     }
                 }

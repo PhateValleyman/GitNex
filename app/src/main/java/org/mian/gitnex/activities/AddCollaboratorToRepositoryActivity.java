@@ -84,7 +84,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
         Call<InlineResponse2001> call = RetrofitClient
                 .getApiInterface(ctx)
-                .userSearch(searchKeyword, null, 10, 1);
+                .userSearch(searchKeyword, null, 1, 10);
 
         call.enqueue(new Callback<InlineResponse2001>() {
 

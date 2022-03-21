@@ -195,10 +195,10 @@ public class CreateLabelActivity extends BaseActivity {
         }
 
         disableProcessButton();
-        createNewLabel(repository.getOwner(), repository.getName(), newLabelName, newLabelColor);
+        createNewLabel(newLabelName, newLabelColor);
     }
 
-    private void createNewLabel(String repoOwner, String repoName, String newLabelName, String newLabelColor) {
+    private void createNewLabel(String newLabelName, String newLabelColor) {
 
         CreateLabelOption createLabelFunc = new CreateLabelOption();
 		createLabelFunc.setColor(newLabelColor);
@@ -210,9 +210,11 @@ public class CreateLabelActivity extends BaseActivity {
 
 	    	call = RetrofitClient.getApiInterface(ctx).orgCreateLabel(getIntent().getStringExtra("orgName"), createLabelFunc);
 	    }
-	    else {
+	    else if(repository != null) {
 
-		    call = RetrofitClient.getApiInterface(ctx).issueCreateLabel(repoOwner, repoName, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(ctx).issueCreateLabel(repository.getOwner(), repository.getName(), createLabelFunc);
+	    } else {
+			return;
 	    }
 
         call.enqueue(new Callback<Label>() {

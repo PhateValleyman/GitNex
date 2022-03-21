@@ -151,7 +151,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		RetrofitClient
 			.getApiInterface(context)
-			.notifyGetList(false, Arrays.asList(filter), null, new Date(Constants.defaultOldestTimestamp), null, pageCurrentIndex, pageResultLimit)
+			.notifyGetList(false, Arrays.asList(filter), null, new Date(70, 0, 1, 0, 0, 0), null, pageCurrentIndex, pageResultLimit)
 			.enqueue((SimpleCallback<List<NotificationThread>>) (call1, listResponse) -> {
 
 				if(listResponse.isPresent() && listResponse.get().isSuccessful() && listResponse.get().body() != null) {

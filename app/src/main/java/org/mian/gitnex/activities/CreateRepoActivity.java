@@ -43,7 +43,7 @@ public class CreateRepoActivity extends BaseActivity {
 
 	private String selectedOwner;
 
-	List<Organization> organizationsList = new ArrayList<>();
+	List<String> organizationsList = new ArrayList<>();
 
     //https://github.com/go-gitea/gitea/blob/52cfd2743c0e85b36081cf80a850e6a5901f1865/models/repo.go#L964-L967
     final List<String> reservedRepoNames = Arrays.asList(".", "..");
@@ -224,36 +224,36 @@ public class CreateRepoActivity extends BaseActivity {
 
 		            List<Organization> organizationsList_ = response.body();
 
-		            organizationsList.add(new Organization().username(userLogin));
+		            organizationsList.add(userLogin);
 		            assert organizationsList_ != null;
 
 		            if(organizationsList_.size() > 0) {
 
 			            for(int i = 0; i < organizationsList_.size(); i++) {
 
-				            if(!getIntent().getStringExtra("orgName").equals("")) {
+				            if(getIntent().getStringExtra("orgName") != null && !"".equals(getIntent().getStringExtra("orgName"))) {
 					            if(getIntent().getStringExtra("orgName").equals(organizationsList_.get(i).getUsername())) {
 						            organizationId = i + 1;
 					            }
 				            }
 
-							organizationsList.add(organizationsList_.get(i));
+							organizationsList.add(organizationsList_.get(i).getUsername());
 			            }
 		            }
 
-		            ArrayAdapter<Organization> adapter = new ArrayAdapter<>(CreateRepoActivity.this, R.layout.list_spinner_items, organizationsList);
+		            ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateRepoActivity.this, R.layout.list_spinner_items, organizationsList);
 
 		            spinner.setAdapter(adapter);
 
-		            spinner.setOnItemClickListener ((parent, view, position, id) -> selectedOwner = organizationsList.get(position).getUsername());
+		            spinner.setOnItemClickListener ((parent, view, position, id) -> selectedOwner = organizationsList.get(position));
 
 		            if(getIntent().getBooleanExtra("organizationAction", false) && organizationId != 0) {
 
 			            int selectOwnerById = organizationId;
 			            new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-				            spinner.setText(organizationsList.get(selectOwnerById).getUsername(), false);
-				            selectedOwner = organizationsList.get(selectOwnerById).getUsername();
+				            spinner.setText(organizationsList.get(selectOwnerById), false);
+				            selectedOwner = organizationsList.get(selectOwnerById);
 			            }, 500);
 			            getIntent().removeExtra("organizationAction");
 		            }
