@@ -80,7 +80,7 @@ public class CommitDetailFragment extends Fragment {
 	private void getDiff() {
 		Call<String> call = new Version(TinyDB.getInstance(requireContext()).getString("giteaVersion")).higherOrEqual("1.16.0") ?
 			RetrofitClient.getApiInterface(requireContext()).repoDownloadCommitDiffOrPatch(repoOwner, repoName, sha, "diff") :
-			RetrofitClient.getWebInterface(requireContext()).repoDownloadCommitDiffOrPatch( repoOwner, repoName, sha, "diff");
+			RetrofitClient.getWebInterface(requireContext()).repoDownloadCommitDiffOrPatch(repoOwner, repoName, sha, "diff");
 
 		call.enqueue(new Callback<String>() {
 

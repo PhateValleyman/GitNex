@@ -3,12 +3,10 @@ package org.mian.gitnex.clients;
 import android.content.Context;
 import android.util.Log;
 import org.gitnex.tea4j.v2.apis.*;
+import org.gitnex.tea4j.v2.apis.custom.CustomApi;
+import org.gitnex.tea4j.v2.apis.custom.OTPApi;
 import org.gitnex.tea4j.v2.apis.custom.WebApi;
 import org.gitnex.tea4j.v2.auth.ApiKeyAuth;
-import org.gitnex.tea4j.v2.models.AccessToken;
-import org.gitnex.tea4j.v2.models.ContentsResponse;
-import org.gitnex.tea4j.v2.models.CreateAccessTokenOption;
-import org.gitnex.tea4j.v2.models.ServerVersion;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.helpers.AppUtil;
@@ -17,7 +15,6 @@ import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.ssl.MemorizingTrustManager;
 import java.io.File;
 import java.security.SecureRandom;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.net.ssl.HttpsURLConnection;
@@ -26,11 +23,9 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-import retrofit2.http.*;
 
 /**
  * Author M M Arif
@@ -147,48 +142,7 @@ public class RetrofitClient {
 
 	}
 
-	public interface ApiInterface extends AdminApi, OrganizationApi, IssueApi, RepositoryApi, MiscellaneousApi, NotificationApi, UserApi, SettingsApi {
+	public interface ApiInterface extends AdminApi, OrganizationApi, IssueApi, RepositoryApi, MiscellaneousApi, NotificationApi,
+		UserApi, SettingsApi, OTPApi, CustomApi {}
 
-		// custom methods to use with OTP tokens
-		@GET("version")
-		Call<ServerVersion> getVersion(@Header("X-Gitea-OTP") int otp);
-
-		@GET("users/{username}/tokens")
-		Call<List<AccessToken>> userGetTokens(
-			@Header("X-Gitea-OTP") int otp,
-			@Path("username") String username,
-			@Query("page") Integer page,
-			@Query("limit") Integer limit);
-
-		@DELETE("users/{username}/tokens/{token}")
-		Call<Void> userDeleteAccessToken(
-			@Header("X-Gitea-OTP") int otp,
-			@Path("username") String username, @Path("token") String token);
-
-		@Headers({"Content-Type:application/json"})
-		@POST("users/{username}/tokens")
-		Call<AccessToken> userCreateToken(
-			@Header("X-Gitea-OTP") int otp,
-			@Path("username") String username,
-			@Body CreateAccessTokenOption body);
-
-		@GET("repos/{owner}/{repo}/contents/{filepath}")
-		Call<List<ContentsResponse>> repoGetContentsList(
-			@Path("owner") String owner,
-			@Path("repo") String repo,
-			@Path("filepath") String filepath,
-			@Query("ref") String ref);
-
-	}
-
-	public interface WebApi extends org.gitnex.tea4j.v2.apis.custom.WebApi {
-
-		@GET("{owner}/{repo}/git/commit/{sha}.{diffType}")
-		Call<String> repoDownloadCommitDiffOrPatch(
-			@retrofit2.http.Path("owner") String owner,
-			@retrofit2.http.Path("repo") String repo,
-			@retrofit2.http.Path("sha") String sha,
-			@retrofit2.http.Path("diffType") String diffType);
-
-	}
 }
