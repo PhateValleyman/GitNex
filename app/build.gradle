@@ -114,7 +114,7 @@ dependencies {
     implementation 'com.github.chrisvest:stormpot:2.4.2'
     implementation 'androidx.browser:browser:1.4.0'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
-    implementation('org.codeberg.opyale:tea4j-autodeploy:5858cceefa') {
+    implementation('org.codeberg.opyale:tea4j-autodeploy:f04a6d33bf') {
         exclude module: 'org.apache.oltu.oauth2.common'
     }
 }

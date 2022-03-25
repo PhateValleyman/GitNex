@@ -245,7 +245,7 @@ public class CreateFileActivity extends BaseActivity {
 
 		Call<FileDeleteResponse> call = RetrofitClient
 			.getApiInterface(ctx)
-			.repoDeleteFile(deleteFileJsonStr, repoOwner, repoName, fileName);
+			.repoDeleteFileWithBody(repoOwner, repoName, fileName, deleteFileJsonStr);
 
 		call.enqueue(new Callback<FileDeleteResponse>() {
 

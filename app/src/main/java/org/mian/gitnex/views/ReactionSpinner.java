@@ -157,7 +157,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 					case REMOVE:
 						response = RetrofitClient
 							.getApiInterface(getContext())
-							.issueDeleteIssueReaction(repoOwner, repoName, (long) id, issueReaction)
+							.issueDeleteIssueReactionWithBody(repoOwner, repoName, (long) id, issueReaction)
 							.execute();
 						break;
 
@@ -178,7 +178,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 					case REMOVE:
 						response = RetrofitClient
 							.getApiInterface(getContext())
-							.issueDeleteCommentReaction(repoOwner, repoName, (long) id, issueReaction)
+							.issueDeleteCommentReactionWithBody(repoOwner, repoName, (long) id, issueReaction)
 							.execute();
 						break;
 
