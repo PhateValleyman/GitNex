@@ -1,0 +1,46 @@
+<resources>
+
+    <!-- Dark theme - default -->
+    <style name="AppThemeSystem" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:typeface">monospace</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/colorWhite</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+        <item name="colorPrimary">@color/darkGreen</item>
+        <item name="colorSecondary">@color/colorWhite</item>
+
+        <item name="diffAddedColor">@color/diffAddedColor</item>
+        <item name="diffRemovedColor">@color/diffRemovedColor</item>
+        <item name="diffSelectedColor">@color/diffSelectedColor</item>
+        <item name="primaryTextColor">@color/colorWhite</item>
+        <item name="primaryBackgroundColor">@color/colorPrimary</item>
+        <item name="inputBackgroundColor">@color/inputBackground</item>
+        <item name="inputSelectedColor">@color/inputSelected</item>
+        <item name="inputTextColor">@color/colorWhite</item>
+        <item name="checkboxStyle">@style/AppThemeCheckBoxStyle</item>
+        <item name="selectedTextColor">@color/darkGreen</item>
+        <item name="alertDialogTheme">@style/AppThemeConfirmDialog</item>
+        <item name="popupMenuStyle">@style/AppThemePopupMenuStyle</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
+        <item name="autoCompleteTextViewStyle">@style/AppThemeDarkSearchAutoCompleteTextView</item>
+        <item name="hintColor">@color/hintColor</item>
+        <item name="colorControlActivated">@color/darkGreen</item>
+        <item name="dividerColor">@color/dividerColorDark</item>
+        <item name="bottomSheetDialogTheme">@style/AppThemeDarkBottomSheetDialog</item>
+        <item name="searchViewStyle">@style/AppSearchViewStyle</item>
+        <item name="progressIndicatorColor">@color/darkGreen</item>
+        <item name="fabColor">@color/darkGreen</item>
+        <item name="iconsColor">@color/darkGreen</item>
+        <item name="pagerTabIndicatorColor">@color/darkGreen</item>
+        <item name="android:actionOverflowButtonStyle">@style/customOverflowButtonStyle</item>
+        <item name="actionOverflowMenuStyle">@style/customOverflowMenuStyle</item>
+        <item name="colorSurface">@color/inputBackground</item>
+        <item name="shapeAppearanceSmallComponent">@style/inputsMaterialComponentCorner</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:listDivider">@drawable/shape_list_divider</item>
+        <item name="isDark">1</item>
+    </style>
+    <!-- Dark theme - default -->
+
+</resources>
