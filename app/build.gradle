@@ -11,9 +11,6 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
     flavorDimensions "default"
     productFlavors {
         free {
@@ -70,7 +67,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
-    implementation "com.google.code.gson:gson:2.8.9"
+    implementation "com.google.code.gson:gson:2.9.0"
     implementation "com.squareup.picasso:picasso:2.71828"
     implementation 'jp.wasabeef:picasso-transformations:2.4.0'
     implementation 'jp.co.cyberagent.android:gpuimage:2.1.0'
