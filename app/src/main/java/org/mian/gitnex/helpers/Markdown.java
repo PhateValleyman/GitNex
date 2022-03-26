@@ -61,8 +61,6 @@ import de.qwerty287.markwonprism4j.Prism4jThemeDefault;
 import de.qwerty287.markwonprism4j.SyntaxHighlightPlugin;
 import io.noties.prism4j.Prism4j;
 import stormpot.Allocator;
-import stormpot.BlazePool;
-import stormpot.Config;
 import stormpot.Pool;
 import stormpot.Poolable;
 import stormpot.Slot;
@@ -87,12 +85,7 @@ public class Markdown {
 
 	static {
 
-		Config<Renderer> config = new Config<>();
-
-		config.setBackgroundExpirationEnabled(true);
-		config.setPreciseLeakDetectionEnabled(true);
-		config.setSize(MAX_OBJECT_POOL_SIZE);
-		config.setAllocator(new Allocator<Renderer>() {
+		rendererPool = Pool.from(new Allocator<Renderer>() {
 
 			@Override
 			public Renderer allocate(Slot slot) {
@@ -101,16 +94,13 @@ public class Markdown {
 
 			@Override public void deallocate(Renderer poolable) {}
 
-		});
+		})
+			.setSize(MAX_OBJECT_POOL_SIZE)
+			.setPreciseLeakDetectionEnabled(true)
+			.setBackgroundExpirationEnabled(true)
+			.build();
 
-		rendererPool = new BlazePool<>(config);
-
-		Config<RecyclerViewRenderer> configRv = new Config<>();
-
-		configRv.setBackgroundExpirationEnabled(true);
-		configRv.setPreciseLeakDetectionEnabled(true);
-		configRv.setSize(MAX_OBJECT_POOL_SIZE);
-		configRv.setAllocator(new Allocator<RecyclerViewRenderer>() {
+		rvRendererPool = Pool.from(new Allocator<RecyclerViewRenderer>() {
 
 			@Override
 			public RecyclerViewRenderer allocate(Slot slot) {
@@ -123,9 +113,11 @@ public class Markdown {
 
 			}
 
-		});
-
-		rvRendererPool = new BlazePool<>(configRv);
+		})
+			.setSize(MAX_OBJECT_POOL_SIZE)
+			.setBackgroundExpirationEnabled(true)
+			.setPreciseLeakDetectionEnabled(true)
+			.build();
 
 	}
 
