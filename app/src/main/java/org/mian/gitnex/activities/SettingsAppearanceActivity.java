@@ -77,11 +77,11 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			lightMinute));
 		activitySettingsAppearanceBinding.darkThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, darkHour,
 			darkMinute));
-		activitySettingsAppearanceBinding.tvDateTimeSelected.setText(themeList[themeSelectedChoice]);
+		activitySettingsAppearanceBinding.tvDateTimeSelected.setText(timeList[timeSelectedChoice]);
 		activitySettingsAppearanceBinding.customFontSelected.setText(tinyDB.getString("customFontStr", "Manrope"));
-		activitySettingsAppearanceBinding.themeSelected.setText(tinyDB.getString("themeStr", "Dark"));
+		activitySettingsAppearanceBinding.themeSelected.setText(themeList[themeSelectedChoice]);
 
-		if(tinyDB.getString("themeStr").startsWith("Auto")) {
+		if(themeList[themeSelectedChoice].startsWith("Auto")) {
 			darkTimeFrame.setVisibility(View.VISIBLE);
 			lightTimeFrame.setVisibility(View.VISIBLE);
 		}
