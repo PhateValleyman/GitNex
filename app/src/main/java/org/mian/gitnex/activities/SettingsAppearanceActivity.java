@@ -71,7 +71,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 		timeSelectedChoice = tinyDB.getInt("timeId");
 		customFontSelectedChoice = tinyDB.getInt("customFontId", 1);
-		themeSelectedChoice = tinyDB.getInt("themeId");
+		themeSelectedChoice = tinyDB.getInt("themeId", 6); // use system theme as default
 
 		activitySettingsAppearanceBinding.lightThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, lightHour,
 			lightMinute));
