@@ -190,7 +190,7 @@ public class CommitDetailFragment extends Fragment {
 					}
 
 					if(commitsModel.getCommitter() != null &&
-						!commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin()) &&
+						(commitsModel.getAuthor() == null || !commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin())) &&
 						commitsModel.getCommitter().getAvatarUrl() != null &&
 						!commitsModel.getCommitter().getAvatarUrl().isEmpty()) {
 
