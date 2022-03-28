@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat;
 import com.vdurmont.emoji.EmojiParser;
 import org.apache.commons.io.FileUtils;
 import org.gitnex.tea4j.v2.models.ContentsResponse;
+import org.apache.commons.io.FilenameUtils;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityFileViewBinding;
@@ -90,7 +91,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 					if(responseBody != null) {
 
 						runOnUiThread(() -> binding.progressBar.setVisibility(View.GONE));
-						String fileExtension = FileUtils.getExtension(filename);
+						String fileExtension = FilenameUtils.getExtension(filename);
 
 						boolean processable = false;
 
@@ -207,7 +208,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 		inflater.inflate(R.menu.generic_nav_dotted_menu, menu);
 		inflater.inflate(R.menu.files_view_menu, menu);
 
-		if(!FileUtils.getExtension(file.getName())
+		if(!FilenameUtils.getExtension(file.getName())
 			.equalsIgnoreCase("md")) {
 
 			menu.getItem(0)
