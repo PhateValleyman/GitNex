@@ -35,9 +35,9 @@ public class MilestoneActions {
 		milestoneStateJson.setState(state);
 		Call<Milestone> call = RetrofitClient
 			.getApiInterface(ctx)
-			.issueEditMilestone(repository.getOwner(), repository.getOwner(), String.valueOf(milestoneId_), milestoneStateJson);
+			.issueEditMilestone(repository.getOwner(), repository.getName(), String.valueOf(milestoneId_), milestoneStateJson);
 
-		call.enqueue(new Callback<Milestone>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Milestone> call, @NonNull retrofit2.Response<Milestone> response) {
@@ -50,8 +50,7 @@ public class MilestoneActions {
 				else if(response.code() == 401) {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-						ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-						ctx.getResources().getString(R.string.cancelButton),
+						ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton),
 						ctx.getResources().getString(R.string.navLogout));
 
 				}

@@ -28,10 +28,7 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -51,10 +48,10 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
     private AutoCompleteTextView editIssueMilestoneSpinner;
 
     private final String msState = "open";
-    private int milestoneId;
+    private int milestoneId = 0;
 	private Date currentDate = null;
 
-    List<Milestone> milestonesList = new ArrayList<>();
+    private LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
 
 	private IssueContext issue;
 
@@ -253,114 +250,114 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
                 .getApiInterface(ctx)
                 .issueGetIssue(repoOwner, repoName, (long) issueIndex);
 
-        call.enqueue(new Callback<Issue>() {
+        call.enqueue(new Callback<>() {
 
-            @Override
-            public void onResponse(@NonNull Call<Issue> call, @NonNull retrofit2.Response<Issue> response) {
+	        @Override
+	        public void onResponse(@NonNull Call<Issue> call, @NonNull retrofit2.Response<Issue> response) {
 
-                if(response.code() == 200) {
+		        if(response.code() == 200) {
 
-                    assert response.body() != null;
-                    editIssueTitle.setText(response.body().getTitle());
-                    editIssueDescription.setText(response.body().getBody());
+			        assert response.body() != null;
+			        editIssueTitle.setText(response.body().getTitle());
+			        editIssueDescription.setText(response.body().getBody());
 
-                    int currentMilestoneId = 0;
-                    if(response.body().getMilestone() != null) {
+			        Milestone currentMilestone = response.body().getMilestone();
 
-	                    currentMilestoneId = Math.toIntExact(response.body().getMilestone().getId());
-                    }
+			        // get milestones list
+			        if(response.body().getId() > 0) {
 
-                    // get milestones list
-                    if(response.body().getId() > 0) {
+				        Call<List<Milestone>> call_ = RetrofitClient.getApiInterface(ctx).issueGetMilestonesList(repoOwner, repoName, msState, null, 1, resultLimit);
 
-                        Call<List<Milestone>> call_ = RetrofitClient
-                                .getApiInterface(ctx)
-                                .issueGetMilestonesList(repoOwner, repoName, msState, null, 1, resultLimit);
+				        call_.enqueue(new Callback<>() {
 
-	                    int checkMilestoneId = currentMilestoneId;
+					        @Override
+					        public void onResponse(@NonNull Call<List<Milestone>> call, @NonNull retrofit2.Response<List<Milestone>> response_) {
 
-	                    call_.enqueue(new Callback<List<Milestone>>() {
+						        if(response_.code() == 200) {
 
-                            @Override
-                            public void onResponse(@NonNull Call<List<Milestone>> call, @NonNull retrofit2.Response<List<Milestone>> response_) {
+							        List<Milestone> milestonesList_ = response_.body();
 
-                                int getSelectedMilestoneId = 0;
+							        assert milestonesList_ != null;
 
-                                if (response_.code() == 200) {
+							        Milestone ms = new Milestone();
+							        ms.setId(0L);
+							        ms.setTitle(getString(R.string.issueCreatedNoMilestone));
+							        milestonesList.put(ms.getTitle(), ms);
 
-                                    List<Milestone> milestonesList_ = response_.body();
+							        if(milestonesList_.size() > 0) {
 
-                                    milestonesList.add(new Milestone().id(0L).title(getString(R.string.issueCreatedNoMilestone)));
-                                    assert milestonesList_ != null;
+								        for(Milestone milestone : milestonesList_) {
 
-                                    if (milestonesList_.size() > 0) {
+									        //Don't translate "open" is a enum
+									        if(milestone.getState().equals("open")) {
+										        milestonesList.put(milestone.getTitle(), milestone);
+									        }
+								        }
+							        }
 
-	                                    milestonesList.addAll(milestonesList_);
+							        ArrayAdapter<String> adapter = new ArrayAdapter<>(EditIssueActivity.this, R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
 
-                                        for (int i = 0; i < milestonesList_.size(); i++) {
+							        editIssueMilestoneSpinner.setAdapter(adapter);
 
-                                            if(checkMilestoneId == milestonesList_.get(i).getId()) {
-	                                            getSelectedMilestoneId = i + 1;
-                                            }
-                                        }
-                                    }
+							        editIssueMilestoneSpinner.setOnItemClickListener((parent, view, position, id) -> {
+								        if(position == 0) {
+									        milestoneId = 0;
+								        }
+								        else if(view instanceof TextView) {
+									        milestoneId = Math.toIntExact(
+										        Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
+								        }
+							        });
 
-                                    ArrayAdapter<Milestone> adapter = new ArrayAdapter<>(EditIssueActivity.this,
-                                            R.layout.list_spinner_items, milestonesList);
+							        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+										if(currentMilestone != null) {
+											milestoneId = Math.toIntExact(currentMilestone.getId());
+											editIssueMilestoneSpinner.setText(currentMilestone.getTitle(), false);
+										} else {
+											milestoneId = 0;
+											editIssueMilestoneSpinner.setText(getString(R.string.issueCreatedNoMilestone), false);
+										}
+							        }, 500);
 
-                                    editIssueMilestoneSpinner.setAdapter(adapter);
+							        enableProcessButton();
+						        }
+					        }
 
-	                                editIssueMilestoneSpinner.setOnItemClickListener ((parent, view, position, id) -> milestoneId = Math.toIntExact(
-		                                milestonesList.get(position).getId()));
+					        @Override
+					        public void onFailure(@NonNull Call<List<Milestone>> call, @NonNull Throwable t) {
 
-	                                int finalMsId = getSelectedMilestoneId;
-	                                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+						        Log.e("onFailure", t.toString());
+					        }
+				        });
 
-		                                editIssueMilestoneSpinner.setText(milestonesList.get(finalMsId).getTitle(),false);
-		                                milestoneId = Math.toIntExact(milestonesList.get(finalMsId).getId());
-	                                }, 500);
+			        }
+			        // get milestones list
 
-                                    enableProcessButton();
-                                }
-                            }
+			        if(response.body().getDueDate() != null) {
 
-                            @Override
-                            public void onFailure(@NonNull Call<List<Milestone>> call, @NonNull Throwable t) {
+				        @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("yyyy-M-dd");
+				        String dueDate = formatter.format(response.body().getDueDate());
+				        editIssueDueDate.setText(dueDate);
+			        }
+			        //enableProcessButton();
 
-                                Log.e("onFailure", t.toString());
-                            }
-                        });
+		        }
+		        else if(response.code() == 401) {
 
-                    }
-                    // get milestones list
+			        AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage),
+				        getResources().getString(R.string.cancelButton), getResources().getString(R.string.navLogout));
+		        }
+		        else {
 
-                    if(response.body().getDueDate() != null) {
+			        Toasty.error(ctx, getString(R.string.genericError));
+		        }
+	        }
 
-                        @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("yyyy-M-dd");
-                        String dueDate = formatter.format(response.body().getDueDate());
-                        editIssueDueDate.setText(dueDate);
-                    }
-                    //enableProcessButton();
+	        @Override
+	        public void onFailure(@NonNull Call<Issue> call, @NonNull Throwable t) {
 
-                }
-                else if(response.code() == 401) {
-
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.cancelButton),
-                            getResources().getString(R.string.navLogout));
-                }
-                else {
-
-                    Toasty.error(ctx, getString(R.string.genericError));
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Issue> call, @NonNull Throwable t) {
-
-                Log.e("onFailure", t.toString());
-            }
+		        Log.e("onFailure", t.toString());
+	        }
         });
 
     }

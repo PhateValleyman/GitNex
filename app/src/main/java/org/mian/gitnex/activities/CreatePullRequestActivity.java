@@ -347,7 +347,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		DatePickerDialog datePickerDialog = new DatePickerDialog(this,
 			(view, year, monthOfYear, dayOfMonth) -> {
 			viewBinding.prDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
-			currentDate = new Date(year, monthOfYear, dayOfMonth);
+			currentDate = new Date(year - 1900, monthOfYear, dayOfMonth);
 			}, mYear, mMonth, mDay);
 		datePickerDialog.show();
 	}

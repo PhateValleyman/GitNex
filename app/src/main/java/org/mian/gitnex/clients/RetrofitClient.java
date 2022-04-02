@@ -2,6 +2,7 @@ package org.mian.gitnex.clients;
 
 import android.content.Context;
 import android.util.Log;
+import com.google.gson.GsonBuilder;
 import org.gitnex.tea4j.v2.apis.*;
 import org.gitnex.tea4j.v2.apis.custom.CustomApi;
 import org.gitnex.tea4j.v2.apis.custom.OTPApi;
@@ -80,7 +81,8 @@ public class RetrofitClient {
 				.baseUrl(instanceUrl)
 				.client(okHttpClient.build())
 				.addConverterFactory(ScalarsConverterFactory.create())
-				.addConverterFactory(GsonConverterFactory.create())
+				.addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+					.create()))
 				.build();
 
 		}
