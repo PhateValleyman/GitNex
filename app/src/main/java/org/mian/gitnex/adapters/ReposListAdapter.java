@@ -144,7 +144,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			repoName.setText(repositories.getFullName().split("/")[1]);
 			repoStars.setText(repositories.getStars_count());
 
-			ColorGenerator generator = ColorGenerator.MATERIAL;
+			ColorGenerator generator = ColorGenerator.Companion.getMATERIAL();
 			int color = generator.getColor(repositories.getName());
 			String firstCharacter = String.valueOf(repositories.getFullName().charAt(0));
 
