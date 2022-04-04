@@ -133,9 +133,8 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 
         String editIssueTitleForm = editIssueTitle.getText().toString();
         String editIssueDescriptionForm = editIssueDescription.getText().toString();
-        String editIssueDueDateForm = editIssueDueDate.getText().toString();
 
-        if(!connToInternet) {
+	    if(!connToInternet) {
 
             Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
             return;
@@ -147,20 +146,12 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
             return;
         }
 
-        if (editIssueDueDateForm.equals("")) {
-
-            editIssueDueDateForm = null;
-        }
-        else {
-
-            editIssueDueDateForm = (AppUtil.customDateCombine(AppUtil.customDateFormat(editIssueDueDateForm)));
-        }
-
-        disableProcessButton();
-        editIssue(issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getIssueIndex(), editIssueTitleForm, editIssueDescriptionForm, editIssueDueDateForm, milestoneId);
+	    disableProcessButton();
+        editIssue(issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getIssueIndex(), editIssueTitleForm, editIssueDescriptionForm,
+	        milestoneId);
     }
 
-    private void editIssue(String repoOwner, String repoName, int issueIndex, String title, String description, String dueDate, int milestoneId) {
+    private void editIssue(String repoOwner, String repoName, int issueIndex, String title, String description, int milestoneId) {
 
         EditIssueOption issueData = new EditIssueOption();
 		issueData.setTitle(title);

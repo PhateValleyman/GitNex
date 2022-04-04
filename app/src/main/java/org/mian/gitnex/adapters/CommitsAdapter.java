@@ -20,7 +20,6 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -100,17 +99,18 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
 
+
             if(!Objects.equals(commitsModel.getCommit().getCommitter().getEmail(), commitsModel.getCommit().getAuthor().getEmail())) {
 	            commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(context
 		            .getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getCommit().getAuthor().getName(), commitsModel.getCommit().getCommitter().getName(),
 			            TimeHelper
-				            .formatTime(new Date(commitsModel.getCommit().getCommitter().getDate()), context.getResources().getConfiguration().locale, "pretty",
+				            .formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()), context.getResources().getConfiguration().locale, "pretty",
 					            context)), HtmlCompat.FROM_HTML_MODE_COMPACT));
             } else {
             	commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(context
 		            .getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
 			            TimeHelper
-				            .formatTime(new Date(commitsModel.getCommit().getCommitter().getDate()), context.getResources().getConfiguration().locale, "pretty",
+				            .formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()), context.getResources().getConfiguration().locale, "pretty",
 					            context)), HtmlCompat.FROM_HTML_MODE_COMPACT));
             }
 

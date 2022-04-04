@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.v2.models.Commit;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.adapters.DiffFilesAdapter;
 import org.mian.gitnex.clients.PicassoService;
@@ -24,11 +23,8 @@ import org.mian.gitnex.databinding.CustomCommitHeaderBinding;
 import org.mian.gitnex.databinding.FragmentCommitDetailsBinding;
 import org.mian.gitnex.helpers.*;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -154,13 +150,13 @@ public class CommitDetailFragment extends Fragment {
 						binding.commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(CommitDetailFragment.this
 							.getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getCommit().getAuthor().getName(), commitsModel.getCommit().getCommitter().getName(),
 								TimeHelper
-									.formatTime(new Date(commitsModel.getCommit().getCommitter().getDate()), getResources().getConfiguration().locale, "pretty",
+									.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()), getResources().getConfiguration().locale, "pretty",
 										requireContext())), HtmlCompat.FROM_HTML_MODE_COMPACT));
 					} else {
 						binding.commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(CommitDetailFragment.this
 							.getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
 								TimeHelper
-									.formatTime(new Date(commitsModel.getCommit().getCommitter().getDate()), getResources().getConfiguration().locale, "pretty",
+									.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()), getResources().getConfiguration().locale, "pretty",
 										requireContext())), HtmlCompat.FROM_HTML_MODE_COMPACT));
 					}
 
