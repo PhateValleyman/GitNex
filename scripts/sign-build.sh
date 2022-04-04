@@ -16,4 +16,4 @@ apt upgrade curl -y
 KEYFILE=$(mktemp)
 curl -X GET "${INSTANCE}/api/v1/repos/${KS_REPO}/contents/${KS_FILE}?token=${BOT_TOKEN}" -H  "accept: application/json" | sed 's|"content":"|#|g' | cut -d '#' -f 2 | cut -d '"' -f 1 | base64 -d > ${KEYFILE}
 
-/opt/android-sdk-linux/build-tools/*/apksigner sign -v --ks-pass pass:$KS_PASS --key-pass pass:$KEY_PASS --ks-key-alias GitNexBot --ks ${KEYFILE} --out signed.apk $(find . -name "*release*.apk")
+apksigner sign -v --ks-pass pass:$KS_PASS --key-pass pass:$KEY_PASS --ks-key-alias GitNexBot --ks ${KEYFILE} --out signed.apk $(find . -name "*release*.apk")
