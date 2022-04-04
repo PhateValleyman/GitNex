@@ -41,20 +41,14 @@ public class RepoWatchersViewModel extends ViewModel {
             public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
 
                 if(response.isSuccessful()) {
-                    if(response.code() == 200) {
-                        watchersList.postValue(response.body());
-
-                    }
+                	watchersList.postValue(response.body());
                 }
-
             }
 
             @Override
             public void onFailure(@NonNull Call<List<User>> call, Throwable t) {
                 Log.i("onFailure", t.toString());
             }
-
         });
-
     }
 }

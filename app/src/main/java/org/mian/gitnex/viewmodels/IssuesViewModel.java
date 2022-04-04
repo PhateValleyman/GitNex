@@ -7,17 +7,19 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import org.gitnex.tea4j.v2.models.Issue;
+import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.ExploreIssuesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Constants;
+import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class IssuesViewModel extends ViewModel {
@@ -43,24 +45,25 @@ public class IssuesViewModel extends ViewModel {
 
 		Call<List<Issue>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.issueSearchIssues(state, null, null, searchKeyword, null, type, null, null, null,
-				created, null, null, null, null, 1, resultLimit);
+			.issueSearchIssues(state, null, null, searchKeyword, null, type, null, null,
+				null, created, null, null, null, null, 1, resultLimit);
 
-		call.enqueue(new Callback<List<Issue>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Issue>> call, @NonNull Response<List<Issue>> response) {
 
-				if (response.isSuccessful()) {
+				if(response.isSuccessful()) {
 					issuesList.postValue(response.body());
 				}
 				else {
-					Log.e("onResponse", String.valueOf(response.code()));
+					Toasty.error(ctx, ctx.getString(R.string.genericError));
 				}
 			}
 
 			@Override
-			public void onFailure(@NonNull Call<List<Issue>> call, Throwable t) {
+			public void onFailure(@NonNull Call<List<Issue>> call, @NonNull Throwable t) {
+
 				Log.e("onFailure", t.toString());
 			}
 		});
@@ -70,15 +73,16 @@ public class IssuesViewModel extends ViewModel {
 
 		Call<List<Issue>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.issueSearchIssues(state, null, null, searchKeyword, null, type, null, null, null,
-				created, null, null, null, null, page, resultLimit);
+			.issueSearchIssues(state, null, null, searchKeyword, null, type, null, null,
+				null, created, null, null, null, null, page, resultLimit);
 
-		call.enqueue(new Callback<List<Issue>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Issue>> call, @NonNull Response<List<Issue>> response) {
 
-				if (response.isSuccessful()) {
+				if(response.isSuccessful()) {
+
 					List<Issue> list = issuesList.getValue();
 					assert list != null;
 					assert response.body() != null;
@@ -92,12 +96,13 @@ public class IssuesViewModel extends ViewModel {
 					}
 				}
 				else {
-					Log.e("onResponse", String.valueOf(response.code()));
+					Toasty.error(ctx, ctx.getString(R.string.genericError));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<List<Issue>> call, @NonNull Throwable t) {
+
 				Log.e("onFailure", t.toString());
 			}
 		});

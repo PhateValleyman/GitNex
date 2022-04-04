@@ -44,7 +44,7 @@ public class ExploreIssuesFragment extends Fragment {
 					imm.hideSoftInputFromWindow(viewBinding.searchKeyword.getWindowToken(), 0);
 
 					viewBinding.progressBar.setVisibility(View.VISIBLE);
-					fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), String.valueOf(viewBinding.searchKeyword.getText()));
+					fetchDataAsync(String.valueOf(viewBinding.searchKeyword.getText()));
 				}
 			}
 			return false;
@@ -54,10 +54,10 @@ public class ExploreIssuesFragment extends Fragment {
 
 			viewBinding.pullToRefresh.setRefreshing(false);
 			if(!Objects.requireNonNull(viewBinding.searchKeyword.getText()).toString().equals("")) {
-				fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), String.valueOf(viewBinding.searchKeyword.getText()));
+				fetchDataAsync(String.valueOf(viewBinding.searchKeyword.getText()));
 			}
 			else {
-				fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), "");
+				fetchDataAsync("");
 			}
 			viewBinding.progressBar.setVisibility(View.VISIBLE);
 
@@ -68,12 +68,12 @@ public class ExploreIssuesFragment extends Fragment {
 		viewBinding.recyclerViewSearchIssues.addItemDecoration(dividerItemDecoration);
 		viewBinding.recyclerViewSearchIssues.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-		fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), "");
+		fetchDataAsync("");
 
 		return viewBinding.getRoot();
 	}
 
-	private void fetchDataAsync(String instanceToken, String searchKeyword) {
+	private void fetchDataAsync(String searchKeyword) {
 
 		IssuesViewModel issuesModel = new ViewModelProvider(this).get(IssuesViewModel.class);
 

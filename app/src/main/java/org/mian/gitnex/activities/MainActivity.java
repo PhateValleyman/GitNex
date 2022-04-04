@@ -34,9 +34,27 @@ import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityMainBinding;
-import org.mian.gitnex.fragments.*;
-import org.mian.gitnex.helpers.*;
+import org.mian.gitnex.fragments.AdministrationFragment;
+import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
+import org.mian.gitnex.fragments.BottomSheetMyIssuesFilterFragment;
+import org.mian.gitnex.fragments.DraftsFragment;
+import org.mian.gitnex.fragments.ExploreFragment;
+import org.mian.gitnex.fragments.MyIssuesFragment;
+import org.mian.gitnex.fragments.MyProfileFragment;
+import org.mian.gitnex.fragments.MyRepositoriesFragment;
+import org.mian.gitnex.fragments.NotificationsFragment;
+import org.mian.gitnex.fragments.OrganizationsFragment;
+import org.mian.gitnex.fragments.RepositoriesFragment;
+import org.mian.gitnex.fragments.SettingsFragment;
+import org.mian.gitnex.fragments.StarredRepositoriesFragment;
+import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.ChangeLog;
+import org.mian.gitnex.helpers.ColorInverter;
+import org.mian.gitnex.helpers.RoundedTransformation;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.structs.BottomSheetListener;
+import org.mian.gitnex.structs.FragmentRefreshListener;
 import java.util.ArrayList;
 import java.util.List;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
@@ -44,7 +62,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 @SuppressWarnings("ConstantConditions")
@@ -56,7 +74,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private TextView toolbarTitle;
 	private Typeface myTypeface;
 
-	private String instanceToken;
 	private boolean noConnection = false;
 
 	private View hView;
@@ -65,6 +82,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	private TextView notificationCounter;
 
 	private BottomSheetListener profileInitListener;
+	private FragmentRefreshListener fragmentRefreshListenerMyIssues;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +106,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		}
 		// DO NOT MOVE
 
-		instanceToken = getAccount().getAuthorization();
 		noConnection = false;
 
 		if(tinyDB.getInt("currentActiveAccountId", -1) <= 0) {
@@ -445,39 +462,51 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	public void onButtonClicked(String text) {
 		int currentActiveAccountId = tinyDB.getInt("currentActiveAccountId");
 
-		if("deleteDrafts".equals(text)) {
+		switch(text) {
 
-			if(currentActiveAccountId > 0) {
+			case "deleteDrafts":
+				if(currentActiveAccountId > 0) {
 
-				FragmentManager fm = getSupportFragmentManager();
-				DraftsFragment frag = (DraftsFragment) fm.findFragmentById(R.id.fragment_container);
+					FragmentManager fm = getSupportFragmentManager();
+					DraftsFragment frag = (DraftsFragment) fm.findFragmentById(R.id.fragment_container);
 
-				if(frag != null) {
+					if(frag != null) {
 
-					new AlertDialog.Builder(ctx)
-						.setTitle(R.string.deleteAllDrafts)
-						.setIcon(R.drawable.ic_delete)
-						.setCancelable(false)
-						.setMessage(R.string.deleteAllDraftsDialogMessage)
-						.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
+						new AlertDialog.Builder(ctx)
+							.setTitle(R.string.deleteAllDrafts)
+							.setIcon(R.drawable.ic_delete)
+							.setCancelable(false)
+							.setMessage(R.string.deleteAllDraftsDialogMessage)
+							.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
 
-							frag.deleteAllDrafts(currentActiveAccountId);
-							dialog.dismiss();
+								frag.deleteAllDrafts(currentActiveAccountId);
+								dialog.dismiss();
 
-						})
-						.setNeutralButton(R.string.cancelButton, null).show();
+							})
+							.setNeutralButton(R.string.cancelButton, null).show();
+					}
+					else {
+
+						Toasty.error(ctx, getResources().getString(R.string.genericError));
+					}
+
 				}
 				else {
 
 					Toasty.error(ctx, getResources().getString(R.string.genericError));
 				}
+				break;
 
-			}
-			else {
-
-				Toasty.error(ctx, getResources().getString(R.string.genericError));
-			}
-
+			case "openMyIssues":
+				if(getFragmentRefreshListener() != null) {
+					getFragmentRefreshListener().onRefresh("open");
+				}
+				break;
+			case "closedMyIssues":
+				if(getFragmentRefreshListener() != null) {
+					getFragmentRefreshListener().onRefresh("closed");
+				}
+				break;
 		}
 
 	}
@@ -575,6 +604,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			bottomSheet.show(getSupportFragmentManager(), "draftsBottomSheet");
 			return true;
 		}
+		else if(id == R.id.filter) {
+
+			BottomSheetMyIssuesFilterFragment filterBottomSheet = new BottomSheetMyIssuesFilterFragment();
+			filterBottomSheet.show(getSupportFragmentManager(), "myIssuesFilterMenuBottomSheet");
+			return true;
+		}
 
 		return super.onOptionsItemSelected(item);
 	}
@@ -654,7 +689,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 		Call<NotificationCount> call = RetrofitClient.getApiInterface(ctx).notifyNewAvailable();
 
-		call.enqueue(new Callback<NotificationCount>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<NotificationCount> call, @NonNull retrofit2.Response<NotificationCount> response) {
@@ -682,4 +717,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		this.profileInitListener = profileInitListener;
 	}
 
+	// My issues-open-close interface
+	public FragmentRefreshListener getFragmentRefreshListener() { return fragmentRefreshListenerMyIssues; }
+	public void setFragmentRefreshListenerMyIssues(FragmentRefreshListener fragmentRefreshListener) { this.fragmentRefreshListenerMyIssues = fragmentRefreshListener; }
 }
