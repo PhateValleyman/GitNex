@@ -155,7 +155,7 @@ public class CreateLabelActivity extends BaseActivity {
         }
 
         disableProcessButton();
-        patchLabel(repository.getOwner(), repository.getName(), updateLabelName, updateLabelColor, Integer.parseInt(
+        patchLabel(repository, updateLabelName, updateLabelColor, Integer.parseInt(
 	        Objects.requireNonNull(getIntent().getStringExtra("labelId"))));
 
     }
@@ -255,7 +255,7 @@ public class CreateLabelActivity extends BaseActivity {
 
     }
 
-    private void patchLabel(String repoOwner, String repoName, String updateLabelName, String updateLabelColor, int labelId) {
+    private void patchLabel(RepositoryContext repository, String updateLabelName, String updateLabelColor, int labelId) {
 
         EditLabelOption createLabelFunc = new EditLabelOption();
 		createLabelFunc.setColor(updateLabelColor);
@@ -269,7 +269,7 @@ public class CreateLabelActivity extends BaseActivity {
 	    }
 	    else {
 
-		    call = RetrofitClient.getApiInterface(ctx).issueEditLabel(repoOwner, repoName, (long) labelId, createLabelFunc);
+		    call = RetrofitClient.getApiInterface(ctx).issueEditLabel(repository.getOwner(), repository.getName(), (long) labelId, createLabelFunc);
 	    }
 
         call.enqueue(new Callback<Label>() {

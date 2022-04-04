@@ -80,7 +80,9 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
                     intent.putExtra("labelAction", "edit");
 	                intent.putExtra("type", type);
 	                intent.putExtra("orgName", orgName);
-	                intent.putExtra(RepositoryContext.INTENT_EXTRA, ((RepoDetailActivity) itemView.getContext()).repository);
+					if(type.equals("repo")) {
+						intent.putExtra(RepositoryContext.INTENT_EXTRA, ((RepoDetailActivity) itemView.getContext()).repository);
+					}
                     context.startActivity(intent);
                     dialog.dismiss();
                 });

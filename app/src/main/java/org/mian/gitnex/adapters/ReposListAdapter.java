@@ -141,7 +141,7 @@ public class ReposListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			String timeFormat = tinyDb.getString("dateFormat", "pretty");
 			orgName.setText(repositories.getFullName().split("/")[0]);
 			repoName.setText(repositories.getFullName().split("/")[1]);
-			repoStars.setText(Math.toIntExact(repositories.getStarsCount()));
+			repoStars.setText(String.valueOf(repositories.getStarsCount()));
 
 			ColorGenerator generator = ColorGenerator.Companion.getMATERIAL();
 			int color = generator.getColor(repositories.getName());
