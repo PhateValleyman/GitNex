@@ -230,4 +230,9 @@ public class RepositoryContext implements Serializable {
 		this.releasesViewTypeIsTag = releasesViewTypeIsTag;
 	}
 
+	public void removeRepository() {
+
+		repository = null;
+	}
+
 }

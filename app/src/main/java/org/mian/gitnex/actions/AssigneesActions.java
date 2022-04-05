@@ -29,7 +29,7 @@ public class AssigneesActions {
 			.getApiInterface(ctx)
 			.issueGetIssue(repoOwner, repoName, (long) issueIndex);
 
-		callSingleIssueLabels.enqueue(new Callback<Issue>() {
+		callSingleIssueLabels.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Issue> call, @NonNull retrofit2.Response<Issue> response) {
@@ -39,7 +39,7 @@ public class AssigneesActions {
 					Issue issueAssigneesList = response.body();
 					assert issueAssigneesList != null;
 
-					if (issueAssigneesList.getAssignees() != null) {
+					if(issueAssigneesList.getAssignees() != null) {
 
 						if(issueAssigneesList.getAssignees().size() > 0) {
 
@@ -67,7 +67,7 @@ public class AssigneesActions {
 			.getApiInterface(ctx)
 			.repoGetAssignees(repoOwner, repoName);
 
-		call.enqueue(new Callback<List<User>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<User>> call, @NonNull retrofit2.Response<List<User>> response) {
@@ -78,7 +78,7 @@ public class AssigneesActions {
 				assigneesBinding.progressBar.setVisibility(View.GONE);
 				assigneesBinding.dialogFrame.setVisibility(View.VISIBLE);
 
-				if (response.code() == 200) {
+				if(response.code() == 200) {
 
 					assert assigneesList_ != null;
 

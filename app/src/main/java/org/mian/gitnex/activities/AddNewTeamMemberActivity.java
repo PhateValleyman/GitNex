@@ -109,11 +109,11 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 	public void loadUserSearchList(String searchKeyword) {
 
-		Call<InlineResponse2001> call = RetrofitClient.getApiInterface(ctx).userSearch(searchKeyword, null, 10, 1);
+		Call<InlineResponse2001> call = RetrofitClient.getApiInterface(ctx).userSearch(searchKeyword, null, 1, 10);
 
 		mProgressBar.setVisibility(View.VISIBLE);
 
-		call.enqueue(new Callback<InlineResponse2001>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<InlineResponse2001> call, @NonNull Response<InlineResponse2001> response) {
@@ -140,6 +140,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 			@Override
 			public void onFailure(@NonNull Call<InlineResponse2001> call, @NonNull Throwable t) {
+
 				Log.e("onFailure", t.toString());
 			}
 

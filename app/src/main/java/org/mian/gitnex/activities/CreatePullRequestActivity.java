@@ -20,7 +20,6 @@ import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreatePrBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
-import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
@@ -163,24 +162,25 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 			.getApiInterface(ctx)
 			.repoCreatePullRequest(repository.getOwner(), repository.getName(), createPullRequest);
 
-		transferCall.enqueue(new Callback<PullRequest>() {
+		transferCall.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<PullRequest> call, @NonNull retrofit2.Response<PullRequest> response) {
 
 				disableProcessButton();
 
-				if (response.code() == 201) {
+				if(response.code() == 201) {
 
 					Toasty.success(ctx, getString(R.string.prCreateSuccess));
+					RepoDetailActivity.updateStatsPR = true;
 					finish();
 				}
-				else if (response.code() == 409 && response.message().equals("Conflict")) {
+				else if(response.code() == 409 && response.message().equals("Conflict")) {
 
 					enableProcessButton();
 					Toasty.error(ctx, getString(R.string.prAlreadyExists));
 				}
-				else if (response.code() == 404) {
+				else if(response.code() == 404) {
 
 					enableProcessButton();
 					Toasty.error(ctx, getString(R.string.apiNotFound));

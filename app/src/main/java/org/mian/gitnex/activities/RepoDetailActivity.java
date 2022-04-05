@@ -78,12 +78,16 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 	public RepositoryContext repository;
 
+	public static boolean updateStatsIssues = false;
+	public static boolean updateStatsPR = false;
+
 	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
 		result -> {
 			if(result.getResultCode() == 201) {
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("updateReleases", false)) {
 					if(fragmentRefreshListenerReleases != null) fragmentRefreshListenerReleases.onRefresh(null);
+					textViewBadgeRelease.setText(String.valueOf(Integer.parseInt(textViewBadgeRelease.getText().toString()) + 1));
 				}
 			}
 		});
@@ -158,14 +162,22 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		getRepoInfo(repository.getOwner(), repository.getName());
 
-		checkRepositoryStarStatus(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
-		checkRepositoryWatchStatus(getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+		checkRepositoryStarStatus(repository.getOwner(), repository.getName());
+		checkRepositoryWatchStatus(repository.getOwner(), repository.getName());
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		repository.checkAccountSwitch(this);
+		if(updateStatsIssues) {
+			textViewBadgeIssue.setText(String.valueOf(Integer.parseInt(textViewBadgeIssue.getText().toString()) + 1));
+			updateStatsIssues = false;
+		}
+		if(updateStatsPR) {
+			textViewBadgePull.setText(String.valueOf(Integer.parseInt(textViewBadgePull.getText().toString()) + 1));
+			updateStatsPR = false;
+		}
 	}
 
 	@Override
@@ -373,7 +385,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			.getApiInterface(ctx)
 			.issueGetMilestonesList(repository.getOwner(), repository.getName(), "open", null, 1, 50);
 
-		call.enqueue(new Callback<List<Milestone>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Milestone>> call, @NonNull Response<List<Milestone>> response) {
@@ -414,6 +426,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			@Override
 			public void onFailure(@NonNull Call<List<Milestone>> call, @NonNull Throwable t) {
+
 				progressDialog.hide();
 				Log.e("onFailure", t.toString());
 			}
@@ -431,7 +444,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			.getApiInterface(ctx)
 			.repoListBranches(repository.getOwner(), repository.getName(), null, null);
 
-		call.enqueue(new Callback<List<Branch>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Branch>> call, @NonNull Response<List<Branch>> response) {
@@ -473,6 +486,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			@Override
 			public void onFailure(@NonNull Call<List<Branch>> call, @NonNull Throwable t) {
+
 				progressDialog.hide();
 				Log.e("onFailure", t.toString());
 			}
@@ -542,7 +556,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		}
 
 		Call<Repository> call = RetrofitClient.getApiInterface(ctx).repoGet(owner, repo);
-		call.enqueue(new Callback<Repository>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Repository> call, @NonNull retrofit2.Response<Repository> response) {
@@ -564,6 +578,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			@Override
 			public void onFailure(@NonNull Call<Repository> call, @NonNull Throwable t) {
+
 				Toasty.error(ctx, getString(R.string.genericError));
 				Log.e("onFailure", t.toString());
 				finish();
@@ -755,10 +770,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		}
 	}
 
-	private void checkRepositoryStarStatus(String instanceToken, final String owner, String repo) {
+	private void checkRepositoryStarStatus(final String owner, String repo) {
 
 		Call<Void> call = RetrofitClient.getApiInterface(ctx).userCurrentCheckStarring(owner, repo);
-		call.enqueue(new Callback<Void>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
@@ -775,10 +790,10 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 	}
 
-	private void checkRepositoryWatchStatus(String instanceToken, final String owner, String repo) {
+	private void checkRepositoryWatchStatus(final String owner, String repo) {
 
 		Call<WatchInfo> call = RetrofitClient.getApiInterface(ctx).userCurrentCheckSubscription(owner, repo);
-		call.enqueue(new Callback<WatchInfo>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<WatchInfo> call, @NonNull retrofit2.Response<WatchInfo> response) {

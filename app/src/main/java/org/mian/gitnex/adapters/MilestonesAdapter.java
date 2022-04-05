@@ -190,7 +190,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 					}
 
 					msDueDate.setText(dueDate);
-					msDueDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToast(dataModel.getDueOn().toString()), context));
+					msDueDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(dataModel.getDueOn()), context));
 				}
 				else if(timeFormat.equals("normal1")) {
 

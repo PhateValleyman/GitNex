@@ -29,10 +29,9 @@ public class TimeHelper {
 			createdTime = formatter.parse(part1);
 		} catch(ParseException ignored) {}
 
-		DateFormat format = DateFormat.getDateTimeInstance();
 		assert createdTime != null;
 
-		return format.format(createdTime);
+		return customDateFormatForToastDateFormat(createdTime);
 
 	}
 
