@@ -78,7 +78,7 @@ public class IssueActions {
 			.issueEditIssue(issue.getRepository().getOwner(),
 				issue.getRepository().getName(), (long) issue.getIssueIndex(), issueStatJson);
 
-		call.enqueue(new Callback<Issue>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Issue> call, @NonNull retrofit2.Response<Issue> response) {
@@ -86,7 +86,7 @@ public class IssueActions {
 				if(response.isSuccessful()) {
 					if(response.code() == 201) {
 
-						if (issue.hasIssue()) {
+						if(issue.hasIssue()) {
 							IssuesFragment.resumeIssues = issue.getIssue().getPullRequest() == null;
 							PullRequestsFragment.resumePullRequests = issue.getIssue().getPullRequest() != null;
 						}
@@ -103,7 +103,9 @@ public class IssueActions {
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton), ctx.getResources().getString(R.string.navLogout));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+						ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton),
+						ctx.getResources().getString(R.string.navLogout));
 
 				}
 				else if(response.code() == 403) {

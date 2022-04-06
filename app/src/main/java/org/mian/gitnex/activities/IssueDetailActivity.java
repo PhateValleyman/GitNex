@@ -523,10 +523,11 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		Call<Issue> call = RetrofitClient.getApiInterface(ctx)
 			.issueGetIssue(repoOwner, repoName, (long) issueIndex);
 
-		call.enqueue(new Callback<Issue>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Issue> call, @NonNull Response<Issue> response) {
+
 				viewBinding.progressBar.setVisibility(View.GONE);
 
 				if(response.code() == 200) {
@@ -540,8 +541,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				else if(response.code() == 401) {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-						getResources().getString(R.string.alertDialogTokenRevokedMessage),
-						getResources().getString(R.string.cancelButton),
+						getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton),
 						getResources().getString(R.string.navLogout));
 
 				}
@@ -554,6 +554,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			@Override
 			public void onFailure(@NonNull Call<Issue> call, @NonNull Throwable t) {
+
 				viewBinding.progressBar.setVisibility(View.GONE);
 				Log.e("onFailure", t.toString());
 			}
@@ -607,6 +608,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			else { // open
 
 				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request);
+				ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.darkGreen)));
 			}
 		}
 		else if(issue.getIssue().getState().equals("closed")) { // issue closed
@@ -615,6 +617,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconIssuePrClosedColor)));
 		} else {
 			viewBinding.issuePrState.setImageResource(R.drawable.ic_issue);
+			ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.darkGreen)));
 		}
 
 		TinyDB tinyDb = TinyDB.getInstance(appCtx);
