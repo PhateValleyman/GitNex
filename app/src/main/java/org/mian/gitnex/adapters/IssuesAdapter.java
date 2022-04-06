@@ -118,18 +118,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 				return true;
 			});
 
-			new Handler().postDelayed(() -> {
-
-				Intent intentIssueDetail = new IssueContext(issueObject, ((RepoDetailActivity) context).repository).getIntent(context, IssueDetailActivity.class);
-
-				itemView.setOnClickListener(layoutView -> {
-					context.startActivity(intentIssueDetail);
-				});
-				frameLabels.setOnClickListener(v -> context.startActivity(intentIssueDetail));
-				frameLabelsDots.setOnClickListener(v -> context.startActivity(intentIssueDetail));
-
-			}, 200);
-
 			issueAssigneeAvatar.setOnClickListener(v -> {
 				Intent intent = new Intent(context, ProfileActivity.class);
 				intent.putExtra("username", issueObject.getUser().getLogin());
@@ -158,6 +146,12 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 			this.issueObject = issue;
 			this.issueCommentsCount.setText(String.valueOf(issue.getComments()));
+
+			Intent intentIssueDetail = new IssueContext(issueObject, ((RepoDetailActivity) context).repository).getIntent(context, IssueDetailActivity.class);
+
+			itemView.setOnClickListener(layoutView -> context.startActivity(intentIssueDetail));
+			frameLabels.setOnClickListener(v -> context.startActivity(intentIssueDetail));
+			frameLabelsDots.setOnClickListener(v -> context.startActivity(intentIssueDetail));
 
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
