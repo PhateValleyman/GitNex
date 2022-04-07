@@ -4,9 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import com.google.gson.GsonBuilder;
 import org.gitnex.tea4j.v2.apis.*;
-import org.gitnex.tea4j.v2.apis.custom.CustomApi;
-import org.gitnex.tea4j.v2.apis.custom.OTPApi;
-import org.gitnex.tea4j.v2.apis.custom.WebApi;
+import org.gitnex.tea4j.v2.apis.custom.*;
 import org.gitnex.tea4j.v2.auth.ApiKeyAuth;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
@@ -145,6 +143,6 @@ public class RetrofitClient {
 	}
 
 	public interface ApiInterface extends AdminApi, OrganizationApi, IssueApi, RepositoryApi, MiscellaneousApi, NotificationApi,
-		UserApi, SettingsApi, OTPApi, CustomApi {}
+		UserApi, SettingsApi, OTPApi, CustomApi, PackageApi {}
 
 }
