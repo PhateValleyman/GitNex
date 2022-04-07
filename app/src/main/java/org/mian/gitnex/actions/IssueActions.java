@@ -17,7 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class IssueActions {
@@ -34,7 +34,7 @@ public class IssueActions {
 			.issueEditComment(issue.getRepository().getOwner(),
 				issue.getRepository().getName(), (long) commentId, commentObj);
 
-		call.enqueue(new Callback<Comment>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Comment> call, @NonNull retrofit2.Response<Comment> response) {
@@ -47,7 +47,8 @@ public class IssueActions {
 
 					case 401:
 						actionResult.finish(ActionResult.Status.FAILED, response);
-						AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle), context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+						AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+							context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
 							context.getResources().getString(R.string.cancelButton), context.getResources().getString(R.string.navLogout));
 						break;
 
@@ -106,24 +107,19 @@ public class IssueActions {
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
 						ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton),
 						ctx.getResources().getString(R.string.navLogout));
-
 				}
 				else if(response.code() == 403) {
 
 					Toasty.error(ctx, ctx.getString(R.string.authorizeError));
-
 				}
 				else if(response.code() == 404) {
 
 					Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
-
 				}
 				else {
 
 					Toasty.error(ctx, ctx.getString(R.string.genericError));
-
 				}
-
 			}
 
 			@Override
@@ -144,7 +140,7 @@ public class IssueActions {
 			.issueAddSubscription(issue.getRepository().getOwner(),
 				issue.getRepository().getName(), (long) issue.getIssueIndex(), ((BaseActivity) ctx).getAccount().getAccount().getUserName());
 
-		call.enqueue(new Callback<Void>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
@@ -154,26 +150,20 @@ public class IssueActions {
 					if(response.code() == 201) {
 
 						Toasty.success(ctx, ctx.getString(R.string.subscribedSuccessfully));
-
 					}
 					else if(response.code() == 200) {
 
 						Toasty.success(ctx, ctx.getString(R.string.alreadySubscribed));
-
 					}
-
 				}
 				else if(response.code() == 401) {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton), ctx.getResources().getString(R.string.navLogout));
-
 				}
 				else {
 
 					Toasty.error(ctx, ctx.getString(R.string.subscriptionError));
-
 				}
-
 			}
 
 			@Override
@@ -192,7 +182,7 @@ public class IssueActions {
 		call = RetrofitClient.getApiInterface(ctx).issueDeleteSubscription(issue.getRepository().getOwner(),
 			issue.getRepository().getName(), (long) issue.getIssueIndex(), ((BaseActivity) ctx).getAccount().getAccount().getUserName());
 
-		call.enqueue(new Callback<Void>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
@@ -202,26 +192,22 @@ public class IssueActions {
 					if(response.code() == 201) {
 
 						Toasty.success(ctx, ctx.getString(R.string.unsubscribedSuccessfully));
-
 					}
 					else if(response.code() == 200) {
 
 						Toasty.success(ctx, ctx.getString(R.string.alreadyUnsubscribed));
-
 					}
-
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle), ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton), ctx.getResources().getString(R.string.navLogout));
-
+					AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+						ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton),
+						ctx.getResources().getString(R.string.navLogout));
 				}
 				else {
 
 					Toasty.error(ctx, ctx.getString(R.string.unSubscriptionError));
-
 				}
-
 			}
 
 			@Override
@@ -244,7 +230,7 @@ public class IssueActions {
 			.issueCreateComment(issue.getRepository().getOwner(),
 				issue.getRepository().getName(), (long) issue.getIssueIndex(), issueComment);
 
-		call.enqueue(new Callback<Comment>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Comment> call, @NonNull retrofit2.Response<Comment> response) {
@@ -252,7 +238,7 @@ public class IssueActions {
 				if(response.code() == 201) {
 					actionResult.finish(ActionResult.Status.SUCCESS);
 
-					if (issue.hasIssue()) {
+					if(issue.hasIssue()) {
 						IssuesFragment.resumeIssues = issue.getIssue().getPullRequest() == null;
 						PullRequestsFragment.resumePullRequests = issue.getIssue().getPullRequest() != null;
 					}
@@ -260,8 +246,7 @@ public class IssueActions {
 				else if(response.code() == 401) {
 
 					AlertDialogs.authorizationTokenRevokedDialog(context, context.getString(R.string.alertDialogTokenRevokedTitle),
-						context.getString(R.string.alertDialogTokenRevokedMessage),
-						context.getString(R.string.cancelButton),
+						context.getString(R.string.alertDialogTokenRevokedMessage), context.getString(R.string.cancelButton),
 						context.getString(R.string.navLogout));
 
 				}
@@ -279,7 +264,5 @@ public class IssueActions {
 		});
 
 		return actionResult;
-
 	}
-
 }

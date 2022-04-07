@@ -13,13 +13,14 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class FilesViewModel extends ViewModel {
@@ -41,24 +42,26 @@ public class FilesViewModel extends ViewModel {
                 .getApiInterface(ctx)
                 .repoGetContentsList(owner, repo, ref);
 
-        call.enqueue(new Callback<List<ContentsResponse>>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<ContentsResponse>> call, @NonNull Response<List<ContentsResponse>> response) {
 
-	            if(response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-	                Collections.sort(response.body(), (byType1, byType2) -> byType1.getType().compareTo(byType2.getType()));
-                    filesList.postValue(response.body());
-                }
-                else {
-	                progressBar.setVisibility(View.GONE);
-	                noDataFiles.setVisibility(View.VISIBLE);
-                }
-            }
+		        if(response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+			        Collections.sort(response.body(), Comparator.comparing(ContentsResponse::getType));
+			        filesList.postValue(response.body());
+		        }
+		        else {
+			        progressBar.setVisibility(View.GONE);
+			        noDataFiles.setVisibility(View.VISIBLE);
+			        Toasty.error(ctx, ctx.getString(R.string.genericError));
+		        }
+	        }
 
-            @Override
-            public void onFailure(@NonNull Call<List<ContentsResponse>> call, @NonNull Throwable t) {
-	            Toasty.error(ctx, ctx.getString(R.string.errorOnLogin));
-            }
+	        @Override
+	        public void onFailure(@NonNull Call<List<ContentsResponse>> call, @NonNull Throwable t) {
+
+		        Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
+	        }
         });
     }
 
@@ -76,25 +79,26 @@ public class FilesViewModel extends ViewModel {
                 .getApiInterface(ctx)
                 .repoGetContentsList(owner, repo, filesDir, ref);
 
-        call.enqueue(new Callback<List<ContentsResponse>>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<ContentsResponse>> call, @NonNull Response<List<ContentsResponse>> response) {
 
-	            if(response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-	                Collections.sort(response.body(), (byType1, byType2) -> byType1.getType().compareTo(byType2.getType()));
-	                filesList2.postValue(response.body());
-                }
-                else {
-	                progressBar.setVisibility(View.GONE);
-	                noDataFiles.setVisibility(View.VISIBLE);
-                }
-            }
+		        if(response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+			        Collections.sort(response.body(), Comparator.comparing(ContentsResponse::getType));
+			        filesList2.postValue(response.body());
+		        }
+		        else {
+			        progressBar.setVisibility(View.GONE);
+			        noDataFiles.setVisibility(View.VISIBLE);
+			        Toasty.error(ctx, ctx.getString(R.string.genericError));
+		        }
+	        }
 
-            @Override
-            public void onFailure(@NonNull Call<List<ContentsResponse>> call, @NonNull Throwable t) {
-	            Toasty.error(ctx, ctx.getString(R.string.errorOnLogin));
-            }
+	        @Override
+	        public void onFailure(@NonNull Call<List<ContentsResponse>> call, @NonNull Throwable t) {
+
+		        Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
+	        }
         });
     }
-
 }

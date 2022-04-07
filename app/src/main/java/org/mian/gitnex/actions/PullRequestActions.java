@@ -21,44 +21,56 @@ public class PullRequestActions {
 				.getApiInterface(context)
 				.repoDeleteBranch(repoOwner, repoName, headBranch);
 
-		call.enqueue(new Callback<Void>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Void> call, @NonNull retrofit2.Response<Void> response) {
 
 				if(response.code() == 204) {
 
-					if(showToasts) Toasty.success(context, context.getString(R.string.deleteBranchSuccess));
+					if(showToasts) {
+						Toasty.success(context, context.getString(R.string.deleteBranchSuccess));
+					}
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs
-						.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle), context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.cancelButton), context.getResources().getString(R.string.navLogout));
+					AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+						context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
+						context.getResources().getString(R.string.cancelButton), context.getResources().getString(R.string.navLogout));
 				}
 				else if(response.code() == 403) {
 
-					if(showToasts) Toasty.error(context, context.getString(R.string.authorizeError));
+					if(showToasts) {
+						Toasty.error(context, context.getString(R.string.authorizeError));
+					}
 				}
 				else if(response.code() == 404) {
 
-					if(showToasts) Toasty.warning(context, context.getString(R.string.deleteBranchErrorNotFound));
+					if(showToasts) {
+						Toasty.warning(context, context.getString(R.string.deleteBranchErrorNotFound));
+					}
 				}
 				else {
 
-					if(showToasts) Toasty.error(context, context.getString(R.string.genericError));
+					if(showToasts) {
+						Toasty.error(context, context.getString(R.string.genericError));
+					}
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
 
-				if(showToasts) Toasty.error(context, context.getString(R.string.deleteBranchError));
+				if(showToasts) {
+					Toasty.error(context, context.getString(R.string.deleteBranchError));
+				}
 			}
 
 		});
 	}
 
 	public static void updatePr(Context context, String repoOwner, String repoName, String index, Boolean rebase) {
+
 		String strategy;
 		if(rebase == null) {
 			strategy = null;
@@ -70,10 +82,11 @@ public class PullRequestActions {
 			strategy = "rebase";
 		}
 		RetrofitClient.getApiInterface(context).repoUpdatePullRequest(repoOwner, repoName, Long.valueOf(index), strategy)
-			.enqueue(new Callback<Void>() {
+			.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call call, @NonNull Response response) {
+
 				if(response.isSuccessful()) {
 					Toasty.success(context, context.getString(R.string.updatePrSuccess));
 				}
@@ -92,9 +105,9 @@ public class PullRequestActions {
 
 			@Override
 			public void onFailure(@NonNull Call call, @NonNull Throwable t) {
+
 				Toasty.error(context, context.getString(R.string.genericError));
 			}
 		});
 	}
-
 }

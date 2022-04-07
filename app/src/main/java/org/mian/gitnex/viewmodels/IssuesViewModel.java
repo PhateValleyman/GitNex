@@ -1,7 +1,6 @@
 package org.mian.gitnex.viewmodels;
 
 import android.content.Context;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -64,7 +63,7 @@ public class IssuesViewModel extends ViewModel {
 			@Override
 			public void onFailure(@NonNull Call<List<Issue>> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
 			}
 		});
 	}
@@ -103,7 +102,7 @@ public class IssuesViewModel extends ViewModel {
 			@Override
 			public void onFailure(@NonNull Call<List<Issue>> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
 			}
 		});
 	}

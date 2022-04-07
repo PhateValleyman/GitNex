@@ -1,14 +1,15 @@
 package org.mian.gitnex.viewmodels;
 
 import android.content.Context;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import org.mian.gitnex.R;
 import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.adapters.AdminGetUsersAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,12 +45,14 @@ public class AdminGetUsersViewModel extends ViewModel {
 		        if(response.isSuccessful()) {
 			        usersList.postValue(response.body());
 		        }
+		        else {
+			        Toasty.error(ctx, ctx.getString(R.string.genericError));
+		        }
 	        }
 
 	        @Override
 	        public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
-
-		        Log.e("onFailure", t.toString());
+		        Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
 	        }
         });
     }
@@ -80,14 +83,14 @@ public class AdminGetUsersViewModel extends ViewModel {
 					}
 				}
 				else {
-					Log.e("onResponse", String.valueOf(response.code()));
+					Toasty.error(ctx, ctx.getString(R.string.genericError));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
 			}
 		});
 	}

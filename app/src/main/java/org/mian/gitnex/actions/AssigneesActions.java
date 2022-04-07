@@ -2,7 +2,6 @@ package org.mian.gitnex.actions;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.v2.models.Issue;
@@ -18,7 +17,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class AssigneesActions {
@@ -50,14 +49,17 @@ public class AssigneesActions {
 						}
 					}
 				}
+				else {
+
+					Toasty.error(ctx, ctx.getResources().getString(R.string.genericError));
+				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<Issue> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
+				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}
-
 		});
 	}
 
@@ -99,7 +101,6 @@ public class AssigneesActions {
 
 					Toasty.error(ctx, ctx.getResources().getString(R.string.genericError));
 				}
-
 			}
 
 			@Override
@@ -108,7 +109,5 @@ public class AssigneesActions {
 				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}
 		});
-
 	}
-
 }

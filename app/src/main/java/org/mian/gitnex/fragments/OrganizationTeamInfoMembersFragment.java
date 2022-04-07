@@ -2,7 +2,6 @@ package org.mian.gitnex.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import org.gitnex.tea4j.v2.models.Team;
 import org.gitnex.tea4j.v2.models.User;
+import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.UserGridAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentOrganizationTeamInfoMembersBinding;
+import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -67,7 +68,7 @@ public class OrganizationTeamInfoMembersFragment extends Fragment {
 
 		binding.progressBar.setVisibility(View.VISIBLE);
 
-		call.enqueue(new Callback<List<User>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
@@ -79,7 +80,8 @@ public class OrganizationTeamInfoMembersFragment extends Fragment {
 
 					binding.noDataMembers.setVisibility(View.GONE);
 					binding.members.setVisibility(View.VISIBLE);
-				} else {
+				}
+				else {
 					binding.members.setVisibility(View.GONE);
 					binding.noDataMembers.setVisibility(View.VISIBLE);
 				}
@@ -89,10 +91,9 @@ public class OrganizationTeamInfoMembersFragment extends Fragment {
 
 			@Override
 			public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
-				Log.i("onFailure", t.toString());
-			}
 
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
+			}
 		});
 	}
-
 }

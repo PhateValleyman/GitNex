@@ -2,7 +2,6 @@ package org.mian.gitnex.activities;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -15,9 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.gitnex.tea4j.v2.models.InlineResponse2001;
 import org.gitnex.tea4j.v2.models.User;
+import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.CollaboratorSearchAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityAddCollaboratorToRepositoryBinding;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.List;
 import retrofit2.Call;
@@ -25,7 +26,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class AddCollaboratorToRepositoryActivity extends BaseActivity {
@@ -86,30 +87,28 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
                 .getApiInterface(ctx)
                 .userSearch(searchKeyword, null, 1, 10);
 
-        call.enqueue(new Callback<InlineResponse2001>() {
+        call.enqueue(new Callback<>() {
 
             @Override
             public void onResponse(@NonNull Call<InlineResponse2001> call, @NonNull Response<InlineResponse2001> response) {
 
-	            mProgressBar.setVisibility(View.GONE);
+		        mProgressBar.setVisibility(View.GONE);
 
-                if (response.code() == 200) {
+		        if(response.isSuccessful()) {
 
-                    assert response.body() != null;
-                    getUsersList(response.body().getData(), ctx);
-                }
-                else {
+			        assert response.body() != null;
+			        getUsersList(response.body().getData(), ctx);
+		        }
+		        else {
 
-                    Log.i("onResponse", String.valueOf(response.code()));
-                }
-
-            }
+			        Toasty.error(ctx, ctx.getString(R.string.genericError));
+		        }
+	        }
 
             @Override
             public void onFailure(@NonNull Call<InlineResponse2001> call, @NonNull Throwable t) {
-                Log.i("onFailure", t.toString());
-            }
-
+		        Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
+	        }
         });
     }
 
@@ -147,5 +146,4 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 		super.onResume();
 		repository.checkAccountSwitch(this);
 	}
-
 }

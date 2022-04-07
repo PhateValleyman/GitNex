@@ -186,7 +186,7 @@ public class AddNewAccountActivity extends BaseActivity {
 			public void onFailure(@NonNull Call<ServerVersion> callVersion, @NonNull Throwable t) {
 
 				Log.e("onFailure-versionCheck", t.toString());
-				Toasty.error(ctx, getResources().getString(R.string.errorOnLogin));
+				Toasty.error(ctx, getResources().getString(R.string.genericServerResponseError));
 			}
 		});
 	}

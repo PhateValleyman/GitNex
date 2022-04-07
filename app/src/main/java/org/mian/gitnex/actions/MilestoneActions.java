@@ -65,7 +65,7 @@ public class MilestoneActions {
 			@Override
 			public void onFailure(@NonNull Call<Milestone> call, @NonNull Throwable t) {
 
-				Log.e(TAG, t.toString());
+				Toasty.error(ctx, ctx.getString(R.string.genericError));
 
 			}
 
