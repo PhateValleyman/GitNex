@@ -1,11 +1,11 @@
 pipeline:
   build:
-    image: nextcloudci/android:android-49
+    image: alvrme/alpine-android:android-31-jdk11
     commands:
       - ./gradlew assembleFreeRelease
 
   sign:
-    image: nextcloudci/android8:android-61
+    image: alvrme/alpine-android:android-31-jdk11
     environment:
       OUTPUT: "signed.apk"
       INSTANCE: "https://codeberg.org"
@@ -18,7 +18,7 @@ pipeline:
       branch: main
 
   latest:
-    image: curlimages/curl:7.77.0
+    image: curlimages/curl:7.82.0
     only:
       - main
     environment:
@@ -33,7 +33,7 @@ pipeline:
       branch: main
 
   release:
-    image: curlimages/curl:7.77.0
+    image: curlimages/curl:7.82.0
     environment:
       WEBDAV_USERNAME: "GitNexBot"
       PLUGIN_FILE: "signed.apk"
