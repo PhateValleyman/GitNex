@@ -8,5 +8,5 @@ pipeline:
     secrets: [ CROWDIN_TOKEN ]
     when:
       event: [ push, tag ]
-      branch: [ main ]
+      branch: main
       path: [ app/src/main/res/values/strings.xml ]
