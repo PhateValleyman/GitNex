@@ -10,6 +10,9 @@ import org.junit.runner.RunWith;
 import org.mian.gitnex.helpers.AppUtil;
 import static org.junit.Assert.*;
 
+/**
+ * @author qwerty287
+ */
 @RunWith(AndroidJUnit4.class)
 public class AppUtilTest {
 
