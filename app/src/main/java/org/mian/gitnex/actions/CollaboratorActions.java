@@ -1,196 +1,120 @@
 package org.mian.gitnex.actions;
 
 import android.content.Context;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.Permission;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.AddCollaboratorToRepositoryActivity;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.fragments.CollaboratorsFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
-import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
-import java.util.List;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class CollaboratorActions {
 
-    public static void deleteCollaborator(final Context context, final String searchKeyword, String userName) {
-
-        final TinyDB tinyDb = TinyDB.getInstance(context);
-
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+    public static void deleteCollaborator(final Context context, String userName, RepositoryContext repository) {
 
         Call<Collaborators> call = RetrofitClient
                 .getApiInterface(context)
-                .deleteCollaborator(Authorization.get(context), repoOwner, repoName, userName);
+                .deleteCollaborator(((BaseActivity) context).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), userName);
 
-        call.enqueue(new Callback<Collaborators>() {
+        call.enqueue(new Callback<>() {
 
-            @Override
-            public void onResponse(@NonNull Call<Collaborators> call, @NonNull retrofit2.Response<Collaborators> response) {
+	        @Override
+	        public void onResponse(@NonNull Call<Collaborators> call, @NonNull retrofit2.Response<Collaborators> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 204) {
+		        if(response.isSuccessful()) {
+			        if(response.code() == 204) {
 
-                        Toasty.success(context, context.getString(R.string.removeCollaboratorToastText));
-                        ((AddCollaboratorToRepositoryActivity)context).finish();
-                        //Log.i("addCollaboratorSearch", addCollaboratorSearch.getText().toString());
-                        //tinyDb.putBoolean("updateDataSet", true);
-                        //AddCollaboratorToRepositoryActivity usersSearchData = new AddCollaboratorToRepositoryActivity();
-                        //usersSearchData.loadUserSearchList(instanceToken, searchKeyword, context);
+				        CollaboratorsFragment.refreshCollaborators = true;
+				        Toasty.success(context, context.getString(R.string.removeCollaboratorToastText));
+				        ((AddCollaboratorToRepositoryActivity) context).finish();
+			        }
+		        }
+		        else if(response.code() == 401) {
 
-                    }
-                }
-                else if(response.code() == 401) {
+			        AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+				        context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.cancelButton),
+				        context.getResources().getString(R.string.navLogout));
+		        }
+		        else if(response.code() == 403) {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            context.getResources().getString(R.string.cancelButton),
-                            context.getResources().getString(R.string.navLogout));
+			        Toasty.error(context, context.getString(R.string.authorizeError));
+		        }
+		        else if(response.code() == 404) {
 
-                }
-                else if(response.code() == 403) {
+			        Toasty.warning(context, context.getString(R.string.apiNotFound));
+		        }
+		        else {
 
-                    Toasty.error(context, context.getString(R.string.authorizeError));
+			        Toasty.error(context, context.getString(R.string.genericError));
+		        }
+	        }
 
-                }
-                else if(response.code() == 404) {
+	        @Override
+	        public void onFailure(@NonNull Call<Collaborators> call, @NonNull Throwable t) {
 
-                    Toasty.warning(context, context.getString(R.string.apiNotFound));
-
-                }
-                else {
-
-                    Toasty.error(context, context.getString(R.string.genericError));
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Collaborators> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
+		        Toasty.error(context, context.getResources().getString(R.string.genericServerResponseError));
+	        }
         });
 
     }
 
-    public static void addCollaborator(final Context context, String permission, String userName) {
-
-        final TinyDB tinyDb = TinyDB.getInstance(context);
-
-        String repoFullName = tinyDb.getString("repoFullName");
-        String[] parts = repoFullName.split("/");
-        final String repoOwner = parts[0];
-        final String repoName = parts[1];
+    public static void addCollaborator(final Context context, String permission, String userName, RepositoryContext repository) {
 
         Permission permissionString = new Permission(permission);
 
         Call<Permission> call = RetrofitClient
                 .getApiInterface(context)
-                .addCollaborator(Authorization.get(context), repoOwner, repoName, userName, permissionString);
+                .addCollaborator(((BaseActivity) context).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), userName, permissionString);
 
-        call.enqueue(new Callback<Permission>() {
+        call.enqueue(new Callback<>() {
 
-            @Override
-            public void onResponse(@NonNull Call<Permission> call, @NonNull retrofit2.Response<Permission> response) {
+	        @Override
+	        public void onResponse(@NonNull Call<Permission> call, @NonNull retrofit2.Response<Permission> response) {
 
-                if(response.isSuccessful()) {
-                    if(response.code() == 204) {
+		        if(response.isSuccessful()) {
+			        if(response.code() == 204) {
 
-                        Toasty.success(context, context.getString(R.string.addCollaboratorToastText));
-                        ((AddCollaboratorToRepositoryActivity)context).finish();
-                        //AddCollaboratorToRepositoryActivity usersSearchData = new AddCollaboratorToRepositoryActivity();
-                        //usersSearchData.loadUserSearchList(instanceToken, searchKeyword, context);
+				        CollaboratorsFragment.refreshCollaborators = true;
+				        Toasty.success(context, context.getString(R.string.addCollaboratorToastText));
+				        ((AddCollaboratorToRepositoryActivity) context).finish();
+			        }
+		        }
+		        else if(response.code() == 401) {
 
-                    }
-                }
-                else if(response.code() == 401) {
+			        AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+				        context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.cancelButton),
+				        context.getResources().getString(R.string.navLogout));
+		        }
+		        else if(response.code() == 403) {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            context.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            context.getResources().getString(R.string.cancelButton),
-                            context.getResources().getString(R.string.navLogout));
+			        Toasty.error(context, context.getString(R.string.authorizeError));
+		        }
+		        else if(response.code() == 404) {
 
-                }
-                else if(response.code() == 403) {
+			        Toasty.warning(context, context.getString(R.string.apiNotFound));
+		        }
+		        else {
 
-                    Toasty.error(context, context.getString(R.string.authorizeError));
+			        Toasty.error(context, context.getString(R.string.genericError));
+		        }
+	        }
 
-                }
-                else if(response.code() == 404) {
+	        @Override
+	        public void onFailure(@NonNull Call<Permission> call, @NonNull Throwable t) {
 
-                    Toasty.warning(context, context.getString(R.string.apiNotFound));
-
-                }
-                else {
-
-                    Toasty.error(context, context.getString(R.string.genericError));
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Permission> call, @NonNull Throwable t) {
-                Log.e("onFailure", t.toString());
-            }
-
+		        Toasty.error(context, context.getResources().getString(R.string.genericServerResponseError));
+	        }
         });
-
     }
-
-	public static ActionResult<List<Collaborators>> getCollaborators(Context context) {
-
-		ActionResult<List<Collaborators>> actionResult = new ActionResult<>();
-		TinyDB tinyDb = TinyDB.getInstance(context);
-
-		String repoFullName = tinyDb.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		String repoOwner = parts[0];
-		String repoName = parts[1];
-
-		Call<List<Collaborators>> call = RetrofitClient
-			.getApiInterface(context)
-			.getCollaborators(Authorization.get(context), repoOwner, repoName);
-
-		call.enqueue(new Callback<List<Collaborators>>() {
-
-			@Override
-			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull Response<List<Collaborators>> response) {
-
-				if (response.isSuccessful()) {
-
-					assert response.body() != null;
-					actionResult.finish(ActionResult.Status.SUCCESS, response.body());
-				}
-				else {
-
-					actionResult.finish(ActionResult.Status.FAILED);
-				}
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<List<Collaborators>> call, @NonNull Throwable t) {
-
-				actionResult.finish(ActionResult.Status.FAILED);
-			}
-		});
-
-		return actionResult;
-
-	}
-
 }

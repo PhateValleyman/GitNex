@@ -2,24 +2,22 @@ package org.mian.gitnex.actions;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.models.Collaborators;
 import org.gitnex.tea4j.models.Issues;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;
-import org.mian.gitnex.helpers.Authorization;
-import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class AssigneesActions {
@@ -28,9 +26,9 @@ public class AssigneesActions {
 
 		Call<Issues> callSingleIssueLabels = RetrofitClient
 			.getApiInterface(ctx)
-			.getIssueByIndex(Authorization.get(ctx), repoOwner, repoName, issueIndex);
+			.getIssueByIndex(((BaseActivity) ctx).getAccount().getAuthorization(), repoOwner, repoName, issueIndex);
 
-		callSingleIssueLabels.enqueue(new Callback<Issues>() {
+		callSingleIssueLabels.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Issues> call, @NonNull retrofit2.Response<Issues> response) {
@@ -40,7 +38,7 @@ public class AssigneesActions {
 					Issues issueAssigneesList = response.body();
 					assert issueAssigneesList != null;
 
-					if (issueAssigneesList.getAssignees() != null) {
+					if(issueAssigneesList.getAssignees() != null) {
 
 						if(issueAssigneesList.getAssignees().size() > 0) {
 
@@ -51,26 +49,27 @@ public class AssigneesActions {
 						}
 					}
 				}
+				else {
+
+					Toasty.error(ctx, ctx.getResources().getString(R.string.genericError));
+				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<Issues> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
+				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}
-
 		});
 	}
 
 	public static void getRepositoryAssignees(Context ctx, String repoOwner, String repoName, List<Collaborators> assigneesList, Dialog dialogAssignees, AssigneesListAdapter assigneesAdapter, CustomAssigneesSelectionDialogBinding assigneesBinding) {
 
-		TinyDB tinyDB = TinyDB.getInstance(ctx);
-
 		Call<List<Collaborators>> call = RetrofitClient
 			.getApiInterface(ctx)
-			.getCollaborators(Authorization.get(ctx), repoOwner, repoName);
+			.getAllAssignees(((BaseActivity) ctx).getAccount().getAuthorization(), repoOwner, repoName);
 
-		call.enqueue(new Callback<List<Collaborators>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Collaborators>> call, @NonNull retrofit2.Response<List<Collaborators>> response) {
@@ -81,13 +80,12 @@ public class AssigneesActions {
 				assigneesBinding.progressBar.setVisibility(View.GONE);
 				assigneesBinding.dialogFrame.setVisibility(View.VISIBLE);
 
-				if (response.code() == 200) {
+				if(response.code() == 200) {
 
 					assert assigneesList_ != null;
 
 					if(assigneesList_.size() > 0) {
 
-						assigneesList.add(new Collaborators(tinyDB.getString("userFullname"), tinyDB.getString("loginUid"), tinyDB.getString("userAvatar")));
 						assigneesList.addAll(assigneesList_);
 					}
 					else {
@@ -103,7 +101,6 @@ public class AssigneesActions {
 
 					Toasty.error(ctx, ctx.getResources().getString(R.string.genericError));
 				}
-
 			}
 
 			@Override
@@ -112,7 +109,5 @@ public class AssigneesActions {
 				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}
 		});
-
 	}
-
 }

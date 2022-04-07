@@ -16,17 +16,15 @@ import org.mian.gitnex.activities.OrganizationDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
-import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 	private final Context context;
-	private final int TYPE_LOAD = 0;
 	private List<Organization> organizationsList;
 	private Runnable loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
@@ -40,12 +38,7 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 	@Override
 	public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(context);
-		if(viewType == TYPE_LOAD) {
-			return new ExplorePublicOrganizationsAdapter.OrganizationsHolder(inflater.inflate(R.layout.list_organizations, parent, false));
-		}
-		else {
-			return new ExplorePublicOrganizationsAdapter.LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
-		}
+		return new ExplorePublicOrganizationsAdapter.OrganizationsHolder(inflater.inflate(R.layout.list_organizations, parent, false));
 	}
 
 	@Override
@@ -54,20 +47,12 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 			isLoading = true;
 			loadMoreListener.run();
 		}
-
-		if(getItemViewType(position) == TYPE_LOAD) {
-			((ExplorePublicOrganizationsAdapter.OrganizationsHolder) holder).bindData(organizationsList.get(position));
-		}
+		((ExplorePublicOrganizationsAdapter.OrganizationsHolder) holder).bindData(organizationsList.get(position));
 	}
 
 	@Override
 	public int getItemViewType(int position) {
-		if(organizationsList.get(position).getFull_name() != null) {
-			return TYPE_LOAD;
-		}
-		else {
-			return 1;
-		}
+		return position;
 	}
 
 	@Override
@@ -91,11 +76,6 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 				Context context = v.getContext();
 				Intent intent = new Intent(context, OrganizationDetailActivity.class);
 				intent.putExtra("orgName", organization.getUsername());
-
-				TinyDB tinyDb = TinyDB.getInstance(context);
-				tinyDb.putString("orgName", organization.getUsername());
-				tinyDb.putString("organizationId", String.valueOf(organization.getId()));
-				tinyDb.putBoolean("organizationAction", true);
 				context.startActivity(intent);
 			});
 		}
@@ -120,12 +100,6 @@ public class ExplorePublicOrganizationsAdapter extends RecyclerView.Adapter<Recy
 			else {
 				orgDescription.setVisibility(View.GONE);
 			}
-		}
-	}
-
-	static class LoadHolder extends RecyclerView.ViewHolder {
-		LoadHolder(View itemView) {
-			super(itemView);
 		}
 	}
 

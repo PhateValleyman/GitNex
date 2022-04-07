@@ -17,11 +17,13 @@ import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Milestones;
 import org.mian.gitnex.R;
 import org.mian.gitnex.actions.MilestoneActions;
+import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Markdown;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,20 +32,19 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 	private final Context context;
-	private final int TYPE_LOAD = 0;
 	private List<Milestones> dataList;
-	private Runnable loadMoreListener;
-	private boolean isLoading = false;
-	private boolean isMoreDataAvailable = true;
+	private OnLoadMoreListener loadMoreListener;
+	private boolean isLoading = false, isMoreDataAvailable = true;
+	private final RepositoryContext repository;
 
-	public MilestonesAdapter(Context ctx, List<Milestones> dataListMain) {
-
+	public MilestonesAdapter(Context ctx, List<Milestones> dataListMain, RepositoryContext repository) {
+		this.repository = repository;
 		this.context = ctx;
 		this.dataList = dataListMain;
 	}
@@ -51,15 +52,8 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 	@NonNull
 	@Override
 	public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
 		LayoutInflater inflater = LayoutInflater.from(context);
-
-		if(viewType == TYPE_LOAD) {
-			return new MilestonesAdapter.DataHolder(inflater.inflate(R.layout.list_milestones, parent, false));
-		}
-		else {
-			return new MilestonesAdapter.LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
-		}
+		return new MilestonesAdapter.DataHolder(inflater.inflate(R.layout.list_milestones, parent, false));
 	}
 
 	@Override
@@ -68,13 +62,9 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
 
 			isLoading = true;
-			loadMoreListener.run();
+			loadMoreListener.onLoadMore();
 		}
-
-		if(getItemViewType(position) == TYPE_LOAD) {
-
-			((MilestonesAdapter.DataHolder) holder).bindData(dataList.get(position));
-		}
+		((MilestonesAdapter.DataHolder) holder).bindData(dataList.get(position));
 	}
 
 	class DataHolder extends RecyclerView.ViewHolder {
@@ -100,7 +90,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 			msProgress = itemView.findViewById(R.id.milestoneProgress);
 			ImageView milestonesMenu = itemView.findViewById(R.id.milestonesMenu);
 
-			if(!TinyDB.getInstance(itemView.getContext()).getBoolean("isRepoAdmin")) {
+			if(!((RepoDetailActivity) itemView.getContext()).repository.getPermissions().canPush()) {
 				milestonesMenu.setVisibility(View.GONE);
 			}
 			milestonesMenu.setOnClickListener(v -> {
@@ -130,16 +120,16 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 				closeMilestone.setOnClickListener(v12 -> {
 
-					MilestoneActions.closeMilestone(ctx, milestoneId_);
+					MilestoneActions.closeMilestone(ctx, milestoneId_, repository);
 					dialog.dismiss();
-					updateAdapter(getAdapterPosition());
+					updateAdapter(getBindingAdapterPosition());
 				});
 
 				openMilestone.setOnClickListener(v12 -> {
 
-					MilestoneActions.openMilestone(ctx, milestoneId_);
+					MilestoneActions.openMilestone(ctx, milestoneId_, repository);
 					dialog.dismiss();
-					updateAdapter(getAdapterPosition());
+					updateAdapter(getBindingAdapterPosition());
 				});
 
 			});
@@ -152,7 +142,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 			this.milestones = dataModel;
 			final TinyDB tinyDb = TinyDB.getInstance(context);
 			final String locale = context.getResources().getConfiguration().locale.getLanguage();
-			final String timeFormat = tinyDb.getString("dateFormat");
+			final String timeFormat = tinyDb.getString("dateFormat", "pretty");
 
 			Markdown.render(context, dataModel.getTitle(), msTitle);
 
@@ -237,63 +227,50 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 				msDueDate.setText(context.getString(R.string.milestoneNoDueDate));
 			}
-
 		}
+	}
 
+	@Override
+	public int getItemViewType(int position) {
+		return position;
+	}
+
+	@Override
+	public int getItemCount() {
+		return dataList.size();
 	}
 
 	private void updateAdapter(int position) {
-
 		dataList.remove(position);
 		notifyItemRemoved(position);
 		notifyItemRangeChanged(position, dataList.size());
 	}
 
-	@Override
-	public int getItemViewType(int position) {
-
-		if(dataList.get(position).getTitle() != null) {
-			return TYPE_LOAD;
-		}
-		else {
-			return 1;
-		}
-	}
-
-	@Override
-	public int getItemCount() {
-
-		return dataList.size();
-	}
-
-	static class LoadHolder extends RecyclerView.ViewHolder {
-
-		LoadHolder(View itemView) {
-
-			super(itemView);
-		}
-	}
-
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
-
 		isMoreDataAvailable = moreDataAvailable;
+		if(!isMoreDataAvailable) {
+			loadMoreListener.onLoadFinished();
+		}
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	public void notifyDataChanged() {
-
 		notifyDataSetChanged();
 		isLoading = false;
+		loadMoreListener.onLoadFinished();
 	}
 
-	public void setLoadMoreListener(Runnable loadMoreListener) {
+	public interface OnLoadMoreListener {
+		void onLoadMore();
+		void onLoadFinished();
+	}
 
+	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
 		this.loadMoreListener = loadMoreListener;
 	}
 
 	public void updateList(List<Milestones> list) {
-
 		dataList = list;
-		notifyDataSetChanged();
+		notifyDataChanged();
 	}
-
 }

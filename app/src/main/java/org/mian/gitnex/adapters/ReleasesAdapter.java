@@ -105,7 +105,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
         final TinyDB tinyDb = TinyDB.getInstance(context);
 	    final Locale locale = context.getResources().getConfiguration().locale;
-	    final String timeFormat = tinyDb.getString("dateFormat");
+	    final String timeFormat = tinyDb.getString("dateFormat", "pretty");
 	    int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
         Releases currentItem = releasesList.get(position);
@@ -118,7 +118,8 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 		    holder.releaseType.setText(R.string.releaseTypePre);
 	    }
 	    else if(currentItem.isDraft()) {
-		    holder.releaseType.setVisibility(View.GONE);
+		    holder.releaseType.setBackgroundResource(R.drawable.shape_draft_release);
+		    holder.releaseType.setText(R.string.releaseDraftText);
 	    }
 	    else {
 		    holder.releaseType.setBackgroundResource(R.drawable.shape_stable_release);

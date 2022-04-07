@@ -4,11 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -24,44 +21,44 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.models.ExploreRepositories;
 import org.gitnex.tea4j.models.UserRepositories;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.ExploreRepositoriesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomExploreRepositoriesDialogBinding;
 import org.mian.gitnex.databinding.FragmentExploreRepoBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.SnackBar;
-import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.Toasty;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Template Author M M Arif
- * Author 6543
- * Modified M M Arif
+ * @author M M Arif
  */
 
 public class ExploreRepositoriesFragment extends Fragment {
 
 	private FragmentExploreRepoBinding viewBinding;
 	private Context context;
-	private TinyDB tinyDb;
 
 	private int pageSize;
 	private final boolean repoTypeInclude = true;
 	private final String sort = "updated";
 	private final String order = "desc";
-	private final String TAG = Constants.exploreRepositories;
 	private int resultLimit;
 	private List<UserRepositories> dataList;
 	private ExploreRepositoriesAdapter adapter;
 
 	private Dialog dialogFilterOptions;
 	private CustomExploreRepositoriesDialogBinding filterBinding;
+
+	private boolean includeTopic = false;
+	private boolean includeDescription = false;
+	private boolean includeTemplate = false;
+	private boolean onlyArchived = false;
 
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,48 +67,21 @@ public class ExploreRepositoriesFragment extends Fragment {
 		setHasOptionsMenu(true);
 
 		context = getContext();
-		tinyDb = TinyDB.getInstance(getContext());
-
 		dataList = new ArrayList<>();
 		adapter = new ExploreRepositoriesAdapter(dataList, context);
 
-		tinyDb.putBoolean("exploreRepoIncludeTopic", false);
-		tinyDb.putBoolean("exploreRepoIncludeDescription", false);
-		tinyDb.putBoolean("exploreRepoIncludeTemplate", false);
-		tinyDb.putBoolean("exploreRepoOnlyArchived", false);
-
 		resultLimit = Constants.getCurrentResultLimit(context);
-
-		viewBinding.searchKeyword.setOnEditorActionListener((v1, actionId, event) -> {
-			if(actionId == EditorInfo.IME_ACTION_SEND) {
-				if(!Objects.requireNonNull(viewBinding.searchKeyword.getText()).toString().equals("")) {
-					InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(viewBinding.searchKeyword.getWindowToken(), 0);
-
-					viewBinding.progressBar.setVisibility(View.VISIBLE);
-					loadInitial(String.valueOf(viewBinding.searchKeyword.getText()), tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit);
-
-					adapter.setLoadMoreListener(() -> viewBinding.recyclerViewReposSearch.post(() -> {
-						if(dataList.size() == resultLimit || pageSize == resultLimit) {
-							int page = (dataList.size() + resultLimit) / resultLimit;
-							loadMore(String.valueOf(viewBinding.searchKeyword.getText()), tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit, page);
-						}
-					}));
-				}
-			}
-			return false;
-		});
 
 		viewBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 			viewBinding.pullToRefresh.setRefreshing(false);
-			loadInitial("", tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit);
+			loadInitial("", resultLimit);
 			adapter.notifyDataChanged();
 		}, 200));
 
 		adapter.setLoadMoreListener(() -> viewBinding.recyclerViewReposSearch.post(() -> {
 			if(dataList.size() == resultLimit || pageSize == resultLimit) {
 				int page = (dataList.size() + resultLimit) / resultLimit;
-				loadMore(String.valueOf(viewBinding.searchKeyword.getText()), tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit, page);
+				loadMore("", resultLimit, page);
 			}
 		}));
 
@@ -121,18 +91,21 @@ public class ExploreRepositoriesFragment extends Fragment {
 		viewBinding.recyclerViewReposSearch.setLayoutManager(new LinearLayoutManager(context));
 		viewBinding.recyclerViewReposSearch.setAdapter(adapter);
 
-		loadInitial("", tinyDb.getBoolean("exploreRepoIncludeTopic"), tinyDb.getBoolean("exploreRepoIncludeDescription"), tinyDb.getBoolean("exploreRepoIncludeTemplate"), tinyDb.getBoolean("exploreRepoOnlyArchived"), resultLimit);
+		loadInitial("", resultLimit);
 
 		return viewBinding.getRoot();
 	}
 
-	private void loadInitial(String searchKeyword, boolean exploreRepoIncludeTopic, boolean exploreRepoIncludeDescription, boolean exploreRepoIncludeTemplate, boolean exploreRepoOnlyArchived, int resultLimit) {
+	private void loadInitial(String searchKeyword, int resultLimit) {
 
 		Call<ExploreRepositories> call = RetrofitClient
-			.getApiInterface(context).queryRepos(Authorization.get(getContext()), searchKeyword, repoTypeInclude, sort, order, exploreRepoIncludeTopic, exploreRepoIncludeDescription, exploreRepoIncludeTemplate, exploreRepoOnlyArchived, resultLimit, 1);
-		call.enqueue(new Callback<ExploreRepositories>() {
+			.getApiInterface(context).queryRepos(((BaseActivity) requireActivity()).getAccount().getAuthorization(), searchKeyword, repoTypeInclude, sort, order, includeTopic, includeDescription, includeTemplate, onlyArchived, resultLimit, 1);
+
+		call.enqueue(new Callback<>() {
+
 			@Override
 			public void onResponse(@NonNull Call<ExploreRepositories> call, @NonNull Response<ExploreRepositories> response) {
+
 				if(response.isSuccessful()) {
 					if(response.body() != null && response.body().getSearchedData().size() > 0) {
 						dataList.clear();
@@ -152,25 +125,29 @@ public class ExploreRepositoriesFragment extends Fragment {
 					viewBinding.progressBar.setVisibility(View.GONE);
 				}
 				else {
-					Log.e(TAG, String.valueOf(response.code()));
+					Toasty.error(requireActivity(), requireActivity().getResources().getString(R.string.genericError));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<ExploreRepositories> call, @NonNull Throwable t) {
-				Log.e(TAG, t.toString());
+
+				Toasty.error(requireActivity(), requireActivity().getResources().getString(R.string.genericServerResponseError));
 			}
 		});
 	}
 
-	private void loadMore(String searchKeyword, boolean exploreRepoIncludeTopic, boolean exploreRepoIncludeDescription, boolean exploreRepoIncludeTemplate, boolean exploreRepoOnlyArchived, int resultLimit, int page) {
+	private void loadMore(String searchKeyword, int resultLimit, int page) {
 
 		viewBinding.progressBar.setVisibility(View.VISIBLE);
 		Call<ExploreRepositories> call = RetrofitClient.getApiInterface(context)
-			.queryRepos(Authorization.get(getContext()), searchKeyword, repoTypeInclude, sort, order, exploreRepoIncludeTopic, exploreRepoIncludeDescription, exploreRepoIncludeTemplate, exploreRepoOnlyArchived, resultLimit, page);
-		call.enqueue(new Callback<ExploreRepositories>() {
+			.queryRepos(((BaseActivity) requireActivity()).getAccount().getAuthorization(), searchKeyword, repoTypeInclude, sort, order, includeTopic, includeDescription, includeTemplate, onlyArchived, resultLimit, page);
+
+		call.enqueue(new Callback<>() {
+
 			@Override
 			public void onResponse(@NonNull Call<ExploreRepositories> call, @NonNull Response<ExploreRepositories> response) {
+
 				if(response.isSuccessful()) {
 					assert response.body() != null;
 					List<UserRepositories> result = response.body().getSearchedData();
@@ -186,13 +163,14 @@ public class ExploreRepositoriesFragment extends Fragment {
 					viewBinding.progressBar.setVisibility(View.GONE);
 				}
 				else {
-					Log.e(TAG, String.valueOf(response.code()));
+					Toasty.error(requireActivity(), requireActivity().getResources().getString(R.string.genericError));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<ExploreRepositories> call, @NonNull Throwable t) {
-				Log.e(TAG, t.toString());
+
+				Toasty.error(requireActivity(), requireActivity().getResources().getString(R.string.genericServerResponseError));
 			}
 		});
 	}
@@ -201,14 +179,42 @@ public class ExploreRepositoriesFragment extends Fragment {
 	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
 		menu.clear();
-		inflater.inflate(R.menu.filter_menu, menu);
+		inflater.inflate(R.menu.search_menu, menu);
+		inflater.inflate(R.menu.filter_menu_explore, menu);
 		super.onCreateOptionsMenu(menu, inflater);
-		MenuItem filter = menu.findItem(R.id.filter);
+		MenuItem filter = menu.findItem(R.id.filter_explore);
 
 		filter.setOnMenuItemClickListener(filter_ -> {
 
 			showFilterOptions();
 			return false;
+		});
+
+		MenuItem searchItem = menu.findItem(R.id.action_search);
+		androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+		searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+		searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				viewBinding.progressBar.setVisibility(View.VISIBLE);
+				loadInitial(query, resultLimit);
+				adapter.setLoadMoreListener(() -> viewBinding.recyclerViewReposSearch.post(() -> {
+					if(dataList.size() == resultLimit || pageSize == resultLimit) {
+						int page = (dataList.size() + resultLimit) / resultLimit;
+						loadMore(query, resultLimit, page);
+					}
+				}));
+				searchView.setQuery(null, false);
+				searchItem.collapseActionView();
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				return false;
+			}
 		});
 	}
 
@@ -225,30 +231,20 @@ public class ExploreRepositoriesFragment extends Fragment {
 		View view = filterBinding.getRoot();
 		dialogFilterOptions.setContentView(view);
 
-		filterBinding.includeTopic.setOnClickListener(includeTopic -> {
-			tinyDb.putBoolean("exploreRepoIncludeTopic", filterBinding.includeTopic.isChecked());
-		});
+		filterBinding.includeTopic.setOnClickListener(includeTopic -> this.includeTopic = filterBinding.includeTopic.isChecked());
 
-		filterBinding.includeDesc.setOnClickListener(includeDesc -> {
-			tinyDb.putBoolean("exploreRepoIncludeDescription", filterBinding.includeDesc.isChecked());
-		});
+		filterBinding.includeDesc.setOnClickListener(includeDesc -> this.includeDescription = filterBinding.includeDesc.isChecked());
 
-		filterBinding.includeTemplate.setOnClickListener(includeTemplate -> {
-			tinyDb.putBoolean("exploreRepoIncludeTemplate", filterBinding.includeTemplate.isChecked());
-		});
+		filterBinding.includeTemplate.setOnClickListener(includeTemplate -> this.includeTemplate = filterBinding.includeTemplate.isChecked());
 
-		filterBinding.onlyArchived.setOnClickListener(onlyArchived -> {
-			tinyDb.putBoolean("exploreRepoOnlyArchived", filterBinding.onlyArchived.isChecked());
-		});
+		filterBinding.onlyArchived.setOnClickListener(onlyArchived -> this.onlyArchived = filterBinding.onlyArchived.isChecked());
 
-		filterBinding.includeTopic.setChecked(tinyDb.getBoolean("exploreRepoIncludeTopic"));
-		filterBinding.includeDesc.setChecked(tinyDb.getBoolean("exploreRepoIncludeDescription"));
-		filterBinding.includeTemplate.setChecked(tinyDb.getBoolean("exploreRepoIncludeTemplate"));
-		filterBinding.onlyArchived.setChecked(tinyDb.getBoolean("exploreRepoOnlyArchived"));
+		filterBinding.includeTopic.setChecked(includeTopic);
+		filterBinding.includeDesc.setChecked(includeDescription);
+		filterBinding.includeTemplate.setChecked(includeTemplate);
+		filterBinding.onlyArchived.setChecked(onlyArchived);
 
-		filterBinding.cancel.setOnClickListener(editProperties -> {
-			dialogFilterOptions.dismiss();
-		});
+		filterBinding.cancel.setOnClickListener(editProperties -> dialogFilterOptions.dismiss());
 
 		dialogFilterOptions.show();
 	}

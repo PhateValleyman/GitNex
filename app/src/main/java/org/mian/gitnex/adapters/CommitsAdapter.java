@@ -1,6 +1,8 @@
 package org.mian.gitnex.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.models.Commits;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.CommitDetailActivity;
+import org.mian.gitnex.activities.CommitsActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
-    private final int TYPE_LOAD = 0;
     private List<Commits> commitsList;
     private Runnable loadMoreListener;
     private boolean isLoading = false;
@@ -40,14 +44,8 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         LayoutInflater inflater = LayoutInflater.from(context);
-
-        if(viewType == TYPE_LOAD) {
-            return new CommitsHolder(inflater.inflate(R.layout.list_commits, parent, false));
-        } else {
-            return new LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
-        }
+        return new CommitsHolder(inflater.inflate(R.layout.list_commits, parent, false));
     }
 
     @Override
@@ -58,19 +56,12 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             loadMoreListener.run();
         }
 
-        if(getItemViewType(position) == TYPE_LOAD) {
-            ((CommitsHolder) holder).bindData(commitsList.get(position));
-        }
+        ((CommitsHolder) holder).bindData(commitsList.get(position));
     }
 
     @Override
     public int getItemViewType(int position) {
-
-        if(commitsList.get(position).getSha() != null) {
-            return TYPE_LOAD;
-        } else {
-            return 1;
-        }
+		return position;
     }
 
     @Override
@@ -83,7 +74,6 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     	View rootView;
 
         TextView commitSubject;
-        TextView commitBody;
 	    TextView commitAuthorAndCommitter;
 	    ImageView commitAuthorAvatar;
 	    ImageView commitCommitterAvatar;
@@ -96,7 +86,6 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             rootView = itemView;
 
             commitSubject = itemView.findViewById(R.id.commitSubject);
-            commitBody = itemView.findViewById(R.id.commitBody);
 	        commitAuthorAndCommitter = itemView.findViewById(R.id.commitAuthorAndCommitter);
 	        commitAuthorAvatar = itemView.findViewById(R.id.commitAuthorAvatar);
 	        commitCommitterAvatar = itemView.findViewById(R.id.commitCommitterAvatar);
@@ -108,31 +97,23 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             String[] commitMessageParts = commitsModel.getCommit().getMessage().split("(\r\n|\n)", 2);
 
-            if(commitMessageParts.length > 1 && !commitMessageParts[1].trim().isEmpty()) {
-	            commitBody.setVisibility(View.VISIBLE);
-	            commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
-	            commitBody.setText(EmojiParser.parseToUnicode(commitMessageParts[1].trim()));
-            } else {
-	            commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
-	            commitBody.setVisibility(View.GONE);
-            }
+            commitSubject.setText(EmojiParser.parseToUnicode(commitMessageParts[0].trim()));
 
-            if(commitsModel.getCommitter().getId() != commitsModel.getAuthor().getId()) {
+            if(!Objects.equals(commitsModel.getCommit().getCommitter().getEmail(), commitsModel.getCommit().getAuthor().getEmail())) {
 	            commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(context
-		            .getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getAuthor().getUsername(), commitsModel.getCommitter().getUsername(),
+		            .getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getCommit().getAuthor().getName(), commitsModel.getCommit().getCommitter().getName(),
 			            TimeHelper
 				            .formatTime(commitsModel.getCommit().getCommitter().getDate(), context.getResources().getConfiguration().locale, "pretty",
 					            context)), HtmlCompat.FROM_HTML_MODE_COMPACT));
             } else {
             	commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(context
-		            .getString(R.string.commitCommittedByWhen, commitsModel.getCommitter().getUsername(),
+		            .getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
 			            TimeHelper
 				            .formatTime(commitsModel.getCommit().getCommitter().getDate(), context.getResources().getConfiguration().locale, "pretty",
 					            context)), HtmlCompat.FROM_HTML_MODE_COMPACT));
-
             }
 
-	        if(commitsModel.getAuthor().getAvatar_url() != null &&
+	        if(commitsModel.getAuthor() != null && commitsModel.getAuthor().getAvatar_url() != null &&
 		        !commitsModel.getAuthor().getAvatar_url().isEmpty()) {
 
 		        commitAuthorAvatar.setVisibility(View.VISIBLE);
@@ -151,7 +132,8 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 		        commitAuthorAvatar.setVisibility(View.GONE);
 	        }
 
-            if(!commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin()) &&
+            if(commitsModel.getCommitter() != null &&
+	            (commitsModel.getAuthor() == null || !commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin())) &&
 	            commitsModel.getCommitter().getAvatar_url() != null &&
 	            !commitsModel.getCommitter().getAvatar_url().isEmpty()) {
 
@@ -172,21 +154,20 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
 	        commitSha.setText(commitsModel.getSha().substring(0, Math.min(commitsModel.getSha().length(), 10)));
-            rootView.setOnClickListener(v -> AppUtil.openUrlInBrowser(context, commitsModel.getHtml_url()));
+            rootView.setOnClickListener(v -> {
+	            Intent intent = ((CommitsActivity) context).repository.getIntent(context, CommitDetailActivity.class);
+				intent.putExtra("sha", commitsModel.getSha());
+				context.startActivity(intent);
+            });
 
         }
     }
 
-    static class LoadHolder extends RecyclerView.ViewHolder {
-        LoadHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    public void setMoreDataAvailable(boolean moreDataAvailable) {
+	public void setMoreDataAvailable(boolean moreDataAvailable) {
         isMoreDataAvailable = moreDataAvailable;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void notifyDataChanged() {
         notifyDataSetChanged();
         isLoading = false;
@@ -198,6 +179,6 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void updateList(List<Commits> list) {
         commitsList = list;
-        notifyDataSetChanged();
+        notifyDataChanged();
     }
 }

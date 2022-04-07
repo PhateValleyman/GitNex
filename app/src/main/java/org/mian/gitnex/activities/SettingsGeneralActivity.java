@@ -2,19 +2,16 @@ package org.mian.gitnex.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CompoundButton;
 import androidx.appcompat.app.AlertDialog;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsGeneralBinding;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class SettingsGeneralActivity extends BaseActivity {
@@ -44,18 +41,23 @@ public class SettingsGeneralActivity extends BaseActivity {
 
 		String[] appHomeDefaultScreenNew = getResources().getStringArray(R.array.appDefaultHomeScreenNew);
 
-		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12.3")) {
+		if(getAccount().requiresVersion("1.12.3")) {
 
 			appHomeDefaultScreen = appHomeDefaultScreenNew;
 		}
 
 		homeScreenList = new ArrayList<>(Arrays.asList(appHomeDefaultScreen));
+
+		if(!getAccount().requiresVersion("1.14.0")) {
+			homeScreenList.remove(8);
+		}
+
 		String[] homeScreenArray = new String[homeScreenList.size()];
 		homeScreenList.toArray(homeScreenArray);
 
 		if(homeScreenSelectedChoice == 0) {
 
-			homeScreenSelectedChoice = tinyDB.getInt("homeScreenId");
+			homeScreenSelectedChoice = tinyDB.getInt("homeScreenId", 0);
 			viewBinding.homeScreenSelected.setText(getResources().getString(R.string.navMyRepos));
 		}
 
@@ -86,6 +88,10 @@ public class SettingsGeneralActivity extends BaseActivity {
 		else if(homeScreenSelectedChoice == 7) {
 
 			viewBinding.homeScreenSelected.setText(getResources().getString(R.string.pageTitleNotifications));
+		}
+		else if(homeScreenSelectedChoice == 8) {
+
+			viewBinding.homeScreenSelected.setText(getResources().getString(R.string.navMyIssues));
 		}
 
 		viewBinding.homeScreenFrame.setOnClickListener(setDefaultHomeScreen -> {

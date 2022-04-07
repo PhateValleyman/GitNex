@@ -17,31 +17,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.apache.commons.lang3.StringUtils;
 import org.gitnex.tea4j.models.NotificationThread;
 import org.mian.gitnex.R;
-import org.mian.gitnex.database.api.BaseApi;
-import org.mian.gitnex.database.api.RepositoriesApi;
-import org.mian.gitnex.database.models.Repository;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.TinyDB;
 import java.util.List;
 
 /**
- * Author opyale
- * Modified M M Arif
+ * @author opyale
  */
 
 public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 	private final Context context;
-	private final int TYPE_LOAD = 0;
 	private List<NotificationThread> notificationThreads;
 	private final OnMoreClickedListener onMoreClickedListener;
 	private final OnNotificationClickedListener onNotificationClickedListener;
-	private Runnable loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
-	private final TinyDB tinyDb;
 
 	public NotificationsAdapter(Context context, List<NotificationThread> notificationThreads, OnMoreClickedListener onMoreClickedListener, OnNotificationClickedListener onNotificationClickedListener) {
-		this.tinyDb = TinyDB.getInstance(context);
+
 		this.context = context;
 		this.notificationThreads = notificationThreads;
 		this.onMoreClickedListener = onMoreClickedListener;
@@ -52,34 +44,20 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 	@Override
 	public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(context);
-		if(viewType == TYPE_LOAD) {
-			return new NotificationsAdapter.NotificationsHolder(inflater.inflate(R.layout.list_notifications, parent, false));
-		}
-		else {
-			return new NotificationsAdapter.LoadHolder(inflater.inflate(R.layout.row_load, parent, false));
-		}
+		return new NotificationsAdapter.NotificationsHolder(inflater.inflate(R.layout.list_notifications, parent, false));
 	}
 
 	@Override
 	public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
+		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading) {
 			isLoading = true;
-			loadMoreListener.run();
 		}
-
-		if(getItemViewType(position) == TYPE_LOAD) {
-			((NotificationsAdapter.NotificationsHolder) holder).bindData(notificationThreads.get(position));
-		}
+		((NotificationsAdapter.NotificationsHolder) holder).bindData(notificationThreads.get(position));
 	}
 
 	@Override
 	public int getItemViewType(int position) {
-		if(notificationThreads.get(position).getSubject() != null) {
-			return TYPE_LOAD;
-		}
-		else {
-			return 1;
-		}
+		return position;
 	}
 
 	@Override
@@ -169,36 +147,9 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 					break;
 			}
 
-			frame.setOnClickListener(v -> {
-
-				onNotificationClickedListener.onNotificationClicked(notificationThread);
-
-				String[] parts = notificationThread.getRepository().getFullName().split("/");
-				final String repoOwner = parts[0];
-				final String repoName = parts[1];
-
-				int currentActiveAccountId = tinyDb.getInt("currentActiveAccountId");
-				RepositoriesApi repositoryData = BaseApi.getInstance(context, RepositoriesApi.class);
-
-				Integer count = repositoryData.checkRepository(currentActiveAccountId, repoOwner, repoName);
-
-				if(count == 0) {
-					long id = repositoryData.insertRepository(currentActiveAccountId, repoOwner, repoName);
-					tinyDb.putLong("repositoryId", id);
-				}
-				else {
-					Repository data = repositoryData.getRepository(currentActiveAccountId, repoOwner, repoName);
-					tinyDb.putLong("repositoryId", data.getRepositoryId());
-				}
-			});
+			frame.setOnClickListener(v -> onNotificationClickedListener.onNotificationClicked(notificationThread));
 
 			more.setOnClickListener(v -> onMoreClickedListener.onMoreClicked(notificationThread));
-		}
-	}
-
-	static class LoadHolder extends RecyclerView.ViewHolder {
-		LoadHolder(View itemView) {
-			super(itemView);
 		}
 	}
 
@@ -210,10 +161,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 	public void notifyDataChanged() {
 		notifyDataSetChanged();
 		isLoading = false;
-	}
-
-	public void setLoadMoreListener(Runnable loadMoreListener) {
-		this.loadMoreListener = loadMoreListener;
 	}
 
 	public void updateList(List<NotificationThread> list) {

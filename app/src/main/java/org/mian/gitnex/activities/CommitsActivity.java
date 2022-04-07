@@ -23,10 +23,9 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.CommitsAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCommitsBinding;
-import org.mian.gitnex.helpers.Authorization;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
-import org.mian.gitnex.helpers.Version;
+import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -42,7 +41,7 @@ public class CommitsActivity extends BaseActivity {
 	private View.OnClickListener onClickListener;
 	private TextView noData;
 	private ProgressBar progressBar;
-	private String TAG = "CommitsActivity";
+	private final String TAG = "CommitsActivity";
 	private int resultLimit = Constants.resultLimitOldGiteaInstances;
 	private int pageSize = 1;
 
@@ -51,10 +50,13 @@ public class CommitsActivity extends BaseActivity {
 	private CommitsAdapter adapter;
 	private ProgressBar progressLoadMore;
 
+	public RepositoryContext repository;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		this.getClass().getName();
 
 		ActivityCommitsBinding activityCommitsBinding = ActivityCommitsBinding.inflate(getLayoutInflater());
 		setContentView(activityCommitsBinding.getRoot());
@@ -62,12 +64,8 @@ public class CommitsActivity extends BaseActivity {
 		Toolbar toolbar = activityCommitsBinding.toolbar;
 		setSupportActionBar(toolbar);
 
-		String repoFullName = tinyDB.getString("repoFullName");
-		String[] parts = repoFullName.split("/");
-		final String repoOwner = parts[0];
-		final String repoName = parts[1];
-
-		String branchName = getIntent().getStringExtra("branchName");
+		repository = RepositoryContext.fromIntent(getIntent());
+		String branchName = repository.getBranchRef();
 
 		TextView toolbar_title = activityCommitsBinding.toolbarTitle;
 		toolbar_title.setMovementMethod(new ScrollingMovementMethod());
@@ -83,7 +81,7 @@ public class CommitsActivity extends BaseActivity {
 		closeActivity.setOnClickListener(onClickListener);
 
 		// if gitea is 1.12 or higher use the new limit (resultLimitNewGiteaInstances)
-		if(new Version(tinyDB.getString("giteaVersion")).higherOrEqual("1.12")) {
+		if(getAccount().requiresVersion("1.12")) {
 
 			resultLimit = Constants.resultLimitNewGiteaInstances;
 		}
@@ -94,7 +92,7 @@ public class CommitsActivity extends BaseActivity {
 		swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 			swipeRefresh.setRefreshing(false);
-			loadInitial(Authorization.get(ctx), repoOwner, repoName, branchName, resultLimit);
+			loadInitial(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), branchName, resultLimit);
 			adapter.notifyDataChanged();
 		}, 200));
 
@@ -104,7 +102,7 @@ public class CommitsActivity extends BaseActivity {
 			if(commitsList.size() == resultLimit || pageSize == resultLimit) {
 
 				int page = (commitsList.size() + resultLimit) / resultLimit;
-				loadMore(Authorization.get(ctx), repoOwner, repoName, page, branchName, resultLimit);
+				loadMore(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), page, branchName, resultLimit);
 			}
 		}));
 
@@ -112,7 +110,7 @@ public class CommitsActivity extends BaseActivity {
 		recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 		recyclerView.setAdapter(adapter);
 
-		loadInitial(Authorization.get(ctx), repoOwner, repoName, branchName, resultLimit);
+		loadInitial(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), branchName, resultLimit);
 	}
 
 	private void loadInitial(String token, String repoOwner, String repoName, String branchName, int resultLimit) {
@@ -156,7 +154,7 @@ public class CommitsActivity extends BaseActivity {
 			@Override
 			public void onFailure(@NonNull Call<List<Commits>> call, @NonNull Throwable t) {
 
-				Toasty.error(ctx, getResources().getString(R.string.errorOnLogin));
+				Toasty.error(ctx, getResources().getString(R.string.genericServerResponseError));
 			}
 
 		});
@@ -202,7 +200,7 @@ public class CommitsActivity extends BaseActivity {
 			@Override
 			public void onFailure(@NonNull Call<List<Commits>> call, @NonNull Throwable t) {
 
-				Toasty.error(ctx, getResources().getString(R.string.errorOnLogin));
+				Toasty.error(ctx, getResources().getString(R.string.genericServerResponseError));
 			}
 
 		});
@@ -258,9 +256,14 @@ public class CommitsActivity extends BaseActivity {
 
 		onClickListener = view -> {
 
-			getIntent().removeExtra("branchName");
 			finish();
 		};
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
 	}
 
 }

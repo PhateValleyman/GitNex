@@ -11,9 +11,9 @@
     <attr name="inputTextColor" format="reference" />
     <attr name="selectedTextColor" format="reference" />
     <attr name="alertDialogTheme" format="reference" />
-    <attr name="dividerColor" format="reference" />
     <attr name="progressIndicatorColor" format="reference" />
     <attr name="fabColor" format="reference" />
     <attr name="iconsColor" format="reference" />
     <attr name="pagerTabIndicatorColor" format="reference" />
+    <attr name="isDark" format="integer" />
 </resources>

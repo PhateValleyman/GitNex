@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import org.mian.gitnex.R;
+import org.mian.gitnex.core.MainApplication;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
+import org.mian.gitnex.helpers.contexts.AccountContext;
 import org.mian.gitnex.notifications.Notifications;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -33,53 +35,59 @@ public abstract class BaseActivity extends AppCompatActivity {
 		this.appCtx = getApplicationContext();
 		this.tinyDB = TinyDB.getInstance(appCtx);
 
-		switch(tinyDB.getInt("themeId")) {
-
+		switch(tinyDB.getInt("themeId", 6)) {
+			case 0:
+				setTheme(R.style.AppTheme);
+				break;
 			case 1:
 
-				tinyDB.putString("currentTheme", "light");
 				setTheme(R.style.AppThemeLight);
 				break;
 			case 2:
 
-				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour"), tinyDB.getInt("lightThemeTimeHour"), tinyDB.getInt("darkThemeTimeMinute"), tinyDB.getInt("lightThemeTimeMinute"))) {
+				if(TimeHelper.timeBetweenHours(
+					tinyDB.getInt("darkThemeTimeHour", 18),
+					tinyDB.getInt("lightThemeTimeHour", 6),
+					tinyDB.getInt("darkThemeTimeMinute", 0),
+					tinyDB.getInt("lightThemeTimeMinute", 0))
+				) {
 
-					tinyDB.putString("currentTheme", "dark");
 					setTheme(R.style.AppTheme);
 				}
 				else {
 
-					tinyDB.putString("currentTheme", "light");
 					setTheme(R.style.AppThemeLight);
 				}
 				break;
 			case 3:
 
-				tinyDB.putString("currentTheme", "light");
 				setTheme(R.style.AppThemeRetro);
 				break;
 			case 4:
-				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour"), tinyDB.getInt("lightThemeTimeHour"), tinyDB.getInt("darkThemeTimeMinute"), tinyDB.getInt("lightThemeTimeMinute"))) {
+				if(TimeHelper.timeBetweenHours(
+					tinyDB.getInt("darkThemeTimeHour", 18),
+					tinyDB.getInt("lightThemeTimeHour", 6),
+					tinyDB.getInt("darkThemeTimeMinute", 0),
+					tinyDB.getInt("lightThemeTimeMinute", 0))
+				) {
 
-					tinyDB.putString("currentTheme", "dark");
 					setTheme(R.style.AppTheme);
 				}
 				else {
 
-					tinyDB.putString("currentTheme", "light");
 					setTheme(R.style.AppThemeRetro);
 				}
 				break;
 			case 5:
 
-				tinyDB.putString("currentTheme", "dark");
 				setTheme(R.style.AppThemePitchBlack);
 				break;
+			case 7:
+				setTheme(R.style.AppThemeSystemPitchBlack);
+				break;
 			default:
-
-				tinyDB.putString("currentTheme", "dark");
-				setTheme(R.style.AppTheme);
-
+				setTheme(R.style.AppThemeSystem);
+				break;
 		}
 
 		String locale = tinyDB.getString("locale");
@@ -96,7 +104,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 	public void onResume() {
 		super.onResume();
 
-		if(tinyDB.getBoolean("biometricStatus") && !tinyDB.getBoolean("biometricLifeCycle")) {
+		if(tinyDB.getBoolean("biometricStatus", false) && !tinyDB.getBoolean("biometricLifeCycle")) {
 
 			Executor executor = ContextCompat.getMainExecutor(this);
 
@@ -130,6 +138,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 			biometricPrompt.authenticate(biometricPromptBuilder);
 
 		}
+	}
+
+	public AccountContext getAccount() {
+		return ((MainApplication) getApplication()).currentAccount;
 	}
 }
 
