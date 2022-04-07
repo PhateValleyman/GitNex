@@ -3,6 +3,8 @@ pipeline:
     image: alvrme/alpine-android:android-31-jdk11
     commands:
       - ./gradlew assembleFreeRelease
+    when:
+      path: [ app/, build.gradle ]
 
   sign:
     image: alvrme/alpine-android:android-31-jdk11
@@ -16,6 +18,7 @@ pipeline:
     when:
       event: [ push, tag ]
       branch: main
+      path: [ app/, build.gradle ]
 
   latest:
     image: curlimages/curl:7.82.0
@@ -31,6 +34,7 @@ pipeline:
     when:
       event: [ push, tag ]
       branch: main
+      path: [ app/, build.gradle ]
 
   release:
     image: curlimages/curl:7.82.0
