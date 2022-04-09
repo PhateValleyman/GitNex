@@ -216,9 +216,13 @@ public class LoginActivity extends BaseActivity {
 
 			String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
 
-			callVersion =
-				(loginOTP != 0) ? RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential).getVersion(loginOTP) :
-					RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential).getVersion();
+			if (loginOTP != 0) {
+
+				callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential).getVersion(loginOTP);
+			} else {
+
+				callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential).getVersion();
+			}
 		}
 
 		callVersion.enqueue(new Callback<ServerVersion>() {
@@ -581,7 +585,7 @@ public class LoginActivity extends BaseActivity {
 			instanceUrlET.setText(tinyDB.getString("instanceUrlRaw"));
 		}
 
-		if(getAccount() != null) {
+		if(getAccount() != null && getAccount().getAccount() != null) {
 
 			loginUidET.setText(getAccount().getAccount().getUserName());
 		}
