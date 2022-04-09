@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.v2.models.Repository;
 import org.gitnex.tea4j.v2.models.SearchResults;
 import org.mian.gitnex.R;
+import org.mian.gitnex.activities.BaseActivity;
+import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.ExploreRepositoriesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomExploreRepositoriesDialogBinding;
@@ -28,6 +30,7 @@ import org.mian.gitnex.databinding.FragmentExploreRepoBinding;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.SnackBar;
 import org.mian.gitnex.helpers.Toasty;
+import org.mian.gitnex.viewmodels.RepositoriesViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -58,6 +61,7 @@ public class ExploreRepositoriesFragment extends Fragment {
 	private boolean includeDescription = false;
 	private boolean includeTemplate = false;
 	private boolean onlyArchived = false;
+	private String searchQuery = "";
 
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -202,6 +206,7 @@ public class ExploreRepositoriesFragment extends Fragment {
 						loadMore(query, resultLimit, page);
 					}
 				}));
+				searchQuery = query;
 				searchView.setQuery(null, false);
 				searchItem.collapseActionView();
 				return false;
@@ -243,5 +248,17 @@ public class ExploreRepositoriesFragment extends Fragment {
 		filterBinding.cancel.setOnClickListener(editProperties -> dialogFilterOptions.dismiss());
 
 		dialogFilterOptions.show();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		if(MainActivity.repoCreated) {
+			dataList.clear();
+			loadInitial(searchQuery, resultLimit);
+			MainActivity.repoCreated = false;
+		}
+
 	}
 }

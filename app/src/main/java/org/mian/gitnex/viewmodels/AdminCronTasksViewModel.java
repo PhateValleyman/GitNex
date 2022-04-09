@@ -23,7 +23,7 @@ public class AdminCronTasksViewModel extends ViewModel {
 
 	private static MutableLiveData<List<Cron>> tasksList;
 
-	public LiveData<List<Cron>> getCronTasksList(Context ctx, String token, int page, int limit) {
+	public LiveData<List<Cron>> getCronTasksList(Context ctx, int page, int limit) {
 
 		tasksList = new MutableLiveData<>();
 		loadCronTasksList(ctx, page, limit);

@@ -96,10 +96,10 @@ public class MyProfileEmailActivity extends BaseActivity {
         List<String> newEmailList = new ArrayList<>(Arrays.asList(newUserEmail.split(",")));
 
         disableProcessButton();
-        addNewEmail(getAccount().getAuthorization(), newEmailList);
+        addNewEmail(newEmailList);
     }
 
-    private void addNewEmail(final String token, List<String> newUserEmail) {
+    private void addNewEmail(List<String> newUserEmail) {
 
         CreateEmailOption addEmailFunc = new CreateEmailOption();
 		addEmailFunc.setEmails(newUserEmail);
@@ -108,54 +108,52 @@ public class MyProfileEmailActivity extends BaseActivity {
                 .getApiInterface(ctx)
                 .userAddEmail(addEmailFunc);
 
-        call.enqueue(new Callback<List<Email>>() {
+        call.enqueue(new Callback<>() {
 
-            @Override
-            public void onResponse(@NonNull Call<List<Email>> call, @NonNull retrofit2.Response<List<Email>> response) {
+	        @Override
+	        public void onResponse(@NonNull Call<List<Email>> call, @NonNull retrofit2.Response<List<Email>> response) {
 
-                if(response.code() == 201) {
+		        if(response.code() == 201) {
 
-                    Toasty.success(ctx, getString(R.string.emailAddedText));
-	                MyProfileEmailsFragment.refreshEmails = true;
-                    enableProcessButton();
-                    finish();
-                }
-                else if(response.code() == 401) {
+			        Toasty.success(ctx, getString(R.string.emailAddedText));
+			        MyProfileEmailsFragment.refreshEmails = true;
+			        enableProcessButton();
+			        finish();
+		        }
+		        else if(response.code() == 401) {
 
-                    enableProcessButton();
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.cancelButton),
-                            getResources().getString(R.string.navLogout));
-                }
-                else if(response.code() == 403) {
+			        enableProcessButton();
+			        AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage),
+				        getResources().getString(R.string.cancelButton), getResources().getString(R.string.navLogout));
+		        }
+		        else if(response.code() == 403) {
 
-                    enableProcessButton();
-                    Toasty.error(ctx, ctx.getString(R.string.authorizeError));
-                }
-                else if(response.code() == 404) {
+			        enableProcessButton();
+			        Toasty.error(ctx, ctx.getString(R.string.authorizeError));
+		        }
+		        else if(response.code() == 404) {
 
-                    enableProcessButton();
-                    Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
-                }
-                else if(response.code() == 422) {
+			        enableProcessButton();
+			        Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
+		        }
+		        else if(response.code() == 422) {
 
-                    enableProcessButton();
-                    Toasty.warning(ctx, ctx.getString(R.string.emailErrorInUse));
-                }
-                else {
+			        enableProcessButton();
+			        Toasty.warning(ctx, ctx.getString(R.string.emailErrorInUse));
+		        }
+		        else {
 
-                    enableProcessButton();
-                    Toasty.error(ctx, getString(R.string.genericError));
-                }
-            }
+			        enableProcessButton();
+			        Toasty.error(ctx, getString(R.string.genericError));
+		        }
+	        }
 
-            @Override
-            public void onFailure(@NonNull Call<List<Email>> call, @NonNull Throwable t) {
+	        @Override
+	        public void onFailure(@NonNull Call<List<Email>> call, @NonNull Throwable t) {
 
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
+		        Log.e("onFailure", t.toString());
+		        enableProcessButton();
+	        }
         });
 
     }

@@ -56,12 +56,12 @@ public class CollaboratorsFragment extends Fragment {
         mProgressBar = fragmentCollaboratorsBinding.progressBar;
         mGridView = fragmentCollaboratorsBinding.gridView;
 
-        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+        fetchDataAsync(repository.getOwner(), repository.getName());
         return fragmentCollaboratorsBinding.getRoot();
 
     }
 
-    private void fetchDataAsync(String instanceToken, String owner, String repo) {
+    private void fetchDataAsync(String owner, String repo) {
 
         CollaboratorsViewModel collaboratorsModel = new ViewModelProvider(this).get(CollaboratorsViewModel.class);
 
@@ -86,7 +86,7 @@ public class CollaboratorsFragment extends Fragment {
 
 		super.onResume();
 		if(refreshCollaborators) {
-			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+			fetchDataAsync(repository.getOwner(), repository.getName());
 			refreshCollaborators = false;
 		}
 	}

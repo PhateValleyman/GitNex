@@ -59,16 +59,16 @@ public class StarredRepositoriesFragment extends Fragment {
 
 			page = 1;
 			fragmentRepositoriesBinding.pullToRefresh.setRefreshing(false);
-			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization());
+			fetchDataAsync();
 			fragmentRepositoriesBinding.progressBar.setVisibility(View.VISIBLE);
 		}, 50));
 
-		fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization());
+		fetchDataAsync();
 
 		return fragmentRepositoriesBinding.getRoot();
 	};
 
-	private void fetchDataAsync(String instanceToken) {
+	private void fetchDataAsync() {
 
 		RepositoriesViewModel reposModel = new ViewModelProvider(this).get(RepositoriesViewModel.class);
 
@@ -138,7 +138,8 @@ public class StarredRepositoriesFragment extends Fragment {
 		super.onResume();
 
 		if(MainActivity.repoCreated) {
-			RepositoriesViewModel.loadReposList(page, resultLimit, "", "starredRepos", null, getContext());
+			page = 1;
+			fetchDataAsync();
 			MainActivity.repoCreated = false;
 		}
 

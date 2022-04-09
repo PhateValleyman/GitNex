@@ -129,7 +129,7 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 					.getApiInterface(context)
 					.orgListTeamMember((long) teamId, currentItem.getLogin());
 
-			call.enqueue(new Callback<User>() {
+			call.enqueue(new Callback<>() {
 
 				@Override
 				public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {

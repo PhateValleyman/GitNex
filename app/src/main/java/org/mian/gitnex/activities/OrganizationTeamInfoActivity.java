@@ -117,7 +117,7 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
     public void onButtonClicked(String text) {
         if("newMember".equals(text)) {
             Intent intent = new Intent(OrganizationTeamInfoActivity.this, AddNewTeamMemberActivity.class);
-            intent.putExtra("team", team);
+            intent.putExtra("teamId", team.getId());
             startActivity(intent);
         }
     }

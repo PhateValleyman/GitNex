@@ -41,7 +41,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 	private List<User> dataList;
 	private UserSearchForTeamMemberAdapter adapter;
 
-	private String teamId;
+	private long teamId;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,14 +66,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		if(getIntent().getStringExtra("teamId") != null && !Objects.requireNonNull(getIntent().getStringExtra("teamId")).equals("")) {
-
-			teamId = getIntent().getStringExtra("teamId");
-		}
-		else {
-
-			teamId = "0";
-		}
+		teamId = getIntent().getLongExtra("teamId", 0);
 
 		mRecyclerView.setHasFixedSize(true);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
@@ -90,7 +83,7 @@ public class AddNewTeamMemberActivity extends BaseActivity {
 
 				if(!addNewTeamMember.getText().toString().equals("") && addNewTeamMember.getText().toString().length() > 1) {
 
-					adapter = new UserSearchForTeamMemberAdapter(dataList, ctx, Integer.parseInt(teamId), getIntent().getStringExtra("orgName"));
+					adapter = new UserSearchForTeamMemberAdapter(dataList, ctx, Math.toIntExact(teamId), getIntent().getStringExtra("orgName"));
 					loadUserSearchList(addNewTeamMember.getText().toString());
 				}
 			}

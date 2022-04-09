@@ -239,42 +239,41 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 .getApiInterface(ctx)
                 .issueCreateIssue(repoOwner, repoName, createNewIssueJson);
 
-        call3.enqueue(new Callback<Issue>() {
+        call3.enqueue(new Callback<>() {
 
-            @Override
-            public void onResponse(@NonNull Call<Issue> call, @NonNull retrofit2.Response<Issue> response2) {
+	        @Override
+	        public void onResponse(@NonNull Call<Issue> call, @NonNull retrofit2.Response<Issue> response2) {
 
-				if(response2.code() == 201) {
+		        if(response2.code() == 201) {
 
-                    IssuesFragment.resumeIssues = true;
+			        IssuesFragment.resumeIssues = true;
 
-                    Toasty.success(ctx, getString(R.string.issueCreated));
-                    enableProcessButton();
-					RepoDetailActivity.updateStatsIssues = true;
-                    finish();
-                }
-                else if(response2.code() == 401) {
+			        Toasty.success(ctx, getString(R.string.issueCreated));
+			        enableProcessButton();
+			        RepoDetailActivity.updateStatsIssues = true;
+			        MainActivity.repoCreated = true;
+			        finish();
+		        }
+		        else if(response2.code() == 401) {
 
-                    enableProcessButton();
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.cancelButton),
-                            getResources().getString(R.string.navLogout));
-                }
-                else {
+			        enableProcessButton();
+			        AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage),
+				        getResources().getString(R.string.cancelButton), getResources().getString(R.string.navLogout));
+		        }
+		        else {
 
-                    Toasty.error(ctx, getString(R.string.genericError));
-                    enableProcessButton();
-                }
+			        Toasty.error(ctx, getString(R.string.genericError));
+			        enableProcessButton();
+		        }
 
-            }
+	        }
 
-            @Override
-            public void onFailure(@NonNull Call<Issue> call, @NonNull Throwable t) {
+	        @Override
+	        public void onFailure(@NonNull Call<Issue> call, @NonNull Throwable t) {
 
-	            Toasty.error(ctx, getString(R.string.genericServerResponseError));
-                enableProcessButton();
-            }
+		        Toasty.error(ctx, getString(R.string.genericServerResponseError));
+		        enableProcessButton();
+	        }
         });
 
     }

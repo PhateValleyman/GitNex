@@ -73,16 +73,16 @@ public class RepositoriesByOrgFragment extends Fragment {
 
 			page = 1;
 			fragmentRepositoriesBinding.pullToRefresh.setRefreshing(false);
-			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization());
+			fetchDataAsync();
 			fragmentRepositoriesBinding.progressBar.setVisibility(View.VISIBLE);
 		}, 50));
 
-		fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization());
+		fetchDataAsync();
 
 		return fragmentRepositoriesBinding.getRoot();
 	};
 
-	private void fetchDataAsync(String instanceToken) {
+	private void fetchDataAsync() {
 
 		RepositoriesViewModel reposModel = new ViewModelProvider(this).get(RepositoriesViewModel.class);
 

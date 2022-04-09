@@ -25,15 +25,15 @@ public class OrganizationLabelsViewModel extends ViewModel {
 
 	private static MutableLiveData<List<Label>> orgLabelsList;
 
-	public LiveData<List<Label>> getOrgLabelsList(String token, String owner, Context ctx, ProgressBar progressBar, TextView noData) {
+	public LiveData<List<Label>> getOrgLabelsList(String owner, Context ctx, ProgressBar progressBar, TextView noData) {
 
 		orgLabelsList = new MutableLiveData<>();
-		loadOrgLabelsList(token, owner, ctx, progressBar, noData);
+		loadOrgLabelsList(owner, ctx, progressBar, noData);
 
 		return orgLabelsList;
 	}
 
-	public static void loadOrgLabelsList(String token, String owner, Context ctx, ProgressBar progressBar, TextView noData) {
+	public static void loadOrgLabelsList(String owner, Context ctx, ProgressBar progressBar, TextView noData) {
 
 		Call<List<Label>> call = RetrofitClient
 			.getApiInterface(ctx)

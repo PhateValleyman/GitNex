@@ -60,16 +60,16 @@ public class MyRepositoriesFragment extends Fragment {
 
 			page = 1;
 			fragmentRepositoriesBinding.pullToRefresh.setRefreshing(false);
-			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), userLogin);
+			fetchDataAsync(userLogin);
 			fragmentRepositoriesBinding.progressBar.setVisibility(View.VISIBLE);
 		}, 50));
 
-		fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), userLogin);
+		fetchDataAsync(userLogin);
 
 		return fragmentRepositoriesBinding.getRoot();
 	};
 
-	private void fetchDataAsync(String instanceToken, String userLogin) {
+	private void fetchDataAsync(String userLogin) {
 
 		RepositoriesViewModel reposModel = new ViewModelProvider(this).get(RepositoriesViewModel.class);
 
@@ -113,7 +113,8 @@ public class MyRepositoriesFragment extends Fragment {
         final String userLogin = ((BaseActivity) requireActivity()).getAccount().getAccount().getUserName();
 
         if(MainActivity.repoCreated) {
-            RepositoriesViewModel.loadReposList(page, resultLimit, userLogin, "myRepos", null, getContext()  );
+			page = 1;
+			fetchDataAsync(userLogin);
 	        MainActivity.repoCreated = false;
         }
 

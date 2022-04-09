@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import org.gitnex.tea4j.v2.models.OrganizationPermissions;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.TeamsByOrgAdapter;
 import org.mian.gitnex.databinding.FragmentTeamsByOrgBinding;
 import org.mian.gitnex.viewmodels.TeamsByOrgViewModel;
@@ -91,7 +90,7 @@ public class TeamsByOrgFragment extends Fragment {
 
         }, 200));
 
-        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), orgName);
+        fetchDataAsync(orgName);
 
         return fragmentTeamsByOrgBinding.getRoot();
     }
@@ -105,7 +104,7 @@ public class TeamsByOrgFragment extends Fragment {
         }
     }
 
-    private void fetchDataAsync(String instanceToken, String owner) {
+    private void fetchDataAsync(String owner) {
 
         TeamsByOrgViewModel teamModel = new ViewModelProvider(this).get(TeamsByOrgViewModel.class);
 

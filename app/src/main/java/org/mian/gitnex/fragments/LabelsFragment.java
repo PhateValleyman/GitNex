@@ -76,7 +76,7 @@ public class LabelsFragment extends Fragment {
             LabelsViewModel.loadLabelsList(repository.getOwner(), repository.getName(), getContext());
         }, 200));
 
-        fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName());
+        fetchDataAsync(repository.getOwner(), repository.getName());
 
         return fragmentLabelsBinding.getRoot();
     }
@@ -93,7 +93,7 @@ public class LabelsFragment extends Fragment {
         }
     }
 
-    private void fetchDataAsync(String instanceToken, String owner, String repo) {
+    private void fetchDataAsync(String owner, String repo) {
 
         LabelsViewModel labelsModel = new ViewModelProvider(this).get(LabelsViewModel.class);
 

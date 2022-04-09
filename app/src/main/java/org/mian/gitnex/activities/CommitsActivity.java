@@ -92,7 +92,7 @@ public class CommitsActivity extends BaseActivity {
 		swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 			swipeRefresh.setRefreshing(false);
-			loadInitial(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), branchName, resultLimit);
+			loadInitial(repository.getOwner(), repository.getName(), branchName, resultLimit);
 			adapter.notifyDataChanged();
 		}, 200));
 
@@ -102,7 +102,7 @@ public class CommitsActivity extends BaseActivity {
 			if(commitsList.size() == resultLimit || pageSize == resultLimit) {
 
 				int page = (commitsList.size() + resultLimit) / resultLimit;
-				loadMore(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), page, branchName, resultLimit);
+				loadMore(repository.getOwner(), repository.getName(), page, branchName, resultLimit);
 			}
 		}));
 
@@ -110,14 +110,14 @@ public class CommitsActivity extends BaseActivity {
 		recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 		recyclerView.setAdapter(adapter);
 
-		loadInitial(getAccount().getAuthorization(), repository.getOwner(), repository.getName(), branchName, resultLimit);
+		loadInitial(repository.getOwner(), repository.getName(), branchName, resultLimit);
 	}
 
-	private void loadInitial(String token, String repoOwner, String repoName, String branchName, int resultLimit) {
+	private void loadInitial(String repoOwner, String repoName, String branchName, int resultLimit) {
 
 		Call<List<Commit>> call = RetrofitClient.getApiInterface(ctx).repoGetAllCommits(repoOwner, repoName, branchName, null, 1, resultLimit);
 
-		call.enqueue(new Callback<List<Commit>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Commit>> call, @NonNull Response<List<Commit>> response) {
@@ -161,13 +161,13 @@ public class CommitsActivity extends BaseActivity {
 
 	}
 
-	private void loadMore(String token, String repoOwner, String repoName, final int page, String branchName, int resultLimit) {
+	private void loadMore(String repoOwner, String repoName, final int page, String branchName, int resultLimit) {
 
 		progressLoadMore.setVisibility(View.VISIBLE);
 
 		Call<List<Commit>> call = RetrofitClient.getApiInterface(ctx).repoGetAllCommits(repoOwner, repoName, branchName, null, page, resultLimit);
 
-		call.enqueue(new Callback<List<Commit>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Commit>> call, @NonNull Response<List<Commit>> response) {

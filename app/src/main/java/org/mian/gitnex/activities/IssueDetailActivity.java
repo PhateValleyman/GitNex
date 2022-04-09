@@ -146,7 +146,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			viewBinding.pullToRefresh.setRefreshing(false);
 			IssueCommentsViewModel
-				.loadIssueComments(getAccount().getAuthorization(), repoOwner, repoName, issueIndex,
+				.loadIssueComments(repoOwner, repoName, issueIndex,
 					ctx);
 
 		}, 500));
@@ -454,7 +454,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			viewBinding.scrollViewComments.post(() -> {
 
 				IssueCommentsViewModel
-					.loadIssueComments(getAccount().getAuthorization(), repoOwner, repoName, issueIndex,
+					.loadIssueComments(repoOwner, repoName, issueIndex,
 						ctx, () -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN));
 
 				commentPosted = false;
@@ -466,7 +466,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			viewBinding.scrollViewComments.post(() -> {
 
 				IssueCommentsViewModel
-					.loadIssueComments(getAccount().getAuthorization(), repoOwner, repoName, issueIndex,
+					.loadIssueComments(repoOwner, repoName, issueIndex,
 						ctx);
 				commentEdited = false;
 			});
@@ -490,7 +490,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		IssueCommentsViewModel issueCommentsModel = new ViewModelProvider(this).get(IssueCommentsViewModel.class);
 
-		issueCommentsModel.getIssueCommentList(getAccount().getAuthorization(), owner, repo, index, ctx)
+		issueCommentsModel.getIssueCommentList(owner, repo, index, ctx)
 			.observe(this, issueCommentsMain -> {
 
 				assert issueCommentsMain != null;

@@ -112,9 +112,9 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				path.remove(path.size() - 1);
 				binding.breadcrumbsView.removeLastItem();
 				if(path.size() == 0) {
-					fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef());
+					fetchDataAsync(repository.getOwner(), repository.getName(), repository.getBranchRef());
 				} else {
-					fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
+					fetchDataAsyncSub(repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
 				}
 			}
 		});
@@ -211,13 +211,13 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 	public void refresh() {
 		if(path.size() > 0) {
-			fetchDataAsyncSub(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
+			fetchDataAsyncSub(repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
 		} else {
-			fetchDataAsync(((BaseActivity) requireActivity()).getAccount().getAuthorization(), repository.getOwner(), repository.getName(), repository.getBranchRef());
+			fetchDataAsync(repository.getOwner(), repository.getName(), repository.getBranchRef());
 		}
 	}
 
-	private void fetchDataAsync(String instanceToken, String owner, String repo, String ref) {
+	private void fetchDataAsync(String owner, String repo, String ref) {
 
 		binding.recyclerView.setVisibility(View.GONE);
 		binding.progressBar.setVisibility(View.VISIBLE);
@@ -247,7 +247,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 	}
 
-	private void fetchDataAsyncSub(String instanceToken, String owner, String repo, String filesDir, String ref) {
+	private void fetchDataAsyncSub(String owner, String repo, String filesDir, String ref) {
 
 		binding.recyclerView.setVisibility(View.GONE);
 		binding.progressBar.setVisibility(View.VISIBLE);

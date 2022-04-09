@@ -22,15 +22,15 @@ public class MembersByOrgViewModel extends ViewModel {
 
     private static MutableLiveData<List<User>> membersList;
 
-    public LiveData<List<User>> getMembersList(String token, String owner, Context ctx) {
+    public LiveData<List<User>> getMembersList(String owner, Context ctx) {
 
         membersList = new MutableLiveData<>();
-        loadMembersList(token, owner, ctx);
+        loadMembersList(owner, ctx);
 
         return membersList;
     }
 
-    private static void loadMembersList(String token, String owner, Context ctx) {
+    private static void loadMembersList(String owner, Context ctx) {
 
         Call<List<User>> call = RetrofitClient
                 .getApiInterface(ctx)

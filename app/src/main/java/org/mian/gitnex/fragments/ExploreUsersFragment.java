@@ -59,14 +59,14 @@ public class ExploreUsersFragment extends Fragment {
 
 		viewBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 			viewBinding.pullToRefresh.setRefreshing(false);
-			loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), "", resultLimit);
+			loadInitial("", resultLimit);
 			adapter.notifyDataChanged();
 		}, 200));
 
 		adapter.setLoadMoreListener(() -> viewBinding.recyclerViewExploreUsers.post(() -> {
 			if(usersList.size() == resultLimit || pageSize == resultLimit) {
 				int page = (usersList.size() + resultLimit) / resultLimit;
-				loadMore(((BaseActivity) requireActivity()).getAccount().getAuthorization(), "", resultLimit, page);
+				loadMore("", resultLimit, page);
 			}
 		}));
 
@@ -76,12 +76,12 @@ public class ExploreUsersFragment extends Fragment {
 		viewBinding.recyclerViewExploreUsers.setLayoutManager(new LinearLayoutManager(context));
 		viewBinding.recyclerViewExploreUsers.setAdapter(adapter);
 
-		loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), "", resultLimit);
+		loadInitial("", resultLimit);
 
 		return viewBinding.getRoot();
 	}
 
-	private void loadInitial(String token, String searchKeyword, int resultLimit) {
+	private void loadInitial(String searchKeyword, int resultLimit) {
 
 		Call<InlineResponse2001> call = RetrofitClient
 			.getApiInterface(context).userSearch(searchKeyword, null, resultLimit, 1);
@@ -119,7 +119,7 @@ public class ExploreUsersFragment extends Fragment {
 		});
 	}
 
-	private void loadMore(String token, String searchKeyword, int resultLimit, int page) {
+	private void loadMore(String searchKeyword, int resultLimit, int page) {
 
 		viewBinding.progressBar.setVisibility(View.VISIBLE);
 		Call<InlineResponse2001> call = RetrofitClient.getApiInterface(context).userSearch(searchKeyword, null, resultLimit, page);
@@ -171,11 +171,11 @@ public class ExploreUsersFragment extends Fragment {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
 				viewBinding.progressBar.setVisibility(View.VISIBLE);
-				loadInitial(((BaseActivity) requireActivity()).getAccount().getAuthorization(), query, resultLimit);
+				loadInitial(query, resultLimit);
 				adapter.setLoadMoreListener(() -> viewBinding.recyclerViewExploreUsers.post(() -> {
 					if(usersList.size() == resultLimit || pageSize == resultLimit) {
 						int page = (usersList.size() + resultLimit) / resultLimit;
-						loadMore(((BaseActivity) requireActivity()).getAccount().getAuthorization(), query, resultLimit, page);
+						loadMore(query, resultLimit, page);
 					}
 				}));
 				searchView.setQuery(null, false);

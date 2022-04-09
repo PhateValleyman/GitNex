@@ -58,7 +58,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 	private int pageCurrentIndex = 1;
 	private int pageResultLimit;
 	private String currentFilterMode = "unread";
-	private String instanceToken;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,8 +74,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		activity = requireActivity();
 		context = getContext();
-
-		instanceToken = ((BaseActivity) requireActivity()).getAccount().getAuthorization();
 
 		pageResultLimit = Constants.getCurrentResultLimit(context);
 

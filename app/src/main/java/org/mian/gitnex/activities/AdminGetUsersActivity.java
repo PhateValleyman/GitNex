@@ -59,14 +59,14 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetLi
 
 			page = 1;
 			activityAdminGetUsersBinding.pullToRefresh.setRefreshing(false);
-			fetchDataAsync(getAccount().getAuthorization());
+			fetchDataAsync();
 			activityAdminGetUsersBinding.progressBar.setVisibility(View.VISIBLE);
 		}, 50));
 
-		fetchDataAsync(getAccount().getAuthorization());
+		fetchDataAsync();
 	};
 
-	private void fetchDataAsync(String instanceToken) {
+	private void fetchDataAsync() {
 
 		AdminGetUsersViewModel adminUsersModel = new ViewModelProvider(this).get(AdminGetUsersViewModel.class);
 

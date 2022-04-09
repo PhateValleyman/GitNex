@@ -345,7 +345,7 @@ public class CreateLabelActivity extends BaseActivity {
                         Toasty.success(ctx, getString(R.string.labelDeleteText));
 	                    if(getIntent().getStringExtra("type") != null && Objects.requireNonNull(getIntent().getStringExtra("type")).equals("org")) {
 
-	                    	OrganizationLabelsViewModel.loadOrgLabelsList(getAccount().getAuthorization(), getIntent().getStringExtra("orgName"), ctx, null, null);
+	                    	OrganizationLabelsViewModel.loadOrgLabelsList(getIntent().getStringExtra("orgName"), ctx, null, null);
 	                    }
 	                    else {
 
