@@ -118,37 +118,39 @@ public class RetrofitClient {
 
 	public static ApiInterface getApiInterface(Context context, String url, String token) {
 
-		if(!apiInterfaces.containsKey(url)) {
+		String key = token.hashCode() + "@" + url;
+		if(!apiInterfaces.containsKey(key)) {
 			synchronized(RetrofitClient.class) {
-				if(!apiInterfaces.containsKey(url)) {
+				if(!apiInterfaces.containsKey(key)) {
 
 					ApiInterface apiInterface = createRetrofit(context, url, true, token).create(ApiInterface.class);
-					apiInterfaces.put(url, apiInterface);
+					apiInterfaces.put(key, apiInterface);
 
 					return apiInterface;
 				}
 			}
 		}
 
-		return apiInterfaces.get(url);
+		return apiInterfaces.get(key);
 
 	}
 
 	public static WebApi getWebInterface(Context context, String url, String token) {
 
-		if(!webInterfaces.containsKey(url)) {
+		String key = token.hashCode() + "@" + url;
+		if(!webInterfaces.containsKey(key)) {
 			synchronized(RetrofitClient.class) {
-				if(!webInterfaces.containsKey(url)) {
+				if(!webInterfaces.containsKey(key)) {
 
 					WebApi webInterface = createRetrofit(context, url, false, token).create(WebApi.class);
-					webInterfaces.put(url, webInterface);
+					webInterfaces.put(key, webInterface);
 
 					return webInterface;
 				}
 			}
 		}
 
-		return webInterfaces.get(url);
+		return webInterfaces.get(key);
 
 	}
 
