@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class AddNewAccountActivity extends BaseActivity {
@@ -37,6 +37,7 @@ public class AddNewAccountActivity extends BaseActivity {
 	private ActivityAddNewAccountBinding viewBinding;
 
 	private String spinnerSelectedValue;
+	private Version giteaVersion;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -117,7 +118,6 @@ public class AddNewAccountActivity extends BaseActivity {
 		}
 		catch(Exception e) {
 
-			Log.e("onFailure-login", e.toString());
 			Toasty.error(ctx, getResources().getString(R.string.malformedUrl));
 		}
 
@@ -125,8 +125,8 @@ public class AddNewAccountActivity extends BaseActivity {
 
 	private void versionCheck(final String instanceUrl, final String loginToken) {
 
-		Call<ServerVersion> callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl, loginToken).getVersion();
-		callVersion.enqueue(new Callback<ServerVersion>() {
+		Call<ServerVersion> callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl, "token " + loginToken).getVersion();
+		callVersion.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull final Call<ServerVersion> callVersion, @NonNull retrofit2.Response<ServerVersion> responseVersion) {
@@ -143,7 +143,7 @@ public class AddNewAccountActivity extends BaseActivity {
 						return;
 					}
 
-					Version giteaVersion = new Version(version.getVersion());
+					giteaVersion = new Version(version.getVersion());
 
 					if(giteaVersion.less(getString(R.string.versionLow))) {
 
@@ -197,9 +197,9 @@ public class AddNewAccountActivity extends BaseActivity {
 
 	private void setupNewAccountWithToken(String instanceUrl, final String loginToken) {
 
-		Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl, loginToken).userGetCurrent();
+		Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl, "token " + loginToken).userGetCurrent();
 
-		call.enqueue(new Callback<User>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<User> call, @NonNull retrofit2.Response<User> response) {
@@ -218,11 +218,10 @@ public class AddNewAccountActivity extends BaseActivity {
 
 						if(!userAccountExists) {
 
-							long id = userAccountsApi.createNewAccount(accountName, instanceUrl, userDetails.getLogin(), loginToken, "");
+							long id = userAccountsApi.createNewAccount(accountName, instanceUrl, userDetails.getLogin(), loginToken, giteaVersion.toString());
 							UserAccount account = userAccountsApi.getAccountById((int) id);
 							AppUtil.switchToAccount(AddNewAccountActivity.this, account);
 							Toasty.success(ctx, getResources().getString(R.string.accountAddedMessage));
-							finish();
 
 						}
 						else {
@@ -230,13 +229,14 @@ public class AddNewAccountActivity extends BaseActivity {
 							if(account.isLoggedIn()) {
 								Toasty.warning(ctx, getResources().getString(R.string.accountAlreadyExistsError));
 								AppUtil.switchToAccount(ctx, account);
-							} else {
+							}
+							else {
 								userAccountsApi.updateTokenByAccountName(accountName, loginToken);
 								userAccountsApi.login(account.getAccountId());
 								AppUtil.switchToAccount(AddNewAccountActivity.this, account);
 							}
-							finish();
 						}
+						finish();
 						break;
 
 					case 401:
@@ -254,7 +254,6 @@ public class AddNewAccountActivity extends BaseActivity {
 			@Override
 			public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
 				Toasty.error(ctx, getResources().getString(R.string.genericError));
 			}
 		});
@@ -265,5 +264,4 @@ public class AddNewAccountActivity extends BaseActivity {
 
 		onClickListener = view -> finish();
 	}
-
 }

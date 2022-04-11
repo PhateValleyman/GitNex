@@ -38,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class LoginActivity extends BaseActivity {
@@ -214,7 +214,7 @@ public class LoginActivity extends BaseActivity {
 
 		if(!loginToken.equals("")) {
 
-			callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), loginToken).getVersion();
+			callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), "token " + loginToken).getVersion();
 		}
 		else {
 
@@ -229,7 +229,7 @@ public class LoginActivity extends BaseActivity {
 			}
 		}
 
-		callVersion.enqueue(new Callback<ServerVersion>() {
+		callVersion.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull final Call<ServerVersion> callVersion, @NonNull retrofit2.Response<ServerVersion> responseVersion) {
@@ -250,10 +250,8 @@ public class LoginActivity extends BaseActivity {
 
 					if(giteaVersion.less(getString(R.string.versionLow))) {
 
-						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx)
-							.setTitle(getString(R.string.versionAlertDialogHeader))
-							.setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion()))
-							.setIcon(R.drawable.ic_warning)
+						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx).setTitle(getString(R.string.versionAlertDialogHeader))
+							.setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion())).setIcon(R.drawable.ic_warning)
 							.setCancelable(true);
 
 						alertDialogBuilder.setNeutralButton(getString(R.string.cancelButton), (dialog, which) -> {
@@ -315,9 +313,9 @@ public class LoginActivity extends BaseActivity {
 
 	private void setupUsingExistingToken(final String loginToken) {
 
-		Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), loginToken).userGetCurrent();
+		Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), "token " + loginToken).userGetCurrent();
 
-		call.enqueue(new Callback<User>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<User> call, @NonNull retrofit2.Response<User> response) {
@@ -390,7 +388,7 @@ public class LoginActivity extends BaseActivity {
 			call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential).userGetTokens(loginUid, null, null);
 		}
 
-		call.enqueue(new Callback<List<AccessToken>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<AccessToken>> call, @NonNull retrofit2.Response<List<AccessToken>> response) {
@@ -485,7 +483,7 @@ public class LoginActivity extends BaseActivity {
 				.userCreateToken(loginUid, createUserToken);
 		}
 
-		callCreateToken.enqueue(new Callback<AccessToken>() {
+		callCreateToken.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<AccessToken> callCreateToken, @NonNull retrofit2.Response<AccessToken> responseCreate) {
@@ -497,8 +495,7 @@ public class LoginActivity extends BaseActivity {
 
 					if(!newToken.getSha1().equals("")) {
 
-						Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), newToken.getSha1())
-							.userGetCurrent();
+						Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), newToken.getSha1()).userGetCurrent();
 
 						call.enqueue(new Callback<User>() {
 
@@ -522,7 +519,8 @@ public class LoginActivity extends BaseActivity {
 										UserAccount account;
 										if(!userAccountExists) {
 											long accountId = userAccountsApi
-												.createNewAccount(accountName, instanceUrl.toString(), userDetails.getLogin(), newToken.getSha1(), giteaVersion.toString());
+												.createNewAccount(accountName, instanceUrl.toString(), userDetails.getLogin(), newToken.getSha1(),
+													giteaVersion.toString());
 											account = userAccountsApi.getAccountById((int) accountId);
 										}
 										else {
