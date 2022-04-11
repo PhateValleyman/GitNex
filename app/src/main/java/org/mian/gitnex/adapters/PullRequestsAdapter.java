@@ -23,6 +23,7 @@ import org.gitnex.tea4j.v2.models.PullRequest;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.ProfileActivity;
+import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
@@ -32,7 +33,6 @@ import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.contexts.IssueContext;
-import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.List;
 import java.util.Locale;
 
@@ -105,14 +105,9 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			frameLabelsDots = itemView.findViewById(R.id.frameLabelsDots);
 
 			itemView.setOnClickListener(v -> {
-				Intent intent = new IssueContext(
-					pullRequestObject,
-					new RepositoryContext(pullRequestObject.getBase().getRepo().getFullName().split("/")[0], pullRequestObject.getBase().getRepo().getName(), context)
-				)
-					.getIntent(context, IssueDetailActivity.class);
 
-				context.startActivity(intent);
-
+				Intent intentPrDetail = new IssueContext(pullRequestObject, ((RepoDetailActivity) context).repository).getIntent(context, IssueDetailActivity.class);
+				context.startActivity(intentPrDetail);
 			});
 
 			assigneeAvatar.setOnClickListener(v -> {
