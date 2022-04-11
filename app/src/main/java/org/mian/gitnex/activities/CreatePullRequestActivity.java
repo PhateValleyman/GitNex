@@ -176,7 +176,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 					MainActivity.repoCreated = true;
 					finish();
 				}
-				else if(response.code() == 409 && response.message().equals("Conflict")) {
+				else if(response.code() == 409 || response.message().equals("Conflict")) {
 
 					enableProcessButton();
 					Toasty.error(ctx, getString(R.string.prAlreadyExists));
