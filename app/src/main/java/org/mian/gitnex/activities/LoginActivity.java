@@ -201,7 +201,6 @@ public class LoginActivity extends BaseActivity {
 		}
 		catch(Exception e) {
 
-			Log.e("onFailure-login", e.toString());
 			Toasty.error(ctx, getResources().getString(R.string.malformedUrl));
 			enableProcessButton();
 		}
@@ -406,21 +405,21 @@ public class LoginActivity extends BaseActivity {
 							// this app had created an token on this instance before
 							// -> since it looks like GitNex forgot the secret we have to delete it first
 
-							Call<Void> delcall;
+							Call<Void> delToken;
 							if(loginOTP != 0) {
 
-								delcall = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential)
+								delToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential)
 									.userDeleteAccessToken(loginOTP, loginUid, String.valueOf(t.getId()));
 							}
 							else {
 
-								delcall = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential).userDeleteAccessToken(loginUid, String.valueOf(t.getId()));
+								delToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential).userDeleteAccessToken(loginUid, String.valueOf(t.getId()));
 							}
 
-							delcall.enqueue(new Callback<Void>() {
+							delToken.enqueue(new Callback<>() {
 
 								@Override
-								public void onResponse(@NonNull Call<Void> delcall, @NonNull retrofit2.Response<Void> response) {
+								public void onResponse(@NonNull Call<Void> delToken, @NonNull retrofit2.Response<Void> response) {
 
 									if(response.code() == 204) {
 
@@ -434,7 +433,7 @@ public class LoginActivity extends BaseActivity {
 								}
 
 								@Override
-								public void onFailure(@NonNull Call<Void> delcall, @NonNull Throwable t) {
+								public void onFailure(@NonNull Call<Void> delToken, @NonNull Throwable t) {
 
 									Log.e("onFailure-login", t.toString());
 									Toasty.error(ctx, getResources().getString(R.string.malformedJson));
@@ -495,9 +494,9 @@ public class LoginActivity extends BaseActivity {
 
 					if(!newToken.getSha1().equals("")) {
 
-						Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), newToken.getSha1()).userGetCurrent();
+						Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), "token " + newToken.getSha1()).userGetCurrent();
 
-						call.enqueue(new Callback<User>() {
+						call.enqueue(new Callback<>() {
 
 							@Override
 							public void onResponse(@NonNull Call<User> call, @NonNull retrofit2.Response<User> response) {
@@ -535,6 +534,7 @@ public class LoginActivity extends BaseActivity {
 										break;
 									case 401:
 
+										Log.e("Token", "token is required");
 										Toasty.error(ctx, getResources().getString(R.string.unauthorizedApiError));
 										enableProcessButton();
 										break;
@@ -548,7 +548,6 @@ public class LoginActivity extends BaseActivity {
 							@Override
 							public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
 
-								Log.e("onFailure", t.toString());
 								Toasty.error(ctx, getResources().getString(R.string.genericError));
 								enableProcessButton();
 							}
