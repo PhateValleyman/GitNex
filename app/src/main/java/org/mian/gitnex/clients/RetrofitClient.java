@@ -16,6 +16,7 @@ import org.gitnex.tea4j.v2.apis.custom.CustomApi;
 import org.gitnex.tea4j.v2.apis.custom.OTPApi;
 import org.gitnex.tea4j.v2.apis.custom.WebApi;
 import org.gitnex.tea4j.v2.auth.ApiKeyAuth;
+import org.jetbrains.annotations.NotNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.helpers.AppUtil;
@@ -23,8 +24,15 @@ import org.mian.gitnex.helpers.FilesData;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.ssl.MemorizingTrustManager;
 import java.io.File;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.security.SecureRandom;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -32,6 +40,7 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -91,6 +100,7 @@ public class RetrofitClient {
 				.addConverterFactory(ScalarsConverterFactory.create())
 				.addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 					.create()))
+				.addConverterFactory(DateQueryConverterFactory.create())
 				.build();
 
 		}
@@ -156,5 +166,37 @@ public class RetrofitClient {
 
 	public interface ApiInterface extends AdminApi, OrganizationApi, IssueApi, RepositoryApi, MiscellaneousApi, NotificationApi,
 		UserApi, SettingsApi, OTPApi, CustomApi, PackageApi {}
+
+	private static class DateQueryConverterFactory extends Converter.Factory {
+		public static DateQueryConverterFactory create() {
+			return new DateQueryConverterFactory();
+		}
+
+		@Override
+		public Converter<?, String> stringConverter(@NotNull Type type, @NotNull Annotation[] annotations, @NotNull Retrofit retrofit) {
+			if (type == Date.class) {
+				return DateQueryConverter.INSTANCE;
+			}
+			return null;
+		}
+
+		private static final class DateQueryConverter implements Converter<Date, String> {
+			static final DateQueryConverter INSTANCE = new DateQueryConverter();
+
+			private static final ThreadLocal<DateFormat> DF = new ThreadLocal<>() {
+
+				@Override
+				public DateFormat initialValue() {
+
+					return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+				}
+			};
+
+			@Override
+			public String convert(@NotNull Date date) {
+				return Objects.requireNonNull(DF.get()).format(date);
+			}
+		}
+	}
 
 }
