@@ -20,7 +20,7 @@ import retrofit2.Response;
 
 public class IssueCommentsViewModel extends ViewModel {
 
-    private static MutableLiveData<List<Comment>> issueComments;
+    private MutableLiveData<List<Comment>> issueComments;
 
     public LiveData<List<Comment>> getIssueCommentList(String owner, String repo, int index, Context ctx) {
 
@@ -30,11 +30,11 @@ public class IssueCommentsViewModel extends ViewModel {
         return issueComments;
     }
 
-	public static void loadIssueComments(String owner, String repo, int index, Context ctx) {
+	public void loadIssueComments(String owner, String repo, int index, Context ctx) {
 		loadIssueComments(owner, repo, index, ctx, null);
 	}
 
-    public static void loadIssueComments(String owner, String repo, int index, Context ctx, Runnable onLoadingFinished) {
+    public void loadIssueComments(String owner, String repo, int index, Context ctx, Runnable onLoadingFinished) {
 
         Call<List<Comment>> call = RetrofitClient
                 .getApiInterface(ctx)

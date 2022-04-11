@@ -89,6 +89,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	public boolean commentEdited = false;
 	public boolean commentPosted = false;
 
+	private IssueCommentsViewModel issueCommentsModel;
+
 	public ActivityResultLauncher<Intent> editIssueLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
 		result -> {
 			if(result.getResultCode() == 200) {
@@ -123,6 +125,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		Objects.requireNonNull(getSupportActionBar()).setTitle(repoName);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+		issueCommentsModel = new ViewModelProvider(this).get(IssueCommentsViewModel.class);
+
 		viewBinding.recyclerView.setHasFixedSize(true);
 		viewBinding.recyclerView.setNestedScrollingEnabled(false);
 		viewBinding.recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
@@ -145,7 +149,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		viewBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 			viewBinding.pullToRefresh.setRefreshing(false);
-			IssueCommentsViewModel
+			issueCommentsModel
 				.loadIssueComments(repoOwner, repoName, issueIndex,
 					ctx);
 
@@ -358,7 +362,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			.getApiInterface(ctx)
 			.issueReplaceLabels(repoOwner, repoName, (long) issueIndex, patchIssueLabels);
 
-		call.enqueue(new Callback<List<Label>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Label>> call, @NonNull retrofit2.Response<List<Label>> response) {
@@ -379,8 +383,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				else if(response.code() == 401) {
 
 					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-						getResources().getString(R.string.alertDialogTokenRevokedMessage),
-						getResources().getString(R.string.cancelButton),
+						getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton),
 						getResources().getString(R.string.navLogout));
 				}
 				else if(response.code() == 403) {
@@ -400,6 +403,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			@Override
 			public void onFailure(@NonNull Call<List<Label>> call, @NonNull Throwable t) {
+
 				Log.e("onFailure", t.toString());
 			}
 		});
@@ -453,7 +457,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			viewBinding.scrollViewComments.post(() -> {
 
-				IssueCommentsViewModel
+				issueCommentsModel
 					.loadIssueComments(repoOwner, repoName, issueIndex,
 						ctx, () -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN));
 
@@ -465,7 +469,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			viewBinding.scrollViewComments.post(() -> {
 
-				IssueCommentsViewModel
+				issueCommentsModel
 					.loadIssueComments(repoOwner, repoName, issueIndex,
 						ctx);
 				commentEdited = false;
@@ -487,8 +491,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	}
 
 	private void fetchDataAsync(String owner, String repo, int index) {
-
-		IssueCommentsViewModel issueCommentsModel = new ViewModelProvider(this).get(IssueCommentsViewModel.class);
 
 		issueCommentsModel.getIssueCommentList(owner, repo, index, ctx)
 			.observe(this, issueCommentsMain -> {
