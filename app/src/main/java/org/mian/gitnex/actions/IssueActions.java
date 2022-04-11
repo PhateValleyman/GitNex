@@ -6,6 +6,7 @@ import org.gitnex.tea4j.v2.models.*;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.IssueDetailActivity;
+import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.IssuesFragment;
 import org.mian.gitnex.fragments.PullRequestsFragment;
@@ -100,6 +101,7 @@ public class IssueActions {
 
 						((IssueDetailActivity) ctx).singleIssueUpdate = true;
 						((IssueDetailActivity) ctx).onResume();
+						RepoDetailActivity.updateRepo = true;
 					}
 				}
 				else if(response.code() == 401) {

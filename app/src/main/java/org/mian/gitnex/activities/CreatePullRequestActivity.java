@@ -172,7 +172,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 				if(response.code() == 201) {
 
 					Toasty.success(ctx, getString(R.string.prCreateSuccess));
-					RepoDetailActivity.updateStatsPR = true;
+					RepoDetailActivity.updateRepo = true;
 					MainActivity.repoCreated = true;
 					finish();
 				}

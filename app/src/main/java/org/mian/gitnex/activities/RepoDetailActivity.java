@@ -78,8 +78,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 	public RepositoryContext repository;
 
-	public static boolean updateStatsIssues = false;
-	public static boolean updateStatsPR = false;
+	public static boolean updateRepo = false;
 
 	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
 		result -> {
@@ -87,7 +86,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("updateReleases", false)) {
 					if(fragmentRefreshListenerReleases != null) fragmentRefreshListenerReleases.onRefresh(null);
-					textViewBadgeRelease.setText(String.valueOf(Integer.parseInt(textViewBadgeRelease.getText().toString()) + 1));
+					//textViewBadgeRelease.setText(String.valueOf(Integer.parseInt(textViewBadgeRelease.getText().toString()) + 1));
+					repository.removeRepository();
+					getRepoInfo(repository.getOwner(), repository.getName());
 				}
 			}
 		});
@@ -170,13 +171,11 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	public void onResume() {
 		super.onResume();
 		repository.checkAccountSwitch(this);
-		if(updateStatsIssues) {
-			textViewBadgeIssue.setText(String.valueOf(Integer.parseInt(textViewBadgeIssue.getText().toString()) + 1));
-			updateStatsIssues = false;
-		}
-		if(updateStatsPR) {
-			textViewBadgePull.setText(String.valueOf(Integer.parseInt(textViewBadgePull.getText().toString()) + 1));
-			updateStatsPR = false;
+		if(updateRepo) {
+			//textViewBadgeIssue.setText(String.valueOf(Integer.parseInt(textViewBadgeIssue.getText().toString()) + 1));
+			updateRepo = false;
+			repository.removeRepository();
+			getRepoInfo(repository.getOwner(), repository.getName());
 		}
 	}
 
@@ -620,24 +619,31 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 		}
 
-		mViewPager = findViewById(R.id.container);
-		mViewPager.setVisibility(View.VISIBLE);
+		if(mViewPager == null) {
+			mViewPager = findViewById(R.id.container);
+			mViewPager.setVisibility(View.VISIBLE);
 
-		mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-		tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-		SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-		mViewPager.setAdapter(mSectionsPagerAdapter);
+			mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+			tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+			SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+			mViewPager.setAdapter(mSectionsPagerAdapter);
+		}
 
 		if(tinyDB.getBoolean("enableCounterBadges", true)) {
 			@SuppressLint("InflateParams") View tabHeader2 = LayoutInflater.from(ctx).inflate(R.layout.badge_issue, null);
-			textViewBadgeIssue = tabHeader2.findViewById(R.id.counterBadgeIssue);
+			if(textViewBadgeIssue == null) {
+				textViewBadgeIssue = tabHeader2.findViewById(R.id.counterBadgeIssue);
+			}
 
 			@SuppressLint("InflateParams") View tabHeader4 = LayoutInflater.from(ctx).inflate(R.layout.badge_pull, null);
-			textViewBadgePull = tabHeader4.findViewById(R.id.counterBadgePull);
+			if(textViewBadgePull == null) {
+				textViewBadgePull = tabHeader4.findViewById(R.id.counterBadgePull);
+			}
 
 			@SuppressLint("InflateParams") View tabHeader6 = LayoutInflater.from(ctx).inflate(R.layout.badge_release, null);
-			textViewBadgeRelease = tabHeader6.findViewById(R.id.counterBadgeRelease);
+			if(textViewBadgeRelease == null) {
+				textViewBadgeRelease = tabHeader6.findViewById(R.id.counterBadgeRelease);
+			}
 
 			ColorStateList textColor = tabLayout.getTabTextColors();
 
@@ -648,7 +654,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				TabLayout.Tab tabOpenIssues = tabLayout.getTabAt(2);
 				assert tabOpenIssues != null;
 
-				tabOpenIssues.setCustomView(tabHeader2);
+				if(tabOpenIssues.getCustomView() == null) {
+					tabOpenIssues.setCustomView(tabHeader2);
+				}
 				TextView openIssueTabView = Objects.requireNonNull(tabOpenIssues.getCustomView()).findViewById(R.id.counterBadgeIssueText);
 				openIssueTabView.setTextColor(textColor);
 			} else {
@@ -659,9 +667,12 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				textViewBadgePull.setVisibility(View.VISIBLE);
 				textViewBadgePull.setText(String.valueOf(repository.getRepository().getOpenPrCounter()));
 
-				Objects.requireNonNull(tabLayout.getTabAt(3)).setCustomView(tabHeader4);
 				TabLayout.Tab tabOpenPulls = tabLayout.getTabAt(3);
-				assert tabOpenPulls != null; // FIXME This should be cleaned up
+				assert tabOpenPulls != null;
+
+				if(tabOpenPulls.getCustomView() == null) {
+					tabOpenPulls.setCustomView(tabHeader4);
+				}
 				TextView openPullTabView = Objects.requireNonNull(tabOpenPulls.getCustomView()).findViewById(R.id.counterBadgePullText);
 				openPullTabView.setTextColor(textColor);
 			} else {
@@ -672,9 +683,12 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				textViewBadgeRelease.setVisibility(View.VISIBLE);
 				textViewBadgeRelease.setText(String.valueOf(repository.getRepository().getReleaseCounter()));
 
-				Objects.requireNonNull(tabLayout.getTabAt(4)).setCustomView(tabHeader6);
+
 				TabLayout.Tab tabOpenRelease = tabLayout.getTabAt(4);
-				assert tabOpenRelease != null; // FIXME This should be cleaned up
+				assert tabOpenRelease != null;
+				if(tabOpenRelease.getCustomView() == null) {
+					tabOpenRelease.setCustomView(tabHeader6);
+				}
 				TextView openReleaseTabView = Objects.requireNonNull(tabOpenRelease.getCustomView()).findViewById(R.id.counterBadgeReleaseText);
 				openReleaseTabView.setTextColor(textColor);
 			} else {
