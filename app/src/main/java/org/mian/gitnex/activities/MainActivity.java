@@ -205,7 +205,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				RecyclerView navRecyclerViewUserAccounts = hView.findViewById(R.id.userAccounts);
 				UserAccountsNavAdapter adapterUserAccounts = new UserAccountsNavAdapter(ctx, userAccountsList, drawer);
 
-				userAccountsApi.getAllLoggedInAccounts().observe((AppCompatActivity) ctx, userAccounts -> {
+				userAccountsApi.getAllAccounts().observe((AppCompatActivity) ctx, userAccounts -> {
 					if(userAccounts.size() > 0) {
 						userAccountsList.clear();
 						userAccountsList.addAll(userAccounts);

@@ -2,7 +2,6 @@ package org.mian.gitnex.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -364,8 +363,7 @@ public class LoginActivity extends BaseActivity {
 			@Override
 			public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
 
-				Log.e("onFailure", t.toString());
-				Toasty.error(ctx, getResources().getString(R.string.genericError));
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
 				enableProcessButton();
 			}
 		});
@@ -435,7 +433,6 @@ public class LoginActivity extends BaseActivity {
 								@Override
 								public void onFailure(@NonNull Call<Void> delToken, @NonNull Throwable t) {
 
-									Log.e("onFailure-login", t.toString());
 									Toasty.error(ctx, getResources().getString(R.string.malformedJson));
 									enableProcessButton();
 								}
@@ -456,7 +453,6 @@ public class LoginActivity extends BaseActivity {
 			@Override
 			public void onFailure(@NonNull Call<List<AccessToken>> call, @NonNull Throwable t) {
 
-				Log.e("onFailure-login", t.toString());
 				Toasty.error(ctx, getResources().getString(R.string.malformedJson));
 				enableProcessButton();
 			}
@@ -534,7 +530,6 @@ public class LoginActivity extends BaseActivity {
 										break;
 									case 401:
 
-										Log.e("Token", "token is required");
 										Toasty.error(ctx, getResources().getString(R.string.unauthorizedApiError));
 										enableProcessButton();
 										break;
@@ -564,7 +559,7 @@ public class LoginActivity extends BaseActivity {
 			@Override
 			public void onFailure(@NonNull Call<AccessToken> createUserToken, @NonNull Throwable t) {
 
-				Log.e("onFailure-token", t.toString());
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
 			}
 		});
 	}
