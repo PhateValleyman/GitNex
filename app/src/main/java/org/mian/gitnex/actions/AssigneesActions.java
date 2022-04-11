@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import org.gitnex.tea4j.v2.models.Issue;
 import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.AssigneesListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.CustomAssigneesSelectionDialogBinding;

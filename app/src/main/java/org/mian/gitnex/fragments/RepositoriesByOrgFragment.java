@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.ReposListAdapter;
 import org.mian.gitnex.databinding.FragmentRepositoriesBinding;

@@ -1,7 +1,6 @@
 package org.mian.gitnex.actions;
 
 import android.content.Context;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.v2.models.EditMilestoneOption;
 import org.gitnex.tea4j.v2.models.Milestone;

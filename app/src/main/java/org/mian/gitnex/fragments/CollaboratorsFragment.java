@@ -10,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.CollaboratorsAdapter;
 import org.mian.gitnex.databinding.FragmentCollaboratorsBinding;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;

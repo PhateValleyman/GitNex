@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.v2.models.InlineResponse2001;
 import org.gitnex.tea4j.v2.models.User;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.UsersAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentExploreUsersBinding;

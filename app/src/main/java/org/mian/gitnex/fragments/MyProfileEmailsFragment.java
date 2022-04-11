@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.adapters.MyProfileEmailsAdapter;
 import org.mian.gitnex.databinding.FragmentProfileEmailsBinding;
 import org.mian.gitnex.viewmodels.ProfileEmailsViewModel;

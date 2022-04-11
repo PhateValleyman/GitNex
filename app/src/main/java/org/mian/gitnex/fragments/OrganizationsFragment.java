@@ -18,7 +18,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.CreateOrganizationActivity;
 import org.mian.gitnex.activities.MainActivity;
 import org.mian.gitnex.adapters.OrganizationsListAdapter;

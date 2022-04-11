@@ -21,7 +21,6 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityAddNewTeamMemberBinding;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

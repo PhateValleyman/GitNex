@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.apache.commons.lang3.StringUtils;
 import org.gitnex.tea4j.v2.models.NotificationThread;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.IssueDetailActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.NotificationsAdapter;

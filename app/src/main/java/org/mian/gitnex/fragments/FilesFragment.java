@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.v2.models.ContentsResponse;
 import org.mian.gitnex.R;
-import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.FileViewActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.adapters.FilesAdapter;
