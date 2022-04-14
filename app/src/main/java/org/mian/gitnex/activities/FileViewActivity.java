@@ -54,7 +54,14 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 			if(result.getResultCode() == 200) {
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("fileModified", false)) {
-					getSingleFileContents(repository.getOwner(), repository.getName(), file.getPath(), repository.getBranchRef());
+					switch(result.getData().getIntExtra("fileAction", CreateFileActivity.FILE_ACTION_EDIT)) {
+						case CreateFileActivity.FILE_ACTION_CREATE:
+						case CreateFileActivity.FILE_ACTION_EDIT:
+							getSingleFileContents(repository.getOwner(), repository.getName(), file.getPath(), repository.getBranchRef());
+							break;
+						default:
+							finish();
+					}
 				}
 			}
 		});

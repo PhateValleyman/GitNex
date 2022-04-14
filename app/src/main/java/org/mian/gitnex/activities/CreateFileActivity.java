@@ -201,6 +201,7 @@ public class CreateFileActivity extends BaseActivity {
 			            Toasty.success(ctx, getString(R.string.newFileSuccessMessage));
 			            Intent result = new Intent();
 			            result.putExtra("fileModified", true);
+						result.putExtra("fileAction", fileAction);
 			            setResult(200, result);
 			            finish();
 		            	break;
@@ -264,6 +265,7 @@ public class CreateFileActivity extends BaseActivity {
 						Toasty.info(ctx, getString(R.string.deleteFileMessage, repository.getBranchRef()));
 						Intent result = new Intent();
 						result.putExtra("fileModified", true);
+						result.putExtra("fileAction", fileAction);
 						setResult(200, result);
 						finish();
 						break;
@@ -327,6 +329,7 @@ public class CreateFileActivity extends BaseActivity {
 						Toasty.info(ctx, getString(R.string.editFileMessage, branchName));
 						Intent result = new Intent();
 						result.putExtra("fileModified", true);
+						result.putExtra("fileAction", fileAction);
 						setResult(200, result);
 						finish();
 						break;
