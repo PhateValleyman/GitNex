@@ -23,6 +23,7 @@ import org.mian.gitnex.helpers.UrlHelper;
 import org.mian.gitnex.helpers.Version;
 import org.mian.gitnex.structs.Protocol;
 import java.net.URI;
+import java.util.Objects;
 import io.mikael.urlbuilder.UrlBuilder;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -214,7 +215,7 @@ public class AddNewAccountActivity extends BaseActivity {
 						// insert new account to db if does not exist
 						String accountName = userDetails.getLogin() + "@" + instanceUrl;
 						UserAccountsApi userAccountsApi = BaseApi.getInstance(ctx, UserAccountsApi.class);
-						boolean userAccountExists = userAccountsApi.userAccountExists(accountName);
+						boolean userAccountExists = Objects.requireNonNull(userAccountsApi).userAccountExists(accountName);
 
 						if(!userAccountExists) {
 
@@ -222,7 +223,8 @@ public class AddNewAccountActivity extends BaseActivity {
 							UserAccount account = userAccountsApi.getAccountById((int) id);
 							AppUtil.switchToAccount(AddNewAccountActivity.this, account);
 							Toasty.success(ctx, getResources().getString(R.string.accountAddedMessage));
-
+							MainActivity.refActivity = true;
+							finish();
 						}
 						else {
 							UserAccount account = userAccountsApi.getAccountByName(accountName);

@@ -68,6 +68,7 @@ import retrofit2.Callback;
 @SuppressWarnings("ConstantConditions")
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomSheetListener {
 
+	public static boolean refActivity = false;
 	public static boolean repoCreated = false;
 
 	private DrawerLayout drawer;
@@ -451,6 +452,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 			ChangeLog changelogDialog = new ChangeLog(this);
 			changelogDialog.showDialog();
+		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		if(refActivity) {
+			this.recreate();
+			this.overridePendingTransition(0, 0);
+			refActivity = false;
 		}
 	}
 
