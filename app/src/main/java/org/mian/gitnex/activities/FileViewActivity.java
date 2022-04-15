@@ -303,7 +303,7 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 				intent.putExtra("fileSha", file.getSha());
 				intent.putExtra("fileContents", binding.contents.getContent());
 
-				ctx.startActivity(intent);
+				editFileLauncher.launch(intent);
 
 			} else {
 				Toasty.error(ctx, getString(R.string.fileTypeCannotBeEdited));
