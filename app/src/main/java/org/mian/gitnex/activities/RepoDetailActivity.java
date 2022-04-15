@@ -405,8 +405,13 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 					for(int i = 0; i < response.body().size(); i++) {
 						Milestone milestones = response.body().get(i);
 						milestonesList.add(milestones.getTitle());
-						if(repository.getIssueMilestoneFilterName().equals(milestones.getTitle())) {
-							selectedMilestone = i;
+					}
+
+					for(int j = 0; j < milestonesList.size(); j++) {
+						if(repository.getIssueMilestoneFilterName() != null) {
+							if(repository.getIssueMilestoneFilterName().equals(milestonesList.get(j))) {
+								selectedMilestone = j;
+							}
 						}
 					}
 
@@ -415,7 +420,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 					pBuilder.setSingleChoiceItems(milestonesList.toArray(new String[0]), selectedMilestone, (dialogInterface, i) -> {
 
-						repository.setIssueMilestoneFilterName(response.body().get(i).getTitle());
+						repository.setIssueMilestoneFilterName(milestonesList.get(i));
 
 						if(getFragmentRefreshListenerFilterIssuesByMilestone() != null) {
 							getFragmentRefreshListenerFilterIssuesByMilestone().onRefresh(milestonesList.get(i));

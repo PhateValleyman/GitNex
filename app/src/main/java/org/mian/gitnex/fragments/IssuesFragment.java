@@ -80,7 +80,7 @@ public class IssuesFragment extends Fragment {
 
 		fragmentIssuesBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 			fragmentIssuesBinding.pullToRefresh.setRefreshing(false);
-			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(), "");
+			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName());
 			adapter.notifyDataChanged();
 		}, 200));
 
@@ -88,7 +88,7 @@ public class IssuesFragment extends Fragment {
 		adapter.setLoadMoreListener(() -> fragmentIssuesBinding.recyclerView.post(() -> {
 			if(issuesList.size() == resultLimit || pageSize == resultLimit) {
 				int page = (issuesList.size() + resultLimit) / resultLimit;
-				loadMore(repository.getOwner(), repository.getName(), page, resultLimit, requestType, repository.getIssueState().toString(), "");
+				loadMore(repository.getOwner(), repository.getName(), page, resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName());
 			}
 		}));
 
