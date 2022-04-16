@@ -24,6 +24,7 @@ import org.mian.gitnex.adapters.LabelsListAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityCreatePrBinding;
 import org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding;
+import org.mian.gitnex.fragments.PullRequestsFragment;
 import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
@@ -182,6 +183,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 					Toasty.success(ctx, getString(R.string.prCreateSuccess));
 					RepoDetailActivity.updateRepo = true;
+					PullRequestsFragment.resumePullRequests = true;
 					MainActivity.repoCreated = true;
 					finish();
 				}

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,7 +60,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class RepoDetailActivity extends BaseActivity implements BottomSheetListener {
@@ -91,7 +90,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("updateReleases", false)) {
 					if(fragmentRefreshListenerReleases != null) fragmentRefreshListenerReleases.onRefresh(null);
-					//textViewBadgeRelease.setText(String.valueOf(Integer.parseInt(textViewBadgeRelease.getText().toString()) + 1));
 					repository.removeRepository();
 					getRepoInfo(repository.getOwner(), repository.getName());
 				}
@@ -127,8 +125,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				}
 			}
 		});
-
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -177,7 +173,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		super.onResume();
 		repository.checkAccountSwitch(this);
 		if(updateRepo) {
-			//textViewBadgeIssue.setText(String.valueOf(Integer.parseInt(textViewBadgeIssue.getText().toString()) + 1));
 			updateRepo = false;
 			repository.removeRepository();
 			getRepoInfo(repository.getOwner(), repository.getName());
@@ -435,9 +430,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			@Override
 			public void onFailure(@NonNull Call<List<Milestone>> call, @NonNull Throwable t) {
-
 				progressDialog.hide();
-				Log.e("onFailure", t.toString());
 			}
 		});
 	}
@@ -495,9 +488,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			@Override
 			public void onFailure(@NonNull Call<List<Branch>> call, @NonNull Throwable t) {
-
 				progressDialog.hide();
-				Log.e("onFailure", t.toString());
 			}
 		});
 	}
@@ -580,7 +571,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				}
 				else {
 					Toasty.error(ctx, getString(R.string.genericError));
-					Log.e("onFailure", String.valueOf(response.code()));
 					finish();
 				}
 			}
@@ -589,12 +579,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			public void onFailure(@NonNull Call<Repository> call, @NonNull Throwable t) {
 
 				Toasty.error(ctx, getString(R.string.genericError));
-				Log.e("onFailure", t.toString());
 				finish();
 			}
-
 		});
-
 	}
 
 	private void initWithRepo() {
@@ -807,11 +794,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			@Override
 			public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-
-				Log.e("onFailure", t.toString());
 			}
 		});
-
 	}
 
 	private void checkRepositoryWatchStatus(final String owner, String repo) {
@@ -833,11 +817,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			@Override
 			public void onFailure(@NonNull Call<WatchInfo> call, @NonNull Throwable t) {
-
-				Log.e("onFailure", t.toString());
 			}
 		});
-
 	}
 
 	// Issues milestone filter interface
