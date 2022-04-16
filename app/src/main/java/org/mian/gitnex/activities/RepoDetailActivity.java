@@ -83,6 +83,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	public RepositoryContext repository;
 
 	public static boolean updateRepo = false;
+	private Dialog progressDialog;
 
 	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
 		result -> {
@@ -376,7 +377,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 	private void filterIssuesByMilestone() {
 
-		Dialog progressDialog = new Dialog(this);
+		progressDialog = new Dialog(this);
 		progressDialog.setContentView(R.layout.custom_progress_loader);
 		progressDialog.show();
 
@@ -435,9 +436,16 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		});
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+
+		progressDialog.dismiss();
+	}
+
 	private void chooseBranch() {
 
-		Dialog progressDialog = new Dialog(this);
+		progressDialog = new Dialog(this);
 		progressDialog.setCancelable(false);
 		progressDialog.setContentView(R.layout.custom_progress_loader);
 		progressDialog.show();
