@@ -440,7 +440,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	public void onDestroy() {
 		super.onDestroy();
 
-		progressDialog.dismiss();
+		if(progressDialog != null) {
+			progressDialog.dismiss();
+		}
 	}
 
 	private void chooseBranch() {
