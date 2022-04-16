@@ -33,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class CreateReleaseActivity extends BaseActivity {
@@ -182,9 +182,6 @@ public class CreateReleaseActivity extends BaseActivity {
 			    enableProcessButton();
 		    }
 	    });
-
-
-
     }
 
     private final View.OnClickListener createReleaseListener = v -> processNewRelease();
@@ -232,6 +229,7 @@ public class CreateReleaseActivity extends BaseActivity {
 	    String selectedBranch, boolean newReleaseType, boolean newReleaseDraft) {
 
         CreateReleaseOption createReleaseJson = new CreateReleaseOption();
+	    createReleaseJson.setName(newReleaseTitle);
 		createReleaseJson.setTagName(newReleaseTagName);
 		createReleaseJson.setBody(newReleaseContent);
 		createReleaseJson.setDraft(newReleaseDraft);
@@ -242,50 +240,47 @@ public class CreateReleaseActivity extends BaseActivity {
                 .getApiInterface(ctx)
                 .repoCreateRelease(repoOwner, repoName, createReleaseJson);
 
-        call.enqueue(new Callback<Release>() {
+        call.enqueue(new Callback<>() {
 
-            @Override
-            public void onResponse(@NonNull Call<Release> call, @NonNull retrofit2.Response<Release> response) {
+	        @Override
+	        public void onResponse(@NonNull Call<Release> call, @NonNull retrofit2.Response<Release> response) {
 
-                if (response.code() == 201) {
+		        if(response.code() == 201) {
 
-                    Intent result = new Intent();
-	                result.putExtra("updateReleases", true);
-	                setResult(201, result);
-                    Toasty.success(ctx, getString(R.string.releaseCreatedText));
-                    finish();
-                }
-                else if(response.code() == 401) {
+			        Intent result = new Intent();
+			        result.putExtra("updateReleases", true);
+			        setResult(201, result);
+			        Toasty.success(ctx, getString(R.string.releaseCreatedText));
+			        finish();
+		        }
+		        else if(response.code() == 401) {
 
-                    enableProcessButton();
-                     AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                             ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                             ctx.getResources().getString(R.string.cancelButton),
-                             ctx.getResources().getString(R.string.navLogout));
-                }
-                else if(response.code() == 403) {
+			        enableProcessButton();
+			        AlertDialogs.authorizationTokenRevokedDialog(ctx, ctx.getResources().getString(R.string.alertDialogTokenRevokedTitle),
+				        ctx.getResources().getString(R.string.alertDialogTokenRevokedMessage), ctx.getResources().getString(R.string.cancelButton),
+				        ctx.getResources().getString(R.string.navLogout));
+		        }
+		        else if(response.code() == 403) {
 
-                    enableProcessButton();
-                    Toasty.error(ctx, ctx.getString(R.string.authorizeError));
-                }
-                else if(response.code() == 404) {
+			        enableProcessButton();
+			        Toasty.error(ctx, ctx.getString(R.string.authorizeError));
+		        }
+		        else if(response.code() == 404) {
 
-                    enableProcessButton();
-                    Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
-                }
-                else {
+			        enableProcessButton();
+			        Toasty.warning(ctx, ctx.getString(R.string.apiNotFound));
+		        }
+		        else {
 
-                    enableProcessButton();
-                    Toasty.error(ctx, ctx.getString(R.string.genericError));
-                }
-            }
+			        enableProcessButton();
+			        Toasty.error(ctx, ctx.getString(R.string.genericError));
+		        }
+	        }
 
-            @Override
-            public void onFailure(@NonNull Call<Release> call, @NonNull Throwable t) {
-
-                Log.e("onFailure", t.toString());
-                enableProcessButton();
-            }
+	        @Override
+	        public void onFailure(@NonNull Call<Release> call, @NonNull Throwable t) {
+		        enableProcessButton();
+	        }
         });
 
     }
@@ -296,48 +291,41 @@ public class CreateReleaseActivity extends BaseActivity {
                 .getApiInterface(ctx)
                 .repoListBranches(repoOwner, repoName, null, null);
 
-        call.enqueue(new Callback<List<Branch>>() {
+        call.enqueue(new Callback<>() {
 
-            @Override
-            public void onResponse(@NonNull Call<List<Branch>> call, @NonNull retrofit2.Response<List<Branch>> response) {
+	        @Override
+	        public void onResponse(@NonNull Call<List<Branch>> call, @NonNull retrofit2.Response<List<Branch>> response) {
 
-                if(response.isSuccessful()) {
+		        if(response.isSuccessful()) {
 
-                    if(response.code() == 200) {
+			        if(response.code() == 200) {
 
-                        List<Branch> branchesList_ = response.body();
+				        List<Branch> branchesList_ = response.body();
 
-                        assert branchesList_ != null;
-                        for(Branch i : branchesList_) {
-	                        branchesList.add(i.getName());
-                        }
+				        assert branchesList_ != null;
+				        for(Branch i : branchesList_) {
+					        branchesList.add(i.getName());
+				        }
 
-	                    ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateReleaseActivity.this,
-		                    R.layout.list_spinner_items, branchesList);
+				        ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateReleaseActivity.this, R.layout.list_spinner_items, branchesList);
 
-                        releaseBranch.setAdapter(adapter);
-                        enableProcessButton();
+				        releaseBranch.setAdapter(adapter);
+				        enableProcessButton();
 
-	                    releaseBranch.setOnItemClickListener ((parent, view, position, id) ->
-		                    selectedBranch = branchesList.get(position)
-	                    );
-                    }
-                }
-                else if(response.code() == 401) {
+				        releaseBranch.setOnItemClickListener((parent, view, position, id) -> selectedBranch = branchesList.get(position));
+			        }
+		        }
+		        else if(response.code() == 401) {
 
-                    AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-                            getResources().getString(R.string.alertDialogTokenRevokedMessage),
-                            getResources().getString(R.string.cancelButton),
-                            getResources().getString(R.string.navLogout));
-                }
+			        AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage),
+				        getResources().getString(R.string.cancelButton), getResources().getString(R.string.navLogout));
+		        }
 
-            }
+	        }
 
-            @Override
-            public void onFailure(@NonNull Call<List<Branch>> call, @NonNull Throwable t) {
-
-                Log.e("onFailure", t.toString());
-            }
+	        @Override
+	        public void onFailure(@NonNull Call<List<Branch>> call, @NonNull Throwable t) {
+	        }
         });
 
     }
@@ -362,5 +350,4 @@ public class CreateReleaseActivity extends BaseActivity {
 		super.onResume();
 		repository.checkAccountSwitch(this);
 	}
-
 }

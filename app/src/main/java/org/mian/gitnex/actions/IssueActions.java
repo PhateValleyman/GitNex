@@ -96,11 +96,21 @@ public class IssueActions {
 							IssuesFragment.resumeIssues = issue.getIssue().getPullRequest() == null;
 							PullRequestsFragment.resumePullRequests = issue.getIssue().getPullRequest() != null;
 						}
-						if(issueState.equals("closed")) {
-							Toasty.success(ctx, ctx.getString(R.string.issueStateClosed));
+						if(issue.getIssueType().equals("Pull")) {
+							if(issueState.equals("closed")) {
+								Toasty.success(ctx, ctx.getString(R.string.prClosed));
+							}
+							else if(issueState.equals("open")) {
+								Toasty.success(ctx, ctx.getString(R.string.prReopened));
+							}
 						}
-						else if(issueState.equals("open")) {
-							Toasty.success(ctx, ctx.getString(R.string.issueStateReopened));
+						else {
+							if(issueState.equals("closed")) {
+								Toasty.success(ctx, ctx.getString(R.string.issueStateClosed));
+							}
+							else if(issueState.equals("open")) {
+								Toasty.success(ctx, ctx.getString(R.string.issueStateReopened));
+							}
 						}
 
 						((IssueDetailActivity) ctx).singleIssueUpdate = true;

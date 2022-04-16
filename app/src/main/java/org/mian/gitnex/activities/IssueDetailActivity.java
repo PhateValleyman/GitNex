@@ -877,14 +877,13 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			@Override
 			public void onFailure(@NonNull Call<PullRequest> call, @NonNull Throwable t) {
-
 			}
 		});
 	}
 
 	private void getRepoInfo() {
 		Call<Repository> call = RetrofitClient.getApiInterface(ctx).repoGet(issue.getRepository().getOwner(), issue.getRepository().getName());
-		call.enqueue(new Callback<Repository>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<Repository> call, @NonNull retrofit2.Response<Repository> response) {
@@ -897,18 +896,14 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				}
 				else {
 					Toasty.error(ctx, getString(R.string.genericError));
-					Log.e("onFailure", String.valueOf(response.code()));
 				}
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<Repository> call, @NonNull Throwable t) {
+
 				Toasty.error(ctx, getString(R.string.genericError));
-				Log.e("onFailure", t.toString());
 			}
-
 		});
-
 	}
-
 }

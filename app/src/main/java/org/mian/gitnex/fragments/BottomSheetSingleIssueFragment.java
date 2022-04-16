@@ -30,7 +30,7 @@ import org.mian.gitnex.views.ReactionSpinner;
 import java.util.Objects;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
@@ -112,7 +112,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 				if(!userIsCreator && !canPush) {
 					binding.editIssue.setVisibility(View.GONE);
 				}
-				if(canPush && !issue.getPullRequest().isMergeable()) {
+				if(canPush && issue.getPullRequest().isMergeable()) {
 					binding.mergePullRequest.setVisibility(View.VISIBLE);
 				}
 				else {
