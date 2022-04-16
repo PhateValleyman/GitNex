@@ -72,7 +72,6 @@ public class IssueActions {
 		});
 
 		return actionResult;
-
 	}
 
 	public static void closeReopenIssue(final Context ctx, final String issueState, IssueContext issue) {
@@ -113,7 +112,7 @@ public class IssueActions {
 							}
 						}
 
-						((IssueDetailActivity) ctx).singleIssueUpdate = true;
+						IssueDetailActivity.singleIssueUpdate = true;
 						((IssueDetailActivity) ctx).onResume();
 						RepoDetailActivity.updateRepo = true;
 					}
@@ -188,7 +187,6 @@ public class IssueActions {
 				Toasty.error(ctx, ctx.getResources().getString(R.string.genericServerResponseError));
 			}
 		});
-
 	}
 
 	public static void unsubscribe(final Context ctx, IssueContext issue) {

@@ -44,7 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class CreateIssueActivity extends BaseActivity implements View.OnClickListener, LabelsListAdapter.LabelsListAdapterListener, AssigneesListAdapter.AssigneesListAdapterListener {
@@ -284,7 +284,6 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 		        enableProcessButton();
 	        }
         });
-
     }
 
     private void initCloseListener() {
@@ -299,60 +298,59 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
                 .getApiInterface(ctx)
                 .issueGetMilestonesList(repoOwner, repoName, msState, null, 1, resultLimit);
 
-        call.enqueue(new Callback<List<Milestone>>() {
+        call.enqueue(new Callback<>() {
 
-            @Override
-            public void onResponse(@NonNull Call<List<Milestone>> call, @NonNull retrofit2.Response<List<Milestone>> response) {
+	        @Override
+	        public void onResponse(@NonNull Call<List<Milestone>> call, @NonNull retrofit2.Response<List<Milestone>> response) {
 
-                if(response.isSuccessful()) {
+		        if(response.isSuccessful()) {
 
-                    if(response.code() == 200) {
+			        if(response.code() == 200) {
 
-                        List<Milestone> milestonesList_ = response.body();
+				        List<Milestone> milestonesList_ = response.body();
 
-	                    Milestone ms = new Milestone();
-						ms.setId(0L);
-						ms.setTitle(getString(R.string.issueCreatedNoMilestone));
-                        milestonesList.put(ms.getTitle(), ms);
-                        assert milestonesList_ != null;
+				        Milestone ms = new Milestone();
+				        ms.setId(0L);
+				        ms.setTitle(getString(R.string.issueCreatedNoMilestone));
+				        milestonesList.put(ms.getTitle(), ms);
+				        assert milestonesList_ != null;
 
-                        if(milestonesList_.size() > 0) {
+				        if(milestonesList_.size() > 0) {
 
-	                        for(Milestone milestone : milestonesList_) {
+					        for(Milestone milestone : milestonesList_) {
 
-		                        //Don't translate "open" is a enum
-		                        if(milestone.getState().equals("open")) {
-			                        milestonesList.put(milestone.getTitle(), milestone);
-		                        }
-	                        }
-                        }
+						        //Don't translate "open" is a enum
+						        if(milestone.getState().equals("open")) {
+							        milestonesList.put(milestone.getTitle(), milestone);
+						        }
+					        }
+				        }
 
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateIssueActivity.this,
-                                R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
+				        ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
 
-	                    viewBinding.newIssueMilestoneSpinner.setAdapter(adapter);
-                        enableProcessButton();
+				        viewBinding.newIssueMilestoneSpinner.setAdapter(adapter);
+				        enableProcessButton();
 
-	                    viewBinding.newIssueMilestoneSpinner.setOnItemClickListener ((parent, view, position, id) -> {
-							if(position == 0) {
-								milestoneId = 0;
-							} else if(view instanceof TextView) {
-			                    milestoneId = Math.toIntExact(Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
-		                    }
-						});
+				        viewBinding.newIssueMilestoneSpinner.setOnItemClickListener((parent, view, position, id) -> {
+					        if(position == 0) {
+						        milestoneId = 0;
+					        }
+					        else if(view instanceof TextView) {
+						        milestoneId = Math.toIntExact(Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
+					        }
+				        });
 
-                    }
-                }
+			        }
+		        }
 
-            }
+	        }
 
-            @Override
-            public void onFailure(@NonNull Call<List<Milestone>> call, @NonNull Throwable t) {
+	        @Override
+	        public void onFailure(@NonNull Call<List<Milestone>> call, @NonNull Throwable t) {
 
-	            Toasty.error(ctx, getString(R.string.genericServerResponseError));
-            }
+		        Toasty.error(ctx, getString(R.string.genericServerResponseError));
+	        }
         });
-
     }
 
     @Override

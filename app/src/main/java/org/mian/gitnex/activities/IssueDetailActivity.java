@@ -112,7 +112,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private CustomAssigneesSelectionDialogBinding assigneesBinding;
 	private ActivityIssueDetailBinding viewBinding;
 
-	public boolean singleIssueUpdate = false;
+	public static boolean singleIssueUpdate = false;
 	public boolean commentEdited = false;
 	public boolean commentPosted = false;
 
@@ -372,7 +372,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				Log.e("onFailure", t.toString());
 			}
 		});
-
 	}
 
 	private void updateIssueLabels() {
@@ -434,7 +433,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				Log.e("onFailure", t.toString());
 			}
 		});
-
 	}
 
 	@Override
@@ -597,19 +595,23 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 	private void getSubscribed() {
 		RetrofitClient.getApiInterface(ctx)
 			.issueCheckSubscription(repoOwner, repoName, (long) issueIndex)
-			.enqueue(new Callback<WatchInfo>() {
+			.enqueue(new Callback<>() {
+
 				@Override
 				public void onResponse(@NonNull Call<WatchInfo> call, @NonNull Response<WatchInfo> response) {
+
 					if(response.isSuccessful()) {
 						assert response.body() != null;
 						issue.setSubscribed(response.body().isSubscribed());
-					} else {
+					}
+					else {
 						issue.setSubscribed(false);
 					}
 				}
 
 				@Override
 				public void onFailure(@NonNull Call<WatchInfo> call, @NonNull Throwable t) {
+
 					issue.setSubscribed(false);
 				}
 			});

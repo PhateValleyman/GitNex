@@ -104,7 +104,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 							try {
 								if(react(repoOwner, repoName, reactionType, reactionAction, new EditReactionOption().content(allowedReaction), id)) {
 									v.post(() -> {
-										((IssueDetailActivity) context).singleIssueUpdate = reactionType == ReactionType.ISSUE;
+										IssueDetailActivity.singleIssueUpdate = reactionType == ReactionType.ISSUE;
 										((IssueDetailActivity) context).commentEdited = reactionType == ReactionType.COMMENT;
 										onInteractedListener.run();
 									});

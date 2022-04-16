@@ -71,7 +71,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 		ReactionSpinner reactionSpinner = new ReactionSpinner(ctx, bundle);
 		reactionSpinner.setOnInteractedListener(() -> {
 
-			((IssueDetailActivity) requireActivity()).singleIssueUpdate = true;
+			IssueDetailActivity.singleIssueUpdate = true;
 
 			bmListener.onButtonClicked("onResume");
 			dismiss();

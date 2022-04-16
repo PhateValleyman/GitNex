@@ -144,7 +144,7 @@ public class PullRequestsFragment extends Fragment {
 		Call<List<PullRequest>> call = RetrofitClient.getApiInterface(context).repoListPullRequests(repoOwner, repoName, prState, null,
 			null, null, page, resultLimit);
 
-		call.enqueue(new Callback<List<PullRequest>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<PullRequest>> call, @NonNull Response<List<PullRequest>> response) {
@@ -178,7 +178,6 @@ public class PullRequestsFragment extends Fragment {
 			@Override
 			public void onFailure(@NonNull Call<List<PullRequest>> call, @NonNull Throwable t) {
 
-				Log.e(TAG, t.toString());
 			}
 		});
 	}
@@ -190,7 +189,7 @@ public class PullRequestsFragment extends Fragment {
 		Call<List<PullRequest>> call = RetrofitClient.getApiInterface(context).repoListPullRequests(repoOwner, repoName, prState, null,
 			null, null, page, resultLimit);
 
-		call.enqueue(new Callback<List<PullRequest>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<PullRequest>> call, @NonNull Response<List<PullRequest>> response) {
@@ -221,7 +220,7 @@ public class PullRequestsFragment extends Fragment {
 
 			@Override
 			public void onFailure(@NonNull Call<List<PullRequest>> call, @NonNull Throwable t) {
-				Log.e(TAG, t.toString());
+
 			}
 		});
 	}

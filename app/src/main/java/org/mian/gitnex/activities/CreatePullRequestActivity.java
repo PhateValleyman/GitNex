@@ -287,7 +287,6 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 				Toasty.error(ctx, getString(R.string.genericServerResponseError));
 			}
 		});
-
 	}
 
 	private void getMilestones(String repoOwner, String repoName, int resultLimit) {
@@ -297,7 +296,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 			.getApiInterface(ctx)
 			.issueGetMilestonesList(repoOwner, repoName, msState, null, 1, resultLimit);
 
-		call.enqueue(new Callback<List<Milestone>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Milestone>> call, @NonNull retrofit2.Response<List<Milestone>> response) {
@@ -320,22 +319,19 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 						}
 					}
 
-					ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this,
-						R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
+					ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this, R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
 
 					viewBinding.milestonesSpinner.setAdapter(adapter);
 					enableProcessButton();
 
-					viewBinding.milestonesSpinner.setOnItemClickListener ((parent, view, position, id) -> {
-							if(position == 0) {
-								milestoneId = 0;
-							}
-							else if(view instanceof TextView) {
-								milestoneId = Math.toIntExact(
-									Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
-							}
+					viewBinding.milestonesSpinner.setOnItemClickListener((parent, view, position, id) -> {
+						if(position == 0) {
+							milestoneId = 0;
 						}
-					);
+						else if(view instanceof TextView) {
+							milestoneId = Math.toIntExact(Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
+						}
+					});
 
 				}
 			}
@@ -346,7 +342,6 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 				Toasty.error(ctx, getString(R.string.genericServerResponseError));
 			}
 		});
-
 	}
 
 	private void setDueDate() {
