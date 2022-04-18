@@ -104,11 +104,14 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			labelsScrollViewDots = itemView.findViewById(R.id.labelsScrollViewDots);
 			frameLabelsDots = itemView.findViewById(R.id.frameLabelsDots);
 
-			itemView.setOnClickListener(v -> {
-
+			View.OnClickListener openPr = v -> {
 				Intent intentPrDetail = new IssueContext(pullRequestObject, ((RepoDetailActivity) context).repository).getIntent(context, IssueDetailActivity.class);
 				context.startActivity(intentPrDetail);
-			});
+			};
+
+			itemView.setOnClickListener(openPr);
+			frameLabels.setOnClickListener(openPr);
+			frameLabelsDots.setOnClickListener(openPr);
 
 			assigneeAvatar.setOnClickListener(v -> {
 				Intent intent = new Intent(context, ProfileActivity.class);
