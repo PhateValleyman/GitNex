@@ -111,9 +111,11 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 		OrganizationDetailActivity.SectionsPagerAdapter mSectionsPagerAdapter = new OrganizationDetailActivity.SectionsPagerAdapter(getSupportFragmentManager());
 
 		ViewPager mViewPager = findViewById(R.id.container);
+		mViewPager.setVisibility(View.VISIBLE);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 		TabLayout tabLayout = findViewById(R.id.tabs);
+		tabLayout.setVisibility(View.VISIBLE);
 
 		if(!isMember) {
 			tabLayout.removeTabAt(3);
