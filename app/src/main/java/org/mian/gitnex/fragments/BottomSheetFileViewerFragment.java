@@ -27,9 +27,11 @@ public class BottomSheetFileViewerFragment extends BottomSheetDialogFragment {
 	    RepositoryContext repository = RepositoryContext.fromBundle(requireArguments());
 	    BottomSheetFileViewerBinding bottomSheetFileViewerBinding = BottomSheetFileViewerBinding.inflate(inflater, container, false);
 
-	    if(!repository.getPermissions().canPush()) {
+	    if(!repository.getPermissions().isPush()) {
 	    	bottomSheetFileViewerBinding.deleteFile.setVisibility(View.GONE);
 	    	bottomSheetFileViewerBinding.editFile.setVisibility(View.GONE);
+	    } else if(!requireArguments().getBoolean("processable")) {
+			bottomSheetFileViewerBinding.editFile.setVisibility(View.GONE);
 	    }
 
 	    bottomSheetFileViewerBinding.downloadFile.setOnClickListener(v1 -> {
