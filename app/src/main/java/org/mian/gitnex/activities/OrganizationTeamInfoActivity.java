@@ -130,6 +130,7 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
         } else if("newRepo".equals(text)) {
 	        Intent intent = new Intent(OrganizationTeamInfoActivity.this, AddNewTeamRepoActivity.class);
 	        intent.putExtra("teamId", team.getId());
+	        intent.putExtra("teamName", team.getName());
 			intent.putExtra("orgName", getIntent().getStringExtra("orgName"));
 	        startActivity(intent);
         }

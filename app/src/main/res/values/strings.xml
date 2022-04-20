@@ -295,7 +295,8 @@
     <string name="memberRemovedMessage">Member removed from the team successfully</string>
     <string name="repoAddedMessage">Repository added to the team successfully</string>
     <string name="repoRemovedMessage">Repository removed from the team successfully</string>
-    <string name="search_repos">Search repositories</string>
+    <string name="repoAddToTeamMessage">Add repository %s to organization %s team %s</string>
+    <string name="repoRemoveTeamMessage">Remove repository %s from team %s</string>
     <!-- org tabbed layout str -->
 
     <!-- create team -->

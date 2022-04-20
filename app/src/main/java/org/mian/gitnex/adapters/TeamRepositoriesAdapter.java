@@ -2,6 +2,7 @@ package org.mian.gitnex.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import org.gitnex.tea4j.v2.models.Repository;
+import org.gitnex.tea4j.v2.models.Team;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AlertDialogs;
@@ -23,28 +25,30 @@ import java.util.List;
  * Author M M Arif
  */
 
-public class RepoSearchForTeamAdapter extends RecyclerView.Adapter<RepoSearchForTeamAdapter.UserSearchViewHolder> {
+public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositoriesAdapter.TeamReposViewHolder> {
 
-	private final List<Repository> repoSearchList;
+	private final List<Repository> reposList;
 	private final Context context;
 	private final int teamId;
 	private final String orgName;
+	private final String teamName;
 
-	public RepoSearchForTeamAdapter(List<Repository> dataList, Context ctx, int teamId, String orgName) {
+	public TeamRepositoriesAdapter(List<Repository> dataList, Context ctx, int teamId, String orgName, String teamName) {
 		this.context = ctx;
-		this.repoSearchList = dataList;
+		this.reposList = dataList;
 		this.teamId = teamId;
 		this.orgName = orgName;
+		this.teamName = teamName;
 	}
 
-	class UserSearchViewHolder extends RecyclerView.ViewHolder {
+	class TeamReposViewHolder extends RecyclerView.ViewHolder {
 
 		private Repository repoInfo;
 
 		private final ImageView repoAvatar;
 		private final TextView name;
 
-		private UserSearchViewHolder(View itemView) {
+		private TeamReposViewHolder(View itemView) {
 
 			super(itemView);
 			repoAvatar = itemView.findViewById(R.id.userAvatar);
@@ -55,25 +59,25 @@ public class RepoSearchForTeamAdapter extends RecyclerView.Adapter<RepoSearchFor
 			addRepoButtonAdd.setVisibility(View.VISIBLE);
 			addRepoButtonRemove.setVisibility(View.GONE);
 
-			addRepoButtonAdd.setOnClickListener(v -> AlertDialogs.addRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId))));
+			addRepoButtonAdd.setOnClickListener(v -> AlertDialogs.addRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
 
 			addRepoButtonRemove.setOnClickListener(v ->
-				AlertDialogs.removeRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId))));
+				AlertDialogs.removeRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
 		}
 
 	}
 
 	@NonNull
 	@Override
-	public RepoSearchForTeamAdapter.UserSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+	public TeamRepositoriesAdapter.TeamReposViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_collaborators_search, parent, false);
-		return new RepoSearchForTeamAdapter.UserSearchViewHolder(v);
+		return new TeamRepositoriesAdapter.TeamReposViewHolder(v);
 	}
 
 	@Override
-	public void onBindViewHolder(@NonNull final RepoSearchForTeamAdapter.UserSearchViewHolder holder, int position) {
+	public void onBindViewHolder(@NonNull final TeamRepositoriesAdapter.TeamReposViewHolder holder, int position) {
 
-		Repository currentItem = repoSearchList.get(position);
+		Repository currentItem = reposList.get(position);
 		holder.repoInfo = currentItem;
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
@@ -94,7 +98,6 @@ public class RepoSearchForTeamAdapter extends RecyclerView.Adapter<RepoSearchFor
 
 	@Override
 	public int getItemCount() {
-		return repoSearchList.size();
+		return reposList.size();
 	}
-
 }
