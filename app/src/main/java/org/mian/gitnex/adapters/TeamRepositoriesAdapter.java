@@ -2,6 +2,8 @@ package org.mian.gitnex.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +16,16 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import org.gitnex.tea4j.v2.models.Repository;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.PicassoService;
+import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Author M M Arif
@@ -30,6 +38,7 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 	private final int teamId;
 	private final String orgName;
 	private final String teamName;
+	private final List<Repository> reposArr;
 
 	public TeamRepositoriesAdapter(List<Repository> dataList, Context ctx, int teamId, String orgName, String teamName) {
 		this.context = ctx;
@@ -37,6 +46,7 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 		this.teamId = teamId;
 		this.orgName = orgName;
 		this.teamName = teamName;
+		reposArr = new ArrayList<>();
 	}
 
 	class TeamReposViewHolder extends RecyclerView.ViewHolder {
@@ -45,6 +55,7 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 
 		private final ImageView repoAvatar;
 		private final TextView name;
+		private final ImageView addRepoButtonAdd;
 
 		private TeamReposViewHolder(View itemView) {
 
@@ -52,10 +63,29 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 			repoAvatar = itemView.findViewById(R.id.userAvatar);
 			name = itemView.findViewById(R.id.userFullName);
 			itemView.findViewById(R.id.userName).setVisibility(View.GONE);
-			ImageView addRepoButtonAdd = itemView.findViewById(R.id.addCollaboratorButtonAdd);
+			addRepoButtonAdd = itemView.findViewById(R.id.addCollaboratorButtonAdd);
 			ImageView addRepoButtonRemove = itemView.findViewById(R.id.addCollaboratorButtonRemove);
-			addRepoButtonAdd.setVisibility(View.VISIBLE);
-			addRepoButtonRemove.setVisibility(View.GONE);
+			//addRepoButtonAdd.setVisibility(View.VISIBLE);
+			//addRepoButtonRemove.setVisibility(View.GONE);
+
+			new Handler(Looper.getMainLooper()).postDelayed(TeamRepositoriesAdapter.this::getTeamRepos, 200);
+
+			new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+				if(reposArr.size() > 0) {
+					for(int i = 0; i < reposArr.size(); i++) {
+						if(!reposArr.get(i).getName().equals(repoInfo.getName())) {
+							addRepoButtonAdd.setVisibility(View.VISIBLE);
+						}
+						else {
+							addRepoButtonAdd.setVisibility(View.GONE);
+						}
+					}
+				}
+				else {
+					addRepoButtonAdd.setVisibility(View.VISIBLE);
+				}
+			}, 500);
 
 			addRepoButtonAdd.setOnClickListener(v -> AlertDialogs.addRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
 
@@ -97,5 +127,31 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 	@Override
 	public int getItemCount() {
 		return reposList.size();
+	}
+
+	private void getTeamRepos() {
+
+		if(getItemCount() > 0) {
+			Call<List<Repository>> call = RetrofitClient
+				.getApiInterface(context)
+				.orgListTeamRepos((long) teamId, 1, 50);
+
+			call.enqueue(new Callback<>() {
+				@Override
+				public void onResponse(@NonNull Call<List<Repository>> call, @NonNull Response<List<Repository>> response) {
+
+					if(response.code() == 200) {
+
+						for(int i = 0; i < Objects.requireNonNull(response.body()).size(); i++) {
+							reposArr.addAll(response.body());
+						}
+					}
+				}
+
+				@Override
+				public void onFailure(@NonNull Call<List<Repository>> call, @NonNull Throwable t) {
+				}
+			});
+		}
 	}
 }
