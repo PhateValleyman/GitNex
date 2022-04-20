@@ -19,6 +19,7 @@ import org.mian.gitnex.databinding.ActivityOrgTeamInfoBinding;
 import org.mian.gitnex.fragments.BottomSheetOrganizationTeamsFragment;
 import org.mian.gitnex.fragments.OrganizationTeamInfoMembersFragment;
 import org.mian.gitnex.fragments.OrganizationTeamInfoPermissionsFragment;
+import org.mian.gitnex.fragments.OrganizationTeamInfoReposFragment;
 import org.mian.gitnex.structs.BottomSheetListener;
 
 /**
@@ -59,13 +60,15 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 					    return OrganizationTeamInfoMembersFragment.newInstance(team);
 				    case 1:
 					    return OrganizationTeamInfoPermissionsFragment.newInstance(team);
+				    case 2:
+						return OrganizationTeamInfoReposFragment.newInstance(team);
 			    }
 			    return null;
 		    }
 
 		    @Override
 		    public int getItemCount() {
-			    return 2;
+			    return 3;
 		    }
 	    });
 
@@ -79,6 +82,8 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 			    case 1:
 				    textView.setText(R.string.teamPermissions);
 				    break;
+			    case 2:
+					textView.setText(R.string.navRepos);
 		    }
 
 		    tab.setCustomView(textView);
@@ -105,6 +110,9 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 	    }
 	    else if(id == R.id.genericMenu) {
 		    BottomSheetOrganizationTeamsFragment bottomSheet = new BottomSheetOrganizationTeamsFragment();
+			Bundle args = new Bundle();
+			args.putBoolean("showRepo", !team.isIncludesAllRepositories());
+			bottomSheet.setArguments(args);
 		    bottomSheet.show(getSupportFragmentManager(), "orgTeamsBottomSheet");
 		    return true;
 	    }
@@ -119,6 +127,11 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
             Intent intent = new Intent(OrganizationTeamInfoActivity.this, AddNewTeamMemberActivity.class);
             intent.putExtra("teamId", team.getId());
             startActivity(intent);
+        } else if("newRepo".equals(text)) {
+	        Intent intent = new Intent(OrganizationTeamInfoActivity.this, AddNewTeamRepoActivity.class);
+	        intent.putExtra("teamId", team.getId());
+			intent.putExtra("orgName", getIntent().getStringExtra("orgName"));
+	        startActivity(intent);
         }
     }
 }

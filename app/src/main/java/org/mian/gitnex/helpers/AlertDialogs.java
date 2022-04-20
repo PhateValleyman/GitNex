@@ -138,6 +138,24 @@ public class AlertDialogs {
 
     }
 
+	public static void addRepoDialog(final Context context, final String orgName, String repo, int teamId) {
+
+		new AlertDialog.Builder(context)
+			.setTitle(context.getResources().getString(R.string.addTeamMemberTitle) + repo)
+			.setPositiveButton(context.getResources().getString(R.string.addButton), (dialog, whichButton) -> TeamActions.addTeamRepo(context, orgName, teamId, repo))
+			.setNeutralButton(context.getResources().getString(R.string.cancelButton), null).show();
+
+	}
+
+	public static void removeRepoDialog(final Context context, final String orgName, String repo, int teamId) {
+
+		new AlertDialog.Builder(context)
+			.setTitle(context.getResources().getString(R.string.removeTeamMemberTitle) + repo)
+			.setPositiveButton(context.getResources().getString(R.string.addButton), (dialog, whichButton) -> TeamActions.removeTeamRepo(context, orgName, teamId, repo))
+			.setNeutralButton(context.getResources().getString(R.string.cancelButton), null).show();
+
+	}
+
     public static void selectPullUpdateStrategy(Context context, String repoOwner, String repo, String issueNumber) {
     	Dialog dialog = new Dialog(context, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
