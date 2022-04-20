@@ -58,7 +58,7 @@ public class AddNewTeamRepoActivity extends BaseActivity {
 
 	public void loadRepos() {
 
-		Call<List<Repository>> call = RetrofitClient.getApiInterface(ctx).orgListRepos(getIntent().getStringExtra("orgName"), 1, 10);
+		Call<List<Repository>> call = RetrofitClient.getApiInterface(ctx).orgListRepos(getIntent().getStringExtra("orgName"), 1, 50);
 
 		addNewTeamRepositoryBinding.progressBar.setVisibility(View.VISIBLE);
 
