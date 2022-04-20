@@ -30,7 +30,7 @@ public class BottomSheetFileViewerFragment extends BottomSheetDialogFragment {
 	    if(!repository.getPermissions().isPush()) {
 	    	bottomSheetFileViewerBinding.deleteFile.setVisibility(View.GONE);
 	    	bottomSheetFileViewerBinding.editFile.setVisibility(View.GONE);
-	    } else if(!requireArguments().getBoolean("processable")) {
+	    } else if(!requireArguments().getBoolean("editable")) {
 			bottomSheetFileViewerBinding.editFile.setVisibility(View.GONE);
 	    }
 
