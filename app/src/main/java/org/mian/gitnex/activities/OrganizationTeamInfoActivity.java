@@ -51,17 +51,18 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 	    }
 
 	    binding.close.setOnClickListener(view -> finish());
+	    binding.pager.setOffscreenPageLimit(1);
 	    binding.pager.setAdapter(new FragmentStateAdapter(getSupportFragmentManager(), getLifecycle()) {
 		    @NonNull
 		    @Override
 		    public Fragment createFragment(int position) {
 			    switch(position) {
 				    case 0:
-					    return OrganizationTeamInfoMembersFragment.newInstance(team);
+					    return OrganizationTeamInfoReposFragment.newInstance(team);
 				    case 1:
-					    return OrganizationTeamInfoPermissionsFragment.newInstance(team);
+					    return OrganizationTeamInfoMembersFragment.newInstance(team);
 				    case 2:
-						return OrganizationTeamInfoReposFragment.newInstance(team);
+					    return OrganizationTeamInfoPermissionsFragment.newInstance(team);
 			    }
 			    return null;
 		    }
@@ -73,17 +74,18 @@ public class OrganizationTeamInfoActivity extends BaseActivity implements Bottom
 	    });
 
 	    new TabLayoutMediator(binding.tabs, binding.pager, (tab, position) -> {
-		    TextView textView = (TextView) LayoutInflater.from(ctx).inflate(R.layout.layout_tab_text, null);
+		    TextView textView = (TextView) LayoutInflater.from(ctx).inflate(R.layout.layout_tab_text, findViewById(android.R.id.content), false);
 
 		    switch(position) {
 			    case 0:
-				    textView.setText(R.string.orgTabMembers);
+				    textView.setText(R.string.navRepos);
 				    break;
 			    case 1:
-				    textView.setText(R.string.teamPermissions);
+				    textView.setText(R.string.orgTabMembers);
 				    break;
 			    case 2:
-					textView.setText(R.string.navRepos);
+				    textView.setText(R.string.teamPermissions);
+					break;
 		    }
 
 		    tab.setCustomView(textView);

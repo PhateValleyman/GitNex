@@ -76,6 +76,7 @@ public class RepositoriesByOrgFragment extends Fragment {
 			fragmentRepositoriesBinding.progressBar.setVisibility(View.VISIBLE);
 		}, 50));
 
+		page = 1;
 		fetchDataAsync();
 
 		return fragmentRepositoriesBinding.getRoot();
