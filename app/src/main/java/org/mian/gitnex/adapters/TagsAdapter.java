@@ -2,7 +2,6 @@ package org.mian.gitnex.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.gitnex.tea4j.v2.models.Tag;
@@ -18,10 +16,11 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.RepoDetailActivity;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Markdown;
+import org.mian.gitnex.structs.FragmentRefreshListener;
 import java.util.List;
 
 /**
- * Author qwerty287
+ * @author qwerty287
  */
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder> {
@@ -30,6 +29,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
     private final Context context;
     private final String repo;
     private final String owner;
+	private final FragmentRefreshListener startDownload;
 
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
@@ -60,11 +60,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
         }
     }
 
-    public TagsAdapter(Context ctx, List<Tag> releasesMain, String repoOwner, String repoName) {
+    public TagsAdapter(Context ctx, List<Tag> releasesMain, String repoOwner, String repoName, FragmentRefreshListener startDownload) {
         this.context = ctx;
         this.tags = releasesMain;
         owner = repoOwner;
         repo = repoName;
+		this.startDownload = startDownload;
     }
 
     @NonNull
@@ -124,13 +125,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 	        });
         });
 
-        holder.releaseZipDownload.setText(
-                HtmlCompat.fromHtml("<a href='" + currentItem.getZipballUrl() + "'>" + context.getResources().getString(R.string.zipArchiveDownloadReleasesTab) + "</a> ", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        holder.releaseZipDownload.setMovementMethod(LinkMovementMethod.getInstance());
+        holder.releaseZipDownload.setText(R.string.zipArchiveDownloadReleasesTab);
+        holder.releaseZipDownload.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
 
-        holder.releaseTarDownload.setText(
-                HtmlCompat.fromHtml("<a href='" + currentItem.getTarballUrl() + "'>" + context.getResources().getString(R.string.tarArchiveDownloadReleasesTab) + "</a> ", HtmlCompat.FROM_HTML_MODE_LEGACY));
-        holder.releaseTarDownload.setMovementMethod(LinkMovementMethod.getInstance());
+        holder.releaseTarDownload.setText(R.string.tarArchiveDownloadReleasesTab);
+	    holder.releaseZipDownload.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
 
 	    if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
 		    isLoading = true;
