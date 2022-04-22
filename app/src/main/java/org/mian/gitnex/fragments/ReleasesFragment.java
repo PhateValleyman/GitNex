@@ -53,6 +53,7 @@ import okhttp3.*;
 
 public class ReleasesFragment extends Fragment {
 
+	private ReleasesViewModel releasesViewModel;
     private ReleasesAdapter adapter;
     private TagsAdapter tagsAdapter;
     private RepositoryContext repository;
@@ -63,7 +64,7 @@ public class ReleasesFragment extends Fragment {
 
 	public static String currentDownloadUrl = null;
 
-    public ReleasesFragment() {
+	public ReleasesFragment() {
     }
 
     public static ReleasesFragment newInstance(RepositoryContext repository) {
@@ -84,6 +85,7 @@ public class ReleasesFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         fragmentReleasesBinding = FragmentReleasesBinding.inflate(inflater, container, false);
+	    releasesViewModel = new ViewModelProvider(this).get(ReleasesViewModel.class);
 
 	    fragmentReleasesBinding.recyclerView.setHasFixedSize(true);
 	    fragmentReleasesBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -95,9 +97,9 @@ public class ReleasesFragment extends Fragment {
 
 		    fragmentReleasesBinding.pullToRefresh.setRefreshing(false);
 	        if(repository.isReleasesViewTypeIsTag()) {
-		        ReleasesViewModel.loadTagsList(repository.getOwner(), repository.getName(), getContext());
+		        releasesViewModel.loadTagsList(repository.getOwner(), repository.getName(), getContext());
 	        } else {
-		        ReleasesViewModel.loadReleasesList(repository.getOwner(), repository.getName(), getContext());
+		        releasesViewModel.loadReleasesList(repository.getOwner(), repository.getName(), getContext());
 	        }
 	        fragmentReleasesBinding.progressBar.setVisibility(View.VISIBLE);
 
@@ -111,9 +113,9 @@ public class ReleasesFragment extends Fragment {
 			page = 1;
 			pageReleases = 1;
 		    if(repository.isReleasesViewTypeIsTag()) {
-			    ReleasesViewModel.loadTagsList(repository.getOwner(), repository.getName(), getContext());
+			    releasesViewModel.loadTagsList(repository.getOwner(), repository.getName(), getContext());
 		    } else {
-			    ReleasesViewModel.loadReleasesList(repository.getOwner(), repository.getName(), getContext());
+			    releasesViewModel.loadReleasesList(repository.getOwner(), repository.getName(), getContext());
 		    }
 		    fragmentReleasesBinding.progressBar.setVisibility(View.VISIBLE);
 	    });
@@ -133,7 +135,7 @@ public class ReleasesFragment extends Fragment {
 			        @Override
 			        public void onLoadMore() {
 				        pageReleases += 1;
-				        ReleasesViewModel.loadMoreReleases(owner, repo, pageReleases, getContext(), adapter);
+				        releasesViewModel.loadMoreReleases(owner, repo, pageReleases, getContext(), adapter);
 				        fragmentReleasesBinding.progressBar.setVisibility(View.VISIBLE);
 			        }
 
@@ -170,7 +172,7 @@ public class ReleasesFragment extends Fragment {
 				    @Override
 				    public void onLoadMore() {
 					    page += 1;
-					    ReleasesViewModel.loadMoreTags(owner, repo , page, getContext(), tagsAdapter);
+					    releasesViewModel.loadMoreTags(owner, repo , page, getContext(), tagsAdapter);
 					    fragmentReleasesBinding.progressBar.setVisibility(View.VISIBLE);
 				    }
 

@@ -9,15 +9,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.gitnex.tea4j.v2.models.Tag;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.RepoDetailActivity;
-import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.Markdown;
+import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.structs.FragmentRefreshListener;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * @author qwerty287
@@ -34,8 +39,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
-	static class TagsViewHolder extends RecyclerView.ViewHolder {
+	class TagsViewHolder extends RecyclerView.ViewHolder {
 
+		private Tag tagsHolder;
         private final TextView tagName;
         private final TextView tagBody;
         private final LinearLayout downloadFrame;
@@ -57,6 +63,24 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 	        releaseTarDownload = itemView.findViewById(R.id.releaseTarDownload);
 	        downloadDropdownIcon = itemView.findViewById(R.id.downloadDropdownIcon);
 	        options = itemView.findViewById(R.id.tagsOptionsMenu);
+
+	        options.setOnClickListener(v -> {
+		        final Context context = v.getContext();
+
+		        @SuppressLint("InflateParams")
+		        View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_tag_in_list, null);
+
+		        TextView delete = view.findViewById(R.id.tagMenuDelete);
+
+		        BottomSheetDialog dialog = new BottomSheetDialog(context);
+		        dialog.setContentView(view);
+		        dialog.show();
+
+		        delete.setOnClickListener(v1 -> {
+			        tagDeleteDialog(context, tagsHolder.getName(), owner, repo, getBindingAdapterPosition());
+			        dialog.dismiss();
+		        });
+	        });
         }
     }
 
@@ -79,6 +103,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
     public void onBindViewHolder(@NonNull TagsViewHolder holder, int position) {
 
 	    Tag currentItem = tags.get(position);
+	    holder.tagsHolder = currentItem;
 
 	    holder.tagName.setText(currentItem.getName());
 
@@ -107,26 +132,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
             holder.options.setVisibility(View.GONE);
         }
 
-        holder.options.setOnClickListener(v -> {
-	        final Context context = v.getContext();
-
-	        @SuppressLint("InflateParams")
-	        View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_tag_in_list, null);
-
-	        TextView delete = view.findViewById(R.id.tagMenuDelete);
-
-	        BottomSheetDialog dialog = new BottomSheetDialog(context);
-	        dialog.setContentView(view);
-	        dialog.show();
-
-	        delete.setOnClickListener(v1 -> {
-		        AlertDialogs.tagDeleteDialog(context, currentItem.getName(), owner, repo);
-	            dialog.dismiss();
-	        });
-        });
-
-        holder.releaseZipDownload.setText(R.string.zipArchiveDownloadReleasesTab);
-        holder.releaseZipDownload.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
+	    holder.releaseZipDownload.setText(R.string.zipArchiveDownloadReleasesTab);
+	    holder.releaseZipDownload.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
 
         holder.releaseTarDownload.setText(R.string.tarArchiveDownloadReleasesTab);
 	    holder.releaseZipDownload.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
@@ -149,6 +156,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 		}
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	public void notifyDataChanged() {
 		notifyDataSetChanged();
 		isLoading = false;
@@ -169,4 +177,45 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 		notifyDataChanged();
 	}
 
+	private void updateAdapter(int position) {
+		tags.remove(position);
+		notifyItemRemoved(position);
+		notifyItemRangeChanged(position, tags.size());
+	}
+
+	public void tagDeleteDialog(final Context context, final String tagName, final String owner, final String repo, int position) {
+
+		new AlertDialog.Builder(context)
+			.setTitle(String.format(context.getString(R.string.deleteTagTitle), tagName))
+			.setMessage(R.string.deleteTagConfirmation)
+			.setIcon(R.drawable.ic_delete)
+			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient
+				.getApiInterface(context).repoDeleteTag(owner, repo, tagName).enqueue(new Callback<>() {
+
+					@Override
+					public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+
+						if(response.isSuccessful()) {
+							updateAdapter(position);
+							Toasty.success(context, context.getString(R.string.tagDeleted));
+						}
+						else if(response.code() == 403) {
+							Toasty.error(context, context.getString(R.string.authorizeError));
+						}
+						else if(response.code() == 409) {
+							Toasty.error(context, context.getString(R.string.tagDeleteError));
+						}
+						else {
+							Toasty.error(context, context.getString(R.string.genericError));
+						}
+					}
+
+					@Override
+					public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+
+						Toasty.error(context, context.getString(R.string.genericError));
+					}
+				}))
+			.setNeutralButton(R.string.cancelButton, null).show();
+	}
 }
