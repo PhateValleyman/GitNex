@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import org.gitnex.tea4j.v2.auth.ApiKeyAuth;
 import org.gitnex.tea4j.v2.models.Release;
-import org.jetbrains.annotations.NotNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.activities.RepoDetailActivity;
@@ -253,7 +252,7 @@ public class ReleasesFragment extends Fragment {
 				okHttpClient.newCall(new Request.Builder().url(currentDownloadUrl).build()).enqueue(new Callback() {
 
 					@Override
-					public void onFailure(@NotNull Call call, @NotNull IOException e) {
+					public void onFailure(@NonNull Call call, @NonNull IOException e) {
 
 						builder.setContentTitle(getString(R.string.fileViewerNotificationTitleFailed))
 							.setContentText(getString(R.string.fileViewerNotificationDescriptionFailed,
@@ -262,7 +261,7 @@ public class ReleasesFragment extends Fragment {
 					}
 
 					@Override
-					public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+					public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
 
 						if(!response.isSuccessful() || response.body() == null) {
 							onFailure(call, new IOException());
