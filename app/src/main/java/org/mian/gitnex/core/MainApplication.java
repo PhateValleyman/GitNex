@@ -50,29 +50,7 @@ public class MainApplication extends Application {
 
 		tinyDB.putBoolean("biometricLifeCycle", false);
 
-		switch(tinyDB.getInt("customFontId", -1)) {
-
-			case 0:
-				FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/roboto.ttf");
-				FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/roboto.ttf");
-				FontsOverride.setDefaultFont(this, "SERIF", "fonts/roboto.ttf");
-				FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/roboto.ttf");
-				break;
-
-			case 2:
-				FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/sourcecodeproregular.ttf");
-				FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/sourcecodeproregular.ttf");
-				FontsOverride.setDefaultFont(this, "SERIF", "fonts/sourcecodeproregular.ttf");
-				FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/sourcecodeproregular.ttf");
-				break;
-
-			default:
-				FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/manroperegular.ttf");
-				FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/manroperegular.ttf");
-				FontsOverride.setDefaultFont(this, "SERIF", "fonts/manroperegular.ttf");
-				FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/manroperegular.ttf");
-
-		}
+		FontsOverride.setDefaultFont(this);
 
 		Notifications.createChannels(appCtx);
 	}

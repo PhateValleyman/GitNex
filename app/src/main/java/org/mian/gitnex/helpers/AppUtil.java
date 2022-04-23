@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Base64;
@@ -435,6 +436,22 @@ public class AppUtil {
 			raw = raw.substring(schemeIndex);
 		}
 		return Uri.parse(scheme+raw);
+	}
+
+	public static Typeface typeface;
+
+	public static Typeface getTypeface(Context context) {
+		if(typeface == null) {
+			switch(TinyDB.getInstance(context).getInt("customFontId", -1)) {
+				case 0:
+					typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto.ttf");
+				case 2:
+					typeface = Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf");
+				default:
+					typeface = Typeface.createFromAsset(context.getAssets(), "fonts/manroperegular.ttf");
+			}
+		}
+		return typeface;
 	}
 
 }
