@@ -63,7 +63,11 @@ public class Version {
 
 		values = new ArrayList<>();
 		Matcher match = patternNumberDotNumber.matcher(raw);
-		match.find();
+		if(!match.find()) {
+			dev = true;
+			values = new ArrayList<>();
+			return;
+		}
 		for(String i : match.group().split("\\.")) {
 			values.add(Integer.parseInt(i));
 		}
