@@ -15,6 +15,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsAppearanceBinding;
 import org.mian.gitnex.fragments.SettingsFragment;
 import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 
@@ -161,6 +162,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 				tinyDB.putString("customFontStr", customFontList[i]);
 				tinyDB.putInt("customFontId", i);
 				AppUtil.typeface = null; // reset typeface
+				FontsOverride.setDefaultFont(this);
 
 				SettingsFragment.refreshParent = true;
 				this.recreate();

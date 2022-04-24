@@ -445,10 +445,13 @@ public class AppUtil {
 			switch(TinyDB.getInstance(context).getInt("customFontId", -1)) {
 				case 0:
 					typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto.ttf");
+					break;
 				case 2:
 					typeface = Typeface.createFromAsset(context.getAssets(), "fonts/sourcecodeproregular.ttf");
+					break;
 				default:
 					typeface = Typeface.createFromAsset(context.getAssets(), "fonts/manroperegular.ttf");
+					break;
 			}
 		}
 		return typeface;

@@ -40,7 +40,7 @@ public class MainApplication extends Application {
 
 		tinyDB.putBoolean("biometricLifeCycle", false);
 
-		FontsOverride.setDefaultFont(this);
+		FontsOverride.setDefaultFont(getBaseContext());
 
 		Notifications.createChannels(appCtx);
 	}
