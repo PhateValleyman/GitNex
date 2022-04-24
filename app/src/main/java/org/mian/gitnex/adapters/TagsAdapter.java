@@ -44,10 +44,10 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 		private Tag tagsHolder;
         private final TextView tagName;
         private final TextView tagBody;
-        private final LinearLayout downloadFrame;
+        private final LinearLayout downloadCopyFrame;
         private final LinearLayout downloads;
-        private final TextView releaseZipDownload;
-	    private final TextView releaseTarDownload;
+		private final LinearLayout releaseZipDownloadFrame;
+		private final LinearLayout releaseTarDownloadFrame;
 	    private final ImageView downloadDropdownIcon;
 	    private final ImageView options;
 
@@ -57,10 +57,10 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
 	        tagName = itemView.findViewById(R.id.tagName);
 	        tagBody = itemView.findViewById(R.id.tagBodyContent);
-	        downloadFrame = itemView.findViewById(R.id.downloadFrame);
+	        downloadCopyFrame = itemView.findViewById(R.id.downloadCopyFrame);
 	        downloads = itemView.findViewById(R.id.downloads);
-	        releaseZipDownload = itemView.findViewById(R.id.releaseZipDownload);
-	        releaseTarDownload = itemView.findViewById(R.id.releaseTarDownload);
+	        releaseZipDownloadFrame = itemView.findViewById(R.id.releaseZipDownloadFrame);
+	        releaseTarDownloadFrame = itemView.findViewById(R.id.releaseTarDownloadFrame);
 	        downloadDropdownIcon = itemView.findViewById(R.id.downloadDropdownIcon);
 	        options = itemView.findViewById(R.id.tagsOptionsMenu);
 
@@ -114,7 +114,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 	        holder.tagBody.setVisibility(View.GONE);
         }
 
-	    holder.downloadFrame.setOnClickListener(v -> {
+	    holder.downloadCopyFrame.setOnClickListener(v -> {
 
 		    if(holder.downloads.getVisibility() == View.GONE) {
 
@@ -132,11 +132,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
             holder.options.setVisibility(View.GONE);
         }
 
-	    holder.releaseZipDownload.setText(R.string.zipArchiveDownloadReleasesTab);
-	    holder.releaseZipDownload.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
-
-        holder.releaseTarDownload.setText(R.string.tarArchiveDownloadReleasesTab);
-	    holder.releaseZipDownload.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
+	    holder.releaseZipDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
+	    holder.releaseTarDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
 
 	    if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
 		    isLoading = true;

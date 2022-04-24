@@ -1,5 +1,6 @@
 package org.mian.gitnex.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -49,10 +50,10 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
         private final TextView releaseTag;
 		private final TextView releaseDate;
         private final TextView releaseBodyContent;
-        private final LinearLayout downloadFrame;
+        private final LinearLayout downloadCopyFrame;
         private final LinearLayout downloads;
-        private final TextView releaseZipDownload;
-	    private final TextView releaseTarDownload;
+        private final LinearLayout releaseZipDownloadFrame;
+	    private final LinearLayout releaseTarDownloadFrame;
 	    private final ImageView downloadDropdownIcon;
 	    private final RecyclerView downloadList;
 
@@ -68,10 +69,10 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 	        TextView releaseCommitSha = itemView.findViewById(R.id.releaseCommitSha);
 	        releaseDate = itemView.findViewById(R.id.releaseDate);
 	        releaseBodyContent = itemView.findViewById(R.id.releaseBodyContent);
-	        downloadFrame = itemView.findViewById(R.id.downloadFrame);
+	        downloadCopyFrame = itemView.findViewById(R.id.downloadCopyFrame);
 	        downloads = itemView.findViewById(R.id.downloads);
-	        releaseZipDownload = itemView.findViewById(R.id.releaseZipDownload);
-	        releaseTarDownload = itemView.findViewById(R.id.releaseTarDownload);
+	        releaseZipDownloadFrame = itemView.findViewById(R.id.releaseZipDownloadFrame);
+	        releaseTarDownloadFrame = itemView.findViewById(R.id.releaseTarDownloadFrame);
 	        downloadDropdownIcon = itemView.findViewById(R.id.downloadDropdownIcon);
 	        downloadList = itemView.findViewById(R.id.downloadList);
 
@@ -152,7 +153,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 	        holder.releaseBodyContent.setText(R.string.noReleaseBodyContent);
         }
 
-	    holder.downloadFrame.setOnClickListener(v -> {
+	    holder.downloadCopyFrame.setOnClickListener(v -> {
 
 		    if(holder.downloads.getVisibility() == View.GONE) {
 
@@ -167,11 +168,8 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
 	    });
 
-	    holder.releaseZipDownload.setText(R.string.zipArchiveDownloadReleasesTab);
-	    holder.releaseZipDownload.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
-
-	    holder.releaseTarDownload.setText(R.string.tarArchiveDownloadReleasesTab);
-	    holder.releaseZipDownload.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
+	    holder.releaseZipDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
+	    holder.releaseTarDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
 
 	    ReleasesDownloadsAdapter adapter = new ReleasesDownloadsAdapter(currentItem.getAssets(), startDownload);
 	    holder.downloadList.setAdapter(adapter);
@@ -194,6 +192,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 		}
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	public void notifyDataChanged() {
 		notifyDataSetChanged();
 		isLoading = false;
@@ -214,5 +213,4 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 		releasesList = list;
 		notifyDataChanged();
 	}
-
 }
