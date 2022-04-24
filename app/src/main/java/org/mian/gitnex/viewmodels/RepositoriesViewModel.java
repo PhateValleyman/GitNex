@@ -21,7 +21,7 @@ import retrofit2.Response;
 
 public class RepositoriesViewModel extends ViewModel {
 
-    private static MutableLiveData<List<Repository>> reposList;
+    private MutableLiveData<List<Repository>> reposList;
 
     public LiveData<List<Repository>> getRepositories(int page, int resultLimit, String userLogin, String type, String orgName, Context ctx) {
 
@@ -31,7 +31,7 @@ public class RepositoriesViewModel extends ViewModel {
         return reposList;
     }
 
-    public static void loadReposList(int page, int resultLimit, String userLogin, String type, String orgName, Context ctx) {
+    public void loadReposList(int page, int resultLimit, String userLogin, String type, String orgName, Context ctx) {
 
 	    Call<List<Repository>> call;
 
@@ -45,6 +45,9 @@ public class RepositoriesViewModel extends ViewModel {
 		    case "org":
 			    call = RetrofitClient.getApiInterface(ctx).orgListRepos(orgName, page, resultLimit);
 			    break;
+		    case "team":
+				call = RetrofitClient.getApiInterface(ctx).orgListTeamRepos(Long.valueOf(userLogin), page, resultLimit);
+				break;
 		    default:
 			    call = RetrofitClient.getApiInterface(ctx).userCurrentListRepos(page, resultLimit);
 			    break;
@@ -74,7 +77,7 @@ public class RepositoriesViewModel extends ViewModel {
         });
     }
 
-	public static void loadMoreRepos(int page, int resultLimit, String userLogin, String type, String orgName, Context ctx, ReposListAdapter adapter) {
+	public void loadMoreRepos(int page, int resultLimit, String userLogin, String type, String orgName, Context ctx, ReposListAdapter adapter) {
 
 		Call<List<Repository>> call;
 
@@ -87,6 +90,9 @@ public class RepositoriesViewModel extends ViewModel {
 				break;
 			case "org":
 				call = RetrofitClient.getApiInterface(ctx).orgListRepos(orgName, page, resultLimit);
+				break;
+			case "team":
+				call = RetrofitClient.getApiInterface(ctx).orgListTeamRepos(Long.valueOf(userLogin), page, resultLimit);
 				break;
 			default:
 				call = RetrofitClient.getApiInterface(ctx).userCurrentListRepos(page, resultLimit);
