@@ -38,7 +38,7 @@ public class Version {
 			return false;
 		}
 		final Pattern patternValid = Pattern.compile("^[v,V]?(\\d+)+(\\.(\\d+))*([_,\\-,+][\\w,\\d,_,\\-,+]*)?$");
-		return patternValid.matcher(value).find();
+		return value.equals("main") || patternValid.matcher(value).find();
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class Version {
 
 		final Pattern patternNumberDotNumber = Pattern.compile("^\\d+(\\.(\\d)+)*");
 
-		if(!valid(raw)) {
+		if(!valid(raw) || raw.equals("main")) {
 			dev = true;
 			values = new ArrayList<>();
 			return;
