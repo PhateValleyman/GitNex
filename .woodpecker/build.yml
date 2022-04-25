@@ -20,7 +20,7 @@ pipeline:
       branch: main
       path: [ app/, build.gradle ]
 
-  latest:
+  upload:
     image: curlimages/curl:7.82.0
     environment:
       WEBDAV_USERNAME: "GitNexBot"
@@ -34,7 +34,7 @@ pipeline:
       branch: main
       path: [ app/, build.gradle ]
 
-  release:
+  upload-release:
     image: curlimages/curl:7.82.0
     environment:
       WEBDAV_USERNAME: "GitNexBot"
