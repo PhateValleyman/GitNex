@@ -1,6 +1,6 @@
 package org.mian.gitnex.helpers;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -138,7 +138,7 @@ public class FileDiffView implements Serializable {
 		return fileInfo;
 	}
 
-	@NonNull
+	@NotNull
 	@Override
 	public String toString() {
 
