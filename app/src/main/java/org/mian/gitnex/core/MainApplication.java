@@ -17,7 +17,6 @@ import org.mian.gitnex.helpers.FontsOverride;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.contexts.AccountContext;
 import org.mian.gitnex.notifications.Notifications;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author opyale
