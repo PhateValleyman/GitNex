@@ -108,6 +108,9 @@ public class ParseDiff {
 						if(rawDiff.length <= 1) {
 							continue;
 						}
+						if(rawDiff[1].startsWith("\n")) {
+							rawDiff[1] = rawDiff[1].substring(1);
+						}
 
 						// extract the diff stats info of the first line
 						String statsLine = rawDiffs[j].split("\n")[0].split(" @@")[0];
