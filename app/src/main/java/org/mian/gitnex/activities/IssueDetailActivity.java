@@ -456,7 +456,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			TextView baseBranch = view.findViewById(R.id.baseBranch);
 			TextView headBranch = view.findViewById(R.id.headBranch);
 
-			baseBranch.setText(issue.getPullRequest().getHead().getRef());
+			baseBranch.setText(issue.getPullRequest().getBase().getRef());
 			headBranch.setText(issue.getPullRequest().getHead().getRef());
 
 			AlertDialog.Builder alertDialog = new AlertDialog.Builder(ctx);
