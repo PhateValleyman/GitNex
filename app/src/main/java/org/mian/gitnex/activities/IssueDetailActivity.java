@@ -332,10 +332,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				}
 				else if(response2.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-						getResources().getString(R.string.alertDialogTokenRevokedMessage),
-						getResources().getString(R.string.cancelButton),
-						getResources().getString(R.string.navLogout));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx);
 				}
 				else if(response2.code() == 403) {
 
@@ -393,9 +390,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-						getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton),
-						getResources().getString(R.string.navLogout));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx);
 				}
 				else if(response.code() == 403) {
 
@@ -573,9 +568,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle),
-						getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton),
-						getResources().getString(R.string.navLogout));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx);
 
 				}
 				else if(response.code() == 404) {
