@@ -256,14 +256,13 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 			        Toasty.success(ctx, getString(R.string.issueCreated));
 			        enableProcessButton();
 			        RepoDetailActivity.updateRepo = true;
-			        MainActivity.repoCreated = true;
+			        MainActivity.reloadRepos = true;
 			        finish();
 		        }
 		        else if(response2.code() == 401) {
 
 			        enableProcessButton();
-			        AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage),
-				        getResources().getString(R.string.cancelButton), getResources().getString(R.string.navLogout));
+			        AlertDialogs.authorizationTokenRevokedDialog(ctx);
 		        }
 		        else {
 

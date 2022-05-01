@@ -69,7 +69,7 @@ import retrofit2.Callback;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomSheetListener {
 
 	public static boolean refActivity = false;
-	public static boolean repoCreated = false;
+	public static boolean reloadRepos = false;
 
 	private DrawerLayout drawer;
 	private TextView toolbarTitle;
@@ -701,8 +701,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				}
 				else if(response.code() == 401) {
 
-					AlertDialogs.authorizationTokenRevokedDialog(ctx, getResources().getString(R.string.alertDialogTokenRevokedTitle), getResources().getString(R.string.alertDialogTokenRevokedMessage), getResources().getString(R.string.cancelButton),
-						getResources().getString(R.string.navLogout));
+					AlertDialogs.authorizationTokenRevokedDialog(ctx);
 				}
 				else {
 

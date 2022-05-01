@@ -32,15 +32,13 @@ public class RepositoryActions {
 		        if(response.isSuccessful()) {
 			        if(response.code() == 204) {
 
-				        MainActivity.repoCreated = true;
+				        MainActivity.reloadRepos = true;
 				        Toasty.success(context, context.getString(R.string.starRepositorySuccess));
 			        }
 		        }
 		        else if(response.code() == 401) {
 
-			        AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-				        context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.cancelButton),
-				        context.getResources().getString(R.string.navLogout));
+			        AlertDialogs.authorizationTokenRevokedDialog(context);
 		        }
 		        else if(response.code() == 403) {
 
@@ -78,15 +76,13 @@ public class RepositoryActions {
 		        if(response.isSuccessful()) {
 			        if(response.code() == 204) {
 
-				        MainActivity.repoCreated = true;
+				        MainActivity.reloadRepos = true;
 				        Toasty.success(context, context.getString(R.string.unStarRepositorySuccess));
 			        }
 		        }
 		        else if(response.code() == 401) {
 
-			        AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-				        context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.cancelButton),
-				        context.getResources().getString(R.string.navLogout));
+			        AlertDialogs.authorizationTokenRevokedDialog(context);
 		        }
 		        else if(response.code() == 403) {
 
@@ -130,9 +126,7 @@ public class RepositoryActions {
 		        }
 		        else if(response.code() == 401) {
 
-			        AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-				        context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.cancelButton),
-				        context.getResources().getString(R.string.navLogout));
+			        AlertDialogs.authorizationTokenRevokedDialog(context);
 		        }
 		        else if(response.code() == 403) {
 
@@ -174,9 +168,7 @@ public class RepositoryActions {
 		        }
 		        else if(response.code() == 401) {
 
-			        AlertDialogs.authorizationTokenRevokedDialog(context, context.getResources().getString(R.string.alertDialogTokenRevokedTitle),
-				        context.getResources().getString(R.string.alertDialogTokenRevokedMessage), context.getResources().getString(R.string.cancelButton),
-				        context.getResources().getString(R.string.navLogout));
+			        AlertDialogs.authorizationTokenRevokedDialog(context);
 		        }
 		        else if(response.code() == 403) {
 
