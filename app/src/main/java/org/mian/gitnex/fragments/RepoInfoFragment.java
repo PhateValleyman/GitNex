@@ -236,7 +236,7 @@ public class RepoInfoFragment extends Fragment {
 					Intent parent = new RepositoryContext(repoInfo.getParent(), requireContext()).getIntent(requireContext(), RepoDetailActivity.class);
 					startActivity(parent);
 				});
-				binding.repoFork.setText(getString(R.string.repo_fork_of, repoInfo.getParent().getFullName()));
+				binding.repoFork.setText(getString(R.string.repoForkOf, repoInfo.getParent().getFullName()));
 			} else {
 				binding.repoForkFrame.setVisibility(View.GONE);
 			}
