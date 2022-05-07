@@ -11,18 +11,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import org.mian.gitnex.activities.AdminCronTasksActivity;
 import org.mian.gitnex.activities.AdminGetUsersActivity;
+import org.mian.gitnex.activities.AdminUnadoptedReposActivity;
 import org.mian.gitnex.activities.BaseActivity;
 import org.mian.gitnex.databinding.FragmentAdministrationBinding;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class AdministrationFragment extends Fragment {
 
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		Context ctx = getContext();
 		FragmentAdministrationBinding fragmentAdministrationBinding = FragmentAdministrationBinding.inflate(inflater, container, false);
 
 		fragmentAdministrationBinding.adminUsers.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminGetUsersActivity.class)));
@@ -34,6 +34,7 @@ public class AdministrationFragment extends Fragment {
 		}
 
 		fragmentAdministrationBinding.adminCron.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminCronTasksActivity.class)));
+		fragmentAdministrationBinding.unadoptedRepos.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminUnadoptedReposActivity.class)));
 
 		String action = requireActivity().getIntent().getStringExtra("giteaAdminAction");
 		if(action != null) {

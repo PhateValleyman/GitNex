@@ -62,9 +62,7 @@ public class AdminCronTasksActivity extends BaseActivity {
 
 	private void fetchDataAsync(Context ctx) {
 
-		AdminCronTasksViewModel cronTasksViewModel = new ViewModelProvider(this).get(AdminCronTasksViewModel.class);
-
-		cronTasksViewModel.getCronTasksList(ctx, PAGE, LIMIT).observe(this, cronTasksListMain -> {
+		adminCronTasksViewModel.getCronTasksList(ctx, PAGE, LIMIT).observe(this, cronTasksListMain -> {
 
 			adapter = new AdminCronTasksAdapter(cronTasksListMain);
 

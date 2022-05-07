@@ -47,6 +47,24 @@
                 android:background="?android:attr/selectableItemBackground"
                 app:drawableStartCompat="@drawable/ic_tasks" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?attr/dividerColor" />
+
+            <TextView
+                android:id="@+id/unadoptedRepos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/unadoptedRepos"
+                android:drawablePadding="32dp"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="16sp"
+                android:padding="16dp"
+                android:background="?android:attr/selectableItemBackground"
+                app:drawableStartCompat="@drawable/ic_directory" />
+
         </LinearLayout>
 
     </ScrollView>
