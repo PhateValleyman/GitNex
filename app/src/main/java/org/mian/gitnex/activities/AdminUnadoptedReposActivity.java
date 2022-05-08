@@ -78,7 +78,7 @@ public class AdminUnadoptedReposActivity extends BaseActivity {
 			PAGE += 1;
 			binding.progressBar.setVisibility(View.VISIBLE);
 			viewModel.loadRepos(ctx, PAGE, resultLimit, null);
-		});
+		}, binding);
 
 		binding.recyclerView.setAdapter(adapter);
 

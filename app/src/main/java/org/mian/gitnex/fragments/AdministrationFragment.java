@@ -1,6 +1,5 @@
 package org.mian.gitnex.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,16 +24,16 @@ public class AdministrationFragment extends Fragment {
 
 		FragmentAdministrationBinding fragmentAdministrationBinding = FragmentAdministrationBinding.inflate(inflater, container, false);
 
-		fragmentAdministrationBinding.adminUsers.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminGetUsersActivity.class)));
+		fragmentAdministrationBinding.systemUsersFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminGetUsersActivity.class)));
 
 		// if gitea version is greater/equal(1.13.0) than user installed version (installed.higherOrEqual(compareVer))
 		if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.13.0")) {
 
-			fragmentAdministrationBinding.adminCron.setVisibility(View.VISIBLE);
+			fragmentAdministrationBinding.adminCronFrame.setVisibility(View.VISIBLE);
 		}
 
-		fragmentAdministrationBinding.adminCron.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminCronTasksActivity.class)));
-		fragmentAdministrationBinding.unadoptedRepos.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminUnadoptedReposActivity.class)));
+		fragmentAdministrationBinding.adminCronFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminCronTasksActivity.class)));
+		fragmentAdministrationBinding.unadoptedReposFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminUnadoptedReposActivity.class)));
 
 		String action = requireActivity().getIntent().getStringExtra("giteaAdminAction");
 		if(action != null) {

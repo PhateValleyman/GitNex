@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
+import org.mian.gitnex.databinding.ActivityAdminCronTasksBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.Toasty;
 import java.util.List;
@@ -28,11 +29,11 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 	private final Runnable updateList;
 	private final Runnable loadMoreListener;
 	private boolean isLoading = false, hasMore = true;
+	private final ActivityAdminCronTasksBinding activityAdminCronTasksBinding;
 
 	class UnadoptedViewHolder extends RecyclerView.ViewHolder {
 
 		private String repoName;
-
 		private final TextView name;
 
 		private UnadoptedViewHolder(View itemView) {
@@ -42,19 +43,22 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 
 			name = itemView.findViewById(R.id.repo_name);
 
-			itemView.setOnClickListener(taskInfo -> new AlertDialog.Builder(ctx)
-				.setTitle(repoName)
-				.setNeutralButton(R.string.close, null)
-				.setPositiveButton(R.string.menuDeleteText, ((dialog, which) -> delete(ctx, repoName)))
-				.setNegativeButton(R.string.adoptRepo, ((dialog, which) -> adopt(ctx, repoName)))
-				.show());
+			itemView.setOnClickListener(taskInfo -> {
+				String[] repoSplit = repoName.split("/");
+				new AlertDialog.Builder(ctx)
+					.setTitle(repoName).setMessage(ctx.getString(R.string.unadoptedReposMessage, repoSplit[1], repoSplit[0]))
+					.setNeutralButton(R.string.close, null)
+					.setPositiveButton(R.string.menuDeleteText, ((dialog, which) -> delete(ctx, repoName)))
+					.setNegativeButton(R.string.adoptRepo, ((dialog, which) -> adopt(ctx, repoName, getBindingAdapterPosition()))).show();
+			});
 		}
 	}
 
-	public AdminUnadoptedReposAdapter(List<String> list, Runnable updateList, Runnable loadMore) {
+	public AdminUnadoptedReposAdapter(List<String> list, Runnable updateList, Runnable loadMore, ActivityAdminCronTasksBinding activityAdminCronTasksBinding) {
 		this.repos = list;
 		this.updateList = updateList;
 		this.loadMoreListener = loadMore;
+		this.activityAdminCronTasksBinding = activityAdminCronTasksBinding;
 	}
 
 	@NonNull
@@ -76,6 +80,12 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 
 		holder.repoName = currentItem;
 		holder.name.setText(currentItem);
+	}
+
+	private void updateAdapter(int position) {
+		repos.remove(position);
+		notifyItemRemoved(position);
+		notifyItemRangeChanged(position, repos.size());
 	}
 
 	private void delete(final Context ctx, final String name) {
@@ -124,7 +134,7 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 		});
 	}
 
-	private void adopt(final Context ctx, final String name) {
+	private void adopt(final Context ctx, final String name, int position) {
 
 		String[] repoSplit = name.split("/");
 
@@ -140,7 +150,10 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 				switch(response.code()) {
 
 					case 204:
-						updateList.run();
+						updateAdapter(position);
+						if(getItemCount() == 0) {
+							activityAdminCronTasksBinding.noData.setVisibility(View.VISIBLE);
+						}
 						Toasty.success(ctx, ctx.getString(R.string.repoAdopted, name));
 						break;
 
