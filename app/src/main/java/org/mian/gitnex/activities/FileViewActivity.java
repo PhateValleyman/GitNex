@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -39,7 +40,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 /**
- * Author M M Arif
+ * @author M M Arif
  */
 
 public class FileViewActivity extends BaseActivity implements BottomSheetListener {
@@ -121,11 +122,16 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 									byte[] pictureBytes = responseBody.bytes();
 
 									runOnUiThread(() -> {
-										binding.contents.setVisibility(View.GONE);
-										binding.markdownFrame.setVisibility(View.GONE);
+										Bitmap image = Images.scaleImage(pictureBytes, 1920);
+										if(image != null) {
+											binding.contents.setVisibility(View.GONE);
+											binding.markdownFrame.setVisibility(View.GONE);
 
-										binding.photoView.setVisibility(View.VISIBLE);
-										binding.photoView.setImageBitmap(Images.scaleImage(pictureBytes, 1920));
+											binding.photoView.setVisibility(View.VISIBLE);
+											binding.photoView.setImageBitmap(image);
+										} else {
+											processable = false;
+										}
 									});
 								}
 								break;
