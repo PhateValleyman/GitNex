@@ -117,22 +117,19 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 								// See https://developer.android.com/guide/topics/media/media-formats#core
 								if(Arrays.asList("bmp", "gif", "jpg", "jpeg", "png", "webp", "heic", "heif").contains(fileExtension.toLowerCase())) {
 
-									processable = true;
-
 									byte[] pictureBytes = responseBody.bytes();
 
-									runOnUiThread(() -> {
-										Bitmap image = Images.scaleImage(pictureBytes, 1920);
-										if(image != null) {
+									Bitmap image = Images.scaleImage(pictureBytes, 1920);
+									processable = image != null;
+									if(processable) {
+										runOnUiThread(() -> {
 											binding.contents.setVisibility(View.GONE);
 											binding.markdownFrame.setVisibility(View.GONE);
 
 											binding.photoView.setVisibility(View.VISIBLE);
 											binding.photoView.setImageBitmap(image);
-										} else {
-											processable = false;
-										}
-									});
+										});
+									}
 								}
 								break;
 
