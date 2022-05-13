@@ -11,7 +11,7 @@ pipeline:
     environment:
       OUTPUT: "signed.apk"
       INSTANCE: "https://codeberg.org"
-      KS_FILE: "ci_keystore.jks"
+      KS_FILE: "gitnex_ci_keystore.jks"
     commands:
       - >
         KEYFILE=$(mktemp)
