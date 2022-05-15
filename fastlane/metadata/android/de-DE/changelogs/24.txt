@@ -1,7 +1,7 @@
 1.1.0-rc1
 - Neu: Angepasstes App-Design der gesamten App der Farben, UX- und UI-Verbesserungen
-- New: New font
-- New: Issues counter badge. Can be enabled/disabled from settings
+- Neu: Neue Schriftart
+- Neu: Issue-Zähler. Kann in den Einstellungen aktiviert/deaktiviert werden
 - New: Redesigned settings screen
 - New: Create a team in Organization
 - New: List organization members
