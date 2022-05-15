@@ -14,5 +14,9 @@ files: [
   {
     "source":       "fastlane/metadata/android/en-US/full_description.txt",
     "translation":  "fastlane/metadata/android/%locale%/full_description.txt",
+  },
+  {
+    "source":       "fastlane/metadata/android/en-US/title.txt",
+    "translation":  "fastlane/metadata/android/%locale%/title.txt",
   }
 ]
