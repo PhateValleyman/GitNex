@@ -127,7 +127,7 @@ public class CommitDetailFragment extends Fragment {
 			public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
 
 				checkLoading();
-				Toasty.error(requireContext(), getString(R.string.genericError));
+				if(getContext() != null) Toasty.error(requireContext(), getString(R.string.genericError));
 			}
 		});
 	}
@@ -231,8 +231,10 @@ public class CommitDetailFragment extends Fragment {
 				public void onFailure(@NonNull Call<Commit> call, @NonNull Throwable t) {
 
 					checkLoading();
-					Toasty.error(requireContext(), getString(R.string.genericError));
-					requireActivity().finish();
+					if(getContext() != null) {
+						Toasty.error(requireContext(), getString(R.string.genericError));
+						requireActivity().finish();
+					}
 				}
 			});
 	}
