@@ -61,6 +61,8 @@ public class CommitDetailFragment extends Fragment {
 
 		super.onCreateView(inflater, container, savedInstanceState);
 
+		if(binding != null) return binding.getRoot();
+
 		binding = FragmentCommitDetailsBinding.inflate(getLayoutInflater(), container, false);
 
 		RepositoryContext repository = RepositoryContext.fromIntent(requireActivity().getIntent());
