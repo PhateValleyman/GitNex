@@ -247,7 +247,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
 		if(StringUtils.containsAny(notificationThread.getSubject().getType().toLowerCase(), "pull", "issue")) {
 
-			RepositoryContext repo = new RepositoryContext(notificationThread.getRepository(), context);
+			RepositoryContext repo = new RepositoryContext(notificationThread.getRepository().getOwner().getLogin(),
+				notificationThread.getRepository().getName(), context); // we can't use the repository object here directly because the permissions are missing
 			String issueUrl = notificationThread.getSubject().getUrl();
 
 			repo.saveToDB(context);
