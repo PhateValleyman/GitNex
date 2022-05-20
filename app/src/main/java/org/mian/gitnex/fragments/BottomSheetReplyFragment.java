@@ -188,10 +188,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 						if(status == ActionResult.Status.SUCCESS) {
 
-							FragmentActivity activity = requireActivity();
-							if(activity instanceof IssueDetailActivity) {
-								((IssueDetailActivity) activity).commentPosted = true;
-							}
+							IssueDetailActivity.commentPosted = true;
 
 							Toasty.success(getContext(), getString(R.string.commentSuccess));
 

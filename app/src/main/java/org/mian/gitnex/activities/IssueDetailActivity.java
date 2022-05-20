@@ -116,7 +116,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 	public static boolean singleIssueUpdate = false;
 	public boolean commentEdited = false;
-	public boolean commentPosted = false;
+	public static boolean commentPosted = false;
 
 	private IssueCommentsViewModel issueCommentsModel;
 
