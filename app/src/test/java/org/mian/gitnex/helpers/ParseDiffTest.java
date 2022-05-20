@@ -24,7 +24,7 @@ public class ParseDiffTest {
 		assertFalse(parsed.get(1).isFileBinary());
 
 		assertEquals(1, parsed.get(1).getFileContents().size());
-		assertEquals(2, parsed.get(1).getFileContents().get(0).getLineAdded());
+		assertEquals(1, parsed.get(1).getFileContents().get(0).getLineAdded());
 		assertEquals(0, parsed.get(1).getFileContents().get(0).getLineRemoved());
 
 		assertEquals(1, parsed.get(3).getFileContents().get(0).getLineAdded());
@@ -40,7 +40,7 @@ public class ParseDiffTest {
 		assertFalse(parsed.get(1).isFileBinary());
 
 		assertEquals(1, parsed.get(1).getFileContents().size());
-		assertEquals(2, parsed.get(1).getFileContents().get(0).getLineAdded());
+		assertEquals(1, parsed.get(1).getFileContents().get(0).getLineAdded());
 		assertEquals(0, parsed.get(1).getFileContents().get(0).getLineRemoved());
 
 		assertEquals(1, parsed.get(3).getFileContents().get(0).getLineAdded());
