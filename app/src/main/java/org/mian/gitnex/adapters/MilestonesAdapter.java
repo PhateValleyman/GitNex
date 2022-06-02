@@ -179,7 +179,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 			if(dataModel.getDueOn() != null) {
 
-				String TAG = Constants.tagMilestonesAdapter;
+				String TAG = "MilestonesAdapter";
 				if(timeFormat.equals("normal") || timeFormat.equals("pretty")) {
 
 					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", new Locale(locale));

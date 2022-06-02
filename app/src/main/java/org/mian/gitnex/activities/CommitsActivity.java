@@ -48,8 +48,6 @@ public class CommitsActivity extends BaseActivity {
 	private RecyclerView recyclerView;
 	private List<Commit> commitsList;
 	private CommitsAdapter adapter;
-	private ProgressBar progressLoadMore;
-
 	public RepositoryContext repository;
 
 	@Override
@@ -73,7 +71,6 @@ public class CommitsActivity extends BaseActivity {
 
 		ImageView closeActivity = activityCommitsBinding.close;
 		noData = activityCommitsBinding.noDataCommits;
-		progressLoadMore = activityCommitsBinding.progressLoadMore;
 		progressBar = activityCommitsBinding.progressBar;
 		SwipeRefreshLayout swipeRefresh = activityCommitsBinding.pullToRefresh;
 
@@ -159,7 +156,7 @@ public class CommitsActivity extends BaseActivity {
 
 	private void loadMore(String repoOwner, String repoName, final int page, String branchName, int resultLimit) {
 
-		progressLoadMore.setVisibility(View.VISIBLE);
+		progressBar.setVisibility(View.VISIBLE);
 
 		Call<List<Commit>> call = RetrofitClient.getApiInterface(ctx).repoGetAllCommits(repoOwner, repoName, branchName, null, page, resultLimit);
 
@@ -190,7 +187,7 @@ public class CommitsActivity extends BaseActivity {
 					Log.e(TAG, String.valueOf(response.code()));
 				}
 
-				progressLoadMore.setVisibility(View.GONE);
+				progressBar.setVisibility(View.GONE);
 			}
 
 			@Override

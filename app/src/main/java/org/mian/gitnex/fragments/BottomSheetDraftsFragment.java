@@ -19,7 +19,7 @@ import org.mian.gitnex.structs.BottomSheetListener;
 
 public class BottomSheetDraftsFragment extends BottomSheetDialogFragment {
 
-	private String TAG = Constants.tagDraftsBottomSheet;
+	private String TAG = "BottomSheetDraftsFragment";
 	private BottomSheetListener bmListener;
 
 	@Nullable

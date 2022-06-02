@@ -50,7 +50,6 @@ public class DiffFilesFragment extends Fragment {
 
 		binding.progressBar.setVisibility(View.VISIBLE);
 		binding.toolbarTitle.setText(R.string.processingText);
-		binding.close.setOnClickListener(v -> requireActivity().finish());
 
 		binding.diffFiles.setOnItemClickListener((parent, view, position, id) -> requireActivity().getSupportFragmentManager()
 			.beginTransaction()
