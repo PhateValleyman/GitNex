@@ -45,6 +45,7 @@ public class DiffFragment extends Fragment {
 		DiffFragment fragment = new DiffFragment();
 		fragment.setFileDiffView(fileDiffView);
 		fragment.setIssue(issue);
+		fragment.type = "pull";
 		return fragment;
 
 	}
