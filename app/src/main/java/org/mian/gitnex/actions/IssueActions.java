@@ -1,6 +1,8 @@
 package org.mian.gitnex.actions;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.v2.models.Comment;
 import org.gitnex.tea4j.v2.models.CreateIssueCommentOption;
@@ -112,7 +114,10 @@ public class IssueActions {
 
 						IssueDetailActivity.singleIssueUpdate = true;
 						((IssueDetailActivity) ctx).onResume();
-						RepoDetailActivity.updateRepo = true;
+						if(((Activity) ctx).getIntent().getStringExtra("openedFromLink") == null ||
+							!((Activity) ctx).getIntent().getStringExtra("openedFromLink").equals("true")) {
+							RepoDetailActivity.updateRepo = true;
+						}
 					}
 				}
 				else if(response.code() == 401) {
