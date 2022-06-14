@@ -2,7 +2,6 @@ package org.mian.gitnex.actions;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import androidx.annotation.NonNull;
 import org.gitnex.tea4j.v2.models.Comment;
 import org.gitnex.tea4j.v2.models.CreateIssueCommentOption;
