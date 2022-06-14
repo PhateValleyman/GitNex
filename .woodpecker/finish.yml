@@ -1,7 +1,6 @@
 depends_on:
     - build
     - locale
-#    - check
 
 run_on: [ success, failure ]
 skip_clone: true
