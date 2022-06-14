@@ -6,5 +6,5 @@ pipeline:
     image: qwerty287/woodpecker-regex-check
     settings:
       pattern: "*.java"
-      regex: " \* \@author [\S\s]+"
+      regex: " \\* \\@author [\\S\\s]+"
       must_contain: true
