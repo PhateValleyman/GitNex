@@ -34,7 +34,7 @@ pipeline:
       # Username and token that should be used to authenticate against the gitea instance
       # - GITEA_USERNAME=secret
       # - GITEA_TOKEN=secret
-    secrets: [ gitea_username, gitea_token ]
+    secrets: [ GITEA_USERNAME, GITEA_TOKEN ]
     commands:
       # Setup git credentials and checkout target branch
       - git config user.name  "$${GIT_AUTHOR_NAME}"
