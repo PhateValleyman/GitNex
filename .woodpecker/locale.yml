@@ -26,7 +26,7 @@ pipeline:
       # Information that should be used when authoring a commit
       - GIT_AUTHOR_NAME=gitnexbot
       - GIT_AUTHOR_EMAIL=gitnexbot@noreply.codeberg.org
-      - GIT_COMMIT_MESSAGE=Translation updates from Crowdin
+      - GIT_COMMIT_MESSAGE=Translation updates from Crowdin [CI SKIP]
       # Basic information concerning the repo that
       - GITEA_HOST=codeberg.org
       - GITEA_REPOSITORY=gitnex/GitNex
