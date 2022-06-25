@@ -98,14 +98,11 @@ public class PullRequestCommitsFragment extends Fragment {
 		return binding.getRoot();
 	}
 
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		this.getClass().getName();
-
-
 	}
 
 	private void loadInitial(IssueContext issue, int resultLimit) {
@@ -203,8 +200,6 @@ public class PullRequestCommitsFragment extends Fragment {
 		});
 
 	}
-
-
 
 	@Override
 	public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
