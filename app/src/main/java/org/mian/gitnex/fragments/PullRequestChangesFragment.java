@@ -19,7 +19,6 @@ import org.mian.gitnex.databinding.FragmentPrChangesBinding;
 public class PullRequestChangesFragment extends Fragment {
 
 	private FragmentPrChangesBinding binding;
-	private Context ctx;
 	private final DiffFilesFragment diffFilesFragment = DiffFilesFragment.newInstance();
 	private final PullRequestCommitsFragment pullRequestCommitsFragment = PullRequestCommitsFragment.newInstance();
 
@@ -33,14 +32,12 @@ public class PullRequestChangesFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		binding = FragmentPrChangesBinding.inflate(inflater, container, false);
-		ctx = requireContext();
 
 		binding.close.setOnClickListener(v -> requireActivity().finish());
 
 		binding.container.setAdapter(new FragmentStateAdapter(requireActivity()) {
 
 			@NonNull
-			@NotNull
 			@Override
 			public Fragment createFragment(int position) {
 
