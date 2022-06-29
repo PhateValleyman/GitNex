@@ -58,7 +58,7 @@
         style="@style/Widget.MaterialComponents.LinearProgressIndicator"
         app:indicatorColor="?attr/progressIndicatorColor" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -165,11 +165,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:headerDividersEnabled="true"
+                android:nestedScrollingEnabled="false"
                 android:background="?attr/primaryBackgroundColor"
                 tools:listitem="@layout/list_diff_files"/>
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>
