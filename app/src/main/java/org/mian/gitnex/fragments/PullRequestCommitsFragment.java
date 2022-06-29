@@ -78,6 +78,7 @@ public class PullRequestCommitsFragment extends Fragment {
 		);
 		params.setMargins(0, 0, 0, 0);
 		binding.pullToRefresh.setLayoutParams(params);
+		binding.progressBar.setLayoutParams(params);
 
 		adapter = new CommitsAdapter(ctx, commitsList);
 		adapter.setLoadMoreListener(() -> binding.recyclerView.post(() -> {
