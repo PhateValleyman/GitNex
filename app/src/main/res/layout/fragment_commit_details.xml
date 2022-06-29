@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -58,15 +57,13 @@
         style="@style/Widget.MaterialComponents.LinearProgressIndicator"
         app:indicatorColor="?attr/progressIndicatorColor" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/diff_files"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="4dp"
-        android:nestedScrollingEnabled="false"
-        android:background="?attr/primaryBackgroundColor"
         android:headerDividersEnabled="true"
-        android:fastScrollEnabled="true"
-        tools:listitem="@layout/list_diff_files" />
+        android:background="?attr/primaryBackgroundColor"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

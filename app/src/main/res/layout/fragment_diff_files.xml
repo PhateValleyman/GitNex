@@ -28,9 +28,11 @@
         android:layout_marginBottom="8dp"
         android:textSize="15sp" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/diff_files"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="?attr/primaryBackgroundColor"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

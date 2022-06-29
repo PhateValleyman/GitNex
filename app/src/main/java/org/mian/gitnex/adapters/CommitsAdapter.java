@@ -158,15 +158,15 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 	        commitSha.setText(commitsModel.getSha().substring(0, Math.min(commitsModel.getSha().length(), 10)));
             rootView.setOnClickListener(v -> {
-				if(context instanceof CommitsActivity) {
-					Intent intent = ((CommitsActivity) context).repository.getIntent(context, CommitDetailActivity.class);
-					intent.putExtra("sha", commitsModel.getSha());
-					context.startActivity(intent);
-				} else {
-					Intent intent = IssueContext.fromIntent(((DiffActivity) context).getIntent()).getRepository().getIntent(context, CommitDetailActivity.class);
-					intent.putExtra("sha", commitsModel.getSha());
-					context.startActivity(intent);
-				}
+	            Intent intent;
+	            if(context instanceof CommitsActivity) {
+		            intent = ((CommitsActivity) context).repository.getIntent(context, CommitDetailActivity.class);
+	            } else {
+		            intent = IssueContext.fromIntent(((DiffActivity) context).getIntent()).getRepository()
+			            .getIntent(context, CommitDetailActivity.class);
+	            }
+	            intent.putExtra("sha", commitsModel.getSha());
+	            context.startActivity(intent);
             });
 
         }

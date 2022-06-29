@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import org.mian.gitnex.R;
 import org.mian.gitnex.adapters.DiffFilesAdapter;
 import org.mian.gitnex.clients.RetrofitClient;
@@ -17,6 +18,7 @@ import org.mian.gitnex.helpers.ParseDiff;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -29,6 +31,8 @@ public class DiffFilesFragment extends Fragment {
 
 	private FragmentDiffFilesBinding binding;
 	private Context ctx;
+	private List<FileDiffView> fileDiffViews = new ArrayList<>();
+	private DiffFilesAdapter adapter;
 
 	public DiffFilesFragment() {}
 
@@ -51,15 +55,15 @@ public class DiffFilesFragment extends Fragment {
 		binding.progressBar.setVisibility(View.VISIBLE);
 		binding.toolbarTitle.setText(R.string.processingText);
 
-		binding.diffFiles.setOnItemClickListener((parent, view, position, id) -> requireActivity().getSupportFragmentManager()
-			.beginTransaction()
-			.replace(R.id.fragment_container, DiffFragment.newInstance((FileDiffView) parent.getItemAtPosition(position), issue))
-			.commit());
+		adapter = new DiffFilesAdapter(ctx, fileDiffViews, issue, "");
+
+		binding.diffFiles.setHasFixedSize(true);
+		binding.diffFiles.setLayoutManager(new LinearLayoutManager(ctx));
+		binding.diffFiles.setAdapter(adapter);
 
 		getPullDiffFiles(issue.getRepository().getOwner(), issue.getRepository().getName(), String.valueOf(issue.getIssueIndex()));
 
 		return binding.getRoot();
-
 	}
 
 	private void getPullDiffFiles(String owner, String repo, String pullIndex) {
@@ -80,7 +84,7 @@ public class DiffFilesFragment extends Fragment {
 				switch(response.code()) {
 
 					case 200:
-						List<FileDiffView> fileDiffViews = ParseDiff.getFileDiffViewArray(response.body());
+						fileDiffViews = ParseDiff.getFileDiffViewArray(response.body());
 
 						int filesCount = fileDiffViews.size();
 
@@ -88,12 +92,11 @@ public class DiffFilesFragment extends Fragment {
 							getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)) :
 							getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount));
 
-						DiffFilesAdapter adapter = new DiffFilesAdapter(ctx, fileDiffViews);
-
 						requireActivity().runOnUiThread(() -> {
 							binding.progressBar.setVisibility(View.GONE);
-							binding.diffFiles.setAdapter(adapter);
 							binding.toolbarTitle.setText(toolbarTitleText);
+							adapter.updateList(fileDiffViews);
+							adapter.notifyDataChanged();
 						});
 						break;
 
@@ -118,7 +121,5 @@ public class DiffFilesFragment extends Fragment {
 		});
 
 		thread.start();
-
 	}
-
 }

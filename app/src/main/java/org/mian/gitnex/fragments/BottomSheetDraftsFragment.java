@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.mian.gitnex.databinding.BottomSheetDraftsBinding;
-import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.structs.BottomSheetListener;
 
 /**
