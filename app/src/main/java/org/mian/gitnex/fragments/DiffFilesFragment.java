@@ -53,7 +53,6 @@ public class DiffFilesFragment extends Fragment {
 		IssueContext issue = IssueContext.fromIntent(requireActivity().getIntent());
 
 		binding.progressBar.setVisibility(View.VISIBLE);
-		binding.toolbarTitle.setText(R.string.processingText);
 
 		adapter = new DiffFilesAdapter(ctx, fileDiffViews, issue, "");
 
@@ -93,6 +92,7 @@ public class DiffFilesFragment extends Fragment {
 							getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount));
 
 						requireActivity().runOnUiThread(() -> {
+							binding.toolbarTitle.setVisibility(View.VISIBLE);
 							binding.progressBar.setVisibility(View.GONE);
 							binding.toolbarTitle.setText(toolbarTitleText);
 							adapter.updateList(fileDiffViews);
