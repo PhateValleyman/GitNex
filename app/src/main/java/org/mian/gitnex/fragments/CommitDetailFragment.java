@@ -21,7 +21,6 @@ import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.adapters.DiffFilesAdapter;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
-import org.mian.gitnex.databinding.CustomCommitHeaderBinding;
 import org.mian.gitnex.databinding.FragmentCommitDetailsBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
@@ -146,11 +145,6 @@ public class CommitDetailFragment extends Fragment {
 				public void onResponse(@NonNull Call<Commit> call, @NonNull Response<Commit> response) {
 
 					checkLoading();
-					CustomCommitHeaderBinding binding = CustomCommitHeaderBinding.inflate(getLayoutInflater());
-					binding.getRoot().setOnClickListener((v) -> {
-						// we need a ClickListener here to prevent that the ItemClickListener of the diffFiles ListView handles clicks for the header
-					});
-					//CommitDetailFragment.this.binding.diffFiles.addHeaderView(binding.getRoot());
 					Commit commitsModel = response.body();
 					if(commitsModel == null) {
 						onFailure(call, new Throwable());
