@@ -78,12 +78,12 @@ public class PullRequestCommitsFragment extends Fragment {
 		);
 		params.setMargins(0, 0, 0, 0);
 		binding.pullToRefresh.setLayoutParams(params);
-		RelativeLayout.LayoutParams paramsProgessBar = new RelativeLayout.LayoutParams(
-			RelativeLayout.LayoutParams.WRAP_CONTENT,
+		RelativeLayout.LayoutParams paramsProgressBar = new RelativeLayout.LayoutParams(
+			RelativeLayout.LayoutParams.MATCH_PARENT,
 			RelativeLayout.LayoutParams.WRAP_CONTENT
 		);
-		paramsProgessBar.setMargins(0, 0, 0, 0);
-		binding.progressBar.setLayoutParams(paramsProgessBar);
+		paramsProgressBar.setMargins(0, 0, 0, 0);
+		binding.progressBar.setLayoutParams(paramsProgressBar);
 
 		adapter = new CommitsAdapter(ctx, commitsList);
 		adapter.setLoadMoreListener(() -> binding.recyclerView.post(() -> {
