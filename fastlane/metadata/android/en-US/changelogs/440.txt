@@ -1,0 +1,14 @@
+4.4.0
+
+New: List/view wiki pages
+New: Create/edit/delete wiki page
+New: Add support for pull request commits
+Bugfix: Fix crashes on login with spaces, new lines and unwanted characters
+Bugfix: Fix crash on repository info view in some cases
+Bugfix: Fix crash on commenting on PR when coming from notification
+
+Release Notes: https://codeberg.org/gitnex/GitNex/releases
+
+Release Video: 
+
+Release Blog: https://gitnex.codeberg.page/posts/440.html
