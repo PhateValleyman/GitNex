@@ -1,10 +1,10 @@
 pipeline:
-  style:
-    image: qwerty287/woodpecker-intellij-formatter
-
   author-header:
     image: qwerty287/woodpecker-regex-check
     settings:
       pattern: "*.java"
       regex: " \\\\* \\\\@author [\\\\S\\\\s]+"
       must_contain: true
+
+  style:
+    image: qwerty287/woodpecker-intellij-formatter
