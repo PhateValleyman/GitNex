@@ -26,10 +26,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import org.gitnex.tea4j.v2.models.Branch;
-import org.gitnex.tea4j.v2.models.Milestone;
-import org.gitnex.tea4j.v2.models.Repository;
-import org.gitnex.tea4j.v2.models.WatchInfo;
+import org.gitnex.tea4j.v2.models.*;
+import org.jetbrains.annotations.NotNull;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.fragments.BottomSheetIssuesFilterFragment;
@@ -178,7 +176,26 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		if(id == android.R.id.home) {
 
-			finish();
+			if(!getIntent().getBooleanExtra("openedFromUserOrg", false)) {
+				RetrofitClient.getApiInterface(ctx).orgGet(repository.getOwner()).enqueue(new Callback<>() {
+
+					@Override
+					public void onResponse(@NotNull Call<Organization> call, @NotNull Response<Organization> response) {
+						Intent intent = new Intent(ctx, response.isSuccessful() ? OrganizationDetailActivity.class : ProfileActivity.class);
+						intent.putExtra(response.isSuccessful() ? "orgName" : "username", repository.getOwner());
+						intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivity(intent);
+						finish();
+					}
+
+					@Override
+					public void onFailure(@NotNull Call<Organization> call, @NotNull Throwable t) {
+						finish();
+					}
+				});
+			} else {
+				finish();
+			}
 			return true;
 		}
 		else if(id == R.id.repoMenu) {
