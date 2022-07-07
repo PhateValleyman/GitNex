@@ -122,7 +122,8 @@ public class RepositoriesFragment extends Fragment {
 		Call<List<Repository>> call = RetrofitClient
 			.getApiInterface(context).userListRepos(username, 1, resultLimit);
 
-		call.enqueue(new Callback<List<Repository>>() {
+		call.enqueue(new Callback<>() {
+
 			@Override
 			public void onResponse(@NonNull Call<List<Repository>> call, @NonNull Response<List<Repository>> response) {
 
