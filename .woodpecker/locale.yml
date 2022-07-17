@@ -1,11 +1,18 @@
 pipeline:
-  push:
-    image: crowdin/cli:3.7.8
+  prepare:
+    image: alpine
     commands:
       - cp crowdin.example.yml crowdin.yml
       - sed -i 's/-removed-/'"$CROWDIN_TOKEN"'/' crowdin.yml
-      - crowdin push
     secrets: [ CROWDIN_TOKEN ]
+    when:
+      event: [ push, tag ]
+      branch: main
+
+  push:
+    image: crowdin/cli:3.7.8
+    commands:
+      - crowdin push
     when:
       event: [ push, tag ]
       branch: main
@@ -45,7 +52,7 @@ pipeline:
       # If files have changed, create a new commit and push it to the branch this pipeline was started on
       - >
         if git commit --message "$${GIT_COMMIT_MESSAGE}"; then
-          git remote set-url origin "https://$${GITEA_USERNAME}:$${GITEA_TOKEN}@$${GITEA_HOST}/$${GITEA_REPOSITORY}"
+          git remote set-url origin "https://$${GITEA_TOKEN}@$${GITEA_HOST}/$${GITEA_REPOSITORY}"
           git push origin "$${GITEA_BRANCH}"
         fi
     when:
