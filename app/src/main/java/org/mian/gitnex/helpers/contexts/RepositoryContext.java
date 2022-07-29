@@ -14,6 +14,9 @@ import org.mian.gitnex.helpers.TinyDB;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * @author qwerty287
+ */
 public class RepositoryContext implements Serializable {
 
 	public static final String INTENT_EXTRA = "repository";
@@ -158,7 +161,7 @@ public class RepositoryContext implements Serializable {
 
 	public void setRepository(org.gitnex.tea4j.v2.models.Repository repository) {
 		this.repository = repository;
-		if(!repository.getFullName().equals(getFullName())) {
+		if(!repository.getFullName().equalsIgnoreCase(getFullName())) {
 			throw new IllegalArgumentException("repo does not match owner and name");
 		}
 	}
