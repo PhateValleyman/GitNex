@@ -38,10 +38,9 @@ pipeline:
       - GITEA_HOST=codeberg.org
       - GITEA_REPOSITORY=gitnex/GitNex
       - GITEA_BRANCH=main
-      # Username and token that should be used to authenticate against the gitea instance
-      # - GITEA_USERNAME=secret
+      # Token that should be used to authenticate against the gitea instance
       # - GITEA_TOKEN=secret
-    secrets: [ GITEA_USERNAME, GITEA_TOKEN ]
+    secrets: [ GITEA_TOKEN ]
     commands:
       # Setup git credentials and checkout target branch
       - git config user.name  "$${GIT_AUTHOR_NAME}"
