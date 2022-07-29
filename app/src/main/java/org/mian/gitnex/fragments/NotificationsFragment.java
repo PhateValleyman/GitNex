@@ -151,7 +151,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 						notificationThreads.clear();
 					}
 
-					if(Objects.requireNonNull(listResponse.get().body()).size() > 0) {
+
+					if(listResponse.get().body() != null) {
 						notificationThreads.addAll(Objects.requireNonNull(listResponse.get().body()));
 					}
 					else {
