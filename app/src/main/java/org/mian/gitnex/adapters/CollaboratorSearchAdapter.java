@@ -2,6 +2,7 @@ package org.mian.gitnex.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,8 +23,10 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
+import java.util.Arrays;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -88,16 +91,21 @@ public class CollaboratorSearchAdapter extends RecyclerView.Adapter<Collaborator
 
             addCollaboratorButtonRemove.setOnClickListener(v -> AlertDialogs.collaboratorRemoveDialog(context, userInfo.getLogin(), repository));
 
-	        userAvatar.setOnClickListener(loginId -> {
-		        Intent intent = new Intent(context, ProfileActivity.class);
-		        intent.putExtra("username", userInfo.getLogin());
-		        context.startActivity(intent);
-	        });
+	        new Handler().postDelayed(() -> {
+		        if(!Arrays.asList(Constants.restrictedUsers).contains(userInfo.getLogin())) {
 
-	        userAvatar.setOnLongClickListener(loginId -> {
-		        AppUtil.copyToClipboard(context, userInfo.getLogin(), context.getString(R.string.copyLoginIdToClipBoard, userInfo.getLogin()));
-		        return true;
-	        });
+			        userAvatar.setOnClickListener(loginId -> {
+				        Intent intent = new Intent(context, ProfileActivity.class);
+				        intent.putExtra("username", userInfo.getLogin());
+				        context.startActivity(intent);
+			        });
+
+			        userAvatar.setOnLongClickListener(loginId -> {
+				        AppUtil.copyToClipboard(context, userInfo.getLogin(), context.getString(R.string.copyLoginIdToClipBoard, userInfo.getLogin()));
+				        return true;
+			        });
+		        }
+	        }, 500);
         }
 
     }

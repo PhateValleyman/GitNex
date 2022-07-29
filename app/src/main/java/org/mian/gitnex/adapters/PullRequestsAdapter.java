@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,11 +29,13 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.ColorInverter;
+import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.LabelWidthCalculator;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.contexts.IssueContext;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -113,16 +116,21 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			frameLabels.setOnClickListener(openPr);
 			frameLabelsDots.setOnClickListener(openPr);
 
-			assigneeAvatar.setOnClickListener(v -> {
-				Intent intent = new Intent(context, ProfileActivity.class);
-				intent.putExtra("username", pullRequestObject.getUser().getLogin());
-				context.startActivity(intent);
-			});
+			new Handler().postDelayed(() -> {
+				if(!Arrays.asList(Constants.restrictedUsers).contains(pullRequestObject.getUser().getLogin())) {
 
-			assigneeAvatar.setOnLongClickListener(loginId -> {
-				AppUtil.copyToClipboard(context, pullRequestObject.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, pullRequestObject.getUser().getLogin()));
-				return true;
-			});
+					assigneeAvatar.setOnClickListener(v -> {
+						Intent intent = new Intent(context, ProfileActivity.class);
+						intent.putExtra("username", pullRequestObject.getUser().getLogin());
+						context.startActivity(intent);
+					});
+
+					assigneeAvatar.setOnLongClickListener(loginId -> {
+						AppUtil.copyToClipboard(context, pullRequestObject.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, pullRequestObject.getUser().getLogin()));
+						return true;
+					});
+				}
+			}, 500);
 		}
 
 		@SuppressLint("SetTextI18n")

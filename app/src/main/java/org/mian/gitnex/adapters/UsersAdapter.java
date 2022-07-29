@@ -3,6 +3,7 @@ package org.mian.gitnex.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,9 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
+import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.RoundedTransformation;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -74,16 +77,21 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 			userFullName = itemView.findViewById(R.id.userFullName);
 			userName = itemView.findViewById(R.id.userName);
 
-			itemView.setOnClickListener(loginId -> {
-				Intent intent = new Intent(context, ProfileActivity.class);
-				intent.putExtra("username", userInfo.getLogin());
-				context.startActivity(intent);
-			});
+			new Handler().postDelayed(() -> {
+				if(!Arrays.asList(Constants.restrictedUsers).contains(userInfo.getLogin())) {
 
-			itemView.setOnLongClickListener(loginId -> {
-				AppUtil.copyToClipboard(context, userInfo.getLogin(), context.getString(R.string.copyLoginIdToClipBoard, userInfo.getLogin()));
-				return true;
-			});
+					itemView.setOnClickListener(loginId -> {
+						Intent intent = new Intent(context, ProfileActivity.class);
+						intent.putExtra("username", userInfo.getLogin());
+						context.startActivity(intent);
+					});
+
+					itemView.setOnLongClickListener(loginId -> {
+						AppUtil.copyToClipboard(context, userInfo.getLogin(), context.getString(R.string.copyLoginIdToClipBoard, userInfo.getLogin()));
+						return true;
+					});
+				}
+			}, 500);
 		}
 
 		@SuppressLint("SetTextI18n")
