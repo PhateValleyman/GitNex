@@ -8,3 +8,6 @@ pipeline:
 
   style:
     image: qwerty287/woodpecker-intellij-formatter
+    settings:
+      file_pattern: "*.java"
+      path: "app/"
