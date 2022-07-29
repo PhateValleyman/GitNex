@@ -39,8 +39,8 @@ pipeline:
       - GITEA_REPOSITORY=gitnex/GitNex
       - GITEA_BRANCH=main
       # Token that should be used to authenticate against the gitea instance
-      # - GITEA_TOKEN=secret
-    secrets: [ GITEA_TOKEN ]
+      # - BOT_TOKEN=secret
+    secrets: [ BOT_TOKEN ]
     commands:
       # Setup git credentials and checkout target branch
       - git config user.name  "$${GIT_AUTHOR_NAME}"
@@ -51,7 +51,7 @@ pipeline:
       # If files have changed, create a new commit and push it to the branch this pipeline was started on
       - >
         if git commit --message "$${GIT_COMMIT_MESSAGE}"; then
-          git remote set-url origin "https://$${GITEA_TOKEN}@$${GITEA_HOST}/$${GITEA_REPOSITORY}"
+          git remote set-url origin "https://$${BOT_TOKEN}@$${GITEA_HOST}/$${GITEA_REPOSITORY}"
           git push origin "$${GITEA_BRANCH}"
         fi
     when:
