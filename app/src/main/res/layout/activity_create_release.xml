@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/primaryBackgroundColor"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?attr/primaryBackgroundColor">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Widget.AppCompat.SearchView"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        android:theme="@style/Widget.AppCompat.SearchView">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -23,13 +23,13 @@
                 android:id="@+id/close"
                 android:layout_width="@dimen/close_button_size"
                 android:layout_height="@dimen/close_button_size"
-                android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:contentDescription="@string/close"
-                android:focusable="true"
+                android:layout_marginLeft="15dp"
                 android:gravity="center_vertical"
+                android:contentDescription="@string/close"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:focusable="true"
+                android:clickable="true"
                 android:src="@drawable/ic_close" />
 
             <TextView
@@ -37,9 +37,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:maxLines="1"
                 android:text="@string/createRelease"
                 android:textColor="?attr/primaryTextColor"
+                android:maxLines="1"
                 android:textSize="20sp" />
 
         </com.google.android.material.appbar.MaterialToolbar>
@@ -54,33 +54,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/releaseTitleLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:boxBackgroundColor="?attr/inputBackgroundColor"
+                android:textColorHint="?attr/hintColor"
+                app:hintTextColor="?attr/hintColor"
+                app:boxStrokeErrorColor="@color/darkRed"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:hint="@string/releaseTitleText"
-                android:textColorHint="?attr/hintColor"
-                app:boxBackgroundColor="?attr/inputBackgroundColor"
-                app:boxStrokeErrorColor="@color/darkRed"
                 app:endIconMode="clear_text"
                 app:endIconTint="?attr/iconsColor"
-                app:hintTextColor="?attr/hintColor">
+                android:hint="@string/releaseTitleText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/releaseTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:inputType="textCapSentences"
-                    android:singleLine="true"
                     android:textColor="?attr/inputTextColor"
                     android:textColorHighlight="?attr/hintColor"
                     android:textColorHint="?attr/hintColor"
+                    android:inputType="textCapSentences"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -89,26 +89,26 @@
                 android:id="@+id/releaseTagNameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:boxBackgroundColor="?attr/inputBackgroundColor"
+                android:textColorHint="?attr/hintColor"
+                app:hintTextColor="?attr/hintColor"
+                app:boxStrokeErrorColor="@color/darkRed"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:hint="@string/releaseTagNameText"
-                android:textColorHint="?attr/hintColor"
-                app:boxBackgroundColor="?attr/inputBackgroundColor"
-                app:boxStrokeErrorColor="@color/darkRed"
                 app:endIconMode="clear_text"
                 app:endIconTint="?attr/iconsColor"
-                app:hintTextColor="?attr/hintColor">
+                android:hint="@string/releaseTagNameText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/releaseTagName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:inputType="textCapSentences"
-                    android:singleLine="true"
                     android:textColor="?attr/inputTextColor"
                     android:textColorHighlight="?attr/hintColor"
                     android:textColorHint="?attr/hintColor"
+                    android:inputType="textCapSentences"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -117,50 +117,50 @@
                 android:id="@+id/releaseContentLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:boxBackgroundColor="?attr/inputBackgroundColor"
+                android:textColorHint="?attr/hintColor"
+                app:hintTextColor="?attr/hintColor"
+                app:boxStrokeErrorColor="@color/darkRed"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:hint="@string/releaseContentText"
-                android:textColorHint="?attr/hintColor"
-                app:boxBackgroundColor="?attr/inputBackgroundColor"
-                app:boxStrokeErrorColor="@color/darkRed"
                 app:endIconMode="clear_text"
                 app:endIconTint="?attr/iconsColor"
-                app:hintTextColor="?attr/hintColor">
+                android:hint="@string/releaseContentText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/releaseContent"
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
-                    android:gravity="top|start"
-                    android:inputType="textCapSentences"
-                    android:scrollbars="vertical"
                     android:textColor="?attr/inputTextColor"
                     android:textColorHighlight="?attr/hintColor"
                     android:textColorHint="?attr/hintColor"
+                    android:gravity="top|start"
+                    android:scrollbars="vertical"
+                    android:inputType="textCapSentences"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/releaseBranchLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:boxBackgroundColor="?attr/inputBackgroundColor"
+                android:textColorHint="?attr/hintColor"
+                app:hintTextColor="?attr/hintColor"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:hint="@string/releaseBranchText"
-                android:textColorHint="?attr/hintColor"
-                app:boxBackgroundColor="?attr/inputBackgroundColor"
                 app:endIconTint="?attr/iconsColor"
-                app:hintTextColor="?attr/hintColor">
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
 
                 <AutoCompleteTextView
                     android:id="@+id/releaseBranch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:labelFor="@+id/releaseBranch"
                     android:textColor="?attr/inputTextColor"
+                    android:labelFor="@+id/releaseBranch"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -169,21 +169,21 @@
                 android:id="@+id/releaseType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:checked="false"
                 android:text="@string/releaseTypeText"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp" />
+                android:checked="false"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:textColor="?attr/primaryTextColor"/>
 
             <CheckBox
                 android:id="@+id/releaseDraft"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:checked="false"
                 android:text="@string/releaseDraftText"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="16sp" />
+                android:checked="false"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:textColor="?attr/primaryTextColor"/>
 
             <Button
                 android:id="@+id/createNewRelease"

@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/primaryBackgroundColor"
-    android:paddingStart="20dp"
     android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="20dp"
     android:paddingEnd="20dp"
-    android:paddingBottom="10dp">
+    android:background="?attr/primaryBackgroundColor" >
 
     <ImageView
         android:id="@+id/userAvatar"
@@ -23,24 +23,24 @@
         android:layout_toEndOf="@+id/userAvatar"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/userFullName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="@string/userName"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/userFullName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/userName"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/userName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="@string/addCollaboratorViewUserDesc"
-            android:textColor="?attr/primaryTextColor"
-            android:textSize="12sp" />
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/addCollaboratorViewUserDesc"
+                android:textColor="?attr/primaryTextColor"
+                android:textSize="12sp" />
 
     </LinearLayout>
 
@@ -48,35 +48,35 @@
         android:id="@+id/frameAddCollaborator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="0dp"
         android:layout_toEndOf="@+id/userInfoSection"
         android:gravity="end"
-        android:orientation="vertical"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="0dp"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp">
+        android:paddingBottom="5dp"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/addCollaboratorButtonAdd"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="end"
-            android:background="@drawable/shape_circle"
             android:contentDescription="@string/addNewContent"
-            android:padding="8dp"
+            android:background="@drawable/shape_circle"
             android:src="@drawable/ic_add"
-            android:visibility="gone" />
+            android:padding="8dp"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/addCollaboratorButtonRemove"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="end"
-            android:background="@drawable/shape_circle_red"
             android:contentDescription="@string/removeContent"
-            android:padding="8dp"
+            android:background="@drawable/shape_circle_red"
             android:src="@drawable/ic_remove"
-            android:visibility="gone" />
+            android:padding="8dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

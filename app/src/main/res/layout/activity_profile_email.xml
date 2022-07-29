@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/primaryBackgroundColor"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?attr/primaryBackgroundColor">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Widget.AppCompat.SearchView"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        android:theme="@style/Widget.AppCompat.SearchView">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -25,13 +25,13 @@
                 android:id="@+id/close"
                 android:layout_width="@dimen/close_button_size"
                 android:layout_height="@dimen/close_button_size"
-                android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:contentDescription="@string/close"
-                android:focusable="true"
+                android:layout_marginLeft="15dp"
                 android:gravity="center_vertical"
+                android:contentDescription="@string/close"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:focusable="true"
+                android:clickable="true"
                 android:src="@drawable/ic_close" />
 
             <TextView
@@ -39,9 +39,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:maxLines="1"
                 android:text="@string/pageTitleAddEmail"
                 android:textColor="?attr/primaryTextColor"
+                android:maxLines="1"
                 android:textSize="20sp" />
 
         </com.google.android.material.appbar.MaterialToolbar>
@@ -51,22 +51,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/userEmailLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:boxBackgroundColor="?attr/inputBackgroundColor"
+            android:textColorHint="?attr/hintColor"
+            app:hintTextColor="?attr/hintColor"
+            app:boxStrokeErrorColor="@color/darkRed"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:hint="@string/profileEmailTitle"
-            android:textColorHint="?attr/hintColor"
-            app:boxBackgroundColor="?attr/inputBackgroundColor"
-            app:boxStrokeErrorColor="@color/darkRed"
             app:endIconMode="clear_text"
             app:endIconTint="?attr/iconsColor"
-            app:hintTextColor="?attr/hintColor">
+            android:hint="@string/profileEmailTitle">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/userEmail"

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/primaryBackgroundColor"
     android:orientation="vertical"
     android:paddingTop="6dp"
-    android:paddingBottom="12dp">
+    android:paddingBottom="12dp"
+    android:background="?attr/primaryBackgroundColor">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -14,15 +15,15 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/repoCreateHeadFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="8dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/bottomSheetHeader"
@@ -39,121 +40,121 @@
                 android:id="@+id/repoCreateSection"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp"
-                app:alignContent="stretch"
+                app:flexWrap="wrap"
                 app:alignItems="stretch"
-                app:flexWrap="wrap">
+                android:padding="8dp"
+                app:alignContent="stretch" >
 
                 <TextView
                     android:id="@+id/newFile"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
+                    android:padding="4dp"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:gravity="center"
-                    android:padding="4dp"
+                    app:layout_alignSelf="flex_start"
+                    app:drawableTopCompat="@drawable/ic_file"
                     android:text="@string/file"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_file"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/createNewIssue"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_issue"
                     android:text="@string/issue"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_issue"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/createLabel"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_label"
                     android:text="@string/label"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_label"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/createNewMilestone"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_milestone"
                     android:text="@string/newIssueMilestoneTitle"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_milestone"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/createRelease"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_release"
                     android:text="@string/release"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_release"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/createPullRequest"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_pull_request"
                     android:text="@string/pr"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_pull_request"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/addCollaborator"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_person_add"
                     android:text="@string/collaborator"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_person_add"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/create_wiki"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_wiki"
                     android:text="@string/wiki"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_wiki"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
             </com.google.android.flexbox.FlexboxLayout>
 
             <View
-                android:id="@+id/repoDivider"
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
+                android:id="@+id/repoDivider"
                 android:layout_marginBottom="16dp"
                 android:background="?attr/dividerColor" />
 
@@ -161,8 +162,8 @@
                 android:id="@+id/repoOthersHeadFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="8dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/bottomSheetHeaderRepo"
@@ -179,114 +180,114 @@
                 android:id="@+id/repoOthersSection"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp"
-                app:alignContent="stretch"
+                app:flexWrap="wrap"
                 app:alignItems="stretch"
-                app:flexWrap="wrap">
+                android:padding="8dp"
+                app:alignContent="stretch" >
 
                 <TextView
                     android:id="@+id/starRepository"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_star"
                     android:text="@string/starMember"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_star"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/unStarRepository"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_star_unfilled"
                     android:text="@string/unstar"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_star_unfilled"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/watchRepository"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_watchers"
                     android:text="@string/watch"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_watchers"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/unWatchRepository"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_unwatch"
                     android:text="@string/unwatch"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_unwatch"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/copyRepoUrl"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_copy"
                     android:text="@string/genericCopyUrl"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_copy"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/shareRepository"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_share"
                     android:text="@string/share"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_share"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/openWebRepo"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_browser"
                     android:text="@string/openInBrowser"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_browser"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/repoSettings"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
                     android:padding="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_alignSelf="flex_start"
+                    android:gravity="center"
+                    app:drawableTopCompat="@drawable/ic_settings"
                     android:text="@string/navSettings"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    app:drawableTopCompat="@drawable/ic_settings"
-                    app:layout_alignSelf="flex_start" />
+                    android:textSize="16sp" />
 
             </com.google.android.flexbox.FlexboxLayout>
 

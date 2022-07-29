@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,11 +22,11 @@
                 android:id="@+id/generalFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -55,9 +56,9 @@
                         android:id="@+id/generalHintText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
+                        android:layout_gravity="center_vertical"
                         android:text="@string/generalHintText"
                         android:textColor="?attr/primaryTextColor"
                         android:textSize="12sp" />
@@ -67,8 +68,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 
@@ -76,11 +77,11 @@
                 android:id="@+id/appearanceFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -122,8 +123,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 
@@ -131,11 +132,11 @@
                 android:id="@+id/draftsFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -177,8 +178,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 
@@ -186,11 +187,11 @@
                 android:id="@+id/securityFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -232,8 +233,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 
@@ -241,11 +242,11 @@
                 android:id="@+id/notificationsFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -287,8 +288,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 
@@ -296,11 +297,11 @@
                 android:id="@+id/languagesFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -342,8 +343,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 
@@ -351,11 +352,11 @@
                 android:id="@+id/reportsFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -397,8 +398,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 
@@ -406,11 +407,11 @@
                 android:id="@+id/rateAppFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -455,11 +456,11 @@
                 android:id="@+id/aboutAppFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"

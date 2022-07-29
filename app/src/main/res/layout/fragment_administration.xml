@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:background="?attr/primaryBackgroundColor">
 
-    <ScrollView
-        android:layout_width="match_parent"
+    <ScrollView android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/primaryBackgroundColor">
 
@@ -53,15 +52,15 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 
             <View
-                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:id="@+id/divider"
                 android:background="?attr/dividerColor" />
 
             <LinearLayout
@@ -102,8 +101,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 
@@ -150,8 +149,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_chevron_right" />
+                    app:srcCompat="@drawable/ic_chevron_right"
+                    android:contentDescription="@string/generalImgContentText" />
 
             </LinearLayout>
 

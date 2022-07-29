@@ -5,10 +5,10 @@
     android:id="@+id/relativeLayoutFrameIssuesList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:focusable="true"
+    android:padding="16dp"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="?android:attr/selectableItemBackground"
+    android:focusable="true">
 
     <LinearLayout
         android:id="@+id/infoSection"
@@ -46,18 +46,18 @@
                 android:id="@+id/labelsScrollViewDots"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fillViewport="true"
                 android:foregroundGravity="right"
+                android:layout_marginBottom="8dp"
                 android:scrollbarThumbHorizontal="@android:color/transparent"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:id="@+id/frameLabelsDots"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal" />
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp" />
 
             </HorizontalScrollView>
 
@@ -69,18 +69,18 @@
         android:id="@+id/labelsScrollViewWithText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:fillViewport="true"
         android:foregroundGravity="right"
+        android:layout_marginBottom="8dp"
         android:scrollbarThumbHorizontal="@android:color/transparent"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/frameLabels"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal" />
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp" />
 
     </HorizontalScrollView>
 

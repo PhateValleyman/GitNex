@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
-    android:scrollbars="none">
+    android:scrollbars="none"
+    android:layout_width="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <RelativeLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/shape_round_corners"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
             android:layout_marginTop="40dp"
-            android:background="@drawable/shape_round_corners"
-            android:orientation="vertical">
+            android:layout_gravity="center">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -30,118 +30,118 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="5dp"
                     android:text="@string/appName"
+                    android:textStyle="bold"
                     android:textColor="?attr/primaryTextColor"
+                    android:layout_gravity="center_horizontal"
                     android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="5dp" />
 
                 <TextView
                     android:id="@+id/appVersionBuild"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/appVersionBuild"
-                    android:textColor="?attr/primaryTextColor"
                     android:textIsSelectable="true"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:text="@string/appVersionBuild"
+                    android:layout_marginTop="5dp"
+                    android:textColor="?attr/primaryTextColor" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <!-- user server version -->
                 <TextView
                     android:id="@+id/userServerVersionHeader"
+                    android:text="@string/commitPage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:paddingStart="28dp"
                     android:paddingEnd="28dp"
-                    android:text="@string/commitPage"
-                    android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="?attr/primaryTextColor" />
 
                 <View
-                    android:id="@+id/dividerUserServerVersion"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:id="@+id/dividerUserServerVersion"
+                    android:background="?attr/dividerColor"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="?attr/dividerColor" />
+                    android:layout_marginBottom="5dp" />
 
                 <TextView
                     android:id="@+id/userServerVersion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textIsSelectable="true"
                     android:paddingStart="28dp"
                     android:paddingEnd="28dp"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textIsSelectable="true"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="?attr/primaryTextColor" />
                 <!-- user server version -->
 
                 <!-- support -->
                 <TextView
                     android:id="@+id/supportHeader"
+                    android:text="@string/supportText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:paddingStart="28dp"
                     android:paddingEnd="28dp"
-                    android:text="@string/supportText"
-                    android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="?attr/primaryTextColor" />
 
                 <View
-                    android:id="@+id/dividerSupport"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:id="@+id/dividerSupport"
+                    android:background="?attr/dividerColor"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="?attr/dividerColor" />
+                    android:layout_marginBottom="5dp" />
 
                 <TextView
                     android:id="@+id/donationLinkPatreon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:autoLink="web"
-                    android:paddingStart="28dp"
-                    android:paddingEnd="28dp"
                     android:text="@string/supportTextPatreon"
                     android:textColor="@color/lightBlue"
-                    android:textColorLink="@color/lightBlue"
-                    android:textSize="14sp" />
+                    android:paddingStart="28dp"
+                    android:paddingEnd="28dp"
+                    android:textSize="14sp"
+                    android:autoLink="web"
+                    android:textColorLink="@color/lightBlue" />
                 <!-- support -->
 
                 <!-- translate -->
                 <TextView
                     android:id="@+id/translateHeader"
+                    android:text="@string/translateText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:paddingStart="28dp"
                     android:paddingEnd="28dp"
-                    android:text="@string/translateText"
-                    android:textColor="?attr/primaryTextColor"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="?attr/primaryTextColor" />
 
                 <View
-                    android:id="@+id/dividerTranslate"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:id="@+id/dividerTranslate"
+                    android:background="?attr/dividerColor"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="?attr/dividerColor" />
+                    android:layout_marginBottom="5dp" />
 
                 <TextView
                     android:id="@+id/translateLink"
@@ -149,11 +149,11 @@
                     android:layout_height="wrap_content"
                     android:autoLink="web"
                     android:gravity="start"
-                    android:paddingStart="28dp"
-                    android:paddingEnd="28dp"
                     android:text="@string/translateWithCrowdin"
                     android:textColor="@color/lightBlue"
                     android:textColorLink="@color/lightBlue"
+                    android:paddingStart="28dp"
+                    android:paddingEnd="28dp"
                     android:textSize="14sp"
                     android:visibility="visible" />
                 <!-- translate -->
@@ -164,9 +164,9 @@
                 android:id="@+id/appWebsite"
                 android:layout_width="140dp"
                 android:layout_height="60dp"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="12dp"
+                android:layout_gravity="center_horizontal"
                 android:text="@string/websiteText"
                 android:textColor="@color/btnTextColor"
                 android:textSize="16sp" />
@@ -181,11 +181,11 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 app:cardBackgroundColor="?attr/primaryBackgroundColor"
                 app:cardCornerRadius="48dp"
                 app:cardElevation="2dp"
                 app:contentPadding="4dp"
+                android:layout_gravity="center_horizontal"
                 tools:visibility="visible">
 
                 <ImageView
@@ -194,8 +194,8 @@
                     android:layout_height="80dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:contentDescription="@string/appName"
-                    android:src="@drawable/app_logo" />
+                    android:src="@drawable/app_logo"
+                    android:contentDescription="@string/appName" />
 
             </androidx.cardview.widget.CardView>
 

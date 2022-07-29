@@ -4,11 +4,11 @@
     android:id="@+id/fileFrame"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="16dp"
     android:background="?android:attr/selectableItemBackground"
     android:focusable="true"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="16dp">
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/fileTypeIs"

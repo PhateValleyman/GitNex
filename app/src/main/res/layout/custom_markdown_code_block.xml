@@ -5,14 +5,14 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:fillViewport="true"
+    android:scrollbarStyle="outsideInset"
     android:paddingTop="8dip"
-    android:paddingBottom="8dip"
-    android:scrollbarStyle="outsideInset">
+    android:paddingBottom="8dip" >
 
     <TextView
         android:id="@+id/textCodeBlock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="2dip" />
+        android:lineSpacingExtra="2dip"/>
 
 </HorizontalScrollView>

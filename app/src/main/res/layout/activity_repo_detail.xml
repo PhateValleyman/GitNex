@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/primaryBackgroundColor"
     android:fitsSystemWindows="true"
+    android:background="?attr/primaryBackgroundColor"
     tools:context=".activities.RepoDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Widget.AppCompat.SearchView"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        android:theme="@style/Widget.AppCompat.SearchView">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -35,31 +36,31 @@
                 tools:visibility="visible" />
 
             <TextView
-                android:id="@+id/toolbar_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
+                android:textSize="18sp"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="18sp" />
+                android:id="@+id/toolbar_title" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/loadingIndicator"
+            android:indeterminate="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true" />
+            android:layout_height="wrap_content"/>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/primaryBackgroundColor"
-            app:tabIndicatorColor="?attr/pagerTabIndicatorColor"
             app:tabMode="scrollable"
             app:tabTextAppearance="@style/customTabLayout"
-            app:tabTextColor="?attr/primaryTextColor">
+            android:layout_width="match_parent"
+            android:background="?attr/primaryBackgroundColor"
+            app:tabTextColor="?attr/primaryTextColor"
+            app:tabIndicatorColor="?attr/pagerTabIndicatorColor"
+            android:layout_height="wrap_content">
 
         </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
