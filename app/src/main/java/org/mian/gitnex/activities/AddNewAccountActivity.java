@@ -58,10 +58,11 @@ public class AddNewAccountActivity extends BaseActivity {
 		viewBinding.instanceUrl.setText(getIntent().getStringExtra("instanceUrl"));
 		viewBinding.loginToken.setText(getIntent().getStringExtra("token"));
 		String scheme = getIntent().getStringExtra("scheme");
-		if(scheme != null && scheme.equals("http"))  {
+		if(scheme != null && scheme.equals("http")) {
 			viewBinding.protocolSpinner.setText(Protocol.HTTP.toString());
 			spinnerSelectedValue = Protocol.HTTP.toString();
-		} else { // default is https
+		}
+		else { // default is https
 			viewBinding.protocolSpinner.setText(Protocol.HTTPS.toString());
 			spinnerSelectedValue = Protocol.HTTPS.toString();
 		}
@@ -69,7 +70,8 @@ public class AddNewAccountActivity extends BaseActivity {
 		ArrayAdapter<Protocol> adapterProtocols = new ArrayAdapter<>(ctx, R.layout.list_spinner_items, Protocol.values());
 
 		viewBinding.protocolSpinner.setAdapter(adapterProtocols);
-		viewBinding.protocolSpinner.setOnItemClickListener((parent, view1, position, id) -> spinnerSelectedValue = String.valueOf(parent.getItemAtPosition(position)));
+		viewBinding.protocolSpinner.setOnItemClickListener(
+			(parent, view1, position, id) -> spinnerSelectedValue = String.valueOf(parent.getItemAtPosition(position)));
 		viewBinding.addNewAccount.setOnClickListener(login -> {
 
 			boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
@@ -114,8 +116,8 @@ public class AddNewAccountActivity extends BaseActivity {
 
 			URI rawInstanceUrl = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET, "http")).toUri();
 
-			URI instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(protocol.toLowerCase()).withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/"))
-				.toUri();
+			URI instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(protocol.toLowerCase())
+				.withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/")).toUri();
 
 			versionCheck(instanceUrl.toString(), loginToken);
 			serverPageLimitSettings();
@@ -206,7 +208,8 @@ public class AddNewAccountActivity extends BaseActivity {
 		generalAPISettings.enqueue(new Callback<>() {
 
 			@Override
-			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings, @NonNull retrofit2.Response<GeneralAPISettings> response) {
+			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings,
+				@NonNull retrofit2.Response<GeneralAPISettings> response) {
 
 				if(response.code() == 200 && response.body() != null) {
 
@@ -248,7 +251,8 @@ public class AddNewAccountActivity extends BaseActivity {
 
 						if(!userAccountExists) {
 
-							long id = userAccountsApi.createNewAccount(accountName, instanceUrl, userDetails.getLogin(), loginToken, giteaVersion.toString(), maxResponseItems, defaultPagingNumber);
+							long id = userAccountsApi.createNewAccount(accountName, instanceUrl, userDetails.getLogin(), loginToken,
+								giteaVersion.toString(), maxResponseItems, defaultPagingNumber);
 							UserAccount account = userAccountsApi.getAccountById((int) id);
 							AppUtil.switchToAccount(AddNewAccountActivity.this, account);
 							Toasty.success(ctx, getResources().getString(R.string.accountAddedMessage));
@@ -295,4 +299,5 @@ public class AddNewAccountActivity extends BaseActivity {
 
 		onClickListener = view -> finish();
 	}
+
 }

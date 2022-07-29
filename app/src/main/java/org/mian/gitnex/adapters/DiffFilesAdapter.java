@@ -69,17 +69,13 @@ public class DiffFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			main_frame = itemView.findViewById(R.id.main_frame);
 
 			main_frame.setOnClickListener(v -> {
-				if(fragmentType.equalsIgnoreCase("commit")){
-					((CommitDetailActivity) context).getSupportFragmentManager()
-						.beginTransaction()
-						.replace(R.id.fragment_container, DiffFragment.newInstance(diffFilesObject, fragmentType))
-						.commit();
+				if(fragmentType.equalsIgnoreCase("commit")) {
+					((CommitDetailActivity) context).getSupportFragmentManager().beginTransaction()
+						.replace(R.id.fragment_container, DiffFragment.newInstance(diffFilesObject, fragmentType)).commit();
 				}
 				else {
-					((DiffActivity) context).getSupportFragmentManager()
-						.beginTransaction()
-						.replace(R.id.fragment_container, DiffFragment.newInstance(diffFilesObject, issue))
-						.commit();
+					((DiffActivity) context).getSupportFragmentManager().beginTransaction()
+						.replace(R.id.fragment_container, DiffFragment.newInstance(diffFilesObject, issue)).commit();
 				}
 
 			});
@@ -94,10 +90,12 @@ public class DiffFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 			if(matcher.find() && matcher.groupCount() == 2) {
 				fileStatistics.setText(context.getString(R.string.diffStatistics, matcher.group(1), matcher.group(2)));
-			} else {
+			}
+			else {
 				fileStatistics.setText(fileDiffView.getFileInfo());
 			}
 		}
+
 	}
 
 	@Override
@@ -118,4 +116,5 @@ public class DiffFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 	public void notifyDataChanged() {
 		notifyDataSetChanged();
 	}
+
 }

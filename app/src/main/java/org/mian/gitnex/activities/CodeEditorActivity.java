@@ -78,7 +78,7 @@ public class CodeEditorActivity extends BaseActivity {
 	private void configLanguageAutoComplete() {
 
 		boolean useModernAutoCompleteAdapter = true;
-		if (useModernAutoCompleteAdapter) {
+		if(useModernAutoCompleteAdapter) {
 			List<Code> codeList = languageManager.getLanguageCodeList(currentLanguage);
 
 			CustomCodeViewAdapter adapter = new CustomCodeViewAdapter(this, codeList);
@@ -119,4 +119,5 @@ public class CodeEditorActivity extends BaseActivity {
 			binding.sourcePosition.setText(getString(R.string.sourcePosition, line, column));
 		});
 	}
+
 }

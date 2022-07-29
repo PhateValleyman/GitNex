@@ -56,6 +56,7 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 				drawer.closeDrawers();
 			});
 		}
+
 	}
 
 	@NonNull
@@ -72,19 +73,12 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 		UserAccount currentItem = userAccountsList.get(position);
 
-		String url = UrlBuilder.fromString(currentItem.getInstanceUrl())
-			.withPath("/")
-			.toString();
+		String url = UrlBuilder.fromString(currentItem.getInstanceUrl()).withPath("/").toString();
 
 		int imageSize = AppUtil.getPixelsFromDensity(context, 35);
 
-		PicassoService.getInstance(context).get()
-			.load(url + "assets/img/favicon.png")
-			.placeholder(R.drawable.loader_animated)
-			.transform(new RoundedTransformation(8, 0))
-			.resize(imageSize, imageSize)
-			.centerCrop()
-			.into(holder.userAccountAvatar);
+		PicassoService.getInstance(context).get().load(url + "assets/img/favicon.png").placeholder(R.drawable.loader_animated)
+			.transform(new RoundedTransformation(8, 0)).resize(imageSize, imageSize).centerCrop().into(holder.userAccountAvatar);
 	}
 
 	@Override
@@ -101,7 +95,7 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 		RecyclerView listView = dialog.findViewById(R.id.accountsList);
 		Button newAccount = dialog.findViewById(R.id.newAccount);
 
-		if (dialog.getWindow() != null) {
+		if(dialog.getWindow() != null) {
 			dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
 

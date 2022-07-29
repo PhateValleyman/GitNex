@@ -49,7 +49,8 @@ public class RepositoriesFragment extends Fragment {
 	private static final String usernameBundle = "";
 	private String username;
 
-	public RepositoriesFragment() {}
+	public RepositoriesFragment() {
+	}
 
 	public static RepositoriesFragment newInstance(String username) {
 		RepositoriesFragment fragment = new RepositoriesFragment();
@@ -62,7 +63,7 @@ public class RepositoriesFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
+		if(getArguments() != null) {
 			username = getArguments().getString(usernameBundle);
 		}
 	}
@@ -107,10 +108,10 @@ public class RepositoriesFragment extends Fragment {
 
 	private void loadInitial(String username, int resultLimit) {
 
-		Call<List<Repository>> call = RetrofitClient
-			.getApiInterface(context).userListRepos(username, 1, resultLimit);
+		Call<List<Repository>> call = RetrofitClient.getApiInterface(context).userListRepos(username, 1, resultLimit);
 
 		call.enqueue(new Callback<List<Repository>>() {
+
 			@Override
 			public void onResponse(@NonNull Call<List<Repository>> call, @NonNull Response<List<Repository>> response) {
 
@@ -255,4 +256,5 @@ public class RepositoriesFragment extends Fragment {
 		}
 		adapter.updateList(arr);
 	}
+
 }

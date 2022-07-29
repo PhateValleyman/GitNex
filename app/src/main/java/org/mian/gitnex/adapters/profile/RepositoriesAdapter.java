@@ -123,12 +123,13 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			int color = generator.getColor(userRepositories.getName());
 			String firstCharacter = String.valueOf(userRepositories.getFullName().charAt(0));
 
-			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
+			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28)
+				.endConfig().buildRoundRect(firstCharacter, color, 3);
 
 			if(userRepositories.getAvatarUrl() != null) {
 				if(!userRepositories.getAvatarUrl().equals("")) {
-					PicassoService
-						.getInstance(context).get().load(userRepositories.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(avatar);
+					PicassoService.getInstance(context).get().load(userRepositories.getAvatarUrl()).placeholder(R.drawable.loader_animated)
+						.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(avatar);
 				}
 				else {
 					avatar.setImageDrawable(drawable);
@@ -140,9 +141,11 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 			if(userRepositories.getUpdatedAt() != null) {
 
-				repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, TimeHelper.formatTime(userRepositories.getUpdatedAt(), locale, timeFormat, context)));
+				repoLastUpdated.setText(
+					context.getString(R.string.lastUpdatedAt, TimeHelper.formatTime(userRepositories.getUpdatedAt(), locale, timeFormat, context)));
 				if(timeFormat.equals("pretty")) {
-					repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(userRepositories.getUpdatedAt()), context));
+					repoLastUpdated.setOnClickListener(
+						new ClickListener(TimeHelper.customDateFormatForToastDateFormat(userRepositories.getUpdatedAt()), context));
 				}
 			}
 			else {
@@ -162,6 +165,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			isRepoAdmin.setChecked(userRepositories.getPermissions().isAdmin());
 
 		}
+
 	}
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
@@ -182,4 +186,5 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 		reposList = list;
 		notifyDataChanged();
 	}
+
 }

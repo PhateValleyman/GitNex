@@ -138,17 +138,20 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 						PrettyTime prettyTime = new PrettyTime(locale);
 						String createdTime = prettyTime.format(forksModel.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
-						repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(forksModel.getUpdatedAt()), context));
+						repoLastUpdated.setOnClickListener(
+							new ClickListener(TimeHelper.customDateFormatForToastDateFormat(forksModel.getUpdatedAt()), context));
 						break;
 					}
 					case "normal": {
-						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+						DateFormat formatter = new SimpleDateFormat(
+							"yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 						String createdTime = formatter.format(forksModel.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
 					}
 					case "normal1": {
-						DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+						DateFormat formatter = new SimpleDateFormat(
+							"dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 						String createdTime = formatter.format(forksModel.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
@@ -205,4 +208,5 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 		forksList = list;
 		notifyDataChanged();
 	}
+
 }

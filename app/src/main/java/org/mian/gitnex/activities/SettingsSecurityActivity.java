@@ -89,7 +89,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 					BiometricManager biometricManager = BiometricManager.from(ctx);
 					KeyguardManager keyguardManager = (KeyguardManager) ctx.getSystemService(Context.KEYGUARD_SERVICE);
 
-					if (!keyguardManager.isDeviceSecure()) {
+					if(!keyguardManager.isDeviceSecure()) {
 
 						switch(biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)) {
 
@@ -163,7 +163,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 					this.recreate();
 					this.overridePendingTransition(0, 0);
 				}
-				catch (IOException e) {
+				catch(IOException e) {
 
 					Log.e("SettingsSecurity", e.toString());
 				}
@@ -229,7 +229,8 @@ public class SettingsSecurityActivity extends BaseActivity {
 			builder.setMessage(getResources().getString(R.string.settingsCertsPopupMessage));
 			builder.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
 
-				appCtx.getSharedPreferences(MemorizingTrustManager.KEYSTORE_NAME, Context.MODE_PRIVATE).edit().remove(MemorizingTrustManager.KEYSTORE_KEY).apply();
+				appCtx.getSharedPreferences(MemorizingTrustManager.KEYSTORE_NAME, Context.MODE_PRIVATE).edit()
+					.remove(MemorizingTrustManager.KEYSTORE_KEY).apply();
 				AppUtil.logout(this);
 			});
 
@@ -242,4 +243,5 @@ public class SettingsSecurityActivity extends BaseActivity {
 
 		onClickListener = view -> finish();
 	}
+
 }

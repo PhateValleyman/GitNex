@@ -27,7 +27,9 @@ public class TimeHelper {
 
 		try {
 			createdTime = formatter.parse(part1);
-		} catch(ParseException ignored) {}
+		}
+		catch(ParseException ignored) {
+		}
 
 		assert createdTime != null;
 
@@ -45,11 +47,13 @@ public class TimeHelper {
 					return prettyTime.format(date);
 				}
 				case "normal": {
-					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm",
+						locale);
 					return formatter.format(date);
 				}
 				case "normal1": {
-					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm",
+						locale);
 					return formatter.format(date);
 				}
 
@@ -82,7 +86,8 @@ public class TimeHelper {
 		if(to.before(from)) {
 			if(cal.after(to)) {
 				to.add(Calendar.DATE, 1);
-			} else {
+			}
+			else {
 				from.add(Calendar.DATE, -1);
 			}
 		}

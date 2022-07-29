@@ -39,8 +39,7 @@ public class IssueContext implements Serializable {
 
 	public IssueContext(Issue issue, PullRequest pullRequest, RepositoryContext repository) {
 		this.issue = issue;
-		this.issueType = issue.getPullRequest() == null ?
-			"Issue" : "Pull";
+		this.issueType = issue.getPullRequest() == null ? "Issue" : "Pull";
 		this.pullRequest = pullRequest;
 		this.repository = repository;
 	}
@@ -53,16 +52,14 @@ public class IssueContext implements Serializable {
 
 	public IssueContext(Issue issue, RepositoryContext repository) {
 		this.issue = issue;
-		this.issueType = issue.getPullRequest() == null ?
-			"Issue" : "Pull";
+		this.issueType = issue.getPullRequest() == null ? "Issue" : "Pull";
 
 		this.repository = repository;
 	}
 
 	public IssueContext(Issue issue, PullRequest pullRequest, Repository repository, Context context) {
 		this.issue = issue;
-		this.issueType = issue.getPullRequest() == null ?
-			"Issue" : "Pull";
+		this.issueType = issue.getPullRequest() == null ? "Issue" : "Pull";
 		this.pullRequest = pullRequest;
 
 		this.repository = new RepositoryContext(repository, context);
@@ -70,8 +67,7 @@ public class IssueContext implements Serializable {
 
 	public IssueContext(Issue issue, Repository repository, Context context) {
 		this.issue = issue;
-		this.issueType = issue.getPullRequest() == null ?
-			"Issue" : "Pull";
+		this.issueType = issue.getPullRequest() == null ? "Issue" : "Pull";
 		this.repository = new RepositoryContext(repository, context);
 	}
 

@@ -32,9 +32,7 @@ public abstract class BaseApi {
 				synchronized(BaseApi.class) {
 					if(!instances.containsKey(clazz)) {
 
-						T instance = clazz
-							.getDeclaredConstructor(Context.class)
-							.newInstance(context);
+						T instance = clazz.getDeclaredConstructor(Context.class).newInstance(context);
 
 						instances.put(clazz, instance);
 						return instance;
@@ -44,8 +42,9 @@ public abstract class BaseApi {
 
 			return (T) instances.get(clazz);
 
-		} catch(NoSuchMethodException | IllegalAccessException |
-			InvocationTargetException | InstantiationException ignored) {}
+		}
+		catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException ignored) {
+		}
 
 		return null;
 	}

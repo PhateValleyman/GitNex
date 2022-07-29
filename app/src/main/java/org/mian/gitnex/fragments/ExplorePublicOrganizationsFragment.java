@@ -60,6 +60,7 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 
 		adapter = new OrganizationsListAdapter(requireContext(), organizationsList);
 		adapter.setLoadMoreListener(new OrganizationsListAdapter.OnLoadMoreListener() {
+
 			@Override
 			public void onLoadMore() {
 				fragmentPublicOrgBinding.recyclerView.post(() -> {
@@ -71,7 +72,8 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 			}
 		});
 
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentPublicOrgBinding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentPublicOrgBinding.recyclerView.getContext(),
+			DividerItemDecoration.VERTICAL);
 		fragmentPublicOrgBinding.recyclerView.setHasFixedSize(true);
 		fragmentPublicOrgBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 		fragmentPublicOrgBinding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -84,9 +86,9 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 
 	private void loadInitial(int resultLimit) {
 
-		Call<List<Organization>> call = RetrofitClient
-			.getApiInterface(context).orgGetAll(Constants.publicOrganizationsPageInit, resultLimit);
+		Call<List<Organization>> call = RetrofitClient.getApiInterface(context).orgGetAll(Constants.publicOrganizationsPageInit, resultLimit);
 		call.enqueue(new Callback<List<Organization>>() {
+
 			@Override
 			public void onResponse(@NonNull Call<List<Organization>> call, @NonNull Response<List<Organization>> response) {
 				if(response.isSuccessful()) {
@@ -124,6 +126,7 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 		fragmentPublicOrgBinding.progressBar.setVisibility(View.VISIBLE);
 		Call<List<Organization>> call = RetrofitClient.getApiInterface(context).orgGetAll(page, resultLimit);
 		call.enqueue(new Callback<List<Organization>>() {
+
 			@Override
 			public void onResponse(@NonNull Call<List<Organization>> call, @NonNull Response<List<Organization>> response) {
 				if(response.isSuccessful()) {
@@ -152,4 +155,5 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 			}
 		});
 	}
+
 }

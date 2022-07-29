@@ -128,7 +128,8 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<RecyclerView.View
 				userRole.setVisibility(View.VISIBLE);
 				TextDrawable drawable = TextDrawable.builder().beginConfig()
 					.textColor(ResourcesCompat.getColor(context.getResources(), R.color.colorWhite, null)).fontSize(44).width(180).height(60)
-					.endConfig().buildRoundRect(context.getResources().getString(R.string.userRoleAdmin).toLowerCase(), ResourcesCompat.getColor(context.getResources(), R.color.releasePre, null), 8);
+					.endConfig().buildRoundRect(context.getResources().getString(R.string.userRoleAdmin).toLowerCase(),
+						ResourcesCompat.getColor(context.getResources(), R.color.releasePre, null), 8);
 				userRole.setImageDrawable(drawable);
 			}
 			else {
@@ -136,8 +137,10 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<RecyclerView.View
 				userRole.setVisibility(View.GONE);
 			}
 
-			PicassoService.getInstance(context).get().load(users.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(userAvatar);
+			PicassoService.getInstance(context).get().load(users.getAvatarUrl()).placeholder(R.drawable.loader_animated)
+				.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(userAvatar);
 		}
+
 	}
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
@@ -155,8 +158,11 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<RecyclerView.View
 	}
 
 	public interface OnLoadMoreListener {
+
 		void onLoadMore();
+
 		void onLoadFinished();
+
 	}
 
 	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
@@ -168,41 +174,44 @@ public class AdminGetUsersAdapter extends RecyclerView.Adapter<RecyclerView.View
 		notifyDataChanged();
 	}
 
-    @Override
-    public Filter getFilter() {
-        return usersFilter;
-    }
+	@Override
+	public Filter getFilter() {
+		return usersFilter;
+	}
 
-    private final Filter usersFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<User> filteredList = new ArrayList<>();
+	private final Filter usersFilter = new Filter() {
 
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(usersListFull);
-            }
-            else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+			List<User> filteredList = new ArrayList<>();
 
-                for (User item : usersListFull) {
-                    if (item.getEmail().toLowerCase().contains(filterPattern) || item.getFullName().toLowerCase().contains(filterPattern) || item.getLogin().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
+			if(constraint == null || constraint.length() == 0) {
+				filteredList.addAll(usersListFull);
+			}
+			else {
+				String filterPattern = constraint.toString().toLowerCase().trim();
 
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
+				for(User item : usersListFull) {
+					if(item.getEmail().toLowerCase().contains(filterPattern) || item.getFullName().toLowerCase()
+						.contains(filterPattern) || item.getLogin().toLowerCase().contains(filterPattern)) {
+						filteredList.add(item);
+					}
+				}
+			}
 
-            return results;
-        }
+			FilterResults results = new FilterResults();
+			results.values = filteredList;
 
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
+			return results;
+		}
 
-            usersList.clear();
-            usersList.addAll((List) results.values);
-            notifyDataChanged();
-        }
-    };
+		@Override
+		protected void publishResults(CharSequence constraint, FilterResults results) {
+
+			usersList.clear();
+			usersList.addAll((List) results.values);
+			notifyDataChanged();
+		}
+	};
+
 }

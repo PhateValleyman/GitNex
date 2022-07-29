@@ -83,8 +83,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 			binding.editIssue.setText(R.string.menuEditText);
 
-			boolean canPushPullSource = issue.getPullRequest().getHead().getRepo() != null ?
-				issue.getPullRequest().getHead().getRepo().getPermissions().isPush() : false;
+			boolean canPushPullSource =
+				issue.getPullRequest().getHead().getRepo() != null ? issue.getPullRequest().getHead().getRepo().getPermissions().isPush() : false;
 			if(issue.getPullRequest().isMerged() || issue.getIssue().getState().equals("closed")) {
 				binding.updatePullRequest.setVisibility(View.GONE);
 				binding.mergePullRequest.setVisibility(View.GONE);
@@ -118,7 +118,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			}
 
 			binding.openFilesDiff.setVisibility(View.VISIBLE);
-		} else {
+		}
+		else {
 			if(!userIsCreator && !canPush) {
 				binding.editIssue.setVisibility(View.GONE);
 			}
@@ -131,7 +132,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.16.0")) {
 				AlertDialogs.selectPullUpdateStrategy(requireContext(), issue.getRepository().getOwner(), issue.getRepository().getName(),
 					String.valueOf(issue.getIssueIndex()));
-			} else {
+			}
+			else {
 				PullRequestActions.updatePr(requireContext(), issue.getRepository().getOwner(), issue.getRepository().getName(),
 					String.valueOf(issue.getIssueIndex()), null);
 			}
@@ -146,7 +148,8 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		binding.deletePrHeadBranch.setOnClickListener(v -> {
 
-			PullRequestActions.deleteHeadBranch(ctx, issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getPullRequest().getHead().getRef(), true);
+			PullRequestActions.deleteHeadBranch(ctx, issue.getRepository().getOwner(), issue.getRepository().getName(),
+				issue.getPullRequest().getHead().getRef(), true);
 			dismiss();
 		});
 
@@ -278,4 +281,5 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 			throw new ClassCastException(context + " must implement BottomSheetListener");
 		}
 	}
+
 }

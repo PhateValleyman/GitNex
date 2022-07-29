@@ -47,7 +47,8 @@ public class RepoInfoFragment extends Fragment {
 
 	private RepositoryContext repository;
 
-	public RepoInfoFragment() {}
+	public RepoInfoFragment() {
+	}
 
 	public static RepoInfoFragment newInstance(RepositoryContext repository) {
 		RepoInfoFragment fragment = new RepoInfoFragment();
@@ -100,7 +101,7 @@ public class RepoInfoFragment extends Fragment {
 
 	private void toggleExpandView() {
 
-		if (binding.repoFileContents.getVisibility() == View.GONE) {
+		if(binding.repoFileContents.getVisibility() == View.GONE) {
 			binding.repoFilenameExpandCollapse.setImageResource(R.drawable.ic_chevron_up);
 			binding.repoFileContents.setVisibility(View.VISIBLE);
 			//Animation slide_down = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down);
@@ -120,7 +121,7 @@ public class RepoInfoFragment extends Fragment {
 
 	private void toggleExpandViewMeta() {
 
-		if (binding.repoMetaFrame.getVisibility() == View.GONE) {
+		if(binding.repoMetaFrame.getVisibility() == View.GONE) {
 			binding.repoMetaDataExpandCollapse.setImageResource(R.drawable.ic_chevron_up);
 			binding.repoMetaFrame.setVisibility(View.VISIBLE);
 			//Animation slide_down = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down);
@@ -141,7 +142,7 @@ public class RepoInfoFragment extends Fragment {
 	private void setRepoInfo(Locale locale, final String timeFormat) {
 		Repository repoInfo = repository.getRepository();
 
-		if (isAdded()) {
+		if(isAdded()) {
 			assert repoInfo != null;
 			binding.repoMetaName.setText(repoInfo.getName());
 
@@ -167,7 +168,8 @@ public class RepoInfoFragment extends Fragment {
 
 			binding.repoMetaCreatedAt.setText(TimeHelper.formatTime(repoInfo.getCreatedAt(), locale, timeFormat, ctx));
 			if(timeFormat.equals("pretty")) {
-				binding.repoMetaCreatedAt.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(repoInfo.getCreatedAt()), ctx));
+				binding.repoMetaCreatedAt.setOnClickListener(
+					new ClickListener(TimeHelper.customDateFormatForToastDateFormat(repoInfo.getCreatedAt()), ctx));
 			}
 
 			String repoMetaUpdatedAt = TimeHelper.formatTime(repoInfo.getUpdatedAt(), locale, timeFormat, ctx);
@@ -176,7 +178,9 @@ public class RepoInfoFragment extends Fragment {
 			binding.repoMetaWebsite.setText(website);
 			binding.repoMetaWebsite.setLinksClickable(false);
 			binding.websiteFrame.setOnClickListener((v) -> {
-				if (!repoInfo.getWebsite().isEmpty()) AppUtil.openUrlInBrowser(requireContext(), repoInfo.getWebsite());
+				if(!repoInfo.getWebsite().isEmpty()) {
+					AppUtil.openUrlInBrowser(requireContext(), repoInfo.getWebsite());
+				}
 			});
 
 			binding.repoAdditionalButton.setOnClickListener(v -> {
@@ -232,15 +236,18 @@ public class RepoInfoFragment extends Fragment {
 			if(repoInfo.isFork()) {
 				binding.repoForkFrame.setVisibility(View.VISIBLE);
 				binding.repoForkFrame.setOnClickListener((v) -> {
-					Intent parent = new RepositoryContext(repoInfo.getParent(), requireContext()).getIntent(requireContext(), RepoDetailActivity.class);
+					Intent parent = new RepositoryContext(repoInfo.getParent(), requireContext()).getIntent(requireContext(),
+						RepoDetailActivity.class);
 					startActivity(parent);
 				});
 				binding.repoFork.setText(getString(R.string.repoForkOf, repoInfo.getParent().getFullName()));
-			} else {
+			}
+			else {
 				binding.repoForkFrame.setVisibility(View.GONE);
 			}
 
-			getFileContents(repository.getOwner(), repository.getName(), getResources().getString(R.string.defaultFilename), repoInfo.getDefaultBranch());
+			getFileContents(repository.getOwner(), repository.getName(), getResources().getString(R.string.defaultFilename),
+				repoInfo.getDefaultBranch());
 
 			pageContent.setVisibility(View.VISIBLE);
 
@@ -249,9 +256,7 @@ public class RepoInfoFragment extends Fragment {
 
 	private void getFileContents(final String owner, String repo, final String filename, final String defBranch) {
 
-		Call<ResponseBody> call = RetrofitClient
-				.getWebInterface(getContext())
-				.getFileContents(owner, repo, defBranch, filename);
+		Call<ResponseBody> call = RetrofitClient.getWebInterface(getContext()).getFileContents(owner, repo, defBranch, filename);
 
 		call.enqueue(new Callback<>() {
 
@@ -309,4 +314,5 @@ public class RepoInfoFragment extends Fragment {
 			}
 		});
 	}
+
 }

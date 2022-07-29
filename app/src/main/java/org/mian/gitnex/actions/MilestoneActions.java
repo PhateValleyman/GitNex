@@ -32,8 +32,7 @@ public class MilestoneActions {
 
 		EditMilestoneOption milestoneStateJson = new EditMilestoneOption();
 		milestoneStateJson.setState(state);
-		Call<Milestone> call = RetrofitClient
-			.getApiInterface(ctx)
+		Call<Milestone> call = RetrofitClient.getApiInterface(ctx)
 			.issueEditMilestone(repository.getOwner(), repository.getName(), String.valueOf(milestoneId_), milestoneStateJson);
 
 		call.enqueue(new Callback<>() {

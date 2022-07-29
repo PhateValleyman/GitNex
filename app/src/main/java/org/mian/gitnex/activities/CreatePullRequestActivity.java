@@ -77,23 +77,21 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 			touchView.getParent().requestDisallowInterceptTouchEvent(true);
 
-			if ((motionEvent.getAction() & MotionEvent.ACTION_UP) != 0 && (motionEvent.getActionMasked() & MotionEvent.ACTION_UP) != 0) {
+			if((motionEvent.getAction() & MotionEvent.ACTION_UP) != 0 && (motionEvent.getActionMasked() & MotionEvent.ACTION_UP) != 0) {
 
 				touchView.getParent().requestDisallowInterceptTouchEvent(false);
 			}
 			return false;
 		});
 
-		labelsAdapter =  new LabelsListAdapter(labelsList, CreatePullRequestActivity.this, labelsIds);
+		labelsAdapter = new LabelsListAdapter(labelsList, CreatePullRequestActivity.this, labelsIds);
 
 		ImageView closeActivity = findViewById(R.id.close);
 
 		initCloseListener();
 		closeActivity.setOnClickListener(onClickListener);
 
-		viewBinding.prDueDate.setOnClickListener(dueDate ->
-			setDueDate()
-		);
+		viewBinding.prDueDate.setOnClickListener(dueDate -> setDueDate());
 
 		disableProcessButton();
 
@@ -120,7 +118,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 		assignees.add("");
 
-		if (labelsIds.size() == 0) {
+		if(labelsIds.size() == 0) {
 
 			labelsIds.add(0);
 		}
@@ -164,8 +162,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		createPullRequest.setLabels(labelIds);
 		createPullRequest.setDueDate(currentDate);
 
-		Call<PullRequest> transferCall = RetrofitClient
-			.getApiInterface(ctx)
+		Call<PullRequest> transferCall = RetrofitClient.getApiInterface(ctx)
 			.repoCreatePullRequest(repository.getOwner(), repository.getName(), createPullRequest);
 
 		transferCall.enqueue(new Callback<>() {
@@ -226,13 +223,13 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 		dialogLabels = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
-		if (dialogLabels.getWindow() != null) {
+		if(dialogLabels.getWindow() != null) {
 
 			dialogLabels.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
 
-		org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding labelsBinding = CustomLabelsSelectionDialogBinding
-			.inflate(LayoutInflater.from(ctx));
+		org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding labelsBinding = CustomLabelsSelectionDialogBinding.inflate(
+			LayoutInflater.from(ctx));
 
 		View view = labelsBinding.getRoot();
 		dialogLabels.setContentView(view);
@@ -245,9 +242,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 	private void getBranches(String repoOwner, String repoName) {
 
-		Call<List<Branch>> call = RetrofitClient
-			.getApiInterface(ctx)
-			.repoListBranches(repoOwner, repoName, null, null);
+		Call<List<Branch>> call = RetrofitClient.getApiInterface(ctx).repoListBranches(repoOwner, repoName, null, null);
 
 		call.enqueue(new Callback<List<Branch>>() {
 
@@ -265,8 +260,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 							branchesList.add(i.getName());
 						}
 
-						ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this,
-							R.layout.list_spinner_items, branchesList);
+						ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this, R.layout.list_spinner_items, branchesList);
 
 						viewBinding.mergeIntoBranchSpinner.setAdapter(adapter);
 						viewBinding.pullFromBranchSpinner.setAdapter(adapter);
@@ -288,9 +282,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 	private void getMilestones(String repoOwner, String repoName, int resultLimit) {
 
 		String msState = "open";
-		Call<List<Milestone>> call = RetrofitClient
-			.getApiInterface(ctx)
-			.issueGetMilestonesList(repoOwner, repoName, msState, null, 1, resultLimit);
+		Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx).issueGetMilestonesList(repoOwner, repoName, msState, null, 1, resultLimit);
 
 		call.enqueue(new Callback<>() {
 
@@ -301,7 +293,8 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 					List<Milestone> milestonesList_ = response.body();
 
-					milestonesList.put(getString(R.string.issueCreatedNoMilestone), new Milestone().id(0L).title(getString(R.string.issueCreatedNoMilestone)));
+					milestonesList.put(getString(R.string.issueCreatedNoMilestone),
+						new Milestone().id(0L).title(getString(R.string.issueCreatedNoMilestone)));
 					assert milestonesList_ != null;
 
 					if(milestonesList_.size() > 0) {
@@ -315,7 +308,8 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 						}
 					}
 
-					ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this, R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
+					ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this, R.layout.list_spinner_items,
+						new ArrayList<>(milestonesList.keySet()));
 
 					viewBinding.milestonesSpinner.setAdapter(adapter);
 					enableProcessButton();
@@ -347,11 +341,10 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		final int mMonth = c.get(Calendar.MONTH);
 		final int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-		DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-			(view, year, monthOfYear, dayOfMonth) -> {
+		DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
 			viewBinding.prDueDate.setText(getString(R.string.setDueDate, year, (monthOfYear + 1), dayOfMonth));
 			currentDate = new Date(year - 1900, monthOfYear, dayOfMonth);
-			}, mYear, mMonth, mDay);
+		}, mYear, mMonth, mDay);
 		datePickerDialog.show();
 	}
 
@@ -375,4 +368,5 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		super.onResume();
 		repository.checkAccountSwitch(this);
 	}
+
 }

@@ -35,8 +35,9 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 	private static final List<String> allowedReactionsCache = new ArrayList<>();
 
-	private enum ReactionType { COMMENT, ISSUE }
-	private enum ReactionAction { REMOVE, ADD }
+	private enum ReactionType {COMMENT, ISSUE}
+
+	private enum ReactionAction {REMOVE, ADD}
 
 	private Runnable onInteractedListener;
 	private Runnable onLoadingFinishedListener;
@@ -49,7 +50,8 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 		int sidesPadding = AppUtil.getPixelsFromDensity(context, 10);
 
-		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+			ViewGroup.LayoutParams.WRAP_CONTENT);
 
 		root.setOrientation(LinearLayout.HORIZONTAL);
 		root.setPadding(sidesPadding, 0, sidesPadding, 0);
@@ -66,7 +68,8 @@ public class ReactionSpinner extends HorizontalScrollView {
 		if(bundle.containsKey("commentId")) {
 			id = bundle.getInt("commentId");
 			reactionType = ReactionType.COMMENT;
-		} else {
+		}
+		else {
 			id = bundle.getInt("issueId");
 			reactionType = ReactionType.ISSUE;
 		}
@@ -86,16 +89,17 @@ public class ReactionSpinner extends HorizontalScrollView {
 							.inflate(R.layout.layout_reaction_button, root, false);
 
 						// Checks if current user reacted with 'allowedReaction'
-						boolean myReaction = allReactions.stream().anyMatch(issueReaction ->
-							issueReaction.getContent().equals(allowedReaction) &&
-								issueReaction.getUser().getLogin().equals(loginUid));
+						boolean myReaction = allReactions.stream().anyMatch(
+							issueReaction -> issueReaction.getContent().equals(allowedReaction) && issueReaction.getUser().getLogin()
+								.equals(loginUid));
 
 						ReactionAction reactionAction;
 
 						if(myReaction) {
 							reactionButton.setCardBackgroundColor(AppUtil.getColorFromAttribute(context, R.attr.inputSelectedColor));
 							reactionAction = ReactionAction.REMOVE;
-						} else {
+						}
+						else {
 							reactionAction = ReactionAction.ADD;
 						}
 
@@ -109,7 +113,9 @@ public class ReactionSpinner extends HorizontalScrollView {
 										onInteractedListener.run();
 									});
 								}
-							} catch(IOException ignored) {}
+							}
+							catch(IOException ignored) {
+							}
 
 						}).start());
 
@@ -126,10 +132,13 @@ public class ReactionSpinner extends HorizontalScrollView {
 						setVisibility(VISIBLE);
 					});
 
-				} else {
+				}
+				else {
 					this.post(() -> setVisibility(GONE));
 				}
-			} catch(IOException ignored) {}
+			}
+			catch(IOException ignored) {
+			}
 			if(onLoadingFinishedListener != null) {
 				((Activity) context).runOnUiThread(() -> onLoadingFinishedListener.run());
 			}
@@ -137,7 +146,8 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 	}
 
-	private boolean react(String repoOwner, String repoName, ReactionType reactionType, ReactionAction reactionAction, EditReactionOption issueReaction, int id) throws IOException {
+	private boolean react(String repoOwner, String repoName, ReactionType reactionType, ReactionAction reactionAction,
+		EditReactionOption issueReaction, int id) throws IOException {
 
 		Response<?> response = null;
 
@@ -147,18 +157,14 @@ public class ReactionSpinner extends HorizontalScrollView {
 				switch(reactionAction) {
 
 					case ADD:
-						response = RetrofitClient
-							.getApiInterface(getContext())
-							.issuePostIssueReaction(repoOwner, repoName, (long) id, issueReaction)
+						response = RetrofitClient.getApiInterface(getContext()).issuePostIssueReaction(repoOwner, repoName, (long) id, issueReaction)
 							.execute();
 						break;
 
 
 					case REMOVE:
-						response = RetrofitClient
-							.getApiInterface(getContext())
-							.issueDeleteIssueReactionWithBody(repoOwner, repoName, (long) id, issueReaction)
-							.execute();
+						response = RetrofitClient.getApiInterface(getContext())
+							.issueDeleteIssueReactionWithBody(repoOwner, repoName, (long) id, issueReaction).execute();
 						break;
 
 				}
@@ -168,18 +174,14 @@ public class ReactionSpinner extends HorizontalScrollView {
 				switch(reactionAction) {
 
 					case ADD:
-						response = RetrofitClient
-							.getApiInterface(getContext())
-							.issuePostCommentReaction(repoOwner, repoName, (long) id, issueReaction)
-							.execute();
+						response = RetrofitClient.getApiInterface(getContext())
+							.issuePostCommentReaction(repoOwner, repoName, (long) id, issueReaction).execute();
 						break;
 
 
 					case REMOVE:
-						response = RetrofitClient
-							.getApiInterface(getContext())
-							.issueDeleteCommentReactionWithBody(repoOwner, repoName, (long) id, issueReaction)
-							.execute();
+						response = RetrofitClient.getApiInterface(getContext())
+							.issueDeleteCommentReactionWithBody(repoOwner, repoName, (long) id, issueReaction).execute();
 						break;
 
 				}
@@ -198,24 +200,19 @@ public class ReactionSpinner extends HorizontalScrollView {
 		switch(reactionType) {
 
 			case ISSUE:
-				response = RetrofitClient
-					.getApiInterface(getContext())
-					.issueGetIssueReactions(repoOwner, repoName, (long) id, null, null)
-					.execute();
+				response = RetrofitClient.getApiInterface(getContext()).issueGetIssueReactions(repoOwner, repoName, (long) id, null, null).execute();
 				break;
 
 			case COMMENT:
-				response = RetrofitClient
-					.getApiInterface(getContext())
-					.issueGetCommentReactions(repoOwner, repoName, (long) id)
-					.execute();
+				response = RetrofitClient.getApiInterface(getContext()).issueGetCommentReactions(repoOwner, repoName, (long) id).execute();
 				break;
 
 		}
 
 		if(response.isSuccessful() && response.body() != null) {
 			return response.body();
-		} else {
+		}
+		else {
 			return Collections.emptyList();
 		}
 	}
@@ -225,10 +222,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 		if(allowedReactionsCache.isEmpty()) {
 
-			Response<GeneralUISettings> response = RetrofitClient
-				.getApiInterface(getContext())
-				.getGeneralUISettings()
-				.execute();
+			Response<GeneralUISettings> response = RetrofitClient.getApiInterface(getContext()).getGeneralUISettings().execute();
 
 			if(response.isSuccessful() && response.body() != null) {
 				allowedReactionsCache.addAll(response.body().getAllowedReactions());

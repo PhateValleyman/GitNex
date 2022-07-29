@@ -36,23 +36,24 @@ public class RepositoriesByOrgFragment extends Fragment {
 	private static final String getOrgName = null;
 	private String orgName;
 
-    public RepositoriesByOrgFragment() { }
+	public RepositoriesByOrgFragment() {
+	}
 
-    public static RepositoriesByOrgFragment newInstance(String orgName) {
-        RepositoriesByOrgFragment fragment = new RepositoriesByOrgFragment();
-        Bundle args = new Bundle();
-        args.putString(getOrgName, orgName);
-        fragment.setArguments(args);
-        return fragment;
-    }
+	public static RepositoriesByOrgFragment newInstance(String orgName) {
+		RepositoriesByOrgFragment fragment = new RepositoriesByOrgFragment();
+		Bundle args = new Bundle();
+		args.putString(getOrgName, orgName);
+		fragment.setArguments(args);
+		return fragment;
+	}
 
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            orgName = getArguments().getString(getOrgName);
-        }
-    }
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if(getArguments() != null) {
+			orgName = getArguments().getString(getOrgName);
+		}
+	}
 
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,7 +84,9 @@ public class RepositoriesByOrgFragment extends Fragment {
 		fetchDataAsync();
 
 		return fragmentRepositoriesBinding.getRoot();
-	};
+	}
+
+	;
 
 	private void fetchDataAsync() {
 
@@ -121,41 +124,43 @@ public class RepositoriesByOrgFragment extends Fragment {
 		});
 	}
 
-    @Override
-    public void onResume() {
+	@Override
+	public void onResume() {
 
-        super.onResume();
+		super.onResume();
 
-        if(MainActivity.reloadRepos) {
-	        repositoriesViewModel.loadReposList(page, resultLimit, null, "org", orgName, getContext());
-	        MainActivity.reloadRepos = false;
-        }
+		if(MainActivity.reloadRepos) {
+			repositoriesViewModel.loadReposList(page, resultLimit, null, "org", orgName, getContext());
+			MainActivity.reloadRepos = false;
+		}
 
-    }
+	}
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+	@Override
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        inflater.inflate(R.menu.search_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.search_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+		MenuItem searchItem = menu.findItem(R.id.action_search);
+		androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+		searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+		searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if(fragmentRepositoriesBinding.recyclerView.getAdapter() != null) {
-                    adapter.getFilter().filter(newText);
-                }
-                return false;
-            }
-        });
-    }
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				if(fragmentRepositoriesBinding.recyclerView.getAdapter() != null) {
+					adapter.getFilter().filter(newText);
+				}
+				return false;
+			}
+		});
+	}
+
 }

@@ -39,7 +39,8 @@ public class DetailFragment extends Fragment {
 	private static final String usernameBundle = "";
 	private String username;
 
-	public DetailFragment() {}
+	public DetailFragment() {
+	}
 
 	public static DetailFragment newInstance(String username) {
 		DetailFragment fragment = new DetailFragment();
@@ -52,7 +53,7 @@ public class DetailFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
+		if(getArguments() != null) {
 			username = getArguments().getString(usernameBundle);
 		}
 	}
@@ -72,11 +73,10 @@ public class DetailFragment extends Fragment {
 
 	public void getProfileDetail(String username) {
 
-		Call<User> call = RetrofitClient
-			.getApiInterface(context)
-			.userGet(username);
+		Call<User> call = RetrofitClient.getApiInterface(context).userGet(username);
 
 		call.enqueue(new Callback<User>() {
+
 			@Override
 			public void onResponse(@NonNull Call<User> call, @NonNull retrofit2.Response<User> response) {
 
@@ -104,17 +104,11 @@ public class DetailFragment extends Fragment {
 								binding.userLang.setText(locale.getDisplayLanguage());
 							}
 
-							PicassoService.getInstance(context).get()
-								.load(response.body().getAvatarUrl())
-								.transform(new RoundedTransformation(imgRadius, 0))
-								.placeholder(R.drawable.loader_animated)
-								.resize(120, 120)
-								.centerCrop()
-								.into(binding.userAvatar);
+							PicassoService.getInstance(context).get().load(response.body().getAvatarUrl())
+								.transform(new RoundedTransformation(imgRadius, 0)).placeholder(R.drawable.loader_animated).resize(120, 120)
+								.centerCrop().into(binding.userAvatar);
 
-							PicassoService.getInstance(context).get()
-								.load(response.body().getAvatarUrl())
-								.transform(new BlurTransformation(context))
+							PicassoService.getInstance(context).get().load(response.body().getAvatarUrl()).transform(new BlurTransformation(context))
 								.into(binding.userAvatarBackground, new com.squareup.picasso.Callback() {
 
 									@Override
@@ -125,18 +119,20 @@ public class DetailFragment extends Fragment {
 										binding.userLogin.setTextColor(invertedColor);
 									}
 
-									@Override public void onError(Exception e) {}
+									@Override
+									public void onError(Exception e) {
+									}
 								});
 
 							binding.userJoinedOn.setText(TimeHelper.formatTime(response.body().getCreated(), locale, timeFormat, context));
 							if(timeFormat.equals("pretty")) {
-								binding.userJoinedOn.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(response.body().getCreated()), context));
+								binding.userJoinedOn.setOnClickListener(
+									new ClickListener(TimeHelper.customDateFormatForToastDateFormat(response.body().getCreated()), context));
 							}
 							break;
 
 						case 401:
-							AlertDialogs
-								.authorizationTokenRevokedDialog(context);
+							AlertDialogs.authorizationTokenRevokedDialog(context);
 							break;
 
 						case 403:
@@ -157,4 +153,5 @@ public class DetailFragment extends Fragment {
 			}
 		});
 	}
+
 }

@@ -60,7 +60,8 @@ public class WikiFragment extends Fragment {
 		fragmentWikiBinding.recyclerView.setHasFixedSize(true);
 		fragmentWikiBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-		RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.shape_list_divider));
+		RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(
+			ContextCompat.getDrawable(requireContext(), R.drawable.shape_list_divider));
 		fragmentWikiBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 
 		fragmentWikiBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -74,7 +75,9 @@ public class WikiFragment extends Fragment {
 		fetchDataAsync(repository.getOwner(), repository.getName());
 
 		return fragmentWikiBinding.getRoot();
-	};
+	}
+
+	;
 
 	@Override
 	public void onResume() {
@@ -97,7 +100,8 @@ public class WikiFragment extends Fragment {
 				public void onLoadMore() {
 
 					page += 1;
-					wikiViewModel.loadMoreWiki(repository.getOwner(), repository.getName(), page, resultLimit, getContext(), fragmentWikiBinding, adapter);
+					wikiViewModel.loadMoreWiki(repository.getOwner(), repository.getName(), page, resultLimit, getContext(), fragmentWikiBinding,
+						adapter);
 					fragmentWikiBinding.progressBar.setVisibility(View.VISIBLE);
 				}
 
@@ -121,4 +125,5 @@ public class WikiFragment extends Fragment {
 			fragmentWikiBinding.progressBar.setVisibility(View.GONE);
 		});
 	}
+
 }

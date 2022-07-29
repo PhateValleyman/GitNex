@@ -6,7 +6,5 @@ package org.mian.gitnex.helpers.codeeditor;
  */
 
 public enum LanguageName {
-	JAVA,
-	PYTHON,
-	GO_LANG
+	JAVA, PYTHON, GO_LANG
 }

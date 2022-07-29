@@ -31,150 +31,151 @@ import retrofit2.Response;
 
 public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.OrgTeamsViewHolder> implements Filterable {
 
-    private final List<Team> teamList;
-    private final Context context;
-    private final List<Team> teamListFull;
-    private final OrganizationPermissions permissions;
-    private final String orgName;
+	private final List<Team> teamList;
+	private final Context context;
+	private final List<Team> teamListFull;
+	private final OrganizationPermissions permissions;
+	private final String orgName;
 
-    static class OrgTeamsViewHolder extends RecyclerView.ViewHolder {
+	static class OrgTeamsViewHolder extends RecyclerView.ViewHolder {
 
-    	private Team team;
+		private Team team;
 
-    	private OrganizationPermissions permissions;
-        private final TextView teamTitle;
-        private final TextView teamDescription;
-        private final LinearLayout membersPreviewFrame;
+		private OrganizationPermissions permissions;
+		private final TextView teamTitle;
+		private final TextView teamDescription;
+		private final LinearLayout membersPreviewFrame;
 
-	    private final List<User> userInfos;
-        private final TeamMembersByOrgPreviewAdapter adapter;
-        private String orgName;
+		private final List<User> userInfos;
+		private final TeamMembersByOrgPreviewAdapter adapter;
+		private String orgName;
 
-        private OrgTeamsViewHolder(View itemView) {
-            super(itemView);
+		private OrgTeamsViewHolder(View itemView) {
+			super(itemView);
 
-            teamTitle = itemView.findViewById(R.id.teamTitle);
-            teamDescription = itemView.findViewById(R.id.teamDescription);
-            membersPreviewFrame = itemView.findViewById(R.id.membersPreviewFrame);
+			teamTitle = itemView.findViewById(R.id.teamTitle);
+			teamDescription = itemView.findViewById(R.id.teamDescription);
+			membersPreviewFrame = itemView.findViewById(R.id.membersPreviewFrame);
 
-	        RecyclerView membersPreview = itemView.findViewById(R.id.membersPreview);
+			RecyclerView membersPreview = itemView.findViewById(R.id.membersPreview);
 
-	        userInfos = new ArrayList<>();
-            adapter = new TeamMembersByOrgPreviewAdapter(itemView.getContext(), userInfos);
+			userInfos = new ArrayList<>();
+			adapter = new TeamMembersByOrgPreviewAdapter(itemView.getContext(), userInfos);
 
-            membersPreview.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.HORIZONTAL, false));
-            membersPreview.setAdapter(adapter);
+			membersPreview.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.HORIZONTAL, false));
+			membersPreview.setAdapter(adapter);
 
-            itemView.setOnClickListener(v -> {
-                Context context = v.getContext();
+			itemView.setOnClickListener(v -> {
+				Context context = v.getContext();
 
-                Intent intent = new Intent(context, OrganizationTeamInfoActivity.class);
-                intent.putExtra("team", team);
-                intent.putExtra("permissions", permissions);
-                intent.putExtra("orgName", orgName);
-                context.startActivity(intent);
-            });
-        }
-    }
+				Intent intent = new Intent(context, OrganizationTeamInfoActivity.class);
+				intent.putExtra("team", team);
+				intent.putExtra("permissions", permissions);
+				intent.putExtra("orgName", orgName);
+				context.startActivity(intent);
+			});
+		}
 
-    public TeamsByOrgAdapter(Context ctx, List<Team> teamListMain, OrganizationPermissions permissions, String orgName) {
-        this.context = ctx;
-        this.teamList = teamListMain;
-        this.permissions = permissions;
-        teamListFull = new ArrayList<>(teamList);
-        this.orgName = orgName;
-    }
+	}
 
-    @NonNull
-    @Override
-    public TeamsByOrgAdapter.OrgTeamsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_teams_by_org, parent, false);
-        return new TeamsByOrgAdapter.OrgTeamsViewHolder(v);
-    }
+	public TeamsByOrgAdapter(Context ctx, List<Team> teamListMain, OrganizationPermissions permissions, String orgName) {
+		this.context = ctx;
+		this.teamList = teamListMain;
+		this.permissions = permissions;
+		teamListFull = new ArrayList<>(teamList);
+		this.orgName = orgName;
+	}
 
-    @Override
-    public void onBindViewHolder(@NonNull TeamsByOrgAdapter.OrgTeamsViewHolder holder, int position) {
+	@NonNull
+	@Override
+	public TeamsByOrgAdapter.OrgTeamsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_teams_by_org, parent, false);
+		return new TeamsByOrgAdapter.OrgTeamsViewHolder(v);
+	}
 
-        Team currentItem = teamList.get(position);
+	@Override
+	public void onBindViewHolder(@NonNull TeamsByOrgAdapter.OrgTeamsViewHolder holder, int position) {
 
-        holder.team = currentItem;
-        holder.teamTitle.setText(currentItem.getName());
-        holder.permissions = permissions;
-        holder.orgName = orgName;
+		Team currentItem = teamList.get(position);
 
-	    holder.membersPreviewFrame.setVisibility(View.GONE);
-	    holder.userInfos.clear();
-	    holder.adapter.notifyDataSetChanged();
+		holder.team = currentItem;
+		holder.teamTitle.setText(currentItem.getName());
+		holder.permissions = permissions;
+		holder.orgName = orgName;
 
-	    RetrofitClient.getApiInterface(context)
-		    .orgListTeamMembers(currentItem.getId(), null, null)
-		    .enqueue(new Callback<List<User>>() {
-			    @Override
-			    public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
-				    if(response.isSuccessful() &&
-					    response.body() != null &&
-					    response.body().size() > 0) {
+		holder.membersPreviewFrame.setVisibility(View.GONE);
+		holder.userInfos.clear();
+		holder.adapter.notifyDataSetChanged();
 
-					    holder.membersPreviewFrame.setVisibility(View.VISIBLE);
-					    holder.userInfos.addAll(response.body().stream()
-						    .limit(Math.min(response.body().size(), 6))
-						    .collect(Collectors.toList()));
+		RetrofitClient.getApiInterface(context).orgListTeamMembers(currentItem.getId(), null, null).enqueue(new Callback<List<User>>() {
 
-					    holder.adapter.notifyDataSetChanged();
-				    }
-			    }
+			@Override
+			public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+				if(response.isSuccessful() && response.body() != null && response.body().size() > 0) {
 
-			    @Override public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {}
-	    });
+					holder.membersPreviewFrame.setVisibility(View.VISIBLE);
+					holder.userInfos.addAll(response.body().stream().limit(Math.min(response.body().size(), 6)).collect(Collectors.toList()));
 
-        if (currentItem.getDescription() != null && !currentItem.getDescription().isEmpty()) {
-            holder.teamDescription.setVisibility(View.VISIBLE);
-            holder.teamDescription.setText(currentItem.getDescription());
-        } else {
-            holder.teamDescription.setVisibility(View.GONE);
-            holder.teamDescription.setText("");
-        }
-    }
+					holder.adapter.notifyDataSetChanged();
+				}
+			}
 
-    @Override
-    public int getItemCount() {
-        return teamList.size();
-    }
+			@Override
+			public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
+			}
+		});
 
-    @Override
-    public Filter getFilter() {
-        return orgTeamsFilter;
-    }
+		if(currentItem.getDescription() != null && !currentItem.getDescription().isEmpty()) {
+			holder.teamDescription.setVisibility(View.VISIBLE);
+			holder.teamDescription.setText(currentItem.getDescription());
+		}
+		else {
+			holder.teamDescription.setVisibility(View.GONE);
+			holder.teamDescription.setText("");
+		}
+	}
 
-    private final Filter orgTeamsFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<Team> filteredList = new ArrayList<>();
+	@Override
+	public int getItemCount() {
+		return teamList.size();
+	}
 
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(teamListFull);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+	@Override
+	public Filter getFilter() {
+		return orgTeamsFilter;
+	}
 
-                for (Team item : teamListFull) {
-                    if (item.getName().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
+	private final Filter orgTeamsFilter = new Filter() {
 
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+			List<Team> filteredList = new ArrayList<>();
 
-            return results;
-        }
+			if(constraint == null || constraint.length() == 0) {
+				filteredList.addAll(teamListFull);
+			}
+			else {
+				String filterPattern = constraint.toString().toLowerCase().trim();
 
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            teamList.clear();
-            teamList.addAll((List<Team>) results.values);
-            notifyDataSetChanged();
-        }
-    };
+				for(Team item : teamListFull) {
+					if(item.getName().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
+						filteredList.add(item);
+					}
+				}
+			}
+
+			FilterResults results = new FilterResults();
+			results.values = filteredList;
+
+			return results;
+		}
+
+		@Override
+		protected void publishResults(CharSequence constraint, FilterResults results) {
+			teamList.clear();
+			teamList.addAll((List<Team>) results.values);
+			notifyDataSetChanged();
+		}
+	};
 
 }

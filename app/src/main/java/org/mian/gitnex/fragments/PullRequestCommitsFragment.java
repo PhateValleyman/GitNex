@@ -45,7 +45,8 @@ public class PullRequestCommitsFragment extends Fragment {
 	private final List<Commit> commitsList = new ArrayList<>();
 	private CommitsAdapter adapter;
 
-	public PullRequestCommitsFragment() {}
+	public PullRequestCommitsFragment() {
+	}
 
 	public static PullRequestCommitsFragment newInstance() {
 		return new PullRequestCommitsFragment();
@@ -72,16 +73,12 @@ public class PullRequestCommitsFragment extends Fragment {
 			loadInitial(issue, resultLimit);
 			adapter.notifyDataChanged();
 		}, 200));
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-			RelativeLayout.LayoutParams.MATCH_PARENT,
-			RelativeLayout.LayoutParams.WRAP_CONTENT
-		);
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+			RelativeLayout.LayoutParams.WRAP_CONTENT);
 		params.setMargins(0, 0, 0, 0);
 		binding.pullToRefresh.setLayoutParams(params);
-		RelativeLayout.LayoutParams paramsProgressBar = new RelativeLayout.LayoutParams(
-			RelativeLayout.LayoutParams.MATCH_PARENT,
-			RelativeLayout.LayoutParams.WRAP_CONTENT
-		);
+		RelativeLayout.LayoutParams paramsProgressBar = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+			RelativeLayout.LayoutParams.WRAP_CONTENT);
 		paramsProgressBar.setMargins(0, 0, 0, 0);
 		binding.progressBar.setLayoutParams(paramsProgressBar);
 
@@ -113,8 +110,9 @@ public class PullRequestCommitsFragment extends Fragment {
 
 	private void loadInitial(IssueContext issue, int resultLimit) {
 
-		Call<List<Commit>> call = RetrofitClient.getApiInterface(ctx).repoGetPullRequestCommits(issue.getRepository().getOwner(),
-			issue.getRepository().getName(), (long) issue.getIssueIndex(), 1, resultLimit);
+		Call<List<Commit>> call = RetrofitClient.getApiInterface(ctx)
+			.repoGetPullRequestCommits(issue.getRepository().getOwner(), issue.getRepository().getName(), (long) issue.getIssueIndex(), 1,
+				resultLimit);
 
 		call.enqueue(new Callback<>() {
 
@@ -164,8 +162,9 @@ public class PullRequestCommitsFragment extends Fragment {
 
 		binding.progressBar.setVisibility(View.VISIBLE);
 
-		Call<List<Commit>> call = RetrofitClient.getApiInterface(ctx).repoGetPullRequestCommits(issue.getRepository().getOwner(),
-			issue.getRepository().getName(), (long) issue.getIssueIndex(), page, resultLimit);
+		Call<List<Commit>> call = RetrofitClient.getApiInterface(ctx)
+			.repoGetPullRequestCommits(issue.getRepository().getOwner(), issue.getRepository().getName(), (long) issue.getIssueIndex(), page,
+				resultLimit);
 
 		call.enqueue(new Callback<>() {
 

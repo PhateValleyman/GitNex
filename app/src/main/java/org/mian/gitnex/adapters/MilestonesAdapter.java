@@ -165,7 +165,8 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 				else {
 
 					int msCompletion = (int) (100 * dataModel.getClosedIssues() / (dataModel.getOpenIssues() + dataModel.getClosedIssues()));
-					msProgress.setOnClickListener(new ClickListener(context.getResources().getString(R.string.milestoneCompletion, msCompletion), context));
+					msProgress.setOnClickListener(
+						new ClickListener(context.getResources().getString(R.string.milestoneCompletion, msCompletion), context));
 					msProgress.setProgress(msCompletion);
 				}
 
@@ -211,6 +212,7 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 				msDueDate.setText(context.getString(R.string.milestoneNoDueDate));
 			}
 		}
+
 	}
 
 	@Override
@@ -244,8 +246,11 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 	}
 
 	public interface OnLoadMoreListener {
+
 		void onLoadMore();
+
 		void onLoadFinished();
+
 	}
 
 	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
@@ -256,4 +261,5 @@ public class MilestonesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 		dataList = list;
 		notifyDataChanged();
 	}
+
 }

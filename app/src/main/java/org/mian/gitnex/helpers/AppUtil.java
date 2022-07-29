@@ -56,17 +56,19 @@ public class AppUtil {
 		assert api != null;
 
 		api.logout(tinyDB.getInt("currentActiveAccountId"));
-		if (api.getCount() >= 1) {
+		if(api.getCount() >= 1) {
 			switchToAccount(ctx, api.loggedInUserAccounts().get(0));
 			if(ctx instanceof MainActivity) {
 				((Activity) ctx).recreate();
-			} else { // if it's not a MainActivity, open MainActivity instead of current one
+			}
+			else { // if it's not a MainActivity, open MainActivity instead of current one
 				((Activity) ctx).finish();
 				Intent intent = new Intent(ctx, MainActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				ctx.startActivity(intent);
 			}
-		} else {
+		}
+		else {
 			tinyDB.putInt("currentActiveAccountId", -2);
 			((Activity) ctx).finish();
 			Intent intent = new Intent(ctx, LoginActivity.class);
@@ -75,21 +77,32 @@ public class AppUtil {
 		}
 	}
 
-	public enum FileType { IMAGE, AUDIO, VIDEO, DOCUMENT, TEXT, EXECUTABLE, FONT, UNKNOWN }
+	public enum FileType {IMAGE, AUDIO, VIDEO, DOCUMENT, TEXT, EXECUTABLE, FONT, UNKNOWN}
 
 	private static final HashMap<String[], FileType> extensions = new HashMap<>();
 
 	// AppUtil should not be instantiated.
-	private AppUtil() {}
+	private AppUtil() {
+	}
 
 	static {
 
 		extensions.put(new String[]{"jpg", "jpeg", "gif", "png", "ico", "tif", "tiff", "bmp"}, FileType.IMAGE);
 		extensions.put(new String[]{"mp3", "wav", "opus", "flac", "wma", "aac", "m4a", "oga", "mpc", "ogg"}, FileType.AUDIO);
-		extensions.put(new String[]{"mp4", "mkv", "avi", "mov", "wmv", "qt", "mts", "m2ts", "webm", "flv", "ogv", "amv", "mpg", "mpeg", "mpv", "m4v", "3gp", "wmv"}, FileType.VIDEO);
-		extensions.put(new String[]{"doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "odg", "otg", "odp", "otp", "bin", "psd", "xcf", "pdf"}, FileType.DOCUMENT);
+		extensions.put(
+			new String[]{"mp4", "mkv", "avi", "mov", "wmv", "qt", "mts", "m2ts", "webm", "flv", "ogv", "amv", "mpg", "mpeg", "mpv", "m4v", "3gp",
+				"wmv"}, FileType.VIDEO);
+		extensions.put(
+			new String[]{"doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "odg", "otg", "odp", "otp", "bin",
+				"psd", "xcf", "pdf"}, FileType.DOCUMENT);
 		extensions.put(new String[]{"exe", "msi", "jar", "dmg", "deb", "apk"}, FileType.EXECUTABLE);
-		extensions.put(new String[]{"txt", "md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv", "python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs", "lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl", "wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf", "gitignore", "gradle", "txt", "properties", "bat", "twig", "cvs", "cmake", "in", "info", "spec", "m4", "am", "dist", "pam", "hx", "ts", "kt", "kts"}, FileType.TEXT);
+		extensions.put(
+			new String[]{"txt", "md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv",
+				"python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs",
+				"lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl",
+				"wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf",
+				"gitignore", "gradle", "txt", "properties", "bat", "twig", "cvs", "cmake", "in", "info", "spec", "m4", "am", "dist", "pam", "hx",
+				"ts", "kt", "kts"}, FileType.TEXT);
 		extensions.put(new String[]{"ttf", "otf", "woff", "woff2", "ttc", "eot"}, FileType.FONT);
 	}
 
@@ -99,8 +112,9 @@ public class AppUtil {
 			for(String[] testExtensions : extensions.keySet()) {
 				for(String testExtension : testExtensions) {
 
-					if(testExtension.equalsIgnoreCase(extension))
+					if(testExtension.equalsIgnoreCase(extension)) {
 						return extensions.get(testExtensions);
+					}
 				}
 			}
 		}
@@ -113,7 +127,8 @@ public class AppUtil {
 		return NetworkStatusObserver.getInstance(context).hasNetworkConnection();
 	}
 
-	public static void copyProgress(InputStream inputStream, OutputStream outputStream, long totalSize, ProgressListener progressListener) throws IOException {
+	public static void copyProgress(InputStream inputStream, OutputStream outputStream, long totalSize, ProgressListener progressListener) throws
+		IOException {
 
 		byte[] buffer = new byte[4096];
 		int read;
@@ -133,7 +148,9 @@ public class AppUtil {
 
 			if(stepCount == stepsPerPercent) {
 				percent++;
-				if(percent <= 100) progressListener.onProgressChanged(percent);
+				if(percent <= 100) {
+					progressListener.onProgressChanged(percent);
+				}
 				stepCount = 0;
 			}
 		}
@@ -146,10 +163,15 @@ public class AppUtil {
 	}
 
 	public interface ProgressListener {
-		default void onActionStarted() {}
-		default void onActionFinished() {}
+
+		default void onActionStarted() {
+		}
+
+		default void onActionFinished() {
+		}
 
 		void onProgressChanged(short progress);
+
 	}
 
 	public static int getAppBuildNo(Context context) {
@@ -223,7 +245,8 @@ public class AppUtil {
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", locale).format(date);
-		} else {
+		}
+		else {
 			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", locale).format(date);
 		}
 
@@ -338,7 +361,9 @@ public class AppUtil {
 
 	public static long getLineCount(String s) {
 
-		if(s.length() < 1) return 0;
+		if(s.length() < 1) {
+			return 0;
+		}
 
 		long lines = 1; // we start counting at 1 because there is always at least one line
 
@@ -385,25 +410,21 @@ public class AppUtil {
 
 		try {
 			if(tinyDB.getBoolean("useCustomTabs")) {
-				new CustomTabsIntent
-					.Builder()
-					.setDefaultColorSchemeParams(
-						new CustomTabColorSchemeParams.Builder()
-							.setToolbarColor(getColorFromAttribute(context, R.attr.primaryBackgroundColor))
-							.setNavigationBarColor(getColorFromAttribute(context, R.attr.primaryBackgroundColor))
-							.setSecondaryToolbarColor(R.attr.primaryTextColor)
-							.build()
-					)
-					.build()
-					.launchUrl(context, Uri.parse(url));
-			} else {
+				new CustomTabsIntent.Builder().setDefaultColorSchemeParams(
+					new CustomTabColorSchemeParams.Builder().setToolbarColor(getColorFromAttribute(context, R.attr.primaryBackgroundColor))
+						.setNavigationBarColor(getColorFromAttribute(context, R.attr.primaryBackgroundColor))
+						.setSecondaryToolbarColor(R.attr.primaryTextColor).build()).build().launchUrl(context, Uri.parse(url));
+			}
+			else {
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				i.addCategory(Intent.CATEGORY_BROWSABLE);
 				context.startActivity(i);
 			}
-		} catch(ActivityNotFoundException e) {
+		}
+		catch(ActivityNotFoundException e) {
 			Toasty.error(context, context.getString(R.string.browserOpenFailed));
-		} catch (Exception e) {
+		}
+		catch(Exception e) {
 			Toasty.error(context, context.getString(R.string.genericError));
 		}
 	}
@@ -420,7 +441,7 @@ public class AppUtil {
 
 	public static String getUriFromSSHUrl(String url) {
 		String[] urlParts = url.split("://");
-		if (urlParts.length > 1) {
+		if(urlParts.length > 1) {
 			url = urlParts[1];
 		}
 		return "https://" + url.replace(":", "/");
@@ -429,10 +450,10 @@ public class AppUtil {
 	public static Uri changeScheme(Uri origin, String scheme) {
 		String raw = origin.toString();
 		int schemeIndex = raw.indexOf("://");
-		if (schemeIndex >= 0) {
+		if(schemeIndex >= 0) {
 			raw = raw.substring(schemeIndex);
 		}
-		return Uri.parse(scheme+raw);
+		return Uri.parse(scheme + raw);
 	}
 
 	public static Typeface typeface;

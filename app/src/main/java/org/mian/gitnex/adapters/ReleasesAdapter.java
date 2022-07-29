@@ -42,8 +42,8 @@ import retrofit2.Response;
 
 public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.ReleasesViewHolder> {
 
-    private List<Release> releasesList;
-    private final Context context;
+	private List<Release> releasesList;
+	private final Context context;
 	private final String repoOwner;
 	private final String repoName;
 
@@ -56,173 +56,178 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
 		private Release releases;
 
-        private final TextView releaseType;
-        private final TextView releaseName;
-        private final ImageView authorAvatar;
-        private final TextView authorName;
-        private final TextView releaseTag;
+		private final TextView releaseType;
+		private final TextView releaseName;
+		private final ImageView authorAvatar;
+		private final TextView authorName;
+		private final TextView releaseTag;
 		private final TextView releaseDate;
-        private final TextView releaseBodyContent;
-        private final LinearLayout downloadCopyFrame;
-        private final LinearLayout downloads;
-        private final LinearLayout releaseZipDownloadFrame;
-	    private final LinearLayout releaseTarDownloadFrame;
-	    private final ImageView downloadDropdownIcon;
-	    private final RecyclerView downloadList;
+		private final TextView releaseBodyContent;
+		private final LinearLayout downloadCopyFrame;
+		private final LinearLayout downloads;
+		private final LinearLayout releaseZipDownloadFrame;
+		private final LinearLayout releaseTarDownloadFrame;
+		private final ImageView downloadDropdownIcon;
+		private final RecyclerView downloadList;
 		private final ImageView optionsMenu;
 
-        private ReleasesViewHolder(View itemView) {
+		private ReleasesViewHolder(View itemView) {
 
-            super(itemView);
+			super(itemView);
 
-	        releaseType = itemView.findViewById(R.id.releaseType);
-	        releaseName = itemView.findViewById(R.id.releaseName);
-	        authorAvatar = itemView.findViewById(R.id.authorAvatar);
-	        authorName = itemView.findViewById(R.id.authorName);
-	        releaseTag = itemView.findViewById(R.id.releaseTag);
-	        TextView releaseCommitSha = itemView.findViewById(R.id.releaseCommitSha);
-	        releaseDate = itemView.findViewById(R.id.releaseDate);
-	        releaseBodyContent = itemView.findViewById(R.id.releaseBodyContent);
-	        downloadCopyFrame = itemView.findViewById(R.id.downloadCopyFrame);
-	        downloads = itemView.findViewById(R.id.downloads);
-	        releaseZipDownloadFrame = itemView.findViewById(R.id.releaseZipDownloadFrame);
-	        releaseTarDownloadFrame = itemView.findViewById(R.id.releaseTarDownloadFrame);
-	        downloadDropdownIcon = itemView.findViewById(R.id.downloadDropdownIcon);
-	        downloadList = itemView.findViewById(R.id.downloadList);
-	        optionsMenu = itemView.findViewById(R.id.releasesOptionsMenu);
+			releaseType = itemView.findViewById(R.id.releaseType);
+			releaseName = itemView.findViewById(R.id.releaseName);
+			authorAvatar = itemView.findViewById(R.id.authorAvatar);
+			authorName = itemView.findViewById(R.id.authorName);
+			releaseTag = itemView.findViewById(R.id.releaseTag);
+			TextView releaseCommitSha = itemView.findViewById(R.id.releaseCommitSha);
+			releaseDate = itemView.findViewById(R.id.releaseDate);
+			releaseBodyContent = itemView.findViewById(R.id.releaseBodyContent);
+			downloadCopyFrame = itemView.findViewById(R.id.downloadCopyFrame);
+			downloads = itemView.findViewById(R.id.downloads);
+			releaseZipDownloadFrame = itemView.findViewById(R.id.releaseZipDownloadFrame);
+			releaseTarDownloadFrame = itemView.findViewById(R.id.releaseTarDownloadFrame);
+			downloadDropdownIcon = itemView.findViewById(R.id.downloadDropdownIcon);
+			downloadList = itemView.findViewById(R.id.downloadList);
+			optionsMenu = itemView.findViewById(R.id.releasesOptionsMenu);
 
-	        downloadList.setHasFixedSize(true);
-	        downloadList.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+			downloadList.setHasFixedSize(true);
+			downloadList.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
 
-	        authorAvatar.setOnClickListener(loginId -> {
-		        Context context = loginId.getContext();
+			authorAvatar.setOnClickListener(loginId -> {
+				Context context = loginId.getContext();
 
-		        Intent intent = new Intent(context, ProfileActivity.class);
-		        intent.putExtra("username", releases.getAuthor().getLogin());
-		        context.startActivity(intent);
-	        });
+				Intent intent = new Intent(context, ProfileActivity.class);
+				intent.putExtra("username", releases.getAuthor().getLogin());
+				context.startActivity(intent);
+			});
 
-	        optionsMenu.setOnClickListener(v -> {
-		        final Context context = v.getContext();
+			optionsMenu.setOnClickListener(v -> {
+				final Context context = v.getContext();
 
-		        View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_release_in_list, itemView.findViewById(android.R.id.content), false);
+				View view = LayoutInflater.from(context)
+					.inflate(R.layout.bottom_sheet_release_in_list, itemView.findViewById(android.R.id.content), false);
 
-		        TextView deleteRelease = view.findViewById(R.id.deleteRelease);
+				TextView deleteRelease = view.findViewById(R.id.deleteRelease);
 
-		        BottomSheetDialog dialog = new BottomSheetDialog(context);
-		        dialog.setContentView(view);
-		        dialog.show();
+				BottomSheetDialog dialog = new BottomSheetDialog(context);
+				dialog.setContentView(view);
+				dialog.show();
 
-		        deleteRelease.setOnClickListener(v1 -> {
-			        deleteRelease(context, releases.getName(), releases.getId(), repoOwner, repoName, getBindingAdapterPosition());
-			        dialog.dismiss();
-		        });
-	        });
-        }
-    }
+				deleteRelease.setOnClickListener(v1 -> {
+					deleteRelease(context, releases.getName(), releases.getId(), repoOwner, repoName, getBindingAdapterPosition());
+					dialog.dismiss();
+				});
+			});
+		}
 
-    public ReleasesAdapter(Context ctx, List<Release> releasesMain, FragmentRefreshListener startDownload, String repoOwner, String repoName, FragmentReleasesBinding fragmentReleasesBinding) {
-        this.context = ctx;
-        this.releasesList = releasesMain;
-	    this.startDownload = startDownload;
-	    this.repoOwner = repoOwner;
-	    this.repoName = repoName;
-	    this.fragmentReleasesBinding = fragmentReleasesBinding;
-    }
+	}
 
-    @NonNull
-    @Override
-    public ReleasesAdapter.ReleasesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_releases, parent, false);
-        return new ReleasesAdapter.ReleasesViewHolder(v);
-    }
+	public ReleasesAdapter(Context ctx, List<Release> releasesMain, FragmentRefreshListener startDownload, String repoOwner, String repoName,
+		FragmentReleasesBinding fragmentReleasesBinding) {
+		this.context = ctx;
+		this.releasesList = releasesMain;
+		this.startDownload = startDownload;
+		this.repoOwner = repoOwner;
+		this.repoName = repoName;
+		this.fragmentReleasesBinding = fragmentReleasesBinding;
+	}
 
-    @Override
-    public void onBindViewHolder(@NonNull ReleasesAdapter.ReleasesViewHolder holder, int position) {
+	@NonNull
+	@Override
+	public ReleasesAdapter.ReleasesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_releases, parent, false);
+		return new ReleasesAdapter.ReleasesViewHolder(v);
+	}
 
-        final TinyDB tinyDb = TinyDB.getInstance(context);
-	    final Locale locale = context.getResources().getConfiguration().locale;
-	    final String timeFormat = tinyDb.getString("dateFormat", "pretty");
-	    int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
+	@Override
+	public void onBindViewHolder(@NonNull ReleasesAdapter.ReleasesViewHolder holder, int position) {
 
-	    Release currentItem = releasesList.get(position);
-        holder.releases = currentItem;
+		final TinyDB tinyDb = TinyDB.getInstance(context);
+		final Locale locale = context.getResources().getConfiguration().locale;
+		final String timeFormat = tinyDb.getString("dateFormat", "pretty");
+		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
-	    holder.releaseName.setText(currentItem.getName());
+		Release currentItem = releasesList.get(position);
+		holder.releases = currentItem;
 
-	    if(currentItem.isPrerelease()) {
-		    holder.releaseType.setBackgroundResource(R.drawable.shape_pre_release);
-		    holder.releaseType.setText(R.string.releaseTypePre);
-	    }
-	    else if(currentItem.isDraft()) {
-		    holder.releaseType.setBackgroundResource(R.drawable.shape_draft_release);
-		    holder.releaseType.setText(R.string.releaseDraftText);
-	    }
-	    else {
-		    holder.releaseType.setBackgroundResource(R.drawable.shape_stable_release);
-		    holder.releaseType.setText(R.string.releaseTypeStable);
-	    }
+		holder.releaseName.setText(currentItem.getName());
 
-	    if(currentItem.getAuthor().getAvatarUrl() != null) {
-		    PicassoService.getInstance(context).get().load(currentItem.getAuthor().getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.authorAvatar);
-	    }
+		if(currentItem.isPrerelease()) {
+			holder.releaseType.setBackgroundResource(R.drawable.shape_pre_release);
+			holder.releaseType.setText(R.string.releaseTypePre);
+		}
+		else if(currentItem.isDraft()) {
+			holder.releaseType.setBackgroundResource(R.drawable.shape_draft_release);
+			holder.releaseType.setText(R.string.releaseDraftText);
+		}
+		else {
+			holder.releaseType.setBackgroundResource(R.drawable.shape_stable_release);
+			holder.releaseType.setText(R.string.releaseTypeStable);
+		}
 
-	    holder.authorName.setText(context.getResources().getString(R.string.releasePublishedBy, currentItem.getAuthor().getLogin()));
+		if(currentItem.getAuthor().getAvatarUrl() != null) {
+			PicassoService.getInstance(context).get().load(currentItem.getAuthor().getAvatarUrl()).placeholder(R.drawable.loader_animated)
+				.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.authorAvatar);
+		}
 
-	    if(currentItem.getTagName() != null) {
-	    	holder.releaseTag.setText(currentItem.getTagName());
-	    }
+		holder.authorName.setText(context.getResources().getString(R.string.releasePublishedBy, currentItem.getAuthor().getLogin()));
 
-	    if(currentItem.getPublishedAt() != null) {
-		    holder.releaseDate.setText(TimeHelper.formatTime(currentItem.getPublishedAt(), locale, timeFormat, context));
-	    }
+		if(currentItem.getTagName() != null) {
+			holder.releaseTag.setText(currentItem.getTagName());
+		}
 
-	    if(timeFormat.equals("pretty")) {
-		    holder.releaseDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getPublishedAt()), context));
-	    }
+		if(currentItem.getPublishedAt() != null) {
+			holder.releaseDate.setText(TimeHelper.formatTime(currentItem.getPublishedAt(), locale, timeFormat, context));
+		}
 
-        if(!currentItem.getBody().equals("")) {
-	        Markdown.render(context, currentItem.getBody(), holder.releaseBodyContent);
-        }
-        else {
-	        holder.releaseBodyContent.setText(R.string.noReleaseBodyContent);
-        }
+		if(timeFormat.equals("pretty")) {
+			holder.releaseDate.setOnClickListener(
+				new ClickListener(TimeHelper.customDateFormatForToastDateFormat(currentItem.getPublishedAt()), context));
+		}
 
-	    holder.downloadCopyFrame.setOnClickListener(v -> {
+		if(!currentItem.getBody().equals("")) {
+			Markdown.render(context, currentItem.getBody(), holder.releaseBodyContent);
+		}
+		else {
+			holder.releaseBodyContent.setText(R.string.noReleaseBodyContent);
+		}
 
-		    if(holder.downloads.getVisibility() == View.GONE) {
+		holder.downloadCopyFrame.setOnClickListener(v -> {
 
-			    holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_down);
-			    holder.downloads.setVisibility(View.VISIBLE);
-		    }
-		    else {
+			if(holder.downloads.getVisibility() == View.GONE) {
 
-			    holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_right);
-			    holder.downloads.setVisibility(View.GONE);
-		    }
+				holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_down);
+				holder.downloads.setVisibility(View.VISIBLE);
+			}
+			else {
 
-	    });
+				holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_right);
+				holder.downloads.setVisibility(View.GONE);
+			}
 
-	    holder.releaseZipDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
-	    holder.releaseTarDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
+		});
 
-	    ReleasesDownloadsAdapter adapter = new ReleasesDownloadsAdapter(currentItem.getAssets(), startDownload);
-	    holder.downloadList.setAdapter(adapter);
+		holder.releaseZipDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
+		holder.releaseTarDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
 
-	    if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
-		    isLoading = true;
-		    loadMoreListener.onLoadMore();
-	    }
+		ReleasesDownloadsAdapter adapter = new ReleasesDownloadsAdapter(currentItem.getAssets(), startDownload);
+		holder.downloadList.setAdapter(adapter);
 
-	    if(!((RepoDetailActivity) context).repository.getPermissions().isPush()) {
-		    holder.optionsMenu.setVisibility(View.GONE);
-	    }
-    }
+		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
+			isLoading = true;
+			loadMoreListener.onLoadMore();
+		}
 
-    @Override
-    public int getItemCount() {
-        return releasesList.size();
-    }
+		if(!((RepoDetailActivity) context).repository.getPermissions().isPush()) {
+			holder.optionsMenu.setVisibility(View.GONE);
+		}
+	}
+
+	@Override
+	public int getItemCount() {
+		return releasesList.size();
+	}
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
 		isMoreDataAvailable = moreDataAvailable;
@@ -239,9 +244,11 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 	}
 
 	public interface OnLoadMoreListener {
+
 		void onLoadMore();
 
 		void onLoadFinished();
+
 	}
 
 	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
@@ -259,14 +266,12 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 		notifyItemRangeChanged(position, releasesList.size());
 	}
 
-	private void deleteRelease(final Context context, final String releaseName, final Long releaseId, final String owner, final String repo, int position) {
+	private void deleteRelease(final Context context, final String releaseName, final Long releaseId, final String owner, final String repo,
+		int position) {
 
-		new AlertDialog.Builder(context)
-			.setTitle(String.format(context.getString(R.string.deleteGenericTitle), releaseName))
-			.setMessage(R.string.deleteReleaseConfirmation)
-			.setIcon(R.drawable.ic_delete)
-			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient
-				.getApiInterface(context).repoDeleteRelease(owner, repo, releaseId).enqueue(new Callback<>() {
+		new AlertDialog.Builder(context).setTitle(String.format(context.getString(R.string.deleteGenericTitle), releaseName))
+			.setMessage(R.string.deleteReleaseConfirmation).setIcon(R.drawable.ic_delete).setPositiveButton(R.string.menuDeleteText,
+				(dialog, whichButton) -> RetrofitClient.getApiInterface(context).repoDeleteRelease(owner, repo, releaseId).enqueue(new Callback<>() {
 
 					@Override
 					public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
@@ -292,7 +297,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 
 						Toasty.error(context, context.getString(R.string.genericError));
 					}
-				}))
-			.setNeutralButton(R.string.cancelButton, null).show();
+				})).setNeutralButton(R.string.cancelButton, null).show();
 	}
+
 }

@@ -24,43 +24,44 @@ public class BottomSheetUserProfileFragment extends BottomSheetDialogFragment {
 		this.following = following;
 	}
 
-    private BottomSheetListener bmListener;
+	private BottomSheetListener bmListener;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+	@Nullable
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-	    BottomSheetUserProfileBinding bottomSheetUserProfileBinding = BottomSheetUserProfileBinding.inflate(inflater, container, false);
+		BottomSheetUserProfileBinding bottomSheetUserProfileBinding = BottomSheetUserProfileBinding.inflate(inflater, container, false);
 
-	    if(following) {
-		    bottomSheetUserProfileBinding.unfollowUser.setVisibility(View.VISIBLE);
-		    bottomSheetUserProfileBinding.followUser.setVisibility(View.GONE);
-	    }
+		if(following) {
+			bottomSheetUserProfileBinding.unfollowUser.setVisibility(View.VISIBLE);
+			bottomSheetUserProfileBinding.followUser.setVisibility(View.GONE);
+		}
 
-        bottomSheetUserProfileBinding.followUser.setOnClickListener(v1 -> {
+		bottomSheetUserProfileBinding.followUser.setOnClickListener(v1 -> {
 
-            bmListener.onButtonClicked("follow");
-            dismiss();
-        });
+			bmListener.onButtonClicked("follow");
+			dismiss();
+		});
 
-	    bottomSheetUserProfileBinding.unfollowUser.setOnClickListener(v1 -> {
+		bottomSheetUserProfileBinding.unfollowUser.setOnClickListener(v1 -> {
 
-		    bmListener.onButtonClicked("follow");
-		    dismiss();
-	    });
+			bmListener.onButtonClicked("follow");
+			dismiss();
+		});
 
-        return bottomSheetUserProfileBinding.getRoot();
-    }
+		return bottomSheetUserProfileBinding.getRoot();
+	}
 
 	@Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+	public void onAttach(@NonNull Context context) {
+		super.onAttach(context);
 
-        try {
-            bmListener = (BottomSheetListener) context;
-        }
-        catch (ClassCastException e) {
-            throw new ClassCastException(context + " must implement BottomSheetListener");
-        }
-    }
+		try {
+			bmListener = (BottomSheetListener) context;
+		}
+		catch(ClassCastException e) {
+			throw new ClassCastException(context + " must implement BottomSheetListener");
+		}
+	}
+
 }

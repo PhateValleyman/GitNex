@@ -79,8 +79,8 @@ public class Markdown {
 
 	private static final Timeout OBJECT_POOL_CLAIM_TIMEOUT = new Timeout(240, TimeUnit.SECONDS);
 
-	private static final ExecutorService executorService =
-		new ThreadPoolExecutor(MAX_THREAD_POOL_SIZE, MAX_THREAD_POOL_SIZE, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+	private static final ExecutorService executorService = new ThreadPoolExecutor(MAX_THREAD_POOL_SIZE, MAX_THREAD_POOL_SIZE, 0, TimeUnit.SECONDS,
+		new LinkedBlockingQueue<>());
 
 	private static final Pool<Renderer> rendererPool;
 	private static final Pool<RecyclerViewRenderer> rvRendererPool;
@@ -99,7 +99,9 @@ public class Markdown {
 				return new Renderer(slot);
 			}
 
-			@Override public void deallocate(Renderer poolable) {}
+			@Override
+			public void deallocate(Renderer poolable) {
+			}
 
 		});
 
@@ -181,9 +183,8 @@ public class Markdown {
 				.usePlugin(LinkifyPlugin.create(true)).usePlugin(SoftBreakAddsNewLinePlugin.create()).usePlugin(TablePlugin.create(context))
 				.usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create())).usePlugin(TaskListPlugin.create(context))
 				.usePlugin(StrikethroughPlugin.create()).usePlugin(PicassoImagesPlugin.create(PicassoService.getInstance(context).get())).usePlugin(
-					SyntaxHighlightPlugin
-						.create(new Prism4j(MainGrammarLocator.getInstance()), prism4jTheme, MainGrammarLocator.DEFAULT_FALLBACK_LANGUAGE))
-				.usePlugin(new AbstractMarkwonPlugin() {
+					SyntaxHighlightPlugin.create(new Prism4j(MainGrammarLocator.getInstance()), prism4jTheme,
+						MainGrammarLocator.DEFAULT_FALLBACK_LANGUAGE)).usePlugin(new AbstractMarkwonPlugin() {
 
 					private Typeface tf;
 
@@ -297,9 +298,8 @@ public class Markdown {
 				.usePlugin(SoftBreakAddsNewLinePlugin.create()).usePlugin(TableEntryPlugin.create(context))
 				.usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create())).usePlugin(TaskListPlugin.create(context))
 				.usePlugin(StrikethroughPlugin.create()).usePlugin(PicassoImagesPlugin.create(PicassoService.getInstance(context).get())).usePlugin(
-					SyntaxHighlightPlugin
-						.create(new Prism4j(MainGrammarLocator.getInstance()), prism4jTheme, MainGrammarLocator.DEFAULT_FALLBACK_LANGUAGE))
-				.usePlugin(new AbstractMarkwonPlugin() {
+					SyntaxHighlightPlugin.create(new Prism4j(MainGrammarLocator.getInstance()), prism4jTheme,
+						MainGrammarLocator.DEFAULT_FALLBACK_LANGUAGE)).usePlugin(new AbstractMarkwonPlugin() {
 
 					private final Context context = RecyclerViewRenderer.this.context;
 					private Typeface tf;
@@ -358,13 +358,14 @@ public class Markdown {
 								String[] repo;
 								if(link.contains("/")) {
 									repo = link.split("#")[0].split("/");
-								} else {
+								}
+								else {
 									repo = new String[]{repoLocal.getOwner(), repoLocal.getName()};
 								}
-								Intent i = new IssueContext(new RepositoryContext(repo[0], repo[1], context), Integer.parseInt(index), null)
-									.getIntent(context, IssueDetailActivity.class);
+								Intent i = new IssueContext(new RepositoryContext(repo[0], repo[1], context), Integer.parseInt(index),
+									null).getIntent(context, IssueDetailActivity.class);
 
-								if (link.contains("/")) {
+								if(link.contains("/")) {
 									i.putExtra("openedFromLink", "true");
 								}
 
@@ -398,8 +399,8 @@ public class Markdown {
 		private void setupAdapter() {
 
 			adapter = MarkwonAdapter.builderTextViewIsRoot(R.layout.custom_markdown_adapter).include(TableBlock.class, TableEntry.create(
-				builder2 -> builder2.tableLayout(R.layout.custom_markdown_table, R.id.table_layout)
-					.textLayoutIsRoot(R.layout.custom_markdown_adapter)))
+					builder2 -> builder2.tableLayout(R.layout.custom_markdown_table, R.id.table_layout)
+						.textLayoutIsRoot(R.layout.custom_markdown_adapter)))
 				.include(FencedCodeBlock.class, SimpleEntry.create(R.layout.custom_markdown_code_block, R.id.textCodeBlock)).build();
 		}
 
@@ -409,8 +410,9 @@ public class Markdown {
 			this.markdown = markdown;
 			this.recyclerView = recyclerView;
 			this.repository = repository;
-			if(linkPostProcessor != null)
+			if(linkPostProcessor != null) {
 				linkPostProcessor.repository = repository;
+			}
 		}
 
 		@Override
@@ -558,8 +560,8 @@ public class Markdown {
 				Node lastNode = textNode;
 				boolean foundAny = false;
 
-				final Pattern patternIssue = Pattern
-					.compile(instanceUrl + "([^/]+/[^/]+)/(?:issues|pulls)/(\\d+)(?:(?:/#|#)(issue-\\d+|issuecomment-\\d+)|)", Pattern.MULTILINE);
+				final Pattern patternIssue = Pattern.compile(
+					instanceUrl + "([^/]+/[^/]+)/(?:issues|pulls)/(\\d+)(?:(?:/#|#)(issue-\\d+|issuecomment-\\d+)|)", Pattern.MULTILINE);
 				final Matcher matcherIssue = patternIssue.matcher(literal);
 
 				final Pattern patternCommit = Pattern.compile(instanceUrl + "([^/]+/[^/]+)/commit/([a-z0-9_]+)(?!`|\\)|\\S+)", Pattern.MULTILINE);

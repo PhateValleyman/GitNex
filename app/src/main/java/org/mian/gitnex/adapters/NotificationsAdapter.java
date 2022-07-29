@@ -32,7 +32,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 	private final OnNotificationClickedListener onNotificationClickedListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
 
-	public NotificationsAdapter(Context context, List<NotificationThread> notificationThreads, OnMoreClickedListener onMoreClickedListener, OnNotificationClickedListener onNotificationClickedListener) {
+	public NotificationsAdapter(Context context, List<NotificationThread> notificationThreads, OnMoreClickedListener onMoreClickedListener,
+		OnNotificationClickedListener onNotificationClickedListener) {
 
 		this.context = context;
 		this.notificationThreads = notificationThreads;
@@ -92,13 +93,15 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 			String subjectId = "";
 
 			if(StringUtils.containsAny(notificationThread.getSubject().getType().toLowerCase(), "pull", "issue")) {
-				subjectId = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray, null) + "'>" + context.getResources().getString(R.string.hash) + url.substring(url.lastIndexOf("/") + 1) + "</font>";
+				subjectId = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray,
+					null) + "'>" + context.getResources().getString(R.string.hash) + url.substring(url.lastIndexOf("/") + 1) + "</font>";
 			}
 
 			subject.setText(HtmlCompat.fromHtml(subjectId + " " + notificationThread.getSubject().getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
 			if(!notificationThread.getSubject().getType().equalsIgnoreCase("repository")) {
 				repository.setText(notificationThread.getRepository().getFullName());
-			} else {
+			}
+			else {
 				repository.setVisibility(View.GONE);
 				pinned.setVisibility(View.GONE);
 				pinned = itemView.findViewById(R.id.pinnedVertical);
@@ -151,6 +154,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 			more.setOnClickListener(v -> onMoreClickedListener.onMoreClicked(notificationThread));
 		}
+
 	}
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
@@ -169,10 +173,15 @@ public class NotificationsAdapter extends RecyclerView.Adapter<RecyclerView.View
 	}
 
 	public interface OnNotificationClickedListener {
+
 		void onNotificationClicked(NotificationThread notificationThread);
+
 	}
 
 	public interface OnMoreClickedListener {
+
 		void onMoreClicked(NotificationThread notificationThread);
+
 	}
+
 }

@@ -41,174 +41,178 @@ import jp.wasabeef.picasso.transformations.BlurTransformation;
 
 public class MyProfileFragment extends Fragment {
 
-    private Context ctx;
+	private Context ctx;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+	@Nullable
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-    	ctx = getContext();
+		ctx = getContext();
 
-        View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        setHasOptionsMenu(true);
+		View v = inflater.inflate(R.layout.fragment_profile, container, false);
+		setHasOptionsMenu(true);
 
-	    ((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navProfile));
+		((MainActivity) requireActivity()).setActionBarTitle(getResources().getString(R.string.navProfile));
 
-	    AccountContext account = ((BaseActivity) requireActivity()).getAccount();
-	    if(account.getUserInfo() != null) {
-		    viewData(v, account);
-	    } else {
-	    	// we have to wait until loading is finished
-		    LinearProgressIndicator loading = v.findViewById(R.id.loadingIndicator);
-		    loading.setVisibility(View.VISIBLE);
-		    ((MainActivity) requireActivity()).setProfileInitListener((text) -> {
-		    	loading.setVisibility(View.GONE);
-		    	viewData(v, account);
-		    });
-	    }
+		AccountContext account = ((BaseActivity) requireActivity()).getAccount();
+		if(account.getUserInfo() != null) {
+			viewData(v, account);
+		}
+		else {
+			// we have to wait until loading is finished
+			LinearProgressIndicator loading = v.findViewById(R.id.loadingIndicator);
+			loading.setVisibility(View.VISIBLE);
+			((MainActivity) requireActivity()).setProfileInitListener((text) -> {
+				loading.setVisibility(View.GONE);
+				viewData(v, account);
+			});
+		}
 
-        return v;
-    }
+		return v;
+	}
 
-    public static class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+	public static class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
-        SectionsPagerAdapter(FragmentManager fm) {
-            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        }
+		SectionsPagerAdapter(FragmentManager fm) {
+			super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+		}
 
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
+		@NonNull
+		@Override
+		public Fragment getItem(int position) {
 
-            switch (position) {
+			switch(position) {
 
-                case 0: // followers
-                    return new MyProfileFollowersFragment();
+				case 0: // followers
+					return new MyProfileFollowersFragment();
 
-                case 1: // following
-                    return new MyProfileFollowingFragment();
+				case 1: // following
+					return new MyProfileFollowingFragment();
 
-                case 2: // emails
-                    return new MyProfileEmailsFragment();
+				case 2: // emails
+					return new MyProfileEmailsFragment();
 
-            }
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        @Override
-        public int getCount() {
-            return 3;
-        }
-    }
+		@Override
+		public int getCount() {
+			return 3;
+		}
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+	}
 
-        menu.clear();
-        requireActivity().getMenuInflater().inflate(R.menu.profile_dotted_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+	@Override
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		menu.clear();
+		requireActivity().getMenuInflater().inflate(R.menu.profile_dotted_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
 
-        int id = item.getItemId();
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-	    if(id == android.R.id.home) {
-		    ((MainActivity)ctx).finish();
-		    return true;
-	    }
-	    else if(id == R.id.profileMenu) {
-		    BottomSheetMyProfileFragment bottomSheet = new BottomSheetMyProfileFragment();
-		    bottomSheet.show(getChildFragmentManager(), "profileBottomSheet");
-		    return true;
-	    }
-	    else {
-		    return super.onOptionsItemSelected(item);
-	    }
-    }
+		int id = item.getItemId();
 
-    public void viewData(View v, AccountContext account) {
-	    TinyDB tinyDb = TinyDB.getInstance(getContext());
+		if(id == android.R.id.home) {
+			((MainActivity) ctx).finish();
+			return true;
+		}
+		else if(id == R.id.profileMenu) {
+			BottomSheetMyProfileFragment bottomSheet = new BottomSheetMyProfileFragment();
+			bottomSheet.show(getChildFragmentManager(), "profileBottomSheet");
+			return true;
+		}
+		else {
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
-	    TextView userFullName = v.findViewById(R.id.userFullName);
-	    ImageView userAvatarBackground = v.findViewById(R.id.userAvatarBackground);
-	    ImageView userAvatar = v.findViewById(R.id.userAvatar);
-	    TextView userLogin = v.findViewById(R.id.userLogin);
-	    View divider = v.findViewById(R.id.divider);
-	    TextView userLanguage = v.findViewById(R.id.userLanguage);
-	    ImageView userLanguageIcon = v.findViewById(R.id.userLanguageIcon);
+	public void viewData(View v, AccountContext account) {
+		TinyDB tinyDb = TinyDB.getInstance(getContext());
 
-	    String[] userLanguageCodes = account.getUserInfo().getLanguage() != null ? account.getUserInfo().getLanguage().split("-") : new String[]{""};
+		TextView userFullName = v.findViewById(R.id.userFullName);
+		ImageView userAvatarBackground = v.findViewById(R.id.userAvatarBackground);
+		ImageView userAvatar = v.findViewById(R.id.userAvatar);
+		TextView userLogin = v.findViewById(R.id.userLogin);
+		View divider = v.findViewById(R.id.divider);
+		TextView userLanguage = v.findViewById(R.id.userLanguage);
+		ImageView userLanguageIcon = v.findViewById(R.id.userLanguageIcon);
 
-	    if(userLanguageCodes.length >= 2) {
-		    Locale locale = new Locale(userLanguageCodes[0], userLanguageCodes[1]);
-		    userLanguage.setText(locale.getDisplayLanguage());
-	    }
-	    else {
-		    userLanguage.setText(getResources().getConfiguration().locale.getDisplayLanguage());
-	    }
+		String[] userLanguageCodes = account.getUserInfo().getLanguage() != null ? account.getUserInfo().getLanguage().split("-") : new String[]{""};
 
-	    userAvatar.setOnClickListener(loginId -> AppUtil.copyToClipboard(ctx, account.getAccount().getUserName(),
-		    ctx.getString(R.string.copyLoginIdToClipBoard, account.getAccount().getUserName())));
+		if(userLanguageCodes.length >= 2) {
+			Locale locale = new Locale(userLanguageCodes[0], userLanguageCodes[1]);
+			userLanguage.setText(locale.getDisplayLanguage());
+		}
+		else {
+			userLanguage.setText(getResources().getConfiguration().locale.getDisplayLanguage());
+		}
 
-	    userFullName.setText(Html.fromHtml(account.getFullName()));
-	    userLogin.setText(getString(R.string.usernameWithAt, account.getAccount().getUserName()));
+		userAvatar.setOnClickListener(loginId -> AppUtil.copyToClipboard(ctx, account.getAccount().getUserName(),
+			ctx.getString(R.string.copyLoginIdToClipBoard, account.getAccount().getUserName())));
 
-	    int avatarRadius = AppUtil.getPixelsFromDensity(ctx, 3);
+		userFullName.setText(Html.fromHtml(account.getFullName()));
+		userLogin.setText(getString(R.string.usernameWithAt, account.getAccount().getUserName()));
 
-	    PicassoService.getInstance(ctx).get().load(account.getUserInfo().getAvatarUrl()).transform(new RoundedTransformation(avatarRadius, 0)).placeholder(R.drawable.loader_animated).resize(120, 120).centerCrop().into(userAvatar);
+		int avatarRadius = AppUtil.getPixelsFromDensity(ctx, 3);
 
-	    PicassoService.getInstance(ctx).get().load(account.getUserInfo().getAvatarUrl()).transform(new BlurTransformation(ctx))
-		    .into(userAvatarBackground, new Callback() {
+		PicassoService.getInstance(ctx).get().load(account.getUserInfo().getAvatarUrl()).transform(new RoundedTransformation(avatarRadius, 0))
+			.placeholder(R.drawable.loader_animated).resize(120, 120).centerCrop().into(userAvatar);
 
-			    @Override
-			    public void onSuccess() {
+		PicassoService.getInstance(ctx).get().load(account.getUserInfo().getAvatarUrl()).transform(new BlurTransformation(ctx))
+			.into(userAvatarBackground, new Callback() {
 
-				    int invertedColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+				@Override
+				public void onSuccess() {
 
-				    userFullName.setTextColor(invertedColor);
-				    divider.setBackgroundColor(invertedColor);
-				    userLogin.setTextColor(invertedColor);
-				    userLanguage.setTextColor(invertedColor);
+					int invertedColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
 
-				    ImageViewCompat.setImageTintList(userLanguageIcon, ColorStateList.valueOf(invertedColor));
-			    }
+					userFullName.setTextColor(invertedColor);
+					divider.setBackgroundColor(invertedColor);
+					userLogin.setTextColor(invertedColor);
+					userLanguage.setTextColor(invertedColor);
 
-			    @Override
-			    public void onError(Exception e) {
+					ImageViewCompat.setImageTintList(userLanguageIcon, ColorStateList.valueOf(invertedColor));
+				}
 
-			    }
-		    });
+				@Override
+				public void onError(Exception e) {
 
-	    MyProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
+				}
+			});
 
-	    ViewPager mViewPager = v.findViewById(R.id.container);
-	    mViewPager.setAdapter(mSectionsPagerAdapter);
+		MyProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
-	    Typeface myTypeface = AppUtil.getTypeface(requireContext());
-	    TabLayout tabLayout = v.findViewById(R.id.tabs);
+		ViewPager mViewPager = v.findViewById(R.id.container);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-	    ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
-	    int tabsCount = vg.getChildCount();
+		Typeface myTypeface = AppUtil.getTypeface(requireContext());
+		TabLayout tabLayout = v.findViewById(R.id.tabs);
 
-	    for(int j = 0; j < tabsCount; j++) {
+		ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+		int tabsCount = vg.getChildCount();
 
-		    ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
-		    int tabChildCount = vgTab.getChildCount();
+		for(int j = 0; j < tabsCount; j++) {
 
-		    for(int i = 0; i < tabChildCount; i++) {
+			ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+			int tabChildCount = vgTab.getChildCount();
 
-			    View tabViewChild = vgTab.getChildAt(i);
+			for(int i = 0; i < tabChildCount; i++) {
 
-			    if(tabViewChild instanceof TextView) {
-				    ((TextView) tabViewChild).setTypeface(myTypeface);
-			    }
-		    }
-	    }
+				View tabViewChild = vgTab.getChildAt(i);
 
-	    mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-	    tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-    }
+				if(tabViewChild instanceof TextView) {
+					((TextView) tabViewChild).setTypeface(myTypeface);
+				}
+			}
+		}
+
+		mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+		tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+	}
+
 }

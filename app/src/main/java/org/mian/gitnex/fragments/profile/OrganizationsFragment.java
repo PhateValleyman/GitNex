@@ -49,7 +49,8 @@ public class OrganizationsFragment extends Fragment {
 	private static final String usernameBundle = "";
 	private String username;
 
-	public OrganizationsFragment() {}
+	public OrganizationsFragment() {
+	}
 
 	public static OrganizationsFragment newInstance(String username) {
 		OrganizationsFragment fragment = new OrganizationsFragment();
@@ -62,7 +63,7 @@ public class OrganizationsFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
+		if(getArguments() != null) {
 			username = getArguments().getString(usernameBundle);
 		}
 	}
@@ -113,11 +114,10 @@ public class OrganizationsFragment extends Fragment {
 
 	private void loadInitial(String username, int resultLimit) {
 
-		Call<List<Organization>> call = RetrofitClient
-			.getApiInterface(context)
-			.orgListUserOrgs(username, 1, resultLimit);
+		Call<List<Organization>> call = RetrofitClient.getApiInterface(context).orgListUserOrgs(username, 1, resultLimit);
 
 		call.enqueue(new Callback<List<Organization>>() {
+
 			@Override
 			public void onResponse(@NonNull Call<List<Organization>> call, @NonNull Response<List<Organization>> response) {
 
@@ -171,9 +171,7 @@ public class OrganizationsFragment extends Fragment {
 
 		fragmentOrganizationsBinding.progressBar.setVisibility(View.VISIBLE);
 
-		Call<List<Organization>> call = RetrofitClient
-			.getApiInterface(context)
-			.orgListUserOrgs(username, page, resultLimit);
+		Call<List<Organization>> call = RetrofitClient.getApiInterface(context).orgListUserOrgs(username, page, resultLimit);
 
 		call.enqueue(new Callback<List<Organization>>() {
 
@@ -264,4 +262,5 @@ public class OrganizationsFragment extends Fragment {
 		}
 		adapter.updateList(arr);
 	}
+
 }

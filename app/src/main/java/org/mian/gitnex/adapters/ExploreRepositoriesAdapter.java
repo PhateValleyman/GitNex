@@ -74,6 +74,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 	}
 
 	class RepositoriesHolder extends RecyclerView.ViewHolder {
+
 		private org.gitnex.tea4j.v2.models.Repository userRepositories;
 
 		private final ImageView image;
@@ -122,11 +123,13 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 			int color = generator.getColor(userRepositories.getName());
 			String firstCharacter = String.valueOf(userRepositories.getFullName().charAt(0));
 
-			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
+			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28)
+				.endConfig().buildRoundRect(firstCharacter, color, 3);
 
 			if(userRepositories.getAvatarUrl() != null) {
 				if(!userRepositories.getAvatarUrl().equals("")) {
-					PicassoService.getInstance(context).get().load(userRepositories.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(image);
+					PicassoService.getInstance(context).get().load(userRepositories.getAvatarUrl()).placeholder(R.drawable.loader_animated)
+						.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(image);
 				}
 				else {
 					image.setImageDrawable(drawable);
@@ -143,17 +146,20 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 						PrettyTime prettyTime = new PrettyTime(locale);
 						String createdTime = prettyTime.format(userRepositories.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
-						repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(userRepositories.getUpdatedAt()), context));
+						repoLastUpdated.setOnClickListener(
+							new ClickListener(TimeHelper.customDateFormatForToastDateFormat(userRepositories.getUpdatedAt()), context));
 						break;
 					}
 					case "normal": {
-						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+						DateFormat formatter = new SimpleDateFormat(
+							"yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 						String createdTime = formatter.format(userRepositories.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
 					}
 					case "normal1": {
-						DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+						DateFormat formatter = new SimpleDateFormat(
+							"dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 						String createdTime = formatter.format(userRepositories.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
@@ -179,6 +185,7 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 			}
 			isRepoAdmin.setChecked(userRepositories.getPermissions().isAdmin());
 		}
+
 	}
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
@@ -199,4 +206,5 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 		reposList = list;
 		notifyDataChanged();
 	}
+
 }

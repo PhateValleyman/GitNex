@@ -158,5 +158,8 @@ public class SettingsGeneralActivity extends BaseActivity {
 		// custom tabs
 	}
 
-	private void initCloseListener() { onClickListener = view -> finish(); }
+	private void initCloseListener() {
+		onClickListener = view -> finish();
+	}
+
 }

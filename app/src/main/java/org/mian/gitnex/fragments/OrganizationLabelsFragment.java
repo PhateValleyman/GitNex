@@ -50,7 +50,7 @@ public class OrganizationLabelsFragment extends Fragment {
 
 		super.onCreate(savedInstanceState);
 
-		if (getArguments() != null) {
+		if(getArguments() != null) {
 
 			repoOwner = getArguments().getString(repoOwnerF);
 		}
@@ -70,8 +70,7 @@ public class OrganizationLabelsFragment extends Fragment {
 		mRecyclerView.setHasFixedSize(true);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-			DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
 		mProgressBar = fragmentLabelsBinding.progressBar;
@@ -123,4 +122,5 @@ public class OrganizationLabelsFragment extends Fragment {
 		});
 
 	}
+
 }

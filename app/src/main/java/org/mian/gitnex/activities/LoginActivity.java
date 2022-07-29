@@ -94,19 +94,25 @@ public class LoginActivity extends BaseActivity {
 		});
 
 		if(R.id.loginToken == loginMethod.getCheckedRadioButtonId()) {
-			AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
+			AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout),
+				findViewById(R.id.otpCodeLayout));
 			findViewById(R.id.loginTokenCodeLayout).setVisibility(View.VISIBLE);
-		} else {
-			AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
+		}
+		else {
+			AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout),
+				findViewById(R.id.otpCodeLayout));
 			findViewById(R.id.loginTokenCodeLayout).setVisibility(View.GONE);
 		}
 
 		loginMethod.setOnCheckedChangeListener((group, checkedId) -> {
 			if(checkedId == R.id.loginToken) {
-				AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
+				AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout),
+					findViewById(R.id.otpCodeLayout));
 				findViewById(R.id.loginTokenCodeLayout).setVisibility(View.VISIBLE);
-			} else {
-				AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
+			}
+			else {
+				AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout),
+					findViewById(R.id.otpCodeLayout));
 				findViewById(R.id.loginTokenCodeLayout).setVisibility(View.GONE);
 			}
 		});
@@ -114,7 +120,8 @@ public class LoginActivity extends BaseActivity {
 		networkStatusObserver.registerNetworkStatusListener(hasNetworkConnection -> runOnUiThread(() -> {
 			if(hasNetworkConnection) {
 				enableProcessButton();
-			} else {
+			}
+			else {
 				disableProcessButton();
 				loginButton.setText(getResources().getString(R.string.btnLogin));
 				Toasty.error(ctx, getResources().getString(R.string.checkNetConnection));
@@ -146,10 +153,11 @@ public class LoginActivity extends BaseActivity {
 
 			LoginType loginType = (loginMethod.getCheckedRadioButtonId() == R.id.loginUsernamePassword) ? LoginType.BASIC : LoginType.TOKEN;
 
-			URI rawInstanceUrl = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET.getText().toString().replaceAll("[\\uFEFF|#]", "").trim(), "http")).toUri();
+			URI rawInstanceUrl = UrlBuilder.fromString(
+				UrlHelper.fixScheme(instanceUrlET.getText().toString().replaceAll("[\\uFEFF|#]", "").trim(), "http")).toUri();
 
-			instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(selectedProtocol.toLowerCase()).withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/"))
-				.toUri();
+			instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(selectedProtocol.toLowerCase())
+				.withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/")).toUri();
 
 			// cache values to make them available the next time the user wants to log in
 			tinyDB.putString("loginType", loginType.name().toLowerCase());
@@ -215,7 +223,8 @@ public class LoginActivity extends BaseActivity {
 		generalAPISettings.enqueue(new Callback<>() {
 
 			@Override
-			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings, @NonNull retrofit2.Response<GeneralAPISettings> response) {
+			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings,
+				@NonNull retrofit2.Response<GeneralAPISettings> response) {
 
 				if(response.code() == 200 && response.body() != null) {
 
@@ -234,8 +243,7 @@ public class LoginActivity extends BaseActivity {
 		});
 	}
 
-	private void versionCheck(final String loginUid, final String loginPass, final int loginOTP, final String loginToken,
-		final LoginType loginType) {
+	private void versionCheck(final String loginUid, final String loginPass, final int loginOTP, final String loginToken, final LoginType loginType) {
 
 		Call<ServerVersion> callVersion;
 
@@ -247,10 +255,11 @@ public class LoginActivity extends BaseActivity {
 
 			String credential = Credentials.basic(loginUid, loginPass, StandardCharsets.UTF_8);
 
-			if (loginOTP != 0) {
+			if(loginOTP != 0) {
 
 				callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null).getVersion(loginOTP);
-			} else {
+			}
+			else {
 
 				callVersion = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null).getVersion();
 			}
@@ -362,7 +371,8 @@ public class LoginActivity extends BaseActivity {
 						boolean userAccountExists = userAccountsApi.userAccountExists(accountName);
 						UserAccount account;
 						if(!userAccountExists) {
-							long accountId = userAccountsApi.createNewAccount(accountName, instanceUrl.toString(), userDetails.getLogin(), loginToken, giteaVersion.toString(), maxResponseItems, defaultPagingNumber);
+							long accountId = userAccountsApi.createNewAccount(accountName, instanceUrl.toString(), userDetails.getLogin(), loginToken,
+								giteaVersion.toString(), maxResponseItems, defaultPagingNumber);
 							account = userAccountsApi.getAccountById((int) accountId);
 						}
 						else {
@@ -440,7 +450,8 @@ public class LoginActivity extends BaseActivity {
 							}
 							else {
 
-								delToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null).userDeleteAccessToken(loginUid, String.valueOf(t.getId()));
+								delToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null)
+									.userDeleteAccessToken(loginUid, String.valueOf(t.getId()));
 							}
 
 							delToken.enqueue(new Callback<>() {
@@ -519,7 +530,8 @@ public class LoginActivity extends BaseActivity {
 
 					if(!newToken.getSha1().equals("")) {
 
-						Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), "token " + newToken.getSha1(), null).userGetCurrent();
+						Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), "token " + newToken.getSha1(), null)
+							.userGetCurrent();
 
 						call.enqueue(new Callback<>() {
 
@@ -542,9 +554,9 @@ public class LoginActivity extends BaseActivity {
 
 										UserAccount account;
 										if(!userAccountExists) {
-											long accountId = userAccountsApi
-												.createNewAccount(accountName, instanceUrl.toString(), userDetails.getLogin(), newToken.getSha1(),
-													giteaVersion.toString(), maxResponseItems, defaultPagingNumber);
+											long accountId = userAccountsApi.createNewAccount(accountName, instanceUrl.toString(),
+												userDetails.getLogin(), newToken.getSha1(), giteaVersion.toString(), maxResponseItems,
+												defaultPagingNumber);
 											account = userAccountsApi.getAccountById((int) accountId);
 										}
 										else {

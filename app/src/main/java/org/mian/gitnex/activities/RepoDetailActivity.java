@@ -83,24 +83,28 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	public static boolean updateRepo = false;
 	private Dialog progressDialog;
 
-	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-		result -> {
+	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(
+		new ActivityResultContracts.StartActivityForResult(), result -> {
 			if(result.getResultCode() == 201) {
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("updateReleases", false)) {
-					if(fragmentRefreshListenerReleases != null) fragmentRefreshListenerReleases.onRefresh(null);
+					if(fragmentRefreshListenerReleases != null) {
+						fragmentRefreshListenerReleases.onRefresh(null);
+					}
 					repository.removeRepository();
 					getRepoInfo(repository.getOwner(), repository.getName());
 				}
 			}
 		});
 
-	private final ActivityResultLauncher<Intent> createMilestoneLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-		result -> {
+	private final ActivityResultLauncher<Intent> createMilestoneLauncher = registerForActivityResult(
+		new ActivityResultContracts.StartActivityForResult(), result -> {
 			if(result.getResultCode() == 201) {
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("milestoneCreated", false)) {
-					if(fragmentRefreshListenerMilestone != null) fragmentRefreshListenerMilestone.onRefresh(repository.getMilestoneState().toString());
+					if(fragmentRefreshListenerMilestone != null) {
+						fragmentRefreshListenerMilestone.onRefresh(repository.getMilestoneState().toString());
+					}
 				}
 			}
 		});
@@ -110,7 +114,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			if(result.getResultCode() == 200) {
 				assert result.getData() != null;
 				if(result.getData().getBooleanExtra("fileModified", false)) {
-					if(fragmentRefreshListenerFiles != null) fragmentRefreshListenerFiles.onRefresh(repository.getBranchRef());
+					if(fragmentRefreshListenerFiles != null) {
+						fragmentRefreshListenerFiles.onRefresh(repository.getBranchRef());
+					}
 				}
 			}
 		});
@@ -361,8 +367,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		progressDialog.setContentView(R.layout.custom_progress_loader);
 		progressDialog.show();
 
-		Call<List<Milestone>> call = RetrofitClient
-			.getApiInterface(ctx)
+		Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx)
 			.issueGetMilestonesList(repository.getOwner(), repository.getName(), "open", null, 1, 50);
 
 		call.enqueue(new Callback<>() {
@@ -432,9 +437,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		progressDialog.setContentView(R.layout.custom_progress_loader);
 		progressDialog.show();
 
-		Call<List<Branch>> call = RetrofitClient
-			.getApiInterface(ctx)
-			.repoListBranches(repository.getOwner(), repository.getName(), null, null);
+		Call<List<Branch>> call = RetrofitClient.getApiInterface(ctx).repoListBranches(repository.getOwner(), repository.getName(), null, null);
 
 		call.enqueue(new Callback<>() {
 
@@ -485,7 +488,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 	public class ViewPagerAdapter extends FragmentStateAdapter {
 
-		public ViewPagerAdapter(@NonNull FragmentActivity fa) { super(fa); }
+		public ViewPagerAdapter(@NonNull FragmentActivity fa) {
+			super(fa);
+		}
 
 		@NonNull
 		@Override
@@ -524,6 +529,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		public int getItemCount() {
 			return 9;
 		}
+
 	}
 
 	private void getRepoInfo(final String owner, String repo) {
@@ -570,7 +576,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		ImageView repoTypeToolbar = findViewById(R.id.repoTypeToolbar);
 		if(repository.getRepository().isPrivate()) {
 			repoTypeToolbar.setVisibility(View.VISIBLE);
-		} else {
+		}
+		else {
 			repoTypeToolbar.setVisibility(View.GONE);
 		}
 
@@ -583,7 +590,11 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			viewPager.setAdapter(new ViewPagerAdapter(this));
 
-			String[] tabTitles = {ctx.getResources().getString(R.string.tabTextInfo), ctx.getResources().getString(R.string.tabTextFiles), ctx.getResources().getString(R.string.pageTitleIssues), ctx.getResources().getString(R.string.tabPullRequests), ctx.getResources().getString(R.string.tabTextReleases), ctx.getResources().getString(R.string.wiki), ctx.getResources().getString(R.string.tabTextMl), ctx.getResources().getString(R.string.newIssueLabelsTitle), ctx.getResources().getString(R.string.tabTextCollaborators)};
+			String[] tabTitles = {ctx.getResources().getString(R.string.tabTextInfo), ctx.getResources().getString(R.string.tabTextFiles),
+				ctx.getResources().getString(R.string.pageTitleIssues), ctx.getResources().getString(R.string.tabPullRequests),
+				ctx.getResources().getString(R.string.tabTextReleases), ctx.getResources().getString(R.string.wiki),
+				ctx.getResources().getString(R.string.tabTextMl), ctx.getResources().getString(R.string.newIssueLabelsTitle),
+				ctx.getResources().getString(R.string.tabTextCollaborators)};
 			new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(tabTitles[position])).attach();
 
 			ViewGroup viewGroup = (ViewGroup) tabLayout.getChildAt(0);
@@ -636,7 +647,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				}
 				TextView openIssueTabView = Objects.requireNonNull(tabOpenIssues.getCustomView()).findViewById(R.id.counterBadgeIssueText);
 				openIssueTabView.setTextColor(textColor);
-			} else {
+			}
+			else {
 				textViewBadgeIssue.setVisibility(View.GONE);
 			}
 
@@ -652,7 +664,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				}
 				TextView openPullTabView = Objects.requireNonNull(tabOpenPulls.getCustomView()).findViewById(R.id.counterBadgePullText);
 				openPullTabView.setTextColor(textColor);
-			} else {
+			}
+			else {
 				textViewBadgePull.setVisibility(View.GONE);
 			}
 
@@ -668,7 +681,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				}
 				TextView openReleaseTabView = Objects.requireNonNull(tabOpenRelease.getCustomView()).findViewById(R.id.counterBadgeReleaseText);
 				openReleaseTabView.setTextColor(textColor);
-			} else {
+			}
+			else {
 				textViewBadgeRelease.setVisibility(View.GONE);
 			}
 		}
@@ -802,33 +816,57 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	}
 
 	// Issues milestone filter interface
-	public FragmentRefreshListener getFragmentRefreshListenerFilterIssuesByMilestone() { return fragmentRefreshListenerFilterIssuesByMilestone; }
+	public FragmentRefreshListener getFragmentRefreshListenerFilterIssuesByMilestone() {
+		return fragmentRefreshListenerFilterIssuesByMilestone;
+	}
 
-	public void setFragmentRefreshListenerFilterIssuesByMilestone(FragmentRefreshListener fragmentRefreshListener) { this.fragmentRefreshListenerFilterIssuesByMilestone = fragmentRefreshListener; }
+	public void setFragmentRefreshListenerFilterIssuesByMilestone(FragmentRefreshListener fragmentRefreshListener) {
+		this.fragmentRefreshListenerFilterIssuesByMilestone = fragmentRefreshListener;
+	}
 
 	// Issues interface
-	public FragmentRefreshListener getFragmentRefreshListener() { return fragmentRefreshListener; }
+	public FragmentRefreshListener getFragmentRefreshListener() {
+		return fragmentRefreshListener;
+	}
 
-	public void setFragmentRefreshListener(FragmentRefreshListener fragmentRefreshListener) { this.fragmentRefreshListener = fragmentRefreshListener; }
+	public void setFragmentRefreshListener(FragmentRefreshListener fragmentRefreshListener) {
+		this.fragmentRefreshListener = fragmentRefreshListener;
+	}
 
 	// Pull request interface
-	public FragmentRefreshListener getFragmentRefreshListenerPr() { return fragmentRefreshListenerPr; }
+	public FragmentRefreshListener getFragmentRefreshListenerPr() {
+		return fragmentRefreshListenerPr;
+	}
 
-	public void setFragmentRefreshListenerPr(FragmentRefreshListener fragmentRefreshListenerPr) { this.fragmentRefreshListenerPr = fragmentRefreshListenerPr; }
+	public void setFragmentRefreshListenerPr(FragmentRefreshListener fragmentRefreshListenerPr) {
+		this.fragmentRefreshListenerPr = fragmentRefreshListenerPr;
+	}
 
 	// Milestones interface
-	public FragmentRefreshListener getFragmentRefreshListenerMilestone() { return fragmentRefreshListenerMilestone; }
+	public FragmentRefreshListener getFragmentRefreshListenerMilestone() {
+		return fragmentRefreshListenerMilestone;
+	}
 
-	public void setFragmentRefreshListenerMilestone(FragmentRefreshListener fragmentRefreshListenerMilestone) { this.fragmentRefreshListenerMilestone = fragmentRefreshListenerMilestone; }
+	public void setFragmentRefreshListenerMilestone(FragmentRefreshListener fragmentRefreshListenerMilestone) {
+		this.fragmentRefreshListenerMilestone = fragmentRefreshListenerMilestone;
+	}
 
 	// Files interface
-	public FragmentRefreshListener getFragmentRefreshListenerFiles() { return fragmentRefreshListenerFiles; }
+	public FragmentRefreshListener getFragmentRefreshListenerFiles() {
+		return fragmentRefreshListenerFiles;
+	}
 
-	public void setFragmentRefreshListenerFiles(FragmentRefreshListener fragmentRefreshListenerFiles) { this.fragmentRefreshListenerFiles = fragmentRefreshListenerFiles; }
+	public void setFragmentRefreshListenerFiles(FragmentRefreshListener fragmentRefreshListenerFiles) {
+		this.fragmentRefreshListenerFiles = fragmentRefreshListenerFiles;
+	}
 
 	//Releases interface
-	public FragmentRefreshListener getFragmentRefreshListenerReleases() { return fragmentRefreshListenerReleases; }
+	public FragmentRefreshListener getFragmentRefreshListenerReleases() {
+		return fragmentRefreshListenerReleases;
+	}
 
-	public void setFragmentRefreshListenerReleases(FragmentRefreshListener fragmentRefreshListener) { this.fragmentRefreshListenerReleases = fragmentRefreshListener; }
+	public void setFragmentRefreshListenerReleases(FragmentRefreshListener fragmentRefreshListener) {
+		this.fragmentRefreshListenerReleases = fragmentRefreshListener;
+	}
 
 }

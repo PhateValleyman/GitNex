@@ -18,26 +18,29 @@ import org.mian.gitnex.database.models.UserAccount;
  * @author M M Arif
  */
 
-@Database(entities = {Draft.class, Repository.class, UserAccount.class},
-        version = 5, exportSchema = false)
+@Database(entities = {Draft.class, Repository.class, UserAccount.class}, version = 5, exportSchema = false)
 public abstract class GitnexDatabase extends RoomDatabase {
 
 	private static final String DB_NAME = "gitnex";
-    private static GitnexDatabase gitnexDatabase;
+	private static GitnexDatabase gitnexDatabase;
 
-    public abstract DraftsDao draftsDao();
-    public abstract RepositoriesDao repositoriesDao();
-    public abstract UserAccountsDao userAccountsDao();
+	public abstract DraftsDao draftsDao();
 
-    private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            //database.execSQL("DROP TABLE Drafts");
-	        database.execSQL("ALTER TABLE 'Drafts' ADD COLUMN 'commentId' TEXT");
-        }
-    };
+	public abstract RepositoriesDao repositoriesDao();
+
+	public abstract UserAccountsDao userAccountsDao();
+
+	private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+
+		@Override
+		public void migrate(@NonNull SupportSQLiteDatabase database) {
+			//database.execSQL("DROP TABLE Drafts");
+			database.execSQL("ALTER TABLE 'Drafts' ADD COLUMN 'commentId' TEXT");
+		}
+	};
 
 	private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+
 		@Override
 		public void migrate(@NonNull SupportSQLiteDatabase database) {
 			database.execSQL("ALTER TABLE 'Drafts' ADD COLUMN 'issueType' TEXT");
@@ -63,15 +66,13 @@ public abstract class GitnexDatabase extends RoomDatabase {
 
 	public static GitnexDatabase getDatabaseInstance(Context context) {
 
-		if (gitnexDatabase == null) {
+		if(gitnexDatabase == null) {
 			synchronized(GitnexDatabase.class) {
 				if(gitnexDatabase == null) {
 
 					gitnexDatabase = Room.databaseBuilder(context, GitnexDatabase.class, DB_NAME)
 						// .fallbackToDestructiveMigration()
-						.allowMainThreadQueries()
-						.addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
-						.build();
+						.allowMainThreadQueries().addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).build();
 
 				}
 			}
@@ -80,4 +81,5 @@ public abstract class GitnexDatabase extends RoomDatabase {
 		return gitnexDatabase;
 
 	}
+
 }

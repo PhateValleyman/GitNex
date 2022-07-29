@@ -29,6 +29,7 @@ public class ReleasesDownloadsAdapter extends RecyclerView.Adapter<ReleasesDownl
 			super(itemView);
 			downloadName = itemView.findViewById(R.id.downloadName);
 		}
+
 	}
 
 	ReleasesDownloadsAdapter(List<Attachment> releasesDownloadsMain, FragmentRefreshListener startDownload) {

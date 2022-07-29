@@ -66,8 +66,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 
 			deleteAccount.setOnClickListener(itemDelete -> {
 
-				new AlertDialog.Builder(context)
-					.setIcon(AppCompatResources.getDrawable(context, R.drawable.ic_delete))
+				new AlertDialog.Builder(context).setIcon(AppCompatResources.getDrawable(context, R.drawable.ic_delete))
 					.setTitle(context.getResources().getString(R.string.removeAccountPopupTitle))
 					.setMessage(context.getResources().getString(R.string.removeAccountPopupMessage))
 					.setPositiveButton(context.getResources().getString(R.string.removeButton), (dialog, which) -> {
@@ -76,8 +75,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 						UserAccountsApi userAccountsApi = BaseApi.getInstance(context, UserAccountsApi.class);
 						assert userAccountsApi != null;
 						userAccountsApi.deleteAccount(Integer.parseInt(String.valueOf(accountId)));
-					}).setNeutralButton(context.getResources().getString(R.string.cancelButton), null)
-					.show();
+					}).setNeutralButton(context.getResources().getString(R.string.cancelButton), null).show();
 			});
 
 			itemView.setOnClickListener(switchAccount -> {
@@ -87,20 +85,22 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 				UserAccount userAccount = userAccountsApi.getAccountByName(accountName);
 
 				if(!userAccount.isLoggedIn()) {
-					UrlBuilder url = UrlBuilder.fromString(userAccount.getInstanceUrl())
-						.withPath("/");
+					UrlBuilder url = UrlBuilder.fromString(userAccount.getInstanceUrl()).withPath("/");
 
 					String host;
 					if(url.scheme.equals("http")) {
 						if(url.port == 80 || url.port == 0) {
 							host = url.hostName;
-						} else {
+						}
+						else {
 							host = url.hostName + ":" + url.port;
 						}
-					} else {
+					}
+					else {
 						if(url.port == 443 || url.port == 0) {
 							host = url.hostName;
-						} else {
+						}
+						else {
 							host = url.hostName + ":" + url.port;
 						}
 					}
@@ -118,11 +118,9 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 
 				if(AppUtil.switchToAccount(context, userAccount)) {
 
-					String url = UrlBuilder.fromString(userAccount.getInstanceUrl())
-						.withPath("/")
-						.toString();
+					String url = UrlBuilder.fromString(userAccount.getInstanceUrl()).withPath("/").toString();
 
-					Toasty.success(context,  context.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
+					Toasty.success(context, context.getResources().getString(R.string.switchAccountSuccess, userAccount.getUserName(), url));
 					getNotificationsCount();
 					((Activity) context).recreate();
 					dialog.dismiss();
@@ -163,7 +161,9 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 
 					assert notificationCount != null;
 					if(notificationCount.getNew() > 0) {
-						String toastMsg = context.getResources().getQuantityString(R.plurals.youHaveNewNotifications, Math.toIntExact(notificationCount.getNew()), Math.toIntExact(notificationCount.getNew()));
+						String toastMsg = context.getResources()
+							.getQuantityString(R.plurals.youHaveNewNotifications, Math.toIntExact(notificationCount.getNew()),
+								Math.toIntExact(notificationCount.getNew()));
 						new Handler().postDelayed(() -> Toasty.info(context, toastMsg), 5000);
 					}
 				}
@@ -190,9 +190,7 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		UserAccount currentItem = userAccountsList.get(position);
 		TinyDB tinyDB = TinyDB.getInstance(context);
 
-		String url = UrlBuilder.fromString(currentItem.getInstanceUrl())
-			.withPath("/")
-			.toString();
+		String url = UrlBuilder.fromString(currentItem.getInstanceUrl()).withPath("/").toString();
 
 		holder.accountId = currentItem.getAccountId();
 		holder.accountName = currentItem.getAccountName();
@@ -200,19 +198,15 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 		holder.userId.setText(currentItem.getUserName());
 		if(currentItem.isLoggedIn()) {
 			holder.accountUrl.setText(url);
-		} else {
+		}
+		else {
 			holder.accountUrl.setText(context.getString(R.string.notLoggedIn, url));
 		}
 
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
-		PicassoService.getInstance(context).get()
-			.load(url + "assets/img/favicon.png")
-			.placeholder(R.drawable.loader_animated)
-			.transform(new RoundedTransformation(imgRadius, 0))
-			.resize(120, 120)
-			.centerCrop()
-			.into(holder.repoAvatar);
+		PicassoService.getInstance(context).get().load(url + "assets/img/favicon.png").placeholder(R.drawable.loader_animated)
+			.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.repoAvatar);
 
 		if(tinyDB.getInt("currentActiveAccountId") == currentItem.getAccountId()) {
 			holder.activeAccount.setVisibility(View.VISIBLE);

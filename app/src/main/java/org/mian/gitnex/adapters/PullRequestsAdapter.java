@@ -105,7 +105,8 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			frameLabelsDots = itemView.findViewById(R.id.frameLabelsDots);
 
 			View.OnClickListener openPr = v -> {
-				Intent intentPrDetail = new IssueContext(pullRequestObject, ((RepoDetailActivity) context).repository).getIntent(context, IssueDetailActivity.class);
+				Intent intentPrDetail = new IssueContext(pullRequestObject, ((RepoDetailActivity) context).repository).getIntent(context,
+					IssueDetailActivity.class);
 				context.startActivity(intentPrDetail);
 			};
 
@@ -120,7 +121,8 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			});
 
 			assigneeAvatar.setOnLongClickListener(loginId -> {
-				AppUtil.copyToClipboard(context, pullRequestObject.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, pullRequestObject.getUser().getLogin()));
+				AppUtil.copyToClipboard(context, pullRequestObject.getUser().getLogin(),
+					context.getString(R.string.copyLoginIdToClipBoard, pullRequestObject.getUser().getLogin()));
 				return true;
 			});
 		}
@@ -133,13 +135,8 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			String timeFormat = tinyDb.getString("dateFormat", "pretty");
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
-			PicassoService.getInstance(context).get()
-				.load(pullRequest.getUser().getAvatarUrl())
-				.placeholder(R.drawable.loader_animated)
-				.transform(new RoundedTransformation(imgRadius, 0))
-				.resize(120, 120)
-				.centerCrop()
-				.into(this.assigneeAvatar);
+			PicassoService.getInstance(context).get().load(pullRequest.getUser().getAvatarUrl()).placeholder(R.drawable.loader_animated)
+				.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(this.assigneeAvatar);
 
 			this.pullRequestObject = pullRequest;
 
@@ -165,7 +162,8 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 						frameLabelsDots.setGravity(Gravity.START | Gravity.TOP);
 						labelsView.setLayoutParams(params);
 
-						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).width(54).height(54).endConfig().buildRound("", color);
+						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).width(54).height(54).endConfig()
+							.buildRound("", color);
 
 						labelsView.setImageDrawable(drawable);
 						frameLabelsDots.addView(labelsView);
@@ -191,8 +189,11 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 						int height = AppUtil.getPixelsFromDensity(context, 20);
 						int textSize = AppUtil.getPixelsFromScaledDensity(context, 12);
 
-						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize).width(LabelWidthCalculator
-							.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize, AppUtil.getPixelsFromDensity(context, 8))).height(height).endConfig().buildRoundRect(labelName, color, AppUtil.getPixelsFromDensity(context, 18));
+						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT)
+							.textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize).width(
+								LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize,
+									AppUtil.getPixelsFromDensity(context, 8))).height(height).endConfig()
+							.buildRoundRect(labelName, color, AppUtil.getPixelsFromDensity(context, 18));
 
 						labelsView.setImageDrawable(drawable);
 						frameLabels.addView(labelsView);
@@ -204,16 +205,20 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 				labelsScrollViewWithText.setVisibility(View.GONE);
 			}
 
-			String prNumber_ = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray, null) + "'>" + context.getResources().getString(R.string.hash) + pullRequest.getNumber() + "</font>";
+			String prNumber_ = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray,
+				null) + "'>" + context.getResources().getString(R.string.hash) + pullRequest.getNumber() + "</font>";
 
-			this.prTitle.setText(HtmlCompat.fromHtml(prNumber_ + " " + EmojiParser.parseToUnicode(pullRequest.getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+			this.prTitle.setText(
+				HtmlCompat.fromHtml(prNumber_ + " " + EmojiParser.parseToUnicode(pullRequest.getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
 			this.prCommentsCount.setText(String.valueOf(pullRequest.getComments()));
 			this.prCreatedTime.setText(TimeHelper.formatTime(pullRequest.getCreatedAt(), locale, timeFormat, context));
 
 			if(timeFormat.equals("pretty")) {
-				this.prCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(pullRequest.getCreatedAt()), context));
+				this.prCreatedTime.setOnClickListener(
+					new ClickListener(TimeHelper.customDateFormatForToastDateFormat(pullRequest.getCreatedAt()), context));
 			}
 		}
+
 	}
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
@@ -234,4 +239,5 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 		prList = list;
 		notifyDataChanged();
 	}
+
 }

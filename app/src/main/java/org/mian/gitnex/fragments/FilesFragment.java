@@ -51,7 +51,8 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 	private FilesAdapter filesAdapter;
 
-	public FilesFragment() {}
+	public FilesFragment() {
+	}
 
 	public static FilesFragment newInstance(RepositoryContext repository) {
 
@@ -80,7 +81,8 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		binding.recyclerView.setAdapter(filesAdapter);
 		binding.recyclerView.addItemDecoration(new DividerItemDecoration(binding.recyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-		binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
+		binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(
+			getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
 		// noinspection unchecked
 		binding.breadcrumbsView.setCallback(new DefaultBreadcrumbsCallback<BreadcrumbItem>() {
 
@@ -90,13 +92,16 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 				if(position == 0) {
 					path.clear();
-				} else {
+				}
+				else {
 					path.pop(path.size() - position);
 				}
 				refresh();
 			}
 
-			@Override public void onNavigateNewLocation(BreadcrumbItem newItem, int changedPosition) {}
+			@Override
+			public void onNavigateNewLocation(BreadcrumbItem newItem, int changedPosition) {
+			}
 
 		});
 
@@ -112,7 +117,8 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 				binding.breadcrumbsView.removeLastItem();
 				if(path.size() == 0) {
 					fetchDataAsync(repository.getOwner(), repository.getName(), repository.getBranchRef());
-				} else {
+				}
+				else {
 					fetchDataAsyncSub(repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
 				}
 			}
@@ -127,14 +133,16 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 			repository.setBranchRef(repoBranch);
 			path.clear();
-			binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
+			binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(
+				getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(
+					R.string.colonDivider) + repository.getBranchRef()))));
 			refresh();
 		});
 
 
 		String dir = requireActivity().getIntent().getStringExtra("dir");
 		if(dir != null) {
-			for(String segment: dir.split("/")) {
+			for(String segment : dir.split("/")) {
 				binding.breadcrumbsView.addItem(new BreadcrumbItem(Collections.singletonList(segment)));
 				path.add(segment);
 			}
@@ -182,7 +190,7 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 					if(instanceUri.getHost().toLowerCase().equals(host)) {
 						account = userAccount;
 						// if scheme is wrong fix it
-						if (!url.getScheme().equals(instanceUri.getScheme())) {
+						if(!url.getScheme().equals(instanceUri.getScheme())) {
 							url = AppUtil.changeScheme(url, instanceUri.getScheme());
 						}
 						break;
@@ -197,12 +205,13 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 					}
 					String owner = splittedUrl.get(splittedUrl.size() - 2);
 					String repo = splittedUrl.get(splittedUrl.size() - 1);
-					if (repo.endsWith(".git")) { // Git clone URL
+					if(repo.endsWith(".git")) { // Git clone URL
 						repo = repo.substring(0, repo.length() - 4);
 					}
 
 					startActivity(new RepositoryContext(owner, repo, requireContext()).getIntent(requireContext(), RepoDetailActivity.class));
-				} else {
+				}
+				else {
 					AppUtil.openUrlInBrowser(requireContext(), url.toString());
 				}
 				break;
@@ -212,7 +221,8 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 	public void refresh() {
 		if(path.size() > 0) {
 			fetchDataAsyncSub(repository.getOwner(), repository.getName(), path.toString(), repository.getBranchRef());
-		} else {
+		}
+		else {
 			fetchDataAsync(repository.getOwner(), repository.getName(), repository.getBranchRef());
 		}
 	}
@@ -224,26 +234,27 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 		FilesViewModel filesModel = new ViewModelProvider(this).get(FilesViewModel.class);
 
-		filesModel.getFilesList(owner, repo, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(getViewLifecycleOwner(), filesListMain -> {
+		filesModel.getFilesList(owner, repo, ref, getContext(), binding.progressBar, binding.noDataFiles)
+			.observe(getViewLifecycleOwner(), filesListMain -> {
 
-			filesAdapter.getOriginalFiles().clear();
-			filesAdapter.getOriginalFiles().addAll(filesListMain);
-			filesAdapter.notifyOriginalDataSetChanged();
+				filesAdapter.getOriginalFiles().clear();
+				filesAdapter.getOriginalFiles().addAll(filesListMain);
+				filesAdapter.notifyOriginalDataSetChanged();
 
-			if(filesListMain.size() > 0) {
+				if(filesListMain.size() > 0) {
 
-				AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame);
-				binding.noDataFiles.setVisibility(View.GONE);
+					AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame);
+					binding.noDataFiles.setVisibility(View.GONE);
 
-			}
-			else {
-				AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame, binding.noDataFiles);
-			}
+				}
+				else {
+					AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame, binding.noDataFiles);
+				}
 
-			binding.filesFrame.setVisibility(View.VISIBLE);
-			binding.progressBar.setVisibility(View.GONE);
+				binding.filesFrame.setVisibility(View.VISIBLE);
+				binding.progressBar.setVisibility(View.GONE);
 
-		});
+			});
 
 	}
 
@@ -253,25 +264,26 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		binding.progressBar.setVisibility(View.VISIBLE);
 
 		FilesViewModel filesModel = new ViewModelProvider(this).get(FilesViewModel.class);
-		filesModel.getFilesList2(owner, repo, filesDir, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(getViewLifecycleOwner(), filesListMain2 -> {
+		filesModel.getFilesList2(owner, repo, filesDir, ref, getContext(), binding.progressBar, binding.noDataFiles)
+			.observe(getViewLifecycleOwner(), filesListMain2 -> {
 
-			filesAdapter.getOriginalFiles().clear();
-			filesAdapter.getOriginalFiles().addAll(filesListMain2);
-			filesAdapter.notifyOriginalDataSetChanged();
+				filesAdapter.getOriginalFiles().clear();
+				filesAdapter.getOriginalFiles().addAll(filesListMain2);
+				filesAdapter.notifyOriginalDataSetChanged();
 
-			if(filesListMain2.size() > 0) {
+				if(filesListMain2.size() > 0) {
 
-				AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame);
-				binding.noDataFiles.setVisibility(View.GONE);
-			}
-			else {
-				AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame, binding.noDataFiles);
-			}
+					AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame);
+					binding.noDataFiles.setVisibility(View.GONE);
+				}
+				else {
+					AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame, binding.noDataFiles);
+				}
 
-			binding.filesFrame.setVisibility(View.VISIBLE);
-			binding.progressBar.setVisibility(View.GONE);
+				binding.filesFrame.setVisibility(View.VISIBLE);
+				binding.progressBar.setVisibility(View.GONE);
 
-		});
+			});
 
 	}
 
@@ -302,7 +314,9 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 			}
 
 			@Override
-			public boolean onQueryTextSubmit(String query) { return false; }
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
 
 		});
 

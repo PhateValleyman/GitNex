@@ -99,10 +99,11 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 	private void loadInitial(String searchKeyword, int resultLimit) {
 
-		Call<SearchResults> call = RetrofitClient
-			.getApiInterface(context).repoSearch(searchKeyword, includeTopic, includeDescription, null, null, null, null,
-				repoTypeInclude, null, includeTemplate, onlyArchived, null, null, sort, order, 1, resultLimit);
+		Call<SearchResults> call = RetrofitClient.getApiInterface(context)
+			.repoSearch(searchKeyword, includeTopic, includeDescription, null, null, null, null, repoTypeInclude, null, includeTemplate, onlyArchived,
+				null, null, sort, order, 1, resultLimit);
 		call.enqueue(new Callback<>() {
+
 			@Override
 			public void onResponse(@NonNull Call<SearchResults> call, @NonNull Response<SearchResults> response) {
 				if(response.isSuccessful()) {
@@ -140,10 +141,11 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 		viewBinding.progressBar.setVisibility(View.VISIBLE);
 		Call<SearchResults> call = RetrofitClient.getApiInterface(context)
-			.repoSearch(searchKeyword, includeTopic, includeDescription, null, null, null, null,
-				repoTypeInclude, null, includeTemplate, onlyArchived, null, null, sort, order, page, resultLimit);
+			.repoSearch(searchKeyword, includeTopic, includeDescription, null, null, null, null, repoTypeInclude, null, includeTemplate, onlyArchived,
+				null, null, sort, order, page, resultLimit);
 
 		call.enqueue(new Callback<>() {
+
 			@Override
 			public void onResponse(@NonNull Call<SearchResults> call, @NonNull Response<SearchResults> response) {
 				if(response.isSuccessful()) {
@@ -221,7 +223,7 @@ public class ExploreRepositoriesFragment extends Fragment {
 
 		dialogFilterOptions = new Dialog(context, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
-		if (dialogFilterOptions.getWindow() != null) {
+		if(dialogFilterOptions.getWindow() != null) {
 			dialogFilterOptions.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
 
@@ -259,4 +261,5 @@ public class ExploreRepositoriesFragment extends Fragment {
 		}
 
 	}
+
 }

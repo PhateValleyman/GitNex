@@ -24,7 +24,8 @@ public class BottomSheetOrganizationTeamsFragment extends BottomSheetDialogFragm
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		BottomSheetOrganizationTeamsBinding bottomSheetOrganizationTeamsBinding = BottomSheetOrganizationTeamsBinding.inflate(inflater, container, false);
+		BottomSheetOrganizationTeamsBinding bottomSheetOrganizationTeamsBinding = BottomSheetOrganizationTeamsBinding.inflate(inflater, container,
+			false);
 
 		bottomSheetOrganizationTeamsBinding.addNewMember.setOnClickListener(v1 -> {
 
@@ -53,7 +54,7 @@ public class BottomSheetOrganizationTeamsFragment extends BottomSheetDialogFragm
 		try {
 			bmListener = (BottomSheetListener) context;
 		}
-		catch (ClassCastException e) {
+		catch(ClassCastException e) {
 			Log.e("BsOrganizationTeams", e.toString());
 		}
 	}

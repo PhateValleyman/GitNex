@@ -49,7 +49,8 @@ public class StarredRepositoriesFragment extends Fragment {
 	private static final String usernameBundle = "";
 	private String username;
 
-	public StarredRepositoriesFragment() {}
+	public StarredRepositoriesFragment() {
+	}
 
 	public static StarredRepositoriesFragment newInstance(String username) {
 		StarredRepositoriesFragment fragment = new StarredRepositoriesFragment();
@@ -62,7 +63,7 @@ public class StarredRepositoriesFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
+		if(getArguments() != null) {
 			username = getArguments().getString(usernameBundle);
 		}
 	}
@@ -107,11 +108,10 @@ public class StarredRepositoriesFragment extends Fragment {
 
 	private void loadInitial(String username, int resultLimit) {
 
-		Call<List<Repository>> call = RetrofitClient
-			.getApiInterface(context)
-			.userListStarred(username, 1, resultLimit);
+		Call<List<Repository>> call = RetrofitClient.getApiInterface(context).userListStarred(username, 1, resultLimit);
 
 		call.enqueue(new Callback<List<Repository>>() {
+
 			@Override
 			public void onResponse(@NonNull Call<List<Repository>> call, @NonNull Response<List<Repository>> response) {
 
@@ -165,9 +165,7 @@ public class StarredRepositoriesFragment extends Fragment {
 
 		fragmentRepositoriesBinding.progressBar.setVisibility(View.VISIBLE);
 
-		Call<List<Repository>> call = RetrofitClient
-			.getApiInterface(context)
-			.userListStarred(username, page, resultLimit);
+		Call<List<Repository>> call = RetrofitClient.getApiInterface(context).userListStarred(username, page, resultLimit);
 
 		call.enqueue(new Callback<List<Repository>>() {
 
@@ -258,4 +256,5 @@ public class StarredRepositoriesFragment extends Fragment {
 		}
 		adapter.updateList(arr);
 	}
+
 }

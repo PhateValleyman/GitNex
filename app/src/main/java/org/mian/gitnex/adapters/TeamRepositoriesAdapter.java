@@ -87,10 +87,11 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 				}
 			}, 500);
 
-			addRepoButtonAdd.setOnClickListener(v -> AlertDialogs.addRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
+			addRepoButtonAdd.setOnClickListener(
+				v -> AlertDialogs.addRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
 
-			addRepoButtonRemove.setOnClickListener(v ->
-				AlertDialogs.removeRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
+			addRepoButtonRemove.setOnClickListener(
+				v -> AlertDialogs.removeRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
 		}
 
 	}
@@ -112,7 +113,8 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 		holder.name.setText(currentItem.getName());
 
 		TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28)
-			.endConfig().buildRoundRect(String.valueOf(currentItem.getFullName().charAt(0)), ColorGenerator.Companion.getMATERIAL().getColor(currentItem.getName()), 3);
+			.endConfig().buildRoundRect(String.valueOf(currentItem.getFullName().charAt(0)),
+				ColorGenerator.Companion.getMATERIAL().getColor(currentItem.getName()), 3);
 
 		if(currentItem.getAvatarUrl() != null && !currentItem.getAvatarUrl().equals("")) {
 			PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated)
@@ -132,11 +134,10 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 	private void getTeamRepos() {
 
 		if(getItemCount() > 0) {
-			Call<List<Repository>> call = RetrofitClient
-				.getApiInterface(context)
-				.orgListTeamRepos((long) teamId, 1, 50);
+			Call<List<Repository>> call = RetrofitClient.getApiInterface(context).orgListTeamRepos((long) teamId, 1, 50);
 
 			call.enqueue(new Callback<>() {
+
 				@Override
 				public void onResponse(@NonNull Call<List<Repository>> call, @NonNull Response<List<Repository>> response) {
 
@@ -154,4 +155,5 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 			});
 		}
 	}
+
 }

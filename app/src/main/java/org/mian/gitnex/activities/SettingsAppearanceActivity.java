@@ -63,22 +63,30 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 		String lightMinute = String.valueOf(tinyDB.getInt("lightThemeTimeMinute"));
 		String lightHour = String.valueOf(tinyDB.getInt("lightThemeTimeHour"));
-		if(lightMinute.length() == 1) lightMinute = "0" + lightMinute;
-		if(lightHour.length() == 1) lightHour = "0" + lightHour;
+		if(lightMinute.length() == 1) {
+			lightMinute = "0" + lightMinute;
+		}
+		if(lightHour.length() == 1) {
+			lightHour = "0" + lightHour;
+		}
 
 		String darkMinute = String.valueOf(tinyDB.getInt("darkThemeTimeMinute"));
 		String darkHour = String.valueOf(tinyDB.getInt("darkThemeTimeHour"));
-		if(darkMinute.length() == 1) darkMinute = "0" + darkMinute;
-		if(darkHour.length() == 1) darkHour = "0" + darkHour;
+		if(darkMinute.length() == 1) {
+			darkMinute = "0" + darkMinute;
+		}
+		if(darkHour.length() == 1) {
+			darkHour = "0" + darkHour;
+		}
 
 		timeSelectedChoice = tinyDB.getInt("timeId");
 		customFontSelectedChoice = tinyDB.getInt("customFontId", 1);
 		themeSelectedChoice = tinyDB.getInt("themeId", 6); // use system theme as default
 
-		activitySettingsAppearanceBinding.lightThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, lightHour,
-			lightMinute));
-		activitySettingsAppearanceBinding.darkThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, darkHour,
-			darkMinute));
+		activitySettingsAppearanceBinding.lightThemeSelectedTime.setText(
+			ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, lightHour, lightMinute));
+		activitySettingsAppearanceBinding.darkThemeSelectedTime.setText(
+			ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, darkHour, darkMinute));
 		activitySettingsAppearanceBinding.tvDateTimeSelected.setText(timeList[timeSelectedChoice]);
 		activitySettingsAppearanceBinding.customFontSelected.setText(customFontList[customFontSelectedChoice]);
 		activitySettingsAppearanceBinding.themeSelected.setText(themeList[themeSelectedChoice]);
@@ -110,7 +118,9 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			tinyDB.putBoolean("showLabelsInList", isChecked);
 			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 		});
-		activitySettingsAppearanceBinding.labelsInListFrame.setOnClickListener(v -> activitySettingsAppearanceBinding.switchLabelsInListBadge.setChecked(!activitySettingsAppearanceBinding.switchLabelsInListBadge.isChecked()));
+		activitySettingsAppearanceBinding.labelsInListFrame.setOnClickListener(
+			v -> activitySettingsAppearanceBinding.switchLabelsInListBadge.setChecked(
+				!activitySettingsAppearanceBinding.switchLabelsInListBadge.isChecked()));
 
 		// theme selection dialog
 		themeFrame.setOnClickListener(view -> {
@@ -139,12 +149,12 @@ public class SettingsAppearanceActivity extends BaseActivity {
 
 		lightTimeFrame.setOnClickListener(view -> {
 			LightTimePicker timePicker = new LightTimePicker();
-	        timePicker.show(getSupportFragmentManager(), "timePicker");
+			timePicker.show(getSupportFragmentManager(), "timePicker");
 		});
 
 		darkTimeFrame.setOnClickListener(view -> {
 			DarkTimePicker timePicker = new DarkTimePicker();
-	        timePicker.show(getSupportFragmentManager(), "timePicker");
+			timePicker.show(getSupportFragmentManager(), "timePicker");
 		});
 
 		// custom font dialog
@@ -234,6 +244,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			Toasty.success(requireActivity().getApplicationContext(), requireContext().getResources().getString(R.string.settingsSave));
 			requireActivity().recreate();
 		}
+
 	}
 
 	public static class DarkTimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -259,6 +270,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			Toasty.success(requireActivity().getApplicationContext(), requireContext().getResources().getString(R.string.settingsSave));
 			requireActivity().recreate();
 		}
+
 	}
 
 }

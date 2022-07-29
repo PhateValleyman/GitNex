@@ -134,7 +134,8 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 			});
 
 			issueAssigneeAvatar.setOnLongClickListener(loginId -> {
-				AppUtil.copyToClipboard(context, issue.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, issue.getUser().getLogin()));
+				AppUtil.copyToClipboard(context, issue.getUser().getLogin(),
+					context.getString(R.string.copyLoginIdToClipBoard, issue.getUser().getLogin()));
 				return true;
 			});
 		}
@@ -147,15 +148,11 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 			Locale locale = context.getResources().getConfiguration().locale;
 			String timeFormat = tinyDb.getString("dateFormat", "pretty");
 
-			PicassoService.getInstance(context).get()
-				.load(issue.getUser().getAvatarUrl())
-				.placeholder(R.drawable.loader_animated)
-				.transform(new RoundedTransformation(imgRadius, 0))
-				.resize(120, 120)
-				.centerCrop()
-				.into(issueAssigneeAvatar);
+			PicassoService.getInstance(context).get().load(issue.getUser().getAvatarUrl()).placeholder(R.drawable.loader_animated)
+				.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(issueAssigneeAvatar);
 
-			String issueNumber_ = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray, null) + "'>" + issue.getRepository().getFullName() + context.getResources().getString(R.string.hash) + issue.getNumber() + "</font>";
+			String issueNumber_ = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray,
+				null) + "'>" + issue.getRepository().getFullName() + context.getResources().getString(R.string.hash) + issue.getNumber() + "</font>";
 
 			issueTitle.setText(HtmlCompat.fromHtml(issueNumber_ + " " + issue.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
 			issueCommentsCount.setText(String.valueOf(issue.getComments()));
@@ -182,7 +179,8 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 						frameLabelsDots.setGravity(Gravity.START | Gravity.TOP);
 						labelsView.setLayoutParams(params);
 
-						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).width(54).height(54).endConfig().buildRound("", color);
+						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).width(54).height(54).endConfig()
+							.buildRound("", color);
 
 						labelsView.setImageDrawable(drawable);
 						frameLabelsDots.addView(labelsView);
@@ -208,9 +206,11 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 						int height = AppUtil.getPixelsFromDensity(context, 20);
 						int textSize = AppUtil.getPixelsFromScaledDensity(context, 12);
 
-						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize).width(
-							LabelWidthCalculator
-								.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize, AppUtil.getPixelsFromDensity(context, 8))).height(height).endConfig().buildRoundRect(labelName, color, AppUtil.getPixelsFromDensity(context, 18));
+						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT)
+							.textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize).width(
+								LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize,
+									AppUtil.getPixelsFromDensity(context, 8))).height(height).endConfig()
+							.buildRoundRect(labelName, color, AppUtil.getPixelsFromDensity(context, 18));
 
 						labelsView.setImageDrawable(drawable);
 						frameLabels.addView(labelsView);
@@ -227,17 +227,20 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 					PrettyTime prettyTime = new PrettyTime(locale);
 					String createdTime = prettyTime.format(issue.getCreatedAt());
 					issueCreatedTime.setText(createdTime);
-					issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getCreatedAt()), context));
+					issueCreatedTime.setOnClickListener(
+						new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getCreatedAt()), context));
 					break;
 				}
 				case "normal": {
-					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm",
+						locale);
 					String createdTime = formatter.format(issue.getCreatedAt());
 					issueCreatedTime.setText(createdTime);
 					break;
 				}
 				case "normal1": {
-					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm",
+						locale);
 					String createdTime = formatter.format(issue.getCreatedAt());
 					issueCreatedTime.setText(createdTime);
 					break;
@@ -245,6 +248,7 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 			}
 
 		}
+
 	}
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
@@ -262,8 +266,11 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 	}
 
 	public interface OnLoadMoreListener {
+
 		void onLoadMore();
+
 		void onLoadFinished();
+
 	}
 
 	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
@@ -274,4 +281,5 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 		searchedList = list;
 		notifyDataChanged();
 	}
+
 }

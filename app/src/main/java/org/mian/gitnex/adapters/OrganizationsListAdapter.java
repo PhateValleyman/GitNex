@@ -96,7 +96,8 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<RecyclerView.
 			this.userOrganizations = org;
 			orgName.setText(org.getUsername());
 
-			PicassoService.getInstance(context).get().load(org.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(image);
+			PicassoService.getInstance(context).get().load(org.getAvatarUrl()).placeholder(R.drawable.loader_animated)
+				.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(image);
 
 			if(!org.getDescription().equals("")) {
 				orgDescription.setVisibility(View.VISIBLE);
@@ -124,8 +125,11 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<RecyclerView.
 	}
 
 	public abstract static class OnLoadMoreListener {
+
 		protected abstract void onLoadMore();
-		public void onLoadFinished() {}
+
+		public void onLoadFinished() {
+		}
 
 	}
 
@@ -179,4 +183,5 @@ public class OrganizationsListAdapter extends RecyclerView.Adapter<RecyclerView.
 			notifyDataChanged();
 		}
 	};
+
 }

@@ -49,7 +49,8 @@ public class FollowingFragment extends Fragment {
 	private static final String usernameBundle = "";
 	private String username;
 
-	public FollowingFragment() {}
+	public FollowingFragment() {
+	}
 
 	public static FollowingFragment newInstance(String username) {
 		FollowingFragment fragment = new FollowingFragment();
@@ -62,7 +63,7 @@ public class FollowingFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
+		if(getArguments() != null) {
 			username = getArguments().getString(usernameBundle);
 		}
 	}
@@ -105,11 +106,10 @@ public class FollowingFragment extends Fragment {
 
 	private void loadInitial(String username, int resultLimit) {
 
-		Call<List<User>> call = RetrofitClient
-			.getApiInterface(context)
-			.userListFollowing(username, 1, resultLimit);
+		Call<List<User>> call = RetrofitClient.getApiInterface(context).userListFollowing(username, 1, resultLimit);
 
 		call.enqueue(new Callback<List<User>>() {
+
 			@Override
 			public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
 
@@ -163,9 +163,7 @@ public class FollowingFragment extends Fragment {
 
 		fragmentProfileFollowersFollowingBinding.progressBar.setVisibility(View.VISIBLE);
 
-		Call<List<User>> call = RetrofitClient
-			.getApiInterface(context)
-			.userListFollowing(username, page, resultLimit);
+		Call<List<User>> call = RetrofitClient.getApiInterface(context).userListFollowing(username, page, resultLimit);
 
 		call.enqueue(new Callback<List<User>>() {
 
@@ -256,4 +254,5 @@ public class FollowingFragment extends Fragment {
 		}
 		adapter.updateList(arr);
 	}
+
 }

@@ -23,7 +23,8 @@ public class BottomSheetPullRequestFilterFragment extends BottomSheetDialogFragm
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		BottomSheetPullRequestFilterBinding bottomSheetPullRequestFilterBinding = BottomSheetPullRequestFilterBinding.inflate(inflater, container, false);
+		BottomSheetPullRequestFilterBinding bottomSheetPullRequestFilterBinding = BottomSheetPullRequestFilterBinding.inflate(inflater, container,
+			false);
 
 		bottomSheetPullRequestFilterBinding.openPr.setOnClickListener(v1 -> {
 			bmListener.onButtonClicked("openPr");

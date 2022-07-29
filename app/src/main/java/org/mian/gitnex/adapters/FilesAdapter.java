@@ -27,35 +27,36 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
 	private final List<ContentsResponse> originalFiles = new ArrayList<>();
 	private final List<ContentsResponse> alteredFiles = new ArrayList<>();
 
-    private final Context context;
+	private final Context context;
 
-    private final FilesAdapterListener filesListener;
+	private final FilesAdapterListener filesListener;
 
-    public interface FilesAdapterListener {
+	public interface FilesAdapterListener {
 
-        void onClickFile(ContentsResponse file);
-    }
+		void onClickFile(ContentsResponse file);
+
+	}
 
 	class FilesViewHolder extends RecyclerView.ViewHolder {
 
-    	private ContentsResponse file;
+		private ContentsResponse file;
 
 		private final ImageView fileTypeIs;
-        private final TextView fileName;
-        private final TextView fileInfo;
+		private final TextView fileName;
+		private final TextView fileInfo;
 
-        private FilesViewHolder(View itemView) {
+		private FilesViewHolder(View itemView) {
 
-            super(itemView);
+			super(itemView);
 
-	        LinearLayout fileFrame = itemView.findViewById(R.id.fileFrame);
-            fileName = itemView.findViewById(R.id.fileName);
-	        fileTypeIs = itemView.findViewById(R.id.fileTypeIs);
-            fileInfo = itemView.findViewById(R.id.fileInfo);
+			LinearLayout fileFrame = itemView.findViewById(R.id.fileFrame);
+			fileName = itemView.findViewById(R.id.fileName);
+			fileTypeIs = itemView.findViewById(R.id.fileTypeIs);
+			fileInfo = itemView.findViewById(R.id.fileInfo);
 
-	        fileFrame.setOnClickListener(v -> filesListener.onClickFile(file));
+			fileFrame.setOnClickListener(v -> filesListener.onClickFile(file));
 
-            //ImageView filesDropdownMenu = itemView.findViewById(R.id.filesDropdownMenu);
+			//ImageView filesDropdownMenu = itemView.findViewById(R.id.filesDropdownMenu);
 
             /*filesDropdownMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -120,117 +121,119 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
                 }
             });*/
 
-        }
-    }
+		}
 
-    public FilesAdapter(Context ctx, FilesAdapterListener filesListener) {
+	}
 
-        this.context = ctx;
-        this.filesListener = filesListener;
-    }
+	public FilesAdapter(Context ctx, FilesAdapterListener filesListener) {
+
+		this.context = ctx;
+		this.filesListener = filesListener;
+	}
 
 	public List<ContentsResponse> getOriginalFiles() {
 		return originalFiles;
 	}
 
-    public void notifyOriginalDataSetChanged() {
+	public void notifyOriginalDataSetChanged() {
 
-	    alteredFiles.clear();
-	    alteredFiles.addAll(originalFiles);
+		alteredFiles.clear();
+		alteredFiles.addAll(originalFiles);
 
-    	notifyDataSetChanged();
-    }
+		notifyDataSetChanged();
+	}
 
-    @NonNull
-    @Override
-    public FilesAdapter.FilesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_files, parent, false);
-        return new FilesAdapter.FilesViewHolder(v);
-    }
+	@NonNull
+	@Override
+	public FilesAdapter.FilesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_files, parent, false);
+		return new FilesAdapter.FilesViewHolder(v);
+	}
 
-    @Override
-    public void onBindViewHolder(@NonNull FilesAdapter.FilesViewHolder holder, int position) {
+	@Override
+	public void onBindViewHolder(@NonNull FilesAdapter.FilesViewHolder holder, int position) {
 
-	    ContentsResponse currentItem = alteredFiles.get(position);
+		ContentsResponse currentItem = alteredFiles.get(position);
 
-        holder.file = currentItem;
-        holder.fileName.setText(currentItem.getName());
+		holder.file = currentItem;
+		holder.fileName.setText(currentItem.getName());
 
-        switch(currentItem.getType()) {
+		switch(currentItem.getType()) {
 
-	        case "file":
-		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_file));
-		        holder.fileInfo.setVisibility(View.VISIBLE);
-		        holder.fileInfo.setText(FileUtils.byteCountToDisplaySize(Math.toIntExact(currentItem.getSize())));
-	        	break;
+			case "file":
+				holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_file));
+				holder.fileInfo.setVisibility(View.VISIBLE);
+				holder.fileInfo.setText(FileUtils.byteCountToDisplaySize(Math.toIntExact(currentItem.getSize())));
+				break;
 
-	        case "dir":
-		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_directory));
-		        holder.fileInfo.setVisibility(View.GONE);
-	        	break;
+			case "dir":
+				holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_directory));
+				holder.fileInfo.setVisibility(View.GONE);
+				break;
 
-	        case "submodule":
-		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_submodule));
-		        holder.fileInfo.setVisibility(View.GONE);
-	        	break;
+			case "submodule":
+				holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_submodule));
+				holder.fileInfo.setVisibility(View.GONE);
+				break;
 
-	        case "symlink":
-		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_symlink));
-		        holder.fileInfo.setVisibility(View.GONE);
-		        break;
+			case "symlink":
+				holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_symlink));
+				holder.fileInfo.setVisibility(View.GONE);
+				break;
 
-	        default:
-		        holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_question));
+			default:
+				holder.fileTypeIs.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_question));
 
-        }
-    }
+		}
+	}
 
-    @Override
-    public int getItemCount() {
-        return alteredFiles.size();
-    }
+	@Override
+	public int getItemCount() {
+		return alteredFiles.size();
+	}
 
-    @Override
-    public Filter getFilter() {
-        return filesFilter;
-    }
+	@Override
+	public Filter getFilter() {
+		return filesFilter;
+	}
 
-    private final Filter filesFilter = new Filter() {
+	private final Filter filesFilter = new Filter() {
 
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
 
-            List<ContentsResponse> filteredList = new ArrayList<>();
+			List<ContentsResponse> filteredList = new ArrayList<>();
 
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(originalFiles);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
+			if(constraint == null || constraint.length() == 0) {
+				filteredList.addAll(originalFiles);
+			}
+			else {
+				String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for (ContentsResponse item : originalFiles) {
-                    if (item.getName().toLowerCase().contains(filterPattern) || item.getPath().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
+				for(ContentsResponse item : originalFiles) {
+					if(item.getName().toLowerCase().contains(filterPattern) || item.getPath().toLowerCase().contains(filterPattern)) {
+						filteredList.add(item);
+					}
+				}
+			}
 
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
+			FilterResults results = new FilterResults();
+			results.values = filteredList;
 
-            return results;
+			return results;
 
-        }
+		}
 
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
+		@Override
+		protected void publishResults(CharSequence constraint, FilterResults results) {
 
-            alteredFiles.clear();
-	        alteredFiles.addAll((List) results.values);
+			alteredFiles.clear();
+			alteredFiles.addAll((List) results.values);
 
-            notifyDataSetChanged();
+			notifyDataSetChanged();
 
-        }
+		}
 
-    };
+	};
 
 }

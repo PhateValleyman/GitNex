@@ -121,7 +121,7 @@ public class MergePullRequestActivity extends BaseActivity {
 		ArrayAdapter<MergePullRequestSpinner> adapter = new ArrayAdapter<>(MergePullRequestActivity.this, R.layout.list_spinner_items, mergeList);
 		viewBinding.mergeSpinner.setAdapter(adapter);
 
-		viewBinding.mergeSpinner.setOnItemClickListener ((parent, view, position, id) -> {
+		viewBinding.mergeSpinner.setOnItemClickListener((parent, view, position, id) -> {
 
 			Do = mergeList.get(position).getId();
 		});
@@ -180,7 +180,8 @@ public class MergePullRequestActivity extends BaseActivity {
 				break;
 		}
 
-		Call<Void> call = RetrofitClient.getApiInterface(ctx).repoMergePullRequest(issue.getRepository().getOwner(), issue.getRepository().getName(), (long) issue.getIssueIndex(), mergePR);
+		Call<Void> call = RetrofitClient.getApiInterface(ctx)
+			.repoMergePullRequest(issue.getRepository().getOwner(), issue.getRepository().getName(), (long) issue.getIssueIndex(), mergePR);
 
 		call.enqueue(new Callback<>() {
 
@@ -259,4 +260,5 @@ public class MergePullRequestActivity extends BaseActivity {
 		super.onResume();
 		issue.getRepository().checkAccountSwitch(this);
 	}
+
 }

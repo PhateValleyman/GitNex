@@ -47,15 +47,16 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 
 		if(notificationThread.isPinned()) {
 			AppUtil.setMultiVisibility(View.GONE, markUnread, markPinned);
-		} else if(notificationThread.isUnread()) {
+		}
+		else if(notificationThread.isUnread()) {
 			markUnread.setVisibility(View.GONE);
-		} else {
+		}
+		else {
 			markRead.setVisibility(View.GONE);
 		}
 
-		markPinned.setOnClickListener(v12 ->
-			RetrofitClient.getApiInterface(context)
-				.notifyReadThread(String.valueOf(notificationThread.getId()), "pinned")
+		markPinned.setOnClickListener(
+			v12 -> RetrofitClient.getApiInterface(context).notifyReadThread(String.valueOf(notificationThread.getId()), "pinned")
 				.enqueue((SimpleCallback<NotificationThread>) (call, voidResponse) -> {
 
 					// reload without any checks, because Gitea returns a 205 and Java expects this to be empty
@@ -69,27 +70,24 @@ public class BottomSheetNotificationsFragment extends BottomSheetDialogFragment 
 					dismiss();
 				}));
 
-		markRead.setOnClickListener(v1 ->
-			RetrofitClient.getApiInterface(context)
-				.notifyReadThread(String.valueOf(notificationThread.getId()), "read")
-				.enqueue((SimpleCallback<NotificationThread>) (call, voidResponse) -> {
+		markRead.setOnClickListener(v1 -> RetrofitClient.getApiInterface(context).notifyReadThread(String.valueOf(notificationThread.getId()), "read")
+			.enqueue((SimpleCallback<NotificationThread>) (call, voidResponse) -> {
 
-					// reload without any checks, because Gitea returns a 205 and Java expects this to be empty
-					// but Gitea send a response -> results in a call of onFailure and no response is present
-					// reload without any checks, because Gitea returns a 205 and Java expects this to be empty
-					// but Gitea send a response -> results in a call of onFailure and no response is present
-					//if(voidResponse.isPresent() && voidResponse.get().isSuccessful()) {
-					onOptionSelectedListener.run();
+				// reload without any checks, because Gitea returns a 205 and Java expects this to be empty
+				// but Gitea send a response -> results in a call of onFailure and no response is present
+				// reload without any checks, because Gitea returns a 205 and Java expects this to be empty
+				// but Gitea send a response -> results in a call of onFailure and no response is present
+				//if(voidResponse.isPresent() && voidResponse.get().isSuccessful()) {
+				onOptionSelectedListener.run();
 					/*} else {
 						Toasty.error(context, getString(R.string.genericError));
 					}*/
 
-					dismiss();
-				}));
+				dismiss();
+			}));
 
-		markUnread.setOnClickListener(v13 ->
-			RetrofitClient.getApiInterface(context)
-				.notifyReadThread(String.valueOf(notificationThread.getId()), "unread")
+		markUnread.setOnClickListener(
+			v13 -> RetrofitClient.getApiInterface(context).notifyReadThread(String.valueOf(notificationThread.getId()), "unread")
 				.enqueue((SimpleCallback<NotificationThread>) (call, voidResponse) -> {
 
 					// reload without any checks, because Gitea returns a 205 and Java expects this to be empty

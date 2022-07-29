@@ -123,8 +123,8 @@ public class DiffAdapter extends BaseAdapter {
 					bundle.putString("commentBody", stringBuilder.toString());
 					bundle.putBoolean("cursorToEnd", true);
 
-				BottomSheetReplyFragment.newInstance(bundle, issue).show(fragmentManager, "replyBottomSheet");
-			}
+					BottomSheetReplyFragment.newInstance(bundle, issue).show(fragmentManager, "replyBottomSheet");
+				}
 
 				return true;
 
@@ -149,10 +149,13 @@ public class DiffAdapter extends BaseAdapter {
 		}
 
 		switch(line.charAt(0)) {
-			case '+': return COLOR_ADDED;
-			case '-': return COLOR_REMOVED;
+			case '+':
+				return COLOR_ADDED;
+			case '-':
+				return COLOR_REMOVED;
 
-			default: return COLOR_NORMAL;
+			default:
+				return COLOR_NORMAL;
 		}
 	}
 

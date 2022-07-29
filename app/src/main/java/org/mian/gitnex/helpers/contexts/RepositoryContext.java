@@ -30,8 +30,7 @@ public class RepositoryContext implements Serializable {
 	}
 
 	public enum State {
-		OPEN,
-		CLOSED;
+		OPEN, CLOSED;
 
 
 		@NonNull
@@ -216,8 +215,8 @@ public class RepositoryContext implements Serializable {
 	}
 
 	public void checkAccountSwitch(Context context) {
-		if(((BaseActivity) context).getAccount().getAccount().getAccountId() != account.getAccount().getAccountId() &&
-			account.getAccount().getAccountId() == TinyDB.getInstance(context).getInt("currentActiveAccountId")) {
+		if(((BaseActivity) context).getAccount().getAccount().getAccountId() != account.getAccount().getAccountId() && account.getAccount()
+			.getAccountId() == TinyDB.getInstance(context).getInt("currentActiveAccountId")) {
 			// user changed account using a deep link or a submodule
 			AppUtil.switchToAccount(context, account.getAccount());
 		}

@@ -37,7 +37,7 @@ public class AccountContext implements Serializable {
 	}
 
 	public String getAuthorization() {
-		return  "token " + account.getToken();
+		return "token " + account.getToken();
 	}
 
 	public String getWebAuthorization() {
@@ -71,8 +71,7 @@ public class AccountContext implements Serializable {
 	}
 
 	public String getFullName() {
-		return userInfo != null ? !userInfo.getFullName().equals("") ?
-			userInfo.getFullName() : userInfo.getLogin() : account.getUserName();
+		return userInfo != null ? !userInfo.getFullName().equals("") ? userInfo.getFullName() : userInfo.getLogin() : account.getUserName();
 	}
 
 	public File getCacheDir(Context context) {

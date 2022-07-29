@@ -15,6 +15,7 @@ import org.mian.gitnex.notifications.Notifications;
 
 /**
  * Template Author M M Arif
+ *
  * @author opyale
  */
 
@@ -34,7 +35,8 @@ public class SettingsNotificationsActivity extends BaseActivity {
 
 		viewBinding.close.setOnClickListener(onClickListener);
 
-		viewBinding.pollingDelaySelected.setText(String.format(getString(R.string.pollingDelaySelectedText), tinyDB.getInt("pollingDelayMinutes", Constants.defaultPollingDelay)));
+		viewBinding.pollingDelaySelected.setText(
+			String.format(getString(R.string.pollingDelaySelectedText), tinyDB.getInt("pollingDelayMinutes", Constants.defaultPollingDelay)));
 		viewBinding.chooseColorState.setCardBackgroundColor(tinyDB.getInt("notificationsLightColor", Color.GREEN));
 
 		viewBinding.enableNotificationsMode.setChecked(tinyDB.getBoolean("notificationsEnabled", true));
@@ -42,12 +44,8 @@ public class SettingsNotificationsActivity extends BaseActivity {
 		viewBinding.enableVibrationMode.setChecked(tinyDB.getBoolean("notificationsEnableVibration", true));
 
 		if(!viewBinding.enableNotificationsMode.isChecked()) {
-			AppUtil.setMultiVisibility(View.GONE,
-				viewBinding.chooseColorFrame,
-				viewBinding.enableLightsFrame,
-				viewBinding.enableVibrationFrame,
-				viewBinding.pollingDelayFrame
-			);
+			AppUtil.setMultiVisibility(View.GONE, viewBinding.chooseColorFrame, viewBinding.enableLightsFrame, viewBinding.enableVibrationFrame,
+				viewBinding.pollingDelayFrame);
 		}
 
 		if(!viewBinding.enableLightsMode.isChecked()) {
@@ -60,20 +58,13 @@ public class SettingsNotificationsActivity extends BaseActivity {
 
 			if(isChecked) {
 				Notifications.startWorker(ctx);
-				AppUtil.setMultiVisibility(View.VISIBLE,
-					viewBinding.chooseColorFrame,
-					viewBinding.enableLightsFrame,
-					viewBinding.enableVibrationFrame,
-					viewBinding.pollingDelayFrame
-				);
-			} else {
+				AppUtil.setMultiVisibility(View.VISIBLE, viewBinding.chooseColorFrame, viewBinding.enableLightsFrame,
+					viewBinding.enableVibrationFrame, viewBinding.pollingDelayFrame);
+			}
+			else {
 				Notifications.stopWorker(ctx);
-				AppUtil.setMultiVisibility(View.GONE,
-					viewBinding.chooseColorFrame,
-					viewBinding.enableLightsFrame,
-					viewBinding.enableVibrationFrame,
-					viewBinding.pollingDelayFrame
-				);
+				AppUtil.setMultiVisibility(View.GONE, viewBinding.chooseColorFrame, viewBinding.enableLightsFrame, viewBinding.enableVibrationFrame,
+					viewBinding.pollingDelayFrame);
 			}
 
 			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
@@ -118,7 +109,8 @@ public class SettingsNotificationsActivity extends BaseActivity {
 
 			if(!isChecked) {
 				viewBinding.chooseColorFrame.setVisibility(View.GONE);
-			} else {
+			}
+			else {
 				viewBinding.chooseColorFrame.setVisibility(View.VISIBLE);
 			}
 

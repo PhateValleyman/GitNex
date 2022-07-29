@@ -31,7 +31,9 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 	public interface LabelsListAdapterListener {
 
 		void labelsInterface(List<String> data);
+
 		void labelsIdsInterface(List<Integer> data);
+
 	}
 
 	public LabelsListAdapter(List<Label> labelsMain, LabelsListAdapterListener labelsListener, List<Integer> currentLabelsIds) {
@@ -56,6 +58,7 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 			labelText = itemView.findViewById(R.id.labelText);
 			labelColor = itemView.findViewById(R.id.labelColor);
 		}
+
 	}
 
 	@NonNull
@@ -129,4 +132,5 @@ public class LabelsListAdapter extends RecyclerView.Adapter<LabelsListAdapter.La
 		currentLabelsIds = list;
 		notifyDataSetChanged();
 	}
+
 }

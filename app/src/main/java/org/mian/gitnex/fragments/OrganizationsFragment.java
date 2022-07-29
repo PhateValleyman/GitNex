@@ -58,7 +58,8 @@ public class OrganizationsFragment extends Fragment {
 		fragmentOrganizationsBinding.recyclerView.setHasFixedSize(true);
 		fragmentOrganizationsBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-		RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.shape_list_divider));
+		RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(
+			ContextCompat.getDrawable(requireContext(), R.drawable.shape_list_divider));
 		fragmentOrganizationsBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 
 		fragmentOrganizationsBinding.recyclerView.setPadding(0, 0, 0, 200);
@@ -75,7 +76,9 @@ public class OrganizationsFragment extends Fragment {
 		fetchDataAsync();
 
 		return fragmentOrganizationsBinding.getRoot();
-	};
+	}
+
+	;
 
 	private void fetchDataAsync() {
 
@@ -113,39 +116,41 @@ public class OrganizationsFragment extends Fragment {
 		});
 	}
 
-    @Override
-    public void onResume(){
-        super.onResume();
+	@Override
+	public void onResume() {
+		super.onResume();
 
-	    if(orgCreated) {
-		    organizationsViewModel.loadOrgList(page, resultLimit, getContext());
-            orgCreated = false;
-        }
-    }
+		if(orgCreated) {
+			organizationsViewModel.loadOrgList(page, resultLimit, getContext());
+			orgCreated = false;
+		}
+	}
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+	@Override
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
-        inflater.inflate(R.menu.search_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.search_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+		MenuItem searchItem = menu.findItem(R.id.action_search);
+		androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+		searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+		searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if(fragmentOrganizationsBinding.recyclerView.getAdapter() != null) {
-                    adapter.getFilter().filter(newText);
-                }
-                return false;
-            }
-        });
-    }
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				if(fragmentOrganizationsBinding.recyclerView.getAdapter() != null) {
+					adapter.getFilter().filter(newText);
+				}
+				return false;
+			}
+		});
+	}
+
 }

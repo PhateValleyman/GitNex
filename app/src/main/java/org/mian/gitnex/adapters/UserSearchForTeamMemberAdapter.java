@@ -62,8 +62,10 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 			addMemberButtonAdd = itemView.findViewById(R.id.addCollaboratorButtonAdd);
 			addMemberButtonRemove = itemView.findViewById(R.id.addCollaboratorButtonRemove);
 
-			addMemberButtonAdd.setOnClickListener(v -> AlertDialogs.addMemberDialog(context, userInfo.getLogin(), Integer.parseInt(String.valueOf(teamId))));
-			addMemberButtonRemove.setOnClickListener(v -> AlertDialogs.removeMemberDialog(context, userInfo.getLogin(), Integer.parseInt(String.valueOf(teamId))));
+			addMemberButtonAdd.setOnClickListener(
+				v -> AlertDialogs.addMemberDialog(context, userInfo.getLogin(), Integer.parseInt(String.valueOf(teamId))));
+			addMemberButtonRemove.setOnClickListener(
+				v -> AlertDialogs.removeMemberDialog(context, userInfo.getLogin(), Integer.parseInt(String.valueOf(teamId))));
 
 			userAvatar.setOnClickListener(loginId -> {
 				Intent intent = new Intent(context, ProfileActivity.class);
@@ -93,7 +95,7 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 		holder.userInfo = currentItem;
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
-		if (!currentItem.getFullName().equals("")) {
+		if(!currentItem.getFullName().equals("")) {
 
 			holder.userFullName.setText(Html.fromHtml(currentItem.getFullName()));
 		}
@@ -104,17 +106,16 @@ public class UserSearchForTeamMemberAdapter extends RecyclerView.Adapter<UserSea
 
 		holder.userName.setText(context.getResources().getString(R.string.usernameWithAt, currentItem.getLogin()));
 
-		if (!currentItem.getAvatarUrl().equals("")) {
-			PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
+		if(!currentItem.getAvatarUrl().equals("")) {
+			PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated)
+				.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.userAvatar);
 		}
 
 		if(getItemCount() > 0) {
 
 			final String loginUid = ((BaseActivity) context).getAccount().getAccount().getUserName();
 
-			Call<User> call = RetrofitClient
-					.getApiInterface(context)
-					.orgListTeamMember((long) teamId, currentItem.getLogin());
+			Call<User> call = RetrofitClient.getApiInterface(context).orgListTeamMember((long) teamId, currentItem.getLogin());
 
 			call.enqueue(new Callback<>() {
 

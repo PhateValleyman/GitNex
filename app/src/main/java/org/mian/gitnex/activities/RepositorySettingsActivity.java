@@ -70,7 +70,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 		dialogTransferRepository = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
-		if (dialogTransferRepository.getWindow() != null) {
+		if(dialogTransferRepository.getWindow() != null) {
 
 			dialogTransferRepository.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
@@ -110,8 +110,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 		TransferRepoOption repositoryTransfer = new TransferRepoOption();
 		repositoryTransfer.setNewOwner(newOwner);
 
-		Call<Repository> transferCall = RetrofitClient
-			.getApiInterface(ctx)
+		Call<Repository> transferCall = RetrofitClient.getApiInterface(ctx)
 			.repoTransfer(repositoryTransfer, repository.getOwner(), repository.getName());
 
 		transferCall.enqueue(new Callback<Repository>() {
@@ -122,7 +121,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 				transferRepoBinding.transfer.setVisibility(View.GONE);
 				transferRepoBinding.processingRequest.setVisibility(View.VISIBLE);
 
-				if (response.code() == 202) {
+				if(response.code() == 202) {
 
 					dialogTransferRepository.dismiss();
 					Toasty.success(ctx, getString(R.string.repoTransferSuccess));
@@ -132,7 +131,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 					Intent intent = new Intent(RepositorySettingsActivity.this, MainActivity.class);
 					RepositorySettingsActivity.this.startActivity(intent);
 				}
-				else if (response.code() == 404) {
+				else if(response.code() == 404) {
 
 					transferRepoBinding.transfer.setVisibility(View.VISIBLE);
 					transferRepoBinding.processingRequest.setVisibility(View.GONE);
@@ -161,7 +160,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 		dialogDeleteRepository = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
-		if (dialogDeleteRepository.getWindow() != null) {
+		if(dialogDeleteRepository.getWindow() != null) {
 
 			dialogDeleteRepository.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
@@ -191,9 +190,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 	private void deleteRepository() {
 
-		Call<Void> deleteCall = RetrofitClient
-			.getApiInterface(ctx)
-			.repoDelete(repository.getOwner(), repository.getName());
+		Call<Void> deleteCall = RetrofitClient.getApiInterface(ctx).repoDelete(repository.getOwner(), repository.getName());
 
 		deleteCall.enqueue(new Callback<Void>() {
 
@@ -203,7 +200,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 				deleteRepoBinding.delete.setVisibility(View.GONE);
 				deleteRepoBinding.processingRequest.setVisibility(View.VISIBLE);
 
-				if (response.code() == 204) {
+				if(response.code() == 204) {
 
 					dialogDeleteRepository.dismiss();
 					Toasty.success(ctx, getString(R.string.repoDeletionSuccess));
@@ -236,7 +233,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 		dialogProp = new Dialog(ctx, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert);
 
-		if (dialogProp.getWindow() != null) {
+		if(dialogProp.getWindow() != null) {
 
 			dialogProp.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
@@ -264,7 +261,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 
 		propBinding.repoEnableIssues.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-			if (isChecked) {
+			if(isChecked) {
 				propBinding.repoEnableTimer.setVisibility(View.VISIBLE);
 			}
 			else {
@@ -289,22 +286,19 @@ public class RepositorySettingsActivity extends BaseActivity {
 		propBinding.repoEnableForceMerge.setChecked(repoInfo.isAllowRebaseExplicit());
 
 		propBinding.save.setOnClickListener(saveProperties -> saveRepositoryProperties(String.valueOf(propBinding.repoName.getText()),
-			String.valueOf(propBinding.repoWebsite.getText()),
-			String.valueOf(propBinding.repoDescription.getText()),
-			propBinding.repoPrivate.isChecked(), propBinding.repoAsTemplate.isChecked(),
-			propBinding.repoEnableIssues.isChecked(), propBinding.repoEnableWiki.isChecked(),
-			propBinding.repoEnablePr.isChecked(), propBinding.repoEnableTimer.isChecked(),
-			propBinding.repoEnableMerge.isChecked(), propBinding.repoEnableRebase.isChecked(),
-			propBinding.repoEnableSquash.isChecked(), propBinding.repoEnableForceMerge.isChecked()));
+			String.valueOf(propBinding.repoWebsite.getText()), String.valueOf(propBinding.repoDescription.getText()),
+			propBinding.repoPrivate.isChecked(), propBinding.repoAsTemplate.isChecked(), propBinding.repoEnableIssues.isChecked(),
+			propBinding.repoEnableWiki.isChecked(), propBinding.repoEnablePr.isChecked(), propBinding.repoEnableTimer.isChecked(),
+			propBinding.repoEnableMerge.isChecked(), propBinding.repoEnableRebase.isChecked(), propBinding.repoEnableSquash.isChecked(),
+			propBinding.repoEnableForceMerge.isChecked()));
 
 		dialogProp.setCancelable(false);
 		dialogProp.show();
 	}
 
-	private void saveRepositoryProperties(String repoName, String repoWebsite, String repoDescription,
-		boolean repoPrivate, boolean repoAsTemplate, boolean repoEnableIssues, boolean repoEnableWiki,
-		boolean repoEnablePr, boolean repoEnableTimer, boolean repoEnableMerge, boolean repoEnableRebase,
-		boolean repoEnableSquash, boolean repoEnableForceMerge) {
+	private void saveRepositoryProperties(String repoName, String repoWebsite, String repoDescription, boolean repoPrivate, boolean repoAsTemplate,
+		boolean repoEnableIssues, boolean repoEnableWiki, boolean repoEnablePr, boolean repoEnableTimer, boolean repoEnableMerge,
+		boolean repoEnableRebase, boolean repoEnableSquash, boolean repoEnableForceMerge) {
 
 		EditRepoOption repoProps = new EditRepoOption();
 		repoProps.setName(repoName);
@@ -321,9 +315,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 		repoProps.setAllowSquashMerge(repoEnableSquash);
 		repoProps.setAllowRebaseExplicit(repoEnableForceMerge);
 
-		Call<Repository> propsCall = RetrofitClient
-			.getApiInterface(ctx)
-			.repoEdit(repository.getOwner(), repository.getName(), repoProps);
+		Call<Repository> propsCall = RetrofitClient.getApiInterface(ctx).repoEdit(repository.getOwner(), repository.getName(), repoProps);
 
 		propsCall.enqueue(new Callback<Repository>() {
 
@@ -333,7 +325,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 				propBinding.save.setVisibility(View.GONE);
 				propBinding.processingRequest.setVisibility(View.VISIBLE);
 
-				if (response.code() == 200) {
+				if(response.code() == 200) {
 
 					dialogProp.dismiss();
 					Toasty.success(ctx, getString(R.string.repoPropertiesSaveSuccess));

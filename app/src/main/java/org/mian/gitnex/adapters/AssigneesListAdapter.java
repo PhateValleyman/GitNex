@@ -36,6 +36,7 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 	public interface AssigneesListAdapterListener {
 
 		void assigneesInterface(List<String> data);
+
 	}
 
 	public AssigneesListAdapter(Context ctx, List<User> dataMain, AssigneesListAdapterListener assigneesListener, List<String> currentAssignees) {
@@ -61,6 +62,7 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 			assigneesName = itemView.findViewById(R.id.assigneesName);
 			assigneesAvatar = itemView.findViewById(R.id.assigneesAvatar);
 		}
+
 	}
 
 	@NonNull
@@ -85,8 +87,8 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 
 			holder.assigneesName.setText(Html.fromHtml(currentItem.getFullName()));
 		}
-		PicassoService
-			.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(180, 180).centerCrop().into(holder.assigneesAvatar);
+		PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated)
+			.transform(new RoundedTransformation(imgRadius, 0)).resize(180, 180).centerCrop().into(holder.assigneesAvatar);
 
 		for(int i = 0; i < assigneesList.size(); i++) {
 
@@ -138,4 +140,5 @@ public class AssigneesListAdapter extends RecyclerView.Adapter<AssigneesListAdap
 		currentAssignees = list;
 		notifyDataSetChanged();
 	}
+
 }

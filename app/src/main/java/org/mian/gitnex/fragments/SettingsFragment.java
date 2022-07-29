@@ -78,7 +78,7 @@ public class SettingsFragment extends Fragment {
 
 	public void showAboutAppDialog() {
 
-		if (aboutAppDialog.getWindow() != null) {
+		if(aboutAppDialog.getWindow() != null) {
 			aboutAppDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
 
@@ -117,7 +117,8 @@ public class SettingsFragment extends Fragment {
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + requireActivity().getPackageName())));
 		}
 		catch(ActivityNotFoundException e) {
-			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + requireActivity().getPackageName())));
+			startActivity(
+				new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + requireActivity().getPackageName())));
 		}
 	}
 
@@ -131,4 +132,5 @@ public class SettingsFragment extends Fragment {
 			refreshParent = false;
 		}
 	}
+
 }

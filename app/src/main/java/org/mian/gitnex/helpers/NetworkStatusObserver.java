@@ -27,10 +27,8 @@ public class NetworkStatusObserver {
 
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-		NetworkRequest networkRequest = new NetworkRequest.Builder()
-			.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-			.addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED)
-			.build();
+		NetworkRequest networkRequest = new NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+			.addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED).build();
 
 		cm.requestNetwork(networkRequest, new ConnectivityManager.NetworkCallback() {
 
@@ -67,7 +65,9 @@ public class NetworkStatusObserver {
 				// in order to use the built-in timeout functionality of {@code requestNetwork()}
 				// which in turn gives us access to {@code onUnavailable()} .
 				mutex.wait(5);
-			} catch(InterruptedException ignored) {}
+			}
+			catch(InterruptedException ignored) {
+			}
 		}
 
 		if(!hasInitialized) {
@@ -96,7 +96,11 @@ public class NetworkStatusObserver {
 		networkStatusListeners.remove(networkStatusListener);
 	}
 
-	public interface NetworkStatusListener { void onNetworkStatusChanged(boolean hasNetworkConnection); }
+	public interface NetworkStatusListener {
+
+		void onNetworkStatusChanged(boolean hasNetworkConnection);
+
+	}
 
 	public static NetworkStatusObserver getInstance(Context context) {
 

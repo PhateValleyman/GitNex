@@ -119,4 +119,5 @@ public class ExploreIssuesFragment extends Fragment {
 			}
 		});
 	}
+
 }

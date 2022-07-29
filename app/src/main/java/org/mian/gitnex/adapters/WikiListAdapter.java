@@ -45,7 +45,8 @@ public class WikiListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 	private final String repoOwner;
 	private final String repoName;
 
-	public WikiListAdapter(List<WikiPageMetaData> wikiListMain, Context ctx, String repoOwner, String repoName, FragmentWikiBinding fragmentWikiBinding) {
+	public WikiListAdapter(List<WikiPageMetaData> wikiListMain, Context ctx, String repoOwner, String repoName,
+		FragmentWikiBinding fragmentWikiBinding) {
 		this.ctx = ctx;
 		this.wikiList = wikiListMain;
 		this.repoOwner = repoOwner;
@@ -145,23 +146,26 @@ public class WikiListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 			this.wikiPageMeta = wikiPageMetaData;
 
 			pageName.setText(wikiPageMetaData.getTitle());
-			wikiLastUpdatedBy.setText(
-				HtmlCompat.fromHtml(ctx.getResources().getString(R.string.wikiAuthor, wikiPageMetaData.getLastCommit().getAuthor().getName(),
-					TimeHelper.formatTime(TimeHelper.parseIso8601(wikiPageMetaData.getLastCommit().getAuthor().getDate()), ctx.getResources().getConfiguration().locale, "pretty",
-						ctx)), HtmlCompat.FROM_HTML_MODE_COMPACT));
-			this.wikiLastUpdatedBy.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(TimeHelper.parseIso8601(wikiPageMetaData.getLastCommit().getAuthor().getDate())), ctx));
+			wikiLastUpdatedBy.setText(HtmlCompat.fromHtml(ctx.getResources()
+				.getString(R.string.wikiAuthor, wikiPageMetaData.getLastCommit().getAuthor().getName(),
+					TimeHelper.formatTime(TimeHelper.parseIso8601(wikiPageMetaData.getLastCommit().getAuthor().getDate()),
+						ctx.getResources().getConfiguration().locale, "pretty", ctx)), HtmlCompat.FROM_HTML_MODE_COMPACT));
+			this.wikiLastUpdatedBy.setOnClickListener(new ClickListener(
+				TimeHelper.customDateFormatForToastDateFormat(TimeHelper.parseIso8601(wikiPageMetaData.getLastCommit().getAuthor().getDate())), ctx));
 
 			ColorGenerator generator = ColorGenerator.Companion.getMATERIAL();
 			int color = generator.getColor(wikiPageMetaData.getTitle());
 			String firstCharacter = String.valueOf(wikiPageMetaData.getTitle().charAt(0));
 
-			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
+			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28)
+				.endConfig().buildRoundRect(firstCharacter, color, 3);
 			avatar.setImageDrawable(drawable);
 
 			if(!((RepoDetailActivity) ctx).repository.getPermissions().isPush()) {
 				wikiMenu.setVisibility(View.GONE);
 			}
 		}
+
 	}
 
 	private void updateAdapter(int position) {
@@ -185,8 +189,11 @@ public class WikiListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 	}
 
 	public interface OnLoadMoreListener {
+
 		void onLoadMore();
+
 		void onLoadFinished();
+
 	}
 
 	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
@@ -200,12 +207,10 @@ public class WikiListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 	private void deleteWiki(final String owner, final String repo, final String pageName, int position, final Context context) {
 
-		new AlertDialog.Builder(context)
-			.setTitle(String.format(context.getString(R.string.deleteGenericTitle), pageName))
-			.setMessage(context.getString(R.string.deleteWikiPageMessage, pageName))
-			.setIcon(R.drawable.ic_delete)
-			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient
-				.getApiInterface(context).repoDeleteWikiPage(owner, repo, pageName).enqueue(new Callback<>() {
+		new AlertDialog.Builder(context).setTitle(String.format(context.getString(R.string.deleteGenericTitle), pageName))
+			.setMessage(context.getString(R.string.deleteWikiPageMessage, pageName)).setIcon(R.drawable.ic_delete)
+			.setPositiveButton(R.string.menuDeleteText,
+				(dialog, whichButton) -> RetrofitClient.getApiInterface(context).repoDeleteWikiPage(owner, repo, pageName).enqueue(new Callback<>() {
 
 					@Override
 					public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
@@ -230,7 +235,7 @@ public class WikiListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 						Toasty.error(context, context.getString(R.string.genericError));
 					}
-				}))
-			.setNeutralButton(R.string.cancelButton, null).show();
+				})).setNeutralButton(R.string.cancelButton, null).show();
 	}
+
 }

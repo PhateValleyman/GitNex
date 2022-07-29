@@ -109,5 +109,6 @@ public class AppUtilTest {
 		assertEquals("https://gitnex.com", AppUtil.changeScheme(Uri.parse("http://gitnex.com"), "https").toString());
 		assertEquals("ssh://codeberg.org/gitnex/GitNex", AppUtil.changeScheme(Uri.parse("http://codeberg.org/gitnex/GitNex"), "ssh").toString());
 	}
+
 }
 

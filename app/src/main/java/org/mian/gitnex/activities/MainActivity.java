@@ -97,9 +97,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		Handler handler = new Handler();
 
 		// DO NOT MOVE
-		if(mainIntent.hasExtra("switchAccountId") &&
-			AppUtil.switchToAccount(ctx, BaseApi.getInstance(ctx, UserAccountsApi.class)
-				.getAccountById(mainIntent.getIntExtra("switchAccountId", 0)))) {
+		if(mainIntent.hasExtra("switchAccountId") && AppUtil.switchToAccount(ctx,
+			BaseApi.getInstance(ctx, UserAccountsApi.class).getAccountById(mainIntent.getIntExtra("switchAccountId", 0)))) {
 
 			mainIntent.removeExtra("switchAccountId");
 			recreate();
@@ -165,7 +164,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		Menu menu = navigationView.getMenu();
 		navNotifications = menu.findItem(R.id.nav_notifications);
 
-		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigationDrawerOpen, R.string.navigationDrawerClose);
+		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigationDrawerOpen,
+			R.string.navigationDrawerClose);
 
 		drawer.addDrawerListener(toggle);
 		drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -204,7 +204,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				userEmail.setTypeface(myTypeface);
 				userFullName.setTypeface(myTypeface);
 
-				if (getAccount().getUserInfo() != null) {
+				if(getAccount().getUserInfo() != null) {
 					String userEmailNav = getAccount().getUserInfo().getEmail();
 					String userFullNameNav = getAccount().getFullName();
 					String userAvatarNav = getAccount().getUserInfo().getAvatarUrl();
@@ -221,7 +221,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 						int avatarRadius = AppUtil.getPixelsFromDensity(ctx, 3);
 
-						PicassoService.getInstance(ctx).get().load(userAvatarNav).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(avatarRadius, 0)).resize(160, 160).centerCrop().into(userAvatar);
+						PicassoService.getInstance(ctx).get().load(userAvatarNav).placeholder(R.drawable.loader_animated)
+							.transform(new RoundedTransformation(avatarRadius, 0)).resize(160, 160).centerCrop().into(userAvatar);
 
 						PicassoService.getInstance(ctx).get().load(userAvatarNav).transform(new BlurTransformation(ctx))
 							.into(userAvatarBackground, new com.squareup.picasso.Callback() {
@@ -258,9 +259,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			@Override
 			public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 
-				if (getAccount().getUserInfo() != null) {
+				if(getAccount().getUserInfo() != null) {
 					navigationView.getMenu().findItem(R.id.nav_administration).setVisible(getAccount().getUserInfo().isIsAdmin());
-				} else {
+				}
+				else {
 					// hide first
 					navigationView.getMenu().findItem(R.id.nav_administration).setVisible(false);
 				}
@@ -271,10 +273,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			}
 
 			@Override
-			public void onDrawerClosed(@NonNull View drawerView) {}
+			public void onDrawerClosed(@NonNull View drawerView) {
+			}
 
 			@Override
-			public void onDrawerStateChanged(int newState) {}
+			public void onDrawerStateChanged(int newState) {
+			}
 
 		});
 
@@ -471,18 +475,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 					if(frag != null) {
 
-						new AlertDialog.Builder(ctx)
-							.setTitle(R.string.deleteAllDrafts)
-							.setIcon(R.drawable.ic_delete)
-							.setCancelable(false)
-							.setMessage(R.string.deleteAllDraftsDialogMessage)
-							.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
+						new AlertDialog.Builder(ctx).setTitle(R.string.deleteAllDrafts).setIcon(R.drawable.ic_delete).setCancelable(false)
+							.setMessage(R.string.deleteAllDraftsDialogMessage).setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
 
 								frag.deleteAllDrafts(currentActiveAccountId);
 								dialog.dismiss();
 
-							})
-							.setNeutralButton(R.string.cancelButton, null).show();
+							}).setNeutralButton(R.string.cancelButton, null).show();
 					}
 					else {
 
@@ -624,7 +623,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		generalAPISettings.enqueue(new Callback<>() {
 
 			@Override
-			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings, @NonNull retrofit2.Response<GeneralAPISettings> response) {
+			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings,
+				@NonNull retrofit2.Response<GeneralAPISettings> response) {
 
 				if(response.code() == 200 && response.body() != null) {
 
@@ -638,7 +638,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						defaultPagingNumber = Math.toIntExact(response.body().getDefaultPagingNum());
 					}
 
-					BaseApi.getInstance(ctx, UserAccountsApi.class).updateServerPagingLimit(maxResponseItems, defaultPagingNumber, tinyDB.getInt("currentActiveAccountId"));
+					BaseApi.getInstance(ctx, UserAccountsApi.class)
+						.updateServerPagingLimit(maxResponseItems, defaultPagingNumber, tinyDB.getInt("currentActiveAccountId"));
 				}
 			}
 
@@ -748,6 +749,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	}
 
 	// My issues interface
-	public FragmentRefreshListener getFragmentRefreshListener() { return fragmentRefreshListenerMyIssues; }
-	public void setFragmentRefreshListenerMyIssues(FragmentRefreshListener fragmentRefreshListener) { this.fragmentRefreshListenerMyIssues = fragmentRefreshListener; }
+	public FragmentRefreshListener getFragmentRefreshListener() {
+		return fragmentRefreshListenerMyIssues;
+	}
+
+	public void setFragmentRefreshListenerMyIssues(FragmentRefreshListener fragmentRefreshListener) {
+		this.fragmentRefreshListenerMyIssues = fragmentRefreshListener;
+	}
+
 }

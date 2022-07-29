@@ -35,7 +35,8 @@ public class MilestonesViewModel extends ViewModel {
 
 	public void loadMilestonesList(String repoOwner, String repoName, String milestoneState, Context ctx) {
 
-		Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx).issueGetMilestonesList(repoOwner, repoName, milestoneState, null, 1, resultLimit);
+		Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx)
+			.issueGetMilestonesList(repoOwner, repoName, milestoneState, null, 1, resultLimit);
 
 		call.enqueue(new Callback<>() {
 
@@ -60,7 +61,8 @@ public class MilestonesViewModel extends ViewModel {
 
 	public void loadMoreMilestones(String repoOwner, String repoName, int page, String milestoneState, Context ctx, MilestonesAdapter adapter) {
 
-		Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx).issueGetMilestonesList(repoOwner, repoName, milestoneState, null, page, resultLimit);
+		Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx)
+			.issueGetMilestonesList(repoOwner, repoName, milestoneState, null, page, resultLimit);
 
 		call.enqueue(new Callback<>() {
 
@@ -93,4 +95,5 @@ public class MilestonesViewModel extends ViewModel {
 			}
 		});
 	}
+
 }

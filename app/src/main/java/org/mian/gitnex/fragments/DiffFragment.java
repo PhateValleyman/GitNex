@@ -29,7 +29,8 @@ public class DiffFragment extends Fragment {
 	private IssueContext issue;
 	private String type;
 
-	public DiffFragment() {}
+	public DiffFragment() {
+	}
 
 	public void setFileDiffView(FileDiffView fileDiffView) {
 		this.fileDiffView = fileDiffView;
@@ -66,9 +67,12 @@ public class DiffFragment extends Fragment {
 		ctx = requireContext();
 
 		if(Objects.equals(type, "pull")) {
-			binding.close.setOnClickListener(v -> requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, ((DiffActivity) requireActivity()).fragment).commit());
-		} else {
-			binding.close.setOnClickListener(v -> requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, CommitDetailFragment.newInstance()).commit());
+			binding.close.setOnClickListener(v -> requireActivity().getSupportFragmentManager().beginTransaction()
+				.replace(R.id.fragment_container, ((DiffActivity) requireActivity()).fragment).commit());
+		}
+		else {
+			binding.close.setOnClickListener(v -> requireActivity().getSupportFragmentManager().beginTransaction()
+				.replace(R.id.fragment_container, CommitDetailFragment.newInstance()).commit());
 		}
 
 		binding.toolbarTitle.setText(fileDiffView.getFileName());
@@ -78,4 +82,5 @@ public class DiffFragment extends Fragment {
 		return binding.getRoot();
 
 	}
+
 }

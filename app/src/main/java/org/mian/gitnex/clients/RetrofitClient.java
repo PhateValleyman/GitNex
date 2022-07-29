@@ -58,35 +58,34 @@ public class RetrofitClient {
 
 		TinyDB tinyDB = TinyDB.getInstance(context);
 
-//		HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-//		logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+		//		HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+		//		logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
 		try {
 
 			SSLContext sslContext = SSLContext.getInstance("TLS");
 
 			MemorizingTrustManager memorizingTrustManager = new MemorizingTrustManager(context);
-			sslContext.init(null, new X509TrustManager[]{ memorizingTrustManager }, new SecureRandom());
+			sslContext.init(null, new X509TrustManager[]{memorizingTrustManager}, new SecureRandom());
 
 			ApiKeyAuth auth = new ApiKeyAuth("header", "Authorization");
 			auth.setApiKey(token);
 			OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder()
-//				.addInterceptor(logging)
-				.addInterceptor(auth)
-				.sslSocketFactory(sslContext.getSocketFactory(), memorizingTrustManager)
+				//				.addInterceptor(logging)
+				.addInterceptor(auth).sslSocketFactory(sslContext.getSocketFactory(), memorizingTrustManager)
 				.hostnameVerifier(memorizingTrustManager.wrapHostnameVerifier(HttpsURLConnection.getDefaultHostnameVerifier()));
 
 			if(cacheEnabled && cacheFile != null) {
 
-				int cacheSize = FilesData.returnOnlyNumberFileSize(tinyDB.getString("cacheSizeStr", context.getString(R.string.cacheSizeDataSelectionSelectedText))) * 1024 * 1024;
+				int cacheSize = FilesData.returnOnlyNumberFileSize(
+					tinyDB.getString("cacheSizeStr", context.getString(R.string.cacheSizeDataSelectionSelectedText))) * 1024 * 1024;
 				Cache cache = new Cache(cacheFile, cacheSize);
 
 				okHttpClient.cache(cache).addInterceptor(chain -> {
 
 					Request request = chain.request();
 
-					request = AppUtil.hasNetworkConnection(context) ?
-						request.newBuilder().header("Cache-Control", "public, max-age=" + 60).build() :
+					request = AppUtil.hasNetworkConnection(context) ? request.newBuilder().header("Cache-Control", "public, max-age=" + 60).build() :
 						request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 30).build();
 
 					return chain.proceed(request);
@@ -94,14 +93,9 @@ public class RetrofitClient {
 				});
 			}
 
-			return new Retrofit.Builder()
-				.baseUrl(instanceUrl)
-				.client(okHttpClient.build())
-				.addConverterFactory(ScalarsConverterFactory.create())
-				.addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-					.create()))
-				.addConverterFactory(DateQueryConverterFactory.create())
-				.build();
+			return new Retrofit.Builder().baseUrl(instanceUrl).client(okHttpClient.build()).addConverterFactory(ScalarsConverterFactory.create())
+				.addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create()))
+				.addConverterFactory(DateQueryConverterFactory.create()).build();
 
 		}
 		catch(Exception e) {
@@ -114,8 +108,7 @@ public class RetrofitClient {
 
 	public static ApiInterface getApiInterface(Context context) {
 		return getApiInterface(context, ((BaseActivity) context).getAccount().getAccount().getInstanceUrl(),
-			((BaseActivity) context).getAccount().getAuthorization(),
-			((BaseActivity) context).getAccount().getCacheDir(context));
+			((BaseActivity) context).getAccount().getAuthorization(), ((BaseActivity) context).getAccount().getCacheDir(context));
 	}
 
 	public static WebApi getWebInterface(Context context) {
@@ -123,7 +116,8 @@ public class RetrofitClient {
 		String instanceUrl = ((BaseActivity) context).getAccount().getAccount().getInstanceUrl();
 		instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
 
-		return getWebInterface(context, instanceUrl, ((BaseActivity) context).getAccount().getWebAuthorization(), ((BaseActivity) context).getAccount().getCacheDir(context));
+		return getWebInterface(context, instanceUrl, ((BaseActivity) context).getAccount().getWebAuthorization(),
+			((BaseActivity) context).getAccount().getCacheDir(context));
 
 	}
 
@@ -134,7 +128,8 @@ public class RetrofitClient {
 			synchronized(RetrofitClient.class) {
 				if(!apiInterfaces.containsKey(key)) {
 
-					ApiInterface apiInterface = Objects.requireNonNull(createRetrofit(context, url, true, token, cacheFile)).create(ApiInterface.class);
+					ApiInterface apiInterface = Objects.requireNonNull(createRetrofit(context, url, true, token, cacheFile))
+						.create(ApiInterface.class);
 					apiInterfaces.put(key, apiInterface);
 
 					return apiInterface;
@@ -165,23 +160,26 @@ public class RetrofitClient {
 
 	}
 
-	public interface ApiInterface extends AdminApi, OrganizationApi, IssueApi, RepositoryApi, MiscellaneousApi, NotificationApi,
-		UserApi, SettingsApi, OTPApi, CustomApi, PackageApi {}
+	public interface ApiInterface extends AdminApi, OrganizationApi, IssueApi, RepositoryApi, MiscellaneousApi, NotificationApi, UserApi, SettingsApi, OTPApi, CustomApi, PackageApi {
+
+	}
 
 	private static class DateQueryConverterFactory extends Converter.Factory {
+
 		public static DateQueryConverterFactory create() {
 			return new DateQueryConverterFactory();
 		}
 
 		@Override
 		public Converter<?, String> stringConverter(@NotNull Type type, @NotNull Annotation[] annotations, @NotNull Retrofit retrofit) {
-			if (type == Date.class) {
+			if(type == Date.class) {
 				return DateQueryConverter.INSTANCE;
 			}
 			return null;
 		}
 
 		private static final class DateQueryConverter implements Converter<Date, String> {
+
 			static final DateQueryConverter INSTANCE = new DateQueryConverter();
 
 			private static final ThreadLocal<DateFormat> DF = new ThreadLocal<>() {
@@ -197,7 +195,9 @@ public class RetrofitClient {
 			public String convert(@NotNull Date date) {
 				return Objects.requireNonNull(DF.get()).format(date);
 			}
+
 		}
+
 	}
 
 }

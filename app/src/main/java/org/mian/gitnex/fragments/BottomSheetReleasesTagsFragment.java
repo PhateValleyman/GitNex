@@ -52,4 +52,5 @@ public class BottomSheetReleasesTagsFragment extends BottomSheetDialogFragment {
 
 		return binding.getRoot();
 	}
+
 }

@@ -31,10 +31,10 @@ import retrofit2.Response;
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder> {
 
-    private List<Tag> tags;
-    private final Context context;
-    private final String repo;
-    private final String owner;
+	private List<Tag> tags;
+	private final Context context;
+	private final String repo;
+	private final String owner;
 	private final FragmentRefreshListener startDownload;
 	private final FragmentReleasesBinding fragmentReleasesBinding;
 	private OnLoadMoreListener loadMoreListener;
@@ -43,110 +43,111 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 	protected class TagsViewHolder extends RecyclerView.ViewHolder {
 
 		private Tag tagsHolder;
-        private final TextView tagName;
-        private final TextView tagBody;
-        private final LinearLayout downloadCopyFrame;
-        private final LinearLayout downloads;
+		private final TextView tagName;
+		private final TextView tagBody;
+		private final LinearLayout downloadCopyFrame;
+		private final LinearLayout downloads;
 		private final LinearLayout releaseZipDownloadFrame;
 		private final LinearLayout releaseTarDownloadFrame;
-	    private final ImageView downloadDropdownIcon;
-	    private final ImageView options;
+		private final ImageView downloadDropdownIcon;
+		private final ImageView options;
 
-        private TagsViewHolder(View itemView) {
+		private TagsViewHolder(View itemView) {
 
-            super(itemView);
+			super(itemView);
 
-	        tagName = itemView.findViewById(R.id.tagName);
-	        tagBody = itemView.findViewById(R.id.tagBodyContent);
-	        downloadCopyFrame = itemView.findViewById(R.id.downloadCopyFrame);
-	        downloads = itemView.findViewById(R.id.downloads);
-	        releaseZipDownloadFrame = itemView.findViewById(R.id.releaseZipDownloadFrame);
-	        releaseTarDownloadFrame = itemView.findViewById(R.id.releaseTarDownloadFrame);
-	        downloadDropdownIcon = itemView.findViewById(R.id.downloadDropdownIcon);
-	        options = itemView.findViewById(R.id.tagsOptionsMenu);
+			tagName = itemView.findViewById(R.id.tagName);
+			tagBody = itemView.findViewById(R.id.tagBodyContent);
+			downloadCopyFrame = itemView.findViewById(R.id.downloadCopyFrame);
+			downloads = itemView.findViewById(R.id.downloads);
+			releaseZipDownloadFrame = itemView.findViewById(R.id.releaseZipDownloadFrame);
+			releaseTarDownloadFrame = itemView.findViewById(R.id.releaseTarDownloadFrame);
+			downloadDropdownIcon = itemView.findViewById(R.id.downloadDropdownIcon);
+			options = itemView.findViewById(R.id.tagsOptionsMenu);
 
-	        options.setOnClickListener(v -> {
-		        final Context context = v.getContext();
+			options.setOnClickListener(v -> {
+				final Context context = v.getContext();
 
-		        @SuppressLint("InflateParams")
-		        View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_tag_in_list, null);
+				@SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_tag_in_list, null);
 
-		        TextView delete = view.findViewById(R.id.tagMenuDelete);
+				TextView delete = view.findViewById(R.id.tagMenuDelete);
 
-		        BottomSheetDialog dialog = new BottomSheetDialog(context);
-		        dialog.setContentView(view);
-		        dialog.show();
+				BottomSheetDialog dialog = new BottomSheetDialog(context);
+				dialog.setContentView(view);
+				dialog.show();
 
-		        delete.setOnClickListener(v1 -> {
-			        tagDeleteDialog(context, tagsHolder.getName(), owner, repo, getBindingAdapterPosition());
-			        dialog.dismiss();
-		        });
-	        });
-        }
-    }
+				delete.setOnClickListener(v1 -> {
+					tagDeleteDialog(context, tagsHolder.getName(), owner, repo, getBindingAdapterPosition());
+					dialog.dismiss();
+				});
+			});
+		}
 
-    public TagsAdapter(Context ctx, List<Tag> releasesMain, String repoOwner, String repoName, FragmentRefreshListener startDownload, FragmentReleasesBinding fragmentReleasesBinding) {
-        this.context = ctx;
-        this.tags = releasesMain;
-        owner = repoOwner;
-        repo = repoName;
+	}
+
+	public TagsAdapter(Context ctx, List<Tag> releasesMain, String repoOwner, String repoName, FragmentRefreshListener startDownload,
+		FragmentReleasesBinding fragmentReleasesBinding) {
+		this.context = ctx;
+		this.tags = releasesMain;
+		owner = repoOwner;
+		repo = repoName;
 		this.startDownload = startDownload;
 		this.fragmentReleasesBinding = fragmentReleasesBinding;
-    }
+	}
 
-    @NonNull
-    @Override
-    public TagsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_tags, parent, false);
-        return new TagsViewHolder(v);
-    }
+	@NonNull
+	@Override
+	public TagsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_tags, parent, false);
+		return new TagsViewHolder(v);
+	}
 
-    @Override
-    public void onBindViewHolder(@NonNull TagsViewHolder holder, int position) {
+	@Override
+	public void onBindViewHolder(@NonNull TagsViewHolder holder, int position) {
 
-	    Tag currentItem = tags.get(position);
-	    holder.tagsHolder = currentItem;
+		Tag currentItem = tags.get(position);
+		holder.tagsHolder = currentItem;
 
-	    holder.tagName.setText(currentItem.getName());
+		holder.tagName.setText(currentItem.getName());
 
-        if(!currentItem.getMessage().equals("")) {
-	        Markdown.render(context, currentItem.getMessage(), holder.tagBody);
-        }
-        else {
-	        holder.tagBody.setVisibility(View.GONE);
-        }
+		if(!currentItem.getMessage().equals("")) {
+			Markdown.render(context, currentItem.getMessage(), holder.tagBody);
+		}
+		else {
+			holder.tagBody.setVisibility(View.GONE);
+		}
 
-	    holder.downloadCopyFrame.setOnClickListener(v -> {
+		holder.downloadCopyFrame.setOnClickListener(v -> {
 
-		    if(holder.downloads.getVisibility() == View.GONE) {
+			if(holder.downloads.getVisibility() == View.GONE) {
 
-			    holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_down);
-			    holder.downloads.setVisibility(View.VISIBLE);
-		    }
-		    else {
+				holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_down);
+				holder.downloads.setVisibility(View.VISIBLE);
+			}
+			else {
 
-			    holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_right);
-			    holder.downloads.setVisibility(View.GONE);
-		    }
-	    });
+				holder.downloadDropdownIcon.setImageResource(R.drawable.ic_chevron_right);
+				holder.downloads.setVisibility(View.GONE);
+			}
+		});
 
-	    if(!((RepoDetailActivity) context).repository.getPermissions().isPush()) {
-            holder.options.setVisibility(View.GONE);
-        }
+		if(!((RepoDetailActivity) context).repository.getPermissions().isPush()) {
+			holder.options.setVisibility(View.GONE);
+		}
 
-	    holder.releaseZipDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
-	    holder.releaseTarDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
+		holder.releaseZipDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getZipballUrl()));
+		holder.releaseTarDownloadFrame.setOnClickListener(v -> startDownload.onRefresh(currentItem.getTarballUrl()));
 
-	    if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
-		    isLoading = true;
-		    loadMoreListener.onLoadMore();
-	    }
-    }
+		if(position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
+			isLoading = true;
+			loadMoreListener.onLoadMore();
+		}
+	}
 
-    @Override
-    public int getItemCount() {
-        return tags.size();
-    }
+	@Override
+	public int getItemCount() {
+		return tags.size();
+	}
 
 	public void setMoreDataAvailable(boolean moreDataAvailable) {
 		isMoreDataAvailable = moreDataAvailable;
@@ -163,8 +164,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 	}
 
 	public interface OnLoadMoreListener {
+
 		void onLoadMore();
+
 		void onLoadFinished();
+
 	}
 
 	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
@@ -184,12 +188,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
 	private void tagDeleteDialog(final Context context, final String tagName, final String owner, final String repo, int position) {
 
-		new AlertDialog.Builder(context)
-			.setTitle(String.format(context.getString(R.string.deleteGenericTitle), tagName))
-			.setMessage(R.string.deleteTagConfirmation)
-			.setIcon(R.drawable.ic_delete)
-			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient
-				.getApiInterface(context).repoDeleteTag(owner, repo, tagName).enqueue(new Callback<>() {
+		new AlertDialog.Builder(context).setTitle(String.format(context.getString(R.string.deleteGenericTitle), tagName))
+			.setMessage(R.string.deleteTagConfirmation).setIcon(R.drawable.ic_delete).setPositiveButton(R.string.menuDeleteText,
+				(dialog, whichButton) -> RetrofitClient.getApiInterface(context).repoDeleteTag(owner, repo, tagName).enqueue(new Callback<>() {
 
 					@Override
 					public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
@@ -217,7 +218,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
 						Toasty.error(context, context.getString(R.string.genericError));
 					}
-				}))
-			.setNeutralButton(R.string.cancelButton, null).show();
+				})).setNeutralButton(R.string.cancelButton, null).show();
 	}
+
 }

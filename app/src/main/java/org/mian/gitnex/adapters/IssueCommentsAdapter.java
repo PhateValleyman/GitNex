@@ -57,7 +57,8 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 	private final Locale locale;
 	private final IssueContext issue;
 
-	public IssueCommentsAdapter(Context ctx, Bundle bundle, List<Comment> issuesCommentsMain, FragmentManager fragmentManager, Runnable onInteractedListener, IssueContext issue) {
+	public IssueCommentsAdapter(Context ctx, Bundle bundle, List<Comment> issuesCommentsMain, FragmentManager fragmentManager,
+		Runnable onInteractedListener, IssueContext issue) {
 
 		this.context = ctx;
 		this.bundle = bundle;
@@ -232,6 +233,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 				return true;
 			});
 		}
+
 	}
 
 	private void updateAdapter(int position) {
@@ -243,9 +245,8 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 
 	private void deleteIssueComment(final Context ctx, final int commentId, int position) {
 
-		Call<Void> call = RetrofitClient
-				.getApiInterface(ctx)
-				.issueDeleteComment(issue.getRepository().getOwner(), issue.getRepository().getName(), (long) commentId);
+		Call<Void> call = RetrofitClient.getApiInterface(ctx)
+			.issueDeleteComment(issue.getRepository().getOwner(), issue.getRepository().getName(), (long) commentId);
 
 		call.enqueue(new Callback<Void>() {
 
@@ -293,6 +294,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_issue_comments, parent, false);
 		return new IssueCommentsAdapter.IssueCommentViewHolder(v);
 	}
+
 	@Override
 	public void onBindViewHolder(@NonNull IssueCommentsAdapter.IssueCommentViewHolder holder, int position) {
 
@@ -305,13 +307,9 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 		holder.issueComment = issueComment;
 		holder.author.setText(issueComment.getUser().getLogin());
 
-		PicassoService.getInstance(context).get()
-			.load(issueComment.getUser().getAvatarUrl())
-			.placeholder(R.drawable.loader_animated)
+		PicassoService.getInstance(context).get().load(issueComment.getUser().getAvatarUrl()).placeholder(R.drawable.loader_animated)
 			.transform(new RoundedTransformation(imgRadius, 0))
-			.resize(AppUtil.getPixelsFromDensity(context, 35), AppUtil.getPixelsFromDensity(context, 35))
-			.centerCrop()
-			.into(holder.avatar);
+			.resize(AppUtil.getPixelsFromDensity(context, 35), AppUtil.getPixelsFromDensity(context, 35)).centerCrop().into(holder.avatar);
 
 		Markdown.render(context, EmojiParser.parseToUnicode(issueComment.getBody()), holder.comment, issue.getRepository());
 

@@ -20,7 +20,8 @@ public class DraftsApi extends BaseApi {
 		draftsDao = gitnexDatabase.draftsDao();
 	}
 
-	public long insertDraft(int repositoryId, int draftAccountId, int issueId, String draftText, String draftType, String commentId, String issueType) {
+	public long insertDraft(int repositoryId, int draftAccountId, int issueId, String draftText, String draftType, String commentId,
+		String issueType) {
 
 		Draft draft = new Draft();
 		draft.setDraftRepositoryId(repositoryId);

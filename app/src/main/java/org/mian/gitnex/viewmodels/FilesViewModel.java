@@ -25,80 +25,82 @@ import retrofit2.Response;
 
 public class FilesViewModel extends ViewModel {
 
-    private MutableLiveData<List<ContentsResponse>> filesList;
-    private MutableLiveData<List<ContentsResponse>> filesList2;
+	private MutableLiveData<List<ContentsResponse>> filesList;
+	private MutableLiveData<List<ContentsResponse>> filesList2;
 
-    public LiveData<List<ContentsResponse>> getFilesList(String owner, String repo, String ref, Context ctx, ProgressBar progressBar, TextView noDataFiles) {
+	public LiveData<List<ContentsResponse>> getFilesList(String owner, String repo, String ref, Context ctx, ProgressBar progressBar,
+		TextView noDataFiles) {
 
-        filesList = new MutableLiveData<>();
-        loadFilesList(owner, repo, ref, ctx, progressBar, noDataFiles);
+		filesList = new MutableLiveData<>();
+		loadFilesList(owner, repo, ref, ctx, progressBar, noDataFiles);
 
-        return filesList;
-    }
+		return filesList;
+	}
 
-    private void loadFilesList(String owner, String repo, String ref, final Context ctx, ProgressBar progressBar, TextView noDataFiles) {
+	private void loadFilesList(String owner, String repo, String ref, final Context ctx, ProgressBar progressBar, TextView noDataFiles) {
 
-        Call<List<ContentsResponse>> call = RetrofitClient
-                .getApiInterface(ctx)
-                .repoGetContentsList(owner, repo, ref);
+		Call<List<ContentsResponse>> call = RetrofitClient.getApiInterface(ctx).repoGetContentsList(owner, repo, ref);
 
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<List<ContentsResponse>> call, @NonNull Response<List<ContentsResponse>> response) {
+		call.enqueue(new Callback<>() {
 
-		        if(response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-			        Collections.sort(response.body(), Comparator.comparing(ContentsResponse::getType));
-			        filesList.postValue(response.body());
-		        }
-		        else {
-			        progressBar.setVisibility(View.GONE);
-			        noDataFiles.setVisibility(View.VISIBLE);
-			        Toasty.error(ctx, ctx.getString(R.string.genericError));
-		        }
-	        }
+			@Override
+			public void onResponse(@NonNull Call<List<ContentsResponse>> call, @NonNull Response<List<ContentsResponse>> response) {
 
-	        @Override
-	        public void onFailure(@NonNull Call<List<ContentsResponse>> call, @NonNull Throwable t) {
+				if(response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+					Collections.sort(response.body(), Comparator.comparing(ContentsResponse::getType));
+					filesList.postValue(response.body());
+				}
+				else {
+					progressBar.setVisibility(View.GONE);
+					noDataFiles.setVisibility(View.VISIBLE);
+					Toasty.error(ctx, ctx.getString(R.string.genericError));
+				}
+			}
 
-		        Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
-	        }
-        });
-    }
+			@Override
+			public void onFailure(@NonNull Call<List<ContentsResponse>> call, @NonNull Throwable t) {
 
-    public LiveData<List<ContentsResponse>> getFilesList2(String owner, String repo, String filesDir, String ref, Context ctx, ProgressBar progressBar, TextView noDataFiles) {
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
+			}
+		});
+	}
 
-        filesList2 = new MutableLiveData<>();
-        loadFilesList2(owner, repo, filesDir, ref, ctx, progressBar, noDataFiles);
+	public LiveData<List<ContentsResponse>> getFilesList2(String owner, String repo, String filesDir, String ref, Context ctx,
+		ProgressBar progressBar, TextView noDataFiles) {
 
-        return filesList2;
-    }
+		filesList2 = new MutableLiveData<>();
+		loadFilesList2(owner, repo, filesDir, ref, ctx, progressBar, noDataFiles);
 
-    private void loadFilesList2(String owner, String repo, String filesDir, String ref, final Context ctx, ProgressBar progressBar, TextView noDataFiles) {
+		return filesList2;
+	}
 
-        Call<List<ContentsResponse>> call = RetrofitClient
-                .getApiInterface(ctx)
-                .repoGetContentsList(owner, repo, filesDir, ref);
+	private void loadFilesList2(String owner, String repo, String filesDir, String ref, final Context ctx, ProgressBar progressBar,
+		TextView noDataFiles) {
 
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<List<ContentsResponse>> call, @NonNull Response<List<ContentsResponse>> response) {
+		Call<List<ContentsResponse>> call = RetrofitClient.getApiInterface(ctx).repoGetContentsList(owner, repo, filesDir, ref);
 
-		        if(response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-			        Collections.sort(response.body(), Comparator.comparing(ContentsResponse::getType));
-			        filesList2.postValue(response.body());
-		        }
-		        else {
-			        progressBar.setVisibility(View.GONE);
-			        noDataFiles.setVisibility(View.VISIBLE);
-			        Toasty.error(ctx, ctx.getString(R.string.genericError));
-		        }
-	        }
+		call.enqueue(new Callback<>() {
 
-	        @Override
-	        public void onFailure(@NonNull Call<List<ContentsResponse>> call, @NonNull Throwable t) {
+			@Override
+			public void onResponse(@NonNull Call<List<ContentsResponse>> call, @NonNull Response<List<ContentsResponse>> response) {
 
-		        Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
-	        }
-        });
-    }
+				if(response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+					Collections.sort(response.body(), Comparator.comparing(ContentsResponse::getType));
+					filesList2.postValue(response.body());
+				}
+				else {
+					progressBar.setVisibility(View.GONE);
+					noDataFiles.setVisibility(View.VISIBLE);
+					Toasty.error(ctx, ctx.getString(R.string.genericError));
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<List<ContentsResponse>> call, @NonNull Throwable t) {
+
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
+			}
+		});
+	}
+
 }

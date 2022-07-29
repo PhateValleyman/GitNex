@@ -31,119 +31,118 @@ import retrofit2.Response;
 
 public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
-    private View.OnClickListener onClickListener;
-    private TextView addCollaboratorSearch;
-    private TextView noData;
-    private ProgressBar mProgressBar;
+	private View.OnClickListener onClickListener;
+	private TextView addCollaboratorSearch;
+	private TextView noData;
+	private ProgressBar mProgressBar;
 
-    private RecyclerView mRecyclerView;
-    private RepositoryContext repository;
+	private RecyclerView mRecyclerView;
+	private RepositoryContext repository;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);
 
-	    ActivityAddCollaboratorToRepositoryBinding activityAddCollaboratorToRepositoryBinding = ActivityAddCollaboratorToRepositoryBinding.inflate(getLayoutInflater());
+		ActivityAddCollaboratorToRepositoryBinding activityAddCollaboratorToRepositoryBinding = ActivityAddCollaboratorToRepositoryBinding.inflate(
+			getLayoutInflater());
 		setContentView(activityAddCollaboratorToRepositoryBinding.getRoot());
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        ImageView closeActivity = activityAddCollaboratorToRepositoryBinding.close;
-        addCollaboratorSearch = activityAddCollaboratorToRepositoryBinding.addCollaboratorSearch;
-        mRecyclerView = activityAddCollaboratorToRepositoryBinding.recyclerViewUserSearch;
-        mProgressBar = activityAddCollaboratorToRepositoryBinding.progressBar;
-        noData = activityAddCollaboratorToRepositoryBinding.noData;
+		ImageView closeActivity = activityAddCollaboratorToRepositoryBinding.close;
+		addCollaboratorSearch = activityAddCollaboratorToRepositoryBinding.addCollaboratorSearch;
+		mRecyclerView = activityAddCollaboratorToRepositoryBinding.recyclerViewUserSearch;
+		mProgressBar = activityAddCollaboratorToRepositoryBinding.progressBar;
+		noData = activityAddCollaboratorToRepositoryBinding.noData;
 
-        repository = RepositoryContext.fromIntent(getIntent());
+		repository = RepositoryContext.fromIntent(getIntent());
 
-        addCollaboratorSearch.requestFocus();
-        assert imm != null;
-        imm.showSoftInput(addCollaboratorSearch, InputMethodManager.SHOW_IMPLICIT);
+		addCollaboratorSearch.requestFocus();
+		assert imm != null;
+		imm.showSoftInput(addCollaboratorSearch, InputMethodManager.SHOW_IMPLICIT);
 
-        initCloseListener();
-        closeActivity.setOnClickListener(onClickListener);
+		initCloseListener();
+		closeActivity.setOnClickListener(onClickListener);
 
-        addCollaboratorSearch.setOnEditorActionListener((v, actionId, event) -> {
+		addCollaboratorSearch.setOnEditorActionListener((v, actionId, event) -> {
 
-            if (actionId == EditorInfo.IME_ACTION_SEND) {
+			if(actionId == EditorInfo.IME_ACTION_SEND) {
 
-                if(!addCollaboratorSearch.getText().toString().equals("")) {
+				if(!addCollaboratorSearch.getText().toString().equals("")) {
 
-	                mProgressBar.setVisibility(View.VISIBLE);
-                    loadUserSearchList(addCollaboratorSearch.getText().toString());
-                }
-            }
+					mProgressBar.setVisibility(View.VISIBLE);
+					loadUserSearchList(addCollaboratorSearch.getText().toString());
+				}
+			}
 
-            return false;
+			return false;
 
-        });
+		});
 
-    }
+	}
 
-    public void loadUserSearchList(String searchKeyword) {
+	public void loadUserSearchList(String searchKeyword) {
 
-        Call<InlineResponse2001> call = RetrofitClient
-                .getApiInterface(ctx)
-                .userSearch(searchKeyword, null, 1, 10);
+		Call<InlineResponse2001> call = RetrofitClient.getApiInterface(ctx).userSearch(searchKeyword, null, 1, 10);
 
-        call.enqueue(new Callback<>() {
+		call.enqueue(new Callback<>() {
 
-            @Override
-            public void onResponse(@NonNull Call<InlineResponse2001> call, @NonNull Response<InlineResponse2001> response) {
+			@Override
+			public void onResponse(@NonNull Call<InlineResponse2001> call, @NonNull Response<InlineResponse2001> response) {
 
-		        mProgressBar.setVisibility(View.GONE);
+				mProgressBar.setVisibility(View.GONE);
 
-		        if(response.isSuccessful()) {
+				if(response.isSuccessful()) {
 
-			        assert response.body() != null;
-			        getUsersList(response.body().getData(), ctx);
-		        }
-		        else {
+					assert response.body() != null;
+					getUsersList(response.body().getData(), ctx);
+				}
+				else {
 
-			        Toasty.error(ctx, ctx.getString(R.string.genericError));
-		        }
-	        }
+					Toasty.error(ctx, ctx.getString(R.string.genericError));
+				}
+			}
 
-            @Override
-            public void onFailure(@NonNull Call<InlineResponse2001> call, @NonNull Throwable t) {
-		        Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
-	        }
-        });
-    }
+			@Override
+			public void onFailure(@NonNull Call<InlineResponse2001> call, @NonNull Throwable t) {
+				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
+			}
+		});
+	}
 
-    private void getUsersList(List<User> dataList, Context context) {
+	private void getUsersList(List<User> dataList, Context context) {
 
-        CollaboratorSearchAdapter adapter = new CollaboratorSearchAdapter(dataList, context, repository);
+		CollaboratorSearchAdapter adapter = new CollaboratorSearchAdapter(dataList, context, repository);
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
+		mRecyclerView.setHasFixedSize(true);
+		mRecyclerView.setLayoutManager(new LinearLayoutManager(ctx));
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+		mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        mProgressBar.setVisibility(View.VISIBLE);
+		mProgressBar.setVisibility(View.VISIBLE);
 
-        if(adapter.getItemCount() > 0) {
+		if(adapter.getItemCount() > 0) {
 
-            mRecyclerView.setAdapter(adapter);
-            noData.setVisibility(View.GONE);
-        }
-        else {
+			mRecyclerView.setAdapter(adapter);
+			noData.setVisibility(View.GONE);
+		}
+		else {
 
-            noData.setVisibility(View.VISIBLE);
-        }
+			noData.setVisibility(View.VISIBLE);
+		}
 
-	    mProgressBar.setVisibility(View.GONE);
-    }
+		mProgressBar.setVisibility(View.GONE);
+	}
 
-    private void initCloseListener() {
-        onClickListener = view -> finish();
-    }
+	private void initCloseListener() {
+		onClickListener = view -> finish();
+	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		repository.checkAccountSwitch(this);
 	}
+
 }

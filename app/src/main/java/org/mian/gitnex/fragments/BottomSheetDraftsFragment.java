@@ -44,7 +44,7 @@ public class BottomSheetDraftsFragment extends BottomSheetDialogFragment {
 		try {
 			bmListener = (BottomSheetListener) context;
 		}
-		catch (ClassCastException e) {
+		catch(ClassCastException e) {
 			Log.e(TAG, e.toString());
 		}
 	}

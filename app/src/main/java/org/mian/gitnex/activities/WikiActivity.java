@@ -105,8 +105,7 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 		createWikiPageOptions.setTitle(wikiTitle);
 		createWikiPageOptions.setContentBase64(AppUtil.encodeBase64(wikiContent));
 
-		Call<WikiPage> call = RetrofitClient
-			.getApiInterface(ctx)
+		Call<WikiPage> call = RetrofitClient.getApiInterface(ctx)
 			.repoCreateWikiPage(repository.getOwner(), repository.getName(), createWikiPageOptions);
 
 		call.enqueue(new Callback<>() {
@@ -155,8 +154,7 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 		createWikiPageOptions.setTitle(wikiTitle);
 		createWikiPageOptions.setContentBase64(AppUtil.encodeBase64(wikiContent));
 
-		Call<WikiPage> call = RetrofitClient
-			.getApiInterface(ctx)
+		Call<WikiPage> call = RetrofitClient.getApiInterface(ctx)
 			.repoEditWikiPage(repository.getOwner(), repository.getName(), pageName, createWikiPageOptions);
 
 		call.enqueue(new Callback<>() {
@@ -201,9 +199,7 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 
 	private void getWikiPageContents() {
 
-		Call<WikiPage> call = RetrofitClient
-			.getApiInterface(ctx)
-			.repoGetWikiPage(repository.getOwner(), repository.getName(), pageName);
+		Call<WikiPage> call = RetrofitClient.getApiInterface(ctx).repoGetWikiPage(repository.getOwner(), repository.getName(), pageName);
 
 		call.enqueue(new Callback<>() {
 
@@ -269,12 +265,10 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 
 	private void deleteWiki(final String owner, final String repo, final String pageName) {
 
-		new AlertDialog.Builder(ctx)
-			.setTitle(String.format(ctx.getString(R.string.deleteGenericTitle), pageName))
-			.setMessage(ctx.getString(R.string.deleteWikiPageMessage, pageName))
-			.setIcon(R.drawable.ic_delete)
-			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient
-				.getApiInterface(ctx).repoDeleteWikiPage(owner, repo, pageName).enqueue(new Callback<>() {
+		new AlertDialog.Builder(ctx).setTitle(String.format(ctx.getString(R.string.deleteGenericTitle), pageName))
+			.setMessage(ctx.getString(R.string.deleteWikiPageMessage, pageName)).setIcon(R.drawable.ic_delete)
+			.setPositiveButton(R.string.menuDeleteText,
+				(dialog, whichButton) -> RetrofitClient.getApiInterface(ctx).repoDeleteWikiPage(owner, repo, pageName).enqueue(new Callback<>() {
 
 					@Override
 					public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
@@ -297,8 +291,7 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 
 						Toasty.error(ctx, ctx.getString(R.string.genericError));
 					}
-				}))
-			.setNeutralButton(R.string.cancelButton, null).show();
+				})).setNeutralButton(R.string.cancelButton, null).show();
 	}
 
 	@Override
@@ -361,8 +354,9 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 
 			if(action.equalsIgnoreCase("edit") || action.equalsIgnoreCase("add")) {
 				if(renderMd) {
-					Markdown.render(ctx, EmojiParser.parseToUnicode(String.valueOf(
-						Objects.requireNonNull(binding.contentLayout.getEditText()).getText())), binding.markdownPreview, repository);
+					Markdown.render(ctx,
+						EmojiParser.parseToUnicode(String.valueOf(Objects.requireNonNull(binding.contentLayout.getEditText()).getText())),
+						binding.markdownPreview, repository);
 
 					binding.markdownPreview.setVisibility(View.VISIBLE);
 					binding.contentLayout.setVisibility(View.GONE);
@@ -401,4 +395,5 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+
 }

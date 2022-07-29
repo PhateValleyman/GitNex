@@ -45,16 +45,16 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 
 			itemView.setOnClickListener(taskInfo -> {
 				String[] repoSplit = repoName.split("/");
-				new AlertDialog.Builder(ctx)
-					.setTitle(repoName).setMessage(ctx.getString(R.string.unadoptedReposMessage, repoSplit[1], repoSplit[0]))
-					.setNeutralButton(R.string.close, null)
-					.setPositiveButton(R.string.menuDeleteText, ((dialog, which) -> delete(ctx, repoName)))
+				new AlertDialog.Builder(ctx).setTitle(repoName).setMessage(ctx.getString(R.string.unadoptedReposMessage, repoSplit[1], repoSplit[0]))
+					.setNeutralButton(R.string.close, null).setPositiveButton(R.string.menuDeleteText, ((dialog, which) -> delete(ctx, repoName)))
 					.setNegativeButton(R.string.adoptRepo, ((dialog, which) -> adopt(ctx, repoName, getBindingAdapterPosition()))).show();
 			});
 		}
+
 	}
 
-	public AdminUnadoptedReposAdapter(List<String> list, Runnable updateList, Runnable loadMore, ActivityAdminCronTasksBinding activityAdminCronTasksBinding) {
+	public AdminUnadoptedReposAdapter(List<String> list, Runnable updateList, Runnable loadMore,
+		ActivityAdminCronTasksBinding activityAdminCronTasksBinding) {
 		this.repos = list;
 		this.updateList = updateList;
 		this.loadMoreListener = loadMore;
@@ -92,9 +92,7 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 
 		String[] repoSplit = name.split("/");
 
-		Call<Void> call = RetrofitClient
-			.getApiInterface(ctx)
-			.adminDeleteUnadoptedRepository(repoSplit[0], repoSplit[1]);
+		Call<Void> call = RetrofitClient.getApiInterface(ctx).adminDeleteUnadoptedRepository(repoSplit[0], repoSplit[1]);
 
 		call.enqueue(new Callback<>() {
 
@@ -138,9 +136,7 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 
 		String[] repoSplit = name.split("/");
 
-		Call<Void> call = RetrofitClient
-			.getApiInterface(ctx)
-			.adminAdoptRepository(repoSplit[0], repoSplit[1]);
+		Call<Void> call = RetrofitClient.getApiInterface(ctx).adminAdoptRepository(repoSplit[0], repoSplit[1]);
 
 		call.enqueue(new Callback<>() {
 
@@ -198,4 +194,5 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 		this.hasMore = hasMore;
 		isLoading = false;
 	}
+
 }

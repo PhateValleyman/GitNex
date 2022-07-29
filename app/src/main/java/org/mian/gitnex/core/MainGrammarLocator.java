@@ -18,7 +18,8 @@ public class MainGrammarLocator implements GrammarLocator {
 	private static final DefaultGrammarLocator defaultGrammarLocator = new DefaultGrammarLocator();
 	private static volatile MainGrammarLocator instance;
 
-	private MainGrammarLocator() {}
+	private MainGrammarLocator() {
+	}
 
 	public String fromExtension(String extension) {
 

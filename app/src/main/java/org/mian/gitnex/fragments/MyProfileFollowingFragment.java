@@ -76,10 +76,9 @@ public class MyProfileFollowingFragment extends Fragment {
 
 	private void loadInitial(int resultLimit) {
 
-		Call<List<User>> call = RetrofitClient
-			.getApiInterface(context)
-			.userCurrentListFollowing(1, resultLimit);
+		Call<List<User>> call = RetrofitClient.getApiInterface(context).userCurrentListFollowing(1, resultLimit);
 		call.enqueue(new Callback<List<User>>() {
+
 			@Override
 			public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
 				if(response.isSuccessful()) {
@@ -115,9 +114,9 @@ public class MyProfileFollowingFragment extends Fragment {
 	private void loadMore(int resultLimit, int page) {
 
 		viewBinding.progressBar.setVisibility(View.VISIBLE);
-		Call<List<User>> call = RetrofitClient.getApiInterface(context)
-			.userCurrentListFollowing(page, resultLimit);
+		Call<List<User>> call = RetrofitClient.getApiInterface(context).userCurrentListFollowing(page, resultLimit);
 		call.enqueue(new Callback<List<User>>() {
+
 			@Override
 			public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
 				if(response.isSuccessful()) {
@@ -145,4 +144,5 @@ public class MyProfileFollowingFragment extends Fragment {
 			}
 		});
 	}
+
 }

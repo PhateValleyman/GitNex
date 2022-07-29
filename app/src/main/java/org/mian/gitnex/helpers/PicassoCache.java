@@ -39,7 +39,8 @@ public class PicassoCache implements Cache {
 
 		TinyDB tinyDb = TinyDB.getInstance(ctx);
 
-		CACHE_SIZE = FilesData.returnOnlyNumberFileSize(tinyDb.getString("cacheSizeImagesStr", ctx.getString(R.string.cacheSizeImagesSelectionSelectedText))) * 1024 * 1024;
+		CACHE_SIZE = FilesData.returnOnlyNumberFileSize(
+			tinyDb.getString("cacheSizeImagesStr", ctx.getString(R.string.cacheSizeImagesSelectionSelectedText))) * 1024 * 1024;
 		this.cachePath = cachePath;
 		cacheMap = new HashMap<>();
 		this.ctx = ctx;
@@ -148,7 +149,7 @@ public class PicassoCache implements Cache {
 			int len = Math.min(keyPrefix.length(), key.length());
 			boolean match = true;
 
-			for(int i=0; i<len; i++) {
+			for(int i = 0; i < len; i++) {
 
 				if(key.charAt(i) != keyPrefix.charAt(i)) {
 
