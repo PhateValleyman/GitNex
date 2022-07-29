@@ -89,8 +89,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web"
-            android:textColorLink="@color/lightBlue"
-            android:textColor="?attr/primaryTextColor" />
+            android:textColor="?attr/primaryTextColor"
+            android:textColorLink="@color/lightBlue" />
 
     </LinearLayout>
 

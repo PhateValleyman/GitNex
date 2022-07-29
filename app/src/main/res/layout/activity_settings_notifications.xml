@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        app:elevation="0dp"
-        android:theme="@style/Widget.AppCompat.SearchView">
+        android:theme="@style/Widget.AppCompat.SearchView"
+        app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -29,11 +29,11 @@
                 android:layout_height="@dimen/close_button_size"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:contentDescription="@string/close"
-                android:gravity="center_vertical"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:focusable="true"
                 android:clickable="true"
+                android:contentDescription="@string/close"
+                android:focusable="true"
+                android:gravity="center_vertical"
                 android:src="@drawable/ic_close" />
 
             <TextView
@@ -54,10 +54,10 @@
         android:id="@+id/enableNotificationsFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/enableNotificationsHeader"
@@ -87,10 +87,10 @@
         android:id="@+id/pollingDelayFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/pollingDelayHeaderSelector"
@@ -118,10 +118,10 @@
         android:id="@+id/enableLightsFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/enableLightsHeader"
@@ -151,10 +151,10 @@
         android:id="@+id/chooseColorFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/chooseColorHeader"
@@ -183,10 +183,10 @@
         android:id="@+id/enableVibrationFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/enableVibrationHeader"

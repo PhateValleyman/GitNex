@@ -88,8 +88,8 @@
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|keyboard|keyboardHidden|navigation"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -166,9 +166,9 @@
             android:name=".activities.WikiActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|keyboard|keyboardHidden|navigation" />
         <activity
-            android:windowSoftInputMode="adjustResize"
             android:name=".activities.CodeEditorActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|keyboard|keyboardHidden|navigation" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|keyboard|keyboardHidden|navigation"
+            android:windowSoftInputMode="adjustResize" />
 
         <meta-data
             android:name="com.samsung.android.keepalive.density"
@@ -178,10 +178,10 @@
             android:value="true" /> <!-- deep links -->
         <activity
             android:name=".activities.DeepLinksActivity"
+            android:exported="true"
             android:launchMode="singleTask"
             android:noHistory="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:exported="true">
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

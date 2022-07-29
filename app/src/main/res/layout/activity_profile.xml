@@ -4,15 +4,15 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="?attr/primaryBackgroundColor">
+    android:background="?attr/primaryBackgroundColor"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp"
-        android:theme="@style/Widget.AppCompat.SearchView">
+        android:theme="@style/Widget.AppCompat.SearchView"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -23,25 +23,25 @@
             app:layout_scrollFlags="enterAlways">
 
             <TextView
+                android:id="@+id/toolbarTitle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
-                android:textSize="18sp"
                 android:textColor="?attr/primaryTextColor"
-                android:id="@+id/toolbarTitle" />
+                android:textSize="18sp" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
-            app:tabTextAppearance="@style/customTabLayout"
-            app:tabMode="scrollable"
-            app:tabTextColor="?attr/primaryTextColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="?attr/primaryBackgroundColor"
             app:tabIndicatorColor="?attr/pagerTabIndicatorColor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            app:tabMode="scrollable"
+            app:tabTextAppearance="@style/customTabLayout"
+            app:tabTextColor="?attr/primaryTextColor" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

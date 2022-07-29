@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="?attr/primaryBackgroundColor"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical">
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressBar"
+        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
         app:indicatorColor="?attr/progressIndicatorColor" />
 
     <ScrollView
@@ -28,12 +28,12 @@
                 android:id="@+id/addNewAccountFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="32dp"
-                android:paddingBottom="16dp"
+                android:orientation="vertical"
                 android:paddingStart="16dp"
+                android:paddingTop="32dp"
                 android:paddingEnd="16dp"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:paddingBottom="16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/addAccountText"
@@ -47,28 +47,28 @@
                     android:id="@+id/addNewAccount"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
                     android:text="@string/addNewAccountText"
                     android:textColor="@color/btnTextColor"
-                    android:textSize="16sp"
-                    android:layout_marginTop="24dp" />
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/openInBrowser"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/openWebRepo"
                     android:textColor="@color/btnTextColor"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp" />
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/launchApp"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/launchApp"
                     android:textColor="@color/btnTextColor"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -76,12 +76,12 @@
                 android:id="@+id/noActionFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="32dp"
-                android:paddingBottom="16dp"
+                android:orientation="vertical"
                 android:paddingStart="16dp"
+                android:paddingTop="32dp"
                 android:paddingEnd="16dp"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:paddingBottom="16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/noActionText"
@@ -95,46 +95,46 @@
                     android:id="@+id/repository"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
                     android:text="@string/navRepos"
                     android:textColor="@color/btnTextColor"
-                    android:textSize="16sp"
-                    android:layout_marginTop="24dp" />
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/organization"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/navOrg"
                     android:textColor="@color/btnTextColor"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp" />
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/notification"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/pageTitleNotifications"
                     android:textColor="@color/btnTextColor"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp" />
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/explore"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/pageTitleExplore"
                     android:textColor="@color/btnTextColor"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp" />
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/launchApp2"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/launchApp"
                     android:textColor="@color/btnTextColor"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 

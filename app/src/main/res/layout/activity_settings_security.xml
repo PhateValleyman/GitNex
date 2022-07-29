@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/primaryBackgroundColor"
     android:orientation="vertical">
 
@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        app:elevation="0dp"
-        android:theme="@style/Widget.AppCompat.SearchView">
+        android:theme="@style/Widget.AppCompat.SearchView"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -26,11 +26,11 @@
                 android:layout_height="@dimen/close_button_size"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:contentDescription="@string/close"
-                android:gravity="center_vertical"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:focusable="true"
                 android:clickable="true"
+                android:contentDescription="@string/close"
+                android:focusable="true"
+                android:gravity="center_vertical"
                 android:src="@drawable/ic_close" />
 
             <TextView
@@ -51,10 +51,10 @@
         android:id="@+id/biometricFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/biometricHeader"
@@ -84,10 +84,10 @@
         android:id="@+id/certsFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/tvCertHeader"
@@ -105,10 +105,10 @@
         android:id="@+id/cacheSizeDataSelectionFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/cacheSizeDataHeaderSelector"
@@ -136,10 +136,10 @@
         android:id="@+id/cacheSizeImagesSelectionFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/cacheSizeImagesHeaderSelector"
@@ -167,10 +167,10 @@
         android:id="@+id/clearCacheSelectionFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical"
-        android:padding="15dp"
-        android:layout_marginBottom="5dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/clearCacheHeaderSelector"

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/primaryBackgroundColor"
     android:orientation="vertical"
     android:paddingTop="6dp"
-    android:paddingBottom="12dp"
-    android:background="?attr/primaryBackgroundColor">
+    android:paddingBottom="12dp">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -15,15 +14,15 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/issuesFilterHeadFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="8dp">
 
                 <TextView
                     android:id="@+id/bottomSheetHeader"
@@ -40,49 +39,49 @@
                 android:id="@+id/issuesFilterSection"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:flexWrap="wrap"
-                app:alignItems="stretch"
                 android:padding="8dp"
-                app:alignContent="stretch" >
+                app:alignContent="stretch"
+                app:alignItems="stretch"
+                app:flexWrap="wrap">
 
                 <TextView
                     android:id="@+id/filterByMilestone"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:padding="4dp"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:gravity="center"
-                    app:layout_alignSelf="flex_start"
-                    app:drawableTopCompat="@drawable/ic_milestone"
+                    android:padding="4dp"
                     android:text="@string/newIssueMilestoneTitle"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    app:drawableTopCompat="@drawable/ic_milestone"
+                    app:layout_alignSelf="flex_start" />
 
                 <TextView
                     android:id="@+id/openIssues"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:padding="4dp"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:gravity="center"
-                    app:layout_alignSelf="flex_start"
-                    app:drawableTopCompat="@drawable/ic_issue"
+                    android:padding="4dp"
                     android:text="@string/isOpen"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    app:drawableTopCompat="@drawable/ic_issue"
+                    app:layout_alignSelf="flex_start" />
 
                 <TextView
                     android:id="@+id/closedIssues"
                     android:layout_width="98dp"
                     android:layout_height="100dp"
-                    android:padding="4dp"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:gravity="center"
-                    app:layout_alignSelf="flex_start"
-                    app:drawableTopCompat="@drawable/ic_issue_closed"
+                    android:padding="4dp"
                     android:text="@string/isClosed"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    app:drawableTopCompat="@drawable/ic_issue_closed"
+                    app:layout_alignSelf="flex_start" />
 
             </com.google.android.flexbox.FlexboxLayout>
 

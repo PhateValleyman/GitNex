@@ -57,8 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_weight="0"
-            android:contentDescription="@string/menuContentDesc"
             android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/menuContentDesc"
             app:srcCompat="@drawable/ic_dotted_menu_horizontal" />
 
     </LinearLayout>
@@ -68,18 +68,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:textColor="?attr/primaryTextColor"
-        android:textIsSelectable="true"
         android:autoLink="web"
+        android:textColor="?attr/primaryTextColor"
         android:textColorLink="@color/lightBlue"
+        android:textIsSelectable="true"
         android:textSize="14sp" />
 
     <LinearLayout
         android:id="@+id/commentReactionBadges"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        android:visibility="gone" />
 
 </LinearLayout>

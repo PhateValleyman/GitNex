@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="?attr/primaryBackgroundColor"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="?attr/primaryBackgroundColor"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
         android:id="@+id/userInfoLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressBar"
+            style="@style/Widget.MaterialComponents.LinearProgressIndicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            style="@style/Widget.MaterialComponents.LinearProgressIndicator"
             app:indicatorColor="?attr/progressIndicatorColor" />
 
         <RelativeLayout
@@ -73,9 +73,9 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="15dp">
 
             <LinearLayout
@@ -87,9 +87,9 @@
                 android:paddingRight="15dp">
 
                 <ImageView
-                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:contentDescription="@string/generalImgContentText"
                     app:srcCompat="@drawable/ic_email" />
 
@@ -127,9 +127,9 @@
                 android:paddingRight="15dp">
 
                 <ImageView
-                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:contentDescription="@string/generalImgContentText"
                     app:srcCompat="@drawable/ic_language" />
 
@@ -167,9 +167,9 @@
                 android:paddingRight="15dp">
 
                 <ImageView
-                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:contentDescription="@string/generalImgContentText"
                     app:srcCompat="@drawable/ic_calendar" />
 

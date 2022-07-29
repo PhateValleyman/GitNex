@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="?attr/primaryBackgroundColor">
+    android:background="?attr/primaryBackgroundColor"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp"
-        android:theme="@style/Widget.AppCompat.SearchView">
+        android:theme="@style/Widget.AppCompat.SearchView"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -25,20 +24,20 @@
                 android:id="@+id/issuePrState"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_issue"
+                android:contentDescription="@string/generalImgContentText"
                 android:paddingStart="0dp"
                 android:paddingEnd="8dp"
-                android:visibility="gone"
-                android:contentDescription="@string/generalImgContentText" />
+                android:src="@drawable/ic_issue"
+                android:visibility="gone" />
 
             <TextView
+                android:id="@+id/toolbar_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
-                android:textSize="18sp"
                 android:textColor="?attr/primaryTextColor"
-                android:id="@+id/toolbar_title" />
+                android:textSize="18sp" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -46,31 +45,31 @@
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressBar"
+        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
         android:indeterminate="true"
-        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
         app:indicatorColor="?attr/progressIndicatorColor" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/addNewComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="@string/commentButtonText"
-        android:contentDescription="@string/commentButtonText"
-        android:textColor="@color/colorWhite"
-        android:backgroundTint="?attr/fabColor"
         android:layout_gravity="bottom|end"
-        app:iconTint="@color/colorWhite"
-        app:icon="@drawable/ic_reply" />
+        android:layout_margin="16dp"
+        android:backgroundTint="?attr/fabColor"
+        android:contentDescription="@string/commentButtonText"
+        android:text="@string/commentButtonText"
+        android:textColor="@color/colorWhite"
+        app:icon="@drawable/ic_reply"
+        app:iconTint="@color/colorWhite" />
 
     <RelativeLayout
         android:id="@+id/relativeMainLayoutFrame"
         android:layout_width="match_parent"
-        android:layout_marginTop="56dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/pullToRefresh"
@@ -78,9 +77,9 @@
             android:layout_height="wrap_content">
 
             <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollViewComments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/scrollViewComments"
                 android:fillViewport="true">
 
                 <RelativeLayout
@@ -104,9 +103,9 @@
 
                         <TextView
                             android:id="@+id/issueTitle"
-                            android:layout_toEndOf="@+id/assigneeAvatar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_toEndOf="@+id/assigneeAvatar"
                             android:gravity="start"
                             android:textColor="?attr/primaryTextColor"
                             android:textIsSelectable="true"
@@ -114,11 +113,11 @@
 
                         <LinearLayout
                             android:id="@+id/msdueFrame"
-                            android:layout_toEndOf="@+id/assigneeAvatar"
-                            android:layout_below="@+id/issueTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_below="@+id/issueTitle"
                             android:layout_marginTop="10dp"
+                            android:layout_toEndOf="@+id/assigneeAvatar"
                             android:orientation="vertical">
 
                             <LinearLayout
@@ -133,8 +132,8 @@
                                 <ImageView
                                     android:layout_width="18dp"
                                     android:layout_height="wrap_content"
-                                    app:srcCompat="@drawable/ic_calendar"
-                                    android:contentDescription="@string/generalImgContentText" />
+                                    android:contentDescription="@string/generalImgContentText"
+                                    app:srcCompat="@drawable/ic_calendar" />
 
                                 <TextView
                                     android:id="@+id/issueDueDate"
@@ -159,8 +158,8 @@
                                 <ImageView
                                     android:layout_width="18dp"
                                     android:layout_height="wrap_content"
-                                    app:srcCompat="@drawable/ic_milestone"
-                                    android:contentDescription="@string/generalImgContentText" />
+                                    android:contentDescription="@string/generalImgContentText"
+                                    app:srcCompat="@drawable/ic_milestone" />
 
                                 <TextView
                                     android:id="@+id/issueMilestone"
@@ -176,85 +175,85 @@
                         </LinearLayout>
 
                         <HorizontalScrollView
-                            android:layout_below="@+id/msdueFrame"
+                            android:id="@+id/assigneesScrollView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/assigneesScrollView"
+                            android:layout_below="@+id/msdueFrame"
                             android:layout_alignParentEnd="false"
+                            android:fillViewport="true"
                             android:foregroundGravity="right"
-                            android:scrollbarThumbHorizontal="@android:color/transparent"
-                            android:fillViewport="true">
+                            android:scrollbarThumbHorizontal="@android:color/transparent">
 
                             <LinearLayout
                                 android:id="@+id/frameAssignees"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
                                 android:layout_gravity="end"
+                                android:layout_marginTop="10dp"
                                 android:gravity="end"
-                                android:layout_marginTop="10dp">
+                                android:orientation="horizontal">
 
                             </LinearLayout>
                         </HorizontalScrollView>
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/issueDescription"
-                            android:layout_below="@+id/assigneesScrollView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_below="@+id/assigneesScrollView"
+                            android:autoLink="web"
                             android:gravity="start"
                             android:textColor="?attr/primaryTextColor"
-                            android:autoLink="web"
                             android:textColorLink="@color/lightBlue"
                             android:textIsSelectable="true"
                             android:textSize="14sp" />
 
                         <HorizontalScrollView
-                            android:layout_below="@+id/issueDescription"
+                            android:id="@+id/labelsScrollView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/labelsScrollView"
+                            android:layout_below="@+id/issueDescription"
                             android:layout_alignParentEnd="false"
+                            android:fillViewport="true"
                             android:foregroundGravity="right"
-                            android:scrollbarThumbHorizontal="@android:color/transparent"
-                            android:fillViewport="true">
+                            android:scrollbarThumbHorizontal="@android:color/transparent">
 
                             <LinearLayout
                                 android:id="@+id/frameLabels"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="10dp">
+                                android:layout_marginTop="10dp"
+                                android:orientation="horizontal">
 
                             </LinearLayout>
                         </HorizontalScrollView>
 
                         <RelativeLayout
+                            android:id="@+id/issueTimeFrame"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/issueTimeFrame"
                             android:layout_below="@+id/labelsScrollView"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/issueCreatedTime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="start"
-                                android:visibility="gone"
                                 android:textColor="?attr/hintColor"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                android:visibility="gone" />
 
                             <TextView
                                 android:id="@+id/issueModified"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="?attr/hintColor"
                                 android:layout_toEndOf="@+id/issueCreatedTime"
+                                android:text="@string/modifiedText"
+                                android:textColor="?attr/hintColor"
                                 android:textSize="12sp"
-                                android:visibility="gone"
-                                android:text="@string/modifiedText" />
+                                android:visibility="gone" />
 
                         </RelativeLayout>
 
@@ -263,19 +262,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/issueTimeFrame"
-                            android:visibility="gone"
                             android:layout_marginTop="10dp"
-                            android:orientation="horizontal" />
+                            android:orientation="horizontal"
+                            android:visibility="gone" />
 
                     </RelativeLayout>
 
                     <View
-                        android:layout_below="@id/mainIssueLayout"
+                        android:id="@+id/divider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:id="@+id/divider"
-                        android:visibility="gone"
-                        android:background="?attr/dividerColor" />
+                        android:layout_below="@id/mainIssueLayout"
+                        android:background="?attr/dividerColor"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -287,8 +286,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="?attr/primaryBackgroundColor"
-                            android:paddingBottom="64dp"
                             android:clipToPadding="false"
+                            android:paddingBottom="64dp"
                             android:scrollbars="vertical" />
 
                     </LinearLayout>

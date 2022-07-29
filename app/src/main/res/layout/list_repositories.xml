@@ -59,10 +59,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:text="@string/noDataDescription"
         android:textColor="?attr/primaryTextColor"
         android:textSize="15sp"
-        android:visibility="gone"
-        android:text="@string/noDataDescription" />
+        android:visibility="gone" />
 
     <View
         android:id="@+id/spacerView"
