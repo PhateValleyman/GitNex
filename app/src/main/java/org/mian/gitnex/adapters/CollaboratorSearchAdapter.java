@@ -23,10 +23,8 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
-import java.util.Arrays;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,7 +90,7 @@ public class CollaboratorSearchAdapter extends RecyclerView.Adapter<Collaborator
             addCollaboratorButtonRemove.setOnClickListener(v -> AlertDialogs.collaboratorRemoveDialog(context, userInfo.getLogin(), repository));
 
 	        new Handler().postDelayed(() -> {
-		        if(!Arrays.asList(Constants.restrictedUsers).contains(userInfo.getLogin())) {
+		        if(!AppUtil.checkGhostUsers(userInfo.getLogin())) {
 
 			        userAvatar.setOnClickListener(loginId -> {
 				        Intent intent = new Intent(context, ProfileActivity.class);

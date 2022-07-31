@@ -29,7 +29,6 @@ import org.mian.gitnex.fragments.BottomSheetReplyFragment;
 import org.mian.gitnex.fragments.IssuesFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Markdown;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -38,7 +37,6 @@ import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.views.ReactionList;
 import org.mian.gitnex.views.ReactionSpinner;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -225,7 +223,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<IssueCommentsAdap
 			});
 
 			new Handler().postDelayed(() -> {
-				if(!Arrays.asList(Constants.restrictedUsers).contains(userLoginId)) {
+				if(!AppUtil.checkGhostUsers(userLoginId)) {
 					avatar.setOnClickListener(loginId -> {
 						Intent intent = new Intent(context, ProfileActivity.class);
 						intent.putExtra("username", userLoginId);

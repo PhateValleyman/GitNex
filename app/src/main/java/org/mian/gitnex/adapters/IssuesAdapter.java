@@ -29,7 +29,6 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.ColorInverter;
-import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.LabelWidthCalculator;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
@@ -38,7 +37,6 @@ import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.ocpsoft.prettytime.PrettyTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -116,7 +114,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			frameLabelsDots = itemView.findViewById(R.id.frameLabelsDots);
 
 			new Handler().postDelayed(() -> {
-				if(!Arrays.asList(Constants.restrictedUsers).contains(issueObject.getUser().getLogin())) {
+				if(!AppUtil.checkGhostUsers(issueObject.getUser().getLogin())) {
 
 					issueAssigneeAvatar.setOnLongClickListener(loginId -> {
 						AppUtil.copyToClipboard(context, issueObject.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, issueObject.getUser().getLogin()));

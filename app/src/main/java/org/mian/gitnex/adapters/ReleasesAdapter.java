@@ -25,14 +25,12 @@ import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.FragmentReleasesBinding;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
-import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.Markdown;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.Toasty;
 import org.mian.gitnex.structs.FragmentRefreshListener;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import retrofit2.Call;
@@ -98,7 +96,7 @@ public class ReleasesAdapter extends RecyclerView.Adapter<ReleasesAdapter.Releas
 	        downloadList.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
 
 	        new Handler().postDelayed(() -> {
-		        if(!Arrays.asList(Constants.restrictedUsers).contains(releases.getAuthor().getLogin())) {
+		        if(!AppUtil.checkGhostUsers(releases.getAuthor().getLogin())) {
 
 			        authorAvatar.setOnClickListener(loginId -> {
 				        Context context = loginId.getContext();

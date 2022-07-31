@@ -44,7 +44,4 @@ public class Constants {
 
 	// work managers
 	public static final String notificationsWorkerId  = "notifications_worker";
-
-	// profiles/users to restrict
-	public static String[] restrictedUsers = {"Ghost"};
 }

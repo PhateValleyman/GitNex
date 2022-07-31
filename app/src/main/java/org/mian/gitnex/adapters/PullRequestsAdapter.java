@@ -29,13 +29,11 @@ import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.ColorInverter;
-import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.LabelWidthCalculator;
 import org.mian.gitnex.helpers.RoundedTransformation;
 import org.mian.gitnex.helpers.TimeHelper;
 import org.mian.gitnex.helpers.TinyDB;
 import org.mian.gitnex.helpers.contexts.IssueContext;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -117,7 +115,7 @@ public class PullRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 			frameLabelsDots.setOnClickListener(openPr);
 
 			new Handler().postDelayed(() -> {
-				if(!Arrays.asList(Constants.restrictedUsers).contains(pullRequestObject.getUser().getLogin())) {
+				if(!AppUtil.checkGhostUsers(pullRequestObject.getUser().getLogin())) {
 
 					assigneeAvatar.setOnClickListener(v -> {
 						Intent intent = new Intent(context, ProfileActivity.class);

@@ -17,9 +17,7 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.activities.ProfileActivity;
 import org.mian.gitnex.clients.PicassoService;
 import org.mian.gitnex.helpers.AppUtil;
-import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.RoundedTransformation;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -78,7 +76,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 			userName = itemView.findViewById(R.id.userName);
 
 			new Handler().postDelayed(() -> {
-				if(!Arrays.asList(Constants.restrictedUsers).contains(userInfo.getLogin())) {
+				if(!AppUtil.checkGhostUsers(userInfo.getLogin())) {
 
 					itemView.setOnClickListener(loginId -> {
 						Intent intent = new Intent(context, ProfileActivity.class);

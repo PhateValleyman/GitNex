@@ -60,7 +60,6 @@ import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.ColorInverter;
-import org.mian.gitnex.helpers.Constants;
 import org.mian.gitnex.helpers.DividerItemDecorator;
 import org.mian.gitnex.helpers.LabelWidthCalculator;
 import org.mian.gitnex.helpers.Markdown;
@@ -75,7 +74,6 @@ import org.mian.gitnex.views.ReactionList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -688,7 +686,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		viewBinding.issueTitle.setText(HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(issue.getIssue().getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
 		String cleanIssueDescription = issue.getIssue().getBody().trim();
 
-		if(!Arrays.asList(Constants.restrictedUsers).contains(issue.getIssue().getUser().getLogin())) {
+		if(!AppUtil.checkGhostUsers(issue.getIssue().getUser().getLogin())) {
 
 			viewBinding.assigneeAvatar.setOnClickListener(loginId -> {
 				Intent intent = new Intent(ctx, ProfileActivity.class);
@@ -726,7 +724,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 				int finalI = i;
 
-				if(!Arrays.asList(Constants.restrictedUsers).contains(issue.getIssue().getAssignees().get(finalI).getLogin())) {
+				if(!AppUtil.checkGhostUsers(issue.getIssue().getAssignees().get(finalI).getLogin())) {
 
 					assigneesView.setOnClickListener(loginId -> {
 						Intent intent = new Intent(ctx, ProfileActivity.class);
