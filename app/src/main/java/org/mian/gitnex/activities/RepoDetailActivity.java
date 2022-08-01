@@ -28,6 +28,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import org.gitnex.tea4j.v2.models.Branch;
 import org.gitnex.tea4j.v2.models.Milestone;
+import org.gitnex.tea4j.v2.models.Organization;
 import org.gitnex.tea4j.v2.models.Repository;
 import org.gitnex.tea4j.v2.models.WatchInfo;
 import org.mian.gitnex.R;
@@ -105,18 +106,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	});
 	private FragmentRefreshListener fragmentRefreshListenerFilterIssuesByMilestone;
 	private FragmentRefreshListener fragmentRefreshListenerReleases;
-	private Dialog progressDialog;	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-		if(result.getResultCode() == 201) {
-			assert result.getData() != null;
-			if(result.getData().getBooleanExtra("updateReleases", false)) {
-				if(fragmentRefreshListenerReleases != null) {
-					fragmentRefreshListenerReleases.onRefresh(null);
-				}
-				repository.removeRepository();
-				getRepoInfo(repository.getOwner(), repository.getName());
-			}
-		}
-	});
+	private Dialog progressDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -130,7 +120,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		Toolbar toolbar = findViewById(R.id.toolbar);
 
 		TextView toolbarTitle = findViewById(R.id.toolbar_title);
-		toolbarTitle.setText(repository.getName());
+		toolbarTitle.setText(repository.getFullName());
 
 		setSupportActionBar(toolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle(repository.getName());
@@ -143,7 +133,18 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		checkRepositoryStarStatus(repository.getOwner(), repository.getName());
 		checkRepositoryWatchStatus(repository.getOwner(), repository.getName());
-	}
+	}	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+		if(result.getResultCode() == 201) {
+			assert result.getData() != null;
+			if(result.getData().getBooleanExtra("updateReleases", false)) {
+				if(fragmentRefreshListenerReleases != null) {
+					fragmentRefreshListenerReleases.onRefresh(null);
+				}
+				repository.removeRepository();
+				getRepoInfo(repository.getOwner(), repository.getName());
+			}
+		}
+	});
 
 	@Override
 	public void onResume() {
@@ -171,7 +172,27 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		if(id == android.R.id.home) {
 
-			finish();
+			if(!getIntent().getBooleanExtra("openedFromUserOrg", false)) {
+				RetrofitClient.getApiInterface(ctx).orgGet(repository.getOwner()).enqueue(new Callback<>() {
+
+					@Override
+					public void onResponse(@NonNull Call<Organization> call, @NonNull Response<Organization> response) {
+						Intent intent = new Intent(ctx, response.isSuccessful() ? OrganizationDetailActivity.class : ProfileActivity.class);
+						intent.putExtra(response.isSuccessful() ? "orgName" : "username", repository.getOwner());
+						intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivity(intent);
+						finish();
+					}
+
+					@Override
+					public void onFailure(@NonNull Call<Organization> call, @NonNull Throwable t) {
+						finish();
+					}
+				});
+			}
+			else {
+				finish();
+			}
 			return true;
 		}
 		else if(id == R.id.repoMenu) {

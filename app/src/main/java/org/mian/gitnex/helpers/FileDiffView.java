@@ -1,6 +1,7 @@
 package org.mian.gitnex.helpers;
 
 import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -103,6 +104,8 @@ public class FileDiffView implements Serializable {
 			return lineRemoved;
 		}
 
+		@NotNull
+		@Override
 		public String toString() {
 
 			return "+" + this.lineAdded + ", -" + this.lineRemoved;
@@ -112,11 +115,11 @@ public class FileDiffView implements Serializable {
 
 	public static class Content implements Serializable {
 
+		private final String raw;
 		private int lineAdded;
 		private int lineRemoved;
 		private int oldLineStart;
 		private int newLineStart;
-		private final String raw;
 
 		public Content(String content) {
 

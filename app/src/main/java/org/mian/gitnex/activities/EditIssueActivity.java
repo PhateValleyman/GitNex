@@ -49,6 +49,7 @@ import retrofit2.Callback;
 public class EditIssueActivity extends BaseActivity implements View.OnClickListener {
 
 	private final String msState = "open";
+	private final LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
 	private View.OnClickListener onClickListener;
 	private int resultLimit;
 	private EditText editIssueTitle;
@@ -58,9 +59,6 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 	private AutoCompleteTextView editIssueMilestoneSpinner;
 	private int milestoneId = 0;
 	private Date currentDate = null;
-
-	private final LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
-
 	private IssueContext issue;
 
 	@SuppressLint("ClickableViewAccessibility")
