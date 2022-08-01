@@ -152,18 +152,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.repo_dotted_menu, menu);
 		return true;
-	}	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-		if(result.getResultCode() == 201) {
-			assert result.getData() != null;
-			if(result.getData().getBooleanExtra("updateReleases", false)) {
-				if(fragmentRefreshListenerReleases != null) {
-					fragmentRefreshListenerReleases.onRefresh(null);
-				}
-				repository.removeRepository();
-				getRepoInfo(repository.getOwner(), repository.getName());
-			}
-		}
-	});
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -426,7 +415,18 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				progressDialog.hide();
 			}
 		});
-	}
+	}	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+		if(result.getResultCode() == 201) {
+			assert result.getData() != null;
+			if(result.getData().getBooleanExtra("updateReleases", false)) {
+				if(fragmentRefreshListenerReleases != null) {
+					fragmentRefreshListenerReleases.onRefresh(null);
+				}
+				repository.removeRepository();
+				getRepoInfo(repository.getOwner(), repository.getName());
+			}
+		}
+	});
 
 	@Override
 	public void onDestroy() {
