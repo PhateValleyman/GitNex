@@ -15,9 +15,8 @@ import java.util.concurrent.Executors;
 
 public abstract class BaseApi {
 
-	private static final Map<Class<? extends BaseApi>, Object> instances = new HashMap<>();
-
 	protected static final ExecutorService executorService = Executors.newCachedThreadPool();
+	private static final Map<Class<? extends BaseApi>, Object> instances = new HashMap<>();
 	protected final GitnexDatabase gitnexDatabase;
 
 	protected BaseApi(Context context) {

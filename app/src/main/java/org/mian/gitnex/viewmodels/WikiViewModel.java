@@ -28,8 +28,7 @@ public class WikiViewModel extends ViewModel {
 
 	private MutableLiveData<List<WikiPageMetaData>> wikiList;
 
-	public LiveData<List<WikiPageMetaData>> getWiki(String owner, String repo, int page, int resultLimit, Context ctx,
-		FragmentWikiBinding fragmentWikiBinding) {
+	public LiveData<List<WikiPageMetaData>> getWiki(String owner, String repo, int page, int resultLimit, Context ctx, FragmentWikiBinding fragmentWikiBinding) {
 
 		wikiList = new MutableLiveData<>();
 		loadWikiList(owner, repo, page, resultLimit, ctx, fragmentWikiBinding);
@@ -79,8 +78,7 @@ public class WikiViewModel extends ViewModel {
 		});
 	}
 
-	public void loadMoreWiki(String owner, String repo, int page, int resultLimit, Context ctx, FragmentWikiBinding fragmentWikiBinding,
-		WikiListAdapter adapter) {
+	public void loadMoreWiki(String owner, String repo, int page, int resultLimit, Context ctx, FragmentWikiBinding fragmentWikiBinding, WikiListAdapter adapter) {
 
 		Call<List<WikiPageMetaData>> call;
 		call = RetrofitClient.getApiInterface(ctx).repoGetWikiPages(owner, repo, page, resultLimit);

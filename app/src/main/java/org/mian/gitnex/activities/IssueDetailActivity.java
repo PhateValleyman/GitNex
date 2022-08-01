@@ -89,53 +89,49 @@ import retrofit2.Response;
 
 public class IssueDetailActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener, AssigneesListAdapter.AssigneesListAdapterListener, BottomSheetListener {
 
+	public static boolean singleIssueUpdate = false;
+	public static boolean commentPosted = false;
+	private final List<Label> labelsList = new ArrayList<>();
+	private final List<User> assigneesList = new ArrayList<>();
+	public boolean commentEdited = false;
 	private IssueCommentsAdapter adapter;
-
 	private String repoOwner;
 	private String repoName;
 	private int issueIndex;
 	private String issueCreator;
 	private IssueContext issue;
-
 	private LabelsListAdapter labelsAdapter;
 	private AssigneesListAdapter assigneesAdapter;
-
 	private List<Integer> currentLabelsIds = new ArrayList<>();
 	private List<Integer> labelsIds = new ArrayList<>();
-	private final List<Label> labelsList = new ArrayList<>();
-	private final List<User> assigneesList = new ArrayList<>();
 	private List<String> assigneesListData = new ArrayList<>();
 	private List<String> currentAssignees = new ArrayList<>();
-
 	private Dialog dialogLabels;
 	private Dialog dialogAssignees;
-
 	private CustomLabelsSelectionDialogBinding labelsBinding;
 	private CustomAssigneesSelectionDialogBinding assigneesBinding;
 	private ActivityIssueDetailBinding viewBinding;
-
-	public static boolean singleIssueUpdate = false;
-	public boolean commentEdited = false;
-	public static boolean commentPosted = false;
-
 	private IssueCommentsViewModel issueCommentsModel;
+	private Runnable showMenu = () -> {
+	};
+	private boolean loadingFinishedIssue = false;
+	private boolean loadingFinishedPr = false;
+	private boolean loadingFinishedRepo = false;
+	public ActivityResultLauncher<Intent> editIssueLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+		if(result.getResultCode() == 200) {
+			assert result.getData() != null;
+			if(result.getData().getBooleanExtra("issueEdited", false)) {
+				new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-	public ActivityResultLauncher<Intent> editIssueLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-		result -> {
-			if(result.getResultCode() == 200) {
-				assert result.getData() != null;
-				if(result.getData().getBooleanExtra("issueEdited", false)) {
-					new Handler(Looper.getMainLooper()).postDelayed(() -> {
+					viewBinding.frameAssignees.removeAllViews();
+					viewBinding.frameLabels.removeAllViews();
+					issue.setIssue(null);
+					getSingleIssue(repoOwner, repoName, issueIndex);
 
-						viewBinding.frameAssignees.removeAllViews();
-						viewBinding.frameLabels.removeAllViews();
-						issue.setIssue(null);
-						getSingleIssue(repoOwner, repoName, issueIndex);
-
-					}, 500);
-				}
+				}, 500);
 			}
-		});
+		}
+	});
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -325,8 +321,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					issue.setIssue(response2.body());
 					getSingleIssue(repoOwner, repoName, issueIndex);
 					currentAssignees.clear();
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> AssigneesActions.getCurrentIssueAssignees(ctx, repoOwner, repoName, issueIndex, currentAssignees), 1000);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> AssigneesActions.getCurrentIssueAssignees(ctx, repoOwner, repoName, issueIndex, currentAssignees), 1000);
 				}
 				else if(response2.code() == 401) {
 
@@ -381,8 +376,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 					issue.setIssue(null);
 					getSingleIssue(repoOwner, repoName, issueIndex);
 					currentLabelsIds.clear();
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> LabelsActions.getCurrentIssueLabels(ctx, repoOwner, repoName, issueIndex, currentLabelsIds), 1000);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> LabelsActions.getCurrentIssueLabels(ctx, repoOwner, repoName, issueIndex, currentLabelsIds), 1000);
 					IssuesFragment.resumeIssues = true;
 				}
 				else if(response.code() == 401) {
@@ -411,12 +405,6 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			}
 		});
 	}
-
-	private Runnable showMenu = () -> {
-	};
-	private boolean loadingFinishedIssue = false;
-	private boolean loadingFinishedPr = false;
-	private boolean loadingFinishedRepo = false;
 
 	private void updateMenuState() {
 		if(loadingFinishedIssue && loadingFinishedPr && loadingFinishedRepo) {
@@ -449,8 +437,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		if(id == android.R.id.home) {
 
-			if(issue.hasIssue() && getIntent().getStringExtra("openedFromLink") != null && getIntent().getStringExtra("openedFromLink")
-				.equals("true")) {
+			if(issue.hasIssue() && getIntent().getStringExtra("openedFromLink") != null && getIntent().getStringExtra("openedFromLink").equals("true")) {
 				Intent intent = issue.getRepository().getIntent(ctx, RepoDetailActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
@@ -502,8 +489,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 			viewBinding.scrollViewComments.post(() -> {
 
-				issueCommentsModel.loadIssueComments(repoOwner, repoName, issueIndex, ctx,
-					() -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN));
+				issueCommentsModel.loadIssueComments(repoOwner, repoName, issueIndex, ctx, () -> viewBinding.scrollViewComments.fullScroll(ScrollView.FOCUS_DOWN));
 
 				commentPosted = false;
 			});
@@ -645,14 +631,12 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			if(issue.getIssue().getPullRequest().isMerged()) { // merged
 
 				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request);
-				ImageViewCompat.setImageTintList(viewBinding.issuePrState,
-					ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconPrMergedColor)));
+				ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconPrMergedColor)));
 			}
 			else if(!issue.getIssue().getPullRequest().isMerged() && issue.getIssue().getState().equals("closed")) { // closed
 
 				viewBinding.issuePrState.setImageResource(R.drawable.ic_pull_request);
-				ImageViewCompat.setImageTintList(viewBinding.issuePrState,
-					ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconIssuePrClosedColor)));
+				ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconIssuePrClosedColor)));
 			}
 			else { // open
 
@@ -664,8 +648,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			loadingFinishedPr = true;
 			updateMenuState();
 			viewBinding.issuePrState.setImageResource(R.drawable.ic_issue);
-			ImageViewCompat.setImageTintList(viewBinding.issuePrState,
-				ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconIssuePrClosedColor)));
+			ImageViewCompat.setImageTintList(viewBinding.issuePrState, ColorStateList.valueOf(ctx.getResources().getColor(R.color.iconIssuePrClosedColor)));
 		}
 		else {
 			loadingFinishedPr = true;
@@ -679,12 +662,10 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		final String timeFormat = tinyDb.getString("dateFormat", "pretty");
 		issueCreator = issue.getIssue().getUser().getLogin();
 
-		PicassoService.getInstance(ctx).get().load(issue.getIssue().getUser().getAvatarUrl()).placeholder(R.drawable.loader_animated)
-			.transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop().into(viewBinding.assigneeAvatar);
-		String issueNumber_ = "<font color='" + ResourcesCompat.getColor(getResources(), R.color.lightGray, null) + "'>" + appCtx.getResources()
-			.getString(R.string.hash) + issue.getIssue().getNumber() + "</font>";
-		viewBinding.issueTitle.setText(
-			HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(issue.getIssue().getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+		PicassoService.getInstance(ctx).get().load(issue.getIssue().getUser().getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(120, 120).centerCrop()
+			.into(viewBinding.assigneeAvatar);
+		String issueNumber_ = "<font color='" + ResourcesCompat.getColor(getResources(), R.color.lightGray, null) + "'>" + appCtx.getResources().getString(R.string.hash) + issue.getIssue().getNumber() + "</font>";
+		viewBinding.issueTitle.setText(HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(issue.getIssue().getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
 		String cleanIssueDescription = issue.getIssue().getBody().trim();
 
 		viewBinding.assigneeAvatar.setOnClickListener(loginId -> {
@@ -694,8 +675,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 		});
 
 		viewBinding.assigneeAvatar.setOnLongClickListener(loginId -> {
-			AppUtil.copyToClipboard(ctx, issue.getIssue().getUser().getLogin(),
-				ctx.getString(R.string.copyLoginIdToClipBoard, issue.getIssue().getUser().getLogin()));
+			AppUtil.copyToClipboard(ctx, issue.getIssue().getUser().getLogin(), ctx.getString(R.string.copyLoginIdToClipBoard, issue.getIssue().getUser().getLogin()));
 			return true;
 		});
 
@@ -714,9 +694,8 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 				ImageView assigneesView = new ImageView(ctx);
 
-				PicassoService.getInstance(ctx).get().load(issue.getIssue().getAssignees().get(i).getAvatarUrl())
-					.placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(100, 100).centerCrop()
-					.into(assigneesView);
+				PicassoService.getInstance(ctx).get().load(issue.getIssue().getAssignees().get(i).getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(100, 100)
+					.centerCrop().into(assigneesView);
 
 				viewBinding.frameAssignees.addView(assigneesView);
 				assigneesView.setLayoutParams(params1);
@@ -729,8 +708,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				});
 
 				assigneesView.setOnLongClickListener(loginId -> {
-					AppUtil.copyToClipboard(ctx, issue.getIssue().getAssignees().get(finalI).getLogin(),
-						ctx.getString(R.string.copyLoginIdToClipBoard, issue.getIssue().getAssignees().get(finalI).getLogin()));
+					AppUtil.copyToClipboard(ctx, issue.getIssue().getAssignees().get(finalI).getLogin(), ctx.getString(R.string.copyLoginIdToClipBoard, issue.getIssue().getAssignees().get(finalI).getLogin()));
 					return true;
 				});
 
@@ -751,8 +729,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			viewBinding.assigneesScrollView.setVisibility(View.GONE);
 		}
 
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-			LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		params.setMargins(0, 0, 15, 0);
 
 		if(issue.getIssue().getLabels() != null) {
@@ -773,10 +750,9 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				int height = AppUtil.getPixelsFromDensity(ctx, 20);
 				int textSize = AppUtil.getPixelsFromScaledDensity(ctx, 12);
 
-				TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT)
-					.textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize)
-					.width(LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize, AppUtil.getPixelsFromDensity(ctx, 10)))
-					.height(height).endConfig().buildRoundRect(labelName, color, AppUtil.getPixelsFromDensity(ctx, 18));
+				TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize)
+					.width(LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize, AppUtil.getPixelsFromDensity(ctx, 10))).height(height).endConfig()
+					.buildRoundRect(labelName, color, AppUtil.getPixelsFromDensity(ctx, 18));
 
 				labelsView.setImageDrawable(drawable);
 				viewBinding.frameLabels.addView(labelsView);
@@ -795,8 +771,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", locale);
 				String dueDate = formatter.format(issue.getIssue().getDueDate());
 				viewBinding.issueDueDate.setText(dueDate);
-				viewBinding.issueDueDate.setOnClickListener(
-					new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getDueDate()), ctx));
+				viewBinding.issueDueDate.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getDueDate()), ctx));
 			}
 			else if(timeFormat.equals("normal1")) {
 
@@ -817,8 +792,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 			edited = getString(R.string.colorfulBulletSpan) + getString(R.string.modifiedText);
 			viewBinding.issueModified.setVisibility(View.VISIBLE);
 			viewBinding.issueModified.setText(edited);
-			viewBinding.issueModified.setOnClickListener(
-				new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getUpdatedAt()), ctx));
+			viewBinding.issueModified.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getUpdatedAt()), ctx));
 		}
 		else {
 
@@ -851,8 +825,7 @@ public class IssueDetailActivity extends BaseActivity implements LabelsListAdapt
 
 		if(timeFormat.equals("pretty")) {
 
-			viewBinding.issueCreatedTime.setOnClickListener(
-				new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getCreatedAt()), ctx));
+			viewBinding.issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getIssue().getCreatedAt()), ctx));
 		}
 
 		Bundle bundle = new Bundle();

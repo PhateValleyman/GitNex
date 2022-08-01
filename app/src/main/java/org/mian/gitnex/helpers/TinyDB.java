@@ -38,6 +38,28 @@ public class TinyDB {
 	}
 
 	/**
+	 * Check if external storage is writable or not
+	 *
+	 * @return true if writable, false otherwise
+	 */
+	public static boolean isExternalStorageWritable() {
+		return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+	}
+
+	/**
+	 * Check if external storage is readable or not
+	 *
+	 * @return true if readable, false otherwise
+	 */
+	public static boolean isExternalStorageReadable() {
+		String state = Environment.getExternalStorageState();
+
+		return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
+	}
+
+	// Getters
+
+	/**
 	 * Saves 'theBitmap' into 'fullPath'
 	 *
 	 * @param fullPath  full path of the image file e.g. "Images/MeAtLunch.png"
@@ -104,8 +126,6 @@ public class TinyDB {
 		return (fileCreated && bitmapCompressed && streamClosed);
 	}
 
-	// Getters
-
 	/**
 	 * Get int value from SharedPreferences at 'key'. If key not found, return 'defaultValue'
 	 *
@@ -159,6 +179,8 @@ public class TinyDB {
 		return preferences.getString(key, defaultValue);
 	}
 
+	// Put methods
+
 	/**
 	 * Get boolean value from SharedPreferences at 'key'. If key not found, return 'defaultValue'
 	 *
@@ -172,8 +194,6 @@ public class TinyDB {
 	public boolean getBoolean(String key, boolean defaultValue) {
 		return preferences.getBoolean(key, defaultValue);
 	}
-
-	// Put methods
 
 	/**
 	 * Put int value into SharedPreferences with 'key' and save
@@ -250,7 +270,6 @@ public class TinyDB {
 		return new File(path).delete();
 	}
 
-
 	/**
 	 * Clear SharedPreferences (remove everything)
 	 */
@@ -266,7 +285,6 @@ public class TinyDB {
 	public Map<String, ?> getAll() {
 		return preferences.getAll();
 	}
-
 
 	/**
 	 * Register SharedPreferences change listener
@@ -286,27 +304,6 @@ public class TinyDB {
 	public void unregisterOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
 
 		preferences.unregisterOnSharedPreferenceChangeListener(listener);
-	}
-
-
-	/**
-	 * Check if external storage is writable or not
-	 *
-	 * @return true if writable, false otherwise
-	 */
-	public static boolean isExternalStorageWritable() {
-		return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
-	}
-
-	/**
-	 * Check if external storage is readable or not
-	 *
-	 * @return true if readable, false otherwise
-	 */
-	public static boolean isExternalStorageReadable() {
-		String state = Environment.getExternalStorageState();
-
-		return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
 	}
 
 	/**

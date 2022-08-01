@@ -19,12 +19,11 @@ import org.mian.gitnex.structs.BottomSheetListener;
 public class BottomSheetUserProfileFragment extends BottomSheetDialogFragment {
 
 	private final boolean following;
+	private BottomSheetListener bmListener;
 
 	public BottomSheetUserProfileFragment(boolean following) {
 		this.following = following;
 	}
-
-	private BottomSheetListener bmListener;
 
 	@Nullable
 	@Override

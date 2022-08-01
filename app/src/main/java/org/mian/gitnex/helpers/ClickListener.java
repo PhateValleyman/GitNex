@@ -13,8 +13,8 @@ import org.mian.gitnex.R;
 
 public class ClickListener implements View.OnClickListener {
 
-	private String infoText;
-	private Context mCtx;
+	private final String infoText;
+	private final Context mCtx;
 
 	public ClickListener(String infoText, Context mCtx) {
 

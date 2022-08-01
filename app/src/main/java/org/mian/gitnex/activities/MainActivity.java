@@ -97,8 +97,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		Handler handler = new Handler();
 
 		// DO NOT MOVE
-		if(mainIntent.hasExtra("switchAccountId") && AppUtil.switchToAccount(ctx,
-			BaseApi.getInstance(ctx, UserAccountsApi.class).getAccountById(mainIntent.getIntExtra("switchAccountId", 0)))) {
+		if(mainIntent.hasExtra("switchAccountId") && AppUtil.switchToAccount(ctx, BaseApi.getInstance(ctx, UserAccountsApi.class).getAccountById(mainIntent.getIntExtra("switchAccountId", 0)))) {
 
 			mainIntent.removeExtra("switchAccountId");
 			recreate();
@@ -164,8 +163,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		Menu menu = navigationView.getMenu();
 		navNotifications = menu.findItem(R.id.nav_notifications);
 
-		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigationDrawerOpen,
-			R.string.navigationDrawerClose);
+		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigationDrawerOpen, R.string.navigationDrawerClose);
 
 		drawer.addDrawerListener(toggle);
 		drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -221,26 +219,25 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 						int avatarRadius = AppUtil.getPixelsFromDensity(ctx, 3);
 
-						PicassoService.getInstance(ctx).get().load(userAvatarNav).placeholder(R.drawable.loader_animated)
-							.transform(new RoundedTransformation(avatarRadius, 0)).resize(160, 160).centerCrop().into(userAvatar);
+						PicassoService.getInstance(ctx).get().load(userAvatarNav).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(avatarRadius, 0)).resize(160, 160).centerCrop()
+							.into(userAvatar);
 
-						PicassoService.getInstance(ctx).get().load(userAvatarNav).transform(new BlurTransformation(ctx))
-							.into(userAvatarBackground, new com.squareup.picasso.Callback() {
+						PicassoService.getInstance(ctx).get().load(userAvatarNav).transform(new BlurTransformation(ctx)).into(userAvatarBackground, new com.squareup.picasso.Callback() {
 
-								@Override
-								public void onSuccess() {
+							@Override
+							public void onSuccess() {
 
-									int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+								int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
 
-									userFullName.setTextColor(textColor);
-									userEmail.setTextColor(textColor);
-								}
+								userFullName.setTextColor(textColor);
+								userEmail.setTextColor(textColor);
+							}
 
-								@Override
-								public void onError(Exception e) {
+							@Override
+							public void onError(Exception e) {
 
-								}
-							});
+							}
+						});
 					}
 				}
 
@@ -475,8 +472,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 					if(frag != null) {
 
-						new AlertDialog.Builder(ctx).setTitle(R.string.deleteAllDrafts).setIcon(R.drawable.ic_delete).setCancelable(false)
-							.setMessage(R.string.deleteAllDraftsDialogMessage).setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
+						new AlertDialog.Builder(ctx).setTitle(R.string.deleteAllDrafts).setIcon(R.drawable.ic_delete).setCancelable(false).setMessage(R.string.deleteAllDraftsDialogMessage)
+							.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
 
 								frag.deleteAllDrafts(currentActiveAccountId);
 								dialog.dismiss();
@@ -623,8 +620,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		generalAPISettings.enqueue(new Callback<>() {
 
 			@Override
-			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings,
-				@NonNull retrofit2.Response<GeneralAPISettings> response) {
+			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings, @NonNull retrofit2.Response<GeneralAPISettings> response) {
 
 				if(response.code() == 200 && response.body() != null) {
 
@@ -638,8 +634,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 						defaultPagingNumber = Math.toIntExact(response.body().getDefaultPagingNum());
 					}
 
-					BaseApi.getInstance(ctx, UserAccountsApi.class)
-						.updateServerPagingLimit(maxResponseItems, defaultPagingNumber, tinyDB.getInt("currentActiveAccountId"));
+					BaseApi.getInstance(ctx, UserAccountsApi.class).updateServerPagingLimit(maxResponseItems, defaultPagingNumber, tinyDB.getInt("currentActiveAccountId"));
 				}
 			}
 

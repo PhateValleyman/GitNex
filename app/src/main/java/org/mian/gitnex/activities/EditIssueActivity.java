@@ -48,20 +48,18 @@ import retrofit2.Callback;
 
 public class EditIssueActivity extends BaseActivity implements View.OnClickListener {
 
+	private final String msState = "open";
 	private View.OnClickListener onClickListener;
 	private int resultLimit;
-
 	private EditText editIssueTitle;
 	private EditText editIssueDescription;
 	private TextView editIssueDueDate;
 	private Button editIssueButton;
 	private AutoCompleteTextView editIssueMilestoneSpinner;
-
-	private final String msState = "open";
 	private int milestoneId = 0;
 	private Date currentDate = null;
 
-	private LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
+	private final LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
 
 	private IssueContext issue;
 
@@ -152,8 +150,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 		}
 
 		disableProcessButton();
-		editIssue(issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getIssueIndex(), editIssueTitleForm,
-			editIssueDescriptionForm, milestoneId);
+		editIssue(issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getIssueIndex(), editIssueTitleForm, editIssueDescriptionForm, milestoneId);
 	}
 
 	private void editIssue(String repoOwner, String repoName, int issueIndex, String title, String description, int milestoneId) {
@@ -254,8 +251,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 					// get milestones list
 					if(response.body().getId() > 0) {
 
-						Call<List<Milestone>> call_ = RetrofitClient.getApiInterface(ctx)
-							.issueGetMilestonesList(repoOwner, repoName, msState, null, 1, resultLimit);
+						Call<List<Milestone>> call_ = RetrofitClient.getApiInterface(ctx).issueGetMilestonesList(repoOwner, repoName, msState, null, 1, resultLimit);
 
 						call_.enqueue(new Callback<>() {
 
@@ -284,8 +280,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 										}
 									}
 
-									ArrayAdapter<String> adapter = new ArrayAdapter<>(EditIssueActivity.this, R.layout.list_spinner_items,
-										new ArrayList<>(milestonesList.keySet()));
+									ArrayAdapter<String> adapter = new ArrayAdapter<>(EditIssueActivity.this, R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
 
 									editIssueMilestoneSpinner.setAdapter(adapter);
 
@@ -294,8 +289,7 @@ public class EditIssueActivity extends BaseActivity implements View.OnClickListe
 											milestoneId = 0;
 										}
 										else if(view instanceof TextView) {
-											milestoneId = Math.toIntExact(
-												Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
+											milestoneId = Math.toIntExact(Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
 										}
 									});
 

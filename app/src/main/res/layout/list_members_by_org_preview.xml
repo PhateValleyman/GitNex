@@ -9,6 +9,6 @@
         android:id="@+id/avatar"
         android:layout_width="@dimen/list_avatar_size"
         android:layout_height="@dimen/list_avatar_size"
-        android:contentDescription="@string/generalImgContentText" />
+        android:contentDescription="@string/generalImgContentText"/>
 
 </LinearLayout>

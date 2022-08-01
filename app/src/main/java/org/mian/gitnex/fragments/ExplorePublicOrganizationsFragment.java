@@ -32,12 +32,12 @@ import retrofit2.Response;
 
 public class ExplorePublicOrganizationsFragment extends Fragment {
 
+	private final String TAG = "PublicOrganizations";
 	private FragmentOrganizationsBinding fragmentPublicOrgBinding;
 	private List<Organization> organizationsList;
 	private OrganizationsListAdapter adapter;
 	private Context context;
 	private int pageSize;
-	private final String TAG = "PublicOrganizations";
 	private int resultLimit;
 
 	@Nullable
@@ -72,8 +72,7 @@ public class ExplorePublicOrganizationsFragment extends Fragment {
 			}
 		});
 
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentPublicOrgBinding.recyclerView.getContext(),
-			DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentPublicOrgBinding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		fragmentPublicOrgBinding.recyclerView.setHasFixedSize(true);
 		fragmentPublicOrgBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 		fragmentPublicOrgBinding.recyclerView.setLayoutManager(new LinearLayoutManager(context));

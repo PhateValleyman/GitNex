@@ -49,6 +49,9 @@ import retrofit2.Callback;
 
 public class CreateIssueActivity extends BaseActivity implements View.OnClickListener, LabelsListAdapter.LabelsListAdapterListener, AssigneesListAdapter.AssigneesListAdapterListener {
 
+	private final List<Label> labelsList = new ArrayList<>();
+	private final LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
+	private final List<User> assigneesList = new ArrayList<>();
 	private ActivityCreateIssueBinding viewBinding;
 	private CustomLabelsSelectionDialogBinding labelsBinding;
 	private CustomAssigneesSelectionDialogBinding assigneesBinding;
@@ -60,16 +63,10 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 	private String assigneesSetter;
 	private int milestoneId;
 	private Date currentDate = null;
-
 	private RepositoryContext repository;
-
 	private LabelsListAdapter labelsAdapter;
 	private AssigneesListAdapter assigneesAdapter;
-
 	private List<Integer> labelsIds = new ArrayList<>();
-	private final List<Label> labelsList = new ArrayList<>();
-	private final LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
-	private final List<User> assigneesList = new ArrayList<>();
 	private List<String> assigneesListData = new ArrayList<>();
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -178,8 +175,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 		assigneesBinding.save.setOnClickListener(assigneesBinding_ -> dialogAssignees.dismiss());
 
 		dialogAssignees.show();
-		AssigneesActions.getRepositoryAssignees(ctx, repository.getOwner(), repository.getName(), assigneesList, dialogAssignees, assigneesAdapter,
-			assigneesBinding);
+		AssigneesActions.getRepositoryAssignees(ctx, repository.getOwner(), repository.getName(), assigneesList, dialogAssignees, assigneesAdapter, assigneesBinding);
 	}
 
 	private void showLabels() {
@@ -226,8 +222,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 		createNewIssueFunc(repository.getOwner(), repository.getName(), newIssueDescriptionForm, milestoneId, newIssueTitleForm);
 	}
 
-	private void createNewIssueFunc(String repoOwner, String repoName, String newIssueDescriptionForm, int newIssueMilestoneIdForm,
-		String newIssueTitleForm) {
+	private void createNewIssueFunc(String repoOwner, String repoName, String newIssueDescriptionForm, int newIssueMilestoneIdForm, String newIssueTitleForm) {
 
 		ArrayList<Long> labelIds = new ArrayList<>();
 		for(Integer i : labelsIds) {
@@ -319,8 +314,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 							}
 						}
 
-						ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.list_spinner_items,
-							new ArrayList<>(milestonesList.keySet()));
+						ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
 
 						viewBinding.newIssueMilestoneSpinner.setAdapter(adapter);
 						enableProcessButton();
@@ -330,8 +324,7 @@ public class CreateIssueActivity extends BaseActivity implements View.OnClickLis
 								milestoneId = 0;
 							}
 							else if(view instanceof TextView) {
-								milestoneId = Math.toIntExact(
-									Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
+								milestoneId = Math.toIntExact(Objects.requireNonNull(milestonesList.get(((TextView) view).getText().toString())).getId());
 							}
 						});
 

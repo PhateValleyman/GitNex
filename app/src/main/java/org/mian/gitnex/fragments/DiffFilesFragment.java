@@ -88,9 +88,8 @@ public class DiffFilesFragment extends Fragment {
 
 						int filesCount = fileDiffViews.size();
 
-						String toolbarTitleText =
-							(filesCount > 1) ? getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)) :
-								getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount));
+						String toolbarTitleText = (filesCount > 1) ? getResources().getString(R.string.fileDiffViewHeader, Integer.toString(filesCount)) :
+							getResources().getString(R.string.fileDiffViewHeaderSingle, Integer.toString(filesCount));
 
 						requireActivity().runOnUiThread(() -> {
 							binding.toolbarTitle.setVisibility(View.VISIBLE);

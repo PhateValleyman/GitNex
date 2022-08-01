@@ -35,6 +35,7 @@ public class CreateOrganizationActivity extends BaseActivity {
 
 	private EditText orgName;
 	private EditText orgDesc;
+	private final View.OnClickListener createOrgListener = v -> processNewOrganization();
 
 	@SuppressLint("ClickableViewAccessibility")
 	@Override
@@ -88,8 +89,6 @@ public class CreateOrganizationActivity extends BaseActivity {
 
 		onClickListener = view -> finish();
 	}
-
-	private final View.OnClickListener createOrgListener = v -> processNewOrganization();
 
 	private void processNewOrganization() {
 

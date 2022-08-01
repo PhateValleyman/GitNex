@@ -43,12 +43,9 @@ import moe.feng.common.view.breadcrumbs.model.BreadcrumbItem;
 
 public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapterListener {
 
-	private FragmentFilesBinding binding;
-
-	private RepositoryContext repository;
-
 	private final Path path = new Path();
-
+	private FragmentFilesBinding binding;
+	private RepositoryContext repository;
 	private FilesAdapter filesAdapter;
 
 	public FilesFragment() {
@@ -81,8 +78,8 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		binding.recyclerView.setAdapter(filesAdapter);
 		binding.recyclerView.addItemDecoration(new DividerItemDecoration(binding.recyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-		binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(
-			getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
+		binding.breadcrumbsView.setItems(new ArrayList<>(
+			Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
 		// noinspection unchecked
 		binding.breadcrumbsView.setCallback(new DefaultBreadcrumbsCallback<BreadcrumbItem>() {
 
@@ -133,9 +130,8 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 			repository.setBranchRef(repoBranch);
 			path.clear();
-			binding.breadcrumbsView.setItems(new ArrayList<>(Collections.singletonList(BreadcrumbItem.createSimpleItem(
-				getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(
-					R.string.colonDivider) + repository.getBranchRef()))));
+			binding.breadcrumbsView.setItems(new ArrayList<>(
+				Collections.singletonList(BreadcrumbItem.createSimpleItem(getResources().getString(R.string.filesBreadcrumbRoot) + getResources().getString(R.string.colonDivider) + repository.getBranchRef()))));
 			refresh();
 		});
 
@@ -234,27 +230,26 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 
 		FilesViewModel filesModel = new ViewModelProvider(this).get(FilesViewModel.class);
 
-		filesModel.getFilesList(owner, repo, ref, getContext(), binding.progressBar, binding.noDataFiles)
-			.observe(getViewLifecycleOwner(), filesListMain -> {
+		filesModel.getFilesList(owner, repo, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(getViewLifecycleOwner(), filesListMain -> {
 
-				filesAdapter.getOriginalFiles().clear();
-				filesAdapter.getOriginalFiles().addAll(filesListMain);
-				filesAdapter.notifyOriginalDataSetChanged();
+			filesAdapter.getOriginalFiles().clear();
+			filesAdapter.getOriginalFiles().addAll(filesListMain);
+			filesAdapter.notifyOriginalDataSetChanged();
 
-				if(filesListMain.size() > 0) {
+			if(filesListMain.size() > 0) {
 
-					AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame);
-					binding.noDataFiles.setVisibility(View.GONE);
+				AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame);
+				binding.noDataFiles.setVisibility(View.GONE);
 
-				}
-				else {
-					AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame, binding.noDataFiles);
-				}
+			}
+			else {
+				AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame, binding.noDataFiles);
+			}
 
-				binding.filesFrame.setVisibility(View.VISIBLE);
-				binding.progressBar.setVisibility(View.GONE);
+			binding.filesFrame.setVisibility(View.VISIBLE);
+			binding.progressBar.setVisibility(View.GONE);
 
-			});
+		});
 
 	}
 
@@ -264,26 +259,25 @@ public class FilesFragment extends Fragment implements FilesAdapter.FilesAdapter
 		binding.progressBar.setVisibility(View.VISIBLE);
 
 		FilesViewModel filesModel = new ViewModelProvider(this).get(FilesViewModel.class);
-		filesModel.getFilesList2(owner, repo, filesDir, ref, getContext(), binding.progressBar, binding.noDataFiles)
-			.observe(getViewLifecycleOwner(), filesListMain2 -> {
+		filesModel.getFilesList2(owner, repo, filesDir, ref, getContext(), binding.progressBar, binding.noDataFiles).observe(getViewLifecycleOwner(), filesListMain2 -> {
 
-				filesAdapter.getOriginalFiles().clear();
-				filesAdapter.getOriginalFiles().addAll(filesListMain2);
-				filesAdapter.notifyOriginalDataSetChanged();
+			filesAdapter.getOriginalFiles().clear();
+			filesAdapter.getOriginalFiles().addAll(filesListMain2);
+			filesAdapter.notifyOriginalDataSetChanged();
 
-				if(filesListMain2.size() > 0) {
+			if(filesListMain2.size() > 0) {
 
-					AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame);
-					binding.noDataFiles.setVisibility(View.GONE);
-				}
-				else {
-					AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame, binding.noDataFiles);
-				}
+				AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame);
+				binding.noDataFiles.setVisibility(View.GONE);
+			}
+			else {
+				AppUtil.setMultiVisibility(View.VISIBLE, binding.recyclerView, binding.filesFrame, binding.noDataFiles);
+			}
 
-				binding.filesFrame.setVisibility(View.VISIBLE);
-				binding.progressBar.setVisibility(View.GONE);
+			binding.filesFrame.setVisibility(View.VISIBLE);
+			binding.progressBar.setVisibility(View.GONE);
 
-			});
+		});
 
 	}
 

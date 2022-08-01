@@ -60,8 +60,8 @@ public class AssigneesActions {
 		});
 	}
 
-	public static void getRepositoryAssignees(Context ctx, String repoOwner, String repoName, List<User> assigneesList, Dialog dialogAssignees,
-		AssigneesListAdapter assigneesAdapter, CustomAssigneesSelectionDialogBinding assigneesBinding) {
+	public static void getRepositoryAssignees(Context ctx, String repoOwner, String repoName, List<User> assigneesList, Dialog dialogAssignees, AssigneesListAdapter assigneesAdapter,
+		CustomAssigneesSelectionDialogBinding assigneesBinding) {
 
 		Call<List<User>> call = RetrofitClient.getApiInterface(ctx).repoGetAssignees(repoOwner, repoName);
 

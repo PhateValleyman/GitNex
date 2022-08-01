@@ -110,8 +110,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 		TransferRepoOption repositoryTransfer = new TransferRepoOption();
 		repositoryTransfer.setNewOwner(newOwner);
 
-		Call<Repository> transferCall = RetrofitClient.getApiInterface(ctx)
-			.repoTransfer(repositoryTransfer, repository.getOwner(), repository.getName());
+		Call<Repository> transferCall = RetrofitClient.getApiInterface(ctx).repoTransfer(repositoryTransfer, repository.getOwner(), repository.getName());
 
 		transferCall.enqueue(new Callback<Repository>() {
 
@@ -285,20 +284,18 @@ public class RepositorySettingsActivity extends BaseActivity {
 		propBinding.repoEnableSquash.setChecked(repoInfo.isAllowSquashMerge());
 		propBinding.repoEnableForceMerge.setChecked(repoInfo.isAllowRebaseExplicit());
 
-		propBinding.save.setOnClickListener(saveProperties -> saveRepositoryProperties(String.valueOf(propBinding.repoName.getText()),
-			String.valueOf(propBinding.repoWebsite.getText()), String.valueOf(propBinding.repoDescription.getText()),
-			propBinding.repoPrivate.isChecked(), propBinding.repoAsTemplate.isChecked(), propBinding.repoEnableIssues.isChecked(),
-			propBinding.repoEnableWiki.isChecked(), propBinding.repoEnablePr.isChecked(), propBinding.repoEnableTimer.isChecked(),
-			propBinding.repoEnableMerge.isChecked(), propBinding.repoEnableRebase.isChecked(), propBinding.repoEnableSquash.isChecked(),
-			propBinding.repoEnableForceMerge.isChecked()));
+		propBinding.save.setOnClickListener(
+			saveProperties -> saveRepositoryProperties(String.valueOf(propBinding.repoName.getText()), String.valueOf(propBinding.repoWebsite.getText()), String.valueOf(propBinding.repoDescription.getText()),
+				propBinding.repoPrivate.isChecked(), propBinding.repoAsTemplate.isChecked(), propBinding.repoEnableIssues.isChecked(), propBinding.repoEnableWiki.isChecked(), propBinding.repoEnablePr.isChecked(),
+				propBinding.repoEnableTimer.isChecked(), propBinding.repoEnableMerge.isChecked(), propBinding.repoEnableRebase.isChecked(), propBinding.repoEnableSquash.isChecked(),
+				propBinding.repoEnableForceMerge.isChecked()));
 
 		dialogProp.setCancelable(false);
 		dialogProp.show();
 	}
 
-	private void saveRepositoryProperties(String repoName, String repoWebsite, String repoDescription, boolean repoPrivate, boolean repoAsTemplate,
-		boolean repoEnableIssues, boolean repoEnableWiki, boolean repoEnablePr, boolean repoEnableTimer, boolean repoEnableMerge,
-		boolean repoEnableRebase, boolean repoEnableSquash, boolean repoEnableForceMerge) {
+	private void saveRepositoryProperties(String repoName, String repoWebsite, String repoDescription, boolean repoPrivate, boolean repoAsTemplate, boolean repoEnableIssues, boolean repoEnableWiki, boolean repoEnablePr,
+		boolean repoEnableTimer, boolean repoEnableMerge, boolean repoEnableRebase, boolean repoEnableSquash, boolean repoEnableForceMerge) {
 
 		EditRepoOption repoProps = new EditRepoOption();
 		repoProps.setName(repoName);
@@ -333,8 +330,7 @@ public class RepositorySettingsActivity extends BaseActivity {
 					repository.setRepository(response.body());
 
 					if(!repository.getName().equals(repoName)) {
-						Objects.requireNonNull(BaseApi.getInstance(ctx, RepositoriesApi.class))
-							.updateRepositoryOwnerAndName(repository.getOwner(), repoName, repository.getRepositoryId());
+						Objects.requireNonNull(BaseApi.getInstance(ctx, RepositoriesApi.class)).updateRepositoryOwnerAndName(repository.getOwner(), repoName, repository.getRepositoryId());
 						Intent result = new Intent();
 						result.putExtra("nameChanged", true);
 						setResult(200, result);

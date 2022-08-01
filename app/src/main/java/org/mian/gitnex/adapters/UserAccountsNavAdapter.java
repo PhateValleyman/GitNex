@@ -41,24 +41,6 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 		this.drawer = drawerLayout;
 	}
 
-	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
-
-		private final ImageView userAccountAvatar;
-
-		private UserAccountsViewHolder(View itemView) {
-
-			super(itemView);
-
-			userAccountAvatar = itemView.findViewById(R.id.userAccountAvatar);
-
-			itemView.setOnClickListener(item -> {
-				customDialogUserAccountsList();
-				drawer.closeDrawers();
-			});
-		}
-
-	}
-
 	@NonNull
 	@Override
 	public UserAccountsNavAdapter.UserAccountsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -77,8 +59,8 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 
 		int imageSize = AppUtil.getPixelsFromDensity(context, 35);
 
-		PicassoService.getInstance(context).get().load(url + "assets/img/favicon.png").placeholder(R.drawable.loader_animated)
-			.transform(new RoundedTransformation(8, 0)).resize(imageSize, imageSize).centerCrop().into(holder.userAccountAvatar);
+		PicassoService.getInstance(context).get().load(url + "assets/img/favicon.png").placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(imageSize, imageSize).centerCrop()
+			.into(holder.userAccountAvatar);
 	}
 
 	@Override
@@ -109,6 +91,24 @@ public class UserAccountsNavAdapter extends RecyclerView.Adapter<UserAccountsNav
 		listView.setLayoutManager(new LinearLayoutManager(context));
 		listView.setAdapter(arrayAdapter);
 		dialog.show();
+	}
+
+	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
+
+		private final ImageView userAccountAvatar;
+
+		private UserAccountsViewHolder(View itemView) {
+
+			super(itemView);
+
+			userAccountAvatar = itemView.findViewById(R.id.userAccountAvatar);
+
+			itemView.setOnClickListener(item -> {
+				customDialogUserAccountsList();
+				drawer.closeDrawers();
+			});
+		}
+
 	}
 
 }

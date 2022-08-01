@@ -18,12 +18,12 @@ public class AccountContext implements Serializable {
 	private UserAccount account;
 	private User userInfo;
 
-	public static AccountContext fromId(int id, Context context) {
-		return new AccountContext(Objects.requireNonNull(UserAccountsApi.getInstance(context, UserAccountsApi.class)).getAccountById(id));
-	}
-
 	public AccountContext(UserAccount account) {
 		this.account = account;
+	}
+
+	public static AccountContext fromId(int id, Context context) {
+		return new AccountContext(Objects.requireNonNull(UserAccountsApi.getInstance(context, UserAccountsApi.class)).getAccountById(id));
 	}
 
 	public UserAccount getAccount() {

@@ -16,14 +16,12 @@ import java.util.List;
 
 public class SettingsGeneralActivity extends BaseActivity {
 
+	private static int homeScreenSelectedChoice = 0;
+	private static int defaultLinkHandlerScreenSelectedChoice = 0;
 	private ActivitySettingsGeneralBinding viewBinding;
 	private View.OnClickListener onClickListener;
-
 	private List<String> homeScreenList;
-	private static int homeScreenSelectedChoice = 0;
-
 	private List<String> linkHandlerDefaultScreen;
-	private static int defaultLinkHandlerScreenSelectedChoice = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

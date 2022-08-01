@@ -39,9 +39,9 @@ import retrofit2.Response;
 
 public class RepoForksActivity extends BaseActivity {
 
+	private final String TAG = "RepositoryForks";
 	private TextView noData;
 	private ProgressBar progressBar;
-	private final String TAG = "RepositoryForks";
 	private int resultLimit;
 	private int pageSize = 1;
 

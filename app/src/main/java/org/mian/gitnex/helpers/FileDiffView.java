@@ -11,89 +11,12 @@ import java.util.List;
 
 public class FileDiffView implements Serializable {
 
-	private String fileNewName;
-	private String fileOldName;
-	private String diffType;
-	private String fileInfo;
-	private Stats stats;
-	private List<Content> contents;
-
-	public static class Stats implements Serializable {
-
-		private int lineAdded;
-		private int lineRemoved;
-
-		public Stats(int added, int removed) {
-
-			this.lineAdded = added;
-			this.lineRemoved = removed;
-		}
-
-		public int getAdded() {
-
-			return lineAdded;
-		}
-
-		public int getRemoved() {
-
-			return lineRemoved;
-		}
-
-		public String toString() {
-
-			return "+" + this.lineAdded + ", -" + this.lineRemoved;
-		}
-
-	}
-
-	public static class Content implements Serializable {
-
-		private int lineAdded;
-		private int lineRemoved;
-		private int oldLineStart;
-		private int newLineStart;
-		private String raw;
-
-		public Content(String content) {
-
-			this.raw = content;
-		}
-
-		public Content(String content, int oldStart, int newStart, int removed, int added) {
-
-			this.raw = content;
-			this.lineAdded = added;
-			this.lineRemoved = removed;
-			this.oldLineStart = oldStart;
-			this.newLineStart = newStart;
-		}
-
-		public String getRaw() {
-
-			return raw;
-		}
-
-		public int getLineAdded() {
-
-			return this.lineAdded;
-		}
-
-		public int getLineRemoved() {
-
-			return this.lineRemoved;
-		}
-
-		public int getOldLineStart() {
-
-			return this.oldLineStart;
-		}
-
-		public int getNewLineStart() {
-
-			return this.newLineStart;
-		}
-
-	}
+	private final String fileNewName;
+	private final String fileOldName;
+	private final String diffType;
+	private final String fileInfo;
+	private final Stats stats;
+	private final List<Content> contents;
 
 	public FileDiffView(String oldName, String newName, String diffType, String fileInfo, List<Content> fileContents) {
 
@@ -157,6 +80,83 @@ public class FileDiffView implements Serializable {
 	public List<Content> getFileContents() {
 
 		return this.contents;
+	}
+
+	public static class Stats implements Serializable {
+
+		private int lineAdded;
+		private int lineRemoved;
+
+		public Stats(int added, int removed) {
+
+			this.lineAdded = added;
+			this.lineRemoved = removed;
+		}
+
+		public int getAdded() {
+
+			return lineAdded;
+		}
+
+		public int getRemoved() {
+
+			return lineRemoved;
+		}
+
+		public String toString() {
+
+			return "+" + this.lineAdded + ", -" + this.lineRemoved;
+		}
+
+	}
+
+	public static class Content implements Serializable {
+
+		private int lineAdded;
+		private int lineRemoved;
+		private int oldLineStart;
+		private int newLineStart;
+		private final String raw;
+
+		public Content(String content) {
+
+			this.raw = content;
+		}
+
+		public Content(String content, int oldStart, int newStart, int removed, int added) {
+
+			this.raw = content;
+			this.lineAdded = added;
+			this.lineRemoved = removed;
+			this.oldLineStart = oldStart;
+			this.newLineStart = newStart;
+		}
+
+		public String getRaw() {
+
+			return raw;
+		}
+
+		public int getLineAdded() {
+
+			return this.lineAdded;
+		}
+
+		public int getLineRemoved() {
+
+			return this.lineRemoved;
+		}
+
+		public int getOldLineStart() {
+
+			return this.oldLineStart;
+		}
+
+		public int getNewLineStart() {
+
+			return this.newLineStart;
+		}
+
 	}
 
 }

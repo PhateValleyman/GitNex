@@ -39,18 +39,14 @@ import retrofit2.Response;
 public class IssuesFragment extends Fragment {
 
 	public static boolean resumeIssues = false;
-
+	private final String requestType = Constants.issuesRequestType;
 	private FragmentIssuesBinding fragmentIssuesBinding;
 	private Context context;
-
 	private Menu menu;
 	private List<Issue> issuesList;
 	private IssuesAdapter adapter;
-
 	private int pageSize = Constants.issuesPageInit;
 	private int resultLimit;
-	private final String requestType = Constants.issuesRequestType;
-
 	private RepositoryContext repository;
 
 	public static IssuesFragment newInstance(RepositoryContext repository) {
@@ -75,8 +71,7 @@ public class IssuesFragment extends Fragment {
 
 		fragmentIssuesBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 			fragmentIssuesBinding.pullToRefresh.setRefreshing(false);
-			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(),
-				repository.getIssueMilestoneFilterName(), null);
+			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName(), null);
 			adapter.notifyDataChanged();
 		}, 200));
 
@@ -84,13 +79,11 @@ public class IssuesFragment extends Fragment {
 		adapter.setLoadMoreListener(() -> fragmentIssuesBinding.recyclerView.post(() -> {
 			if(issuesList.size() == resultLimit || pageSize == resultLimit) {
 				int page = (issuesList.size() + resultLimit) / resultLimit;
-				loadMore(repository.getOwner(), repository.getName(), page, resultLimit, requestType, repository.getIssueState().toString(),
-					repository.getIssueMilestoneFilterName());
+				loadMore(repository.getOwner(), repository.getName(), page, resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName());
 			}
 		}));
 
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentIssuesBinding.recyclerView.getContext(),
-			DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentIssuesBinding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		fragmentIssuesBinding.recyclerView.setHasFixedSize(true);
 		fragmentIssuesBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 		fragmentIssuesBinding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -112,16 +105,14 @@ public class IssuesFragment extends Fragment {
 
 				if(issuesList.size() == resultLimit || pageSize == resultLimit) {
 					int page = (issuesList.size() + resultLimit) / resultLimit;
-					loadMore(repository.getOwner(), repository.getName(), page, resultLimit, requestType, repository.getIssueState().toString(),
-						repository.getIssueMilestoneFilterName());
+					loadMore(repository.getOwner(), repository.getName(), page, resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName());
 				}
 			}));
 
 			fragmentIssuesBinding.progressBar.setVisibility(View.VISIBLE);
 			fragmentIssuesBinding.noDataIssues.setVisibility(View.GONE);
 
-			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, issueState, repository.getIssueMilestoneFilterName(),
-				null);
+			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, issueState, repository.getIssueMilestoneFilterName(), null);
 			fragmentIssuesBinding.recyclerView.setAdapter(adapter);
 		});
 
@@ -134,21 +125,18 @@ public class IssuesFragment extends Fragment {
 
 				if(issuesList.size() == resultLimit || pageSize == resultLimit) {
 					int page = (issuesList.size() + resultLimit) / resultLimit;
-					loadMore(repository.getOwner(), repository.getName(), page, resultLimit, requestType, repository.getIssueState().toString(),
-						repository.getIssueMilestoneFilterName());
+					loadMore(repository.getOwner(), repository.getName(), page, resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName());
 				}
 			}));
 
 			fragmentIssuesBinding.progressBar.setVisibility(View.VISIBLE);
 			fragmentIssuesBinding.noDataIssues.setVisibility(View.GONE);
 
-			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(),
-				filterIssueByMilestone, null);
+			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(), filterIssueByMilestone, null);
 			fragmentIssuesBinding.recyclerView.setAdapter(adapter);
 		});
 
-		loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(),
-			repository.getIssueMilestoneFilterName(), null);
+		loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName(), null);
 
 		return fragmentIssuesBinding.getRoot();
 	}
@@ -157,18 +145,14 @@ public class IssuesFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		if(resumeIssues) {
-			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(),
-				repository.getIssueMilestoneFilterName(), null);
+			loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName(), null);
 			resumeIssues = false;
 		}
 	}
 
-	private void loadInitial(String repoOwner, String repoName, int resultLimit, String requestType, String issueState, String filterByMilestone,
-		String query) {
+	private void loadInitial(String repoOwner, String repoName, int resultLimit, String requestType, String issueState, String filterByMilestone, String query) {
 
-		Call<List<Issue>> call = RetrofitClient.getApiInterface(context)
-			.issueListIssues(repoOwner, repoName, issueState, null, query, requestType, filterByMilestone, null, null, null, null, null, 1,
-				resultLimit);
+		Call<List<Issue>> call = RetrofitClient.getApiInterface(context).issueListIssues(repoOwner, repoName, issueState, null, query, requestType, filterByMilestone, null, null, null, null, null, 1, resultLimit);
 
 		call.enqueue(new Callback<>() {
 
@@ -206,14 +190,11 @@ public class IssuesFragment extends Fragment {
 		});
 	}
 
-	private void loadMore(String repoOwner, String repoName, int page, int resultLimit, String requestType, String issueState,
-		String filterByMilestone) {
+	private void loadMore(String repoOwner, String repoName, int page, int resultLimit, String requestType, String issueState, String filterByMilestone) {
 
 		fragmentIssuesBinding.progressBar.setVisibility(View.VISIBLE);
 
-		Call<List<Issue>> call = RetrofitClient.getApiInterface(context)
-			.issueListIssues(repoOwner, repoName, issueState, null, null, requestType, filterByMilestone, null, null, null, null, null, page,
-				resultLimit);
+		Call<List<Issue>> call = RetrofitClient.getApiInterface(context).issueListIssues(repoOwner, repoName, issueState, null, null, requestType, filterByMilestone, null, null, null, null, null, page, resultLimit);
 		call.enqueue(new Callback<>() {
 
 			@Override
@@ -268,8 +249,7 @@ public class IssuesFragment extends Fragment {
 
 			@Override
 			public boolean onQueryTextSubmit(String query) {
-				loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(),
-					repository.getIssueMilestoneFilterName(), query);
+				loadInitial(repository.getOwner(), repository.getName(), resultLimit, requestType, repository.getIssueState().toString(), repository.getIssueMilestoneFilterName(), query);
 				searchView.setQuery(null, false);
 				searchItem.collapseActionView();
 				return false;

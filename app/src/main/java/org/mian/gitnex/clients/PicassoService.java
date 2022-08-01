@@ -56,13 +56,6 @@ public class PicassoService {
 		}
 	}
 
-	public Picasso get() {
-
-		cachePath.mkdirs();
-		return picasso;
-
-	}
-
 	public static synchronized PicassoService getInstance(Context context) {
 
 		if(picassoService == null) {
@@ -74,6 +67,13 @@ public class PicassoService {
 		}
 
 		return picassoService;
+
+	}
+
+	public Picasso get() {
+
+		cachePath.mkdirs();
+		return picasso;
 
 	}
 

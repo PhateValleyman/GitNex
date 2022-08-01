@@ -36,19 +36,14 @@ import retrofit2.Callback;
 
 public class CreateFileActivity extends BaseActivity {
 
-	private ActivityCreateFileBinding binding;
-
 	public static final int FILE_ACTION_CREATE = 0;
 	public static final int FILE_ACTION_DELETE = 1;
 	public static final int FILE_ACTION_EDIT = 2;
-
+	private final List<String> branches = new ArrayList<>();
+	private ActivityCreateFileBinding binding;
 	private int fileAction = FILE_ACTION_CREATE;
-
 	private String filePath;
 	private String fileSha;
-
-	private final List<String> branches = new ArrayList<>();
-
 	private RepositoryContext repository;
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -121,8 +116,7 @@ public class CreateFileActivity extends BaseActivity {
 		disableProcessButton();
 
 		NetworkStatusObserver networkStatusObserver = NetworkStatusObserver.getInstance(ctx);
-		networkStatusObserver.registerNetworkStatusListener(
-			hasNetworkConnection -> runOnUiThread(() -> binding.newFileCreate.setEnabled(hasNetworkConnection)));
+		networkStatusObserver.registerNetworkStatusListener(hasNetworkConnection -> runOnUiThread(() -> binding.newFileCreate.setEnabled(hasNetworkConnection)));
 
 		binding.newFileCreate.setOnClickListener(v -> processNewFile());
 
@@ -160,8 +154,7 @@ public class CreateFileActivity extends BaseActivity {
 		switch(fileAction) {
 
 			case FILE_ACTION_CREATE:
-				createNewFile(repository.getOwner(), repository.getName(), newFileName, AppUtil.encodeBase64(newFileContent), newFileCommitMessage,
-					newFileBranchName);
+				createNewFile(repository.getOwner(), repository.getName(), newFileName, AppUtil.encodeBase64(newFileContent), newFileCommitMessage, newFileBranchName);
 				break;
 
 			case FILE_ACTION_DELETE:
@@ -169,8 +162,7 @@ public class CreateFileActivity extends BaseActivity {
 				break;
 
 			case FILE_ACTION_EDIT:
-				editFile(repository.getOwner(), repository.getName(), filePath, AppUtil.encodeBase64(newFileContent), newFileCommitMessage,
-					newFileBranchName, fileSha);
+				editFile(repository.getOwner(), repository.getName(), filePath, AppUtil.encodeBase64(newFileContent), newFileCommitMessage, newFileBranchName, fileSha);
 				break;
 
 		}
@@ -295,8 +287,7 @@ public class CreateFileActivity extends BaseActivity {
 
 	}
 
-	private void editFile(String repoOwner, String repoName, String fileName, String fileContent, String fileCommitMessage, String branchName,
-		String fileSha) {
+	private void editFile(String repoOwner, String repoName, String fileName, String fileContent, String fileCommitMessage, String branchName, String fileSha) {
 
 		UpdateFileOptions editFileJsonStr = new UpdateFileOptions();
 		editFileJsonStr.setContent(fileContent);

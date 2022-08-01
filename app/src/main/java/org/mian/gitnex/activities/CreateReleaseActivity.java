@@ -38,8 +38,9 @@ import retrofit2.Callback;
 
 public class CreateReleaseActivity extends BaseActivity {
 
-	private View.OnClickListener onClickListener;
 	public ImageView closeActivity;
+	List<String> branchesList = new ArrayList<>();
+	private View.OnClickListener onClickListener;
 	private EditText releaseTagName;
 	private AutoCompleteTextView releaseBranch;
 	private EditText releaseTitle;
@@ -49,10 +50,8 @@ public class CreateReleaseActivity extends BaseActivity {
 	private Button createNewRelease;
 	private String selectedBranch;
 	private Button createNewTag;
-
 	private RepositoryContext repository;
-
-	List<String> branchesList = new ArrayList<>();
+	private final View.OnClickListener createReleaseListener = v -> processNewRelease();
 
 	@SuppressLint("ClickableViewAccessibility")
 	@Override
@@ -182,8 +181,6 @@ public class CreateReleaseActivity extends BaseActivity {
 		});
 	}
 
-	private final View.OnClickListener createReleaseListener = v -> processNewRelease();
-
 	private void processNewRelease() {
 
 		boolean connToInternet = AppUtil.hasNetworkConnection(appCtx);
@@ -220,12 +217,11 @@ public class CreateReleaseActivity extends BaseActivity {
 		}
 
 		disableProcessButton();
-		createNewReleaseFunc(repository.getOwner(), repository.getName(), newReleaseTagName, newReleaseTitle, newReleaseContent, selectedBranch,
-			newReleaseType, newReleaseDraft);
+		createNewReleaseFunc(repository.getOwner(), repository.getName(), newReleaseTagName, newReleaseTitle, newReleaseContent, selectedBranch, newReleaseType, newReleaseDraft);
 	}
 
-	private void createNewReleaseFunc(String repoOwner, String repoName, String newReleaseTagName, String newReleaseTitle, String newReleaseContent,
-		String selectedBranch, boolean newReleaseType, boolean newReleaseDraft) {
+	private void createNewReleaseFunc(String repoOwner, String repoName, String newReleaseTagName, String newReleaseTitle, String newReleaseContent, String selectedBranch, boolean newReleaseType,
+		boolean newReleaseDraft) {
 
 		CreateReleaseOption createReleaseJson = new CreateReleaseOption();
 		createReleaseJson.setName(newReleaseTitle);

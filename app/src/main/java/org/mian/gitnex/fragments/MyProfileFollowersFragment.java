@@ -31,13 +31,12 @@ import retrofit2.Response;
 
 public class MyProfileFollowersFragment extends Fragment {
 
+	private final String TAG = "MyProfileFollowersFragment";
 	private FragmentProfileFollowersFollowingBinding viewBinding;
 	private Context context;
-
 	private List<User> dataList;
 	private UsersAdapter adapter;
 	private int pageSize;
-	private final String TAG = "MyProfileFollowersFragment";
 	private int resultLimit;
 
 	@Override

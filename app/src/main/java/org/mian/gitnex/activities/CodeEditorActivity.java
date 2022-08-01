@@ -23,10 +23,10 @@ import java.util.Map;
 
 public class CodeEditorActivity extends BaseActivity {
 
-	private ActivityCodeEditorBinding binding;
-	private LanguageManager languageManager;
 	private final LanguageName currentLanguage = LanguageName.JAVA;
 	private final ThemeName currentTheme = ThemeName.FIVE_COLOR;
+	private ActivityCodeEditorBinding binding;
+	private LanguageManager languageManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

@@ -33,8 +33,7 @@ public class AdministrationFragment extends Fragment {
 		}
 
 		fragmentAdministrationBinding.adminCronFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminCronTasksActivity.class)));
-		fragmentAdministrationBinding.unadoptedReposFrame.setOnClickListener(
-			v1 -> startActivity(new Intent(getContext(), AdminUnadoptedReposActivity.class)));
+		fragmentAdministrationBinding.unadoptedReposFrame.setOnClickListener(v1 -> startActivity(new Intent(getContext(), AdminUnadoptedReposActivity.class)));
 
 		String action = requireActivity().getIntent().getStringExtra("giteaAdminAction");
 		if(action != null) {

@@ -71,39 +71,6 @@ public class MyProfileFragment extends Fragment {
 		return v;
 	}
 
-	public static class SectionsPagerAdapter extends FragmentStatePagerAdapter {
-
-		SectionsPagerAdapter(FragmentManager fm) {
-			super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-		}
-
-		@NonNull
-		@Override
-		public Fragment getItem(int position) {
-
-			switch(position) {
-
-				case 0: // followers
-					return new MyProfileFollowersFragment();
-
-				case 1: // following
-					return new MyProfileFollowingFragment();
-
-				case 2: // emails
-					return new MyProfileEmailsFragment();
-
-			}
-
-			return null;
-		}
-
-		@Override
-		public int getCount() {
-			return 3;
-		}
-
-	}
-
 	@Override
 	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
@@ -152,38 +119,36 @@ public class MyProfileFragment extends Fragment {
 			userLanguage.setText(getResources().getConfiguration().locale.getDisplayLanguage());
 		}
 
-		userAvatar.setOnClickListener(loginId -> AppUtil.copyToClipboard(ctx, account.getAccount().getUserName(),
-			ctx.getString(R.string.copyLoginIdToClipBoard, account.getAccount().getUserName())));
+		userAvatar.setOnClickListener(loginId -> AppUtil.copyToClipboard(ctx, account.getAccount().getUserName(), ctx.getString(R.string.copyLoginIdToClipBoard, account.getAccount().getUserName())));
 
 		userFullName.setText(Html.fromHtml(account.getFullName()));
 		userLogin.setText(getString(R.string.usernameWithAt, account.getAccount().getUserName()));
 
 		int avatarRadius = AppUtil.getPixelsFromDensity(ctx, 3);
 
-		PicassoService.getInstance(ctx).get().load(account.getUserInfo().getAvatarUrl()).transform(new RoundedTransformation(avatarRadius, 0))
-			.placeholder(R.drawable.loader_animated).resize(120, 120).centerCrop().into(userAvatar);
+		PicassoService.getInstance(ctx).get().load(account.getUserInfo().getAvatarUrl()).transform(new RoundedTransformation(avatarRadius, 0)).placeholder(R.drawable.loader_animated).resize(120, 120).centerCrop()
+			.into(userAvatar);
 
-		PicassoService.getInstance(ctx).get().load(account.getUserInfo().getAvatarUrl()).transform(new BlurTransformation(ctx))
-			.into(userAvatarBackground, new Callback() {
+		PicassoService.getInstance(ctx).get().load(account.getUserInfo().getAvatarUrl()).transform(new BlurTransformation(ctx)).into(userAvatarBackground, new Callback() {
 
-				@Override
-				public void onSuccess() {
+			@Override
+			public void onSuccess() {
 
-					int invertedColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+				int invertedColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
 
-					userFullName.setTextColor(invertedColor);
-					divider.setBackgroundColor(invertedColor);
-					userLogin.setTextColor(invertedColor);
-					userLanguage.setTextColor(invertedColor);
+				userFullName.setTextColor(invertedColor);
+				divider.setBackgroundColor(invertedColor);
+				userLogin.setTextColor(invertedColor);
+				userLanguage.setTextColor(invertedColor);
 
-					ImageViewCompat.setImageTintList(userLanguageIcon, ColorStateList.valueOf(invertedColor));
-				}
+				ImageViewCompat.setImageTintList(userLanguageIcon, ColorStateList.valueOf(invertedColor));
+			}
 
-				@Override
-				public void onError(Exception e) {
+			@Override
+			public void onError(Exception e) {
 
-				}
-			});
+			}
+		});
 
 		MyProfileFragment.SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
@@ -213,6 +178,39 @@ public class MyProfileFragment extends Fragment {
 
 		mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 		tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+	}
+
+	public static class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+
+		SectionsPagerAdapter(FragmentManager fm) {
+			super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+		}
+
+		@NonNull
+		@Override
+		public Fragment getItem(int position) {
+
+			switch(position) {
+
+				case 0: // followers
+					return new MyProfileFollowersFragment();
+
+				case 1: // following
+					return new MyProfileFollowingFragment();
+
+				case 2: // emails
+					return new MyProfileEmailsFragment();
+
+			}
+
+			return null;
+		}
+
+		@Override
+		public int getCount() {
+			return 3;
+		}
+
 	}
 
 }

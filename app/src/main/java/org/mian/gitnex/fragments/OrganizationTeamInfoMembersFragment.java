@@ -26,13 +26,11 @@ import retrofit2.Response;
 
 public class OrganizationTeamInfoMembersFragment extends Fragment {
 
+	private final List<User> teamUserInfo = new ArrayList<>();
 	private Context ctx;
-
 	private FragmentOrganizationTeamInfoMembersBinding binding;
 	private Team team;
-
 	private UserGridAdapter adapter;
-	private final List<User> teamUserInfo = new ArrayList<>();
 
 	public OrganizationTeamInfoMembersFragment() {
 	}

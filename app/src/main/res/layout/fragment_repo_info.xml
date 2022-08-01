@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
-        android:orientation="vertical"
-        android:background="?attr/primaryBackgroundColor"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/primaryBackgroundColor"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:padding="15dp"
-            android:orientation="vertical"
             android:id="@+id/repoInfoLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
 
             <TextView
                 android:id="@+id/repoIsArchived"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:layout_gravity="center"
-                android:text="@string/archivedRepositoryMessage"
-                android:background="@drawable/shape_archived"
-                android:padding="6dp"
                 android:layout_marginBottom="8dp"
-                android:textColor="@color/colorWhite" />
+                android:background="@drawable/shape_archived"
+                android:gravity="center_vertical"
+                android:padding="6dp"
+                android:text="@string/archivedRepositoryMessage"
+                android:textColor="@color/colorWhite"/>
 
             <LinearLayout
                 android:id="@+id/repoMetaFrameHeader"
@@ -42,22 +42,22 @@
                     android:id="@+id/repoMetaData"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/repoMetaData"
-                    android:textSize="16sp"
-                    android:paddingTop="10dp"
                     android:layout_weight="0.9"
                     android:gravity="center_vertical"
-                    android:paddingBottom="10dp"
                     android:paddingStart="0dp"
+                    android:paddingTop="10dp"
                     android:paddingEnd="0dp"
-                    android:textColor="@color/lightGray"/>
+                    android:paddingBottom="10dp"
+                    android:text="@string/repoMetaData"
+                    android:textColor="@color/lightGray"
+                    android:textSize="16sp"/>
 
                 <ImageView
                     android:id="@+id/repoMetaDataExpandCollapse"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
                     android:layout_gravity="center_vertical|end"
+                    android:layout_weight="0.1"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/issueDescriptionEmpty"
                     app:srcCompat="@drawable/ic_chevron_down"/>
@@ -74,10 +74,10 @@
                     android:id="@+id/repoMetaName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/primaryTextColor"
                     android:layout_marginBottom="5dp"
+                    android:textColor="?attr/primaryTextColor"
                     android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/repoMetaDescription"
@@ -89,7 +89,7 @@
                     android:maxLines="3"
                     android:textColor="?attr/primaryTextColor"
                     android:textColorLink="@color/lightBlue"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -104,8 +104,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:focusable="true"
                         android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -113,14 +113,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/repoStargazersInMenu"
-                            app:srcCompat="@drawable/ic_star_unfilled" />
+                            app:srcCompat="@drawable/ic_star_unfilled"/>
 
                         <TextView
                             android:id="@+id/repoMetaStars"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="?attr/primaryTextColor"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -129,8 +129,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:focusable="true"
                         android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -138,14 +138,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/tabPullRequests"
-                            app:srcCompat="@drawable/ic_pull_request" />
+                            app:srcCompat="@drawable/ic_pull_request"/>
 
                         <TextView
                             android:id="@+id/repoMetaPullRequests"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="?attr/primaryTextColor"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -154,8 +154,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:focusable="true"
                         android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -163,14 +163,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/infoTabRepoForksCount"
-                            app:srcCompat="@drawable/ic_fork" />
+                            app:srcCompat="@drawable/ic_fork"/>
 
                         <TextView
                             android:id="@+id/repoMetaForks"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="?attr/primaryTextColor"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -179,8 +179,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:focusable="true"
                         android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -188,14 +188,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/repoWatchersInMenu"
-                            app:srcCompat="@drawable/ic_unwatch" />
+                            app:srcCompat="@drawable/ic_unwatch"/>
 
                         <TextView
                             android:id="@+id/repoMetaWatchers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="?attr/primaryTextColor"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -204,32 +204,32 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="12dp"
-                    android:background="?attr/dividerColor" />
+                    android:background="?attr/dividerColor"/>
 
                 <LinearLayout
                     android:id="@+id/repo_fork_frame"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:background="?android:attr/selectableItemBackground"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:orientation="horizontal"
                     android:paddingLeft="15dp"
-                    android:paddingRight="15dp">
+                    android:paddingTop="8dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="8dp">
 
                     <ImageView
-                        android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_fork" />
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/ic_fork"/>
 
                     <TextView
                         android:id="@+id/repo_fork"
-                        android:layout_marginStart="15dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
                         android:textColor="?attr/primaryTextColor"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -242,11 +242,11 @@
                     android:paddingRight="15dp">
 
                     <ImageView
-                        android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:contentDescription="@string/repoWatchersInMenu"
-                        app:srcCompat="@drawable/ic_download" />
+                        app:srcCompat="@drawable/ic_download"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -260,7 +260,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/infoTabRepoSize"
                             android:textColor="?attr/primaryTextColor"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"/>
 
                         <TextView
                             android:id="@+id/repoMetaSize"
@@ -269,7 +269,7 @@
                             android:alpha="0.9"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="14sp"
-                            tools:text="29" />
+                            tools:text="29"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -283,11 +283,11 @@
                     android:paddingRight="15dp">
 
                     <ImageView
-                        android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:contentDescription="@string/infoTabRepoCreatedAt"
-                        app:srcCompat="@drawable/ic_calendar" />
+                        app:srcCompat="@drawable/ic_calendar"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -301,7 +301,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/infoTabRepoCreatedAt"
                             android:textColor="?attr/primaryTextColor"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"/>
 
                         <TextView
                             android:id="@+id/repoMetaCreatedAt"
@@ -310,7 +310,7 @@
                             android:alpha="0.9"
                             android:textColor="?attr/primaryTextColor"
                             android:textSize="14sp"
-                            tools:text="29" />
+                            tools:text="29"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -324,11 +324,11 @@
                     android:paddingRight="15dp">
 
                     <ImageView
-                        android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:contentDescription="@string/websiteText"
-                        app:srcCompat="@drawable/ic_link" />
+                        app:srcCompat="@drawable/ic_link"/>
 
                     <LinearLayout
                         android:id="@+id/websiteFrame"
@@ -343,7 +343,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/websiteText"
                             android:textColor="?attr/primaryTextColor"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"/>
 
                         <TextView
                             android:id="@+id/repoMetaWebsite"
@@ -351,10 +351,10 @@
                             android:layout_height="wrap_content"
                             android:alpha="0.9"
                             android:autoLink="web"
-                            android:textColorLink="@color/lightBlue"
                             android:textColor="?attr/primaryTextColor"
+                            android:textColorLink="@color/lightBlue"
                             android:textSize="14sp"
-                            tools:text="29" />
+                            tools:text="29"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -367,7 +367,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="20dp"
                     android:text="@string/infoShowMoreInformation"
-                    android:textColor="@color/btnTextColor" />
+                    android:textColor="@color/btnTextColor"/>
 
             </LinearLayout>
 
@@ -383,24 +383,24 @@
                     android:id="@+id/repoFilename"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/defaultFilenameText"
-                    android:textSize="16sp"
-                    android:paddingTop="10dp"
                     android:layout_weight="0.9"
-                    android:gravity="center_vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="0dp"
                     android:autoLink="web"
+                    android:gravity="center_vertical"
+                    android:paddingStart="0dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="0dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/defaultFilenameText"
+                    android:textColor="@color/lightGray"
                     android:textColorLink="@color/lightBlue"
-                    android:textColor="@color/lightGray"/>
+                    android:textSize="16sp"/>
 
                 <ImageView
                     android:id="@+id/repoFilenameExpandCollapse"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
                     android:layout_gravity="center_vertical|end"
+                    android:layout_weight="0.1"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/issueDescriptionEmpty"
                     app:srcCompat="@drawable/ic_chevron_up"/>
@@ -409,17 +409,17 @@
 
             <LinearLayout
                 android:id="@+id/fileContentsFrame"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/repoFileContents"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="?attr/primaryTextColor"
                     android:textIsSelectable="true"
-                    android:textSize="16sp"
-                    android:textColor="?attr/primaryTextColor"/>
+                    android:textSize="16sp"/>
 
             </LinearLayout>
 

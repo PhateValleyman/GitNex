@@ -37,8 +37,6 @@ import retrofit2.Response;
 @SuppressLint("ViewConstructor")
 public class ReactionList extends HorizontalScrollView {
 
-	private enum ReactionType {COMMENT, ISSUE}
-
 	private Runnable onReactionAddedListener;
 
 	@SuppressLint("SetTextI18n")
@@ -48,8 +46,7 @@ public class ReactionList extends HorizontalScrollView {
 
 		LinearLayout root = new LinearLayout(context);
 
-		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-			ViewGroup.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 		root.setOrientation(LinearLayout.HORIZONTAL);
 		root.setGravity(Gravity.START);
@@ -83,8 +80,7 @@ public class ReactionList extends HorizontalScrollView {
 				switch(reactionType) {
 
 					case ISSUE:
-						response = RetrofitClient.getApiInterface(context).issueGetIssueReactions(repoOwner, repoName, (long) id, null, null)
-							.execute();
+						response = RetrofitClient.getApiInterface(context).issueGetIssueReactions(repoOwner, repoName, (long) id, null, null).execute();
 						break;
 
 					case COMMENT:
@@ -113,8 +109,7 @@ public class ReactionList extends HorizontalScrollView {
 
 						List<Reaction> issueReactions = sortedReactions.get(content);
 
-						@SuppressLint("InflateParams") CardView reactionBadge = (CardView) LayoutInflater.from(context)
-							.inflate(R.layout.layout_reaction_badge, this, false);
+						@SuppressLint("InflateParams") CardView reactionBadge = (CardView) LayoutInflater.from(context).inflate(R.layout.layout_reaction_badge, this, false);
 
 						for(Reaction issueReaction : issueReactions) {
 							if(issueReaction.getUser().getLogin().equals(loginUid)) {
@@ -125,8 +120,7 @@ public class ReactionList extends HorizontalScrollView {
 
 						Emoji emoji = EmojiManager.getForAlias(content);
 
-						((TextView) reactionBadge.findViewById(R.id.symbol)).setText(
-							((emoji == null) ? content : emoji.getUnicode()) + " " + issueReactions.size());
+						((TextView) reactionBadge.findViewById(R.id.symbol)).setText(((emoji == null) ? content : emoji.getUnicode()) + " " + issueReactions.size());
 
 						reactionBadge.setOnClickListener(v -> {
 
@@ -142,8 +136,8 @@ public class ReactionList extends HorizontalScrollView {
 							recyclerView.setAdapter(adapter);
 
 							assert emoji != null;
-							AlertDialog alertDialog = new AlertDialog.Builder(context).setView(recyclerView).setTitle(emoji.getUnicode())
-								.setPositiveButton(R.string.okButton, (dialog, which) -> dialog.cancel()).setCancelable(true).create();
+							AlertDialog alertDialog = new AlertDialog.Builder(context).setView(recyclerView).setTitle(emoji.getUnicode()).setPositiveButton(R.string.okButton, (dialog, which) -> dialog.cancel())
+								.setCancelable(true).create();
 
 							alertDialog.show();
 
@@ -166,5 +160,7 @@ public class ReactionList extends HorizontalScrollView {
 	public void setOnReactionAddedListener(Runnable onReactionAddedListener) {
 		this.onReactionAddedListener = onReactionAddedListener;
 	}
+
+	private enum ReactionType {COMMENT, ISSUE}
 
 }

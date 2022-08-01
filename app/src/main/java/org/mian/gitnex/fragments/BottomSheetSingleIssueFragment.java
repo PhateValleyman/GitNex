@@ -32,9 +32,9 @@ import java.util.Objects;
 
 public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
-	private BottomSheetListener bmListener;
 	private final IssueContext issue;
 	private final String issueCreator;
+	private BottomSheetListener bmListener;
 
 	public BottomSheetSingleIssueFragment(IssueContext issue, String username) {
 		this.issue = issue;
@@ -83,8 +83,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 			binding.editIssue.setText(R.string.menuEditText);
 
-			boolean canPushPullSource =
-				issue.getPullRequest().getHead().getRepo() != null ? issue.getPullRequest().getHead().getRepo().getPermissions().isPush() : false;
+			boolean canPushPullSource = issue.getPullRequest().getHead().getRepo() != null ? issue.getPullRequest().getHead().getRepo().getPermissions().isPush() : false;
 			if(issue.getPullRequest().isMerged() || issue.getIssue().getState().equals("closed")) {
 				binding.updatePullRequest.setVisibility(View.GONE);
 				binding.mergePullRequest.setVisibility(View.GONE);
@@ -130,12 +129,10 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		binding.updatePullRequest.setOnClickListener(v -> {
 			if(((BaseActivity) requireActivity()).getAccount().requiresVersion("1.16.0")) {
-				AlertDialogs.selectPullUpdateStrategy(requireContext(), issue.getRepository().getOwner(), issue.getRepository().getName(),
-					String.valueOf(issue.getIssueIndex()));
+				AlertDialogs.selectPullUpdateStrategy(requireContext(), issue.getRepository().getOwner(), issue.getRepository().getName(), String.valueOf(issue.getIssueIndex()));
 			}
 			else {
-				PullRequestActions.updatePr(requireContext(), issue.getRepository().getOwner(), issue.getRepository().getName(),
-					String.valueOf(issue.getIssueIndex()), null);
+				PullRequestActions.updatePr(requireContext(), issue.getRepository().getOwner(), issue.getRepository().getName(), String.valueOf(issue.getIssueIndex()), null);
 			}
 			dismiss();
 		});
@@ -148,8 +145,7 @@ public class BottomSheetSingleIssueFragment extends BottomSheetDialogFragment {
 
 		binding.deletePrHeadBranch.setOnClickListener(v -> {
 
-			PullRequestActions.deleteHeadBranch(ctx, issue.getRepository().getOwner(), issue.getRepository().getName(),
-				issue.getPullRequest().getHead().getRef(), true);
+			PullRequestActions.deleteHeadBranch(ctx, issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getPullRequest().getHead().getRef(), true);
 			dismiss();
 		});
 

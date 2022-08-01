@@ -25,36 +25,13 @@ import retrofit2.Callback;
 
 public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadoptedReposAdapter.UnadoptedViewHolder> {
 
-	private List<String> repos;
 	private final Runnable updateList;
 	private final Runnable loadMoreListener;
-	private boolean isLoading = false, hasMore = true;
 	private final ActivityAdminCronTasksBinding activityAdminCronTasksBinding;
+	private List<String> repos;
+	private boolean isLoading = false, hasMore = true;
 
-	class UnadoptedViewHolder extends RecyclerView.ViewHolder {
-
-		private String repoName;
-		private final TextView name;
-
-		private UnadoptedViewHolder(View itemView) {
-
-			super(itemView);
-			Context ctx = itemView.getContext();
-
-			name = itemView.findViewById(R.id.repo_name);
-
-			itemView.setOnClickListener(taskInfo -> {
-				String[] repoSplit = repoName.split("/");
-				new AlertDialog.Builder(ctx).setTitle(repoName).setMessage(ctx.getString(R.string.unadoptedReposMessage, repoSplit[1], repoSplit[0]))
-					.setNeutralButton(R.string.close, null).setPositiveButton(R.string.menuDeleteText, ((dialog, which) -> delete(ctx, repoName)))
-					.setNegativeButton(R.string.adoptRepo, ((dialog, which) -> adopt(ctx, repoName, getBindingAdapterPosition()))).show();
-			});
-		}
-
-	}
-
-	public AdminUnadoptedReposAdapter(List<String> list, Runnable updateList, Runnable loadMore,
-		ActivityAdminCronTasksBinding activityAdminCronTasksBinding) {
+	public AdminUnadoptedReposAdapter(List<String> list, Runnable updateList, Runnable loadMore, ActivityAdminCronTasksBinding activityAdminCronTasksBinding) {
 		this.repos = list;
 		this.updateList = updateList;
 		this.loadMoreListener = loadMore;
@@ -193,6 +170,28 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 	public void setHasMore(boolean hasMore) {
 		this.hasMore = hasMore;
 		isLoading = false;
+	}
+
+	class UnadoptedViewHolder extends RecyclerView.ViewHolder {
+
+		private final TextView name;
+		private String repoName;
+
+		private UnadoptedViewHolder(View itemView) {
+
+			super(itemView);
+			Context ctx = itemView.getContext();
+
+			name = itemView.findViewById(R.id.repo_name);
+
+			itemView.setOnClickListener(taskInfo -> {
+				String[] repoSplit = repoName.split("/");
+				new AlertDialog.Builder(ctx).setTitle(repoName).setMessage(ctx.getString(R.string.unadoptedReposMessage, repoSplit[1], repoSplit[0])).setNeutralButton(R.string.close, null)
+					.setPositiveButton(R.string.menuDeleteText, ((dialog, which) -> delete(ctx, repoName))).setNegativeButton(R.string.adoptRepo, ((dialog, which) -> adopt(ctx, repoName, getBindingAdapterPosition())))
+					.show();
+			});
+		}
+
 	}
 
 }

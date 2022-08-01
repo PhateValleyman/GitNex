@@ -21,6 +21,20 @@ public class MainGrammarLocator implements GrammarLocator {
 	private MainGrammarLocator() {
 	}
 
+	public static MainGrammarLocator getInstance() {
+
+		if(instance == null) {
+			synchronized(MainGrammarLocator.class) {
+				if(instance == null) {
+					instance = new MainGrammarLocator();
+				}
+			}
+		}
+
+		return instance;
+
+	}
+
 	public String fromExtension(String extension) {
 
 		switch(extension.toLowerCase()) {
@@ -116,20 +130,6 @@ public class MainGrammarLocator implements GrammarLocator {
 	public Set<String> languages() {
 
 		return defaultGrammarLocator.languages();
-	}
-
-	public static MainGrammarLocator getInstance() {
-
-		if(instance == null) {
-			synchronized(MainGrammarLocator.class) {
-				if(instance == null) {
-					instance = new MainGrammarLocator();
-				}
-			}
-		}
-
-		return instance;
-
 	}
 
 }

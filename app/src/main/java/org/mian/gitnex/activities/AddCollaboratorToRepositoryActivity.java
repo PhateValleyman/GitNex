@@ -44,8 +44,7 @@ public class AddCollaboratorToRepositoryActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 
-		ActivityAddCollaboratorToRepositoryBinding activityAddCollaboratorToRepositoryBinding = ActivityAddCollaboratorToRepositoryBinding.inflate(
-			getLayoutInflater());
+		ActivityAddCollaboratorToRepositoryBinding activityAddCollaboratorToRepositoryBinding = ActivityAddCollaboratorToRepositoryBinding.inflate(getLayoutInflater());
 		setContentView(activityAddCollaboratorToRepositoryBinding.getRoot());
 
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

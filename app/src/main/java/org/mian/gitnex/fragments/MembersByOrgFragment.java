@@ -26,8 +26,8 @@ import org.mian.gitnex.viewmodels.MembersByOrgViewModel;
 
 public class MembersByOrgFragment extends Fragment {
 
+	private static final String orgNameF = "param2";
 	private TextView noDataMembers;
-	private static String orgNameF = "param2";
 	private String orgName;
 	private UserGridAdapter adapter;
 	private GridView mGridView;

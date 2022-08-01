@@ -43,22 +43,19 @@ import retrofit2.Callback;
 
 public class CreatePullRequestActivity extends BaseActivity implements LabelsListAdapter.LabelsListAdapterListener {
 
+	private final List<String> assignees = new ArrayList<>();
+	LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
+	List<String> branchesList = new ArrayList<>();
+	List<Label> labelsList = new ArrayList<>();
 	private View.OnClickListener onClickListener;
 	private ActivityCreatePrBinding viewBinding;
 	private int resultLimit;
 	private Dialog dialogLabels;
 	private List<Integer> labelsIds = new ArrayList<>();
-	private final List<String> assignees = new ArrayList<>();
 	private int milestoneId;
 	private Date currentDate = null;
-
 	private RepositoryContext repository;
-
 	private LabelsListAdapter labelsAdapter;
-
-	LinkedHashMap<String, Milestone> milestonesList = new LinkedHashMap<>();
-	List<String> branchesList = new ArrayList<>();
-	List<Label> labelsList = new ArrayList<>();
 
 	@SuppressLint("ClickableViewAccessibility")
 	@Override
@@ -162,8 +159,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 		createPullRequest.setLabels(labelIds);
 		createPullRequest.setDueDate(currentDate);
 
-		Call<PullRequest> transferCall = RetrofitClient.getApiInterface(ctx)
-			.repoCreatePullRequest(repository.getOwner(), repository.getName(), createPullRequest);
+		Call<PullRequest> transferCall = RetrofitClient.getApiInterface(ctx).repoCreatePullRequest(repository.getOwner(), repository.getName(), createPullRequest);
 
 		transferCall.enqueue(new Callback<>() {
 
@@ -228,8 +224,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 			dialogLabels.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		}
 
-		org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding labelsBinding = CustomLabelsSelectionDialogBinding.inflate(
-			LayoutInflater.from(ctx));
+		org.mian.gitnex.databinding.CustomLabelsSelectionDialogBinding labelsBinding = CustomLabelsSelectionDialogBinding.inflate(LayoutInflater.from(ctx));
 
 		View view = labelsBinding.getRoot();
 		dialogLabels.setContentView(view);
@@ -293,8 +288,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 
 					List<Milestone> milestonesList_ = response.body();
 
-					milestonesList.put(getString(R.string.issueCreatedNoMilestone),
-						new Milestone().id(0L).title(getString(R.string.issueCreatedNoMilestone)));
+					milestonesList.put(getString(R.string.issueCreatedNoMilestone), new Milestone().id(0L).title(getString(R.string.issueCreatedNoMilestone)));
 					assert milestonesList_ != null;
 
 					if(milestonesList_.size() > 0) {
@@ -308,8 +302,7 @@ public class CreatePullRequestActivity extends BaseActivity implements LabelsLis
 						}
 					}
 
-					ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this, R.layout.list_spinner_items,
-						new ArrayList<>(milestonesList.keySet()));
+					ArrayAdapter<String> adapter = new ArrayAdapter<>(CreatePullRequestActivity.this, R.layout.list_spinner_items, new ArrayList<>(milestonesList.keySet()));
 
 					viewBinding.milestonesSpinner.setAdapter(adapter);
 					enableProcessButton();

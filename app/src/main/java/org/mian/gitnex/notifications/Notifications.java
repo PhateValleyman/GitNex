@@ -44,8 +44,7 @@ public class Notifications {
 			notificationManager.deleteNotificationChannel(context.getPackageName()); // TODO Can be removed in future versions
 
 			// Create new notification channels
-			NotificationChannel mainChannel = new NotificationChannel(Constants.mainNotificationChannelId,
-				context.getString(R.string.mainNotificationChannelName), NotificationManager.IMPORTANCE_DEFAULT);
+			NotificationChannel mainChannel = new NotificationChannel(Constants.mainNotificationChannelId, context.getString(R.string.mainNotificationChannelName), NotificationManager.IMPORTANCE_DEFAULT);
 			mainChannel.setDescription(context.getString(R.string.mainNotificationChannelDescription));
 
 			if(tinyDB.getBoolean("notificationsEnableVibration", true)) {
@@ -64,8 +63,7 @@ public class Notifications {
 				mainChannel.enableLights(false);
 			}
 
-			NotificationChannel downloadChannel = new NotificationChannel(Constants.downloadNotificationChannelId,
-				context.getString(R.string.fileViewerNotificationChannelName), NotificationManager.IMPORTANCE_LOW);
+			NotificationChannel downloadChannel = new NotificationChannel(Constants.downloadNotificationChannelId, context.getString(R.string.fileViewerNotificationChannelName), NotificationManager.IMPORTANCE_LOW);
 			downloadChannel.setDescription(context.getString(R.string.fileViewerNotificationChannelDescription));
 
 			notificationManager.createNotificationChannel(mainChannel);
@@ -85,8 +83,7 @@ public class Notifications {
 
 		if(tinyDB.getBoolean("notificationsEnabled", true)) {
 
-			Constraints.Builder constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).setRequiresBatteryNotLow(false)
-				.setRequiresStorageNotLow(false).setRequiresCharging(false);
+			Constraints.Builder constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).setRequiresBatteryNotLow(false).setRequiresStorageNotLow(false).setRequiresCharging(false);
 
 			if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 				constraints.setRequiresDeviceIdle(false);
@@ -94,11 +91,10 @@ public class Notifications {
 
 			int pollingDelayMinutes = Math.max(tinyDB.getInt("pollingDelayMinutes", Constants.defaultPollingDelay), 15);
 
-			PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, pollingDelayMinutes,
-				TimeUnit.MINUTES).setConstraints(constraints.build()).addTag(Constants.notificationsWorkerId).build();
+			PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationsWorker.class, pollingDelayMinutes, TimeUnit.MINUTES).setConstraints(constraints.build())
+				.addTag(Constants.notificationsWorkerId).build();
 
-			WorkManager.getInstance(context)
-				.enqueueUniquePeriodicWork(Constants.notificationsWorkerId, ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
+			WorkManager.getInstance(context).enqueueUniquePeriodicWork(Constants.notificationsWorkerId, ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
 
 		}
 	}

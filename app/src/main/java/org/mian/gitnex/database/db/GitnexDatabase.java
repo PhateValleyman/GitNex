@@ -22,14 +22,6 @@ import org.mian.gitnex.database.models.UserAccount;
 public abstract class GitnexDatabase extends RoomDatabase {
 
 	private static final String DB_NAME = "gitnex";
-	private static GitnexDatabase gitnexDatabase;
-
-	public abstract DraftsDao draftsDao();
-
-	public abstract RepositoriesDao repositoriesDao();
-
-	public abstract UserAccountsDao userAccountsDao();
-
 	private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
 
 		@Override
@@ -38,7 +30,6 @@ public abstract class GitnexDatabase extends RoomDatabase {
 			database.execSQL("ALTER TABLE 'Drafts' ADD COLUMN 'commentId' TEXT");
 		}
 	};
-
 	private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
 
 		@Override
@@ -46,7 +37,6 @@ public abstract class GitnexDatabase extends RoomDatabase {
 			database.execSQL("ALTER TABLE 'Drafts' ADD COLUMN 'issueType' TEXT");
 		}
 	};
-
 	private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
 
 		@Override
@@ -54,7 +44,6 @@ public abstract class GitnexDatabase extends RoomDatabase {
 			database.execSQL("ALTER TABLE 'userAccounts' ADD COLUMN 'isLoggedIn' INTEGER NOT NULL DEFAULT 1");
 		}
 	};
-
 	private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
 
 		@Override
@@ -63,6 +52,7 @@ public abstract class GitnexDatabase extends RoomDatabase {
 			database.execSQL("ALTER TABLE 'userAccounts' ADD COLUMN 'defaultPagingNumber' INTEGER NOT NULL DEFAULT 30");
 		}
 	};
+	private static GitnexDatabase gitnexDatabase;
 
 	public static GitnexDatabase getDatabaseInstance(Context context) {
 
@@ -81,5 +71,11 @@ public abstract class GitnexDatabase extends RoomDatabase {
 		return gitnexDatabase;
 
 	}
+
+	public abstract DraftsDao draftsDao();
+
+	public abstract RepositoriesDao repositoriesDao();
+
+	public abstract UserAccountsDao userAccountsDao();
 
 }

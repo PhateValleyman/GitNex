@@ -34,6 +34,7 @@ public class MyProfileEmailActivity extends BaseActivity {
 	private View.OnClickListener onClickListener;
 	private EditText userEmail;
 	private Button addEmailButton;
+	private final View.OnClickListener addEmailListener = v -> processAddNewEmail();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,8 +69,6 @@ public class MyProfileEmailActivity extends BaseActivity {
 		}
 
 	}
-
-	private final View.OnClickListener addEmailListener = v -> processAddNewEmail();
 
 	private void processAddNewEmail() {
 

@@ -47,13 +47,11 @@ public class TimeHelper {
 					return prettyTime.format(date);
 				}
 				case "normal": {
-					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm",
-						locale);
+					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 					return formatter.format(date);
 				}
 				case "normal1": {
-					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm",
-						locale);
+					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 					return formatter.format(date);
 				}
 

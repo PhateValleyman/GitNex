@@ -17,7 +17,7 @@
         android:layout_height="@dimen/list_avatar_size_medium"
         android:layout_marginEnd="10dp"
         android:contentDescription="@string/generalImgContentText"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@tools:sample/avatars"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -32,14 +32,14 @@
             android:textColor="?attr/primaryTextColor"
             android:textSize="14sp"
             android:textStyle="bold"
-            tools:text="opyale" />
+            tools:text="opyale"/>
 
         <TextView
             android:id="@+id/authorLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/primaryTextColor"
-            tools:text="opyale" />
+            tools:text="opyale"/>
 
     </LinearLayout>
 

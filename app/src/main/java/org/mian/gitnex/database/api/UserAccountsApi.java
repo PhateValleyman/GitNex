@@ -19,8 +19,7 @@ public class UserAccountsApi extends BaseApi {
 		userAccountsDao = gitnexDatabase.userAccountsDao();
 	}
 
-	public long createNewAccount(String accountName, String instanceUrl, String userName, String token, String serverVersion, int maxResponseItems,
-		int defaultPagingNumber) {
+	public long createNewAccount(String accountName, String instanceUrl, String userName, String token, String serverVersion, int maxResponseItems, int defaultPagingNumber) {
 
 		UserAccount userAccount = new UserAccount();
 		userAccount.setAccountName(accountName);

@@ -27,32 +27,6 @@ public class CollaboratorsAdapter extends BaseAdapter {
 	private final List<User> collaboratorsList;
 	private final Context context;
 
-	private class ViewHolder {
-
-		private String userLoginId;
-
-		private final ImageView collaboratorAvatar;
-		private final TextView collaboratorName;
-
-		ViewHolder(View v) {
-
-			collaboratorAvatar = v.findViewById(R.id.collaboratorAvatar);
-			collaboratorName = v.findViewById(R.id.collaboratorName);
-
-			collaboratorAvatar.setOnClickListener(loginId -> {
-				Intent intent = new Intent(context, ProfileActivity.class);
-				intent.putExtra("username", userLoginId);
-				context.startActivity(intent);
-			});
-
-			collaboratorAvatar.setOnLongClickListener(loginId -> {
-				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
-				return true;
-			});
-		}
-
-	}
-
 	public CollaboratorsAdapter(Context ctx, List<User> collaboratorsListMain) {
 
 		this.context = ctx;
@@ -100,8 +74,8 @@ public class CollaboratorsAdapter extends BaseAdapter {
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
 		User currentItem = collaboratorsList.get(position);
-		PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated)
-			.transform(new RoundedTransformation(imgRadius, 0)).resize(180, 180).centerCrop().into(viewHolder.collaboratorAvatar);
+		PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(180, 180).centerCrop()
+			.into(viewHolder.collaboratorAvatar);
 
 		viewHolder.userLoginId = currentItem.getLogin();
 
@@ -112,6 +86,31 @@ public class CollaboratorsAdapter extends BaseAdapter {
 		else {
 
 			viewHolder.collaboratorName.setText(currentItem.getLogin());
+		}
+
+	}
+
+	private class ViewHolder {
+
+		private final ImageView collaboratorAvatar;
+		private final TextView collaboratorName;
+		private String userLoginId;
+
+		ViewHolder(View v) {
+
+			collaboratorAvatar = v.findViewById(R.id.collaboratorAvatar);
+			collaboratorName = v.findViewById(R.id.collaboratorName);
+
+			collaboratorAvatar.setOnClickListener(loginId -> {
+				Intent intent = new Intent(context, ProfileActivity.class);
+				intent.putExtra("username", userLoginId);
+				context.startActivity(intent);
+			});
+
+			collaboratorAvatar.setOnLongClickListener(loginId -> {
+				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+				return true;
+			});
 		}
 
 	}

@@ -46,10 +46,10 @@ import java.util.Locale;
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 	private final Context context;
+	TinyDB tinyDb;
 	private List<Issue> issuesList;
 	private Runnable loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
-	TinyDB tinyDb;
 
 	public IssuesAdapter(Context ctx, List<Issue> issuesListMain) {
 
@@ -87,9 +87,26 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		return issuesList.size();
 	}
 
-	class IssuesHolder extends RecyclerView.ViewHolder {
+	public void setMoreDataAvailable(boolean moreDataAvailable) {
+		isMoreDataAvailable = moreDataAvailable;
+	}
 
-		private Issue issueObject;
+	@SuppressLint("NotifyDataSetChanged")
+	public void notifyDataChanged() {
+		notifyDataSetChanged();
+		isLoading = false;
+	}
+
+	public void setLoadMoreListener(Runnable loadMoreListener) {
+		this.loadMoreListener = loadMoreListener;
+	}
+
+	public void updateList(List<Issue> list) {
+		issuesList = list;
+		notifyDataChanged();
+	}
+
+	class IssuesHolder extends RecyclerView.ViewHolder {
 
 		private final ImageView issueAssigneeAvatar;
 		private final TextView issueTitle;
@@ -99,6 +116,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 		private final LinearLayout frameLabels;
 		private final HorizontalScrollView labelsScrollViewDots;
 		private final LinearLayout frameLabelsDots;
+		private Issue issueObject;
 
 		IssuesHolder(View itemView) {
 
@@ -113,8 +131,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 			frameLabelsDots = itemView.findViewById(R.id.frameLabelsDots);
 
 			issueAssigneeAvatar.setOnLongClickListener(loginId -> {
-				AppUtil.copyToClipboard(context, issueObject.getUser().getLogin(),
-					context.getString(R.string.copyLoginIdToClipBoard, issueObject.getUser().getLogin()));
+				AppUtil.copyToClipboard(context, issueObject.getUser().getLogin(), context.getString(R.string.copyLoginIdToClipBoard, issueObject.getUser().getLogin()));
 				return true;
 			});
 
@@ -133,26 +150,22 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
-			PicassoService.getInstance(context).get().load(issue.getUser().getAvatarUrl()).placeholder(R.drawable.loader_animated)
-				.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(issueAssigneeAvatar);
+			PicassoService.getInstance(context).get().load(issue.getUser().getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop()
+				.into(issueAssigneeAvatar);
 
-			String issueNumber_ = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray,
-				null) + "'>" + context.getResources().getString(R.string.hash) + issue.getNumber() + "</font>";
-			issueTitle.setText(
-				HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(issue.getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+			String issueNumber_ = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray, null) + "'>" + context.getResources().getString(R.string.hash) + issue.getNumber() + "</font>";
+			issueTitle.setText(HtmlCompat.fromHtml(issueNumber_ + " " + EmojiParser.parseToUnicode(issue.getTitle()), HtmlCompat.FROM_HTML_MODE_LEGACY));
 
 			this.issueObject = issue;
 			this.issueCommentsCount.setText(String.valueOf(issue.getComments()));
 
-			Intent intentIssueDetail = new IssueContext(issueObject, ((RepoDetailActivity) context).repository).getIntent(context,
-				IssueDetailActivity.class);
+			Intent intentIssueDetail = new IssueContext(issueObject, ((RepoDetailActivity) context).repository).getIntent(context, IssueDetailActivity.class);
 
 			itemView.setOnClickListener(layoutView -> context.startActivity(intentIssueDetail));
 			frameLabels.setOnClickListener(v -> context.startActivity(intentIssueDetail));
 			frameLabelsDots.setOnClickListener(v -> context.startActivity(intentIssueDetail));
 
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 			params.setMargins(0, 0, 15, 0);
 
 			if(issue.getLabels() != null) {
@@ -173,8 +186,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 						frameLabelsDots.setGravity(Gravity.START | Gravity.TOP);
 						labelsView.setLayoutParams(params);
 
-						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).width(54).height(54).endConfig()
-							.buildRound("", color);
+						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).width(54).height(54).endConfig().buildRound("", color);
 
 						labelsView.setImageDrawable(drawable);
 						frameLabelsDots.addView(labelsView);
@@ -200,10 +212,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 						int height = AppUtil.getPixelsFromDensity(context, 20);
 						int textSize = AppUtil.getPixelsFromScaledDensity(context, 12);
 
-						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT)
-							.textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize).width(
-								LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize,
-									AppUtil.getPixelsFromDensity(context, 8))).height(height).endConfig()
+						TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).textColor(new ColorInverter().getContrastColor(color)).fontSize(textSize)
+							.width(LabelWidthCalculator.calculateLabelWidth(labelName, Typeface.DEFAULT, textSize, AppUtil.getPixelsFromDensity(context, 8))).height(height).endConfig()
 							.buildRoundRect(labelName, color, AppUtil.getPixelsFromDensity(context, 18));
 
 						labelsView.setImageDrawable(drawable);
@@ -217,20 +227,17 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 					PrettyTime prettyTime = new PrettyTime(locale);
 					String createdTime = prettyTime.format(issue.getCreatedAt());
 					this.issueCreatedTime.setText(createdTime);
-					this.issueCreatedTime.setOnClickListener(
-						new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getCreatedAt()), context));
+					this.issueCreatedTime.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(issue.getCreatedAt()), context));
 					break;
 				}
 				case "normal": {
-					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm",
-						locale);
+					DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 					String createdTime = formatter.format(issue.getCreatedAt());
 					this.issueCreatedTime.setText(createdTime);
 					break;
 				}
 				case "normal1": {
-					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm",
-						locale);
+					DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 					String createdTime = formatter.format(issue.getCreatedAt());
 					this.issueCreatedTime.setText(createdTime);
 					break;
@@ -239,25 +246,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 		}
 
-	}
-
-	public void setMoreDataAvailable(boolean moreDataAvailable) {
-		isMoreDataAvailable = moreDataAvailable;
-	}
-
-	@SuppressLint("NotifyDataSetChanged")
-	public void notifyDataChanged() {
-		notifyDataSetChanged();
-		isLoading = false;
-	}
-
-	public void setLoadMoreListener(Runnable loadMoreListener) {
-		this.loadMoreListener = loadMoreListener;
-	}
-
-	public void updateList(List<Issue> list) {
-		issuesList = list;
-		notifyDataChanged();
 	}
 
 }

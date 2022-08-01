@@ -47,7 +47,9 @@ public class CreateLabelActivity extends BaseActivity {
 
 	private RepositoryContext repository;
 	private String labelColor = "";
+	private final View.OnClickListener createLabelListener = v -> processCreateLabel();
 	private String labelColorDefault = "";
+	private final View.OnClickListener updateLabelListener = v -> processUpdateLabel();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -120,10 +122,6 @@ public class CreateLabelActivity extends BaseActivity {
 		}
 
 	}
-
-	private final View.OnClickListener createLabelListener = v -> processCreateLabel();
-
-	private final View.OnClickListener updateLabelListener = v -> processUpdateLabel();
 
 	private void processUpdateLabel() {
 

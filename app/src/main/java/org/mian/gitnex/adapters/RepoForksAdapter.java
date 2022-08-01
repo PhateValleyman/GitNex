@@ -74,17 +74,35 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 		return forksList.size();
 	}
 
-	class ForksHolder extends RecyclerView.ViewHolder {
+	public void setMoreDataAvailable(boolean moreDataAvailable) {
+		isMoreDataAvailable = moreDataAvailable;
+	}
 
-		private org.gitnex.tea4j.v2.models.Repository userRepositories;
+	@SuppressLint("NotifyDataSetChanged")
+	public void notifyDataChanged() {
+		notifyDataSetChanged();
+		isLoading = false;
+	}
+
+	public void setLoadMoreListener(Runnable loadMoreListener) {
+		this.loadMoreListener = loadMoreListener;
+	}
+
+	public void updateList(List<org.gitnex.tea4j.v2.models.Repository> list) {
+		forksList = list;
+		notifyDataChanged();
+	}
+
+	class ForksHolder extends RecyclerView.ViewHolder {
 
 		private final ImageView image;
 		private final TextView repoName;
 		private final TextView orgName;
 		private final TextView repoDescription;
-		private CheckBox isRepoAdmin;
 		private final TextView repoStars;
 		private final TextView repoLastUpdated;
+		private org.gitnex.tea4j.v2.models.Repository userRepositories;
+		private CheckBox isRepoAdmin;
 
 		ForksHolder(View itemView) {
 
@@ -115,13 +133,12 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			int color = generator.getColor(forksModel.getName());
 			String firstCharacter = String.valueOf(forksModel.getFullName().charAt(0));
 
-			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28)
-				.endConfig().buildRoundRect(firstCharacter, color, 3);
+			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
 
 			if(forksModel.getAvatarUrl() != null) {
 				if(!forksModel.getAvatarUrl().equals("")) {
-					PicassoService.getInstance(context).get().load(forksModel.getAvatarUrl()).placeholder(R.drawable.loader_animated)
-						.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(image);
+					PicassoService.getInstance(context).get().load(forksModel.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop()
+						.into(image);
 				}
 				else {
 					image.setImageDrawable(drawable);
@@ -138,20 +155,17 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 						PrettyTime prettyTime = new PrettyTime(locale);
 						String createdTime = prettyTime.format(forksModel.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
-						repoLastUpdated.setOnClickListener(
-							new ClickListener(TimeHelper.customDateFormatForToastDateFormat(forksModel.getUpdatedAt()), context));
+						repoLastUpdated.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(forksModel.getUpdatedAt()), context));
 						break;
 					}
 					case "normal": {
-						DateFormat formatter = new SimpleDateFormat(
-							"yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+						DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 						String createdTime = formatter.format(forksModel.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
 					}
 					case "normal1": {
-						DateFormat formatter = new SimpleDateFormat(
-							"dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
+						DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy '" + context.getResources().getString(R.string.timeAtText) + "' HH:mm", locale);
 						String createdTime = formatter.format(forksModel.getUpdatedAt());
 						repoLastUpdated.setText(context.getString(R.string.lastUpdatedAt, createdTime));
 						break;
@@ -188,25 +202,6 @@ public class RepoForksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			});
 		}
 
-	}
-
-	public void setMoreDataAvailable(boolean moreDataAvailable) {
-		isMoreDataAvailable = moreDataAvailable;
-	}
-
-	@SuppressLint("NotifyDataSetChanged")
-	public void notifyDataChanged() {
-		notifyDataSetChanged();
-		isLoading = false;
-	}
-
-	public void setLoadMoreListener(Runnable loadMoreListener) {
-		this.loadMoreListener = loadMoreListener;
-	}
-
-	public void updateList(List<org.gitnex.tea4j.v2.models.Repository> list) {
-		forksList = list;
-		notifyDataChanged();
 	}
 
 }

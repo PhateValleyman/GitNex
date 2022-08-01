@@ -21,16 +21,14 @@ import org.mian.gitnex.helpers.contexts.RepositoryContext;
 public class AlertDialogs {
 
 	public static void authorizationTokenRevokedDialog(final Context context) {
-		new AlertDialog.Builder(context).setTitle(R.string.alertDialogTokenRevokedTitle).setMessage(R.string.alertDialogTokenRevokedMessage)
-			.setCancelable(true).setIcon(R.drawable.ic_warning).setNeutralButton(R.string.cancelButton, null)
-			.setPositiveButton(R.string.navLogout, (dialog, which) -> AppUtil.logout(context)).show();
+		new AlertDialog.Builder(context).setTitle(R.string.alertDialogTokenRevokedTitle).setMessage(R.string.alertDialogTokenRevokedMessage).setCancelable(true).setIcon(R.drawable.ic_warning)
+			.setNeutralButton(R.string.cancelButton, null).setPositiveButton(R.string.navLogout, (dialog, which) -> AppUtil.logout(context)).show();
 	}
 
-	public static void labelDeleteDialog(final Context context, final String labelTitle, final String labelId, String type, String orgName,
-		RepositoryContext repository) {
+	public static void labelDeleteDialog(final Context context, final String labelTitle, final String labelId, String type, String orgName, RepositoryContext repository) {
 
-		new AlertDialog.Builder(context).setTitle(context.getString(R.string.deleteGenericTitle, labelTitle)).setMessage(R.string.labelDeleteMessage)
-			.setIcon(R.drawable.ic_delete).setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> {
+		new AlertDialog.Builder(context).setTitle(context.getString(R.string.deleteGenericTitle, labelTitle)).setMessage(R.string.labelDeleteMessage).setIcon(R.drawable.ic_delete)
+			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> {
 
 				Intent intent = new Intent(context, CreateLabelActivity.class);
 				intent.putExtra("labelId", labelId);
@@ -46,47 +44,37 @@ public class AlertDialogs {
 
 	public static void collaboratorRemoveDialog(final Context context, final String userNameMain, RepositoryContext repository) {
 
-		new AlertDialog.Builder(context).setTitle(context.getString(R.string.removeCollaboratorDialogTitle, userNameMain))
-			.setMessage(R.string.removeCollaboratorMessage).setPositiveButton(R.string.removeButton,
-				(dialog, whichButton) -> CollaboratorActions.deleteCollaborator(context, userNameMain, repository))
-			.setNeutralButton(R.string.cancelButton, null).show();
+		new AlertDialog.Builder(context).setTitle(context.getString(R.string.removeCollaboratorDialogTitle, userNameMain)).setMessage(R.string.removeCollaboratorMessage)
+			.setPositiveButton(R.string.removeButton, (dialog, whichButton) -> CollaboratorActions.deleteCollaborator(context, userNameMain, repository)).setNeutralButton(R.string.cancelButton, null).show();
 
 	}
 
 	public static void addMemberDialog(final Context context, final String userNameMain, int teamId) {
 
-		new AlertDialog.Builder(context).setTitle(context.getResources().getString(R.string.addTeamMember, userNameMain))
-			.setMessage(R.string.addTeamMemberMessage)
-			.setPositiveButton(R.string.addButton, (dialog, whichButton) -> TeamActions.addTeamMember(context, userNameMain, teamId))
-			.setNeutralButton(R.string.cancelButton, null).show();
+		new AlertDialog.Builder(context).setTitle(context.getResources().getString(R.string.addTeamMember, userNameMain)).setMessage(R.string.addTeamMemberMessage)
+			.setPositiveButton(R.string.addButton, (dialog, whichButton) -> TeamActions.addTeamMember(context, userNameMain, teamId)).setNeutralButton(R.string.cancelButton, null).show();
 
 	}
 
 	public static void removeMemberDialog(final Context context, final String userNameMain, int teamId) {
 
-		new AlertDialog.Builder(context).setTitle(context.getResources().getString(R.string.removeTeamMember, userNameMain))
-			.setMessage(R.string.removeTeamMemberMessage)
-			.setPositiveButton(R.string.removeButton, (dialog, whichButton) -> TeamActions.removeTeamMember(context, userNameMain, teamId))
-			.setNeutralButton(R.string.cancelButton, null).show();
+		new AlertDialog.Builder(context).setTitle(context.getResources().getString(R.string.removeTeamMember, userNameMain)).setMessage(R.string.removeTeamMemberMessage)
+			.setPositiveButton(R.string.removeButton, (dialog, whichButton) -> TeamActions.removeTeamMember(context, userNameMain, teamId)).setNeutralButton(R.string.cancelButton, null).show();
 
 	}
 
 	public static void addRepoDialog(final Context context, final String orgName, String repo, int teamId, String teamName) {
 
-		new AlertDialog.Builder(context).setTitle(context.getResources().getString(R.string.addTeamMember, repo))
-			.setMessage(context.getResources().getString(R.string.repoAddToTeamMessage, repo, orgName, teamName))
-			.setPositiveButton(context.getResources().getString(R.string.addButton),
-				(dialog, whichButton) -> TeamActions.addTeamRepo(context, orgName, teamId, repo))
+		new AlertDialog.Builder(context).setTitle(context.getResources().getString(R.string.addTeamMember, repo)).setMessage(context.getResources().getString(R.string.repoAddToTeamMessage, repo, orgName, teamName))
+			.setPositiveButton(context.getResources().getString(R.string.addButton), (dialog, whichButton) -> TeamActions.addTeamRepo(context, orgName, teamId, repo))
 			.setNeutralButton(context.getResources().getString(R.string.cancelButton), null).show();
 
 	}
 
 	public static void removeRepoDialog(final Context context, final String orgName, String repo, int teamId, String teamName) {
 
-		new AlertDialog.Builder(context).setTitle(context.getResources().getString(R.string.removeTeamMember, repo))
-			.setMessage(context.getResources().getString(R.string.repoRemoveTeamMessage, repo, teamName))
-			.setPositiveButton(context.getResources().getString(R.string.removeButton),
-				(dialog, whichButton) -> TeamActions.removeTeamRepo(context, orgName, teamId, repo))
+		new AlertDialog.Builder(context).setTitle(context.getResources().getString(R.string.removeTeamMember, repo)).setMessage(context.getResources().getString(R.string.repoRemoveTeamMessage, repo, teamName))
+			.setPositiveButton(context.getResources().getString(R.string.removeButton), (dialog, whichButton) -> TeamActions.removeTeamRepo(context, orgName, teamId, repo))
 			.setNeutralButton(context.getResources().getString(R.string.cancelButton), null).show();
 
 	}

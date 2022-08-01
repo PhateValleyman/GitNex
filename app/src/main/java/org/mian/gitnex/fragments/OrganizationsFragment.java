@@ -32,8 +32,8 @@ import org.mian.gitnex.viewmodels.OrganizationsViewModel;
 
 public class OrganizationsFragment extends Fragment {
 
-	private OrganizationsViewModel organizationsViewModel;
 	public static boolean orgCreated = false;
+	private OrganizationsViewModel organizationsViewModel;
 	private FragmentOrganizationsBinding fragmentOrganizationsBinding;
 	private OrganizationsListAdapter adapter;
 	private int page = 1;
@@ -58,8 +58,7 @@ public class OrganizationsFragment extends Fragment {
 		fragmentOrganizationsBinding.recyclerView.setHasFixedSize(true);
 		fragmentOrganizationsBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-		RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(
-			ContextCompat.getDrawable(requireContext(), R.drawable.shape_list_divider));
+		RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.shape_list_divider));
 		fragmentOrganizationsBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 
 		fragmentOrganizationsBinding.recyclerView.setPadding(0, 0, 0, 200);
@@ -77,8 +76,6 @@ public class OrganizationsFragment extends Fragment {
 
 		return fragmentOrganizationsBinding.getRoot();
 	}
-
-	;
 
 	private void fetchDataAsync() {
 

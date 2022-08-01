@@ -25,16 +25,13 @@ import org.mian.gitnex.helpers.Toasty;
 
 public class SettingsAppearanceActivity extends BaseActivity {
 
-	private View.OnClickListener onClickListener;
-
 	private static String[] timeList;
 	private static int timeSelectedChoice = 0;
-
 	private static String[] customFontList;
 	private static int customFontSelectedChoice = 0;
-
 	private static String[] themeList;
 	private static int themeSelectedChoice = 0;
+	private View.OnClickListener onClickListener;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,10 +80,8 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		customFontSelectedChoice = tinyDB.getInt("customFontId", 1);
 		themeSelectedChoice = tinyDB.getInt("themeId", 6); // use system theme as default
 
-		activitySettingsAppearanceBinding.lightThemeSelectedTime.setText(
-			ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, lightHour, lightMinute));
-		activitySettingsAppearanceBinding.darkThemeSelectedTime.setText(
-			ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, darkHour, darkMinute));
+		activitySettingsAppearanceBinding.lightThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, lightHour, lightMinute));
+		activitySettingsAppearanceBinding.darkThemeSelectedTime.setText(ctx.getResources().getString(R.string.settingsThemeTimeSelectedHint, darkHour, darkMinute));
 		activitySettingsAppearanceBinding.tvDateTimeSelected.setText(timeList[timeSelectedChoice]);
 		activitySettingsAppearanceBinding.customFontSelected.setText(customFontList[customFontSelectedChoice]);
 		activitySettingsAppearanceBinding.themeSelected.setText(themeList[themeSelectedChoice]);
@@ -119,8 +114,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 			Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 		});
 		activitySettingsAppearanceBinding.labelsInListFrame.setOnClickListener(
-			v -> activitySettingsAppearanceBinding.switchLabelsInListBadge.setChecked(
-				!activitySettingsAppearanceBinding.switchLabelsInListBadge.isChecked()));
+			v -> activitySettingsAppearanceBinding.switchLabelsInListBadge.setChecked(!activitySettingsAppearanceBinding.switchLabelsInListBadge.isChecked()));
 
 		// theme selection dialog
 		themeFrame.setOnClickListener(view -> {

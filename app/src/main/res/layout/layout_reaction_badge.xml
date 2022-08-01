@@ -19,6 +19,6 @@
         android:paddingBottom="5dp"
         android:textColor="?attr/primaryTextColor"
         android:textSize="14sp"
-        tools:text="👍" />
+        tools:text="👍"/>
 
 </androidx.cardview.widget.CardView>

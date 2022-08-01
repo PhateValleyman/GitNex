@@ -31,9 +31,8 @@ import org.mian.gitnex.viewmodels.RepositoriesViewModel;
 
 public class OrganizationTeamInfoReposFragment extends Fragment {
 
-	private RepositoriesViewModel repositoriesViewModel;
 	public static boolean repoAdded = false;
-
+	private RepositoriesViewModel repositoriesViewModel;
 	private FragmentRepositoriesBinding fragmentRepositoriesBinding;
 	private ReposListAdapter adapter;
 	private int page = 1;
@@ -67,8 +66,7 @@ public class OrganizationTeamInfoReposFragment extends Fragment {
 		fragmentRepositoriesBinding.recyclerView.setHasFixedSize(true);
 		fragmentRepositoriesBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-		RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(
-			ContextCompat.getDrawable(requireContext(), R.drawable.shape_list_divider));
+		RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.shape_list_divider));
 		fragmentRepositoriesBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 
 		fragmentRepositoriesBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -86,39 +84,38 @@ public class OrganizationTeamInfoReposFragment extends Fragment {
 
 	private void fetchDataAsync() {
 
-		repositoriesViewModel.getRepositories(page, resultLimit, String.valueOf(team.getId()), "team", null, getContext())
-			.observe(getViewLifecycleOwner(), reposListMain -> {
+		repositoriesViewModel.getRepositories(page, resultLimit, String.valueOf(team.getId()), "team", null, getContext()).observe(getViewLifecycleOwner(), reposListMain -> {
 
-				adapter = new ReposListAdapter(reposListMain, getContext());
-				adapter.setLoadMoreListener(new ReposListAdapter.OnLoadMoreListener() {
+			adapter = new ReposListAdapter(reposListMain, getContext());
+			adapter.setLoadMoreListener(new ReposListAdapter.OnLoadMoreListener() {
 
-					@Override
-					public void onLoadMore() {
+				@Override
+				public void onLoadMore() {
 
-						page += 1;
-						repositoriesViewModel.loadMoreRepos(page, resultLimit, String.valueOf(team.getId()), "team", null, getContext(), adapter);
-						fragmentRepositoriesBinding.progressBar.setVisibility(View.VISIBLE);
-					}
-
-					@Override
-					public void onLoadFinished() {
-
-						fragmentRepositoriesBinding.progressBar.setVisibility(View.GONE);
-					}
-				});
-
-				if(adapter.getItemCount() > 0) {
-					fragmentRepositoriesBinding.recyclerView.setAdapter(adapter);
-					fragmentRepositoriesBinding.noData.setVisibility(View.GONE);
-				}
-				else {
-					adapter.notifyDataChanged();
-					fragmentRepositoriesBinding.recyclerView.setAdapter(adapter);
-					fragmentRepositoriesBinding.noData.setVisibility(View.VISIBLE);
+					page += 1;
+					repositoriesViewModel.loadMoreRepos(page, resultLimit, String.valueOf(team.getId()), "team", null, getContext(), adapter);
+					fragmentRepositoriesBinding.progressBar.setVisibility(View.VISIBLE);
 				}
 
-				fragmentRepositoriesBinding.progressBar.setVisibility(View.GONE);
+				@Override
+				public void onLoadFinished() {
+
+					fragmentRepositoriesBinding.progressBar.setVisibility(View.GONE);
+				}
 			});
+
+			if(adapter.getItemCount() > 0) {
+				fragmentRepositoriesBinding.recyclerView.setAdapter(adapter);
+				fragmentRepositoriesBinding.noData.setVisibility(View.GONE);
+			}
+			else {
+				adapter.notifyDataChanged();
+				fragmentRepositoriesBinding.recyclerView.setAdapter(adapter);
+				fragmentRepositoriesBinding.noData.setVisibility(View.VISIBLE);
+			}
+
+			fragmentRepositoriesBinding.progressBar.setVisibility(View.GONE);
+		});
 	}
 
 	@Override

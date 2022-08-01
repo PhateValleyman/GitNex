@@ -168,8 +168,7 @@ public class RepoInfoFragment extends Fragment {
 
 			binding.repoMetaCreatedAt.setText(TimeHelper.formatTime(repoInfo.getCreatedAt(), locale, timeFormat, ctx));
 			if(timeFormat.equals("pretty")) {
-				binding.repoMetaCreatedAt.setOnClickListener(
-					new ClickListener(TimeHelper.customDateFormatForToastDateFormat(repoInfo.getCreatedAt()), ctx));
+				binding.repoMetaCreatedAt.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(repoInfo.getCreatedAt()), ctx));
 			}
 
 			String repoMetaUpdatedAt = TimeHelper.formatTime(repoInfo.getUpdatedAt(), locale, timeFormat, ctx);
@@ -236,8 +235,7 @@ public class RepoInfoFragment extends Fragment {
 			if(repoInfo.isFork()) {
 				binding.repoForkFrame.setVisibility(View.VISIBLE);
 				binding.repoForkFrame.setOnClickListener((v) -> {
-					Intent parent = new RepositoryContext(repoInfo.getParent(), requireContext()).getIntent(requireContext(),
-						RepoDetailActivity.class);
+					Intent parent = new RepositoryContext(repoInfo.getParent(), requireContext()).getIntent(requireContext(), RepoDetailActivity.class);
 					startActivity(parent);
 				});
 				binding.repoFork.setText(getString(R.string.repoForkOf, repoInfo.getParent().getFullName()));
@@ -246,8 +244,7 @@ public class RepoInfoFragment extends Fragment {
 				binding.repoForkFrame.setVisibility(View.GONE);
 			}
 
-			getFileContents(repository.getOwner(), repository.getName(), getResources().getString(R.string.defaultFilename),
-				repoInfo.getDefaultBranch());
+			getFileContents(repository.getOwner(), repository.getName(), getResources().getString(R.string.defaultFilename), repoInfo.getDefaultBranch());
 
 			pageContent.setVisibility(View.VISIBLE);
 

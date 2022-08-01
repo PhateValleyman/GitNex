@@ -13,25 +13,7 @@ import android.widget.EditText;
 public class SourcePositionListener {
 
 	private final EditText editText;
-
-	@FunctionalInterface
-	public interface OnPositionChanged {
-
-		void onPositionChange(int line, int column);
-
-	}
-
 	private OnPositionChanged onPositionChanged;
-
-	public SourcePositionListener(EditText editText) {
-		this.editText = editText;
-		editText.setAccessibilityDelegate(viewAccessibility);
-	}
-
-	public void setOnPositionChanged(OnPositionChanged listener) {
-		onPositionChanged = listener;
-	}
-
 	private final View.AccessibilityDelegate viewAccessibility = new View.AccessibilityDelegate() {
 
 		@Override
@@ -49,5 +31,21 @@ public class SourcePositionListener {
 			}
 		}
 	};
+
+	public SourcePositionListener(EditText editText) {
+		this.editText = editText;
+		editText.setAccessibilityDelegate(viewAccessibility);
+	}
+
+	public void setOnPositionChanged(OnPositionChanged listener) {
+		onPositionChanged = listener;
+	}
+
+	@FunctionalInterface
+	public interface OnPositionChanged {
+
+		void onPositionChange(int line, int column);
+
+	}
 
 }

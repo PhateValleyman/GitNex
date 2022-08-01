@@ -105,8 +105,7 @@ public class OrganizationDetailActivity extends BaseActivity implements BottomSh
 	}
 
 	public void init() {
-		OrganizationDetailActivity.SectionsPagerAdapter mSectionsPagerAdapter = new OrganizationDetailActivity.SectionsPagerAdapter(
-			getSupportFragmentManager());
+		OrganizationDetailActivity.SectionsPagerAdapter mSectionsPagerAdapter = new OrganizationDetailActivity.SectionsPagerAdapter(getSupportFragmentManager());
 
 		ViewPager mViewPager = findViewById(R.id.container);
 		mViewPager.setVisibility(View.VISIBLE);

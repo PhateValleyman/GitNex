@@ -56,8 +56,7 @@ public class LabelsActions {
 		});
 	}
 
-	public static void getRepositoryLabels(Context ctx, String repoOwner, String repoName, List<Label> labelsList, Dialog dialogLabels,
-		LabelsListAdapter labelsAdapter, CustomLabelsSelectionDialogBinding labelsBinding) {
+	public static void getRepositoryLabels(Context ctx, String repoOwner, String repoName, List<Label> labelsList, Dialog dialogLabels, LabelsListAdapter labelsAdapter, CustomLabelsSelectionDialogBinding labelsBinding) {
 
 		Call<List<Label>> call = RetrofitClient.getApiInterface(ctx).issueListLabels(repoOwner, repoName, null, null);
 

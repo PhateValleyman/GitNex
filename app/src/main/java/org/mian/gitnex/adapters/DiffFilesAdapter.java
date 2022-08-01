@@ -28,9 +28,9 @@ public class DiffFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 	private static final Pattern statisticsPattern = Pattern.compile("(\\d+).*?,.*?(\\d+)");
 
 	private final Context context;
-	private List<FileDiffView> fileDiffViews;
 	private final IssueContext issue;
 	private final String fragmentType;
+	private List<FileDiffView> fileDiffViews;
 
 	public DiffFilesAdapter(Context context, List<FileDiffView> fileDiffViews, IssueContext issue, String fragmentType) {
 
@@ -53,6 +53,25 @@ public class DiffFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 		((DiffFilesAdapter.FilesHolder) holder).bindData(fileDiffViews.get(position));
 	}
 
+	@Override
+	public int getItemViewType(int position) {
+		return position;
+	}
+
+	@Override
+	public int getItemCount() {
+		return fileDiffViews.size();
+	}
+
+	public void updateList(List<FileDiffView> list) {
+		fileDiffViews = list;
+	}
+
+	@SuppressLint("NotifyDataSetChanged")
+	public void notifyDataChanged() {
+		notifyDataSetChanged();
+	}
+
 	class FilesHolder extends RecyclerView.ViewHolder {
 
 		FileDiffView diffFilesObject;
@@ -70,12 +89,10 @@ public class DiffFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 			main_frame.setOnClickListener(v -> {
 				if(fragmentType.equalsIgnoreCase("commit")) {
-					((CommitDetailActivity) context).getSupportFragmentManager().beginTransaction()
-						.replace(R.id.fragment_container, DiffFragment.newInstance(diffFilesObject, fragmentType)).commit();
+					((CommitDetailActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, DiffFragment.newInstance(diffFilesObject, fragmentType)).commit();
 				}
 				else {
-					((DiffActivity) context).getSupportFragmentManager().beginTransaction()
-						.replace(R.id.fragment_container, DiffFragment.newInstance(diffFilesObject, issue)).commit();
+					((DiffActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, DiffFragment.newInstance(diffFilesObject, issue)).commit();
 				}
 
 			});
@@ -96,25 +113,6 @@ public class DiffFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 			}
 		}
 
-	}
-
-	@Override
-	public int getItemViewType(int position) {
-		return position;
-	}
-
-	@Override
-	public int getItemCount() {
-		return fileDiffViews.size();
-	}
-
-	public void updateList(List<FileDiffView> list) {
-		fileDiffViews = list;
-	}
-
-	@SuppressLint("NotifyDataSetChanged")
-	public void notifyDataChanged() {
-		notifyDataSetChanged();
 	}
 
 }

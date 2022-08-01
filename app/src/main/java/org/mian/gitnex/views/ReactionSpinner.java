@@ -34,11 +34,6 @@ import retrofit2.Response;
 public class ReactionSpinner extends HorizontalScrollView {
 
 	private static final List<String> allowedReactionsCache = new ArrayList<>();
-
-	private enum ReactionType {COMMENT, ISSUE}
-
-	private enum ReactionAction {REMOVE, ADD}
-
 	private Runnable onInteractedListener;
 	private Runnable onLoadingFinishedListener;
 
@@ -50,8 +45,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 		int sidesPadding = AppUtil.getPixelsFromDensity(context, 10);
 
-		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-			ViewGroup.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 		root.setOrientation(LinearLayout.HORIZONTAL);
 		root.setPadding(sidesPadding, 0, sidesPadding, 0);
@@ -85,13 +79,10 @@ public class ReactionSpinner extends HorizontalScrollView {
 					// Show all allowed reactions
 					for(String allowedReaction : allowedReactions) {
 
-						@SuppressLint("InflateParams") CardView reactionButton = (CardView) LayoutInflater.from(context)
-							.inflate(R.layout.layout_reaction_button, root, false);
+						@SuppressLint("InflateParams") CardView reactionButton = (CardView) LayoutInflater.from(context).inflate(R.layout.layout_reaction_button, root, false);
 
 						// Checks if current user reacted with 'allowedReaction'
-						boolean myReaction = allReactions.stream().anyMatch(
-							issueReaction -> issueReaction.getContent().equals(allowedReaction) && issueReaction.getUser().getLogin()
-								.equals(loginUid));
+						boolean myReaction = allReactions.stream().anyMatch(issueReaction -> issueReaction.getContent().equals(allowedReaction) && issueReaction.getUser().getLogin().equals(loginUid));
 
 						ReactionAction reactionAction;
 
@@ -146,8 +137,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 	}
 
-	private boolean react(String repoOwner, String repoName, ReactionType reactionType, ReactionAction reactionAction,
-		EditReactionOption issueReaction, int id) throws IOException {
+	private boolean react(String repoOwner, String repoName, ReactionType reactionType, ReactionAction reactionAction, EditReactionOption issueReaction, int id) throws IOException {
 
 		Response<?> response = null;
 
@@ -157,14 +147,12 @@ public class ReactionSpinner extends HorizontalScrollView {
 				switch(reactionAction) {
 
 					case ADD:
-						response = RetrofitClient.getApiInterface(getContext()).issuePostIssueReaction(repoOwner, repoName, (long) id, issueReaction)
-							.execute();
+						response = RetrofitClient.getApiInterface(getContext()).issuePostIssueReaction(repoOwner, repoName, (long) id, issueReaction).execute();
 						break;
 
 
 					case REMOVE:
-						response = RetrofitClient.getApiInterface(getContext())
-							.issueDeleteIssueReactionWithBody(repoOwner, repoName, (long) id, issueReaction).execute();
+						response = RetrofitClient.getApiInterface(getContext()).issueDeleteIssueReactionWithBody(repoOwner, repoName, (long) id, issueReaction).execute();
 						break;
 
 				}
@@ -174,14 +162,12 @@ public class ReactionSpinner extends HorizontalScrollView {
 				switch(reactionAction) {
 
 					case ADD:
-						response = RetrofitClient.getApiInterface(getContext())
-							.issuePostCommentReaction(repoOwner, repoName, (long) id, issueReaction).execute();
+						response = RetrofitClient.getApiInterface(getContext()).issuePostCommentReaction(repoOwner, repoName, (long) id, issueReaction).execute();
 						break;
 
 
 					case REMOVE:
-						response = RetrofitClient.getApiInterface(getContext())
-							.issueDeleteCommentReactionWithBody(repoOwner, repoName, (long) id, issueReaction).execute();
+						response = RetrofitClient.getApiInterface(getContext()).issueDeleteCommentReactionWithBody(repoOwner, repoName, (long) id, issueReaction).execute();
 						break;
 
 				}
@@ -240,5 +226,9 @@ public class ReactionSpinner extends HorizontalScrollView {
 	public void setOnLoadingFinishedListener(Runnable onLoadingFinishedListener) {
 		this.onLoadingFinishedListener = onLoadingFinishedListener;
 	}
+
+	private enum ReactionType {COMMENT, ISSUE}
+
+	private enum ReactionAction {REMOVE, ADD}
 
 }

@@ -24,6 +24,14 @@ public class Path {
 
 	}
 
+	public static Path of(String path) {
+
+		String[] parsed_segments = path.split("/");
+
+		return new Path(Arrays.stream(parsed_segments).filter(s -> !s.trim().isEmpty()).toArray(String[]::new));
+
+	}
+
 	public Path addListener(Runnable onChangedListener) {
 
 		onChangedListeners.add(onChangedListener);
@@ -116,14 +124,6 @@ public class Path {
 	public String[] segments() {
 
 		return segments.toArray(new String[]{});
-	}
-
-	public static Path of(String path) {
-
-		String[] parsed_segments = path.split("/");
-
-		return new Path(Arrays.stream(parsed_segments).filter(s -> !s.trim().isEmpty()).toArray(String[]::new));
-
 	}
 
 	@NonNull

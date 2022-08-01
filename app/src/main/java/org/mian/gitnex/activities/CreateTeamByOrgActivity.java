@@ -33,6 +33,10 @@ import retrofit2.Callback;
 
 public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClickListener {
 
+	private final String[] permissionList = {"Read", "Write", "Admin"};
+	private final String[] accessControlsList = new String[]{"Code", "Issues", "Pull Request", "Releases", "Wiki", "External Wiki", "External Issues"};
+	private final boolean[] selectedAccessControlsTrueFalse = new boolean[]{false, false, false, false, false, false, false};
+	public int permissionSelectedChoice = -1;
 	private View.OnClickListener onClickListener;
 	private TextView teamName;
 	private TextView teamDesc;
@@ -41,15 +45,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 	private TextView teamAccessControls;
 	private TextView teamAccessControlsArray;
 	private Button createTeamButton;
-	private final String[] permissionList = {"Read", "Write", "Admin"};
-	public int permissionSelectedChoice = -1;
-
-	private final String[] accessControlsList = new String[]{"Code", "Issues", "Pull Request", "Releases", "Wiki", "External Wiki",
-		"External Issues"};
-
 	private List<String> pushAccessList;
-
-	private final boolean[] selectedAccessControlsTrueFalse = new boolean[]{false, false, false, false, false, false, false};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -161,10 +157,8 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 
 					if(value) {
 
-						teamAccessControls.setText(
-							getString(R.string.newTeamPermissionValues, teamAccessControls.getText(), pushAccessList.get(selectedVal)));
-						teamAccessControlsArray.setText(
-							getString(R.string.newTeamPermissionValuesFinal, teamAccessControlsArray.getText(), repoCode));
+						teamAccessControls.setText(getString(R.string.newTeamPermissionValues, teamAccessControls.getText(), pushAccessList.get(selectedVal)));
+						teamAccessControlsArray.setText(getString(R.string.newTeamPermissionValuesFinal, teamAccessControlsArray.getText(), repoCode));
 					}
 
 					selectedVal++;
@@ -264,8 +258,7 @@ public class CreateTeamByOrgActivity extends BaseActivity implements View.OnClic
 		createNewTeamCall(orgName, newTeamName, newTeamDesc, newTeamPermission, newTeamAccessControls_);
 	}
 
-	private void createNewTeamCall(String orgName, String newTeamName, String newTeamDesc, String newTeamPermission,
-		List<String> newTeamAccessControls) {
+	private void createNewTeamCall(String orgName, String newTeamName, String newTeamDesc, String newTeamPermission, List<String> newTeamAccessControls) {
 
 		CreateTeamOption createNewTeamJson = new CreateTeamOption();
 		createNewTeamJson.setName(newTeamName);

@@ -17,15 +17,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/primaryBackgroundColor"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"/>
 
     </LinearLayout>
 
     <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:id="@+id/divider"
-        android:background="?attr/dividerColor" />
+        android:background="?attr/dividerColor"/>
 
     <Button
         android:id="@+id/newAccount"
@@ -36,7 +36,7 @@
         android:paddingEnd="4dp"
         android:text="@string/addNewAccount"
         android:textColor="@color/colorWhite"
-        android:textSize="16sp" />
+        android:textSize="16sp"/>
 
 </LinearLayout>
 

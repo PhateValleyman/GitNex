@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:background="?attr/primaryBackgroundColor"
     android:paddingStart="20dp"
+    android:paddingTop="10dp"
     android:paddingEnd="20dp"
-    android:background="?attr/primaryBackgroundColor" >
+    android:paddingBottom="10dp">
 
     <ImageView
         android:id="@+id/userAvatar"
@@ -14,7 +14,7 @@
         android:layout_height="@dimen/list_avatar_size"
         android:layout_marginEnd="10dp"
         android:contentDescription="@string/generalImgContentText"
-        android:src="@drawable/ic_android" />
+        android:src="@drawable/ic_android"/>
 
     <LinearLayout
         android:id="@+id/userInfoSection"
@@ -23,24 +23,24 @@
         android:layout_toEndOf="@+id/userAvatar"
         android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/userFullName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:text="@string/userName"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/userFullName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/userName"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/userName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:text="@string/addCollaboratorViewUserDesc"
-                android:textColor="?attr/primaryTextColor"
-                android:textSize="12sp" />
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/addCollaboratorViewUserDesc"
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="12sp"/>
 
     </LinearLayout>
 
@@ -48,23 +48,23 @@
         android:id="@+id/frameAddCollaborator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/userInfoSection"
-        android:gravity="end"
         android:layout_marginStart="14dp"
         android:layout_marginEnd="0dp"
+        android:layout_toEndOf="@+id/userInfoSection"
+        android:gravity="end"
+        android:orientation="vertical"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:orientation="vertical">
+        android:paddingBottom="5dp">
 
         <ImageView
             android:id="@+id/addCollaboratorButtonAdd"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="end"
-            android:contentDescription="@string/addNewContent"
             android:background="@drawable/shape_circle"
-            android:src="@drawable/ic_add"
+            android:contentDescription="@string/addNewContent"
             android:padding="8dp"
+            android:src="@drawable/ic_add"
             android:visibility="gone"/>
 
         <ImageView
@@ -72,10 +72,10 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="end"
-            android:contentDescription="@string/removeContent"
             android:background="@drawable/shape_circle_red"
-            android:src="@drawable/ic_remove"
+            android:contentDescription="@string/removeContent"
             android:padding="8dp"
+            android:src="@drawable/ic_remove"
             android:visibility="gone"/>
 
     </LinearLayout>

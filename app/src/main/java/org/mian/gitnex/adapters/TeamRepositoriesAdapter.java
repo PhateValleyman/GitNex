@@ -49,53 +49,6 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 		reposArr = new ArrayList<>();
 	}
 
-	class TeamReposViewHolder extends RecyclerView.ViewHolder {
-
-		private Repository repoInfo;
-
-		private final ImageView repoAvatar;
-		private final TextView name;
-		private final ImageView addRepoButtonAdd;
-
-		private TeamReposViewHolder(View itemView) {
-
-			super(itemView);
-			repoAvatar = itemView.findViewById(R.id.userAvatar);
-			name = itemView.findViewById(R.id.userFullName);
-			itemView.findViewById(R.id.userName).setVisibility(View.GONE);
-			addRepoButtonAdd = itemView.findViewById(R.id.addCollaboratorButtonAdd);
-			ImageView addRepoButtonRemove = itemView.findViewById(R.id.addCollaboratorButtonRemove);
-			//addRepoButtonAdd.setVisibility(View.VISIBLE);
-			//addRepoButtonRemove.setVisibility(View.GONE);
-
-			new Handler(Looper.getMainLooper()).postDelayed(TeamRepositoriesAdapter.this::getTeamRepos, 200);
-
-			new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-				if(reposArr.size() > 0) {
-					for(int i = 0; i < reposArr.size(); i++) {
-						if(!reposArr.get(i).getName().equals(repoInfo.getName())) {
-							addRepoButtonAdd.setVisibility(View.VISIBLE);
-						}
-						else {
-							addRepoButtonAdd.setVisibility(View.GONE);
-						}
-					}
-				}
-				else {
-					addRepoButtonAdd.setVisibility(View.VISIBLE);
-				}
-			}, 500);
-
-			addRepoButtonAdd.setOnClickListener(
-				v -> AlertDialogs.addRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
-
-			addRepoButtonRemove.setOnClickListener(
-				v -> AlertDialogs.removeRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
-		}
-
-	}
-
 	@NonNull
 	@Override
 	public TeamRepositoriesAdapter.TeamReposViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -112,13 +65,12 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 
 		holder.name.setText(currentItem.getName());
 
-		TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28)
-			.endConfig().buildRoundRect(String.valueOf(currentItem.getFullName().charAt(0)),
-				ColorGenerator.Companion.getMATERIAL().getColor(currentItem.getName()), 3);
+		TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig()
+			.buildRoundRect(String.valueOf(currentItem.getFullName().charAt(0)), ColorGenerator.Companion.getMATERIAL().getColor(currentItem.getName()), 3);
 
 		if(currentItem.getAvatarUrl() != null && !currentItem.getAvatarUrl().equals("")) {
-			PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated)
-				.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.repoAvatar);
+			PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop()
+				.into(holder.repoAvatar);
 		}
 		else {
 			holder.repoAvatar.setImageDrawable(drawable);
@@ -154,6 +106,50 @@ public class TeamRepositoriesAdapter extends RecyclerView.Adapter<TeamRepositori
 				}
 			});
 		}
+	}
+
+	class TeamReposViewHolder extends RecyclerView.ViewHolder {
+
+		private final ImageView repoAvatar;
+		private final TextView name;
+		private final ImageView addRepoButtonAdd;
+		private Repository repoInfo;
+
+		private TeamReposViewHolder(View itemView) {
+
+			super(itemView);
+			repoAvatar = itemView.findViewById(R.id.userAvatar);
+			name = itemView.findViewById(R.id.userFullName);
+			itemView.findViewById(R.id.userName).setVisibility(View.GONE);
+			addRepoButtonAdd = itemView.findViewById(R.id.addCollaboratorButtonAdd);
+			ImageView addRepoButtonRemove = itemView.findViewById(R.id.addCollaboratorButtonRemove);
+			//addRepoButtonAdd.setVisibility(View.VISIBLE);
+			//addRepoButtonRemove.setVisibility(View.GONE);
+
+			new Handler(Looper.getMainLooper()).postDelayed(TeamRepositoriesAdapter.this::getTeamRepos, 200);
+
+			new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+				if(reposArr.size() > 0) {
+					for(int i = 0; i < reposArr.size(); i++) {
+						if(!reposArr.get(i).getName().equals(repoInfo.getName())) {
+							addRepoButtonAdd.setVisibility(View.VISIBLE);
+						}
+						else {
+							addRepoButtonAdd.setVisibility(View.GONE);
+						}
+					}
+				}
+				else {
+					addRepoButtonAdd.setVisibility(View.VISIBLE);
+				}
+			}, 500);
+
+			addRepoButtonAdd.setOnClickListener(v -> AlertDialogs.addRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
+
+			addRepoButtonRemove.setOnClickListener(v -> AlertDialogs.removeRepoDialog(context, orgName, repoInfo.getName(), Integer.parseInt(String.valueOf(teamId)), teamName));
+		}
+
 	}
 
 }

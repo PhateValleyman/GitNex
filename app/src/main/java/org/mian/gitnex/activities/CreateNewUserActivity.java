@@ -33,6 +33,7 @@ public class CreateNewUserActivity extends BaseActivity {
 	private EditText userEmail;
 	private EditText userPassword;
 	private Button createUserButton;
+	private final View.OnClickListener createNewUserListener = v -> processCreateNewUser();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -171,8 +172,6 @@ public class CreateNewUserActivity extends BaseActivity {
 		});
 
 	}
-
-	private final View.OnClickListener createNewUserListener = v -> processCreateNewUser();
 
 	private void initCloseListener() {
 

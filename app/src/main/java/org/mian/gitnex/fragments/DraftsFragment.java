@@ -174,8 +174,8 @@ public class DraftsFragment extends Fragment {
 				continue;
 			}
 
-			if(d.getRepositoryOwner().toLowerCase().contains(text) || d.getRepositoryName().toLowerCase().contains(text) || d.getDraftText()
-				.toLowerCase().contains(text) || String.valueOf(d.getIssueId()).contains(text)) {
+			if(d.getRepositoryOwner().toLowerCase().contains(text) || d.getRepositoryName().toLowerCase().contains(text) || d.getDraftText().toLowerCase().contains(text) || String.valueOf(d.getIssueId())
+				.contains(text)) {
 				arr.add(d);
 			}
 		}

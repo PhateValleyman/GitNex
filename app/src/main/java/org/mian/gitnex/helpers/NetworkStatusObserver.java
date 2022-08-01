@@ -27,8 +27,7 @@ public class NetworkStatusObserver {
 
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-		NetworkRequest networkRequest = new NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-			.addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED).build();
+		NetworkRequest networkRequest = new NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED).build();
 
 		cm.requestNetwork(networkRequest, new ConnectivityManager.NetworkCallback() {
 
@@ -75,6 +74,20 @@ public class NetworkStatusObserver {
 		}
 	}
 
+	public static NetworkStatusObserver getInstance(Context context) {
+
+		if(networkStatusObserver == null) {
+			synchronized(NetworkStatusObserver.class) {
+				if(networkStatusObserver == null) {
+					networkStatusObserver = new NetworkStatusObserver(context);
+				}
+			}
+		}
+
+		return networkStatusObserver;
+
+	}
+
 	private void networkStatusChanged() {
 		boolean hasNetworkConnection = hasNetworkConnection();
 
@@ -99,20 +112,6 @@ public class NetworkStatusObserver {
 	public interface NetworkStatusListener {
 
 		void onNetworkStatusChanged(boolean hasNetworkConnection);
-
-	}
-
-	public static NetworkStatusObserver getInstance(Context context) {
-
-		if(networkStatusObserver == null) {
-			synchronized(NetworkStatusObserver.class) {
-				if(networkStatusObserver == null) {
-					networkStatusObserver = new NetworkStatusObserver(context);
-				}
-			}
-		}
-
-		return networkStatusObserver;
 
 	}
 

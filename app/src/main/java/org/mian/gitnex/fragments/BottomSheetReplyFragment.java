@@ -42,19 +42,23 @@ import java.util.Objects;
 
 public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
-	private enum Mode {EDIT, SEND}
-
 	private Mode mode = Mode.SEND;
-
 	private TinyDB tinyDB;
 	private DraftsApi draftsApi;
-
 	private int currentActiveAccountId;
 	private IssueContext issue;
 	private long draftId;
-
 	private Runnable onInteractedListener;
 	private TextView draftsHint;
+
+	public static BottomSheetReplyFragment newInstance(Bundle bundle, IssueContext issue) {
+
+		BottomSheetReplyFragment fragment = new BottomSheetReplyFragment();
+		bundle.putSerializable(IssueContext.INTENT_EXTRA, issue);
+		fragment.setArguments(bundle);
+
+		return fragment;
+	}
 
 	@Override
 	public void onAttach(@NonNull Context context) {
@@ -283,8 +287,7 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 
 			if(draftId == 0) {
 
-				draftId = draftsApi.insertDraft(issue.getRepository().saveToDB(requireContext()), currentActiveAccountId, issue.getIssueIndex(), text,
-					draftType, "TODO", issue.getIssueType());
+				draftId = draftsApi.insertDraft(issue.getRepository().saveToDB(requireContext()), currentActiveAccountId, issue.getIssueIndex(), text, draftType, "TODO", issue.getIssueType());
 			}
 			else {
 
@@ -296,18 +299,11 @@ public class BottomSheetReplyFragment extends BottomSheetDialogFragment {
 		}
 	}
 
-	public static BottomSheetReplyFragment newInstance(Bundle bundle, IssueContext issue) {
-
-		BottomSheetReplyFragment fragment = new BottomSheetReplyFragment();
-		bundle.putSerializable(IssueContext.INTENT_EXTRA, issue);
-		fragment.setArguments(bundle);
-
-		return fragment;
-	}
-
 	public void setOnInteractedListener(Runnable onInteractedListener) {
 
 		this.onInteractedListener = onInteractedListener;
 	}
+
+	private enum Mode {EDIT, SEND}
 
 }

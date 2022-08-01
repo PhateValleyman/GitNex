@@ -29,13 +29,11 @@ import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTI
 
 public class SettingsSecurityActivity extends BaseActivity {
 
-	private View.OnClickListener onClickListener;
-
 	private static String[] cacheSizeDataList;
 	private static int cacheSizeDataSelectedChoice = 0;
-
 	private static String[] cacheSizeImagesList;
 	private static int cacheSizeImagesSelectedChoice = 0;
+	private View.OnClickListener onClickListener;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -229,8 +227,7 @@ public class SettingsSecurityActivity extends BaseActivity {
 			builder.setMessage(getResources().getString(R.string.settingsCertsPopupMessage));
 			builder.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
 
-				appCtx.getSharedPreferences(MemorizingTrustManager.KEYSTORE_NAME, Context.MODE_PRIVATE).edit()
-					.remove(MemorizingTrustManager.KEYSTORE_KEY).apply();
+				appCtx.getSharedPreferences(MemorizingTrustManager.KEYSTORE_NAME, Context.MODE_PRIVATE).edit().remove(MemorizingTrustManager.KEYSTORE_KEY).apply();
 				AppUtil.logout(this);
 			});
 

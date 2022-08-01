@@ -20,9 +20,14 @@ import java.util.Locale;
 
 public class SettingsTranslationActivity extends BaseActivity {
 
+	private static int langSelectedChoice = 0;
 	private View.OnClickListener onClickListener;
 
-	private static int langSelectedChoice = 0;
+	private static String getLanguageDisplayName(String langCode) {
+		Locale english = new Locale("en");
+		Locale translated = new Locale(langCode);
+		return String.format("%s (%s)", translated.getDisplayName(translated), translated.getDisplayName(english));
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -86,12 +91,6 @@ public class SettingsTranslationActivity extends BaseActivity {
 	private void initCloseListener() {
 
 		onClickListener = view -> finish();
-	}
-
-	private static String getLanguageDisplayName(String langCode) {
-		Locale english = new Locale("en");
-		Locale translated = new Locale(langCode);
-		return String.format("%s (%s)", translated.getDisplayName(translated), translated.getDisplayName(english));
 	}
 
 }

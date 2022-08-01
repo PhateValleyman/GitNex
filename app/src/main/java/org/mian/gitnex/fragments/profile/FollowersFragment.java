@@ -37,16 +37,13 @@ import retrofit2.Response;
 
 public class FollowersFragment extends Fragment {
 
+	private static final String usernameBundle = "";
 	private Context context;
 	private FragmentProfileFollowersFollowingBinding fragmentProfileFollowersFollowingBinding;
-
 	private List<User> usersList;
 	private UsersAdapter adapter;
-
 	private int pageSize;
 	private int resultLimit;
-
-	private static final String usernameBundle = "";
 	private String username;
 
 	public FollowersFragment() {

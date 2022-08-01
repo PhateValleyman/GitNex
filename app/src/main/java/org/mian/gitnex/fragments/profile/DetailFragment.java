@@ -31,12 +31,11 @@ import retrofit2.Callback;
 
 public class DetailFragment extends Fragment {
 
-	private Context context;
-	private FragmentProfileDetailBinding binding;
+	private static final String usernameBundle = "";
 	Locale locale;
 	TinyDB tinyDb;
-
-	private static final String usernameBundle = "";
+	private Context context;
+	private FragmentProfileDetailBinding binding;
 	private String username;
 
 	public DetailFragment() {
@@ -104,8 +103,7 @@ public class DetailFragment extends Fragment {
 								binding.userLang.setText(locale.getDisplayLanguage());
 							}
 
-							PicassoService.getInstance(context).get().load(response.body().getAvatarUrl())
-								.transform(new RoundedTransformation(imgRadius, 0)).placeholder(R.drawable.loader_animated).resize(120, 120)
+							PicassoService.getInstance(context).get().load(response.body().getAvatarUrl()).transform(new RoundedTransformation(imgRadius, 0)).placeholder(R.drawable.loader_animated).resize(120, 120)
 								.centerCrop().into(binding.userAvatar);
 
 							PicassoService.getInstance(context).get().load(response.body().getAvatarUrl()).transform(new BlurTransformation(context))
@@ -126,8 +124,7 @@ public class DetailFragment extends Fragment {
 
 							binding.userJoinedOn.setText(TimeHelper.formatTime(response.body().getCreated(), locale, timeFormat, context));
 							if(timeFormat.equals("pretty")) {
-								binding.userJoinedOn.setOnClickListener(
-									new ClickListener(TimeHelper.customDateFormatForToastDateFormat(response.body().getCreated()), context));
+								binding.userJoinedOn.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(response.body().getCreated()), context));
 							}
 							break;
 

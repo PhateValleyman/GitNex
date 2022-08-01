@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/profileEmailTitle"
         android:textColor="?attr/primaryTextColor"
-        android:textSize="16sp" />
+        android:textSize="16sp"/>
 
     <ImageView
         android:id="@+id/emailPrimary"
@@ -25,6 +25,6 @@
         android:contentDescription="@string/emailTypeText"
         android:paddingStart="20dp"
         android:paddingEnd="2dp"
-        tools:src="@drawable/ic_verified_user" />
+        tools:src="@drawable/ic_verified_user"/>
 
 </LinearLayout>

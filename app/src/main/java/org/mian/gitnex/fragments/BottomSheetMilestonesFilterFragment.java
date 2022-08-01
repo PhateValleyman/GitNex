@@ -24,8 +24,7 @@ public class BottomSheetMilestonesFilterFragment extends BottomSheetDialogFragme
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		BottomSheetMilestonesFilterBinding bottomSheetMilestonesFilterBinding = BottomSheetMilestonesFilterBinding.inflate(inflater, container,
-			false);
+		BottomSheetMilestonesFilterBinding bottomSheetMilestonesFilterBinding = BottomSheetMilestonesFilterBinding.inflate(inflater, container, false);
 
 		bottomSheetMilestonesFilterBinding.openMilestone.setOnClickListener(v1 -> {
 			bmListener.onButtonClicked("openMilestone");

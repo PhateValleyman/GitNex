@@ -23,24 +23,20 @@ import java.util.UUID;
 
 public class PicassoCache implements Cache {
 
-	private Context ctx;
-	private final String TAG = "PicassoCache";
-
 	private static final Bitmap.CompressFormat COMPRESS_FORMAT = Bitmap.CompressFormat.PNG;
 	private static final int COMPRESSION_QUALITY = 50; // 0 = high compression (low file size) | 100 = no compression
-	private final int CACHE_SIZE;
-
 	private static final String CACHE_MAP_FILE = "cacheMap";
-
+	private final String TAG = "PicassoCache";
+	private final int CACHE_SIZE;
 	private final File cachePath;
 	private final HashMap<String, String> cacheMap;
+	private final Context ctx;
 
 	public PicassoCache(File cachePath, Context ctx) throws IOException, ClassNotFoundException {
 
 		TinyDB tinyDb = TinyDB.getInstance(ctx);
 
-		CACHE_SIZE = FilesData.returnOnlyNumberFileSize(
-			tinyDb.getString("cacheSizeImagesStr", ctx.getString(R.string.cacheSizeImagesSelectionSelectedText))) * 1024 * 1024;
+		CACHE_SIZE = FilesData.returnOnlyNumberFileSize(tinyDb.getString("cacheSizeImagesStr", ctx.getString(R.string.cacheSizeImagesSelectionSelectedText))) * 1024 * 1024;
 		this.cachePath = cachePath;
 		cacheMap = new HashMap<>();
 		this.ctx = ctx;

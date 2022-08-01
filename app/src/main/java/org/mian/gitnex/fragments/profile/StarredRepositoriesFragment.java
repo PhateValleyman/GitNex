@@ -37,16 +37,13 @@ import retrofit2.Response;
 
 public class StarredRepositoriesFragment extends Fragment {
 
+	private static final String usernameBundle = "";
 	private Context context;
 	private FragmentRepositoriesBinding fragmentRepositoriesBinding;
-
 	private List<Repository> reposList;
 	private StarredRepositoriesAdapter adapter;
-
 	private int pageSize;
 	private int resultLimit;
-
-	private static final String usernameBundle = "";
 	private String username;
 
 	public StarredRepositoriesFragment() {

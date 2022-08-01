@@ -33,70 +33,9 @@ import java.util.List;
 
 public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsViewHolder> {
 
-	private List<DraftWithRepository> draftsList;
 	private final FragmentManager fragmentManager;
 	private final Context context;
-
-	class DraftsViewHolder extends RecyclerView.ViewHolder {
-
-		private DraftWithRepository draftWithRepository;
-
-		private final TextView draftText;
-		private final TextView repoInfo;
-		private final ImageView editCommentStatus;
-
-		private DraftsViewHolder(View itemView) {
-
-			super(itemView);
-
-			draftText = itemView.findViewById(R.id.draftText);
-			repoInfo = itemView.findViewById(R.id.repoInfo);
-			ImageView deleteDraft = itemView.findViewById(R.id.deleteDraft);
-			editCommentStatus = itemView.findViewById(R.id.editCommentStatus);
-
-			deleteDraft.setOnClickListener(itemDelete -> {
-
-				int getDraftId = draftWithRepository.getDraftId();
-				deleteDraft(getBindingAdapterPosition());
-
-				DraftsApi draftsApi = BaseApi.getInstance(context, DraftsApi.class);
-				assert draftsApi != null;
-				draftsApi.deleteSingleDraft(getDraftId);
-
-			});
-
-			itemView.setOnClickListener(itemEdit -> {
-
-				RepositoryContext repository = new RepositoryContext(draftWithRepository.getRepositoryOwner(),
-					draftWithRepository.getRepositoryName(), context);
-				repository.setRepositoryId(draftWithRepository.getRepositoryId());
-				IssueContext issue = new IssueContext(repository, draftWithRepository.getIssueId(), draftWithRepository.getIssueType());
-				Bundle bundle = issue.getBundle();
-
-				bundle.putString("commentBody", draftWithRepository.getDraftText());
-				bundle.putString("issueNumber", String.valueOf(draftWithRepository.getIssueId()));
-				bundle.putString("draftTitle", repoInfo.getText().toString());
-				bundle.putString("commentId", draftWithRepository.getCommentId());
-				bundle.putString("draftId", String.valueOf(draftWithRepository.getDraftId()));
-
-				if(!draftWithRepository.getCommentId().isEmpty()) {
-					bundle.putString("commentAction", "edit");
-				}
-
-				BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle, issue);
-				bottomSheetReplyFragment.setOnInteractedListener(() -> {
-					Intent i = new IssueContext(
-						new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName(), context),
-						draftWithRepository.getIssueId(), draftWithRepository.getIssueType()).getIntent(context, IssueDetailActivity.class);
-					i.putExtra("openedFromLink", "true");
-					context.startActivity(i);
-				});
-				bottomSheetReplyFragment.show(fragmentManager, "replyBottomSheet");
-			});
-
-		}
-
-	}
+	private List<DraftWithRepository> draftsList;
 
 	public DraftsAdapter(Context ctx, FragmentManager fragmentManager, List<DraftWithRepository> draftsListMain) {
 		this.context = ctx;
@@ -125,10 +64,8 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
 		DraftWithRepository currentItem = draftsList.get(position);
 
-		String issueNumber = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray,
-			null) + "'>" + context.getResources().getString(R.string.hash) + currentItem.getIssueId() + "</font>";
-		Spanned headTitle = HtmlCompat.fromHtml(issueNumber + " " + currentItem.getRepositoryOwner() + " / " + currentItem.getRepositoryName(),
-			HtmlCompat.FROM_HTML_MODE_LEGACY);
+		String issueNumber = "<font color='" + ResourcesCompat.getColor(context.getResources(), R.color.lightGray, null) + "'>" + context.getResources().getString(R.string.hash) + currentItem.getIssueId() + "</font>";
+		Spanned headTitle = HtmlCompat.fromHtml(issueNumber + " " + currentItem.getRepositoryOwner() + " / " + currentItem.getRepositoryName(), HtmlCompat.FROM_HTML_MODE_LEGACY);
 
 		holder.repoInfo.setText(headTitle);
 		holder.draftWithRepository = currentItem;
@@ -152,6 +89,64 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftsView
 
 		draftsList = list;
 		notifyDataSetChanged();
+	}
+
+	class DraftsViewHolder extends RecyclerView.ViewHolder {
+
+		private final TextView draftText;
+		private final TextView repoInfo;
+		private final ImageView editCommentStatus;
+		private DraftWithRepository draftWithRepository;
+
+		private DraftsViewHolder(View itemView) {
+
+			super(itemView);
+
+			draftText = itemView.findViewById(R.id.draftText);
+			repoInfo = itemView.findViewById(R.id.repoInfo);
+			ImageView deleteDraft = itemView.findViewById(R.id.deleteDraft);
+			editCommentStatus = itemView.findViewById(R.id.editCommentStatus);
+
+			deleteDraft.setOnClickListener(itemDelete -> {
+
+				int getDraftId = draftWithRepository.getDraftId();
+				deleteDraft(getBindingAdapterPosition());
+
+				DraftsApi draftsApi = BaseApi.getInstance(context, DraftsApi.class);
+				assert draftsApi != null;
+				draftsApi.deleteSingleDraft(getDraftId);
+
+			});
+
+			itemView.setOnClickListener(itemEdit -> {
+
+				RepositoryContext repository = new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName(), context);
+				repository.setRepositoryId(draftWithRepository.getRepositoryId());
+				IssueContext issue = new IssueContext(repository, draftWithRepository.getIssueId(), draftWithRepository.getIssueType());
+				Bundle bundle = issue.getBundle();
+
+				bundle.putString("commentBody", draftWithRepository.getDraftText());
+				bundle.putString("issueNumber", String.valueOf(draftWithRepository.getIssueId()));
+				bundle.putString("draftTitle", repoInfo.getText().toString());
+				bundle.putString("commentId", draftWithRepository.getCommentId());
+				bundle.putString("draftId", String.valueOf(draftWithRepository.getDraftId()));
+
+				if(!draftWithRepository.getCommentId().isEmpty()) {
+					bundle.putString("commentAction", "edit");
+				}
+
+				BottomSheetReplyFragment bottomSheetReplyFragment = BottomSheetReplyFragment.newInstance(bundle, issue);
+				bottomSheetReplyFragment.setOnInteractedListener(() -> {
+					Intent i = new IssueContext(new RepositoryContext(draftWithRepository.getRepositoryOwner(), draftWithRepository.getRepositoryName(), context), draftWithRepository.getIssueId(),
+						draftWithRepository.getIssueType()).getIntent(context, IssueDetailActivity.class);
+					i.putExtra("openedFromLink", "true");
+					context.startActivity(i);
+				});
+				bottomSheetReplyFragment.show(fragmentManager, "replyBottomSheet");
+			});
+
+		}
+
 	}
 
 }

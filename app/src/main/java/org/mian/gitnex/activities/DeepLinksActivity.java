@@ -174,9 +174,7 @@ public class DeepLinksActivity extends BaseActivity {
 							issueIntent.putExtra("issueComment", urlSplitted[1]);
 						}
 
-						IssueContext issue = new IssueContext(
-							new RepositoryContext(data.getPathSegments().get(0), data.getPathSegments().get(1), ctx),
-							Integer.parseInt(data.getLastPathSegment()), "Issue");
+						IssueContext issue = new IssueContext(new RepositoryContext(data.getPathSegments().get(0), data.getPathSegments().get(1), ctx), Integer.parseInt(data.getLastPathSegment()), "Issue");
 
 						issue.getRepository().saveToDB(ctx);
 
@@ -186,12 +184,10 @@ public class DeepLinksActivity extends BaseActivity {
 						finish();
 					}
 					else if(Objects.requireNonNull(data.getLastPathSegment()).contains("issues")) {
-						new Handler(Looper.getMainLooper()).postDelayed(
-							() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "issue"), 500);
+						new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "issue"), 500);
 					}
 					else if(data.getLastPathSegment().equals("new")) {
-						new Handler(Looper.getMainLooper()).postDelayed(
-							() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "issueNew"), 500);
+						new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "issueNew"), 500);
 					}
 					else {
 						ctx.startActivity(mainIntent);
@@ -214,14 +210,12 @@ public class DeepLinksActivity extends BaseActivity {
 
 					}
 					else if(Objects.requireNonNull(data.getLastPathSegment()).contains("pulls")) {
-						new Handler(Looper.getMainLooper()).postDelayed(
-							() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "pull"), 500);
+						new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "pull"), 500);
 					}
 					else if(data.getLastPathSegment().equals("files")) { // pr diff
 						new Handler(Looper.getMainLooper()).postDelayed(() -> {
 							issueIntent.putExtra("openPrDiff", "true");
-							getPullRequest(data.getPathSegments().get(0), data.getPathSegments().get(1),
-								Integer.parseInt(data.getPathSegments().get(3)));
+							getPullRequest(data.getPathSegments().get(0), data.getPathSegments().get(1), Integer.parseInt(data.getPathSegments().get(3)));
 						}, 500);
 					}
 					else {
@@ -231,36 +225,29 @@ public class DeepLinksActivity extends BaseActivity {
 				}
 
 				else if(data.getPathSegments().get(2).equals("compare")) { // new pull request
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "pullNew"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "pullNew"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("commit")) {
 					repoIntent.putExtra("sha", data.getLastPathSegment());
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "commit"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "commit"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("commits")) { // commits list
 					String branch = data.getLastPathSegment();
 					repoIntent.putExtra("branchName", branch);
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "commitsList"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "commitsList"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("milestones") && data.getLastPathSegment().equals("new")) { // new milestone
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "milestonesNew"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "milestonesNew"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("milestones")) { // milestones
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "milestones"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "milestones"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("milestone")) { // milestone
 					repoIntent.putExtra("milestoneId", data.getLastPathSegment());
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "milestones"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "milestones"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("releases") && data.getLastPathSegment().equals("new")) { // new release
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "newRelease"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "newRelease"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("releases")) { // releases
 					if(data.getPathSegments().size() == 5) {
@@ -268,26 +255,20 @@ public class DeepLinksActivity extends BaseActivity {
 							repoIntent.putExtra("releaseTagName", data.getLastPathSegment());
 						}
 					}
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "releases"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "releases"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("labels")) { // labels
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "labels"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "labels"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("settings")) { // repo settings
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "settings"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "settings"), 500);
 				}
 				else if(data.getLastPathSegment().equals("branches")) { // branches list
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "branchesList"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "branchesList"), 500);
 				}
-				else if(data.getPathSegments().size() == 5 && data.getPathSegments().get(2).equals("src") && data.getPathSegments().get(3)
-					.equals("branch")) { // branch
+				else if(data.getPathSegments().size() == 5 && data.getPathSegments().get(2).equals("src") && data.getPathSegments().get(3).equals("branch")) { // branch
 					repoIntent.putExtra("selectedBranch", data.getLastPathSegment());
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "branch"), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> goToRepoSection(data.getPathSegments().get(0), data.getPathSegments().get(1), "branch"), 500);
 				}
 				else if(data.getPathSegments().get(2).equals("src") && data.getPathSegments().get(3).equals("branch")) { // file/dir
 					StringBuilder filePath = new StringBuilder();
@@ -298,9 +279,7 @@ public class DeepLinksActivity extends BaseActivity {
 						filePath.append("/");
 					}
 					filePath.deleteCharAt(filePath.toString().length() - 1);
-					new Handler(Looper.getMainLooper()).postDelayed(
-						() -> getFile(data.getPathSegments().get(0), data.getPathSegments().get(1), filePath.toString(),
-							data.getPathSegments().get(4)), 500);
+					new Handler(Looper.getMainLooper()).postDelayed(() -> getFile(data.getPathSegments().get(0), data.getPathSegments().get(1), filePath.toString(), data.getPathSegments().get(4)), 500);
 				}
 				else { // no action, show options
 					showNoActionButtons();

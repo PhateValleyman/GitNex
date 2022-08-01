@@ -99,8 +99,8 @@ public class SyntaxHighlightedArea extends LinearLayout {
 
 					MainGrammarLocator mainGrammarLocator = MainGrammarLocator.getInstance();
 
-					CharSequence highlightedSource = Prism4jSyntaxHighlight.create(new Prism4j(mainGrammarLocator), prism4jTheme,
-						MainGrammarLocator.DEFAULT_FALLBACK_LANGUAGE).highlight(mainGrammarLocator.fromExtension(extension), source);
+					CharSequence highlightedSource = Prism4jSyntaxHighlight.create(new Prism4j(mainGrammarLocator), prism4jTheme, MainGrammarLocator.DEFAULT_FALLBACK_LANGUAGE)
+						.highlight(mainGrammarLocator.fromExtension(extension), source);
 
 					getActivity().runOnUiThread(() -> sourceView.setText(highlightedSource));
 

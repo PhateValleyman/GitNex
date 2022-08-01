@@ -48,25 +48,82 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 	private ActivityFileViewBinding binding;
 	private ContentsResponse file;
 	private RepositoryContext repository;
+	ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+
+		if(result.getResultCode() == Activity.RESULT_OK) {
+
+			assert result.getData() != null;
+
+			try {
+
+				OutputStream outputStream = getContentResolver().openOutputStream(result.getData().getData());
+
+				NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, ctx.getPackageName()).setContentTitle(getString(R.string.fileViewerNotificationTitleStarted))
+					.setContentText(getString(R.string.fileViewerNotificationDescriptionStarted, file.getName())).setSmallIcon(R.drawable.gitnex_transparent).setPriority(NotificationCompat.PRIORITY_LOW)
+					.setChannelId(Constants.downloadNotificationChannelId).setProgress(100, 0, false).setOngoing(true);
+
+				int notificationId = Notifications.uniqueNotificationId(ctx);
+
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.notify(notificationId, builder.build());
+
+				Thread thread = new Thread(() -> {
+
+					try {
+
+						Call<ResponseBody> call = RetrofitClient.getWebInterface(ctx).getFileContents(repository.getOwner(), repository.getName(), repository.getBranchRef(), file.getPath());
+
+						Response<ResponseBody> response = call.execute();
+
+						assert response.body() != null;
+
+						AppUtil.copyProgress(response.body().byteStream(), outputStream, file.getSize(), progress -> {
+							builder.setProgress(100, progress, false);
+							notificationManager.notify(notificationId, builder.build());
+						});
+
+						builder.setContentTitle(getString(R.string.fileViewerNotificationTitleFinished)).setContentText(getString(R.string.fileViewerNotificationDescriptionFinished, file.getName()));
+
+					}
+					catch(IOException ignored) {
+
+						builder.setContentTitle(getString(R.string.fileViewerNotificationTitleFailed)).setContentText(getString(R.string.fileViewerNotificationDescriptionFailed, file.getName()));
+
+					}
+					finally {
+
+						builder.setProgress(0, 0, false).setOngoing(false);
+
+						notificationManager.notify(notificationId, builder.build());
+
+					}
+				});
+
+				thread.start();
+
+			}
+			catch(IOException ignored) {
+			}
+		}
+
+	});
 	private boolean renderMd = false;
 	private boolean processable = false;
-
-	public ActivityResultLauncher<Intent> editFileLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-		result -> {
-			if(result.getResultCode() == 200) {
-				assert result.getData() != null;
-				if(result.getData().getBooleanExtra("fileModified", false)) {
-					switch(result.getData().getIntExtra("fileAction", CreateFileActivity.FILE_ACTION_EDIT)) {
-						case CreateFileActivity.FILE_ACTION_CREATE:
-						case CreateFileActivity.FILE_ACTION_EDIT:
-							getSingleFileContents(repository.getOwner(), repository.getName(), file.getPath(), repository.getBranchRef());
-							break;
-						default:
-							finish();
-					}
+	public ActivityResultLauncher<Intent> editFileLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+		if(result.getResultCode() == 200) {
+			assert result.getData() != null;
+			if(result.getData().getBooleanExtra("fileModified", false)) {
+				switch(result.getData().getIntExtra("fileAction", CreateFileActivity.FILE_ACTION_EDIT)) {
+					case CreateFileActivity.FILE_ACTION_CREATE:
+					case CreateFileActivity.FILE_ACTION_EDIT:
+						getSingleFileContents(repository.getOwner(), repository.getName(), file.getPath(), repository.getBranchRef());
+						break;
+					default:
+						finish();
 				}
 			}
-		});
+		}
+	});
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -327,73 +384,6 @@ public class FileViewActivity extends BaseActivity implements BottomSheetListene
 		activityResultLauncher.launch(intent);
 
 	}
-
-	ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-		result -> {
-
-			if(result.getResultCode() == Activity.RESULT_OK) {
-
-				assert result.getData() != null;
-
-				try {
-
-					OutputStream outputStream = getContentResolver().openOutputStream(result.getData().getData());
-
-					NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, ctx.getPackageName()).setContentTitle(
-							getString(R.string.fileViewerNotificationTitleStarted))
-						.setContentText(getString(R.string.fileViewerNotificationDescriptionStarted, file.getName()))
-						.setSmallIcon(R.drawable.gitnex_transparent).setPriority(NotificationCompat.PRIORITY_LOW)
-						.setChannelId(Constants.downloadNotificationChannelId).setProgress(100, 0, false).setOngoing(true);
-
-					int notificationId = Notifications.uniqueNotificationId(ctx);
-
-					NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					;
-					notificationManager.notify(notificationId, builder.build());
-
-					Thread thread = new Thread(() -> {
-
-						try {
-
-							Call<ResponseBody> call = RetrofitClient.getWebInterface(ctx)
-								.getFileContents(repository.getOwner(), repository.getName(), repository.getBranchRef(), file.getPath());
-
-							Response<ResponseBody> response = call.execute();
-
-							assert response.body() != null;
-
-							AppUtil.copyProgress(response.body().byteStream(), outputStream, file.getSize(), progress -> {
-								builder.setProgress(100, progress, false);
-								notificationManager.notify(notificationId, builder.build());
-							});
-
-							builder.setContentTitle(getString(R.string.fileViewerNotificationTitleFinished))
-								.setContentText(getString(R.string.fileViewerNotificationDescriptionFinished, file.getName()));
-
-						}
-						catch(IOException ignored) {
-
-							builder.setContentTitle(getString(R.string.fileViewerNotificationTitleFailed))
-								.setContentText(getString(R.string.fileViewerNotificationDescriptionFailed, file.getName()));
-
-						}
-						finally {
-
-							builder.setProgress(0, 0, false).setOngoing(false);
-
-							notificationManager.notify(notificationId, builder.build());
-
-						}
-					});
-
-					thread.start();
-
-				}
-				catch(IOException ignored) {
-				}
-			}
-
-		});
 
 	@Override
 	public void onResume() {

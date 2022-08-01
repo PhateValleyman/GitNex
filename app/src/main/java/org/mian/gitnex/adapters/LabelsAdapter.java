@@ -35,13 +35,50 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
 	private final String type;
 	private final String orgName;
 
-	class LabelsViewHolder extends RecyclerView.ViewHolder {
+	public LabelsAdapter(Context ctx, List<Label> labelsMain, String type, String orgName) {
 
-		private Label labels;
+		this.labelsList = labelsMain;
+		this.type = type;
+		this.orgName = orgName;
+	}
+
+	@NonNull
+	@Override
+	public LabelsAdapter.LabelsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_labels, parent, false);
+		return new LabelsAdapter.LabelsViewHolder(v);
+	}
+
+	@Override
+	public void onBindViewHolder(@NonNull LabelsAdapter.LabelsViewHolder holder, int position) {
+
+		Label currentItem = labelsList.get(position);
+		holder.labels = currentItem;
+
+		String labelColor = currentItem.getColor();
+		String labelName = currentItem.getName();
+
+		int color = Color.parseColor("#" + labelColor);
+		int contrastColor = new ColorInverter().getContrastColor(color);
+
+		ImageViewCompat.setImageTintList(holder.labelIcon, ColorStateList.valueOf(contrastColor));
+
+		holder.labelName.setTextColor(contrastColor);
+		holder.labelName.setText(labelName);
+		holder.labelView.setCardBackgroundColor(color);
+	}
+
+	@Override
+	public int getItemCount() {
+		return labelsList.size();
+	}
+
+	class LabelsViewHolder extends RecyclerView.ViewHolder {
 
 		private final CardView labelView;
 		private final ImageView labelIcon;
 		private final TextView labelName;
+		private Label labels;
 
 		private LabelsViewHolder(View itemView) {
 			super(itemView);
@@ -103,44 +140,6 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.LabelsView
 
 		}
 
-	}
-
-	public LabelsAdapter(Context ctx, List<Label> labelsMain, String type, String orgName) {
-
-		this.labelsList = labelsMain;
-		this.type = type;
-		this.orgName = orgName;
-	}
-
-	@NonNull
-	@Override
-	public LabelsAdapter.LabelsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_labels, parent, false);
-		return new LabelsAdapter.LabelsViewHolder(v);
-	}
-
-	@Override
-	public void onBindViewHolder(@NonNull LabelsAdapter.LabelsViewHolder holder, int position) {
-
-		Label currentItem = labelsList.get(position);
-		holder.labels = currentItem;
-
-		String labelColor = currentItem.getColor();
-		String labelName = currentItem.getName();
-
-		int color = Color.parseColor("#" + labelColor);
-		int contrastColor = new ColorInverter().getContrastColor(color);
-
-		ImageViewCompat.setImageTintList(holder.labelIcon, ColorStateList.valueOf(contrastColor));
-
-		holder.labelName.setTextColor(contrastColor);
-		holder.labelName.setText(labelName);
-		holder.labelView.setCardBackgroundColor(color);
-	}
-
-	@Override
-	public int getItemCount() {
-		return labelsList.size();
 	}
 
 }

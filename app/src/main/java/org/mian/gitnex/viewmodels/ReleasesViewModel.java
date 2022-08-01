@@ -26,6 +26,7 @@ public class ReleasesViewModel extends ViewModel {
 
 	private MutableLiveData<List<Release>> releasesList;
 	private int resultLimit;
+	private MutableLiveData<List<Tag>> tagsList;
 
 	public LiveData<List<Release>> getReleasesList(String owner, String repo, Context ctx) {
 
@@ -94,8 +95,6 @@ public class ReleasesViewModel extends ViewModel {
 			}
 		});
 	}
-
-	private MutableLiveData<List<Tag>> tagsList;
 
 	public LiveData<List<Tag>> getTagsList(String owner, String repo, Context ctx) {
 

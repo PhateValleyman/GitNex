@@ -74,9 +74,8 @@ public class ProfileActivity extends BaseActivity implements BottomSheetListener
 
 		viewPager.setAdapter(new ViewPagerAdapter(this));
 
-		String[] tabTitles = {ctx.getResources().getString(R.string.tabTextInfo), ctx.getResources().getString(R.string.navRepos),
-			ctx.getResources().getString(R.string.navStarredRepos), ctx.getResources().getString(R.string.navOrg),
-			ctx.getResources().getString(R.string.profileTabFollowers), ctx.getResources().getString(R.string.profileTabFollowing)};
+		String[] tabTitles = {ctx.getResources().getString(R.string.tabTextInfo), ctx.getResources().getString(R.string.navRepos), ctx.getResources().getString(R.string.navStarredRepos),
+			ctx.getResources().getString(R.string.navOrg), ctx.getResources().getString(R.string.profileTabFollowers), ctx.getResources().getString(R.string.profileTabFollowing)};
 		new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(tabTitles[position])).attach();
 
 		ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
@@ -174,6 +173,32 @@ public class ProfileActivity extends BaseActivity implements BottomSheetListener
 		});
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		int id = item.getItemId();
+
+		if(id == android.R.id.home) {
+			finish();
+			return true;
+		}
+		else if(id == R.id.genericMenu) {
+			new BottomSheetUserProfileFragment(following).show(getSupportFragmentManager(), "userProfileBottomSheet");
+			return true;
+		}
+		else {
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		if(!username.equals(getAccount().getAccount().getUserName())) {
+			getMenuInflater().inflate(R.menu.generic_nav_dotted_menu, menu);
+		}
+		return super.onCreateOptionsMenu(menu);
+	}
+
 	public class ViewPagerAdapter extends FragmentStateAdapter {
 
 		public ViewPagerAdapter(@NonNull FragmentActivity fa) {
@@ -205,32 +230,6 @@ public class ProfileActivity extends BaseActivity implements BottomSheetListener
 			return 6;
 		}
 
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-
-		int id = item.getItemId();
-
-		if(id == android.R.id.home) {
-			finish();
-			return true;
-		}
-		else if(id == R.id.genericMenu) {
-			new BottomSheetUserProfileFragment(following).show(getSupportFragmentManager(), "userProfileBottomSheet");
-			return true;
-		}
-		else {
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		if(!username.equals(getAccount().getAccount().getUserName())) {
-			getMenuInflater().inflate(R.menu.generic_nav_dotted_menu, menu);
-		}
-		return super.onCreateOptionsMenu(menu);
 	}
 
 }

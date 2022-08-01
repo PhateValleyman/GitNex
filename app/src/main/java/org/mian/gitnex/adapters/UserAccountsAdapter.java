@@ -43,16 +43,102 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 	private final Context context;
 	private final Dialog dialog;
 
-	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
+	public UserAccountsAdapter(Context ctx, Dialog dialog) {
+		this.dialog = dialog;
+		this.context = ctx;
+		this.userAccountsList = Objects.requireNonNull(BaseApi.getInstance(context, UserAccountsApi.class)).usersAccounts();
+	}
 
-		private int accountId;
-		private String accountName;
+	private void updateLayoutByPosition(int position) {
+
+		userAccountsList.remove(position);
+		notifyItemRemoved(position);
+		notifyItemRangeChanged(position, userAccountsList.size());
+		Toasty.success(context, context.getResources().getString(R.string.accountDeletedMessage));
+	}
+
+	private void getNotificationsCount() {
+
+		Call<NotificationCount> call = RetrofitClient.getApiInterface(context).notifyNewAvailable();
+
+		call.enqueue(new Callback<>() {
+
+			@Override
+			public void onResponse(@NonNull Call<NotificationCount> call, @NonNull retrofit2.Response<NotificationCount> response) {
+
+				NotificationCount notificationCount = response.body();
+
+				if(response.code() == 200) {
+
+					assert notificationCount != null;
+					if(notificationCount.getNew() > 0) {
+						String toastMsg = context.getResources().getQuantityString(R.plurals.youHaveNewNotifications, Math.toIntExact(notificationCount.getNew()), Math.toIntExact(notificationCount.getNew()));
+						new Handler().postDelayed(() -> Toasty.info(context, toastMsg), 5000);
+					}
+				}
+			}
+
+			@Override
+			public void onFailure(@NonNull Call<NotificationCount> call, @NonNull Throwable t) {
+			}
+		});
+	}
+
+	@NonNull
+	@Override
+	public UserAccountsAdapter.UserAccountsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_user_accounts, parent, false);
+		return new UserAccountsViewHolder(v);
+	}
+
+	@SuppressLint("DefaultLocale")
+	@Override
+	public void onBindViewHolder(@NonNull UserAccountsAdapter.UserAccountsViewHolder holder, int position) {
+
+		UserAccount currentItem = userAccountsList.get(position);
+		TinyDB tinyDB = TinyDB.getInstance(context);
+
+		String url = UrlBuilder.fromString(currentItem.getInstanceUrl()).withPath("/").toString();
+
+		holder.accountId = currentItem.getAccountId();
+		holder.accountName = currentItem.getAccountName();
+
+		holder.userId.setText(currentItem.getUserName());
+		if(currentItem.isLoggedIn()) {
+			holder.accountUrl.setText(url);
+		}
+		else {
+			holder.accountUrl.setText(context.getString(R.string.notLoggedIn, url));
+		}
+
+		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
+
+		PicassoService.getInstance(context).get().load(url + "assets/img/favicon.png").placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop()
+			.into(holder.repoAvatar);
+
+		if(tinyDB.getInt("currentActiveAccountId") == currentItem.getAccountId()) {
+			holder.activeAccount.setVisibility(View.VISIBLE);
+		}
+		else {
+			holder.deleteAccount.setVisibility(View.VISIBLE);
+		}
+	}
+
+	@Override
+	public int getItemCount() {
+		return userAccountsList.size();
+	}
+
+	class UserAccountsViewHolder extends RecyclerView.ViewHolder {
 
 		private final TextView accountUrl;
 		private final TextView userId;
 		private final ImageView activeAccount;
 		private final ImageView deleteAccount;
 		private final ImageView repoAvatar;
+		private int accountId;
+		private String accountName;
 
 		private UserAccountsViewHolder(View itemView) {
 
@@ -66,10 +152,8 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 
 			deleteAccount.setOnClickListener(itemDelete -> {
 
-				new AlertDialog.Builder(context).setIcon(AppCompatResources.getDrawable(context, R.drawable.ic_delete))
-					.setTitle(context.getResources().getString(R.string.removeAccountPopupTitle))
-					.setMessage(context.getResources().getString(R.string.removeAccountPopupMessage))
-					.setPositiveButton(context.getResources().getString(R.string.removeButton), (dialog, which) -> {
+				new AlertDialog.Builder(context).setIcon(AppCompatResources.getDrawable(context, R.drawable.ic_delete)).setTitle(context.getResources().getString(R.string.removeAccountPopupTitle))
+					.setMessage(context.getResources().getString(R.string.removeAccountPopupMessage)).setPositiveButton(context.getResources().getString(R.string.removeButton), (dialog, which) -> {
 
 						updateLayoutByPosition(getBindingAdapterPosition());
 						UserAccountsApi userAccountsApi = BaseApi.getInstance(context, UserAccountsApi.class);
@@ -130,95 +214,6 @@ public class UserAccountsAdapter extends RecyclerView.Adapter<UserAccountsAdapte
 
 		}
 
-	}
-
-	public UserAccountsAdapter(Context ctx, Dialog dialog) {
-		this.dialog = dialog;
-		this.context = ctx;
-		this.userAccountsList = Objects.requireNonNull(BaseApi.getInstance(context, UserAccountsApi.class)).usersAccounts();
-	}
-
-	private void updateLayoutByPosition(int position) {
-
-		userAccountsList.remove(position);
-		notifyItemRemoved(position);
-		notifyItemRangeChanged(position, userAccountsList.size());
-		Toasty.success(context, context.getResources().getString(R.string.accountDeletedMessage));
-	}
-
-	private void getNotificationsCount() {
-
-		Call<NotificationCount> call = RetrofitClient.getApiInterface(context).notifyNewAvailable();
-
-		call.enqueue(new Callback<>() {
-
-			@Override
-			public void onResponse(@NonNull Call<NotificationCount> call, @NonNull retrofit2.Response<NotificationCount> response) {
-
-				NotificationCount notificationCount = response.body();
-
-				if(response.code() == 200) {
-
-					assert notificationCount != null;
-					if(notificationCount.getNew() > 0) {
-						String toastMsg = context.getResources()
-							.getQuantityString(R.plurals.youHaveNewNotifications, Math.toIntExact(notificationCount.getNew()),
-								Math.toIntExact(notificationCount.getNew()));
-						new Handler().postDelayed(() -> Toasty.info(context, toastMsg), 5000);
-					}
-				}
-			}
-
-			@Override
-			public void onFailure(@NonNull Call<NotificationCount> call, @NonNull Throwable t) {
-			}
-		});
-	}
-
-	@NonNull
-	@Override
-	public UserAccountsAdapter.UserAccountsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_user_accounts, parent, false);
-		return new UserAccountsViewHolder(v);
-	}
-
-	@SuppressLint("DefaultLocale")
-	@Override
-	public void onBindViewHolder(@NonNull UserAccountsAdapter.UserAccountsViewHolder holder, int position) {
-
-		UserAccount currentItem = userAccountsList.get(position);
-		TinyDB tinyDB = TinyDB.getInstance(context);
-
-		String url = UrlBuilder.fromString(currentItem.getInstanceUrl()).withPath("/").toString();
-
-		holder.accountId = currentItem.getAccountId();
-		holder.accountName = currentItem.getAccountName();
-
-		holder.userId.setText(currentItem.getUserName());
-		if(currentItem.isLoggedIn()) {
-			holder.accountUrl.setText(url);
-		}
-		else {
-			holder.accountUrl.setText(context.getString(R.string.notLoggedIn, url));
-		}
-
-		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
-
-		PicassoService.getInstance(context).get().load(url + "assets/img/favicon.png").placeholder(R.drawable.loader_animated)
-			.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(holder.repoAvatar);
-
-		if(tinyDB.getInt("currentActiveAccountId") == currentItem.getAccountId()) {
-			holder.activeAccount.setVisibility(View.VISIBLE);
-		}
-		else {
-			holder.deleteAccount.setVisibility(View.VISIBLE);
-		}
-	}
-
-	@Override
-	public int getItemCount() {
-		return userAccountsList.size();
 	}
 
 }

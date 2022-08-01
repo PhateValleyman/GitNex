@@ -23,21 +23,6 @@ public class MyProfileEmailsAdapter extends RecyclerView.Adapter<MyProfileEmails
 	private final List<Email> emailsList;
 	private final Context context;
 
-	static class EmailsViewHolder extends RecyclerView.ViewHolder {
-
-		private final ImageView emailPrimary;
-		private final TextView userEmail;
-
-		private EmailsViewHolder(View itemView) {
-			super(itemView);
-
-			emailPrimary = itemView.findViewById(R.id.emailPrimary);
-			userEmail = itemView.findViewById(R.id.userEmail);
-
-		}
-
-	}
-
 	public MyProfileEmailsAdapter(Context ctx, List<Email> emailsListMain) {
 		this.context = ctx;
 		this.emailsList = emailsListMain;
@@ -58,10 +43,8 @@ public class MyProfileEmailsAdapter extends RecyclerView.Adapter<MyProfileEmails
 		holder.userEmail.setText(currentItem.getEmail());
 
 		if(currentItem.isPrimary()) {
-			TextDrawable drawable = TextDrawable.builder().beginConfig()
-				.textColor(ResourcesCompat.getColor(context.getResources(), R.color.colorWhite, null)).fontSize(36).width(220).height(60).endConfig()
-				.buildRoundRect(context.getResources().getString(R.string.emailTypeText),
-					ResourcesCompat.getColor(context.getResources(), R.color.tooltipBackground, null), 8);
+			TextDrawable drawable = TextDrawable.builder().beginConfig().textColor(ResourcesCompat.getColor(context.getResources(), R.color.colorWhite, null)).fontSize(36).width(220).height(60).endConfig()
+				.buildRoundRect(context.getResources().getString(R.string.emailTypeText), ResourcesCompat.getColor(context.getResources(), R.color.tooltipBackground, null), 8);
 			holder.emailPrimary.setImageDrawable(drawable);
 		}
 		else {
@@ -73,6 +56,21 @@ public class MyProfileEmailsAdapter extends RecyclerView.Adapter<MyProfileEmails
 	@Override
 	public int getItemCount() {
 		return emailsList.size();
+	}
+
+	static class EmailsViewHolder extends RecyclerView.ViewHolder {
+
+		private final ImageView emailPrimary;
+		private final TextView userEmail;
+
+		private EmailsViewHolder(View itemView) {
+			super(itemView);
+
+			emailPrimary = itemView.findViewById(R.id.emailPrimary);
+			userEmail = itemView.findViewById(R.id.userEmail);
+
+		}
+
 	}
 
 }

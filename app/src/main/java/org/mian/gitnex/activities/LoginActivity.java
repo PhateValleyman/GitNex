@@ -43,15 +43,12 @@ import retrofit2.Callback;
 
 public class LoginActivity extends BaseActivity {
 
-	private enum LoginType {BASIC, TOKEN}
-
 	private Button loginButton;
 	private EditText instanceUrlET, loginUidET, loginPassword, otpCode, loginTokenCode;
 	private AutoCompleteTextView protocolSpinner;
 	private RadioGroup loginMethod;
 	private String device_id = "token";
 	private String selectedProtocol;
-
 	private URI instanceUrl;
 	private Version giteaVersion;
 	private int maxResponseItems = 50;
@@ -94,25 +91,21 @@ public class LoginActivity extends BaseActivity {
 		});
 
 		if(R.id.loginToken == loginMethod.getCheckedRadioButtonId()) {
-			AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout),
-				findViewById(R.id.otpCodeLayout));
+			AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
 			findViewById(R.id.loginTokenCodeLayout).setVisibility(View.VISIBLE);
 		}
 		else {
-			AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout),
-				findViewById(R.id.otpCodeLayout));
+			AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
 			findViewById(R.id.loginTokenCodeLayout).setVisibility(View.GONE);
 		}
 
 		loginMethod.setOnCheckedChangeListener((group, checkedId) -> {
 			if(checkedId == R.id.loginToken) {
-				AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout),
-					findViewById(R.id.otpCodeLayout));
+				AppUtil.setMultiVisibility(View.GONE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
 				findViewById(R.id.loginTokenCodeLayout).setVisibility(View.VISIBLE);
 			}
 			else {
-				AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout),
-					findViewById(R.id.otpCodeLayout));
+				AppUtil.setMultiVisibility(View.VISIBLE, findViewById(R.id.login_uidLayout), findViewById(R.id.login_passwdLayout), findViewById(R.id.otpCodeLayout));
 				findViewById(R.id.loginTokenCodeLayout).setVisibility(View.GONE);
 			}
 		});
@@ -153,11 +146,9 @@ public class LoginActivity extends BaseActivity {
 
 			LoginType loginType = (loginMethod.getCheckedRadioButtonId() == R.id.loginUsernamePassword) ? LoginType.BASIC : LoginType.TOKEN;
 
-			URI rawInstanceUrl = UrlBuilder.fromString(
-				UrlHelper.fixScheme(instanceUrlET.getText().toString().replaceAll("[\\uFEFF|#]", "").trim(), "http")).toUri();
+			URI rawInstanceUrl = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET.getText().toString().replaceAll("[\\uFEFF|#]", "").trim(), "http")).toUri();
 
-			instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(selectedProtocol.toLowerCase())
-				.withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/")).toUri();
+			instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(selectedProtocol.toLowerCase()).withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/")).toUri();
 
 			// cache values to make them available the next time the user wants to log in
 			tinyDB.putString("loginType", loginType.name().toLowerCase());
@@ -223,8 +214,7 @@ public class LoginActivity extends BaseActivity {
 		generalAPISettings.enqueue(new Callback<>() {
 
 			@Override
-			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings,
-				@NonNull retrofit2.Response<GeneralAPISettings> response) {
+			public void onResponse(@NonNull final Call<GeneralAPISettings> generalAPISettings, @NonNull retrofit2.Response<GeneralAPISettings> response) {
 
 				if(response.code() == 200 && response.body() != null) {
 
@@ -287,8 +277,7 @@ public class LoginActivity extends BaseActivity {
 					if(giteaVersion.less(getString(R.string.versionLow))) {
 
 						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx).setTitle(getString(R.string.versionAlertDialogHeader))
-							.setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion())).setIcon(R.drawable.ic_warning)
-							.setCancelable(true);
+							.setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion())).setIcon(R.drawable.ic_warning).setCancelable(true);
 
 						alertDialogBuilder.setNeutralButton(getString(R.string.cancelButton), (dialog, which) -> {
 
@@ -371,8 +360,7 @@ public class LoginActivity extends BaseActivity {
 						boolean userAccountExists = userAccountsApi.userAccountExists(accountName);
 						UserAccount account;
 						if(!userAccountExists) {
-							long accountId = userAccountsApi.createNewAccount(accountName, instanceUrl.toString(), userDetails.getLogin(), loginToken,
-								giteaVersion.toString(), maxResponseItems, defaultPagingNumber);
+							long accountId = userAccountsApi.createNewAccount(accountName, instanceUrl.toString(), userDetails.getLogin(), loginToken, giteaVersion.toString(), maxResponseItems, defaultPagingNumber);
 							account = userAccountsApi.getAccountById((int) accountId);
 						}
 						else {
@@ -445,13 +433,11 @@ public class LoginActivity extends BaseActivity {
 							Call<Void> delToken;
 							if(loginOTP != 0) {
 
-								delToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null)
-									.userDeleteAccessToken(loginOTP, loginUid, String.valueOf(t.getId()));
+								delToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null).userDeleteAccessToken(loginOTP, loginUid, String.valueOf(t.getId()));
 							}
 							else {
 
-								delToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null)
-									.userDeleteAccessToken(loginUid, String.valueOf(t.getId()));
+								delToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null).userDeleteAccessToken(loginUid, String.valueOf(t.getId()));
 							}
 
 							delToken.enqueue(new Callback<>() {
@@ -509,13 +495,11 @@ public class LoginActivity extends BaseActivity {
 
 		if(loginOTP != 0) {
 
-			callCreateToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null)
-				.userCreateToken(loginOTP, loginUid, createUserToken);
+			callCreateToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null).userCreateToken(loginOTP, loginUid, createUserToken);
 		}
 		else {
 
-			callCreateToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null)
-				.userCreateToken(loginUid, createUserToken);
+			callCreateToken = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), credential, null).userCreateToken(loginUid, createUserToken);
 		}
 
 		callCreateToken.enqueue(new Callback<>() {
@@ -530,8 +514,7 @@ public class LoginActivity extends BaseActivity {
 
 					if(!newToken.getSha1().equals("")) {
 
-						Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), "token " + newToken.getSha1(), null)
-							.userGetCurrent();
+						Call<User> call = RetrofitClient.getApiInterface(ctx, instanceUrl.toString(), "token " + newToken.getSha1(), null).userGetCurrent();
 
 						call.enqueue(new Callback<>() {
 
@@ -554,8 +537,7 @@ public class LoginActivity extends BaseActivity {
 
 										UserAccount account;
 										if(!userAccountExists) {
-											long accountId = userAccountsApi.createNewAccount(accountName, instanceUrl.toString(),
-												userDetails.getLogin(), newToken.getSha1(), giteaVersion.toString(), maxResponseItems,
+											long accountId = userAccountsApi.createNewAccount(accountName, instanceUrl.toString(), userDetails.getLogin(), newToken.getSha1(), giteaVersion.toString(), maxResponseItems,
 												defaultPagingNumber);
 											account = userAccountsApi.getAccountById((int) accountId);
 										}
@@ -605,7 +587,6 @@ public class LoginActivity extends BaseActivity {
 		});
 	}
 
-
 	private void loadDefaults() {
 
 		if(tinyDB.getString("loginType").equals(LoginType.BASIC.name().toLowerCase())) {
@@ -648,5 +629,7 @@ public class LoginActivity extends BaseActivity {
 		loginButton.setText(R.string.btnLogin);
 		loginButton.setEnabled(true);
 	}
+
+	private enum LoginType {BASIC, TOKEN}
 
 }

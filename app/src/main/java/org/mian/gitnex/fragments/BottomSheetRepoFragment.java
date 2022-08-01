@@ -22,8 +22,8 @@ import org.mian.gitnex.structs.BottomSheetListener;
 
 public class BottomSheetRepoFragment extends BottomSheetDialogFragment {
 
-	private BottomSheetListener bmListener;
 	private final RepositoryContext repository;
+	private BottomSheetListener bmListener;
 
 	public BottomSheetRepoFragment(RepositoryContext repository) {
 		this.repository = repository;

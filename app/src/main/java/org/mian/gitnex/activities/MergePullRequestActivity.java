@@ -34,6 +34,7 @@ public class MergePullRequestActivity extends BaseActivity {
 	private IssueContext issue;
 	private ActivityMergePullRequestBinding viewBinding;
 	private String Do;
+	private final View.OnClickListener mergePullRequest = v -> processMergePullRequest();
 
 	@SuppressLint("SetTextI18n")
 	@Override
@@ -132,8 +133,6 @@ public class MergePullRequestActivity extends BaseActivity {
 		onClickListener = view -> finish();
 	}
 
-	private final View.OnClickListener mergePullRequest = v -> processMergePullRequest();
-
 	private void processMergePullRequest() {
 
 		String mergePRDesc = Objects.requireNonNull(viewBinding.mergeDescription.getText()).toString();
@@ -180,8 +179,7 @@ public class MergePullRequestActivity extends BaseActivity {
 				break;
 		}
 
-		Call<Void> call = RetrofitClient.getApiInterface(ctx)
-			.repoMergePullRequest(issue.getRepository().getOwner(), issue.getRepository().getName(), (long) issue.getIssueIndex(), mergePR);
+		Call<Void> call = RetrofitClient.getApiInterface(ctx).repoMergePullRequest(issue.getRepository().getOwner(), issue.getRepository().getName(), (long) issue.getIssueIndex(), mergePR);
 
 		call.enqueue(new Callback<>() {
 
@@ -201,8 +199,7 @@ public class MergePullRequestActivity extends BaseActivity {
 							PullRequestActions.deleteHeadBranch(ctx, repoOwner, repoName, issue.getPullRequest().getHead().getRef(), false);
 						}
 						else {
-							PullRequestActions.deleteHeadBranch(ctx, issue.getRepository().getOwner(), issue.getRepository().getName(),
-								issue.getPullRequest().getHead().getRef(), false);
+							PullRequestActions.deleteHeadBranch(ctx, issue.getRepository().getOwner(), issue.getRepository().getName(), issue.getPullRequest().getHead().getRef(), false);
 						}
 
 					}

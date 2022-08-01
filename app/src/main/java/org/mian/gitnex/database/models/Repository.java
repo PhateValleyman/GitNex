@@ -11,8 +11,7 @@ import static androidx.room.ForeignKey.CASCADE;
  * @author M M Arif
  */
 
-@Entity(tableName = "Repositories", foreignKeys = @ForeignKey(entity = UserAccount.class, parentColumns = "accountId", childColumns = "repoAccountId", onDelete = CASCADE), indices = {
-	@Index("repoAccountId")})
+@Entity(tableName = "Repositories", foreignKeys = @ForeignKey(entity = UserAccount.class, parentColumns = "accountId", childColumns = "repoAccountId", onDelete = CASCADE), indices = {@Index("repoAccountId")})
 public class Repository implements Serializable {
 
 	@PrimaryKey(autoGenerate = true)

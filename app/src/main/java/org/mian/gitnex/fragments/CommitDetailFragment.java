@@ -90,8 +90,7 @@ public class CommitDetailFragment extends Fragment {
 	}
 
 	private void getDiff() {
-		Call<String> call = ((BaseActivity) requireActivity()).getAccount().requiresVersion("1.16.0") ?
-			RetrofitClient.getApiInterface(requireContext()).repoDownloadCommitDiffOrPatch(repoOwner, repoName, sha, "diff") :
+		Call<String> call = ((BaseActivity) requireActivity()).getAccount().requiresVersion("1.16.0") ? RetrofitClient.getApiInterface(requireContext()).repoDownloadCommitDiffOrPatch(repoOwner, repoName, sha, "diff") :
 			RetrofitClient.getWebInterface(requireContext()).repoDownloadCommitDiffOrPatch(repoOwner, repoName, sha, "diff");
 
 		call.enqueue(new Callback<>() {
@@ -167,28 +166,24 @@ public class CommitDetailFragment extends Fragment {
 
 				if(!Objects.equals(commitsModel.getCommit().getCommitter().getEmail(), commitsModel.getCommit().getCommitter().getEmail())) {
 					binding.commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(
-						CommitDetailFragment.this.getString(R.string.commitAuthoredByAndCommittedByWhen,
-							commitsModel.getCommit().getAuthor().getName(), commitsModel.getCommit().getCommitter().getName(),
-							TimeHelper.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()),
-								getResources().getConfiguration().locale, "pretty", requireContext())), HtmlCompat.FROM_HTML_MODE_COMPACT));
+						CommitDetailFragment.this.getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getCommit().getAuthor().getName(), commitsModel.getCommit().getCommitter().getName(),
+							TimeHelper.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()), getResources().getConfiguration().locale, "pretty", requireContext())),
+						HtmlCompat.FROM_HTML_MODE_COMPACT));
 				}
 				else {
-					binding.commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(
-						CommitDetailFragment.this.getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
-							TimeHelper.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()),
-								getResources().getConfiguration().locale, "pretty", requireContext())), HtmlCompat.FROM_HTML_MODE_COMPACT));
+					binding.commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(CommitDetailFragment.this.getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
+							TimeHelper.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()), getResources().getConfiguration().locale, "pretty", requireContext())),
+						HtmlCompat.FROM_HTML_MODE_COMPACT));
 				}
 
-				if(commitsModel.getAuthor() != null && commitsModel.getAuthor().getAvatarUrl() != null && !commitsModel.getAuthor().getAvatarUrl()
-					.isEmpty()) {
+				if(commitsModel.getAuthor() != null && commitsModel.getAuthor().getAvatarUrl() != null && !commitsModel.getAuthor().getAvatarUrl().isEmpty()) {
 
 					binding.commitAuthorAvatar.setVisibility(View.VISIBLE);
 
 					int imgRadius = AppUtil.getPixelsFromDensity(requireContext(), 3);
 
-					PicassoService.getInstance(requireContext()).get().load(commitsModel.getAuthor().getAvatarUrl())
-						.placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop()
-						.into(binding.commitAuthorAvatar);
+					PicassoService.getInstance(requireContext()).get().load(commitsModel.getAuthor().getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0))
+						.resize(120, 120).centerCrop().into(binding.commitAuthorAvatar);
 
 					binding.commitAuthorAvatar.setOnClickListener((v) -> {
 						Intent intent = new Intent(requireContext(), ProfileActivity.class);
@@ -202,17 +197,15 @@ public class CommitDetailFragment extends Fragment {
 					binding.commitAuthorAvatar.setVisibility(View.GONE);
 				}
 
-				if(commitsModel.getCommitter() != null && (commitsModel.getAuthor() == null || !commitsModel.getAuthor().getLogin()
-					.equals(commitsModel.getCommitter().getLogin())) && commitsModel.getCommitter()
+				if(commitsModel.getCommitter() != null && (commitsModel.getAuthor() == null || !commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin())) && commitsModel.getCommitter()
 					.getAvatarUrl() != null && !commitsModel.getCommitter().getAvatarUrl().isEmpty()) {
 
 					binding.commitCommitterAvatar.setVisibility(View.VISIBLE);
 
 					int imgRadius = AppUtil.getPixelsFromDensity(requireContext(), 3);
 
-					PicassoService.getInstance(requireContext()).get().load(commitsModel.getCommitter().getAvatarUrl())
-						.placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop()
-						.into(binding.commitCommitterAvatar);
+					PicassoService.getInstance(requireContext()).get().load(commitsModel.getCommitter().getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0))
+						.resize(120, 120).centerCrop().into(binding.commitCommitterAvatar);
 
 					binding.commitCommitterAvatar.setOnClickListener((v) -> {
 						Intent intent = new Intent(requireContext(), ProfileActivity.class);

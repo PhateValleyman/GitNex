@@ -17,9 +17,9 @@ import org.mian.gitnex.databinding.FragmentPrChangesBinding;
 
 public class PullRequestChangesFragment extends Fragment {
 
-	private FragmentPrChangesBinding binding;
 	private final DiffFilesFragment diffFilesFragment = DiffFilesFragment.newInstance();
 	private final PullRequestCommitsFragment pullRequestCommitsFragment = PullRequestCommitsFragment.newInstance();
+	private FragmentPrChangesBinding binding;
 
 	public PullRequestChangesFragment() {
 	}

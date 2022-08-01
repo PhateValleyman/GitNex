@@ -26,14 +26,13 @@ import org.mian.gitnex.viewmodels.OrganizationLabelsViewModel;
 
 public class OrganizationLabelsFragment extends Fragment {
 
+	private static final String repoOwnerF = "param1";
+	private final String type = "org";
 	private OrganizationLabelsViewModel organizationLabelsViewModel;
 	private ProgressBar mProgressBar;
 	private RecyclerView mRecyclerView;
 	private LabelsAdapter adapter;
 	private TextView noData;
-	private static final String repoOwnerF = "param1";
-	private final String type = "org";
-
 	private String repoOwner;
 
 	public static OrganizationLabelsFragment newInstance(String param1) {

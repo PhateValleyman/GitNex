@@ -49,6 +49,28 @@ import java.util.regex.Pattern;
 
 public class AppUtil {
 
+	private static final HashMap<String[], FileType> extensions = new HashMap<>();
+	public static Typeface typeface;
+
+	static {
+
+		extensions.put(new String[]{"jpg", "jpeg", "gif", "png", "ico", "tif", "tiff", "bmp"}, FileType.IMAGE);
+		extensions.put(new String[]{"mp3", "wav", "opus", "flac", "wma", "aac", "m4a", "oga", "mpc", "ogg"}, FileType.AUDIO);
+		extensions.put(new String[]{"mp4", "mkv", "avi", "mov", "wmv", "qt", "mts", "m2ts", "webm", "flv", "ogv", "amv", "mpg", "mpeg", "mpv", "m4v", "3gp", "wmv"}, FileType.VIDEO);
+		extensions.put(new String[]{"doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "odg", "otg", "odp", "otp", "bin", "psd", "xcf", "pdf"}, FileType.DOCUMENT);
+		extensions.put(new String[]{"exe", "msi", "jar", "dmg", "deb", "apk"}, FileType.EXECUTABLE);
+		extensions.put(
+			new String[]{"txt", "md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv", "python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs",
+				"rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs", "lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl", "wiki.meta",
+				"yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf", "gitignore", "gradle", "txt", "properties", "bat", "twig", "cvs", "cmake", "in",
+				"info", "spec", "m4", "am", "dist", "pam", "hx", "ts", "kt", "kts"}, FileType.TEXT);
+		extensions.put(new String[]{"ttf", "otf", "woff", "woff2", "ttc", "eot"}, FileType.FONT);
+	}
+
+	// AppUtil should not be instantiated.
+	private AppUtil() {
+	}
+
 	public static void logout(Context ctx) {
 		TinyDB tinyDB = TinyDB.getInstance(ctx);
 
@@ -77,35 +99,6 @@ public class AppUtil {
 		}
 	}
 
-	public enum FileType {IMAGE, AUDIO, VIDEO, DOCUMENT, TEXT, EXECUTABLE, FONT, UNKNOWN}
-
-	private static final HashMap<String[], FileType> extensions = new HashMap<>();
-
-	// AppUtil should not be instantiated.
-	private AppUtil() {
-	}
-
-	static {
-
-		extensions.put(new String[]{"jpg", "jpeg", "gif", "png", "ico", "tif", "tiff", "bmp"}, FileType.IMAGE);
-		extensions.put(new String[]{"mp3", "wav", "opus", "flac", "wma", "aac", "m4a", "oga", "mpc", "ogg"}, FileType.AUDIO);
-		extensions.put(
-			new String[]{"mp4", "mkv", "avi", "mov", "wmv", "qt", "mts", "m2ts", "webm", "flv", "ogv", "amv", "mpg", "mpeg", "mpv", "m4v", "3gp",
-				"wmv"}, FileType.VIDEO);
-		extensions.put(
-			new String[]{"doc", "docx", "ppt", "pptx", "xls", "xlsx", "xlsm", "odt", "ott", "odf", "ods", "ots", "odg", "otg", "odp", "otp", "bin",
-				"psd", "xcf", "pdf"}, FileType.DOCUMENT);
-		extensions.put(new String[]{"exe", "msi", "jar", "dmg", "deb", "apk"}, FileType.EXECUTABLE);
-		extensions.put(
-			new String[]{"txt", "md", "json", "java", "go", "php", "c", "cc", "cpp", "h", "cxx", "cyc", "m", "cs", "bash", "sh", "bsh", "cv",
-				"python", "perl", "pm", "rb", "ruby", "javascript", "coffee", "rc", "rs", "rust", "basic", "clj", "css", "dart", "lisp", "erl", "hs",
-				"lsp", "rkt", "ss", "llvm", "ll", "lua", "matlab", "pascal", "r", "scala", "sql", "latex", "tex", "vb", "vbs", "vhd", "tcl",
-				"wiki.meta", "yaml", "yml", "markdown", "xml", "proto", "regex", "py", "pl", "js", "html", "htm", "volt", "ini", "htaccess", "conf",
-				"gitignore", "gradle", "txt", "properties", "bat", "twig", "cvs", "cmake", "in", "info", "spec", "m4", "am", "dist", "pam", "hx",
-				"ts", "kt", "kts"}, FileType.TEXT);
-		extensions.put(new String[]{"ttf", "otf", "woff", "woff2", "ttc", "eot"}, FileType.FONT);
-	}
-
 	public static FileType getFileType(String extension) {
 
 		if(extension != null && !extension.isEmpty()) {
@@ -127,8 +120,7 @@ public class AppUtil {
 		return NetworkStatusObserver.getInstance(context).hasNetworkConnection();
 	}
 
-	public static void copyProgress(InputStream inputStream, OutputStream outputStream, long totalSize, ProgressListener progressListener) throws
-		IOException {
+	public static void copyProgress(InputStream inputStream, OutputStream outputStream, long totalSize, ProgressListener progressListener) throws IOException {
 
 		byte[] buffer = new byte[4096];
 		int read;
@@ -160,18 +152,6 @@ public class AppUtil {
 		}
 
 		progressListener.onActionFinished();
-	}
-
-	public interface ProgressListener {
-
-		default void onActionStarted() {
-		}
-
-		default void onActionFinished() {
-		}
-
-		void onProgressChanged(short progress);
-
 	}
 
 	public static int getAppBuildNo(Context context) {
@@ -219,14 +199,6 @@ public class AppUtil {
 	public static Boolean checkIntegers(String str) {
 
 		return str.matches("\\d+");
-	}
-
-	public int getResponseStatusCode(String u) throws Exception {
-
-		URL url = new URL(u);
-		HttpURLConnection http = (HttpURLConnection) url.openConnection();
-		return (http.getResponseCode());
-
 	}
 
 	public static void setAppLocale(Resources resource, String locCode) {
@@ -410,10 +382,8 @@ public class AppUtil {
 
 		try {
 			if(tinyDB.getBoolean("useCustomTabs")) {
-				new CustomTabsIntent.Builder().setDefaultColorSchemeParams(
-					new CustomTabColorSchemeParams.Builder().setToolbarColor(getColorFromAttribute(context, R.attr.primaryBackgroundColor))
-						.setNavigationBarColor(getColorFromAttribute(context, R.attr.primaryBackgroundColor))
-						.setSecondaryToolbarColor(R.attr.primaryTextColor).build()).build().launchUrl(context, Uri.parse(url));
+				new CustomTabsIntent.Builder().setDefaultColorSchemeParams(new CustomTabColorSchemeParams.Builder().setToolbarColor(getColorFromAttribute(context, R.attr.primaryBackgroundColor))
+					.setNavigationBarColor(getColorFromAttribute(context, R.attr.primaryBackgroundColor)).setSecondaryToolbarColor(R.attr.primaryTextColor).build()).build().launchUrl(context, Uri.parse(url));
 			}
 			else {
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -456,8 +426,6 @@ public class AppUtil {
 		return Uri.parse(scheme + raw);
 	}
 
-	public static Typeface typeface;
-
 	public static Typeface getTypeface(Context context) {
 		if(typeface == null) {
 			switch(TinyDB.getInstance(context).getInt("customFontId", -1)) {
@@ -473,6 +441,28 @@ public class AppUtil {
 			}
 		}
 		return typeface;
+	}
+
+	public int getResponseStatusCode(String u) throws Exception {
+
+		URL url = new URL(u);
+		HttpURLConnection http = (HttpURLConnection) url.openConnection();
+		return (http.getResponseCode());
+
+	}
+
+	public enum FileType {IMAGE, AUDIO, VIDEO, DOCUMENT, TEXT, EXECUTABLE, FONT, UNKNOWN}
+
+	public interface ProgressListener {
+
+		default void onActionStarted() {
+		}
+
+		default void onActionFinished() {
+		}
+
+		void onProgressChanged(short progress);
+
 	}
 
 }

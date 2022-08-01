@@ -9,11 +9,11 @@
         android:id="@+id/selectStrategy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:padding="16dp"
         android:text="@string/selectUpdateStrategy"
         android:textColor="?attr/primaryTextColor"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <View
         android:id="@+id/dividerTop"
@@ -21,29 +21,29 @@
         android:layout_height="1dp"
         android:background="?attr/dividerColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectStrategy" />
+        app:layout_constraintTop_toBottomOf="@+id/selectStrategy"/>
 
     <Button
         android:id="@+id/updatePullMerge"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_margin="16dp"
-        android:textColor="@color/colorWhite"
         android:text="@string/updateStrategyMerge"
+        android:textColor="@color/colorWhite"
         app:layout_constraintEnd_toStartOf="@id/updatePullRebase"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/selectStrategy" />
+        app:layout_constraintTop_toBottomOf="@id/selectStrategy"/>
 
     <Button
         android:id="@+id/updatePullRebase"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_margin="16dp"
-        android:textColor="@color/colorWhite"
         android:text="@string/updateStrategyRebase"
+        android:textColor="@color/colorWhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/updatePullMerge"
-        app:layout_constraintTop_toBottomOf="@id/selectStrategy" />
+        app:layout_constraintTop_toBottomOf="@id/selectStrategy"/>
 
     <View
         android:id="@+id/dividerBottom"
@@ -52,20 +52,20 @@
         android:layout_marginTop="16dp"
         android:background="?attr/dividerColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updatePullMerge" />
+        app:layout_constraintTop_toBottomOf="@+id/updatePullMerge"/>
 
     <Button
         android:id="@+id/cancelPullUpdate"
+        style="?android:attr/button"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        style="?android:attr/button"
         android:layout_alignParentStart="true"
+        android:layout_margin="16dp"
         android:text="@string/cancelButton"
         android:textColor="@color/colorWhite"
-        android:layout_margin="16dp"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dividerBottom"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/dividerBottom"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

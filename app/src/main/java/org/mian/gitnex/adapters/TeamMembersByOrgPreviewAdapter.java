@@ -39,8 +39,8 @@ public class TeamMembersByOrgPreviewAdapter extends RecyclerView.Adapter<TeamMem
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 		User userInfo = userData.get(position);
 
-		PicassoService.getInstance(context).get().load(userInfo.getAvatarUrl()).placeholder(R.drawable.loader_animated)
-			.transform(new RoundedTransformation(AppUtil.getPixelsFromDensity(context, 3), 0)).resize(120, 120).centerCrop().into(holder.avatar);
+		PicassoService.getInstance(context).get().load(userInfo.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(AppUtil.getPixelsFromDensity(context, 3), 0)).resize(120, 120)
+			.centerCrop().into(holder.avatar);
 	}
 
 	@Override

@@ -31,13 +31,12 @@ import org.mian.gitnex.viewmodels.TeamsByOrgViewModel;
 
 public class TeamsByOrgFragment extends Fragment {
 
-	private TeamsByOrgViewModel teamsByOrgViewModel;
+	private static final String orgNameF = "param2";
 	public static boolean resumeTeams = false;
-
+	private TeamsByOrgViewModel teamsByOrgViewModel;
 	private ProgressBar mProgressBar;
 	private RecyclerView mRecyclerView;
 	private TextView noDataTeams;
-	private static final String orgNameF = "param2";
 	private String orgName;
 	private OrganizationPermissions permissions;
 	private TeamsByOrgAdapter adapter;

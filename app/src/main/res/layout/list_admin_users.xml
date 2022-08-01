@@ -3,15 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="?android:attr/selectableItemBackground">
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="16dp">
 
     <LinearLayout
         android:id="@+id/userInfoSection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginEnd="15dp">
+        android:layout_marginEnd="15dp"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/userAvatar"
@@ -19,16 +19,16 @@
             android:layout_height="@dimen/list_avatar_size"
             android:layout_gravity="center"
             android:contentDescription="@string/generalImgContentText"
-            android:src="@drawable/ic_android" />
+            android:src="@drawable/ic_android"/>
 
         <ImageView
             android:id="@+id/userRole"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:scaleType="fitCenter"
             android:contentDescription="@string/userRoleAdmin"
-            android:src="@drawable/ic_android" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_android"/>
 
     </LinearLayout>
 
@@ -47,7 +47,7 @@
             android:text="@string/userName"
             android:textColor="?attr/primaryTextColor"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/userName"
@@ -56,7 +56,7 @@
             android:layout_marginBottom="4dp"
             android:text="@string/userName"
             android:textColor="?attr/primaryTextColor"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/userEmail"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:text="@string/userEmail"
             android:textColor="?attr/primaryTextColor"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 
     </LinearLayout>
 

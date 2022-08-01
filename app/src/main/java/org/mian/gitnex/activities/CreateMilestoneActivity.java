@@ -41,6 +41,7 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 	private RepositoryContext repository;
 
 	private Date currentDate = null;
+	private final View.OnClickListener createMilestoneListener = v -> processNewMilestone();
 
 	@SuppressLint("ClickableViewAccessibility")
 	@Override
@@ -91,8 +92,6 @@ public class CreateMilestoneActivity extends BaseActivity implements View.OnClic
 		}
 
 	}
-
-	private final View.OnClickListener createMilestoneListener = v -> processNewMilestone();
 
 	private void processNewMilestone() {
 

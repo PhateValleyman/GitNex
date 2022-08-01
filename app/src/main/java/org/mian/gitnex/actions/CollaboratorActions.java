@@ -68,8 +68,7 @@ public class CollaboratorActions {
 		AddCollaboratorOption permissionString = new AddCollaboratorOption();
 		permissionString.setPermission(permission);
 
-		Call<Void> call = RetrofitClient.getApiInterface(context)
-			.repoAddCollaborator(repository.getOwner(), repository.getName(), userName, permissionString);
+		Call<Void> call = RetrofitClient.getApiInterface(context).repoAddCollaborator(repository.getOwner(), repository.getName(), userName, permissionString);
 
 		call.enqueue(new Callback<>() {
 

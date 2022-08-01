@@ -18,8 +18,8 @@ import org.mian.gitnex.structs.BottomSheetListener;
 
 public class BottomSheetOrganizationFragment extends BottomSheetDialogFragment {
 
-	private BottomSheetListener bmListener;
 	private final OrganizationPermissions permissions;
+	private BottomSheetListener bmListener;
 
 	public BottomSheetOrganizationFragment(OrganizationPermissions org) {
 		permissions = org;
@@ -94,7 +94,7 @@ public class BottomSheetOrganizationFragment extends BottomSheetDialogFragment {
 			bmListener = (BottomSheetListener) context;
 		}
 		catch(ClassCastException e) {
-			throw new ClassCastException(context.toString() + " must implement BottomSheetListener");
+			throw new ClassCastException(context + " must implement BottomSheetListener");
 		}
 	}
 

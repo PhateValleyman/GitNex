@@ -25,9 +25,8 @@ import org.mian.gitnex.viewmodels.ProfileEmailsViewModel;
 
 public class MyProfileEmailsFragment extends Fragment {
 
-	private ProfileEmailsViewModel profileEmailsViewModel;
 	public static boolean refreshEmails = false;
-
+	private ProfileEmailsViewModel profileEmailsViewModel;
 	private ProgressBar mProgressBar;
 	private MyProfileEmailsAdapter adapter;
 	private RecyclerView mRecyclerView;

@@ -30,32 +30,41 @@ public class UserGridAdapter extends BaseAdapter implements Filterable {
 	private final List<User> membersList;
 	private final Context context;
 	private final List<User> membersListFull;
+	private final Filter membersFilter = new Filter() {
 
-	private class ViewHolder {
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+			List<User> filteredList = new ArrayList<>();
 
-		private String userLoginId;
+			if(constraint == null || constraint.length() == 0) {
 
-		private final ImageView memberAvatar;
-		private final TextView memberName;
+				filteredList.addAll(membersListFull);
+			}
+			else {
 
-		ViewHolder(View v) {
+				String filterPattern = constraint.toString().toLowerCase().trim();
 
-			memberAvatar = v.findViewById(R.id.userAvatarImageView);
-			memberName = v.findViewById(R.id.userNameTv);
+				for(User item : membersListFull) {
+					if(item.getFullName().toLowerCase().contains(filterPattern) || item.getLogin().toLowerCase().contains(filterPattern)) {
+						filteredList.add(item);
+					}
+				}
+			}
 
-			v.setOnClickListener(loginId -> {
-				Intent intent = new Intent(context, ProfileActivity.class);
-				intent.putExtra("username", userLoginId);
-				context.startActivity(intent);
-			});
+			FilterResults results = new FilterResults();
+			results.values = filteredList;
 
-			v.setOnLongClickListener(loginId -> {
-				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
-				return true;
-			});
+			return results;
 		}
 
-	}
+		@Override
+		protected void publishResults(CharSequence constraint, FilterResults results) {
+
+			membersList.clear();
+			membersList.addAll((List) results.values);
+			notifyDataSetChanged();
+		}
+	};
 
 	public UserGridAdapter(Context ctx, List<User> membersListMain) {
 
@@ -105,8 +114,8 @@ public class UserGridAdapter extends BaseAdapter implements Filterable {
 		User currentItem = membersList.get(position);
 		int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
-		PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated)
-			.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(viewHolder.memberAvatar);
+		PicassoService.getInstance(context).get().load(currentItem.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop()
+			.into(viewHolder.memberAvatar);
 
 		viewHolder.userLoginId = currentItem.getLogin();
 
@@ -125,40 +134,29 @@ public class UserGridAdapter extends BaseAdapter implements Filterable {
 		return membersFilter;
 	}
 
-	private final Filter membersFilter = new Filter() {
+	private class ViewHolder {
 
-		@Override
-		protected FilterResults performFiltering(CharSequence constraint) {
-			List<User> filteredList = new ArrayList<>();
+		private final ImageView memberAvatar;
+		private final TextView memberName;
+		private String userLoginId;
 
-			if(constraint == null || constraint.length() == 0) {
+		ViewHolder(View v) {
 
-				filteredList.addAll(membersListFull);
-			}
-			else {
+			memberAvatar = v.findViewById(R.id.userAvatarImageView);
+			memberName = v.findViewById(R.id.userNameTv);
 
-				String filterPattern = constraint.toString().toLowerCase().trim();
+			v.setOnClickListener(loginId -> {
+				Intent intent = new Intent(context, ProfileActivity.class);
+				intent.putExtra("username", userLoginId);
+				context.startActivity(intent);
+			});
 
-				for(User item : membersListFull) {
-					if(item.getFullName().toLowerCase().contains(filterPattern) || item.getLogin().toLowerCase().contains(filterPattern)) {
-						filteredList.add(item);
-					}
-				}
-			}
-
-			FilterResults results = new FilterResults();
-			results.values = filteredList;
-
-			return results;
+			v.setOnLongClickListener(loginId -> {
+				AppUtil.copyToClipboard(context, userLoginId, context.getString(R.string.copyLoginIdToClipBoard, userLoginId));
+				return true;
+			});
 		}
 
-		@Override
-		protected void publishResults(CharSequence constraint, FilterResults results) {
-
-			membersList.clear();
-			membersList.addAll((List) results.values);
-			notifyDataSetChanged();
-		}
-	};
+	}
 
 }

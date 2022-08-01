@@ -45,8 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 				break;
 			case 2:
 
-				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour", 18), tinyDB.getInt("lightThemeTimeHour", 6),
-					tinyDB.getInt("darkThemeTimeMinute", 0), tinyDB.getInt("lightThemeTimeMinute", 0))) {
+				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour", 18), tinyDB.getInt("lightThemeTimeHour", 6), tinyDB.getInt("darkThemeTimeMinute", 0), tinyDB.getInt("lightThemeTimeMinute", 0))) {
 
 					setTheme(R.style.AppTheme);
 				}
@@ -60,8 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 				setTheme(R.style.AppThemeRetro);
 				break;
 			case 4:
-				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour", 18), tinyDB.getInt("lightThemeTimeHour", 6),
-					tinyDB.getInt("darkThemeTimeMinute", 0), tinyDB.getInt("lightThemeTimeMinute", 0))) {
+				if(TimeHelper.timeBetweenHours(tinyDB.getInt("darkThemeTimeHour", 18), tinyDB.getInt("lightThemeTimeHour", 6), tinyDB.getInt("darkThemeTimeMinute", 0), tinyDB.getInt("lightThemeTimeMinute", 0))) {
 
 					setTheme(R.style.AppTheme);
 				}
@@ -126,8 +124,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 			});
 
-			BiometricPrompt.PromptInfo biometricPromptBuilder = new BiometricPrompt.PromptInfo.Builder().setTitle(
-					getString(R.string.biometricAuthTitle)).setSubtitle(getString(R.string.biometricAuthSubTitle))
+			BiometricPrompt.PromptInfo biometricPromptBuilder = new BiometricPrompt.PromptInfo.Builder().setTitle(getString(R.string.biometricAuthTitle)).setSubtitle(getString(R.string.biometricAuthSubTitle))
 				.setNegativeButtonText(getString(R.string.cancelButton)).build();
 
 			biometricPrompt.authenticate(biometricPromptBuilder);

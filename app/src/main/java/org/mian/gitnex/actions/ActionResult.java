@@ -14,11 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 public class ActionResult<R> {
 
-	public enum Status {SUCCESS, FAILED}
-
 	private final BlockingQueue<Boolean> blockingQueue;
 	private final List<OnFinishedListener<R>> onFinishedListeners;
-
 	private boolean invalidated = false;
 
 	public ActionResult() {
@@ -74,13 +71,15 @@ public class ActionResult<R> {
 
 	}
 
-	public static class None {
-
-	}
+	public enum Status {SUCCESS, FAILED}
 
 	public interface OnFinishedListener<R> {
 
 		void onFinished(Status status, R result);
+
+	}
+
+	public static class None {
 
 	}
 

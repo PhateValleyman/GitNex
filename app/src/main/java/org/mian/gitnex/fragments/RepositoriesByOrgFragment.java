@@ -28,12 +28,12 @@ import org.mian.gitnex.viewmodels.RepositoriesViewModel;
 
 public class RepositoriesByOrgFragment extends Fragment {
 
+	private static final String getOrgName = null;
 	private RepositoriesViewModel repositoriesViewModel;
 	private FragmentRepositoriesBinding fragmentRepositoriesBinding;
 	private ReposListAdapter adapter;
 	private int page = 1;
 	private int resultLimit;
-	private static final String getOrgName = null;
 	private String orgName;
 
 	public RepositoriesByOrgFragment() {
@@ -68,8 +68,7 @@ public class RepositoriesByOrgFragment extends Fragment {
 
 		fragmentRepositoriesBinding.recyclerView.setHasFixedSize(true);
 		fragmentRepositoriesBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentRepositoriesBinding.recyclerView.getContext(),
-			DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(fragmentRepositoriesBinding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		fragmentRepositoriesBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 
 		fragmentRepositoriesBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -85,8 +84,6 @@ public class RepositoriesByOrgFragment extends Fragment {
 
 		return fragmentRepositoriesBinding.getRoot();
 	}
-
-	;
 
 	private void fetchDataAsync() {
 

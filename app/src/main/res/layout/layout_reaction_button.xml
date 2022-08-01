@@ -17,6 +17,6 @@
         android:textColor="?attr/primaryTextColor"
         android:textSize="20dp"
         tools:ignore="SpUsage"
-        tools:text="👍" />
+        tools:text="👍"/>
 
 </androidx.cardview.widget.CardView>

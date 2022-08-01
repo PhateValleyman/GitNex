@@ -55,8 +55,7 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetLi
 
 		activityAdminGetUsersBinding.recyclerView.setHasFixedSize(true);
 		activityAdminGetUsersBinding.recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(activityAdminGetUsersBinding.recyclerView.getContext(),
-			DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(activityAdminGetUsersBinding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		activityAdminGetUsersBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 
 		activityAdminGetUsersBinding.pullToRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -69,8 +68,6 @@ public class AdminGetUsersActivity extends BaseActivity implements BottomSheetLi
 
 		fetchDataAsync();
 	}
-
-	;
 
 	private void fetchDataAsync() {
 

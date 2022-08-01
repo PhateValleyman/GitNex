@@ -64,72 +64,59 @@ import retrofit2.Response;
 
 public class RepoDetailActivity extends BaseActivity implements BottomSheetListener {
 
+	public static boolean updateRepo = false;
+	private final ActivityResultLauncher<Intent> settingsLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+		if(result.getResultCode() == 200) {
+			assert result.getData() != null;
+			if(result.getData().getBooleanExtra("nameChanged", false)) {
+				recreate();
+			}
+		}
+	});
+	public ViewPager2 viewPager;
+	public RepositoryContext repository;
 	private TextView textViewBadgeIssue;
 	private TextView textViewBadgePull;
 	private TextView textViewBadgeRelease;
 	private Typeface myTypeface;
-
 	private FragmentRefreshListener fragmentRefreshListener;
 	private FragmentRefreshListener fragmentRefreshListenerPr;
 	private FragmentRefreshListener fragmentRefreshListenerMilestone;
+	private final ActivityResultLauncher<Intent> createMilestoneLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+		if(result.getResultCode() == 201) {
+			assert result.getData() != null;
+			if(result.getData().getBooleanExtra("milestoneCreated", false)) {
+				if(fragmentRefreshListenerMilestone != null) {
+					fragmentRefreshListenerMilestone.onRefresh(repository.getMilestoneState().toString());
+				}
+			}
+		}
+	});
 	private FragmentRefreshListener fragmentRefreshListenerFiles;
+	private final ActivityResultLauncher<Intent> editFileLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+		if(result.getResultCode() == 200) {
+			assert result.getData() != null;
+			if(result.getData().getBooleanExtra("fileModified", false)) {
+				if(fragmentRefreshListenerFiles != null) {
+					fragmentRefreshListenerFiles.onRefresh(repository.getBranchRef());
+				}
+			}
+		}
+	});
 	private FragmentRefreshListener fragmentRefreshListenerFilterIssuesByMilestone;
 	private FragmentRefreshListener fragmentRefreshListenerReleases;
-
-	public ViewPager2 viewPager;
-
-	public RepositoryContext repository;
-
-	public static boolean updateRepo = false;
-	private Dialog progressDialog;
-
-	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(
-		new ActivityResultContracts.StartActivityForResult(), result -> {
-			if(result.getResultCode() == 201) {
-				assert result.getData() != null;
-				if(result.getData().getBooleanExtra("updateReleases", false)) {
-					if(fragmentRefreshListenerReleases != null) {
-						fragmentRefreshListenerReleases.onRefresh(null);
-					}
-					repository.removeRepository();
-					getRepoInfo(repository.getOwner(), repository.getName());
+	private Dialog progressDialog;	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+		if(result.getResultCode() == 201) {
+			assert result.getData() != null;
+			if(result.getData().getBooleanExtra("updateReleases", false)) {
+				if(fragmentRefreshListenerReleases != null) {
+					fragmentRefreshListenerReleases.onRefresh(null);
 				}
+				repository.removeRepository();
+				getRepoInfo(repository.getOwner(), repository.getName());
 			}
-		});
-
-	private final ActivityResultLauncher<Intent> createMilestoneLauncher = registerForActivityResult(
-		new ActivityResultContracts.StartActivityForResult(), result -> {
-			if(result.getResultCode() == 201) {
-				assert result.getData() != null;
-				if(result.getData().getBooleanExtra("milestoneCreated", false)) {
-					if(fragmentRefreshListenerMilestone != null) {
-						fragmentRefreshListenerMilestone.onRefresh(repository.getMilestoneState().toString());
-					}
-				}
-			}
-		});
-
-	private final ActivityResultLauncher<Intent> editFileLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-		result -> {
-			if(result.getResultCode() == 200) {
-				assert result.getData() != null;
-				if(result.getData().getBooleanExtra("fileModified", false)) {
-					if(fragmentRefreshListenerFiles != null) {
-						fragmentRefreshListenerFiles.onRefresh(repository.getBranchRef());
-					}
-				}
-			}
-		});
-
-	private final ActivityResultLauncher<Intent> settingsLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-		result -> {
-			if(result.getResultCode() == 200) {
-				assert result.getData() != null;
-				if(result.getData().getBooleanExtra("nameChanged", false)) {
-					recreate();
-				}
-			}
-		});
+		}
+	});
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -367,8 +354,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		progressDialog.setContentView(R.layout.custom_progress_loader);
 		progressDialog.show();
 
-		Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx)
-			.issueGetMilestonesList(repository.getOwner(), repository.getName(), "open", null, 1, 50);
+		Call<List<Milestone>> call = RetrofitClient.getApiInterface(ctx).issueGetMilestonesList(repository.getOwner(), repository.getName(), "open", null, 1, 50);
 
 		call.enqueue(new Callback<>() {
 
@@ -486,52 +472,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		});
 	}
 
-	public class ViewPagerAdapter extends FragmentStateAdapter {
-
-		public ViewPagerAdapter(@NonNull FragmentActivity fa) {
-			super(fa);
-		}
-
-		@NonNull
-		@Override
-		public Fragment createFragment(int position) {
-
-			Fragment fragment = null;
-
-			switch(position) {
-				case 0: // Repository details
-					return RepoInfoFragment.newInstance(repository);
-				case 1: // Files
-					return FilesFragment.newInstance(repository);
-				case 2: // Issues
-					fragment = IssuesFragment.newInstance(repository);
-					break;
-				case 3: // Pull requests
-					fragment = PullRequestsFragment.newInstance(repository);
-					break;
-				case 4: // Releases
-					return ReleasesFragment.newInstance(repository);
-				case 5: // Wiki
-					return WikiFragment.newInstance(repository);
-				case 6: // Milestones
-					fragment = MilestonesFragment.newInstance(repository);
-					break;
-				case 7: // Labels
-					return LabelsFragment.newInstance(repository);
-				case 8: // Collaborators
-					return CollaboratorsFragment.newInstance(repository);
-			}
-			assert fragment != null;
-			return fragment;
-		}
-
-		@Override
-		public int getItemCount() {
-			return 9;
-		}
-
-	}
-
 	private void getRepoInfo(final String owner, String repo) {
 
 		LinearProgressIndicator loading = findViewById(R.id.loadingIndicator);
@@ -590,11 +530,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 			viewPager.setAdapter(new ViewPagerAdapter(this));
 
-			String[] tabTitles = {ctx.getResources().getString(R.string.tabTextInfo), ctx.getResources().getString(R.string.tabTextFiles),
-				ctx.getResources().getString(R.string.pageTitleIssues), ctx.getResources().getString(R.string.tabPullRequests),
-				ctx.getResources().getString(R.string.tabTextReleases), ctx.getResources().getString(R.string.wiki),
-				ctx.getResources().getString(R.string.tabTextMl), ctx.getResources().getString(R.string.newIssueLabelsTitle),
-				ctx.getResources().getString(R.string.tabTextCollaborators)};
+			String[] tabTitles = {ctx.getResources().getString(R.string.tabTextInfo), ctx.getResources().getString(R.string.tabTextFiles), ctx.getResources().getString(R.string.pageTitleIssues),
+				ctx.getResources().getString(R.string.tabPullRequests), ctx.getResources().getString(R.string.tabTextReleases), ctx.getResources().getString(R.string.wiki),
+				ctx.getResources().getString(R.string.tabTextMl), ctx.getResources().getString(R.string.newIssueLabelsTitle), ctx.getResources().getString(R.string.tabTextCollaborators)};
 			new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(tabTitles[position])).attach();
 
 			ViewGroup viewGroup = (ViewGroup) tabLayout.getChildAt(0);
@@ -868,5 +806,54 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	public void setFragmentRefreshListenerReleases(FragmentRefreshListener fragmentRefreshListener) {
 		this.fragmentRefreshListenerReleases = fragmentRefreshListener;
 	}
+
+	public class ViewPagerAdapter extends FragmentStateAdapter {
+
+		public ViewPagerAdapter(@NonNull FragmentActivity fa) {
+			super(fa);
+		}
+
+		@NonNull
+		@Override
+		public Fragment createFragment(int position) {
+
+			Fragment fragment = null;
+
+			switch(position) {
+				case 0: // Repository details
+					return RepoInfoFragment.newInstance(repository);
+				case 1: // Files
+					return FilesFragment.newInstance(repository);
+				case 2: // Issues
+					fragment = IssuesFragment.newInstance(repository);
+					break;
+				case 3: // Pull requests
+					fragment = PullRequestsFragment.newInstance(repository);
+					break;
+				case 4: // Releases
+					return ReleasesFragment.newInstance(repository);
+				case 5: // Wiki
+					return WikiFragment.newInstance(repository);
+				case 6: // Milestones
+					fragment = MilestonesFragment.newInstance(repository);
+					break;
+				case 7: // Labels
+					return LabelsFragment.newInstance(repository);
+				case 8: // Collaborators
+					return CollaboratorsFragment.newInstance(repository);
+			}
+			assert fragment != null;
+			return fragment;
+		}
+
+		@Override
+		public int getItemCount() {
+			return 9;
+		}
+
+	}
+
+
+
 
 }

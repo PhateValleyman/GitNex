@@ -37,16 +37,13 @@ import retrofit2.Response;
 
 public class OrganizationsFragment extends Fragment {
 
+	private static final String usernameBundle = "";
 	private Context context;
 	private FragmentOrganizationsBinding fragmentOrganizationsBinding;
-
 	private List<Organization> organizationsList;
 	private OrganizationsListAdapter adapter;
-
 	private int pageSize;
 	private int resultLimit;
-
-	private static final String usernameBundle = "";
 	private String username;
 
 	public OrganizationsFragment() {

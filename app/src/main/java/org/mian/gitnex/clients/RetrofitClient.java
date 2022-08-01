@@ -77,8 +77,7 @@ public class RetrofitClient {
 
 			if(cacheEnabled && cacheFile != null) {
 
-				int cacheSize = FilesData.returnOnlyNumberFileSize(
-					tinyDB.getString("cacheSizeStr", context.getString(R.string.cacheSizeDataSelectionSelectedText))) * 1024 * 1024;
+				int cacheSize = FilesData.returnOnlyNumberFileSize(tinyDB.getString("cacheSizeStr", context.getString(R.string.cacheSizeDataSelectionSelectedText))) * 1024 * 1024;
 				Cache cache = new Cache(cacheFile, cacheSize);
 
 				okHttpClient.cache(cache).addInterceptor(chain -> {
@@ -94,8 +93,7 @@ public class RetrofitClient {
 			}
 
 			return new Retrofit.Builder().baseUrl(instanceUrl).client(okHttpClient.build()).addConverterFactory(ScalarsConverterFactory.create())
-				.addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create()))
-				.addConverterFactory(DateQueryConverterFactory.create()).build();
+				.addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create())).addConverterFactory(DateQueryConverterFactory.create()).build();
 
 		}
 		catch(Exception e) {
@@ -107,8 +105,8 @@ public class RetrofitClient {
 	}
 
 	public static ApiInterface getApiInterface(Context context) {
-		return getApiInterface(context, ((BaseActivity) context).getAccount().getAccount().getInstanceUrl(),
-			((BaseActivity) context).getAccount().getAuthorization(), ((BaseActivity) context).getAccount().getCacheDir(context));
+		return getApiInterface(context, ((BaseActivity) context).getAccount().getAccount().getInstanceUrl(), ((BaseActivity) context).getAccount().getAuthorization(),
+			((BaseActivity) context).getAccount().getCacheDir(context));
 	}
 
 	public static WebApi getWebInterface(Context context) {
@@ -116,8 +114,7 @@ public class RetrofitClient {
 		String instanceUrl = ((BaseActivity) context).getAccount().getAccount().getInstanceUrl();
 		instanceUrl = instanceUrl.substring(0, instanceUrl.lastIndexOf("api/v1/"));
 
-		return getWebInterface(context, instanceUrl, ((BaseActivity) context).getAccount().getWebAuthorization(),
-			((BaseActivity) context).getAccount().getCacheDir(context));
+		return getWebInterface(context, instanceUrl, ((BaseActivity) context).getAccount().getWebAuthorization(), ((BaseActivity) context).getAccount().getCacheDir(context));
 
 	}
 
@@ -128,8 +125,7 @@ public class RetrofitClient {
 			synchronized(RetrofitClient.class) {
 				if(!apiInterfaces.containsKey(key)) {
 
-					ApiInterface apiInterface = Objects.requireNonNull(createRetrofit(context, url, true, token, cacheFile))
-						.create(ApiInterface.class);
+					ApiInterface apiInterface = Objects.requireNonNull(createRetrofit(context, url, true, token, cacheFile)).create(ApiInterface.class);
 					apiInterfaces.put(key, apiInterface);
 
 					return apiInterface;

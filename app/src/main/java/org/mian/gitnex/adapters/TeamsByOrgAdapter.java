@@ -36,47 +36,38 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
 	private final List<Team> teamListFull;
 	private final OrganizationPermissions permissions;
 	private final String orgName;
+	private final Filter orgTeamsFilter = new Filter() {
 
-	static class OrgTeamsViewHolder extends RecyclerView.ViewHolder {
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+			List<Team> filteredList = new ArrayList<>();
 
-		private Team team;
+			if(constraint == null || constraint.length() == 0) {
+				filteredList.addAll(teamListFull);
+			}
+			else {
+				String filterPattern = constraint.toString().toLowerCase().trim();
 
-		private OrganizationPermissions permissions;
-		private final TextView teamTitle;
-		private final TextView teamDescription;
-		private final LinearLayout membersPreviewFrame;
+				for(Team item : teamListFull) {
+					if(item.getName().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
+						filteredList.add(item);
+					}
+				}
+			}
 
-		private final List<User> userInfos;
-		private final TeamMembersByOrgPreviewAdapter adapter;
-		private String orgName;
+			FilterResults results = new FilterResults();
+			results.values = filteredList;
 
-		private OrgTeamsViewHolder(View itemView) {
-			super(itemView);
-
-			teamTitle = itemView.findViewById(R.id.teamTitle);
-			teamDescription = itemView.findViewById(R.id.teamDescription);
-			membersPreviewFrame = itemView.findViewById(R.id.membersPreviewFrame);
-
-			RecyclerView membersPreview = itemView.findViewById(R.id.membersPreview);
-
-			userInfos = new ArrayList<>();
-			adapter = new TeamMembersByOrgPreviewAdapter(itemView.getContext(), userInfos);
-
-			membersPreview.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.HORIZONTAL, false));
-			membersPreview.setAdapter(adapter);
-
-			itemView.setOnClickListener(v -> {
-				Context context = v.getContext();
-
-				Intent intent = new Intent(context, OrganizationTeamInfoActivity.class);
-				intent.putExtra("team", team);
-				intent.putExtra("permissions", permissions);
-				intent.putExtra("orgName", orgName);
-				context.startActivity(intent);
-			});
+			return results;
 		}
 
-	}
+		@Override
+		protected void publishResults(CharSequence constraint, FilterResults results) {
+			teamList.clear();
+			teamList.addAll((List<Team>) results.values);
+			notifyDataSetChanged();
+		}
+	};
 
 	public TeamsByOrgAdapter(Context ctx, List<Team> teamListMain, OrganizationPermissions permissions, String orgName) {
 		this.context = ctx;
@@ -145,37 +136,43 @@ public class TeamsByOrgAdapter extends RecyclerView.Adapter<TeamsByOrgAdapter.Or
 		return orgTeamsFilter;
 	}
 
-	private final Filter orgTeamsFilter = new Filter() {
+	static class OrgTeamsViewHolder extends RecyclerView.ViewHolder {
 
-		@Override
-		protected FilterResults performFiltering(CharSequence constraint) {
-			List<Team> filteredList = new ArrayList<>();
+		private final TextView teamTitle;
+		private final TextView teamDescription;
+		private final LinearLayout membersPreviewFrame;
+		private final List<User> userInfos;
+		private final TeamMembersByOrgPreviewAdapter adapter;
+		private Team team;
+		private OrganizationPermissions permissions;
+		private String orgName;
 
-			if(constraint == null || constraint.length() == 0) {
-				filteredList.addAll(teamListFull);
-			}
-			else {
-				String filterPattern = constraint.toString().toLowerCase().trim();
+		private OrgTeamsViewHolder(View itemView) {
+			super(itemView);
 
-				for(Team item : teamListFull) {
-					if(item.getName().toLowerCase().contains(filterPattern) || item.getDescription().toLowerCase().contains(filterPattern)) {
-						filteredList.add(item);
-					}
-				}
-			}
+			teamTitle = itemView.findViewById(R.id.teamTitle);
+			teamDescription = itemView.findViewById(R.id.teamDescription);
+			membersPreviewFrame = itemView.findViewById(R.id.membersPreviewFrame);
 
-			FilterResults results = new FilterResults();
-			results.values = filteredList;
+			RecyclerView membersPreview = itemView.findViewById(R.id.membersPreview);
 
-			return results;
+			userInfos = new ArrayList<>();
+			adapter = new TeamMembersByOrgPreviewAdapter(itemView.getContext(), userInfos);
+
+			membersPreview.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.HORIZONTAL, false));
+			membersPreview.setAdapter(adapter);
+
+			itemView.setOnClickListener(v -> {
+				Context context = v.getContext();
+
+				Intent intent = new Intent(context, OrganizationTeamInfoActivity.class);
+				intent.putExtra("team", team);
+				intent.putExtra("permissions", permissions);
+				intent.putExtra("orgName", orgName);
+				context.startActivity(intent);
+			});
 		}
 
-		@Override
-		protected void publishResults(CharSequence constraint, FilterResults results) {
-			teamList.clear();
-			teamList.addAll((List<Team>) results.values);
-			notifyDataSetChanged();
-		}
-	};
+	}
 
 }

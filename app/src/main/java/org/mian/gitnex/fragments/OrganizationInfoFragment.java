@@ -28,10 +28,9 @@ import retrofit2.Callback;
 
 public class OrganizationInfoFragment extends Fragment {
 
+	private static final String orgNameF = "param1";
 	private Context ctx;
 	private ProgressBar mProgressBar;
-	private static String orgNameF = "param1";
-
 	private String orgName;
 	private ImageView orgAvatar;
 	private TextView orgDescInfo;
@@ -98,8 +97,7 @@ public class OrganizationInfoFragment extends Fragment {
 
 					assert orgInfo != null;
 
-					PicassoService.getInstance(ctx).get().load(orgInfo.getAvatarUrl()).placeholder(R.drawable.loader_animated)
-						.transform(new RoundedTransformation(8, 0)).resize(230, 230).centerCrop().into(orgAvatar);
+					PicassoService.getInstance(ctx).get().load(orgInfo.getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(8, 0)).resize(230, 230).centerCrop().into(orgAvatar);
 
 					if(!orgInfo.getDescription().isEmpty()) {
 						Markdown.render(ctx, orgInfo.getDescription(), orgDescInfo);

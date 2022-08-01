@@ -23,20 +23,18 @@ import java.util.stream.Collectors;
 
 public class DiffAdapter extends BaseAdapter {
 
-	private final Context context;
-	private final FragmentManager fragmentManager;
-	private final List<String> lines;
-	private final IssueContext issue;
-
-	private final List<Integer> selectedLines;
-	private final Typeface typeface;
-	private final String type;
-
 	private static int COLOR_ADDED;
 	private static int COLOR_REMOVED;
 	private static int COLOR_NORMAL;
 	private static int COLOR_SELECTED;
 	private static int COLOR_FONT;
+	private final Context context;
+	private final FragmentManager fragmentManager;
+	private final List<String> lines;
+	private final IssueContext issue;
+	private final List<Integer> selectedLines;
+	private final Typeface typeface;
+	private final String type;
 
 	public DiffAdapter(Context context, FragmentManager fragmentManager, List<String> lines, IssueContext issue, String type) {
 

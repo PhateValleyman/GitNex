@@ -33,6 +33,7 @@ import java.util.List;
 
 public class MilestonesFragment extends Fragment {
 
+	public String state = "open";
 	private MilestonesViewModel milestonesViewModel;
 	private FragmentMilestonesBinding viewBinding;
 	private Menu menu;
@@ -41,12 +42,20 @@ public class MilestonesFragment extends Fragment {
 	private RepositoryContext repository;
 	private String milestoneId;
 	private int page = 1;
-	public String state = "open";
 
 	public static MilestonesFragment newInstance(RepositoryContext repository) {
 		MilestonesFragment fragment = new MilestonesFragment();
 		fragment.setArguments(repository.getBundle());
 		return fragment;
+	}
+
+	private static int getMilestoneIndex(int milestoneId, List<Milestone> milestones) {
+		for(Milestone milestone : milestones) {
+			if(milestone.getId() == milestoneId) {
+				return milestones.indexOf(milestone);
+			}
+		}
+		return -1;
 	}
 
 	@Override
@@ -71,8 +80,7 @@ public class MilestonesFragment extends Fragment {
 
 		dataList = new ArrayList<>();
 
-		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewBinding.recyclerView.getContext(),
-			DividerItemDecoration.VERTICAL);
+		DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(viewBinding.recyclerView.getContext(), DividerItemDecoration.VERTICAL);
 		viewBinding.recyclerView.addItemDecoration(dividerItemDecoration);
 		viewBinding.recyclerView.setHasFixedSize(true);
 		viewBinding.recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
@@ -145,15 +153,6 @@ public class MilestonesFragment extends Fragment {
 
 			viewBinding.progressBar.setVisibility(View.GONE);
 		});
-	}
-
-	private static int getMilestoneIndex(int milestoneId, List<Milestone> milestones) {
-		for(Milestone milestone : milestones) {
-			if(milestone.getId() == milestoneId) {
-				return milestones.indexOf(milestone);
-			}
-		}
-		return -1;
 	}
 
 	@Override

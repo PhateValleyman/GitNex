@@ -71,6 +71,25 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 		return commitsList.size();
 	}
 
+	public void setMoreDataAvailable(boolean moreDataAvailable) {
+		isMoreDataAvailable = moreDataAvailable;
+	}
+
+	@SuppressLint("NotifyDataSetChanged")
+	public void notifyDataChanged() {
+		notifyDataSetChanged();
+		isLoading = false;
+	}
+
+	public void setLoadMoreListener(Runnable loadMoreListener) {
+		this.loadMoreListener = loadMoreListener;
+	}
+
+	public void updateList(List<Commit> list) {
+		commitsList = list;
+		notifyDataChanged();
+	}
+
 	class CommitsHolder extends RecyclerView.ViewHolder {
 
 		View rootView;
@@ -104,27 +123,24 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 			if(!Objects.equals(commitsModel.getCommit().getCommitter().getEmail(), commitsModel.getCommit().getAuthor().getEmail())) {
 				commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(
-					context.getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getCommit().getAuthor().getName(),
-						commitsModel.getCommit().getCommitter().getName(),
-						TimeHelper.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()),
-							context.getResources().getConfiguration().locale, "pretty", context)), HtmlCompat.FROM_HTML_MODE_COMPACT));
+					context.getString(R.string.commitAuthoredByAndCommittedByWhen, commitsModel.getCommit().getAuthor().getName(), commitsModel.getCommit().getCommitter().getName(),
+						TimeHelper.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()), context.getResources().getConfiguration().locale, "pretty", context)),
+					HtmlCompat.FROM_HTML_MODE_COMPACT));
 			}
 			else {
-				commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(
-					context.getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
-						TimeHelper.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()),
-							context.getResources().getConfiguration().locale, "pretty", context)), HtmlCompat.FROM_HTML_MODE_COMPACT));
+				commitAuthorAndCommitter.setText(HtmlCompat.fromHtml(context.getString(R.string.commitCommittedByWhen, commitsModel.getCommit().getCommitter().getName(),
+						TimeHelper.formatTime(TimeHelper.parseIso8601(commitsModel.getCommit().getCommitter().getDate()), context.getResources().getConfiguration().locale, "pretty", context)),
+					HtmlCompat.FROM_HTML_MODE_COMPACT));
 			}
 
-			if(commitsModel.getAuthor() != null && commitsModel.getAuthor().getAvatarUrl() != null && !commitsModel.getAuthor().getAvatarUrl()
-				.isEmpty()) {
+			if(commitsModel.getAuthor() != null && commitsModel.getAuthor().getAvatarUrl() != null && !commitsModel.getAuthor().getAvatarUrl().isEmpty()) {
 
 				commitAuthorAvatar.setVisibility(View.VISIBLE);
 
 				int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
-				PicassoService.getInstance(context).get().load(commitsModel.getAuthor().getAvatarUrl()).placeholder(R.drawable.loader_animated)
-					.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(commitAuthorAvatar);
+				PicassoService.getInstance(context).get().load(commitsModel.getAuthor().getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120)
+					.centerCrop().into(commitAuthorAvatar);
 
 			}
 			else {
@@ -132,16 +148,15 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 				commitAuthorAvatar.setVisibility(View.GONE);
 			}
 
-			if(commitsModel.getCommitter() != null && (commitsModel.getAuthor() == null || !commitsModel.getAuthor().getLogin()
-				.equals(commitsModel.getCommitter().getLogin())) && commitsModel.getCommitter().getAvatarUrl() != null && !commitsModel.getCommitter()
-				.getAvatarUrl().isEmpty()) {
+			if(commitsModel.getCommitter() != null && (commitsModel.getAuthor() == null || !commitsModel.getAuthor().getLogin().equals(commitsModel.getCommitter().getLogin())) && commitsModel.getCommitter()
+				.getAvatarUrl() != null && !commitsModel.getCommitter().getAvatarUrl().isEmpty()) {
 
 				commitCommitterAvatar.setVisibility(View.VISIBLE);
 
 				int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
 
-				PicassoService.getInstance(context).get().load(commitsModel.getCommitter().getAvatarUrl()).placeholder(R.drawable.loader_animated)
-					.transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120).centerCrop().into(commitCommitterAvatar);
+				PicassoService.getInstance(context).get().load(commitsModel.getCommitter().getAvatarUrl()).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(imgRadius, 0)).resize(120, 120)
+					.centerCrop().into(commitCommitterAvatar);
 
 			}
 			else {
@@ -156,8 +171,7 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 					intent = ((CommitsActivity) context).repository.getIntent(context, CommitDetailActivity.class);
 				}
 				else {
-					intent = IssueContext.fromIntent(((DiffActivity) context).getIntent()).getRepository()
-						.getIntent(context, CommitDetailActivity.class);
+					intent = IssueContext.fromIntent(((DiffActivity) context).getIntent()).getRepository().getIntent(context, CommitDetailActivity.class);
 				}
 				intent.putExtra("sha", commitsModel.getSha());
 				context.startActivity(intent);
@@ -165,25 +179,6 @@ public class CommitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 		}
 
-	}
-
-	public void setMoreDataAvailable(boolean moreDataAvailable) {
-		isMoreDataAvailable = moreDataAvailable;
-	}
-
-	@SuppressLint("NotifyDataSetChanged")
-	public void notifyDataChanged() {
-		notifyDataSetChanged();
-		isLoading = false;
-	}
-
-	public void setLoadMoreListener(Runnable loadMoreListener) {
-		this.loadMoreListener = loadMoreListener;
-	}
-
-	public void updateList(List<Commit> list) {
-		commitsList = list;
-		notifyDataChanged();
 	}
 
 }

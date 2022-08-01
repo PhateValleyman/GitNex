@@ -36,23 +36,20 @@ import retrofit2.Callback;
 
 public class CreateRepoActivity extends BaseActivity {
 
+	//https://github.com/go-gitea/gitea/blob/52cfd2743c0e85b36081cf80a850e6a5901f1865/models/repo.go#L964-L967
+	final List<String> reservedRepoNames = Arrays.asList(".", "..");
+	final Pattern reservedRepoPatterns = Pattern.compile("\\.(git|wiki)$");
 	public ImageView closeActivity;
+	List<String> organizationsList = new ArrayList<>();
 	private View.OnClickListener onClickListener;
 	private AutoCompleteTextView spinner;
 	private Button createRepo;
 	private EditText repoName;
 	private EditText repoDesc;
 	private CheckBox repoAccess;
-
 	private String loginUid;
-
 	private String selectedOwner;
-
-	List<String> organizationsList = new ArrayList<>();
-
-	//https://github.com/go-gitea/gitea/blob/52cfd2743c0e85b36081cf80a850e6a5901f1865/models/repo.go#L964-L967
-	final List<String> reservedRepoNames = Arrays.asList(".", "..");
-	final Pattern reservedRepoPatterns = Pattern.compile("\\.(git|wiki)$");
+	private final View.OnClickListener createRepoListener = v -> processNewRepo();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,8 +92,6 @@ public class CreateRepoActivity extends BaseActivity {
 			createRepo.setOnClickListener(createRepoListener);
 		}
 	}
-
-	private final View.OnClickListener createRepoListener = v -> processNewRepo();
 
 	private void processNewRepo() {
 
