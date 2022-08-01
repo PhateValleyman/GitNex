@@ -144,6 +144,14 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			repository.removeRepository();
 			getRepoInfo(repository.getOwner(), repository.getName());
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.repo_dotted_menu, menu);
+		return true;
 	}	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
 		if(result.getResultCode() == 201) {
 			assert result.getData() != null;
@@ -156,14 +164,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 		}
 	});
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.repo_dotted_menu, menu);
-		return true;
-	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
