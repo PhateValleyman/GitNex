@@ -83,6 +83,9 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	private FragmentRefreshListener fragmentRefreshListener;
 	private FragmentRefreshListener fragmentRefreshListenerPr;
 	private FragmentRefreshListener fragmentRefreshListenerMilestone;
+	private FragmentRefreshListener fragmentRefreshListenerFiles;
+	private FragmentRefreshListener fragmentRefreshListenerFilterIssuesByMilestone;
+	private FragmentRefreshListener fragmentRefreshListenerReleases;
 	private final ActivityResultLauncher<Intent> createMilestoneLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
 		if(result.getResultCode() == 201) {
 			assert result.getData() != null;
@@ -93,7 +96,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 		}
 	});
-	private FragmentRefreshListener fragmentRefreshListenerFiles;
 	private final ActivityResultLauncher<Intent> editFileLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
 		if(result.getResultCode() == 200) {
 			assert result.getData() != null;
@@ -104,8 +106,18 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 		}
 	});
-	private FragmentRefreshListener fragmentRefreshListenerFilterIssuesByMilestone;
-	private FragmentRefreshListener fragmentRefreshListenerReleases;
+	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+		if(result.getResultCode() == 201) {
+			assert result.getData() != null;
+			if(result.getData().getBooleanExtra("updateReleases", false)) {
+				if(fragmentRefreshListenerReleases != null) {
+					fragmentRefreshListenerReleases.onRefresh(null);
+				}
+				repository.removeRepository();
+				getRepoInfo(repository.getOwner(), repository.getName());
+			}
+		}
+	});
 	private Dialog progressDialog;
 
 	@Override
@@ -415,18 +427,7 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 				progressDialog.hide();
 			}
 		});
-	}	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-		if(result.getResultCode() == 201) {
-			assert result.getData() != null;
-			if(result.getData().getBooleanExtra("updateReleases", false)) {
-				if(fragmentRefreshListenerReleases != null) {
-					fragmentRefreshListenerReleases.onRefresh(null);
-				}
-				repository.removeRepository();
-				getRepoInfo(repository.getOwner(), repository.getName());
-			}
-		}
-	});
+	}
 
 	@Override
 	public void onDestroy() {
