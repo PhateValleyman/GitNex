@@ -35,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -441,6 +442,16 @@ public class AppUtil {
 			}
 		}
 		return typeface;
+	}
+
+	/**
+	 * check for ghost/restricted users/profiles
+	 */
+	public static Boolean checkGhostUsers(String str) {
+
+		ArrayList<String> restrictedUsers = new ArrayList<>();
+		restrictedUsers.add("Ghost");
+		return restrictedUsers.contains(str);
 	}
 
 	public int getResponseStatusCode(String u) throws Exception {

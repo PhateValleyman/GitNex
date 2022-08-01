@@ -115,7 +115,7 @@ public class RepoForksActivity extends BaseActivity {
 
 		Call<List<Repository>> call = RetrofitClient.getApiInterface(ctx).listForks(repoOwner, repoName, pageSize, resultLimit);
 
-		call.enqueue(new Callback<List<Repository>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Repository>> call, @NonNull Response<List<Repository>> response) {
@@ -157,7 +157,7 @@ public class RepoForksActivity extends BaseActivity {
 
 		Call<List<Repository>> call = RetrofitClient.getApiInterface(ctx).listForks(repoOwner, repoName, page, resultLimit);
 
-		call.enqueue(new Callback<List<Repository>>() {
+		call.enqueue(new Callback<>() {
 
 			@Override
 			public void onResponse(@NonNull Call<List<Repository>> call, @NonNull Response<List<Repository>> response) {
@@ -226,7 +226,7 @@ public class RepoForksActivity extends BaseActivity {
 		List<Repository> userRepositories = new ArrayList<>();
 
 		for(Repository d : forksList) {
-			if(d.getName().toLowerCase().contains(text) || d.getDescription().toLowerCase().contains(text)) {
+			if(d.getOwner().getLogin().contains(text) || d.getName().toLowerCase().contains(text) || d.getDescription().toLowerCase().contains(text)) {
 
 				userRepositories.add(d);
 			}

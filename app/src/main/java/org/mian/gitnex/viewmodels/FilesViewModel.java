@@ -41,7 +41,6 @@ public class FilesViewModel extends ViewModel {
 		Call<List<ContentsResponse>> call = RetrofitClient.getApiInterface(ctx).repoGetContentsList(owner, repo, ref);
 
 		call.enqueue(new Callback<>() {
-
 			@Override
 			public void onResponse(@NonNull Call<List<ContentsResponse>> call, @NonNull Response<List<ContentsResponse>> response) {
 
@@ -52,7 +51,6 @@ public class FilesViewModel extends ViewModel {
 				else {
 					progressBar.setVisibility(View.GONE);
 					noDataFiles.setVisibility(View.VISIBLE);
-					Toasty.error(ctx, ctx.getString(R.string.genericError));
 				}
 			}
 
@@ -77,7 +75,6 @@ public class FilesViewModel extends ViewModel {
 		Call<List<ContentsResponse>> call = RetrofitClient.getApiInterface(ctx).repoGetContentsList(owner, repo, filesDir, ref);
 
 		call.enqueue(new Callback<>() {
-
 			@Override
 			public void onResponse(@NonNull Call<List<ContentsResponse>> call, @NonNull Response<List<ContentsResponse>> response) {
 
@@ -88,7 +85,6 @@ public class FilesViewModel extends ViewModel {
 				else {
 					progressBar.setVisibility(View.GONE);
 					noDataFiles.setVisibility(View.VISIBLE);
-					Toasty.error(ctx, ctx.getString(R.string.genericError));
 				}
 			}
 

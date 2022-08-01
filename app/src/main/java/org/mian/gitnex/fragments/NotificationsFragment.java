@@ -32,12 +32,12 @@ import org.mian.gitnex.helpers.contexts.IssueContext;
 import org.mian.gitnex.helpers.contexts.RepositoryContext;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author opyale
- * Modified M M Arif
+ * @author M M Arif
  */
 
 public class NotificationsFragment extends Fragment implements NotificationsAdapter.OnNotificationClickedListener, NotificationsAdapter.OnMoreClickedListener {
@@ -110,7 +110,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 		});
 
 		viewBinding.markAllAsRead.setOnClickListener(
-			v1 -> RetrofitClient.getApiInterface(context).notifyReadList(new Date(), "true", Arrays.asList("unread", "pinned"), "read").enqueue((SimpleCallback<List<NotificationThread>>) (call, voidResponse) -> {
+			v1 -> RetrofitClient.getApiInterface(context).notifyReadList(null, "false", Arrays.asList("unread", "pinned"), "read").enqueue((SimpleCallback<List<NotificationThread>>) (call, voidResponse) -> {
 
 				if(voidResponse.isPresent() && voidResponse.get().isSuccessful()) {
 					Toasty.success(context, getString(R.string.markedNotificationsAsRead));
@@ -146,15 +146,16 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 						notificationThreads.clear();
 					}
 
-					if(listResponse.get().body().size() > 0) {
-						notificationThreads.addAll(listResponse.get().body());
+
+					if(listResponse.get().body() != null) {
+						notificationThreads.addAll(Objects.requireNonNull(listResponse.get().body()));
 					}
 					else {
 						notificationsAdapter.setMoreDataAvailable(false);
 					}
 
-					if(!append || listResponse.get().body().size() > 0) {
-						notificationsAdapter.notifyDataSetChanged();
+					if(!append || Objects.requireNonNull(listResponse.get().body()).size() > 0) {
+						notificationsAdapter.notifyDataChanged();
 					}
 				}
 

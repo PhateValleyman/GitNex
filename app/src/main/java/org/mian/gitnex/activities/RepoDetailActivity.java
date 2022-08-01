@@ -133,6 +133,17 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 
 		checkRepositoryStarStatus(repository.getOwner(), repository.getName());
 		checkRepositoryWatchStatus(repository.getOwner(), repository.getName());
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		repository.checkAccountSwitch(this);
+		if(updateRepo) {
+			updateRepo = false;
+			repository.removeRepository();
+			getRepoInfo(repository.getOwner(), repository.getName());
+		}
 	}	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
 		if(result.getResultCode() == 201) {
 			assert result.getData() != null;
@@ -145,17 +156,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 			}
 		}
 	});
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		repository.checkAccountSwitch(this);
-		if(updateRepo) {
-			updateRepo = false;
-			repository.removeRepository();
-			getRepoInfo(repository.getOwner(), repository.getName());
-		}
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

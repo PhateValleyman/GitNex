@@ -158,9 +158,9 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/wiki_content"
                         android:layout_width="match_parent"
-                        android:layout_height="480dp"
+                        android:layout_height="wrap_content"
                         android:gravity="top|start"
-                        android:imeOptions="actionNext"
+                        android:minHeight="480dp"
                         android:singleLine="false"
                         android:textColor="?attr/inputTextColor"
                         android:textColorHighlight="?attr/hintColor"
