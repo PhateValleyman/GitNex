@@ -77,7 +77,7 @@ public class MostVisitedReposAdapter extends RecyclerView.Adapter<MostVisitedRep
 		ColorGenerator generator = ColorGenerator.Companion.getMATERIAL();
 		int color = generator.getColor(currentItem.getRepositoryOwner());
 		String firstCharacter = String.valueOf(currentItem.getRepositoryOwner().charAt(0));
-		TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
+		TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 14);
 
 		holder.image.setImageDrawable(drawable);
 		holder.orgName.setText(currentItem.getRepositoryOwner());
