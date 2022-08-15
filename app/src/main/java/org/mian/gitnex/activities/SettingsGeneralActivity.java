@@ -98,18 +98,16 @@ public class SettingsGeneralActivity extends BaseActivity {
 
 		viewBinding.homeScreenFrame.setOnClickListener(setDefaultHomeScreen -> {
 
-			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
-				.setTitle(R.string.settingsHomeScreenSelectorDialogTitle)
-				.setCancelable(homeScreenSelectedChoice != -1)
+			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx).setTitle(R.string.settingsHomeScreenSelectorDialogTitle).setCancelable(homeScreenSelectedChoice != -1)
 				.setSingleChoiceItems(homeScreenArray, homeScreenSelectedChoice, (dialogInterfaceHomeScreen, i) -> {
 
-				homeScreenSelectedChoice = i;
-				viewBinding.homeScreenSelected.setText(homeScreenArray[i]);
-				tinyDB.putInt("homeScreenId", i);
+					homeScreenSelectedChoice = i;
+					viewBinding.homeScreenSelected.setText(homeScreenArray[i]);
+					tinyDB.putInt("homeScreenId", i);
 
-				dialogInterfaceHomeScreen.dismiss();
-				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-			});
+					dialogInterfaceHomeScreen.dismiss();
+					Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
+				});
 
 			materialAlertDialogBuilder.create().show();
 		});
@@ -127,9 +125,7 @@ public class SettingsGeneralActivity extends BaseActivity {
 
 		viewBinding.setDefaultLinkHandler.setOnClickListener(setDefaultLinkHandler -> {
 
-			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
-				.setTitle(R.string.linkSelectorDialogTitle)
-				.setCancelable(defaultLinkHandlerScreenSelectedChoice != -1)
+			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx).setTitle(R.string.linkSelectorDialogTitle).setCancelable(defaultLinkHandlerScreenSelectedChoice != -1)
 				.setSingleChoiceItems(linksArray, defaultLinkHandlerScreenSelectedChoice, (dialogInterfaceHomeScreen, i) -> {
 
 					defaultLinkHandlerScreenSelectedChoice = i;

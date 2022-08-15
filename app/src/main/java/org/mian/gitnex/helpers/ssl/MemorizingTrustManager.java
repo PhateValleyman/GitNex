@@ -21,23 +21,13 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertPathValidatorException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateParsingException;
-import java.security.cert.X509Certificate;
+import java.security.cert.*;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 
 /**
  * @author Georg Lukas, modified by opyale
@@ -543,12 +533,9 @@ public class MemorizingTrustManager implements X509TrustManager {
 
 		((BaseActivity) context).runOnUiThread(() -> {
 
-			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(context)
-				.setTitle(titleId)
-				.setMessage(message)
+			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(context).setTitle(titleId).setMessage(message)
 				.setPositiveButton(R.string.mtmDecisionAlways, (dialog, which) -> interactResult(myId, MTMDecision.DECISION_ALWAYS))
-				.setNeutralButton(R.string.mtmDecisionAbort, (dialog, which) -> interactResult(myId, MTMDecision.DECISION_ABORT))
-				.setOnCancelListener(dialog -> interactResult(myId, MTMDecision.DECISION_ABORT));
+				.setNeutralButton(R.string.mtmDecisionAbort, (dialog, which) -> interactResult(myId, MTMDecision.DECISION_ABORT)).setOnCancelListener(dialog -> interactResult(myId, MTMDecision.DECISION_ABORT));
 
 			materialAlertDialogBuilder.create().show();
 		});

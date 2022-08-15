@@ -140,9 +140,7 @@ public class AdminCronTasksAdapter extends RecyclerView.Adapter<AdminCronTasksAd
 				lastRunContent.setText(lastRun);
 				execTimeContent.setText(String.valueOf(cronTasks.getExecTimes()));
 
-				MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
-					.setTitle(StringUtils.capitalize(cronTasks.getName().replace("_", " ")))
-					.setView(view)
+				MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx).setTitle(StringUtils.capitalize(cronTasks.getName().replace("_", " "))).setView(view)
 					.setPositiveButton(ctx.getString(R.string.close), null);
 
 				materialAlertDialogBuilder.create().show();

@@ -25,14 +25,6 @@ public class OrganizationLabelsViewModel extends ViewModel {
 
 	private static MutableLiveData<List<Label>> orgLabelsList;
 
-	public LiveData<List<Label>> getOrgLabelsList(String owner, Context ctx, ProgressBar progressBar, TextView noData) {
-
-		orgLabelsList = new MutableLiveData<>();
-		loadOrgLabelsList(owner, ctx, progressBar, noData);
-
-		return orgLabelsList;
-	}
-
 	public static void loadOrgLabelsList(String owner, Context ctx, ProgressBar progressBar, TextView noData) {
 
 		Call<List<Label>> call = RetrofitClient.getApiInterface(ctx).orgListLabels(owner, null, null);
@@ -60,6 +52,14 @@ public class OrganizationLabelsViewModel extends ViewModel {
 				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
 			}
 		});
+	}
+
+	public LiveData<List<Label>> getOrgLabelsList(String owner, Context ctx, ProgressBar progressBar, TextView noData) {
+
+		orgLabelsList = new MutableLiveData<>();
+		loadOrgLabelsList(owner, ctx, progressBar, noData);
+
+		return orgLabelsList;
 	}
 
 }

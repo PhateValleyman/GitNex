@@ -63,11 +63,8 @@ public class SettingsTranslationActivity extends BaseActivity {
 		// language dialog
 		langFrame.setOnClickListener(view -> {
 
-			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
-				.setTitle(R.string.settingsLanguageSelectorDialogTitle)
-				.setCancelable(langSelectedChoice != -1)
-				.setNeutralButton(getString(R.string.cancelButton), null)
-				.setSingleChoiceItems(langs.values().toArray(new String[0]), langSelectedChoice, (dialogInterface, i) -> {
+			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx).setTitle(R.string.settingsLanguageSelectorDialogTitle).setCancelable(langSelectedChoice != -1)
+				.setNeutralButton(getString(R.string.cancelButton), null).setSingleChoiceItems(langs.values().toArray(new String[0]), langSelectedChoice, (dialogInterface, i) -> {
 
 					String selectedLanguage = langs.keySet().toArray(new String[0])[i];
 					tinyDB.putInt("langId", i);

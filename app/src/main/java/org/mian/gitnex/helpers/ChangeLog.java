@@ -90,11 +90,8 @@ public class ChangeLog {
 
 		String changelogMessage = getChangelog(resId, res);
 
-		MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(changelogActivity)
-			.setTitle(R.string.changelogTitle)
-			.setMessage(HtmlCompat.fromHtml("<small>" + changelogMessage + "</small>", HtmlCompat.FROM_HTML_MODE_LEGACY))
-			.setCancelable(false)
-			.setNeutralButton(R.string.close, null);
+		MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(changelogActivity).setTitle(R.string.changelogTitle)
+			.setMessage(HtmlCompat.fromHtml("<small>" + changelogMessage + "</small>", HtmlCompat.FROM_HTML_MODE_LEGACY)).setCancelable(false).setNeutralButton(R.string.close, null);
 
 		materialAlertDialogBuilder.create().show();
 	}

@@ -17,6 +17,7 @@ pipeline:
       - cd /opt
       - tar xzf /tmp/idea.tar.gz
       - mv /opt/idea* /opt/idea
+      - cd "$CI_WORKSPACE"
       - /opt/idea/bin/idea.sh format -s "$(pwd)/.idea/codeStyles/Project.xml" -m "*" -r .
       - git diff
 

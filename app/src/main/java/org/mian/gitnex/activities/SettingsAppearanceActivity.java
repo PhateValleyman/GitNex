@@ -119,8 +119,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		// theme selection dialog
 		themeFrame.setOnClickListener(view -> {
 
-			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
-				.setTitle(R.string.themeSelectorDialogTitle)
+			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx).setTitle(R.string.themeSelectorDialogTitle)
 				.setSingleChoiceItems(themeList, themeSelectedChoice, (dialogInterfaceTheme, i) -> {
 
 					themeSelectedChoice = i;
@@ -150,9 +149,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		// custom font dialog
 		customFontFrame.setOnClickListener(view -> {
 
-			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
-				.setTitle(R.string.settingsCustomFontSelectorDialogTitle)
-				.setCancelable(customFontSelectedChoice != -1)
+			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx).setTitle(R.string.settingsCustomFontSelectorDialogTitle).setCancelable(customFontSelectedChoice != -1)
 				.setSingleChoiceItems(customFontList, customFontSelectedChoice, (dialogInterfaceCustomFont, i) -> {
 
 					customFontSelectedChoice = i;
@@ -174,9 +171,7 @@ public class SettingsAppearanceActivity extends BaseActivity {
 		// time and date dialog
 		timeFrame.setOnClickListener(view -> {
 
-			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
-				.setTitle(R.string.settingsTimeSelectorDialogTitle)
-				.setCancelable(timeSelectedChoice != -1)
+			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx).setTitle(R.string.settingsTimeSelectorDialogTitle).setCancelable(timeSelectedChoice != -1)
 				.setSingleChoiceItems(timeList, timeSelectedChoice, (dialogInterfaceTime, i) -> {
 
 					timeSelectedChoice = i;
