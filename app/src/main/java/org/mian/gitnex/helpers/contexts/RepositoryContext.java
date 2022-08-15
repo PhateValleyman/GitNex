@@ -34,6 +34,7 @@ public class RepositoryContext implements Serializable {
 	private boolean watched = false;
 	private int repositoryId = 0;
 	private Repository repositoryModel = null;
+
 	public RepositoryContext(org.gitnex.tea4j.v2.models.Repository repository, Context context) {
 		this.account = ((BaseActivity) context).getAccount();
 		this.repository = repository;

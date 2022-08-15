@@ -84,7 +84,8 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 	});
 	private FragmentRefreshListener fragmentRefreshListenerFilterIssuesByMilestone;
 	private FragmentRefreshListener fragmentRefreshListenerReleases;
-	private Dialog progressDialog;	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+	private Dialog progressDialog;
+	private final ActivityResultLauncher<Intent> createReleaseLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
 		if(result.getResultCode() == 201) {
 			assert result.getData() != null;
 			if(result.getData().getBooleanExtra("updateReleases", false)) {
@@ -856,7 +857,6 @@ public class RepoDetailActivity extends BaseActivity implements BottomSheetListe
 		}
 
 	}
-
 
 
 }
