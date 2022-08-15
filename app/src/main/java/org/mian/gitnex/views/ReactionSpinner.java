@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.cardview.widget.CardView;
+import com.google.android.material.card.MaterialCardView;
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
 import org.gitnex.tea4j.v2.models.EditReactionOption;
@@ -34,6 +34,10 @@ import retrofit2.Response;
 public class ReactionSpinner extends HorizontalScrollView {
 
 	private static final List<String> allowedReactionsCache = new ArrayList<>();
+
+	private enum ReactionType { COMMENT, ISSUE }
+	private enum ReactionAction { REMOVE, ADD }
+
 	private Runnable onInteractedListener;
 	private Runnable onLoadingFinishedListener;
 
@@ -62,8 +66,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 		if(bundle.containsKey("commentId")) {
 			id = bundle.getInt("commentId");
 			reactionType = ReactionType.COMMENT;
-		}
-		else {
+		} else {
 			id = bundle.getInt("issueId");
 			reactionType = ReactionType.ISSUE;
 		}
@@ -79,18 +82,20 @@ public class ReactionSpinner extends HorizontalScrollView {
 					// Show all allowed reactions
 					for(String allowedReaction : allowedReactions) {
 
-						@SuppressLint("InflateParams") CardView reactionButton = (CardView) LayoutInflater.from(context).inflate(R.layout.layout_reaction_button, root, false);
+						@SuppressLint("InflateParams") MaterialCardView reactionButton = (MaterialCardView) LayoutInflater.from(context)
+							.inflate(R.layout.layout_reaction_button, root, false);
 
 						// Checks if current user reacted with 'allowedReaction'
-						boolean myReaction = allReactions.stream().anyMatch(issueReaction -> issueReaction.getContent().equals(allowedReaction) && issueReaction.getUser().getLogin().equals(loginUid));
+						boolean myReaction = allReactions.stream().anyMatch(issueReaction ->
+							issueReaction.getContent().equals(allowedReaction) &&
+								issueReaction.getUser().getLogin().equals(loginUid));
 
 						ReactionAction reactionAction;
 
 						if(myReaction) {
 							reactionButton.setCardBackgroundColor(AppUtil.getColorFromAttribute(context, R.attr.inputSelectedColor));
 							reactionAction = ReactionAction.REMOVE;
-						}
-						else {
+						} else {
 							reactionAction = ReactionAction.ADD;
 						}
 
@@ -104,9 +109,7 @@ public class ReactionSpinner extends HorizontalScrollView {
 										onInteractedListener.run();
 									});
 								}
-							}
-							catch(IOException ignored) {
-							}
+							} catch(IOException ignored) {}
 
 						}).start());
 
@@ -123,13 +126,10 @@ public class ReactionSpinner extends HorizontalScrollView {
 						setVisibility(VISIBLE);
 					});
 
-				}
-				else {
+				} else {
 					this.post(() -> setVisibility(GONE));
 				}
-			}
-			catch(IOException ignored) {
-			}
+			} catch(IOException ignored) {}
 			if(onLoadingFinishedListener != null) {
 				((Activity) context).runOnUiThread(() -> onLoadingFinishedListener.run());
 			}
@@ -147,12 +147,18 @@ public class ReactionSpinner extends HorizontalScrollView {
 				switch(reactionAction) {
 
 					case ADD:
-						response = RetrofitClient.getApiInterface(getContext()).issuePostIssueReaction(repoOwner, repoName, (long) id, issueReaction).execute();
+						response = RetrofitClient
+							.getApiInterface(getContext())
+							.issuePostIssueReaction(repoOwner, repoName, (long) id, issueReaction)
+							.execute();
 						break;
 
 
 					case REMOVE:
-						response = RetrofitClient.getApiInterface(getContext()).issueDeleteIssueReactionWithBody(repoOwner, repoName, (long) id, issueReaction).execute();
+						response = RetrofitClient
+							.getApiInterface(getContext())
+							.issueDeleteIssueReactionWithBody(repoOwner, repoName, (long) id, issueReaction)
+							.execute();
 						break;
 
 				}
@@ -162,12 +168,18 @@ public class ReactionSpinner extends HorizontalScrollView {
 				switch(reactionAction) {
 
 					case ADD:
-						response = RetrofitClient.getApiInterface(getContext()).issuePostCommentReaction(repoOwner, repoName, (long) id, issueReaction).execute();
+						response = RetrofitClient
+							.getApiInterface(getContext())
+							.issuePostCommentReaction(repoOwner, repoName, (long) id, issueReaction)
+							.execute();
 						break;
 
 
 					case REMOVE:
-						response = RetrofitClient.getApiInterface(getContext()).issueDeleteCommentReactionWithBody(repoOwner, repoName, (long) id, issueReaction).execute();
+						response = RetrofitClient
+							.getApiInterface(getContext())
+							.issueDeleteCommentReactionWithBody(repoOwner, repoName, (long) id, issueReaction)
+							.execute();
 						break;
 
 				}
@@ -186,19 +198,24 @@ public class ReactionSpinner extends HorizontalScrollView {
 		switch(reactionType) {
 
 			case ISSUE:
-				response = RetrofitClient.getApiInterface(getContext()).issueGetIssueReactions(repoOwner, repoName, (long) id, null, null).execute();
+				response = RetrofitClient
+					.getApiInterface(getContext())
+					.issueGetIssueReactions(repoOwner, repoName, (long) id, null, null)
+					.execute();
 				break;
 
 			case COMMENT:
-				response = RetrofitClient.getApiInterface(getContext()).issueGetCommentReactions(repoOwner, repoName, (long) id).execute();
+				response = RetrofitClient
+					.getApiInterface(getContext())
+					.issueGetCommentReactions(repoOwner, repoName, (long) id)
+					.execute();
 				break;
 
 		}
 
 		if(response.isSuccessful() && response.body() != null) {
 			return response.body();
-		}
-		else {
+		} else {
 			return Collections.emptyList();
 		}
 	}
@@ -208,7 +225,10 @@ public class ReactionSpinner extends HorizontalScrollView {
 
 		if(allowedReactionsCache.isEmpty()) {
 
-			Response<GeneralUISettings> response = RetrofitClient.getApiInterface(getContext()).getGeneralUISettings().execute();
+			Response<GeneralUISettings> response = RetrofitClient
+				.getApiInterface(getContext())
+				.getGeneralUISettings()
+				.execute();
 
 			if(response.isSuccessful() && response.body() != null) {
 				allowedReactionsCache.addAll(response.body().getAllowedReactions());
@@ -226,9 +246,5 @@ public class ReactionSpinner extends HorizontalScrollView {
 	public void setOnLoadingFinishedListener(Runnable onLoadingFinishedListener) {
 		this.onLoadingFinishedListener = onLoadingFinishedListener;
 	}
-
-	private enum ReactionType {COMMENT, ISSUE}
-
-	private enum ReactionAction {REMOVE, ADD}
 
 }

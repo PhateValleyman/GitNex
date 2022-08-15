@@ -12,15 +12,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import org.gitnex.tea4j.v2.models.GeneralAPISettings;
 import org.gitnex.tea4j.v2.models.NotificationCount;
@@ -39,6 +39,7 @@ import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
 import org.mian.gitnex.fragments.BottomSheetMyIssuesFilterFragment;
 import org.mian.gitnex.fragments.DraftsFragment;
 import org.mian.gitnex.fragments.ExploreFragment;
+import org.mian.gitnex.fragments.MostVisitedReposFragment;
 import org.mian.gitnex.fragments.MyIssuesFragment;
 import org.mian.gitnex.fragments.MyProfileFragment;
 import org.mian.gitnex.fragments.MyRepositoriesFragment;
@@ -97,7 +98,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		Handler handler = new Handler();
 
 		// DO NOT MOVE
-		if(mainIntent.hasExtra("switchAccountId") && AppUtil.switchToAccount(ctx, BaseApi.getInstance(ctx, UserAccountsApi.class).getAccountById(mainIntent.getIntExtra("switchAccountId", 0)))) {
+		if(mainIntent.hasExtra("switchAccountId") &&
+			AppUtil.switchToAccount(ctx, BaseApi.getInstance(ctx, UserAccountsApi.class)
+				.getAccountById(mainIntent.getIntExtra("switchAccountId", 0)))) {
 
 			mainIntent.removeExtra("switchAccountId");
 			recreate();
@@ -143,6 +146,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 		else if(fragmentById instanceof MyProfileFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.navProfile));
 		}
+		else if(fragmentById instanceof MostVisitedReposFragment) {
+			toolbarTitle.setText(getResources().getString(R.string.navMostVisited));
+		}
 		else if(fragmentById instanceof DraftsFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.titleDrafts));
 		}
@@ -181,7 +187,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				TextView userFullName = hView.findViewById(R.id.userFullname);
 				ImageView userAvatar = hView.findViewById(R.id.userAvatar);
 				ImageView userAvatarBackground = hView.findViewById(R.id.userAvatarBackground);
-				CardView navRecyclerViewFrame = hView.findViewById(R.id.userAccountsFrame);
+				MaterialCardView navRecyclerViewFrame = hView.findViewById(R.id.userAccountsFrame);
 
 				List<UserAccount> userAccountsList = new ArrayList<>();
 				UserAccountsApi userAccountsApi;
@@ -202,7 +208,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 				userEmail.setTypeface(myTypeface);
 				userFullName.setTypeface(myTypeface);
 
-				if(getAccount().getUserInfo() != null) {
+				if (getAccount().getUserInfo() != null) {
 					String userEmailNav = getAccount().getUserInfo().getEmail();
 					String userFullNameNav = getAccount().getFullName();
 					String userAvatarNav = getAccount().getUserInfo().getAvatarUrl();
@@ -219,25 +225,25 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 						int avatarRadius = AppUtil.getPixelsFromDensity(ctx, 3);
 
-						PicassoService.getInstance(ctx).get().load(userAvatarNav).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(avatarRadius, 0)).resize(160, 160).centerCrop()
-							.into(userAvatar);
+						PicassoService.getInstance(ctx).get().load(userAvatarNav).placeholder(R.drawable.loader_animated).transform(new RoundedTransformation(avatarRadius, 0)).resize(160, 160).centerCrop().into(userAvatar);
 
-						PicassoService.getInstance(ctx).get().load(userAvatarNav).transform(new BlurTransformation(ctx)).into(userAvatarBackground, new com.squareup.picasso.Callback() {
+						PicassoService.getInstance(ctx).get().load(userAvatarNav).transform(new BlurTransformation(ctx))
+							.into(userAvatarBackground, new com.squareup.picasso.Callback() {
 
-							@Override
-							public void onSuccess() {
+								@Override
+								public void onSuccess() {
 
-								int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
+									int textColor = new ColorInverter().getImageViewContrastColor(userAvatarBackground);
 
-								userFullName.setTextColor(textColor);
-								userEmail.setTextColor(textColor);
-							}
+									userFullName.setTextColor(textColor);
+									userEmail.setTextColor(textColor);
+								}
 
-							@Override
-							public void onError(Exception e) {
+								@Override
+								public void onError(Exception e) {
 
-							}
-						});
+								}
+							});
 					}
 				}
 
@@ -256,10 +262,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			@Override
 			public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 
-				if(getAccount().getUserInfo() != null) {
+				if (getAccount().getUserInfo() != null) {
 					navigationView.getMenu().findItem(R.id.nav_administration).setVisible(getAccount().getUserInfo().isIsAdmin());
-				}
-				else {
+				} else {
 					// hide first
 					navigationView.getMenu().findItem(R.id.nav_administration).setVisible(false);
 				}
@@ -270,12 +275,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 			}
 
 			@Override
-			public void onDrawerClosed(@NonNull View drawerView) {
-			}
+			public void onDrawerClosed(@NonNull View drawerView) {}
 
 			@Override
-			public void onDrawerStateChanged(int newState) {
-			}
+			public void onDrawerStateChanged(int newState) {}
 
 		});
 
@@ -403,6 +406,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyIssuesFragment()).commit();
 					navigationView.setCheckedItem(R.id.nav_my_issues);
 					break;
+				case 9:
+					toolbarTitle.setText(getResources().getString(R.string.navMostVisited));
+					getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MostVisitedReposFragment()).commit();
+					navigationView.setCheckedItem(R.id.nav_most_visited);
+					break;
 
 				default:
 					toolbarTitle.setText(getResources().getString(R.string.navMyRepos));
@@ -472,13 +480,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 					if(frag != null) {
 
-						new AlertDialog.Builder(ctx).setTitle(R.string.deleteAllDrafts).setIcon(R.drawable.ic_delete).setCancelable(false).setMessage(R.string.deleteAllDraftsDialogMessage)
+						new MaterialAlertDialogBuilder(ctx)
+							.setTitle(R.string.deleteAllDrafts)
+							.setCancelable(false)
+							.setMessage(R.string.deleteAllDraftsDialogMessage)
 							.setPositiveButton(R.string.menuDeleteText, (dialog, which) -> {
 
 								frag.deleteAllDrafts(currentActiveAccountId);
 								dialog.dismiss();
 
-							}).setNeutralButton(R.string.cancelButton, null).show();
+							})
+							.setNeutralButton(R.string.cancelButton, null).show();
 					}
 					else {
 
@@ -587,6 +599,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 			toolbarTitle.setText(getResources().getString(R.string.navMyIssues));
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyIssuesFragment()).commit();
+		}
+		else if(id == R.id.nav_most_visited) {
+
+			toolbarTitle.setText(getResources().getString(R.string.navMostVisited));
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MostVisitedReposFragment()).commit();
 		}
 
 		drawer.closeDrawer(GravityCompat.START);
@@ -744,12 +761,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 	}
 
 	// My issues interface
-	public FragmentRefreshListener getFragmentRefreshListener() {
-		return fragmentRefreshListenerMyIssues;
-	}
-
-	public void setFragmentRefreshListenerMyIssues(FragmentRefreshListener fragmentRefreshListener) {
-		this.fragmentRefreshListenerMyIssues = fragmentRefreshListener;
-	}
-
+	public FragmentRefreshListener getFragmentRefreshListener() { return fragmentRefreshListenerMyIssues; }
+	public void setFragmentRefreshListenerMyIssues(FragmentRefreshListener fragmentRefreshListener) { this.fragmentRefreshListenerMyIssues = fragmentRefreshListener; }
 }

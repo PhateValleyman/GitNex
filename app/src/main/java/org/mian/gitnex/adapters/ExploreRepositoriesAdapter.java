@@ -129,19 +129,19 @@ public class ExploreRepositoriesAdapter extends RecyclerView.Adapter<RecyclerVie
 		void bindData(org.gitnex.tea4j.v2.models.Repository userRepositories) {
 			this.userRepositories = userRepositories;
 
-			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
+			int imgRadius = AppUtil.getPixelsFromDensity(context, 60);
 			Locale locale = context.getResources().getConfiguration().locale;
 			String timeFormat = tinyDb.getString("dateFormat", "pretty");
 
 			orgName.setText(userRepositories.getFullName().split("/")[0]);
 			repoName.setText(userRepositories.getFullName().split("/")[1]);
-			repoStars.setText(String.valueOf(userRepositories.getStarsCount()));
+			repoStars.setText(AppUtil.numberFormatter(userRepositories.getStarsCount()));
 
 			ColorGenerator generator = ColorGenerator.Companion.getMATERIAL();
 			int color = generator.getColor(userRepositories.getName());
 			String firstCharacter = String.valueOf(userRepositories.getFullName().charAt(0));
 
-			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 3);
+			TextDrawable drawable = TextDrawable.builder().beginConfig().useFont(Typeface.DEFAULT).fontSize(18).toUpperCase().width(28).height(28).endConfig().buildRoundRect(firstCharacter, color, 14);
 
 			if(userRepositories.getAvatarUrl() != null) {
 				if(!userRepositories.getAvatarUrl().equals("")) {

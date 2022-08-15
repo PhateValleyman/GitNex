@@ -2,7 +2,7 @@ package org.mian.gitnex.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.mian.gitnex.R;
 import org.mian.gitnex.databinding.ActivitySettingsGeneralBinding;
 import org.mian.gitnex.helpers.Toasty;
@@ -91,15 +91,17 @@ public class SettingsGeneralActivity extends BaseActivity {
 
 			viewBinding.homeScreenSelected.setText(getResources().getString(R.string.navMyIssues));
 		}
+		else if(homeScreenSelectedChoice == 9) {
+
+			viewBinding.homeScreenSelected.setText(getResources().getString(R.string.navMostVisited));
+		}
 
 		viewBinding.homeScreenFrame.setOnClickListener(setDefaultHomeScreen -> {
 
-			AlertDialog.Builder hsBuilder = new AlertDialog.Builder(SettingsGeneralActivity.this);
-
-			hsBuilder.setTitle(R.string.settingsHomeScreenSelectorDialogTitle);
-			hsBuilder.setCancelable(homeScreenSelectedChoice != -1);
-
-			hsBuilder.setSingleChoiceItems(homeScreenArray, homeScreenSelectedChoice, (dialogInterfaceHomeScreen, i) -> {
+			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
+				.setTitle(R.string.settingsHomeScreenSelectorDialogTitle)
+				.setCancelable(homeScreenSelectedChoice != -1)
+				.setSingleChoiceItems(homeScreenArray, homeScreenSelectedChoice, (dialogInterfaceHomeScreen, i) -> {
 
 				homeScreenSelectedChoice = i;
 				viewBinding.homeScreenSelected.setText(homeScreenArray[i]);
@@ -109,8 +111,7 @@ public class SettingsGeneralActivity extends BaseActivity {
 				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
 			});
 
-			AlertDialog hsDialog = hsBuilder.create();
-			hsDialog.show();
+			materialAlertDialogBuilder.create().show();
 		});
 		// home screen
 
@@ -126,23 +127,20 @@ public class SettingsGeneralActivity extends BaseActivity {
 
 		viewBinding.setDefaultLinkHandler.setOnClickListener(setDefaultLinkHandler -> {
 
-			AlertDialog.Builder dlBuilder = new AlertDialog.Builder(SettingsGeneralActivity.this);
-			dlBuilder.setTitle(R.string.linkSelectorDialogTitle);
+			MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
+				.setTitle(R.string.linkSelectorDialogTitle)
+				.setCancelable(defaultLinkHandlerScreenSelectedChoice != -1)
+				.setSingleChoiceItems(linksArray, defaultLinkHandlerScreenSelectedChoice, (dialogInterfaceHomeScreen, i) -> {
 
-			dlBuilder.setCancelable(defaultLinkHandlerScreenSelectedChoice != -1);
+					defaultLinkHandlerScreenSelectedChoice = i;
+					viewBinding.generalDeepLinkSelected.setText(linksArray[i]);
+					tinyDB.putInt("defaultScreenId", i);
 
-			dlBuilder.setSingleChoiceItems(linksArray, defaultLinkHandlerScreenSelectedChoice, (dialogInterfaceHomeScreen, i) -> {
+					dialogInterfaceHomeScreen.dismiss();
+					Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
+				});
 
-				defaultLinkHandlerScreenSelectedChoice = i;
-				viewBinding.generalDeepLinkSelected.setText(linksArray[i]);
-				tinyDB.putInt("defaultScreenId", i);
-
-				dialogInterfaceHomeScreen.dismiss();
-				Toasty.success(appCtx, getResources().getString(R.string.settingsSave));
-			});
-
-			AlertDialog dlDialog = dlBuilder.create();
-			dlDialog.show();
+			materialAlertDialogBuilder.create().show();
 		});
 		// link handler
 

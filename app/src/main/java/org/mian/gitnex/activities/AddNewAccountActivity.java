@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.gitnex.tea4j.v2.models.GeneralAPISettings;
 import org.gitnex.tea4j.v2.models.ServerVersion;
 import org.gitnex.tea4j.v2.models.User;
@@ -58,11 +58,10 @@ public class AddNewAccountActivity extends BaseActivity {
 		viewBinding.instanceUrl.setText(getIntent().getStringExtra("instanceUrl"));
 		viewBinding.loginToken.setText(getIntent().getStringExtra("token"));
 		String scheme = getIntent().getStringExtra("scheme");
-		if(scheme != null && scheme.equals("http")) {
+		if(scheme != null && scheme.equals("http"))  {
 			viewBinding.protocolSpinner.setText(Protocol.HTTP.toString());
 			spinnerSelectedValue = Protocol.HTTP.toString();
-		}
-		else { // default is https
+		} else { // default is https
 			viewBinding.protocolSpinner.setText(Protocol.HTTPS.toString());
 			spinnerSelectedValue = Protocol.HTTPS.toString();
 		}
@@ -115,7 +114,8 @@ public class AddNewAccountActivity extends BaseActivity {
 
 			URI rawInstanceUrl = UrlBuilder.fromString(UrlHelper.fixScheme(instanceUrlET, "http")).toUri();
 
-			URI instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(protocol.toLowerCase()).withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/")).toUri();
+			URI instanceUrl = UrlBuilder.fromUri(rawInstanceUrl).withScheme(protocol.toLowerCase()).withPath(PathsHelper.join(rawInstanceUrl.getPath(), "/api/v1/"))
+				.toUri();
 
 			versionCheck(instanceUrl.toString(), loginToken);
 			serverPageLimitSettings();
@@ -152,21 +152,17 @@ public class AddNewAccountActivity extends BaseActivity {
 
 					if(giteaVersion.less(getString(R.string.versionLow))) {
 
-						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx).setTitle(getString(R.string.versionAlertDialogHeader))
-							.setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion())).setIcon(R.drawable.ic_warning).setCancelable(true);
+						MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
+							.setTitle(getString(R.string.versionAlertDialogHeader))
+							.setMessage(getResources().getString(R.string.versionUnsupportedOld, version.getVersion()))
+							.setNeutralButton(getString(R.string.cancelButton), null)
+							.setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
 
-						alertDialogBuilder.setNeutralButton(getString(R.string.cancelButton), (dialog, which) -> {
+								dialog.dismiss();
+								login(instanceUrl, loginToken);
+							});
 
-							dialog.dismiss();
-						});
-
-						alertDialogBuilder.setPositiveButton(getString(R.string.textContinue), (dialog, which) -> {
-
-							dialog.dismiss();
-							login(instanceUrl, loginToken);
-						});
-
-						alertDialogBuilder.create().show();
+						materialAlertDialogBuilder.create().show();
 					}
 					else if(giteaVersion.lessOrEqual(getString(R.string.versionHigh))) {
 
@@ -294,5 +290,4 @@ public class AddNewAccountActivity extends BaseActivity {
 
 		onClickListener = view -> finish();
 	}
-
 }

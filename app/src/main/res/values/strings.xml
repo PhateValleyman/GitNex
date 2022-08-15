@@ -7,6 +7,7 @@
     <string name="appWebsiteLink" translatable="false">https://gitnex.com/</string>
     <string name="commitPage" translatable="false">Your Gitea Version</string>
     <string name="supportLinkPatreon" translatable="false">https://www.patreon.com/mmarif</string>
+    <string name="supportLinkBuyMeaCoffee" translatable="false">https://www.buymeacoffee.com/mmarif</string>
     <string name="appVersionBuild" translatable="false">%s / %d</string>
     <string name="appDesc" translatable="false">GitNex is a free, open-source Android client for Git repository management tool Gitea. GitNex is
         Licensed under GPLv3.\n\nThanks to all the contributors and donators for your generous work and donations.
@@ -18,6 +19,7 @@
     <string name="supportText" translatable="false">Support</string>
 
     <string name="supportTextPatreon" translatable="false">Patreon</string>
+    <string name="supportTextBuyMeaCoffee" translatable="false">Buy Me a Coffee</string>
 
     <!-- menu items -->
     <string name="navMyRepos">My Repositories</string>
@@ -31,6 +33,7 @@
     <string name="navLogout">Logout</string>
     <string name="navAdministration">Administration</string>
     <string name="navMyIssues">My Issues</string>
+    <string name="navMostVisited">Most Visited Repos</string>
     <!-- menu items -->
 
     <!-- page titles -->
@@ -815,4 +818,5 @@
     <!-- code editor -->
     <string name="sourcePosition" translatable="false">%1$d:%2$d</string>
     <string name="codeEditor" translatable="false">Code Editor</string>
+    <string name="openInCodeEditor">Open in Code Editor</string>
 </resources>

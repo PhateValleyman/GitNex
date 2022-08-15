@@ -27,17 +27,17 @@
                 android:singleLine="true"
                 android:textColor="?attr/primaryTextColor"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/releasesOptionsMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
                 android:layout_weight="0"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:layout_gravity="center_vertical|end"
                 android:contentDescription="@string/labelMenuContentDesc"
-                android:src="@drawable/ic_dotted_menu_horizontal"/>
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_dotted_menu_horizontal" />
 
         </LinearLayout>
 
@@ -53,12 +53,21 @@
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
-                    android:id="@+id/authorAvatar"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:contentDescription="@string/generalImgContentText"
-                    tools:srcCompat="@tools:sample/avatars[7]"/>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="@dimen/dimen24dp"
+                    android:layout_height="@dimen/dimen24dp"
+                    style="?attr/materialCardViewFilledStyle"
+                    app:cardElevation="@dimen/dimen0dp"
+                    app:cardCornerRadius="@dimen/dimen12dp">
+
+                    <ImageView
+                        android:id="@+id/authorAvatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:srcCompat="@tools:sample/avatars[7]"
+                        android:contentDescription="@string/generalImgContentText" />
+
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:id="@+id/authorName"
@@ -66,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -79,8 +88,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="6dp"
                     android:gravity="end|center_vertical"
+                    android:layout_marginBottom="6dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -91,7 +100,7 @@
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
                         android:textColor="@color/colorWhite"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -105,8 +114,8 @@
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/generalImgContentText"
-                        app:srcCompat="@drawable/ic_label"/>
+                        app:srcCompat="@drawable/ic_label"
+                        android:contentDescription="@string/generalImgContentText" />
 
                     <TextView
                         android:id="@+id/releaseTag"
@@ -115,7 +124,7 @@
                         android:layout_marginStart="8dp"
                         android:singleLine="true"
                         android:textColor="?attr/primaryTextColor"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -124,14 +133,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="end|center_vertical"
                     android:orientation="horizontal"
-                    android:visibility="gone"
-                    tools:ignore="UseCompoundDrawables">
+                    tools:ignore="UseCompoundDrawables"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/generalImgContentText"
-                        app:srcCompat="@drawable/ic_code"/>
+                        app:srcCompat="@drawable/ic_code"
+                        android:contentDescription="@string/generalImgContentText" />
 
                     <TextView
                         android:id="@+id/releaseCommitSha"
@@ -140,7 +149,7 @@
                         android:layout_marginStart="8dp"
                         android:singleLine="true"
                         android:textColor="?attr/primaryTextColor"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -154,8 +163,8 @@
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/generalImgContentText"
-                        app:srcCompat="@drawable/ic_calendar"/>
+                        app:srcCompat="@drawable/ic_calendar"
+                        android:contentDescription="@string/generalImgContentText" />
 
                     <TextView
                         android:id="@+id/releaseDate"
@@ -164,7 +173,7 @@
                         android:layout_marginStart="8dp"
                         android:singleLine="true"
                         android:textColor="?attr/primaryTextColor"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -186,9 +195,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="web|email"
-            android:textColor="?attr/primaryTextColor"
             android:textColorLink="@color/lightBlue"
-            android:textSize="14sp"/>
+            android:textColor="?attr/primaryTextColor"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -212,17 +221,17 @@
                 android:layout_width="15dp"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/generalImgContentText"
+                app:tint="?attr/primaryTextColor"
                 android:src="@drawable/ic_chevron_right"
-                app:srcCompat="@drawable/ic_chevron_right"
-                app:tint="?attr/primaryTextColor"/>
+                app:srcCompat="@drawable/ic_chevron_right" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
-                android:text="@string/releaseDownloadText"
                 android:textColor="?attr/primaryTextColor"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:text="@string/releaseDownloadText" />
 
         </LinearLayout>
 
@@ -232,33 +241,33 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:paddingTop="8dp">
 
             <LinearLayout
                 android:id="@+id/releaseZipDownloadFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_download"/>
+                    app:srcCompat="@drawable/ic_download"
+                    android:contentDescription="@string/generalImgContentText" />
 
                 <TextView
                     android:id="@+id/releaseZipDownload"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="@string/zipArchiveDownloadReleasesTab"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="12sp"/>
+                    android:text="@string/zipArchiveDownloadReleasesTab"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -266,25 +275,25 @@
                 android:id="@+id/releaseTarDownloadFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:layout_marginStart="8dp"
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:contentDescription="@string/generalImgContentText"
-                    app:srcCompat="@drawable/ic_download"/>
+                    app:srcCompat="@drawable/ic_download"
+                    android:contentDescription="@string/generalImgContentText" />
 
                 <TextView
                     android:id="@+id/releaseTarDownload"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="@string/tarArchiveDownloadReleasesTab"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="12sp"/>
+                    android:text="@string/tarArchiveDownloadReleasesTab"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -293,7 +302,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="?attr/primaryBackgroundColor"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical" />
 
         </LinearLayout>
 

@@ -147,14 +147,21 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 				RepositoryContext repo = new RepositoryContext(repoOwner, repoName, context);
 
-				repo.saveToDB(context);
-
 				Intent intentIssueDetail = new IssueContext(issue, repo).getIntent(context, IssueDetailActivity.class);
 				intentIssueDetail.putExtra("openedFromLink", "true");
 
-				itemView.setOnClickListener(v -> context.startActivity(intentIssueDetail));
-				frameLabels.setOnClickListener(v -> context.startActivity(intentIssueDetail));
-				frameLabelsDots.setOnClickListener(v -> context.startActivity(intentIssueDetail));
+				itemView.setOnClickListener(v -> {
+					repo.saveToDB(context);
+					context.startActivity(intentIssueDetail);
+				});
+				frameLabels.setOnClickListener(v -> {
+					repo.saveToDB(context);
+					context.startActivity(intentIssueDetail);
+				});
+				frameLabelsDots.setOnClickListener(v -> {
+					repo.saveToDB(context);
+					context.startActivity(intentIssueDetail);
+				});
 			}, 200);
 
 			issueAssigneeAvatar.setOnClickListener(v -> {
@@ -172,7 +179,7 @@ public class ExploreIssuesAdapter extends RecyclerView.Adapter<RecyclerView.View
 		void bindData(Issue issue) {
 
 			this.issue = issue;
-			int imgRadius = AppUtil.getPixelsFromDensity(context, 3);
+			int imgRadius = AppUtil.getPixelsFromDensity(context, 60);
 
 			Locale locale = context.getResources().getConfiguration().locale;
 			String timeFormat = tinyDb.getString("dateFormat", "pretty");

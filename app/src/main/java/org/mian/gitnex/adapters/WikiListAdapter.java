@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.gitnex.tea4j.v2.models.WikiPageMetaData;
 import org.mian.gitnex.R;
 import org.mian.gitnex.activities.RepoDetailActivity;
@@ -38,12 +38,12 @@ import retrofit2.Response;
 public class WikiListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 	private final Context ctx;
-	private final FragmentWikiBinding fragmentWikiBinding;
-	private final String repoOwner;
-	private final String repoName;
 	private List<WikiPageMetaData> wikiList;
 	private OnLoadMoreListener loadMoreListener;
 	private boolean isLoading = false, isMoreDataAvailable = true;
+	private final FragmentWikiBinding fragmentWikiBinding;
+	private final String repoOwner;
+	private final String repoName;
 
 	public WikiListAdapter(List<WikiPageMetaData> wikiListMain, Context ctx, String repoOwner, String repoName, FragmentWikiBinding fragmentWikiBinding) {
 		this.ctx = ctx;
@@ -80,81 +80,14 @@ public class WikiListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 		return wikiList.size();
 	}
 
-	private void updateAdapter(int position) {
-		wikiList.remove(position);
-		notifyItemRemoved(position);
-		notifyItemRangeChanged(position, wikiList.size());
-	}
-
-	public void setMoreDataAvailable(boolean moreDataAvailable) {
-		isMoreDataAvailable = moreDataAvailable;
-		if(!isMoreDataAvailable) {
-			loadMoreListener.onLoadFinished();
-		}
-	}
-
-	@SuppressLint("NotifyDataSetChanged")
-	public void notifyDataChanged() {
-		notifyDataSetChanged();
-		isLoading = false;
-		loadMoreListener.onLoadFinished();
-	}
-
-	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
-		this.loadMoreListener = loadMoreListener;
-	}
-
-	public void updateList(List<WikiPageMetaData> list) {
-		wikiList = list;
-		notifyDataChanged();
-	}
-
-	private void deleteWiki(final String owner, final String repo, final String pageName, int position, final Context context) {
-
-		new AlertDialog.Builder(context).setTitle(String.format(context.getString(R.string.deleteGenericTitle), pageName)).setMessage(context.getString(R.string.deleteWikiPageMessage, pageName))
-			.setIcon(R.drawable.ic_delete).setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient.getApiInterface(context).repoDeleteWikiPage(owner, repo, pageName).enqueue(new Callback<>() {
-
-				@Override
-				public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-
-					if(response.isSuccessful()) {
-						updateAdapter(position);
-						Toasty.success(context, context.getString(R.string.wikiPageDeleted));
-						if(getItemCount() == 0) {
-							fragmentWikiBinding.noData.setVisibility(View.VISIBLE);
-						}
-					}
-					else if(response.code() == 403) {
-						Toasty.error(context, context.getString(R.string.authorizeError));
-					}
-					else {
-						Toasty.error(context, context.getString(R.string.genericError));
-					}
-				}
-
-				@Override
-				public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-
-					Toasty.error(context, context.getString(R.string.genericError));
-				}
-			})).setNeutralButton(R.string.cancelButton, null).show();
-	}
-
-	public interface OnLoadMoreListener {
-
-		void onLoadMore();
-
-		void onLoadFinished();
-
-	}
-
 	class WikisHolder extends RecyclerView.ViewHolder {
+
+		private WikiPageMetaData wikiPageMeta;
 
 		private final ImageView avatar;
 		private final TextView pageName;
 		private final TextView wikiLastUpdatedBy;
 		private final ImageView wikiMenu;
-		private WikiPageMetaData wikiPageMeta;
 
 		WikisHolder(View itemView) {
 
@@ -212,8 +145,10 @@ public class WikiListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 			this.wikiPageMeta = wikiPageMetaData;
 
 			pageName.setText(wikiPageMetaData.getTitle());
-			wikiLastUpdatedBy.setText(HtmlCompat.fromHtml(ctx.getResources().getString(R.string.wikiAuthor, wikiPageMetaData.getLastCommit().getAuthor().getName(),
-				TimeHelper.formatTime(TimeHelper.parseIso8601(wikiPageMetaData.getLastCommit().getAuthor().getDate()), ctx.getResources().getConfiguration().locale, "pretty", ctx)), HtmlCompat.FROM_HTML_MODE_COMPACT));
+			wikiLastUpdatedBy.setText(
+				HtmlCompat.fromHtml(ctx.getResources().getString(R.string.wikiAuthor, wikiPageMetaData.getLastCommit().getAuthor().getName(),
+					TimeHelper.formatTime(TimeHelper.parseIso8601(wikiPageMetaData.getLastCommit().getAuthor().getDate()), ctx.getResources().getConfiguration().locale, "pretty",
+						ctx)), HtmlCompat.FROM_HTML_MODE_COMPACT));
 			this.wikiLastUpdatedBy.setOnClickListener(new ClickListener(TimeHelper.customDateFormatForToastDateFormat(TimeHelper.parseIso8601(wikiPageMetaData.getLastCommit().getAuthor().getDate())), ctx));
 
 			ColorGenerator generator = ColorGenerator.Companion.getMATERIAL();
@@ -227,7 +162,75 @@ public class WikiListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 				wikiMenu.setVisibility(View.GONE);
 			}
 		}
-
 	}
 
+	private void updateAdapter(int position) {
+		wikiList.remove(position);
+		notifyItemRemoved(position);
+		notifyItemRangeChanged(position, wikiList.size());
+	}
+
+	public void setMoreDataAvailable(boolean moreDataAvailable) {
+		isMoreDataAvailable = moreDataAvailable;
+		if(!isMoreDataAvailable) {
+			loadMoreListener.onLoadFinished();
+		}
+	}
+
+	@SuppressLint("NotifyDataSetChanged")
+	public void notifyDataChanged() {
+		notifyDataSetChanged();
+		isLoading = false;
+		loadMoreListener.onLoadFinished();
+	}
+
+	public interface OnLoadMoreListener {
+		void onLoadMore();
+		void onLoadFinished();
+	}
+
+	public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+		this.loadMoreListener = loadMoreListener;
+	}
+
+	public void updateList(List<WikiPageMetaData> list) {
+		wikiList = list;
+		notifyDataChanged();
+	}
+
+	private void deleteWiki(final String owner, final String repo, final String pageName, int position, final Context context) {
+
+		MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(context, R.style.ThemeOverlay_Material3_Dialog_Alert);
+
+		materialAlertDialogBuilder.setTitle(String.format(context.getString(R.string.deleteGenericTitle), pageName))
+			.setMessage(context.getString(R.string.deleteWikiPageMessage, pageName))
+			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient
+				.getApiInterface(context).repoDeleteWikiPage(owner, repo, pageName).enqueue(new Callback<>() {
+
+					@Override
+					public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+
+						if(response.isSuccessful()) {
+							updateAdapter(position);
+							Toasty.success(context, context.getString(R.string.wikiPageDeleted));
+							if(getItemCount() == 0) {
+								fragmentWikiBinding.noData.setVisibility(View.VISIBLE);
+							}
+						}
+						else if(response.code() == 403) {
+							Toasty.error(context, context.getString(R.string.authorizeError));
+						}
+						else {
+							Toasty.error(context, context.getString(R.string.genericError));
+						}
+					}
+
+					@Override
+					public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+
+						Toasty.error(context, context.getString(R.string.genericError));
+					}
+				}))
+			.setNeutralButton(R.string.cancelButton, null).show();
+	}
 }

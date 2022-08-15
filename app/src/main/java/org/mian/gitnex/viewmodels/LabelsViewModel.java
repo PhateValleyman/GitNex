@@ -20,39 +20,40 @@ import retrofit2.Response;
 
 public class LabelsViewModel extends ViewModel {
 
-	private MutableLiveData<List<Label>> labelsList;
+    private static MutableLiveData<List<Label>> labelsList;
 
-	public LiveData<List<Label>> getLabelsList(String owner, String repo, Context ctx) {
+    public LiveData<List<Label>> getLabelsList(String owner, String repo, Context ctx) {
 
-		labelsList = new MutableLiveData<>();
-		loadLabelsList(owner, repo, ctx);
+        labelsList = new MutableLiveData<>();
+        loadLabelsList(owner, repo, ctx);
 
-		return labelsList;
-	}
+        return labelsList;
+    }
 
-	public void loadLabelsList(String owner, String repo, Context ctx) {
+    public static void loadLabelsList(String owner, String repo, Context ctx) {
 
-		Call<List<Label>> call = RetrofitClient.getApiInterface(ctx).issueListLabels(owner, repo, null, null);
+        Call<List<Label>> call = RetrofitClient
+                .getApiInterface(ctx)
+                .issueListLabels(owner, repo, null, null);
 
-		call.enqueue(new Callback<>() {
+        call.enqueue(new Callback<>() {
 
-			@Override
-			public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> response) {
+            @Override
+            public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> response) {
 
-				if(response.isSuccessful()) {
-					labelsList.postValue(response.body());
-				}
-				else {
-					Toasty.error(ctx, ctx.getString(R.string.genericError));
-				}
-			}
+		        if(response.isSuccessful()) {
+			        labelsList.postValue(response.body());
+		        }
+		        else {
+			        Toasty.error(ctx, ctx.getString(R.string.genericError));
+		        }
+	        }
 
-			@Override
-			public void onFailure(@NonNull Call<List<Label>> call, @NonNull Throwable t) {
+	        @Override
+	        public void onFailure(@NonNull Call<List<Label>> call, @NonNull Throwable t) {
 
-				Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
-			}
-		});
-	}
-
+		        Toasty.error(ctx, ctx.getString(R.string.genericServerResponseError));
+	        }
+        });
+    }
 }

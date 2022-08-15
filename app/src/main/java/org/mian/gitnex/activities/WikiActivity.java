@@ -8,7 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.vdurmont.emoji.EmojiParser;
 import org.gitnex.tea4j.v2.models.CreateWikiPageOptions;
 import org.gitnex.tea4j.v2.models.WikiPage;
@@ -105,7 +105,9 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 		createWikiPageOptions.setTitle(wikiTitle);
 		createWikiPageOptions.setContentBase64(AppUtil.encodeBase64(wikiContent));
 
-		Call<WikiPage> call = RetrofitClient.getApiInterface(ctx).repoCreateWikiPage(repository.getOwner(), repository.getName(), createWikiPageOptions);
+		Call<WikiPage> call = RetrofitClient
+			.getApiInterface(ctx)
+			.repoCreateWikiPage(repository.getOwner(), repository.getName(), createWikiPageOptions);
 
 		call.enqueue(new Callback<>() {
 
@@ -153,7 +155,9 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 		createWikiPageOptions.setTitle(wikiTitle);
 		createWikiPageOptions.setContentBase64(AppUtil.encodeBase64(wikiContent));
 
-		Call<WikiPage> call = RetrofitClient.getApiInterface(ctx).repoEditWikiPage(repository.getOwner(), repository.getName(), pageName, createWikiPageOptions);
+		Call<WikiPage> call = RetrofitClient
+			.getApiInterface(ctx)
+			.repoEditWikiPage(repository.getOwner(), repository.getName(), pageName, createWikiPageOptions);
 
 		call.enqueue(new Callback<>() {
 
@@ -197,7 +201,9 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 
 	private void getWikiPageContents() {
 
-		Call<WikiPage> call = RetrofitClient.getApiInterface(ctx).repoGetWikiPage(repository.getOwner(), repository.getName(), pageName);
+		Call<WikiPage> call = RetrofitClient
+			.getApiInterface(ctx)
+			.repoGetWikiPage(repository.getOwner(), repository.getName(), pageName);
 
 		call.enqueue(new Callback<>() {
 
@@ -263,31 +269,37 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 
 	private void deleteWiki(final String owner, final String repo, final String pageName) {
 
-		new AlertDialog.Builder(ctx).setTitle(String.format(ctx.getString(R.string.deleteGenericTitle), pageName)).setMessage(ctx.getString(R.string.deleteWikiPageMessage, pageName)).setIcon(R.drawable.ic_delete)
-			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient.getApiInterface(ctx).repoDeleteWikiPage(owner, repo, pageName).enqueue(new Callback<>() {
+		MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
+			.setTitle(String.format(ctx.getString(R.string.deleteGenericTitle), pageName))
+			.setMessage(ctx.getString(R.string.deleteWikiPageMessage, pageName))
+			.setNeutralButton(R.string.cancelButton, null)
+			.setPositiveButton(R.string.menuDeleteText, (dialog, whichButton) -> RetrofitClient
+				.getApiInterface(ctx).repoDeleteWikiPage(owner, repo, pageName).enqueue(new Callback<>() {
 
-				@Override
-				public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+					@Override
+					public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
 
-					if(response.isSuccessful()) {
-						Toasty.success(ctx, getString(R.string.wikiPageDeleted));
-						WikiFragment.resumeWiki = true;
-						finish();
+						if(response.isSuccessful()) {
+							Toasty.success(ctx, getString(R.string.wikiPageDeleted));
+							WikiFragment.resumeWiki = true;
+							finish();
+						}
+						else if(response.code() == 403) {
+							Toasty.error(ctx, ctx.getString(R.string.authorizeError));
+						}
+						else {
+							Toasty.error(ctx, ctx.getString(R.string.genericError));
+						}
 					}
-					else if(response.code() == 403) {
-						Toasty.error(ctx, ctx.getString(R.string.authorizeError));
-					}
-					else {
+
+					@Override
+					public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+
 						Toasty.error(ctx, ctx.getString(R.string.genericError));
 					}
-				}
+				}));
 
-				@Override
-				public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-
-					Toasty.error(ctx, ctx.getString(R.string.genericError));
-				}
-			})).setNeutralButton(R.string.cancelButton, null).show();
+		materialAlertDialogBuilder.create().show();
 	}
 
 	@Override
@@ -350,7 +362,8 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 
 			if(action.equalsIgnoreCase("edit") || action.equalsIgnoreCase("add")) {
 				if(renderMd) {
-					Markdown.render(ctx, EmojiParser.parseToUnicode(String.valueOf(Objects.requireNonNull(binding.contentLayout.getEditText()).getText())), binding.markdownPreview, repository);
+					Markdown.render(ctx, EmojiParser.parseToUnicode(String.valueOf(
+						Objects.requireNonNull(binding.contentLayout.getEditText()).getText())), binding.markdownPreview, repository);
 
 					binding.markdownPreview.setVisibility(View.VISIBLE);
 					binding.contentLayout.setVisibility(View.GONE);
@@ -389,5 +402,4 @@ public class WikiActivity extends BaseActivity implements BottomSheetListener {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 }

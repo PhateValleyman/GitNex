@@ -77,7 +77,7 @@ public class OrganizationLabelsFragment extends Fragment {
 		swipeRefresh.setOnRefreshListener(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
 			swipeRefresh.setRefreshing(false);
-			organizationLabelsViewModel.loadOrgLabelsList(repoOwner, getContext(), mProgressBar, noData);
+			OrganizationLabelsViewModel.loadOrgLabelsList(repoOwner, getContext(), mProgressBar, noData);
 
 		}, 200));
 
@@ -94,7 +94,7 @@ public class OrganizationLabelsFragment extends Fragment {
 
 		if(CreateLabelActivity.refreshLabels) {
 
-			organizationLabelsViewModel.loadOrgLabelsList(repoOwner, getContext(), mProgressBar, noData);
+			OrganizationLabelsViewModel.loadOrgLabelsList(repoOwner, getContext(), mProgressBar, noData);
 			CreateLabelActivity.refreshLabels = false;
 		}
 	}
@@ -112,7 +112,7 @@ public class OrganizationLabelsFragment extends Fragment {
 			}
 			else {
 
-				adapter.notifyDataSetChanged();
+				adapter.notifyDataChanged();
 				mRecyclerView.setAdapter(adapter);
 				noData.setVisibility(View.VISIBLE);
 			}

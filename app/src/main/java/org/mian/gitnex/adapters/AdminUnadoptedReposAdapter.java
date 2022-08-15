@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.mian.gitnex.R;
 import org.mian.gitnex.clients.RetrofitClient;
 import org.mian.gitnex.databinding.ActivityAdminCronTasksBinding;
@@ -25,11 +25,37 @@ import retrofit2.Callback;
 
 public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadoptedReposAdapter.UnadoptedViewHolder> {
 
+	private List<String> repos;
 	private final Runnable updateList;
 	private final Runnable loadMoreListener;
-	private final ActivityAdminCronTasksBinding activityAdminCronTasksBinding;
-	private List<String> repos;
 	private boolean isLoading = false, hasMore = true;
+	private final ActivityAdminCronTasksBinding activityAdminCronTasksBinding;
+
+	class UnadoptedViewHolder extends RecyclerView.ViewHolder {
+
+		private String repoName;
+		private final TextView name;
+
+		private UnadoptedViewHolder(View itemView) {
+
+			super(itemView);
+			Context ctx = itemView.getContext();
+
+			name = itemView.findViewById(R.id.repo_name);
+
+			itemView.setOnClickListener(taskInfo -> {
+				String[] repoSplit = repoName.split("/");
+
+				MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(ctx)
+					.setTitle(repoName).setMessage(ctx.getString(R.string.unadoptedReposMessage, repoSplit[1], repoSplit[0]))
+					.setNeutralButton(R.string.close, null)
+					.setPositiveButton(R.string.menuDeleteText, ((dialog, which) -> delete(ctx, repoName)))
+					.setNegativeButton(R.string.adoptRepo, ((dialog, which) -> adopt(ctx, repoName, getBindingAdapterPosition())));
+
+				materialAlertDialogBuilder.create().show();
+			});
+		}
+	}
 
 	public AdminUnadoptedReposAdapter(List<String> list, Runnable updateList, Runnable loadMore, ActivityAdminCronTasksBinding activityAdminCronTasksBinding) {
 		this.repos = list;
@@ -69,7 +95,9 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 
 		String[] repoSplit = name.split("/");
 
-		Call<Void> call = RetrofitClient.getApiInterface(ctx).adminDeleteUnadoptedRepository(repoSplit[0], repoSplit[1]);
+		Call<Void> call = RetrofitClient
+			.getApiInterface(ctx)
+			.adminDeleteUnadoptedRepository(repoSplit[0], repoSplit[1]);
 
 		call.enqueue(new Callback<>() {
 
@@ -113,7 +141,9 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 
 		String[] repoSplit = name.split("/");
 
-		Call<Void> call = RetrofitClient.getApiInterface(ctx).adminAdoptRepository(repoSplit[0], repoSplit[1]);
+		Call<Void> call = RetrofitClient
+			.getApiInterface(ctx)
+			.adminAdoptRepository(repoSplit[0], repoSplit[1]);
 
 		call.enqueue(new Callback<>() {
 
@@ -171,27 +201,4 @@ public class AdminUnadoptedReposAdapter extends RecyclerView.Adapter<AdminUnadop
 		this.hasMore = hasMore;
 		isLoading = false;
 	}
-
-	class UnadoptedViewHolder extends RecyclerView.ViewHolder {
-
-		private final TextView name;
-		private String repoName;
-
-		private UnadoptedViewHolder(View itemView) {
-
-			super(itemView);
-			Context ctx = itemView.getContext();
-
-			name = itemView.findViewById(R.id.repo_name);
-
-			itemView.setOnClickListener(taskInfo -> {
-				String[] repoSplit = repoName.split("/");
-				new AlertDialog.Builder(ctx).setTitle(repoName).setMessage(ctx.getString(R.string.unadoptedReposMessage, repoSplit[1], repoSplit[0])).setNeutralButton(R.string.close, null)
-					.setPositiveButton(R.string.menuDeleteText, ((dialog, which) -> delete(ctx, repoName))).setNegativeButton(R.string.adoptRepo, ((dialog, which) -> adopt(ctx, repoName, getBindingAdapterPosition())))
-					.show();
-			});
-		}
-
-	}
-
 }
