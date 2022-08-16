@@ -147,7 +147,8 @@
     <string name="settingsSecurityHeader">Sécurité</string>
     <string name="settingsCertsSelectorHeader">Supprimer les certificats</string>
     <string name="settingsCertsPopupTitle">Supprimer les certificats ?</string>
-    <string name="settingsCertsPopupMessage">Les noms d’hôtes et les certificats ajoutés manuellement seront supprimés.\n\nIl faudra vous reconnecter.</string>
+    <string
+        name="settingsCertsPopupMessage">Les noms d’hôtes et les certificats ajoutés manuellement seront supprimés.\n\nIl faudra vous reconnecter.</string>
     <string name="settingsDateTimeHeaderText">Date et heure</string>
     <string name="settingsSave">Réglages enregistrés</string>
     <string name="settingsLanguageSelectorHeader">Langue</string>
@@ -177,7 +178,8 @@
     <string name="cacheSizeImagesSelectionHeaderText">Cache des images</string>
     <string name="clearCacheSelectionHeaderText">Vider le cache</string>
     <string name="clearCacheDialogHeader">Vider le cache ?</string>
-    <string name="clearCacheDialogMessage">Toutes les données du cache seront supprimées, y compris les fichiers et les images.\n\nContinuer ?</string>
+    <string
+        name="clearCacheDialogMessage">Toutes les données du cache seront supprimées, y compris les fichiers et les images.\n\nContinuer ?</string>
     <string name="draftsHeader">Brouillons</string>
     <string name="draftsHintText">Brouillon de commentaires</string>
     <string name="settingsEnableCommentsDeletionText">Supprimer les brouillons</string>
@@ -185,7 +187,8 @@
     <string name="settingsGeneralHeader">Général</string>
     <string name="generalHintText">Ouverture des liens, écran d’accueil</string>
     <string name="generalDeepLinkDefaultScreen">Écran par défaut</string>
-    <string name="generalDeepLinkDefaultScreenHintText">L’écran à afficher par défaut lorsque l’application ne parvient pas à ouvrir un lien externe.</string>
+    <string
+        name="generalDeepLinkDefaultScreenHintText">L’écran à afficher par défaut lorsque l’application ne parvient pas à ouvrir un lien externe.</string>
     <string name="generalDeepLinkSelectedText">S/O</string>
     <string name="linkSelectorDialogTitle">Écran par défaut</string>
     <string name="settingsBiometricHeader">Biométrie</string>
@@ -241,7 +244,8 @@
     <string name="newTeamPermissionWrite">Les membres peuvent lire et pousser dans les dépôts de l’équipe.</string>
     <string name="newTeamPermissionAdmin">Les membres peuvent tirer et pousser dans les dépôts de l’équipe ainsi qu’ajouter des participants.</string>
     <string name="teamNameEmpty">Nom d’équipe requis</string>
-    <string name="teamNameError">Le nom d’équipe peut contenir des caractères alphanumériques, des tirets (-), des soulignés (_) et des points (.).</string>
+    <string
+        name="teamNameError">Le nom d’équipe peut contenir des caractères alphanumériques, des tirets (-), des soulignés (_) et des points (.).</string>
     <string name="teamPermissionEmpty">Veuillez sélectionner une permission</string>
     <string name="teamDescError">La description contient des caractères interdits</string>
     <string name="teamDescLimit">La description de l’équipe dépasse la limite de 100 caractères</string>
@@ -393,7 +397,8 @@
     <string name="viewInBrowser">Voir dans le navigateur</string>
     <string name="isOpen">Ouvert</string>
     <string name="isClosed">Fermé</string>
-    <string name="genericServerResponseError">Impossible de se connecter au serveur pour le moment, veuillez vérifier son statut puis réessayer</string>
+    <string
+        name="genericServerResponseError">Impossible de se connecter au serveur pour le moment, veuillez vérifier son statut puis réessayer</string>
     <string name="genericCopyUrl">Copier l’URL</string>
     <string name="genericWaitFor">Attendez un instant ☕</string>
     <string name="file">Fichier</string>
@@ -619,7 +624,8 @@
     <string name="nowFollowUser">Vous suivez @%s</string>
     <string name="unfollowingFailed">Impossible de ne plus suivre l’utilisateur</string>
     <string name="followingFailed">Impossible de suivre l’utilisateur</string>
-    <string name="updatePrConflict">La demande d’ajout est en conflit avec la branche principale. Veuillez résoudre ce conflit, puis réessayez.</string>
+    <string
+        name="updatePrConflict">La demande d’ajout est en conflit avec la branche principale. Veuillez résoudre ce conflit, puis réessayez.</string>
     <string name="updatePrSuccess">Demande d’ajout mise à jour</string>
     <string name="updateStrategyMerge">Fusionner</string>
     <string name="updateStrategyRebase">Rebaser</string>
@@ -643,7 +649,8 @@
     <string name="adoptRepo">Adopter</string>
     <string name="repoAdopted">Dépôt %s adopté</string>
     <string name="unadoptedRepos">Dépôts abandonnés</string>
-    <string name="unadoptedReposMessage">- Adopter le dépôt %s l’ajoutera à l’organisation/utilisateur %s.\n- Le supprimer l’effacera du système.</string>
+    <string
+        name="unadoptedReposMessage">- Adopter le dépôt %s l’ajoutera à l’organisation/utilisateur %s.\n- Le supprimer l’effacera du système.</string>
     <string name="commits">Révisions</string>
     <!-- wiki -->
     <string name="wiki">Wiki</string>

@@ -55,7 +55,7 @@
     <string name="malformedUrl">Impossibile connettersi all\'host. Controlla l\'URL o la porta per eventuali errori</string>
     <string name="protocolError">Non si consiglia di utilizzare il protocollo HTTP a meno che non si stia testando sulla rete locale</string>
     <string name="malformedJson">È stato ricevuto JSON non valido. La risposta del server non ha avuto successo</string>
-    <string name="emptyFieldURL">Istanza 
+    <string name="emptyFieldURL">Istanza
 URL è richiesto</string>
     <string name="emptyFieldUsername">Nome utente obbligatorio</string>
     <string name="emptyFieldPassword">Password obbligatoria</string>
@@ -177,7 +177,8 @@ URL è richiesto</string>
     <string name="cacheSizeImagesSelectionHeaderText">Dimensione Cache Immagini</string>
     <string name="clearCacheSelectionHeaderText">Cancella Cache</string>
     <string name="clearCacheDialogHeader">Svuotare la cache?</string>
-    <string name="clearCacheDialogMessage">Questo eliminerà tutti i dati della cache inclusi file e immagini.\n\nProcedi con la cancellazione?</string>
+    <string
+        name="clearCacheDialogMessage">Questo eliminerà tutti i dati della cache inclusi file e immagini.\n\nProcedi con la cancellazione?</string>
     <string name="draftsHeader">Bozze</string>
     <string name="draftsHintText">Bozze dei commenti</string>
     <string name="settingsEnableCommentsDeletionText">Abilita Eliminazione Bozze</string>
@@ -216,7 +217,8 @@ URL è richiesto</string>
     <string name="teamPermissionNone">• I membri di questo team non hanno alcun permesso.</string>
     <string name="teamPermissionRead">• I membri di questo team possono vedere i repository del team.</string>
     <string name="teamPermissionWrite">• I membri di questo team possono vedere e fare push ai repository del team.</string>
-    <string name="teamPermissionAdmin">• I membri di questo team possono fare push da e verso i repository del team e aggiungere collaboratori.</string>
+    <string
+        name="teamPermissionAdmin">• I membri di questo team possono fare push da e verso i repository del team e aggiungere collaboratori.</string>
     <string name="teamPermissionOwner">• I membri di questo team hanno i permessi di proprietario.</string>
     <string name="teamShowAll">mostra tutto</string>
     <string name="orgMember">Membri Org</string>
@@ -242,7 +244,7 @@ URL è richiesto</string>
     <string name="newTeamPermissionAdmin">I membri possono inviare i repository del team e aggiungere loro collaboratori</string>
     <string name="teamNameEmpty">Inserisci il nome del team</string>
     <string name="teamNameError">Il nome del team deve contenere solo caratteri alfanumerici, trattino (-), trattino basso (_) e punto (.)</string>
-    <string name="teamPermissionEmpty">Seleziona 
+    <string name="teamPermissionEmpty">Seleziona
 autorizzazione</string>
     <string name="teamDescError">La descrizione del team contiene caratteri non validi</string>
     <string name="teamDescLimit">La descrizione del team ha più di 100 caratteri</string>
@@ -570,7 +572,8 @@ autorizzazione</string>
     <string name="repoSettingsDeleteError">Repository name does not match</string>
     <string name="repoDeletionSuccess">Repository deleted successfully</string>
     <string name="repoSettingsTransferOwnership">Transfer Ownership</string>
-    <string name="repoSettingsTransferOwnershipHint">Transfer this repository to a user or to an organization for which you have administrator rights</string>
+    <string
+        name="repoSettingsTransferOwnershipHint">Transfer this repository to a user or to an organization for which you have administrator rights</string>
     <string name="repoSettingsTransferOwnershipDescription">Things to know before transfer:\n\n- You will lose access to the repository if you transfer it to an individual user.\n- You will keep access to the repository if you transfer it to an organization that you (co-)own.\n\nEnter the repository name as confirmation</string>
     <string name="repoTransferText">Esegui Trasferimento</string>
     <string name="repoTransferOwnerText">Nuovo Proprietario</string>

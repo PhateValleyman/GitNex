@@ -146,7 +146,8 @@
     <string name="settingsSecurityHeader">Security</string>
     <string name="settingsCertsSelectorHeader">Delete Trusted Certificates</string>
     <string name="settingsCertsPopupTitle">Delete Trusted Certificates?</string>
-    <string name="settingsCertsPopupMessage">Are you sure to delete any manually trusted certificate or hostname? \n\nYou will also be logged out.</string>
+    <string
+        name="settingsCertsPopupMessage">Are you sure to delete any manually trusted certificate or hostname? \n\nYou will also be logged out.</string>
     <string name="settingsDateTimeHeaderText">Tarih ve Saat</string>
     <string name="settingsSave">Ayarlar kaydedildi</string>
     <string name="settingsLanguageSelectorHeader">Dil</string>
@@ -371,7 +372,8 @@
     <string name="doneButton">Tamam</string>
     <string name="cancelButton">İptal</string>
     <string name="genericError">Bir şeyler ters gitti, lütfen tekrar deneyin</string>
-    <string name="apiNotFound">Bu isteğin yüklü olandan daha yüksek Gitea sürümü gerekiyor. Lütfen örneğinizi Gitea\'nin en son sürümüne yükseltin.</string>
+    <string
+        name="apiNotFound">Bu isteğin yüklü olandan daha yüksek Gitea sürümü gerekiyor. Lütfen örneğinizi Gitea\'nin en son sürümüne yükseltin.</string>
     <string name="noDataFound">🌟 Nothing in here 🌟</string>
     <string name="addButton">Ekle</string>
     <string name="removeButton">Kaldır</string>
@@ -568,7 +570,8 @@
     <string name="repoSettingsDeleteError">Repository name does not match</string>
     <string name="repoDeletionSuccess">Repository deleted successfully</string>
     <string name="repoSettingsTransferOwnership">Transfer Ownership</string>
-    <string name="repoSettingsTransferOwnershipHint">Transfer this repository to a user or to an organization for which you have administrator rights</string>
+    <string
+        name="repoSettingsTransferOwnershipHint">Transfer this repository to a user or to an organization for which you have administrator rights</string>
     <string name="repoSettingsTransferOwnershipDescription">Things to know before transfer:\n\n- You will lose access to the repository if you transfer it to an individual user.\n- You will keep access to the repository if you transfer it to an organization that you (co-)own.\n\nEnter the repository name as confirmation</string>
     <string name="repoTransferText">Perform Transfer</string>
     <string name="repoTransferOwnerText">New Owner</string>
