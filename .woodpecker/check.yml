@@ -15,6 +15,6 @@ pipeline:
       path: "app/"
 
   test:
-    image: gradle:7.4.1
+    image: alvrme/alpine-android:android-31-jdk11
     commands:
       - ./gradlew test
