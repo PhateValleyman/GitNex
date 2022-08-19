@@ -43,8 +43,12 @@ public class ParseDiff {
 		Matcher rmMatcher = rmPattern.matcher(raw);
 		Matcher addMatcher = addPattern.matcher(raw);
 
-		if(raw.startsWith("+")) add++;
-		else if(raw.startsWith("-")) rm++;
+		if(raw.startsWith("+")) {
+			add++;
+		}
+		else if(raw.startsWith("-")) {
+			rm++;
+		}
 		while(rmMatcher.find())
 			rm++;
 		while(addMatcher.find())
