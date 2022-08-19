@@ -13,3 +13,8 @@ pipeline:
     settings:
       file_pattern: "*.java"
       path: "app/"
+
+  test:
+    image: gradle:7.4.1
+    commands:
+      - gradle test
