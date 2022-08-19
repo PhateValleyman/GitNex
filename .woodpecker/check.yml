@@ -17,4 +17,4 @@ pipeline:
   test:
     image: gradle:7.4.1
     commands:
-      - gradle test
+      - ./gradlew test
