@@ -176,8 +176,7 @@
     <string name="cacheSizeImagesSelectionHeaderText">Tamaño de la caché de imágenes</string>
     <string name="clearCacheSelectionHeaderText">Limpiar cache</string>
     <string name="clearCacheDialogHeader">Limpiar cache?</string>
-    <string
-        name="clearCacheDialogMessage">Esto borrará todos los datos de la caché, incluidos los archivos y las imágenes.\n\n¿Proceder al borrado?</string>
+    <string name="clearCacheDialogMessage">Esto borrará todos los datos de la caché, incluidos los archivos y las imágenes.\n\n¿Proceder al borrado?</string>
     <string name="draftsHeader">Borradores</string>
     <string name="draftsHintText">Comentarios para el borrador</string>
     <string name="settingsEnableCommentsDeletionText">Activar el borrado de borradores</string>
@@ -190,8 +189,7 @@
     <string name="linkSelectorDialogTitle">Seleccione la pantalla del gestor de enlaces por defecto</string>
     <string name="settingsBiometricHeader">Desbloqueo biométrico</string>
     <string name="settingsLabelsInListHeader">Etiquetas con soporte de texto</string>
-    <string
-        name="settingsLabelsInListHint">Activar esto mostrará etiquetas con texto en las incidencias y PR. Por defecto son puntos de colores</string>
+    <string name="settingsLabelsInListHint">Activar esto mostrará etiquetas con texto en las incidencias y PR. Por defecto son puntos de colores</string>
     <!-- settings -->
     <string name="noMoreData">No hay más datos disponibles</string>
     <string name="createLabel">Nueva etiqueta</string>
@@ -217,8 +215,7 @@
     <string name="teamPermissionNone">Los miembros de este equipo no tienen permisos.</string>
     <string name="teamPermissionRead">Los miembros de este equipo pueden ver los repositorios del equipo.</string>
     <string name="teamPermissionWrite">Los miembros de este equipo pueden ver y aportar a los repositorios del equipo.</string>
-    <string
-        name="teamPermissionAdmin">Los miembros de este equipo pueden aportar a y desde los repositorios del equipo y añadir colaboradores.</string>
+    <string name="teamPermissionAdmin">Los miembros de este equipo pueden aportar a y desde los repositorios del equipo y añadir colaboradores.</string>
     <string name="teamPermissionOwner">Los miembros de este equipo tienen permisos completos.</string>
     <string name="teamShowAll">ver todo</string>
     <string name="orgMember">Miembros de la organización</string>
@@ -243,8 +240,7 @@
     <string name="newTeamPermissionWrite">Miembros pueden leer y push a los repositorios del equipo</string>
     <string name="newTeamPermissionAdmin">Miembros pueden pull y push a los repositorios del equipo y pueden añadir colaboradores</string>
     <string name="teamNameEmpty">Por favor, introduce el nombre del equipo</string>
-    <string
-        name="teamNameError">El nombre del equipo tiene que consistir sólo en caracteres alfanuméricos, minus (-), barra baja (_) y punto (.)</string>
+    <string name="teamNameError">El nombre del equipo tiene que consistir sólo en caracteres alfanuméricos, minus (-), barra baja (_) y punto (.)</string>
     <string name="teamPermissionEmpty">Por favor, selecciona un permiso</string>
     <string name="teamDescError">La descripción del equipo incluye caracteres ilegales</string>
     <string name="teamDescLimit">La descripción del equipo tiene más de 100 caracteres</string>
@@ -432,8 +428,7 @@
     <string name="versionAlertDialogHeader">Versión de Gitea no compatible</string>
     <string name="loginViaPassword">Usuario / contraseña</string>
     <string name="loginMethodText">Elige su método de login preferido para accesar su cuenta. Token es más seguro!</string>
-    <string
-        name="unauthorizedApiError">La instancia ha respondido con un error - No autorizado. Verifique sus credenciales y trátalo de nuevo</string>
+    <string name="unauthorizedApiError">La instancia ha respondido con un error - No autorizado. Verifique sus credenciales y trátalo de nuevo</string>
     <string name="loginTokenError">Token es necesario</string>
     <string name="prDeletedFork">Fork eliminado</string>
     <string name="editPrNavHeader">Editar pull request #%1$s</string>
@@ -573,8 +568,7 @@
     <string name="repoSettingsDeleteError">Repository name does not match</string>
     <string name="repoDeletionSuccess">El repositorio se ha eliminado correctamente</string>
     <string name="repoSettingsTransferOwnership">Transferir propiedad</string>
-    <string
-        name="repoSettingsTransferOwnershipHint">Transfer this repository to a user or to an organization for which you have administrator rights</string>
+    <string name="repoSettingsTransferOwnershipHint">Transfer this repository to a user or to an organization for which you have administrator rights</string>
     <string name="repoSettingsTransferOwnershipDescription">Things to know before transfer:\n\n- You will lose access to the repository if you transfer it to an individual user.\n- You will keep access to the repository if you transfer it to an organization that you (co-)own.\n\nEnter the repository name as confirmation</string>
     <string name="repoTransferText">Perform Transfer</string>
     <string name="repoTransferOwnerText">Nuevo Propietario</string>
@@ -648,8 +642,7 @@
     <string name="adoptRepo">Adoptar</string>
     <string name="repoAdopted">Repositorio adoptado %s</string>
     <string name="unadoptedRepos">Repositorios no adoptados</string>
-    <string
-        name="unadoptedReposMessage">- Adoptar el repositorio %s lo añadirá a la organización o usuario %s.\n - Eliminar lo borrará del sistema.</string>
+    <string name="unadoptedReposMessage">- Adoptar el repositorio %s lo añadirá a la organización o usuario %s.\n - Eliminar lo borrará del sistema.</string>
     <string name="commits">Commits</string>
     <!-- wiki -->
     <string name="wiki">Wiki</string>

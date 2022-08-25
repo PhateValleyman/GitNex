@@ -176,8 +176,7 @@
     <string name="cacheSizeImagesSelectionHeaderText">Tamanho do Cache das Imagens</string>
     <string name="clearCacheSelectionHeaderText">Limpar Cache</string>
     <string name="clearCacheDialogHeader">Limpar Cache?</string>
-    <string
-        name="clearCacheDialogMessage">Isto vai excluir todos os dados de cache, incluindo arquivos e imagens.\n\nProsseguir com a exclusão?</string>
+    <string name="clearCacheDialogMessage">Isto vai excluir todos os dados de cache, incluindo arquivos e imagens.\n\nProsseguir com a exclusão?</string>
     <string name="draftsHeader">Rascunhos</string>
     <string name="draftsHintText">Rascunho dos comentários</string>
     <string name="settingsEnableCommentsDeletionText">Ativar exclusão de rascunhos</string>

@@ -146,8 +146,7 @@
     <string name="settingsSecurityHeader">ආරක්ෂාව</string>
     <string name="settingsCertsSelectorHeader">විශ්වාසනීය සහතික මකන්න</string>
     <string name="settingsCertsPopupTitle">විශ්වාසනීය සහතික මකන්නද?</string>
-    <string
-        name="settingsCertsPopupMessage">අතින් විශ්වාස කළ හැකි සහතිකයක් හෝ සත්කාරක නාමයක් මකා දැමීමට ඔබට විශ්වාසද? \n\nඔබ ද ලොග් අවුට් වනු ඇත.</string>
+    <string name="settingsCertsPopupMessage">අතින් විශ්වාස කළ හැකි සහතිකයක් හෝ සත්කාරක නාමයක් මකා දැමීමට ඔබට විශ්වාසද? \n\nඔබ ද ලොග් අවුට් වනු ඇත.</string>
     <string name="settingsDateTimeHeaderText">දිනය &amp; වේලාව</string>
     <string name="settingsSave">සැකසුම් සුරැකිණි</string>
     <string name="settingsLanguageSelectorHeader">භාෂාව</string>
@@ -393,8 +392,7 @@
     <string name="viewInBrowser">බ්‍රව්සරයේ බලන්න</string>
     <string name="isOpen">විවෘත</string>
     <string name="isClosed">වසා ඇත</string>
-    <string
-        name="genericServerResponseError">අපට මේ මොහොතේ සේවාදායකය වෙත ළඟා විය නොහැක, කරුණාකර ඔබගේ සේවාදායක තත්ත්වය පරීක්ෂා කර නැවත උත්සාහ කරන්න</string>
+    <string name="genericServerResponseError">අපට මේ මොහොතේ සේවාදායකය වෙත ළඟා විය නොහැක, කරුණාකර ඔබගේ සේවාදායක තත්ත්වය පරීක්ෂා කර නැවත උත්සාහ කරන්න</string>
     <string name="genericCopyUrl">URL පිටපත් කරන්න</string>
     <string name="genericWaitFor">ඉන්න ☕</string>
     <string name="file">ගොනුව</string>
@@ -446,8 +444,7 @@
     <string name="mergePullRequestButtonText">ඒකාබද්ධ කරන්න</string>
     <string name="deleteBranchAfterMerge">ඒකාබද්ධ කිරීමෙන් පසු ශාඛාව මකන්න</string>
     <string name="mergeNoteText">මෙම ඇදීමේ ඉල්ලීම ඒකාබද්ධ කිරීමට ඔබට අවසර නොමැති නම් ඒකාබද්ධ කිරීම අසාර්ථක විය හැක.</string>
-    <string
-        name="mergeInfoDisabledMessage">Disabled Merge බොත්තම යන්නෙන් අදහස් වන්නේ ඒකාබද්ධ කිරීමට පෙර නිවැරදි කිරීමට ගැටුම් හෝ වෙනත් දේවල් ඇති බවයි</string>
+    <string name="mergeInfoDisabledMessage">Disabled Merge බොත්තම යන්නෙන් අදහස් වන්නේ ඒකාබද්ධ කිරීමට පෙර නිවැරදි කිරීමට ගැටුම් හෝ වෙනත් දේවල් ඇති බවයි</string>
     <string name="deleteBranchForkInfo">මෙම ශාඛාව දෙබලක ගබඩාවකට අයත් වේ</string>
     <string name="mergeCommentText">අදහස ඒකාබද්ධ කරන්න</string>
     <string name="mergePRSuccessMsg">ඇදීමේ ඉල්ලීම සාර්ථකව ඒකාබද්ධ කරන ලදී</string>
@@ -595,8 +592,7 @@
     <string name="prClosed">ඇදීමේ ඉල්ලීම වසා ඇත</string>
     <string name="prReopened">ඇදීමේ ඉල්ලීම නැවත විවෘත කරන ලදී</string>
     <string name="prMergeInfo">ඉල්ලීම් තොරතුරු අදින්න</string>
-    <string
-        name="accountDoesNotExist">URI %1$s සඳහා ගිණුම යෙදුම තුළ නොමැති බව පෙනේ. නව ගිණුමක් එක් කරන්න බොත්තම තට්ටු කිරීමෙන් ඔබට එකක් එක් කළ හැක.</string>
+    <string name="accountDoesNotExist">URI %1$s සඳහා ගිණුම යෙදුම තුළ නොමැති බව පෙනේ. නව ගිණුමක් එක් කරන්න බොත්තම තට්ටු කිරීමෙන් ඔබට එකක් එක් කළ හැක.</string>
     <string name="launchApp">යෙදුම වෙත යන්න</string>
     <string name="noActionText">GitNex හට ඉල්ලූ සම්පත හැසිරවිය නොහැක, ඔබට කාර්යයේ විස්තර සැපයීම සමඟ වැඩිදියුණු කිරීමක් ලෙස ව්‍යාපෘති ගබඩාවේ ගැටලුවක් විවෘත කළ හැක. පහත බොත්තම් වලින් දැන් පෙරනිමි තිරයක් දියත් කරන්න, එය සැකසුම් වලින් වෙනස් කළ හැක.</string>
     <string name="biometricAuthTitle">ජෛවමිතික සත්‍යාපනය</string>

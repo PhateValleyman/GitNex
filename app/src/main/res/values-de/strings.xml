@@ -177,8 +177,7 @@
     <string name="cacheSizeImagesSelectionHeaderText">Größe des Bilder-Caches</string>
     <string name="clearCacheSelectionHeaderText">Cache löschen</string>
     <string name="clearCacheDialogHeader">Cache löschen?</string>
-    <string
-        name="clearCacheDialogMessage">Dadurch werden alle Cache-Daten einschließlich Dateien und Bilder gelöscht.\n\nMit dem Löschen fortfahren?</string>
+    <string name="clearCacheDialogMessage">Dadurch werden alle Cache-Daten einschließlich Dateien und Bilder gelöscht.\n\nMit dem Löschen fortfahren?</string>
     <string name="draftsHeader">Entwürfe</string>
     <string name="draftsHintText">Kommentarentwürfe</string>
     <string name="settingsEnableCommentsDeletionText">Entwürfe löschen aktivieren</string>
@@ -191,8 +190,7 @@
     <string name="linkSelectorDialogTitle">Wähle Standard-Link-Handhaber</string>
     <string name="settingsBiometricHeader">Biometrisches Entsperren</string>
     <string name="settingsLabelsInListHeader">Labels mit Text</string>
-    <string
-        name="settingsLabelsInListHint">Dies wird Labels mit Text in Issue- und Pull-Request-Lister anzeigen, Standard sind farbige Punkte</string>
+    <string name="settingsLabelsInListHint">Dies wird Labels mit Text in Issue- und Pull-Request-Lister anzeigen, Standard sind farbige Punkte</string>
     <!-- settings -->
     <string name="noMoreData">Keine weiteren Daten verfügbar.</string>
     <string name="createLabel">Label erstellen</string>
@@ -395,8 +393,7 @@
     <string name="viewInBrowser">In Browser betrachten</string>
     <string name="isOpen">Offen</string>
     <string name="isClosed">Geschlossen</string>
-    <string
-        name="genericServerResponseError">Wir können den Server im Moment nicht erreichen. Bitte überprüfe den Serverstatus und versuche es erneut</string>
+    <string name="genericServerResponseError">Wir können den Server im Moment nicht erreichen. Bitte überprüfe den Serverstatus und versuche es erneut</string>
     <string name="genericCopyUrl">Link kopieren</string>
     <string name="genericWaitFor">Laden ... ☕</string>
     <string name="file">Datei</string>
@@ -572,8 +569,7 @@
     <string name="repoSettingsDeleteError">Repository-Name stimmt nicht überein</string>
     <string name="repoDeletionSuccess">Repository erfolgreich gelöscht</string>
     <string name="repoSettingsTransferOwnership">Besitz übertragen</string>
-    <string
-        name="repoSettingsTransferOwnershipHint">Dieses Repository an einen Benutzer oder eine Organisation übertragen, in der du Adminrechte hast</string>
+    <string name="repoSettingsTransferOwnershipHint">Dieses Repository an einen Benutzer oder eine Organisation übertragen, in der du Adminrechte hast</string>
     <string name="repoSettingsTransferOwnershipDescription">Dinge, die vor der Übertragung bekannt sein sollten:\n\n- Du verlierst den Zugriff auf das Projekt, wenn es an einen Benutzer übertragen wird.\n- Du behälst den Zugriff auf das Projekt, wenn es an eine Organisation übertragen wird, die du (mit-)besitzt.\n\nGib den Repository-Namen als Bestätigung ein</string>
     <string name="repoTransferText">Übertragen</string>
     <string name="repoTransferOwnerText">Neuer Besitzer</string>

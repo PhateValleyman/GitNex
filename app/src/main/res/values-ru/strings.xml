@@ -459,8 +459,7 @@
     <string name="deleteBranch">Delete Branch</string>
     <string name="waitLoadingDownloadFile">Пожалуйста дождитесь загрузки файла</string>
     <string name="downloadFileSaved">Файл успешно сохранён</string>
-    <string
-        name="excludeFilesInFileViewer">Этот тип/размер файла не поддерживается программой просмотра файлов. Вы можете скачать его из меню.</string>
+    <string name="excludeFilesInFileViewer">Этот тип/размер файла не поддерживается программой просмотра файлов. Вы можете скачать его из меню.</string>
     <string name="deleteFile">Удалить этот файл</string>
     <string name="editFile">Редактировать этот файл</string>
     <string name="deleteFileMessage">Файл установлен для удаления по ветке %1$s</string>
@@ -571,8 +570,7 @@
     <string name="repoSettingsDeleteError">Имя репозитория не совпадает</string>
     <string name="repoDeletionSuccess">Репозиторий успешно удалён</string>
     <string name="repoSettingsTransferOwnership">Передать права собственности</string>
-    <string
-        name="repoSettingsTransferOwnershipHint">Передать репозиторий другому пользователю или организации где у вас есть права администратора</string>
+    <string name="repoSettingsTransferOwnershipHint">Передать репозиторий другому пользователю или организации где у вас есть права администратора</string>
     <string name="repoSettingsTransferOwnershipDescription">Что нужно знать перед передачей:\n\n- Вы потеряете доступ к репозиторию, если передадите его отдельному пользователю.\n- Вы сохраните доступ к репозиторию, если передадите его организации, которой вы (со)владеете.\n\nВведите имя репозитория в качестве подтверждения</string>
     <string name="repoTransferText">Выполнить передачу</string>
     <string name="repoTransferOwnerText">Новый владелец</string>

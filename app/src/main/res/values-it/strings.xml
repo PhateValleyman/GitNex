@@ -177,8 +177,7 @@ URL è richiesto</string>
     <string name="cacheSizeImagesSelectionHeaderText">Dimensione Cache Immagini</string>
     <string name="clearCacheSelectionHeaderText">Cancella Cache</string>
     <string name="clearCacheDialogHeader">Svuotare la cache?</string>
-    <string
-        name="clearCacheDialogMessage">Questo eliminerà tutti i dati della cache inclusi file e immagini.\n\nProcedi con la cancellazione?</string>
+    <string name="clearCacheDialogMessage">Questo eliminerà tutti i dati della cache inclusi file e immagini.\n\nProcedi con la cancellazione?</string>
     <string name="draftsHeader">Bozze</string>
     <string name="draftsHintText">Bozze dei commenti</string>
     <string name="settingsEnableCommentsDeletionText">Abilita Eliminazione Bozze</string>
@@ -217,8 +216,7 @@ URL è richiesto</string>
     <string name="teamPermissionNone">• I membri di questo team non hanno alcun permesso.</string>
     <string name="teamPermissionRead">• I membri di questo team possono vedere i repository del team.</string>
     <string name="teamPermissionWrite">• I membri di questo team possono vedere e fare push ai repository del team.</string>
-    <string
-        name="teamPermissionAdmin">• I membri di questo team possono fare push da e verso i repository del team e aggiungere collaboratori.</string>
+    <string name="teamPermissionAdmin">• I membri di questo team possono fare push da e verso i repository del team e aggiungere collaboratori.</string>
     <string name="teamPermissionOwner">• I membri di questo team hanno i permessi di proprietario.</string>
     <string name="teamShowAll">mostra tutto</string>
     <string name="orgMember">Membri Org</string>
@@ -572,8 +570,7 @@ autorizzazione</string>
     <string name="repoSettingsDeleteError">Repository name does not match</string>
     <string name="repoDeletionSuccess">Repository deleted successfully</string>
     <string name="repoSettingsTransferOwnership">Transfer Ownership</string>
-    <string
-        name="repoSettingsTransferOwnershipHint">Transfer this repository to a user or to an organization for which you have administrator rights</string>
+    <string name="repoSettingsTransferOwnershipHint">Transfer this repository to a user or to an organization for which you have administrator rights</string>
     <string name="repoSettingsTransferOwnershipDescription">Things to know before transfer:\n\n- You will lose access to the repository if you transfer it to an individual user.\n- You will keep access to the repository if you transfer it to an organization that you (co-)own.\n\nEnter the repository name as confirmation</string>
     <string name="repoTransferText">Esegui Trasferimento</string>
     <string name="repoTransferOwnerText">Nuovo Proprietario</string>
