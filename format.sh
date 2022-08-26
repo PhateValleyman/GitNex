@@ -9,6 +9,10 @@ intelij=$(getBinary intellij-idea-ultimate-edition)
     intelij=$(getBinary intellij-idea-community-edition)
 }
 [ -z "$intelij" ] && {
+    intelij=$(getBinary android-studio)
+}
+
+[ -z "$intelij" ] && {
     echo "Couldn't format files, IntelliJ binary is missing"
     exit 1
 }
