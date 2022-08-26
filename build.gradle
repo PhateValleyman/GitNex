@@ -24,18 +24,7 @@ task clean(type: Delete) {
 }
 
 task format {
-    def proc
-    // first, try `intellij-idea-ultimate-edition` as command
-    try {
-        proc = 'intellij-idea-ultimate-edition format -s ".idea/codeStyles/Project.xml" -m "${PLUGIN_FILE_PATTERN:-"*"}" -r .'.execute()
-    } catch (ignored) {
-        try {
-            proc = 'intellij-idea-community-edition format -s ".idea/codeStyles/Project.xml" -m "${PLUGIN_FILE_PATTERN:-"*"}" -r .'.execute()
-        } catch (ignored2) {
-            println('Couldn\'t format files, IntelliJ binary is missing')
-            return
-        }
-    }
+    def proc = './format.sh'.execute()
     proc.consumeProcessOutput(System.out, System.err)
     proc.waitFor()
 }
