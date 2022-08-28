@@ -16,6 +16,7 @@ public class MarkwonHighlighter extends AbstractMarkwonPlugin {
 	private final Theme theme;
 	private final Context context;
 	private final String fallbackLanguage;
+
 	public MarkwonHighlighter(Context context, @NonNull Theme theme, @Nullable String fallbackLanguage) {
 		this.theme = theme;
 		this.context = context;

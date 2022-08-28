@@ -25,6 +25,7 @@ public class SyntaxHighlighter implements SyntaxHighlight {
 	private final Theme theme;
 	private final Context context;
 	private final String fallback;
+
 	protected SyntaxHighlighter(Context context, @NonNull Theme theme, @Nullable String fallback) {
 		this.context = context;
 		this.theme = theme;
