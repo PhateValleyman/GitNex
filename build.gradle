@@ -24,7 +24,7 @@ task clean(type: Delete) {
 }
 
 task format {
-    def proc = './format.sh'.execute()
+    def proc = './scripts/format.sh'.execute()
     proc.consumeProcessOutput(System.out, System.err)
     proc.waitFor()
 }
