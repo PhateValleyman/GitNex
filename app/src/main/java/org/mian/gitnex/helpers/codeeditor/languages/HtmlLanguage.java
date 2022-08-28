@@ -83,6 +83,11 @@ public class HtmlLanguage extends Language {
 	}
 
 	@Override
+	public String getName() {
+		return "HTML";
+	}
+
+	@Override
 	public Set<Character> getIndentationStarts() {
 		Set<Character> characterSet = new HashSet<>();
 		characterSet.add('{');

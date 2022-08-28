@@ -88,6 +88,11 @@ public class PhpLanguage extends Language {
 	}
 
 	@Override
+	public String getName() {
+		return "PHP";
+	}
+
+	@Override
 	public Set<Character> getIndentationStarts() {
 		Set<Character> characterSet = new HashSet<>();
 		characterSet.add('{');

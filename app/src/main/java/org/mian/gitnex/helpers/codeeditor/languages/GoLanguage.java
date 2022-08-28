@@ -48,6 +48,11 @@ public class GoLanguage extends Language {
 	}
 
 	@Override
+	public String getName() {
+		return "Go";
+	}
+
+	@Override
 	public Set<Character> getIndentationStarts() {
 		Set<Character> characterSet = new HashSet<>();
 		characterSet.add('{');

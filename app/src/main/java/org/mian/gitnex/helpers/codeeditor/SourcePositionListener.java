@@ -12,13 +12,6 @@ import android.widget.EditText;
 
 public class SourcePositionListener {
 
-	@FunctionalInterface
-	public interface OnPositionChanged {
-
-		void onPositionChange(int line, int column);
-
-	}
-
 	private OnPositionChanged onPositionChanged;
 
 	public SourcePositionListener(EditText editText) {
@@ -44,6 +37,13 @@ public class SourcePositionListener {
 
 	public void setOnPositionChanged(OnPositionChanged listener) {
 		onPositionChanged = listener;
+	}
+
+	@FunctionalInterface
+	public interface OnPositionChanged {
+
+		void onPositionChange(int line, int column);
+
 	}
 
 }

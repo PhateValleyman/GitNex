@@ -7,9 +7,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import org.apache.commons.lang3.EnumUtils;
 import org.mian.gitnex.core.MainGrammarLocator;
-import org.mian.gitnex.helpers.codeeditor.LanguageName;
 import org.mian.gitnex.helpers.codeeditor.languages.Language;
 import org.mian.gitnex.helpers.codeeditor.languages.LanguageElement;
 import org.mian.gitnex.helpers.codeeditor.theme.Theme;
@@ -24,32 +22,23 @@ import io.noties.markwon.syntax.SyntaxHighlight;
 
 public class SyntaxHighlighter implements SyntaxHighlight {
 
+	private final Theme theme;
+	private final Context context;
+	private final String fallback;
+	protected SyntaxHighlighter(Context context, @NonNull Theme theme, @Nullable String fallback) {
+		this.context = context;
+		this.theme = theme;
+		this.fallback = fallback;
+	}
+
 	@NonNull
-	public static SyntaxHighlighter create(
-		Context context,
-		@NonNull Theme theme) {
+	public static SyntaxHighlighter create(Context context, @NonNull Theme theme) {
 		return new SyntaxHighlighter(context, theme, null);
 	}
 
 	@NonNull
-	public static SyntaxHighlighter create(
-		Context context,
-		@NonNull Theme theme,
-		@Nullable String fallback) {
+	public static SyntaxHighlighter create(Context context, @NonNull Theme theme, @Nullable String fallback) {
 		return new SyntaxHighlighter(context, theme, fallback);
-	}
-
-	private final Theme theme;
-	private final Context context;
-	private final String fallback;
-
-	protected SyntaxHighlighter(
-		Context context,
-		@NonNull Theme theme,
-		@Nullable String fallback) {
-		this.context = context;
-		this.theme = theme;
-		this.fallback = fallback;
 	}
 
 	@NonNull
@@ -59,32 +48,24 @@ public class SyntaxHighlighter implements SyntaxHighlight {
 			return code;
 		}
 
-		if (info == null) {
+		if(info == null) {
 			info = fallback;
 		}
 
 		if(info != null) {
-			info = MainGrammarLocator.fromExtension(info).toUpperCase();
+			info = MainGrammarLocator.fromExtension(info);
 		}
 
 		Editable highlightedCode = new SpannableStringBuilder(code);
 
-		Language l;
-		if(EnumUtils.isValidEnum(LanguageName.class, info)) {
-			l = LanguageName.valueOf(info).getLanguage();
-		}
-		else {
-			return code;
-		}
+		Language l = Language.fromName(info);
 
 		for(LanguageElement e : Objects.requireNonNull(LanguageElement.class.getEnumConstants())) {
 			Pattern p = l.getPattern(e);
 			if(p != null) {
 				Matcher matcher = p.matcher(highlightedCode);
-				while (matcher.find()) {
-					highlightedCode.setSpan(new ForegroundColorSpan(context.getResources().getColor(theme.getColor(e), null)),
-						matcher.start(), matcher.end(),
-						Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				while(matcher.find()) {
+					highlightedCode.setSpan(new ForegroundColorSpan(context.getResources().getColor(theme.getColor(e), null)), matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 				}
 			}
 		}

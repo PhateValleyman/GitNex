@@ -26,6 +26,14 @@ public class XmlLanguage extends Language {
 	private static final Pattern PATTERN_ATTRIBUTE = Pattern.compile("\\.[a-zA-Z0-9_]+");
 	private static final Pattern PATTERN_OPERATION = Pattern.compile(":|==|>|<|!=|>=|<=|->|=|>|<|%|-|-=|%=|\\+|\\-|\\-=|\\+=|\\^|\\&|\\|::|\\?|\\*");
 
+	public static String getCommentStart() {
+		return "<!--";
+	}
+
+	public static String getCommentEnd() {
+		return "-->";
+	}
+
 	@Override
 	public Pattern getPattern(LanguageElement element) {
 		switch(element) {
@@ -58,11 +66,7 @@ public class XmlLanguage extends Language {
 
 	@Override
 	public String[] getKeywords() {
-		return new String[]{
-			"<xml",
-            "encoding",
-            "version",
-		};
+		return new String[]{"<xml", "encoding", "version",};
 	}
 
 	@Override
@@ -73,6 +77,11 @@ public class XmlLanguage extends Language {
 			codeList.add(new Keyword(keyword));
 		}
 		return codeList;
+	}
+
+	@Override
+	public String getName() {
+		return "XML";
 	}
 
 	@Override
@@ -87,14 +96,6 @@ public class XmlLanguage extends Language {
 		Set<Character> characterSet = new HashSet<>();
 		characterSet.add('}');
 		return characterSet;
-	}
-
-	public static String getCommentStart() {
-		return "<!--";
-	}
-
-	public static String getCommentEnd() {
-		return "-->";
 	}
 
 }

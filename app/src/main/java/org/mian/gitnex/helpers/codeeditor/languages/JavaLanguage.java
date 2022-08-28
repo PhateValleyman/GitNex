@@ -88,6 +88,11 @@ public class JavaLanguage extends Language {
 	}
 
 	@Override
+	public String getName() {
+		return "Java";
+	}
+
+	@Override
 	public Set<Character> getIndentationStarts() {
 		Set<Character> characterSet = new HashSet<>();
 		characterSet.add('{');

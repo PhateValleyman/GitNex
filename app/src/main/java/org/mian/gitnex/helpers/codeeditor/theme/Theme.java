@@ -12,7 +12,12 @@ import org.mian.gitnex.helpers.codeeditor.languages.LanguageElement;
 public interface Theme {
 
 	FiveColorsTheme FIVE_COLORS = new FiveColorsTheme();
+
 	FiveColorsDarkTheme FIVE_COLORS_DARK = new FiveColorsDarkTheme();
+
+	static Theme getDefaultTheme(Context context) {
+		return AppUtil.getColorFromAttribute(context, R.attr.isDark) == 1 ? FIVE_COLORS_DARK : FIVE_COLORS;
+	}
 
 	@ColorRes
 	int getColor(LanguageElement element);
@@ -23,7 +28,4 @@ public interface Theme {
 	@ColorRes
 	int getBackgroundColor();
 
-	static Theme getDefaultTheme(Context context) {
-		return AppUtil.getColorFromAttribute(context, R.attr.isDark) == 1 ? FIVE_COLORS_DARK : FIVE_COLORS;
-	}
 }

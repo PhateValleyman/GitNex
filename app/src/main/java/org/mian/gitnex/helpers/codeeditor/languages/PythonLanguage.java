@@ -86,6 +86,11 @@ public class PythonLanguage extends Language {
 	}
 
 	@Override
+	public String getName() {
+		return "Python";
+	}
+
+	@Override
 	public Set<Character> getIndentationStarts() {
 		Set<Character> characterSet = new HashSet<>();
 		characterSet.add(':');

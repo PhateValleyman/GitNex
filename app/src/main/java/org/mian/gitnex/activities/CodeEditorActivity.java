@@ -12,6 +12,8 @@ import org.mian.gitnex.R;
 import org.mian.gitnex.core.MainGrammarLocator;
 import org.mian.gitnex.databinding.ActivityCodeEditorBinding;
 import org.mian.gitnex.helpers.codeeditor.*;
+import org.mian.gitnex.helpers.codeeditor.languages.Language;
+import org.mian.gitnex.helpers.codeeditor.languages.UnknownLanguage;
 import org.mian.gitnex.helpers.codeeditor.theme.Theme;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +28,7 @@ public class CodeEditorActivity extends BaseActivity {
 
 	private Theme currentTheme;
 	private ActivityCodeEditorBinding binding;
-	private LanguageName currentLanguage = LanguageName.UNKNOWN;
+	private Language currentLanguage = new UnknownLanguage();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,14 +46,9 @@ public class CodeEditorActivity extends BaseActivity {
 		currentTheme = Theme.getDefaultTheme(this);
 
 		if(getIntent().getStringExtra("fileExtension") != null) {
-			fileExtension = MainGrammarLocator.fromExtension(getIntent().getStringExtra("fileExtension")).toUpperCase();
+			fileExtension = MainGrammarLocator.fromExtension(getIntent().getStringExtra("fileExtension"));
 
-			if(EnumUtils.isValidEnum(LanguageName.class, fileExtension)) {
-				currentLanguage = LanguageName.valueOf(fileExtension);
-			}
-			else {
-				currentLanguage = LanguageName.UNKNOWN;
-			}
+			currentLanguage = Language.fromName(fileExtension);
 		}
 
 		configCodeView(currentLanguage, fileContent);
@@ -64,7 +61,7 @@ public class CodeEditorActivity extends BaseActivity {
 		setResult(Activity.RESULT_OK, intent);
 	}
 
-	private void configCodeView(LanguageName currentLanguage, String fileContent) {
+	private void configCodeView(Language currentLanguage, String fileContent) {
 
 		binding.codeView.setTypeface(Typeface.createFromAsset(ctx.getAssets(), "fonts/sourcecodeproregular.ttf"));
 
@@ -78,7 +75,7 @@ public class CodeEditorActivity extends BaseActivity {
 		binding.codeView.setEnableAutoIndentation(true);
 
 		// Set up the language and theme with SyntaxManager helper class
-		currentLanguage.getLanguage().applyTheme(this, binding.codeView, currentTheme);
+		currentLanguage.applyTheme(this, binding.codeView, currentTheme);
 
 		// Setup auto pair complete
 		final Map<Character, Character> pairCompleteMap = new HashMap<>();
@@ -103,14 +100,14 @@ public class CodeEditorActivity extends BaseActivity {
 
 		boolean useModernAutoCompleteAdapter = true;
 		if(useModernAutoCompleteAdapter) {
-			List<Code> codeList = currentLanguage.getLanguage().getCodeList();
+			List<Code> codeList = currentLanguage.getCodeList();
 
 			CustomCodeViewAdapter adapter = new CustomCodeViewAdapter(this, codeList);
 
 			binding.codeView.setAdapter(adapter);
 		}
 		else {
-			String[] languageKeywords = currentLanguage.getLanguage().getKeywords();
+			String[] languageKeywords = currentLanguage.getKeywords();
 
 			final int layoutId = R.layout.list_item_suggestion;
 
@@ -122,8 +119,8 @@ public class CodeEditorActivity extends BaseActivity {
 	}
 
 	private void configLanguageAutoIndentation() {
-		binding.codeView.setIndentationStarts(currentLanguage.getLanguage().getIndentationStarts());
-		binding.codeView.setIndentationEnds(currentLanguage.getLanguage().getIndentationEnds());
+		binding.codeView.setIndentationStarts(currentLanguage.getIndentationStarts());
+		binding.codeView.setIndentationEnds(currentLanguage.getIndentationEnds());
 	}
 
 	private void configCodeViewPlugins() {
@@ -134,7 +131,7 @@ public class CodeEditorActivity extends BaseActivity {
 	}
 
 	private void configLanguageName() {
-		binding.languageName.setText(currentLanguage.name().toLowerCase());
+		binding.languageName.setText(currentLanguage.getName().toLowerCase());
 	}
 
 	private void configSourcePositionListener() {
