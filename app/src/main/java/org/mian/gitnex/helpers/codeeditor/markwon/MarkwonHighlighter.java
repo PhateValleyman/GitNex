@@ -8,6 +8,9 @@ import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.MarkwonConfiguration;
 import io.noties.markwon.core.MarkwonTheme;
 
+/**
+ * @author qwerty287
+ */
 public class MarkwonHighlighter extends AbstractMarkwonPlugin {
 	@NonNull
 	public static MarkwonHighlighter create(
