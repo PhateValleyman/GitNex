@@ -22,12 +22,11 @@ public abstract class Language {
 	private static void initializeMap() {
 		if(languages == null) {
 			languages = new HashMap<>();
-			languages.put("JAVA", new JavaLanguage());
-			languages.put("PYTHON", new PythonLanguage());
-			languages.put("GO", new GoLanguage());
-			languages.put("PHP", new PhpLanguage());
-			languages.put("XML", new XmlLanguage());
-			languages.put("HTML", new HtmlLanguage());
+
+			Language[] languagesArray = new Language[]{new JavaLanguage(), new PythonLanguage(), new GoLanguage(), new PhpLanguage(), new XmlLanguage(), new HtmlLanguage()};
+			for(Language l : languagesArray) {
+				languages.put(l.getName().toUpperCase(), l);
+			}
 		}
 	}
 

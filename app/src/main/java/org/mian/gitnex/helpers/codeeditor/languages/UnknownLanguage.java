@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * @author qwerty287
+ */
 public class UnknownLanguage extends Language {
 
 	@Override
