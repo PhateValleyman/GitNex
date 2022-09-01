@@ -1,6 +1,12 @@
 #!/bin/bash
 
-probe_intelij_binarys=("intellij-idea-ultimate-edition" "intellij-idea-community-edition" "android-studio" "intellij" "intelli")
+probe_intelij_binarys=(
+    "intellij-idea-ultimate-edition"
+    "intellij-idea-community-edition"
+    "android-studio"
+    "intellij"
+    "intelli"
+)
 
 function getBinary() {
     echo $(whereis $1 | cut -d ':' -f 2 | tr -d '[:space:]')
