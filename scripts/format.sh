@@ -18,4 +18,9 @@ for bin in $probe_intelij_binarys; do
     [ -n "$intelij" ] && break
 done
 
+[ -z "$intelij" ] && {
+    echo "Couldn't format files, IntelliJ binary is missing"
+    exit 1
+}
+
 $intelij format -s ".idea/codeStyles/Project.xml" -m "${PLUGIN_FILE_PATTERN:-"*"}" -r .
