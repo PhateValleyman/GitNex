@@ -2,6 +2,7 @@ package org.mian.gitnex.helpers.codeeditor.languages;
 
 import com.amrdeveloper.codeview.Code;
 import com.amrdeveloper.codeview.Keyword;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ public class PythonLanguage extends Language {
 	private static final Pattern PATTERN_ATTRIBUTE = Pattern.compile("\\.[a-zA-Z0-9_]+");
 	private static final Pattern PATTERN_OPERATION = Pattern.compile(":|==|>|<|!=|>=|<=|->|=|>|<|%|-|-=|%=|\\+|\\-|\\-=|\\+=|\\^|\\&|\\|::|\\?|\\*");
 	private static final Pattern PATTERN_HASH_COMMENT = Pattern.compile("#(?!TODO )[^\\n]*");
+	private static final Pattern PATTERN_ANNOTATION = Pattern.compile("@.[a-zA-Z0-9_]+");
 
 	public static String getCommentStart() {
 		return "#";
@@ -59,9 +61,9 @@ public class PythonLanguage extends Language {
 				return PATTERN_OPERATION;
 			case TODO_COMMENT:
 				return PATTERN_TODO_COMMENT;
-
 			case ANNOTATION:
-				// TODO supported by Python
+				return PATTERN_ANNOTATION;
+
 			case GENERIC:
 			case MULTI_LINE_COMMENT:
 			default:
