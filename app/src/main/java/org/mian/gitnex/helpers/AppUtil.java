@@ -374,15 +374,11 @@ public class AppUtil {
 	}
 
 	private static Intent wrapBrowserIntent(Context context, Intent intent) {
+
 		final PackageManager pm = context.getPackageManager();
-		final List<ResolveInfo> activities = pm.queryIntentActivities(
-			// We are using a dummy event to query the activities to get the default browser.
-			// Otherwise, this would just return our application, but we need the browser.
-			new Intent(intent).setData(intent.getData().buildUpon().authority("example.com").scheme("https").build()), PackageManager.MATCH_ALL);
+		final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(intent).setData(intent.getData().buildUpon().authority("example.com").scheme("https").build()), PackageManager.MATCH_ALL);
 		final ArrayList<Intent> chooserIntents = new ArrayList<>();
 		final String ourPackageName = context.getPackageName();
-
-		System.out.println(activities);
 
 		Collections.sort(activities, new ResolveInfo.DisplayNameComparator(pm));
 
@@ -407,7 +403,6 @@ public class AppUtil {
 
 		final Intent lastIntent = chooserIntents.remove(chooserIntents.size() - 1);
 		if(chooserIntents.isEmpty()) {
-			// there was only one, no need to show the chooser
 			return lastIntent;
 		}
 
@@ -418,6 +413,7 @@ public class AppUtil {
 	}
 
 	public static void openUrlInBrowser(Context context, String url) {
+
 		TinyDB tinyDB = TinyDB.getInstance(context);
 
 		Intent i;
@@ -434,7 +430,7 @@ public class AppUtil {
 		try {
 			Intent browserIntent = wrapBrowserIntent(context, i);
 			if(browserIntent == null) {
-				throw new ActivityNotFoundException();
+				Toasty.error(context, context.getString(R.string.genericError));
 			}
 			context.startActivity(browserIntent);
 		}
@@ -442,9 +438,6 @@ public class AppUtil {
 			Toasty.error(context, context.getString(R.string.browserOpenFailed));
 		}
 		catch(Exception e) {
-			Log.e("browser", e.getLocalizedMessage());
-			e.printStackTrace();
-			Log.e("browser", e.toString());
 			Toasty.error(context, context.getString(R.string.genericError));
 		}
 	}
