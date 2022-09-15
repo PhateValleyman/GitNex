@@ -124,6 +124,7 @@ dependencies {
 
 spotless {
     java {
+    	target 'src/**/*.java'
         googleJavaFormat().aosp()
     }
 }
