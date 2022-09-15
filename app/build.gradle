@@ -124,7 +124,15 @@ dependencies {
 
 spotless {
     java {
-    	target 'src/**/*.java'
+        target 'src/**/*.java'
+
+        importOrder('android', 'androidx', 'com', 'junit', 'net', 'org', 'java', 'javax', '', '\\#')
+        removeUnusedImports()
+
         googleJavaFormat().aosp()
+
+        indentWithTabs()
+
+        formatAnnotations()
     }
 }
