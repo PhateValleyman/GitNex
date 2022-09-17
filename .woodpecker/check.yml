@@ -11,7 +11,7 @@ pipeline:
     image: alvrme/alpine-android:android-31-jdk11
     group: check
     commands:
-      - ./gradlew :app:spotlessJavaCheck
+      - ./gradlew :app:spotlessCheck
 
   test:
     image: alvrme/alpine-android:android-31-jdk11
