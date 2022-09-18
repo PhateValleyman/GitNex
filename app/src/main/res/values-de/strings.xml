@@ -52,7 +52,7 @@
     <string name="navigationDrawerClose">Navigationsleiste schließen</string>
     <string name="logo">In Gitea anmelden</string>
     <string name="protocol">Protokoll</string>
-    <string name="urlInfoTooltip">1- Wähle das richtige Protokoll (https oder http) \ N2- Gebe die Gitea-URL ein, z.B. try.gitea.io \n3- Falls du 2FA aktiviert hast, gib den Code in das OTP-Code Feld ein. \n4- Für HTTP basic auth nutze BENUTZERNAME@DOMAIN.COM im URL Feld</string>
+    <string name="urlInfoTooltip">1. Wähle das richtige Protokoll (https oder http)\n2. Gebe die Gitea-URL ein, z.B. try.gitea.io\n3. Falls du 2FA aktiviert hast, gib den Code in das OTP-Code-Feld ein.\n4. Für HTTP basic auth nutze BENUTZERNAME@DOMAIN.COM im URL-Feld.</string>
     <string name="malformedUrl">Konnte keine Verbindung zum Host herstellen. Bitte überprüfe die URL oder Port auf irgendwelche Fehler</string>
     <string name="protocolError">Es wird nicht empfohlen, das HTTP-Protokoll zu verwenden, es sei denn, du testest in einem lokalen Netzwerk</string>
     <string name="malformedJson">Fehlerhaftes JSON erhalten. Serveranfrage war nicht erfolgreich</string>
@@ -398,7 +398,7 @@
     <string name="genericWaitFor">Laden ... ☕</string>
     <string name="file">Datei</string>
     <string name="issue">Issue</string>
-    <string name="label">Label</string>
+    <string name="labelTxt">Label</string>
     <string name="release">Release</string>
     <string name="pr">Pull-Request</string>
     <string name="collaborator">Mitarbeiter</string>
@@ -414,6 +414,7 @@
     <string name="reopen">Erneut öffnen</string>
     <string name="openInBrowser">Im Browser öffnen</string>
     <string name="deleteGenericTitle">%s löschen</string>
+    <string name="reset">Zurücksetzen</string>
     <!-- generic copy -->
     <string name="exploreUsers">Benutzer erkunden</string>
     <string name="exploreIssues">Issues erkunden</string>
@@ -423,7 +424,7 @@
     <string name="watchRepositorySuccess">Repository zur Merkliste hinzugefügt</string>
     <string name="unWatchRepositorySuccess">Repository von der Merkliste entfernt</string>
     <string name="titleDrafts">Entwürfe</string>
-    <string name="versionUnsupportedOld">Nicht unterstützte alte Version(%1$s) von Gitea erkannt. Bitte aktualisiere die Instanz auf die neueste stabile Version. Wenn du fortfährst, funktioniert die App möglicherweise nicht ordnungsgemäß.</string>
+    <string name="versionUnsupportedOld">Nicht unterstützte alte Version (%1$s) von Gitea erkannt. Bitte aktualisiere die Instanz auf die neueste stabile Version. Wenn du fortfährst, funktioniert die App möglicherweise nicht ordnungsgemäß.</string>
     <string name="versionUnsupportedNew">Neue Gitea-Version erkannt! Bitte UPDATE GitNex!</string>
     <string name="versionUnknown">Keine Gitea-Instanz erkannt!</string>
     <string name="versionAlertDialogHeader">Nicht unterstützte Version von Gitea</string>
@@ -507,6 +508,9 @@
     <string name="draftsSingleDeleteSuccess">Entwurf erfolgreich gelöscht</string>
     <string name="deleteAllDraftsDialogMessage">Dadurch werden alle Entwürfe für dieses Konto gelöscht. \n\nMit dem Löschen fortfahren?</string>
     <string name="draftSaved">Entwurf wurde automatisch gespeichert.</string>
+    <string name="resetMostReposCounter">Zähler wurde erfolgreich zurückgesetzt</string>
+    <string name="resetCounterDialogMessage">Möchtest du den Zähler für das Repository %s zurücksetzen?</string>
+    <string name="resetCounterAllDialogMessage">Das wird alle Zähler der Repoitories dieses Accounts zurücksetzen.</string>
     <string name="appearanceHintText">Design, Schriften, Zähler</string>
     <string name="securityHintText">Biometrische Authentifizierung, SSL-Zertifikate, Cache</string>
     <string name="languagesHintText">Sprachen</string>
@@ -517,7 +521,7 @@
     <string name="archivedRepositoryMessage">Dieses Repo ist archiviert. Du kannst Dateien anschauen, aber nichts verändern oder erstellen.</string>
     <string name="accountDeletedMessage">Konto erfolgreich gelöscht</string>
     <string name="removeAccountPopupTitle">Konto entfernen</string>
-    <string name="removeAccountPopupMessage">Bist du sicher, dieses Konto aus der App zu entfernen?\n\nDadurch werden nur alle mit diesem Konto in Verbindung stehenden Daten mit entfernt.</string>
+    <string name="removeAccountPopupMessage">Bist du sicher, dieses Konto aus der App zu entfernen?\n\nDadurch werden alle mit diesem Konto in Verbindung stehenden Daten entfernt.</string>
     <string name="addNewAccount">Neues Konto</string>
     <string name="addNewAccountText">Neues Konto hinzufügen</string>
     <string name="accountAlreadyExistsError">Konto existiert bereits in der App</string>
@@ -525,7 +529,7 @@
     <string name="switchAccountSuccess">Auf Konto umgeschaltet: %1$s@%2$s</string>
     <!-- Notifications -->
     <string name="pageTitleNotifications">Benachrichtigungen</string>
-    <string name="noDataNotifications">Keine Nachrichten 🚀</string>
+    <string name="noDataNotifications">Keine Benachrichtigungen 🚀</string>
     <string name="notificationsPollingHeaderText">Benachrichtigungsverzögerung</string>
     <string name="pollingDelaySelectedText">%d Minuten</string>
     <string name="pollingDelayDialogHeaderText">Abfrageverzögerung auswählen</string>
