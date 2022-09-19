@@ -809,7 +809,7 @@
     <string name="timelineStatusReopenedPr">%1$s reopened this pull request %2$s</string>
     <string name="timelineStatusClosedPr">%1$s closed this pull request %2$s</string>
     <string name="timelineStatusMergedPr">%1$s merged this pull request %2$s</string>
-    <string name="timelineStatusRefPr"><![CDATA[%1$s referenced this pull request from a <font color=\'%2$d\'>%3$s</font> %4$s]]>]</string>
+    <string name="timelineStatusRefPr"><![CDATA[%1$s referenced this pull request from a <font color=\'%2$d\'>%3$s</font> %4$s]]></string>
     <string name="timelineReviewRequest">%1$s requested review from %2$s %3$s</string>
     <string name="timelineChangeTitle">%1$s changed title from %2$s to %3$s %4$s</string>
     <string name="timelineLocked">%1$s locked as %2$s and limited conversation to collaborators %3$s</string>
