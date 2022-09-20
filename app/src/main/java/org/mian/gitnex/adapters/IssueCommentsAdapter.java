@@ -466,11 +466,11 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 				// timelineLine2.setVisibility(View.GONE);
 			}
 
-			StringBuilder informationBuilder = null;
+			StringBuilder infoBuilder = null;
 			if (issueComment.getCreatedAt() != null) {
 
 				if (timeFormat.equals("pretty")) {
-					informationBuilder =
+					infoBuilder =
 							new StringBuilder(
 									TimeHelper.formatTime(
 											issueComment.getCreatedAt(),
@@ -482,7 +482,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 									TimeHelper.customDateFormatForToastDateFormat(
 											issueComment.getCreatedAt()));
 				} else if (timeFormat.equals("normal")) {
-					informationBuilder =
+					infoBuilder =
 							new StringBuilder(
 									TimeHelper.formatTime(
 											issueComment.getCreatedAt(),
@@ -492,13 +492,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 				}
 
 				if (!issueComment.getCreatedAt().equals(issueComment.getUpdatedAt())) {
-					if (informationBuilder != null) {
-						informationBuilder
+					if (infoBuilder != null) {
+						infoBuilder
 								.append(context.getString(R.string.colorfulBulletSpan))
 								.append(context.getString(R.string.modifiedText));
 					}
 				}
 			}
+			String info = infoBuilder.toString();
 
 			// label view in timeline
 			if (issueComment.getType().equalsIgnoreCase("label")) {
@@ -527,27 +528,28 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 										AppUtil.getPixelsFromDensity(context, 18));
 
 				TextView textView = new TextView(context);
-				String startText;
-				String endText = context.getString(R.string.timelineLabelEnd, informationBuilder);
+				String text;
 
 				if (issueComment.getBody().equals("")) {
-					startText =
+					text =
 							context.getString(
-									R.string.timelineRemovedLabelStart,
-									issueComment.getUser().getLogin());
+									R.string.timelineRemovedLabel,
+									issueComment.getUser().getLogin(),
+									info);
 					timelineIcon.setColorFilter(
 							context.getResources().getColor(R.color.iconIssuePrClosedColor, null));
 				} else {
-					startText =
+					text =
 							context.getString(
-									R.string.timelineAddedLabelStart,
-									issueComment.getUser().getLogin());
+									R.string.timelineAddedLabel,
+									issueComment.getUser().getLogin(),
+									info);
 				}
 
 				timelineIcon.setImageDrawable(
 						ContextCompat.getDrawable(context, R.drawable.ic_tag));
 
-				SpannableString spannableString = new SpannableString(startText + " " + endText);
+				SpannableString spannableString = new SpannableString(text.replace('|', ' '));
 
 				drawable.setBounds(
 						0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
@@ -558,8 +560,8 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 								() -> {
 									spannableString.setSpan(
 											image,
-											startText.length(),
-											startText.length() + 1,
+											text.indexOf('|'),
+											text.indexOf('|') + 1,
 											Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 									textView.setText(spannableString);
 									timelineData.addView(textView);
@@ -592,11 +594,10 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 				String commitString =
 						context.getString(
-										R.string.timelineAddedCommit,
-										issueComment.getUser().getLogin())
-								+ commitText
-								+ " "
-								+ informationBuilder;
+								R.string.timelineAddedCommit,
+								issueComment.getUser().getLogin(),
+								commitText,
+								info);
 				start.setText(HtmlCompat.fromHtml(commitString, HtmlCompat.FROM_HTML_MODE_LEGACY));
 				start.setTextSize(fontSize);
 
@@ -665,14 +666,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 								context.getString(
 										R.string.timelineAssigneesRemoved,
 										issueComment.getUser().getLogin(),
-										informationBuilder));
+										info));
 					} else {
 						start.setText(
 								context.getString(
 										R.string.timelineAssigneesUnassigned,
 										issueComment.getAssignee().getLogin(),
 										issueComment.getUser().getLogin(),
-										informationBuilder));
+										info));
 					}
 					timelineIcon.setColorFilter(
 							context.getResources().getColor(R.color.iconIssuePrClosedColor, null));
@@ -685,14 +686,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 								context.getString(
 										R.string.timelineAssigneesSelfAssigned,
 										issueComment.getUser().getLogin(),
-										informationBuilder));
+										info));
 					} else {
 						start.setText(
 								context.getString(
 										R.string.timelineAssigneesAssigned,
 										issueComment.getAssignee().getLogin(),
 										issueComment.getUser().getLogin(),
-										informationBuilder));
+										info));
 					}
 				}
 				start.setTextSize(fontSize);
@@ -712,14 +713,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 									R.string.timelineMilestoneAdded,
 									issueComment.getUser().getLogin(),
 									issueComment.getMilestone().getTitle(),
-									informationBuilder));
+									info));
 				} else {
 					start.setText(
 							context.getString(
 									R.string.timelineMilestoneRemoved,
 									issueComment.getUser().getLogin(),
 									issueComment.getOldMilestone().getTitle(),
-									informationBuilder));
+									info));
 					timelineIcon.setColorFilter(
 							context.getResources().getColor(R.color.iconIssuePrClosedColor, null));
 				}
@@ -743,7 +744,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 								context.getString(
 										R.string.timelineStatusClosedIssue,
 										issueComment.getUser().getLogin(),
-										informationBuilder));
+										info));
 						timelineIcon.setColorFilter(
 								context.getResources()
 										.getColor(R.color.iconIssuePrClosedColor, null));
@@ -752,21 +753,18 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 								context.getString(
 										R.string.timelineStatusReopenedIssue,
 										issueComment.getUser().getLogin(),
-										informationBuilder));
+										info));
 					} else if (issueComment.getType().equalsIgnoreCase("commit_ref")) {
 						String commitString =
 								context.getString(
-												R.string.timelineStatusRefIssue,
-												issueComment.getUser().getLogin())
-										+ "<font color='"
-										+ ResourcesCompat.getColor(
-												context.getResources(), R.color.lightBlue, null)
-										+ "'>"
-										+ context.getResources()
+										R.string.timelineStatusRefIssue,
+										issueComment.getUser().getLogin(),
+										ResourcesCompat.getColor(
+												context.getResources(), R.color.lightBlue, null),
+										context.getResources()
 												.getString(R.string.commitText)
-												.toLowerCase()
-										+ "</font> "
-										+ informationBuilder;
+												.toLowerCase(),
+										info);
 						start.setText(
 								HtmlCompat.fromHtml(
 										commitString, HtmlCompat.FROM_HTML_MODE_LEGACY));
@@ -793,7 +791,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 								context.getString(
 										R.string.timelineStatusClosedPr,
 										issueComment.getUser().getLogin(),
-										informationBuilder));
+										info));
 						timelineIcon.setImageDrawable(
 								ContextCompat.getDrawable(context, R.drawable.ic_pull_request));
 						timelineIcon.setColorFilter(
@@ -804,7 +802,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 								context.getString(
 										R.string.timelineStatusMergedPr,
 										issueComment.getUser().getLogin(),
-										informationBuilder));
+										info));
 						timelineIcon.setImageDrawable(
 								ContextCompat.getDrawable(context, R.drawable.ic_pull_request));
 						timelineIcon.setColorFilter(
@@ -812,17 +810,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 					} else if (issueComment.getType().equalsIgnoreCase("commit_ref")) {
 						String commitString =
 								context.getString(
-												R.string.timelineStatusRefPr,
-												issueComment.getUser().getLogin())
-										+ "<font color='"
-										+ ResourcesCompat.getColor(
-												context.getResources(), R.color.lightBlue, null)
-										+ "'>"
-										+ context.getResources()
+										R.string.timelineStatusRefPr,
+										issueComment.getUser().getLogin(),
+										ResourcesCompat.getColor(
+												context.getResources(), R.color.lightBlue, null),
+										context.getResources()
 												.getString(R.string.commitText)
-												.toLowerCase()
-										+ "</font> "
-										+ informationBuilder;
+												.toLowerCase(),
+										info);
 						start.setText(
 								HtmlCompat.fromHtml(
 										commitString, HtmlCompat.FROM_HTML_MODE_LEGACY));
@@ -845,7 +840,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 								context.getString(
 										R.string.timelineStatusReopenedPr,
 										issueComment.getUser().getLogin(),
-										informationBuilder));
+										info));
 						timelineIcon.setImageDrawable(
 								ContextCompat.getDrawable(context, R.drawable.ic_pull_request));
 					}
@@ -873,7 +868,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 									R.string.timelineReviewRequest,
 									issueComment.getUser().getLogin(),
 									issueComment.getAssignee().getLogin(),
-									informationBuilder));
+									info));
 					timelineIcon.setImageDrawable(
 							ContextCompat.getDrawable(context, R.drawable.ic_unwatch));
 				}
@@ -891,7 +886,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 								issueComment.getUser().getLogin(),
 								issueComment.getOldTitle(),
 								issueComment.getNewTitle(),
-								informationBuilder));
+								info));
 				start.setTextSize(fontSize);
 
 				timelineIcon.setImageDrawable(
@@ -910,7 +905,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 									R.string.timelineLocked,
 									issueComment.getUser().getLogin(),
 									issueComment.getBody(),
-									informationBuilder));
+									info));
 					timelineIcon.setImageDrawable(
 							ContextCompat.getDrawable(context, R.drawable.ic_lock));
 				} else if (issueComment.getType().equalsIgnoreCase("unlock")) {
@@ -918,7 +913,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 							context.getString(
 									R.string.timelineUnlocked,
 									issueComment.getUser().getLogin(),
-									informationBuilder));
+									info));
 					timelineIcon.setImageDrawable(
 							ContextCompat.getDrawable(context, R.drawable.ic_key));
 				}
@@ -938,14 +933,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 									R.string.timelineDependencyAdded,
 									issueComment.getUser().getLogin(),
 									issueComment.getDependentIssue().getNumber(),
-									informationBuilder));
+									info));
 				} else if (issueComment.getType().equalsIgnoreCase("remove_dependency")) {
 					start.setText(
 							context.getString(
 									R.string.timelineDependencyRemoved,
 									issueComment.getUser().getLogin(),
 									issueComment.getDependentIssue().getNumber(),
-									informationBuilder));
+									info));
 					timelineIcon.setColorFilter(
 							context.getResources().getColor(R.color.iconIssuePrClosedColor, null));
 				}
@@ -966,13 +961,13 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 							context.getString(
 									R.string.timelineProjectAdded,
 									issueComment.getUser().getLogin(),
-									informationBuilder));
+									info));
 				} else {
 					start.setText(
 							context.getString(
 									R.string.timelineProjectRemoved,
 									issueComment.getUser().getLogin(),
-									informationBuilder));
+									info));
 					timelineIcon.setColorFilter(
 							context.getResources().getColor(R.color.iconIssuePrClosedColor, null));
 				}
@@ -989,13 +984,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 				TextView start = new TextView(context);
 
+				// TODO pretty-print
 				if (issueComment.getType().equalsIgnoreCase("added_deadline")) {
 					start.setText(
 							context.getString(
 									R.string.timelineDueDateAdded,
 									issueComment.getUser().getLogin(),
 									issueComment.getBody(),
-									informationBuilder));
+									info));
 				} else if (issueComment.getType().equalsIgnoreCase("modified_deadline")) {
 					start.setText(
 							context.getString(
@@ -1003,14 +999,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 									issueComment.getUser().getLogin(),
 									issueComment.getBody().split("\\|")[0],
 									issueComment.getBody().split("\\|")[1],
-									informationBuilder));
+									info));
 				} else if (issueComment.getType().equalsIgnoreCase("removed_deadline")) {
 					start.setText(
 							context.getString(
 									R.string.timelineDueDateRemoved,
 									issueComment.getUser().getLogin(),
 									issueComment.getBody(),
-									informationBuilder));
+									info));
 					timelineIcon.setColorFilter(
 							context.getResources().getColor(R.color.iconIssuePrClosedColor, null));
 				}
@@ -1033,14 +1029,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 									issueComment.getUser().getLogin(),
 									issueComment.getOldRef(),
 									issueComment.getNewRef(),
-									informationBuilder));
+									info));
 				} else if (issueComment.getType().equalsIgnoreCase("delete_branch")) {
 					start.setText(
 							context.getString(
 									R.string.timelineBranchDeleted,
 									issueComment.getUser().getLogin(),
 									issueComment.getOldRef(),
-									informationBuilder));
+									info));
 					timelineIcon.setColorFilter(
 							context.getResources().getColor(R.color.iconIssuePrClosedColor, null));
 				}
@@ -1064,19 +1060,19 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 							context.getString(
 									R.string.timelineTimeTrackingStart,
 									issueComment.getUser().getLogin(),
-									informationBuilder));
+									info));
 				} else if (issueComment.getType().equalsIgnoreCase("stop_tracking")) {
 					start.setText(
 							context.getString(
 									R.string.timelineTimeTrackingStop,
 									issueComment.getUser().getLogin(),
-									informationBuilder));
+									info));
 				} else if (issueComment.getType().equalsIgnoreCase("cancel_tracking")) {
 					start.setText(
 							context.getString(
 									R.string.timelineTimeTrackingCancel,
 									issueComment.getUser().getLogin(),
-									informationBuilder));
+									info));
 					timelineIcon.setColorFilter(
 							context.getResources().getColor(R.color.iconIssuePrClosedColor, null));
 				} else if (issueComment.getType().equalsIgnoreCase("add_time_manual")) {
@@ -1085,14 +1081,14 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 									R.string.timelineTimeTrackingAddManualTime,
 									issueComment.getUser().getLogin(),
 									issueComment.getBody(),
-									informationBuilder));
+									info));
 				} else if (issueComment.getType().equalsIgnoreCase("delete_time_manual")) {
 					start.setText(
 							context.getString(
 									R.string.timelineTimeTrackingDeleteManualTime,
 									issueComment.getUser().getLogin(),
 									issueComment.getBody(),
-									informationBuilder));
+									info));
 					timelineIcon.setColorFilter(
 							context.getResources().getColor(R.color.iconIssuePrClosedColor, null));
 				}
@@ -1116,7 +1112,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 									R.string.timelineChangeIssueRef,
 									issueComment.getUser().getLogin(),
 									issueComment.getNewRef(),
-									informationBuilder);
+									info);
 					Markdown.render(
 							context,
 							EmojiParser.parseToUnicode(text),
@@ -1134,7 +1130,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 										R.string.timelineRefIssue,
 										issueComment.getUser().getLogin(),
 										issueComment.getRefIssue().getNumber(),
-										informationBuilder);
+										info);
 						Markdown.render(
 								context,
 								EmojiParser.parseToUnicode(text),
@@ -1146,7 +1142,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 										R.string.timelineRefPr,
 										issueComment.getUser().getLogin(),
 										issueComment.getRefIssue().getNumber(),
-										informationBuilder);
+										info);
 						Markdown.render(
 								context,
 								EmojiParser.parseToUnicode(text),
@@ -1195,7 +1191,7 @@ public class IssueCommentsAdapter extends RecyclerView.Adapter<RecyclerView.View
 						comment,
 						issue.getRepository());
 
-				information.setText(informationBuilder);
+				information.setText(info);
 
 				Bundle bundle1 = new Bundle();
 				bundle1.putAll(bundle);
