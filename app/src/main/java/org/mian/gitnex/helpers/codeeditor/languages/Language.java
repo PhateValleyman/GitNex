@@ -4,27 +4,34 @@ import android.content.Context;
 import android.content.res.Resources;
 import com.amrdeveloper.codeview.Code;
 import com.amrdeveloper.codeview.CodeView;
-import org.mian.gitnex.helpers.codeeditor.theme.Theme;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.mian.gitnex.helpers.codeeditor.theme.Theme;
 
 /**
  * @author qwerty287
  */
-
 public abstract class Language {
 
 	private static HashMap<String, Language> languages = null;
 
 	private static void initializeMap() {
-		if(languages == null) {
+		if (languages == null) {
 			languages = new HashMap<>();
 
-			Language[] languagesArray = new Language[]{new JavaLanguage(), new PythonLanguage(), new GoLanguage(), new PhpLanguage(), new XmlLanguage(), new HtmlLanguage()};
-			for(Language l : languagesArray) {
+			Language[] languagesArray =
+					new Language[] {
+						new JavaLanguage(),
+						new PythonLanguage(),
+						new GoLanguage(),
+						new PhpLanguage(),
+						new XmlLanguage(),
+						new HtmlLanguage()
+					};
+			for (Language l : languagesArray) {
 				languages.put(l.getName().toUpperCase(), l);
 			}
 		}
@@ -64,9 +71,9 @@ public abstract class Language {
 		codeView.setBackgroundColor(resources.getColor(theme.getBackgroundColor(), null));
 
 		// Syntax Colors
-		for(LanguageElement e : Objects.requireNonNull(LanguageElement.class.getEnumConstants())) {
+		for (LanguageElement e : Objects.requireNonNull(LanguageElement.class.getEnumConstants())) {
 			Pattern p = getPattern(e);
-			if(p != null) {
+			if (p != null) {
 				codeView.addSyntaxPattern(p, resources.getColor(theme.getColor(e), null));
 			}
 		}
@@ -76,5 +83,4 @@ public abstract class Language {
 
 		codeView.reHighlightSyntax();
 	}
-
 }

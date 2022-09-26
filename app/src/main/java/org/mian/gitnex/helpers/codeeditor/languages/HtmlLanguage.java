@@ -2,7 +2,6 @@ package org.mian.gitnex.helpers.codeeditor.languages;
 
 import com.amrdeveloper.codeview.Code;
 import com.amrdeveloper.codeview.Keyword;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,20 +11,21 @@ import java.util.regex.Pattern;
 /**
  * @author M M Arif
  */
-
 public class HtmlLanguage extends Language {
 
-	//Brackets and Colons
+	// Brackets and Colons
 	private static final Pattern PATTERN_BUILTINS = Pattern.compile("[,:;[->]{}()]");
 
-	//Data
+	// Data
 	private static final Pattern PATTERN_NUMBERS = Pattern.compile("\\b(\\d*[.]?\\d+)\\b");
 	private static final Pattern PATTERN_CHAR = Pattern.compile("['](.*?)[']");
 	private static final Pattern PATTERN_STRING = Pattern.compile("[\"](.*?)[\"]");
 	private static final Pattern PATTERN_HEX = Pattern.compile("0x[0-9a-fA-F]+");
 	private static final Pattern PATTERN_SINGLE_LINE_COMMENT = Pattern.compile("<!--.*-->");
 	private static final Pattern PATTERN_ATTRIBUTE = Pattern.compile("\\.[a-zA-Z0-9_]+");
-	private static final Pattern PATTERN_OPERATION = Pattern.compile(":|==|>|<|!=|>=|<=|->|=|>|<|%|-|-=|%=|\\+|\\-|\\-=|\\+=|\\^|\\&|\\|::|\\?|\\*");
+	private static final Pattern PATTERN_OPERATION =
+			Pattern.compile(
+					":|==|>|<|!=|>=|<=|->|=|>|<|%|-|-=|%=|\\+|\\-|\\-=|\\+=|\\^|\\&|\\|::|\\?|\\*");
 
 	public static String getCommentStart() {
 		return "//";
@@ -37,7 +37,7 @@ public class HtmlLanguage extends Language {
 
 	@Override
 	public Pattern getPattern(LanguageElement element) {
-		switch(element) {
+		switch (element) {
 			case KEYWORD:
 				return Pattern.compile("\\b(" + String.join("|", getKeywords()) + ")\\b");
 			case BUILTIN:
@@ -67,17 +67,87 @@ public class HtmlLanguage extends Language {
 
 	@Override
 	public String[] getKeywords() {
-		return new String[]{"<html", "<DOCTYPE", "<head", "<title", "<body", "<h1", "<h2", "<h3", "<h4", "<h5", "<h6", "<br", "<hr", "<section", "<header", "<footer", "<select", "<img", "<embed", "<iframe", "<style",
-			"<script", "<div", "<p", "code", "strong", "small", "template", "form", "input", "textarea", "button", "option", "label", "fieldset", "legend", "datalist", "frame", "map", "area", "canvas", "picture", "svg",
-			"audio", "source", "track", "video", "link", "nav", "ul", "ol", "li", "table", "caption", "th", "tr", "td", "thead", "tbody", "tfooter", "col", "span", "main", "article", "aside", "meta", "base", "noscript",
-			"object", "param", "src", "href"};
+		return new String[] {
+			"<html",
+			"<DOCTYPE",
+			"<head",
+			"<title",
+			"<body",
+			"<h1",
+			"<h2",
+			"<h3",
+			"<h4",
+			"<h5",
+			"<h6",
+			"<br",
+			"<hr",
+			"<section",
+			"<header",
+			"<footer",
+			"<select",
+			"<img",
+			"<embed",
+			"<iframe",
+			"<style",
+			"<script",
+			"<div",
+			"<p",
+			"code",
+			"strong",
+			"small",
+			"template",
+			"form",
+			"input",
+			"textarea",
+			"button",
+			"option",
+			"label",
+			"fieldset",
+			"legend",
+			"datalist",
+			"frame",
+			"map",
+			"area",
+			"canvas",
+			"picture",
+			"svg",
+			"audio",
+			"source",
+			"track",
+			"video",
+			"link",
+			"nav",
+			"ul",
+			"ol",
+			"li",
+			"table",
+			"caption",
+			"th",
+			"tr",
+			"td",
+			"thead",
+			"tbody",
+			"tfooter",
+			"col",
+			"span",
+			"main",
+			"article",
+			"aside",
+			"meta",
+			"base",
+			"noscript",
+			"object",
+			"param",
+			"src",
+			"href"
+		};
 	}
 
 	@Override
 	public List<Code> getCodeList() {
 		List<Code> codeList = new ArrayList<>();
 		String[] keywords = getKeywords();
-		for(String keyword : keywords) {
+		for (String keyword : keywords) {
 			codeList.add(new Keyword(keyword));
 		}
 		return codeList;
@@ -101,5 +171,4 @@ public class HtmlLanguage extends Language {
 		characterSet.add('}');
 		return characterSet;
 	}
-
 }

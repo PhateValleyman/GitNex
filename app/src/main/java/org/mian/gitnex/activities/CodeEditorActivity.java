@@ -7,6 +7,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import com.amrdeveloper.codeview.Code;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.mian.gitnex.R;
 import org.mian.gitnex.core.MainGrammarLocator;
 import org.mian.gitnex.databinding.ActivityCodeEditorBinding;
@@ -15,15 +18,11 @@ import org.mian.gitnex.helpers.codeeditor.SourcePositionListener;
 import org.mian.gitnex.helpers.codeeditor.languages.Language;
 import org.mian.gitnex.helpers.codeeditor.languages.UnknownLanguage;
 import org.mian.gitnex.helpers.codeeditor.theme.Theme;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author AmrDeveloper
  * @author M M Arif
  */
-
 public class CodeEditorActivity extends BaseActivity {
 
 	private Theme currentTheme;
@@ -36,17 +35,19 @@ public class CodeEditorActivity extends BaseActivity {
 		binding = ActivityCodeEditorBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-		binding.close.setOnClickListener(view -> {
-			sendResults();
-			finish();
-		});
+		binding.close.setOnClickListener(
+				view -> {
+					sendResults();
+					finish();
+				});
 
 		String fileContent = getIntent().getStringExtra("fileContent");
 		String fileExtension;
 		currentTheme = Theme.getDefaultTheme(this);
 
-		if(getIntent().getStringExtra("fileExtension") != null) {
-			fileExtension = MainGrammarLocator.fromExtension(getIntent().getStringExtra("fileExtension"));
+		if (getIntent().getStringExtra("fileExtension") != null) {
+			fileExtension =
+					MainGrammarLocator.fromExtension(getIntent().getStringExtra("fileExtension"));
 
 			currentLanguage = Language.fromName(fileExtension);
 		}
@@ -63,7 +64,8 @@ public class CodeEditorActivity extends BaseActivity {
 
 	private void configCodeView(Language currentLanguage, String fileContent) {
 
-		binding.codeView.setTypeface(Typeface.createFromAsset(ctx.getAssets(), "fonts/sourcecodeproregular.ttf"));
+		binding.codeView.setTypeface(
+				Typeface.createFromAsset(ctx.getAssets(), "fonts/sourcecodeproregular.ttf"));
 
 		// Setup Line number feature
 		binding.codeView.setEnableLineNumber(true);
@@ -99,20 +101,20 @@ public class CodeEditorActivity extends BaseActivity {
 	private void configLanguageAutoComplete() {
 
 		boolean useModernAutoCompleteAdapter = true;
-		if(useModernAutoCompleteAdapter) {
+		if (useModernAutoCompleteAdapter) {
 			List<Code> codeList = currentLanguage.getCodeList();
 
 			CustomCodeViewAdapter adapter = new CustomCodeViewAdapter(this, codeList);
 
 			binding.codeView.setAdapter(adapter);
-		}
-		else {
+		} else {
 			String[] languageKeywords = currentLanguage.getKeywords();
 
 			final int layoutId = R.layout.list_item_suggestion;
 
 			final int viewId = R.id.suggestItemTextView;
-			ArrayAdapter<String> adapter = new ArrayAdapter<>(this, layoutId, viewId, languageKeywords);
+			ArrayAdapter<String> adapter =
+					new ArrayAdapter<>(this, layoutId, viewId, languageKeywords);
 
 			binding.codeView.setAdapter(adapter);
 		}
@@ -135,10 +137,12 @@ public class CodeEditorActivity extends BaseActivity {
 	}
 
 	private void configSourcePositionListener() {
-		SourcePositionListener sourcePositionListener = new SourcePositionListener(binding.codeView);
-		sourcePositionListener.setOnPositionChanged((line, column) -> {
-			binding.sourcePosition.setText(getString(R.string.sourcePosition, line, column));
-		});
+		SourcePositionListener sourcePositionListener =
+				new SourcePositionListener(binding.codeView);
+		sourcePositionListener.setOnPositionChanged(
+				(line, column) -> {
+					binding.sourcePosition.setText(
+							getString(R.string.sourcePosition, line, column));
+				});
 	}
-
 }

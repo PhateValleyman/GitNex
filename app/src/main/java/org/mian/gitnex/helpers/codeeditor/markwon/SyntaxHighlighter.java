@@ -7,19 +7,18 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import io.noties.markwon.syntax.SyntaxHighlight;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.mian.gitnex.core.MainGrammarLocator;
 import org.mian.gitnex.helpers.codeeditor.languages.Language;
 import org.mian.gitnex.helpers.codeeditor.languages.LanguageElement;
 import org.mian.gitnex.helpers.codeeditor.theme.Theme;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import io.noties.markwon.syntax.SyntaxHighlight;
 
 /**
  * @author qwerty287
  */
-
 public class SyntaxHighlighter implements SyntaxHighlight {
 
 	private final Theme theme;
@@ -32,28 +31,26 @@ public class SyntaxHighlighter implements SyntaxHighlight {
 		this.fallback = fallback;
 	}
 
-	@NonNull
-	public static SyntaxHighlighter create(Context context, @NonNull Theme theme) {
+	@NonNull public static SyntaxHighlighter create(Context context, @NonNull Theme theme) {
 		return new SyntaxHighlighter(context, theme, null);
 	}
 
-	@NonNull
-	public static SyntaxHighlighter create(Context context, @NonNull Theme theme, @Nullable String fallback) {
+	@NonNull public static SyntaxHighlighter create(
+			Context context, @NonNull Theme theme, @Nullable String fallback) {
 		return new SyntaxHighlighter(context, theme, fallback);
 	}
 
-	@NonNull
-	@Override
+	@NonNull @Override
 	public CharSequence highlight(@Nullable String info, @NonNull String code) {
-		if(code.isEmpty()) {
+		if (code.isEmpty()) {
 			return code;
 		}
 
-		if(info == null) {
+		if (info == null) {
 			info = fallback;
 		}
 
-		if(info != null) {
+		if (info != null) {
 			info = MainGrammarLocator.fromExtension(info);
 		}
 
@@ -61,16 +58,20 @@ public class SyntaxHighlighter implements SyntaxHighlight {
 
 		Language l = Language.fromName(info);
 
-		for(LanguageElement e : Objects.requireNonNull(LanguageElement.class.getEnumConstants())) {
+		for (LanguageElement e : Objects.requireNonNull(LanguageElement.class.getEnumConstants())) {
 			Pattern p = l.getPattern(e);
-			if(p != null) {
+			if (p != null) {
 				Matcher matcher = p.matcher(highlightedCode);
-				while(matcher.find()) {
-					highlightedCode.setSpan(new ForegroundColorSpan(context.getResources().getColor(theme.getColor(e), null)), matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				while (matcher.find()) {
+					highlightedCode.setSpan(
+							new ForegroundColorSpan(
+									context.getResources().getColor(theme.getColor(e), null)),
+							matcher.start(),
+							matcher.end(),
+							Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 				}
 			}
 		}
 		return highlightedCode;
 	}
-
 }

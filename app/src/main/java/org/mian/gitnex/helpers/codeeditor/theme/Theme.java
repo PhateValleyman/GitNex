@@ -16,7 +16,9 @@ public interface Theme {
 	FiveColorsDarkTheme FIVE_COLORS_DARK = new FiveColorsDarkTheme();
 
 	static Theme getDefaultTheme(Context context) {
-		return AppUtil.getColorFromAttribute(context, R.attr.isDark) == 1 ? FIVE_COLORS_DARK : FIVE_COLORS;
+		return AppUtil.getColorFromAttribute(context, R.attr.isDark) == 1
+				? FIVE_COLORS_DARK
+				: FIVE_COLORS;
 	}
 
 	@ColorRes
@@ -27,5 +29,4 @@ public interface Theme {
 
 	@ColorRes
 	int getBackgroundColor();
-
 }

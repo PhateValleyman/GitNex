@@ -3,15 +3,13 @@ package org.mian.gitnex.core;
 /**
  * @author opyale
  */
-
 public class MainGrammarLocator {
 
-	public static final String DEFAULT_FALLBACK_LANGUAGE = null;//"clike";
+	public static final String DEFAULT_FALLBACK_LANGUAGE = null; // "clike";
 
 	public static String fromExtension(String extension) {
 
-		switch(extension.toLowerCase()) {
-
+		switch (extension.toLowerCase()) {
 			case "b":
 			case "bf":
 				return "brainfuck";
@@ -61,9 +59,9 @@ public class MainGrammarLocator {
 			case "md":
 				return "markdown";
 
-			//case "xml":
-			//case "html":
-			//case "htm":
+				// case "xml":
+				// case "html":
+				// case "htm":
 			case "mathml":
 			case "svg":
 				return "markup";
@@ -83,13 +81,11 @@ public class MainGrammarLocator {
 
 			case "yaml":
 			case "yml":
-			case "properties": // This extension doesn't correspond to YAML, but it's the next best option
+			case "properties": // This extension doesn't correspond to YAML, but it's the next best
+				// option
 				return "yaml";
-
 		}
 
 		return extension;
-
 	}
-
 }

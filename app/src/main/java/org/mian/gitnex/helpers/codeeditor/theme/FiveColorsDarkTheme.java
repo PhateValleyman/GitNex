@@ -13,7 +13,7 @@ public class FiveColorsDarkTheme implements Theme {
 	@Override
 	@ColorRes
 	public int getColor(LanguageElement element) {
-		switch(element) {
+		switch (element) {
 			case HEX:
 			case NUMBER:
 			case KEYWORD:
@@ -48,5 +48,4 @@ public class FiveColorsDarkTheme implements Theme {
 	public int getBackgroundColor() {
 		return R.color.five_dark_black;
 	}
-
 }
