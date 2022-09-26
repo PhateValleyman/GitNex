@@ -30,7 +30,8 @@ public abstract class Language {
 						new PhpLanguage(),
 						new XmlLanguage(),
 						new HtmlLanguage(),
-						new JavaScriptLanguage()
+						new JavaScriptLanguage(),
+						new TypeScriptLanguage()
 					};
 			for (Language l : languagesArray) {
 				languages.put(l.getName().toUpperCase(), l);
