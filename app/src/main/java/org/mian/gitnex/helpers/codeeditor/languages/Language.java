@@ -32,7 +32,9 @@ public abstract class Language {
 						new HtmlLanguage(),
 						new JavaScriptLanguage(),
 						new TypeScriptLanguage(),
-						new JSONLanguage()
+						new JsonLanguage(),
+						new CppLanguage(),
+						new CLanguage()
 					};
 			for (Language l : languagesArray) {
 				languages.put(l.getName().toUpperCase(), l);

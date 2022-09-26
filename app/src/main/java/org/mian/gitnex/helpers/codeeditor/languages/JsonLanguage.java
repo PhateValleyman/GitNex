@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * @author qwerty287
  */
-public class JSONLanguage extends Language {
+public class JsonLanguage extends Language {
 
 	private static final Pattern PATTERN_SINGLE_LINE_COMMENT = Pattern.compile("//[^\\n]*");
 	private static final Pattern PATTERN_MULTI_LINE_COMMENT =
