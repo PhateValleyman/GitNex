@@ -29,7 +29,8 @@ public abstract class Language {
 						new GoLanguage(),
 						new PhpLanguage(),
 						new XmlLanguage(),
-						new HtmlLanguage()
+						new HtmlLanguage(),
+						new JavaScriptLanguage()
 					};
 			for (Language l : languagesArray) {
 				languages.put(l.getName().toUpperCase(), l);
