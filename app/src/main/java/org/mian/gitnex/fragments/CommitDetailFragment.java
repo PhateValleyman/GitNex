@@ -242,9 +242,7 @@ public class CommitDetailFragment extends Fragment {
 																					.getDate()),
 																	getResources()
 																			.getConfiguration()
-																			.locale,
-																	"pretty",
-																	requireContext())),
+																			.locale)),
 													HtmlCompat.FROM_HTML_MODE_COMPACT));
 								} else {
 									binding.commitAuthorAndCommitter.setText(
@@ -263,9 +261,7 @@ public class CommitDetailFragment extends Fragment {
 																					.getDate()),
 																	getResources()
 																			.getConfiguration()
-																			.locale,
-																	"pretty",
-																	requireContext())),
+																			.locale)),
 													HtmlCompat.FROM_HTML_MODE_COMPACT));
 								}
 
