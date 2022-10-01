@@ -26,7 +26,7 @@ import org.mian.gitnex.helpers.Markdown;
  */
 public class CreateNoteActivity extends BaseActivity {
 
-	private ActivityCreateNoteBinding activityCreateNoteBinding;
+	private ActivityCreateNoteBinding binding;
 	private boolean renderMd = false;
 	private String action;
 	private Notes notes;
@@ -38,19 +38,19 @@ public class CreateNoteActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 
-		activityCreateNoteBinding = ActivityCreateNoteBinding.inflate(getLayoutInflater());
+		binding = ActivityCreateNoteBinding.inflate(getLayoutInflater());
 		notesApi = BaseApi.getInstance(ctx, NotesApi.class);
 
-		setContentView(activityCreateNoteBinding.getRoot());
-		setSupportActionBar(activityCreateNoteBinding.toolbar);
+		setContentView(binding.getRoot());
+		setSupportActionBar(binding.toolbar);
 
 		InputMethodManager imm =
 				(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		assert imm != null;
-		imm.showSoftInput(activityCreateNoteBinding.noteContent, InputMethodManager.SHOW_IMPLICIT);
-		activityCreateNoteBinding.noteContent.requestFocus();
+		imm.showSoftInput(binding.noteContent, InputMethodManager.SHOW_IMPLICIT);
+		binding.noteContent.requestFocus();
 
-		activityCreateNoteBinding.close.setOnClickListener(view -> finish());
+		binding.close.setOnClickListener(view -> finish());
 
 		if (getIntent().getStringExtra("action") != null) {
 			action = getIntent().getStringExtra("action");
@@ -58,26 +58,25 @@ public class CreateNoteActivity extends BaseActivity {
 			action = "";
 		}
 
-		activityCreateNoteBinding.close.setOnClickListener(close -> finish());
-		activityCreateNoteBinding.toolbarTitle.setMovementMethod(new ScrollingMovementMethod());
+		binding.close.setOnClickListener(close -> finish());
+		binding.toolbarTitle.setMovementMethod(new ScrollingMovementMethod());
 
 		if (action.equalsIgnoreCase("edit")) {
 
 			noteId = getIntent().getIntExtra("noteId", 0);
 			notes = notesApi.fetchNoteById(noteId);
-			activityCreateNoteBinding.noteContent.setText(notes.getContent());
+			binding.noteContent.setText(notes.getContent());
 
-			activityCreateNoteBinding.markdownPreview.setVisibility(View.GONE);
-			activityCreateNoteBinding.toolbarTitle.setText(R.string.editNote);
+			binding.markdownPreview.setVisibility(View.GONE);
+			binding.toolbarTitle.setText(R.string.editNote);
 
-			activityCreateNoteBinding.noteContent.addTextChangedListener(
+			binding.noteContent.addTextChangedListener(
 					new TextWatcher() {
 
 						@Override
 						public void afterTextChanged(Editable s) {
 
-							String text =
-									activityCreateNoteBinding.noteContent.getText().toString();
+							String text = binding.noteContent.getText().toString();
 
 							if (!text.isEmpty()) {
 
@@ -95,16 +94,15 @@ public class CreateNoteActivity extends BaseActivity {
 					});
 		} else if (action.equalsIgnoreCase("add")) {
 
-			activityCreateNoteBinding.markdownPreview.setVisibility(View.GONE);
+			binding.markdownPreview.setVisibility(View.GONE);
 
-			activityCreateNoteBinding.noteContent.addTextChangedListener(
+			binding.noteContent.addTextChangedListener(
 					new TextWatcher() {
 
 						@Override
 						public void afterTextChanged(Editable s) {
 
-							String text =
-									activityCreateNoteBinding.noteContent.getText().toString();
+							String text = binding.noteContent.getText().toString();
 
 							if (!text.isEmpty() && text.length() > 4) {
 
@@ -129,7 +127,7 @@ public class CreateNoteActivity extends BaseActivity {
 								CharSequence s, int start, int before, int count) {}
 					});
 		} else {
-			activityCreateNoteBinding.markdownPreview.setVisibility(View.VISIBLE);
+			binding.markdownPreview.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -163,18 +161,15 @@ public class CreateNoteActivity extends BaseActivity {
 							ctx,
 							EmojiParser.parseToUnicode(
 									Objects.requireNonNull(
-											activityCreateNoteBinding
-													.noteContent
-													.getText()
-													.toString())),
-							activityCreateNoteBinding.markdownPreview);
+											binding.noteContent.getText().toString())),
+							binding.markdownPreview);
 
-					activityCreateNoteBinding.markdownPreview.setVisibility(View.VISIBLE);
-					activityCreateNoteBinding.noteContent.setVisibility(View.GONE);
+					binding.markdownPreview.setVisibility(View.VISIBLE);
+					binding.noteContent.setVisibility(View.GONE);
 					renderMd = true;
 				} else {
-					activityCreateNoteBinding.markdownPreview.setVisibility(View.GONE);
-					activityCreateNoteBinding.noteContent.setVisibility(View.VISIBLE);
+					binding.markdownPreview.setVisibility(View.GONE);
+					binding.noteContent.setVisibility(View.VISIBLE);
 					renderMd = false;
 				}
 			}

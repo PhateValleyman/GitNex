@@ -34,7 +34,7 @@ import org.mian.gitnex.helpers.Toasty;
  */
 public class NotesFragment extends Fragment {
 
-	private FragmentNotesBinding fragmentNotesBinding;
+	private FragmentNotesBinding binding;
 	private Context ctx;
 	private NotesAdapter adapter;
 	private NotesApi notesApi;
@@ -45,7 +45,7 @@ public class NotesFragment extends Fragment {
 	public View onCreateView(
 			@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		fragmentNotesBinding = FragmentNotesBinding.inflate(inflater, container, false);
+		binding = FragmentNotesBinding.inflate(inflater, container, false);
 
 		ctx = getContext();
 		setHasOptionsMenu(true);
@@ -55,7 +55,7 @@ public class NotesFragment extends Fragment {
 
 		noteIntent = new Intent(ctx, CreateNoteActivity.class);
 
-		fragmentNotesBinding.newNote.setOnClickListener(
+		binding.newNote.setOnClickListener(
 				view -> {
 					noteIntent.putExtra("action", "add");
 					ctx.startActivity(noteIntent);
@@ -64,30 +64,29 @@ public class NotesFragment extends Fragment {
 		notesList = new ArrayList<>();
 		notesApi = BaseApi.getInstance(ctx, NotesApi.class);
 
-		fragmentNotesBinding.recyclerView.setHasFixedSize(true);
-		fragmentNotesBinding.recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
+		binding.recyclerView.setHasFixedSize(true);
+		binding.recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 
-		fragmentNotesBinding.recyclerView.setPadding(0, 0, 0, 220);
-		fragmentNotesBinding.recyclerView.setClipToPadding(false);
+		binding.recyclerView.setPadding(0, 0, 0, 220);
+		binding.recyclerView.setClipToPadding(false);
 
 		adapter = new NotesAdapter(ctx, notesList);
 
-		fragmentNotesBinding.pullToRefresh.setOnRefreshListener(
+		binding.pullToRefresh.setOnRefreshListener(
 				() ->
 						new Handler(Looper.getMainLooper())
 								.postDelayed(
 										() -> {
 											notesList.clear();
-											fragmentNotesBinding.pullToRefresh.setRefreshing(false);
-											fragmentNotesBinding.progressBar.setVisibility(
-													View.VISIBLE);
+											binding.pullToRefresh.setRefreshing(false);
+											binding.progressBar.setVisibility(View.VISIBLE);
 											fetchDataAsync();
 										},
 										250));
 
 		fetchDataAsync();
 
-		return fragmentNotesBinding.getRoot();
+		return binding.getRoot();
 	}
 
 	@Override
@@ -102,20 +101,20 @@ public class NotesFragment extends Fragment {
 				.observe(
 						getViewLifecycleOwner(),
 						allNotes -> {
-							fragmentNotesBinding.pullToRefresh.setRefreshing(false);
+							binding.pullToRefresh.setRefreshing(false);
 							assert allNotes != null;
 							if (allNotes.size() > 0) {
 
 								notesList.clear();
-								fragmentNotesBinding.noData.setVisibility(View.GONE);
+								binding.noData.setVisibility(View.GONE);
 								notesList.addAll(allNotes);
 								adapter.notifyDataChanged();
-								fragmentNotesBinding.recyclerView.setAdapter(adapter);
+								binding.recyclerView.setAdapter(adapter);
 							} else {
 
-								fragmentNotesBinding.noData.setVisibility(View.VISIBLE);
+								binding.noData.setVisibility(View.VISIBLE);
 							}
-							fragmentNotesBinding.progressBar.setVisibility(View.GONE);
+							binding.progressBar.setVisibility(View.GONE);
 						});
 	}
 
