@@ -190,10 +190,12 @@
                         android:orientation="vertical">
 
                         <LinearLayout
+                            android:paddingTop="@dimen/dimen8dp"
                             android:id="@+id/statuses"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
+                            android:padding="@dimen/dimen2dp"
                             android:minHeight="@dimen/dimen48dp"
                             android:orientation="horizontal">
 
@@ -208,9 +210,7 @@
                                 android:paddingBottom="@dimen/dimen10dp"
                                 android:paddingStart="@dimen/dimen0dp"
                                 android:paddingEnd="@dimen/dimen0dp"
-                                android:autoLink="web"
-                                android:textColorLink="@color/lightBlue"
-                                android:textColor="@color/lightGray"/>
+                                android:textColor="?attr/primaryTextColor"/>
 
                             <ImageView
                                 android:id="@+id/statusesExpandCollapse"
@@ -220,11 +220,12 @@
                                 android:layout_gravity="center_vertical|end"
                                 android:background="?android:attr/selectableItemBackgroundBorderless"
                                 android:contentDescription="@string/generalImgContentText"
-                                app:srcCompat="@drawable/ic_chevron_up"/>
+                                app:srcCompat="@drawable/ic_chevron_down"/>
 
                         </LinearLayout>
 
                         <LinearLayout
+                            android:visibility="gone"
                             android:id="@+id/statusesLv"
                             android:orientation="vertical"
                             android:layout_width="match_parent"
@@ -234,7 +235,6 @@
                                 android:id="@+id/statusesList"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textIsSelectable="true"
                                 android:textSize="@dimen/dimen16sp"
                                 android:textColor="?attr/primaryTextColor"/>
 

@@ -88,15 +88,16 @@ public class CommitDetailFragment extends Fragment {
 		getDiff();
 		getStatuses();
 
-		binding.statuses.setOnClickListener(view -> {
-			if (binding.statusesLv.getVisibility() == View.GONE) {
-				binding.statusesExpandCollapse.setImageResource(R.drawable.ic_chevron_up);
-				binding.statusesLv.setVisibility(View.VISIBLE);
-			} else {
-				binding.statusesExpandCollapse.setImageResource(R.drawable.ic_chevron_down);
-				binding.statusesLv.setVisibility(View.GONE);
-			}
-		});
+		binding.statuses.setOnClickListener(
+				view -> {
+					if (binding.statusesLv.getVisibility() == View.GONE) {
+						binding.statusesExpandCollapse.setImageResource(R.drawable.ic_chevron_up);
+						binding.statusesLv.setVisibility(View.VISIBLE);
+					} else {
+						binding.statusesExpandCollapse.setImageResource(R.drawable.ic_chevron_down);
+						binding.statusesLv.setVisibility(View.GONE);
+					}
+				});
 
 		binding.close.setOnClickListener((v) -> requireActivity().finish());
 
@@ -386,43 +387,67 @@ public class CommitDetailFragment extends Fragment {
 
 	private void getStatuses() {
 		RetrofitClient.getApiInterface(requireContext())
-			.repoListStatuses(repoOwner, repoName, sha, null, null, null, null)
-			.enqueue(
-				new Callback<>() {
+				.repoListStatuses(repoOwner, repoName, sha, null, null, null, null)
+				.enqueue(
+						new Callback<>() {
 
-					@Override
-					public void onResponse(
-						@NonNull Call<List<CommitStatus>> call,
-						@NonNull Response<List<CommitStatus>> response) {
+							@Override
+							public void onResponse(
+									@NonNull Call<List<CommitStatus>> call,
+									@NonNull Response<List<CommitStatus>> response) {
 
-						checkLoading();
+								checkLoading();
 
-						if (!response.isSuccessful() || response.body() == null) {
-							onFailure(call, new Throwable());
-							return;
-						}
+								if (!response.isSuccessful() || response.body() == null) {
+									onFailure(call, new Throwable());
+									return;
+								}
 
-						if (response.body().size() < 1) {
-							binding.statusesLvMain.setVisibility(View.GONE);
-							return;
-						}
-						binding.statusesList.setLayoutManager(new LinearLayoutManager(requireContext()));
-						binding.statusesList.setAdapter(new CommitStatusesAdapter(response.body()));
+								if (response.body().size() < 1) {
+									binding.statusesLvMain.setVisibility(View.GONE);
+									return;
+								}
 
-					}
+								// merge statuses: a status can be added multiple times with the
+								// same context, so we only use the newest one
+								ArrayList<CommitStatus> result = new ArrayList<>();
+								for (CommitStatus c : response.body()) {
+									CommitStatus statusInList = null;
+									for (CommitStatus s : result) {
+										if (Objects.equals(s.getContext(), c.getContext())) {
+											statusInList = s;
+											break;
+										}
+									}
+									if (statusInList != null) {
+										// if the status that's already in the list was created
+										// before this one, replace it
+										if (statusInList.getCreatedAt().before(c.getCreatedAt())) {
+											result.remove(statusInList);
+											result.add(c);
+										}
+									} else {
+										result.add(c);
+									}
+								}
 
-					@Override
-					public void onFailure(
-						@NonNull Call<List<CommitStatus>> call, @NonNull Throwable t) {
+								binding.statusesList.setLayoutManager(
+										new LinearLayoutManager(requireContext()));
+								binding.statusesList.setAdapter(new CommitStatusesAdapter(result));
+							}
 
-						checkLoading();
-						if (getContext() != null) {
-							Toasty.error(
-								requireContext(), getString(R.string.genericError));
-							requireActivity().finish();
-						}
-					}
-				});
+							@Override
+							public void onFailure(
+									@NonNull Call<List<CommitStatus>> call, @NonNull Throwable t) {
+
+								checkLoading();
+								if (getContext() != null) {
+									Toasty.error(
+											requireContext(), getString(R.string.genericError));
+									requireActivity().finish();
+								}
+							}
+						});
 	}
 
 	private void checkLoading() {
