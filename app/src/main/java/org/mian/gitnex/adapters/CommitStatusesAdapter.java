@@ -20,11 +20,11 @@ import org.mian.gitnex.helpers.Toasty;
  * @author qwerty287
  */
 public class CommitStatusesAdapter
-		extends RecyclerView.Adapter<CommitStatusesAdapter.CronTasksViewHolder> {
+		extends RecyclerView.Adapter<CommitStatusesAdapter.CommitStatusesViewHolder> {
 
 	private final List<CommitStatus> statuses;
 
-	static class CronTasksViewHolder extends RecyclerView.ViewHolder {
+	static class CommitStatusesViewHolder extends RecyclerView.ViewHolder {
 
 		private CommitStatus status;
 
@@ -32,7 +32,7 @@ public class CommitStatusesAdapter
 		private final TextView description;
 		private final ImageView icon;
 
-		private CronTasksViewHolder(View itemView) {
+		private CommitStatusesViewHolder(View itemView) {
 
 			super(itemView);
 
@@ -59,18 +59,18 @@ public class CommitStatusesAdapter
 	}
 
 	@NonNull @Override
-	public CommitStatusesAdapter.CronTasksViewHolder onCreateViewHolder(
+	public CommitStatusesAdapter.CommitStatusesViewHolder onCreateViewHolder(
 			@NonNull ViewGroup parent, int viewType) {
 
 		View v =
 				LayoutInflater.from(parent.getContext())
 						.inflate(R.layout.list_commit_status, parent, false);
-		return new CommitStatusesAdapter.CronTasksViewHolder(v);
+		return new CommitStatusesAdapter.CommitStatusesViewHolder(v);
 	}
 
 	@Override
 	public void onBindViewHolder(
-			@NonNull CommitStatusesAdapter.CronTasksViewHolder holder, int position) {
+			@NonNull CommitStatusesAdapter.CommitStatusesViewHolder holder, int position) {
 
 		CommitStatus currentItem = statuses.get(position);
 		Context ctx = holder.itemView.getContext();
