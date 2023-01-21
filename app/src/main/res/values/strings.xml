@@ -29,7 +29,7 @@
     <string name="navAbout">About</string>
     <string name="navRate">Rate GitNex</string>
     <string name="navLogout">Logout</string>
-    <string name="navAdministration">Administration</string>
+    <string name="navAdministration">Instance Administration</string>
     <string name="navMyIssues">My Issues</string>
     <string name="navMostVisited">Most Visited Repos</string>
     <string name="navNotes">Notes</string>
