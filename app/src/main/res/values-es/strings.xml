@@ -10,7 +10,7 @@
     <string name="navAbout">Acerca de</string>
     <string name="navRate">Valorar GitNex</string>
     <string name="navLogout">Cerrar sesión</string>
-    <string name="navAdministration">Administración</string>
+    <string name="navAdministration">Administración de la instancia</string>
     <string name="navMyIssues">Mis incidencias</string>
     <string name="navMostVisited">Repositorios más visitados</string>
     <string name="navNotes">Notas</string>
@@ -30,7 +30,7 @@
     <string name="pageTitleAddEmail">Añadir dirección de email</string>
     <string name="pageTitleNewFile">Nuevo archivo</string>
     <string name="pageTitleExplore">Explorar</string>
-    <string name="pageTitleAdministration">Administración de Gitea</string>
+    <string name="pageTitleAdministration">Administración</string>
     <string name="pageTitleNewPullRequest">Nuevo pull request</string>
     <string name="pageTitleUsers">Usuarios</string>
     <!-- page titles -->
@@ -51,7 +51,6 @@
     <string name="instanceUrl">URL de instancia</string>
     <string name="navigationDrawerOpen">Abrir cajón de navegación</string>
     <string name="navigationDrawerClose">Cerrar cajón de navegación</string>
-    <string name="logo">Iniciar sesión en Gitea</string>
     <string name="protocol">Protocolo</string>
     <string name="urlInfoTooltip">1- Elige el protocolo correcto (HTTPS o HTTP).\n2- Introduce la URL de Gitea p.e: try.gitea.io.\n3- Si has activado 2FA, introduce el código OTP.\n4- Para autenticación HTTP básica usa USUARIO@DOMAIN.COM en la URL.</string>
     <string name="malformedUrl">No se ha podido conectar con el host. Por favor, compruebe su URL o puerto para ver si hay algún error</string>
@@ -674,15 +673,16 @@
     <string name="commitText">commit</string>
     <string name="timelineAddedCommit">%1$s ha añadido %2$s %3$s</string>
     <!-- the | is replaced by the label -->
-    <string name="timelineAddedLabel">%1$s ha añadido la etiqueta %2$s</string>
+    <string name="timelineAddedLabel">%1$s ha añadido | la etiqueta %2$s</string>
     <!-- the | is replaced by the label -->
-    <string name="timelineRemovedLabel">%1$s ha eliminado la etiqueta %2$s</string>
+    <string name="timelineRemovedLabel">%1$s ha eliminado | la etiqueta %2$s</string>
     <string name="timelineAssigneesRemoved">%1$s ha eliminado su asignación %2$s</string>
     <string name="timelineAssigneesUnassigned">%1$s ha sido desasignado por %2$s %3$s</string>
     <string name="timelineAssigneesSelfAssigned">%1$s se ha autoasignado %2$s</string>
     <string name="timelineAssigneesAssigned">%1$s ha sido asignado por %2$s %3$s</string>
     <string name="timelineMilestoneAdded">%1$s ha añadido %2$s al hito %3$s</string>
     <string name="timelineMilestoneRemoved">%1$s ha eliminado %2$s del hito %3$s</string>
+    <string name="timelineMilestoneDeleted">%1$s ha añadido esto a un hito eliminado %2$s</string>
     <string name="timelineStatusClosedIssue">%1$s ha cerrado la incidencia %2$s</string>
     <string name="timelineStatusReopenedIssue">%1$s ha reabierto la incidencia %2$s</string>
     <string name="timelineStatusReopenedPr">%1$s ha reabierto este Pull Request %2$s</string>
