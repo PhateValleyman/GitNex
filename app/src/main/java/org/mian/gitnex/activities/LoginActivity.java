@@ -641,7 +641,6 @@ public class LoginActivity extends BaseActivity {
 		CreateAccessTokenOption createUserToken = new CreateAccessTokenOption().name(tokenName);
 		if (giteaVersion.higherOrEqual("1.19.0")) {
 			createUserToken.addScopesItem("all");
-			createUserToken.addScopesItem("sudo");
 		}
 		Call<AccessToken> callCreateToken;
 
