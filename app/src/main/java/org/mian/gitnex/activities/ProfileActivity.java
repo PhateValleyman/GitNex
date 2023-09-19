@@ -147,7 +147,7 @@ public class ProfileActivity extends BaseActivity implements BottomSheetListener
 		}
 
 		call.enqueue(
-				new Callback<Void>() {
+				new Callback<>() {
 
 					@Override
 					public void onResponse(

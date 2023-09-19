@@ -36,6 +36,7 @@ import org.mian.gitnex.database.api.BaseApi;
 import org.mian.gitnex.database.api.UserAccountsApi;
 import org.mian.gitnex.database.models.UserAccount;
 import org.mian.gitnex.databinding.ActivityMainBinding;
+import org.mian.gitnex.fragments.AccountSettingsFragment;
 import org.mian.gitnex.fragments.AdministrationFragment;
 import org.mian.gitnex.fragments.BottomSheetDraftsFragment;
 import org.mian.gitnex.fragments.BottomSheetMyIssuesFilterFragment;
@@ -44,7 +45,6 @@ import org.mian.gitnex.fragments.DraftsFragment;
 import org.mian.gitnex.fragments.ExploreFragment;
 import org.mian.gitnex.fragments.MostVisitedReposFragment;
 import org.mian.gitnex.fragments.MyIssuesFragment;
-import org.mian.gitnex.fragments.MyProfileFragment;
 import org.mian.gitnex.fragments.MyRepositoriesFragment;
 import org.mian.gitnex.fragments.NotesFragment;
 import org.mian.gitnex.fragments.NotificationsFragment;
@@ -85,6 +85,7 @@ public class MainActivity extends BaseActivity
 
 	private BottomSheetListener profileInitListener;
 	private FragmentRefreshListener fragmentRefreshListenerMyIssues;
+	private String username;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -139,8 +140,8 @@ public class MainActivity extends BaseActivity
 			toolbarTitle.setText(getResources().getString(R.string.pageTitleExplore));
 		} else if (fragmentById instanceof NotificationsFragment) {
 			toolbarTitle.setText(R.string.pageTitleNotifications);
-		} else if (fragmentById instanceof MyProfileFragment) {
-			toolbarTitle.setText(getResources().getString(R.string.navProfile));
+		} else if (fragmentById instanceof AccountSettingsFragment) {
+			toolbarTitle.setText(getResources().getString(R.string.navAccount));
 		} else if (fragmentById instanceof MostVisitedReposFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.navMostVisited));
 		} else if (fragmentById instanceof NotesFragment) {
@@ -241,6 +242,7 @@ public class MainActivity extends BaseActivity
 						userFullName.setTypeface(myTypeface);
 
 						if (getAccount().getUserInfo() != null) {
+							username = getAccount().getUserInfo().getLogin();
 							String userEmailNav = getAccount().getUserInfo().getEmail();
 							String userFullNameNav = getAccount().getFullName();
 							String userAvatarNav = getAccount().getUserInfo().getAvatarUrl();
@@ -270,15 +272,9 @@ public class MainActivity extends BaseActivity
 
 						userAvatar.setOnClickListener(
 								v -> {
-									toolbarTitle.setText(
-											getResources().getString(R.string.navProfile));
-									getSupportFragmentManager()
-											.beginTransaction()
-											.replace(
-													R.id.fragment_container,
-													new MyProfileFragment())
-											.commit();
-									navigationView.setCheckedItem(R.id.nav_profile);
+									Intent intentProfile = new Intent(ctx, ProfileActivity.class);
+									intentProfile.putExtra("username", username);
+									ctx.startActivity(intentProfile);
 									drawer.closeDrawers();
 								});
 
@@ -388,11 +384,9 @@ public class MainActivity extends BaseActivity
 					return;
 
 				case "profile":
-					getSupportFragmentManager()
-							.beginTransaction()
-							.replace(R.id.fragment_container, new MyProfileFragment())
-							.commit();
-					navigationView.setCheckedItem(R.id.nav_profile);
+					Intent intentProfile = new Intent(ctx, ProfileActivity.class);
+					intentProfile.putExtra("username", username);
+					ctx.startActivity(intentProfile);
 					return;
 
 				case "admin":
@@ -442,12 +436,12 @@ public class MainActivity extends BaseActivity
 					break;
 
 				case 4:
-					toolbarTitle.setText(getResources().getString(R.string.navProfile));
+					toolbarTitle.setText(getResources().getString(R.string.navAccount));
 					getSupportFragmentManager()
 							.beginTransaction()
-							.replace(R.id.fragment_container, new MyProfileFragment())
+							.replace(R.id.fragment_container, new AccountSettingsFragment())
 							.commit();
-					navigationView.setCheckedItem(R.id.nav_profile);
+					navigationView.setCheckedItem(R.id.nav_account_settings);
 					break;
 
 				case 5:
@@ -654,11 +648,11 @@ public class MainActivity extends BaseActivity
 					.replace(R.id.fragment_container, new OrganizationsFragment())
 					.commit();
 		} else if (id == R.id.nav_profile) {
-			toolbarTitle.setText(getResources().getString(R.string.navProfile));
-			getSupportFragmentManager()
-					.beginTransaction()
-					.replace(R.id.fragment_container, new MyProfileFragment())
-					.commit();
+
+			Intent intentProfile = new Intent(ctx, ProfileActivity.class);
+			intentProfile.putExtra("username", username);
+			ctx.startActivity(intentProfile);
+			drawer.closeDrawers();
 		} else if (id == R.id.nav_repositories) {
 
 			toolbarTitle.setText(getResources().getString(R.string.navRepos));
@@ -735,6 +729,13 @@ public class MainActivity extends BaseActivity
 			getSupportFragmentManager()
 					.beginTransaction()
 					.replace(R.id.fragment_container, new DashboardFragment())
+					.commit();
+		} else if (id == R.id.nav_account_settings) {
+
+			toolbarTitle.setText(getResources().getString(R.string.navAccount));
+			getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.fragment_container, new AccountSettingsFragment())
 					.commit();
 		}
 

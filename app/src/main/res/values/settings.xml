@@ -69,7 +69,7 @@
         <item>@string/pageTitleStarredRepos</item>
         <item>@string/navOrg</item>
         <item>@string/navRepos</item>
-        <item>@string/navProfile</item>
+        <item>@string/navAccount</item>
         <item>@string/pageTitleExplore</item>
         <item>@string/titleDrafts</item>
         <item>@string/pageTitleNotifications</item>
