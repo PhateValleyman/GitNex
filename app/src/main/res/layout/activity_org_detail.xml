@@ -42,7 +42,7 @@
             android:background="?attr/primaryBackgroundColor"
             android:visibility="gone"
             app:tabIndicatorColor="?attr/pagerTabIndicatorColor"
-            app:tabMode="scrollable"
+            app:tabMode="auto"
             app:tabTextAppearance="@style/customTabLayout"
             app:tabTextColor="?attr/primaryTextColor">
 

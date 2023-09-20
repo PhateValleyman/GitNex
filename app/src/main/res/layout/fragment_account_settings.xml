@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/primaryBackgroundColor"
             app:tabIndicatorColor="?attr/pagerTabIndicatorColor"
-            app:tabMode="fixed"
+            app:tabMode="auto"
             app:tabTextAppearance="@style/customTabLayout"
             app:tabTextColor="?attr/primaryTextColor">
 
