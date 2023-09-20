@@ -77,6 +77,7 @@
         <item>@string/navMostVisited</item>
         <item>@string/navNotes</item>
         <item>@string/dashboard</item>
+        <item>@string/navWatchedRepositories</item>
     </string-array>
 
     <string-array name="linkHandlerDefaultScreen">

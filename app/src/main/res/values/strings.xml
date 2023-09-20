@@ -36,6 +36,7 @@
     <string name="navMostVisited">Most Visited Repos</string>
     <string name="navNotes">Notes</string>
     <string name="navAccount">Account Settings</string>
+    <string name="navWatchedRepositories">Watched Repositories</string>
     <!-- menu items -->
 
     <!-- page titles -->

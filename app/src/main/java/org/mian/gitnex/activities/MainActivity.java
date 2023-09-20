@@ -52,6 +52,7 @@ import org.mian.gitnex.fragments.OrganizationsFragment;
 import org.mian.gitnex.fragments.RepositoriesFragment;
 import org.mian.gitnex.fragments.SettingsFragment;
 import org.mian.gitnex.fragments.StarredRepositoriesFragment;
+import org.mian.gitnex.fragments.WatchedRepositoriesFragment;
 import org.mian.gitnex.helpers.AlertDialogs;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ChangeLog;
@@ -71,18 +72,14 @@ public class MainActivity extends BaseActivity
 
 	public static boolean refActivity = false;
 	public static boolean reloadRepos = false;
-
 	private DrawerLayout drawer;
 	private TextView toolbarTitle;
 	private Typeface myTypeface;
-
 	private boolean noConnection = false;
-
 	private View hView;
 	private NavigationView navigationView;
 	private MenuItem navNotifications;
 	private TextView notificationCounter;
-
 	private BottomSheetListener profileInitListener;
 	private FragmentRefreshListener fragmentRefreshListenerMyIssues;
 	private String username;
@@ -154,6 +151,8 @@ public class MainActivity extends BaseActivity
 			toolbarTitle.setText(getResources().getString(R.string.navMyIssues));
 		} else if (fragmentById instanceof DashboardFragment) {
 			toolbarTitle.setText(getResources().getString(R.string.dashboard));
+		} else if (fragmentById instanceof WatchedRepositoriesFragment) {
+			toolbarTitle.setText(getResources().getString(R.string.navWatchedRepositories));
 		}
 
 		getNotificationsCount();
@@ -503,6 +502,14 @@ public class MainActivity extends BaseActivity
 							.commit();
 					navigationView.setCheckedItem(R.id.nav_dashboard);
 					break;
+				case 12:
+					toolbarTitle.setText(getResources().getString(R.string.navWatchedRepositories));
+					getSupportFragmentManager()
+							.beginTransaction()
+							.replace(R.id.fragment_container, new WatchedRepositoriesFragment())
+							.commit();
+					navigationView.setCheckedItem(R.id.nav_watched_repositories);
+					break;
 				default:
 					toolbarTitle.setText(getResources().getString(R.string.navMyRepos));
 					getSupportFragmentManager()
@@ -736,6 +743,13 @@ public class MainActivity extends BaseActivity
 			getSupportFragmentManager()
 					.beginTransaction()
 					.replace(R.id.fragment_container, new AccountSettingsFragment())
+					.commit();
+		} else if (id == R.id.nav_watched_repositories) {
+
+			toolbarTitle.setText(getResources().getString(R.string.navWatchedRepositories));
+			getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.fragment_container, new WatchedRepositoriesFragment())
 					.commit();
 		}
 
