@@ -20,8 +20,11 @@
             android:layout_height="wrap_content"
             android:background="?attr/primaryBackgroundColor"
             app:tabIndicatorColor="?attr/pagerTabIndicatorColor"
+            app:tabIndicatorFullWidth="true"
             app:tabMode="auto"
+            app:tabIndicatorHeight="@dimen/dimen4dp"
             app:tabTextAppearance="@style/customTabLayout"
+            app:tabMinWidth="@dimen/dimen100dp"
             app:tabTextColor="?attr/primaryTextColor">
 
         </com.google.android.material.tabs.TabLayout>
