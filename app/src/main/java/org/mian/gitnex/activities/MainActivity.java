@@ -250,8 +250,16 @@ public class MainActivity extends BaseActivity
 							String userFullNameNav = getAccount().getFullName();
 							String userAvatarNav = getAccount().getUserInfo().getAvatarUrl();
 
-							if (!userEmailNav.isEmpty()) {
-								userEmail.setText(userEmailNav);
+							if (Boolean.parseBoolean(
+									AppDatabaseSettings.getSettingsValue(
+											ctx,
+											AppDatabaseSettings.APP_USER_HIDE_EMAIL_IN_NAV_KEY))) {
+								userEmail.setVisibility(View.GONE);
+							} else {
+								userEmail.setVisibility(View.VISIBLE);
+								if (!userEmailNav.isEmpty()) {
+									userEmail.setText(userEmailNav);
+								}
 							}
 
 							if (!userFullNameNav.isEmpty()) {

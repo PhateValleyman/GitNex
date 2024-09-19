@@ -35,6 +35,7 @@ import org.mian.gitnex.databinding.CustomEditAvatarDialogBinding;
 import org.mian.gitnex.databinding.CustomEditProfileBinding;
 import org.mian.gitnex.databinding.FragmentProfileDetailBinding;
 import org.mian.gitnex.helpers.AlertDialogs;
+import org.mian.gitnex.helpers.AppDatabaseSettings;
 import org.mian.gitnex.helpers.AppUtil;
 import org.mian.gitnex.helpers.ClickListener;
 import org.mian.gitnex.helpers.Markdown;
@@ -62,6 +63,7 @@ public class DetailFragment extends Fragment {
 	private int imgRadius;
 	private static Uri avatarUri = null;
 	public static boolean refProfile = false;
+	public boolean itsMe = false;
 
 	public DetailFragment() {}
 
@@ -109,6 +111,7 @@ public class DetailFragment extends Fragment {
 
 		if (username.equals(((BaseActivity) context).getAccount().getAccount().getUserName())) {
 			binding.metaProfile.setVisibility(View.VISIBLE);
+			itsMe = true;
 		} else {
 			binding.metaProfile.setVisibility(View.GONE);
 		}
@@ -366,7 +369,19 @@ public class DetailFragment extends Fragment {
 											getString(
 													R.string.usernameWithAt,
 													response.body().getLogin()));
-									binding.userEmail.setText(email);
+
+									if (Boolean.parseBoolean(
+													AppDatabaseSettings.getSettingsValue(
+															context,
+															AppDatabaseSettings
+																	.APP_USER_PROFILE_HIDE_EMAIL_LANGUAGE_KEY))
+											&& itsMe) {
+										binding.userEmail.setText(
+												getString(R.string.strPrivate).toUpperCase());
+										binding.userEmail.setAlpha(.4F);
+									} else {
+										binding.userEmail.setText(email);
+									}
 
 									binding.userFollowersCount.setText(
 											String.format(
@@ -389,13 +404,25 @@ public class DetailFragment extends Fragment {
 									String[] userLanguageCodes =
 											response.body().getLanguage().split("-");
 
-									if (userLanguageCodes.length >= 2) {
-										Locale locale =
-												new Locale(
-														userLanguageCodes[0], userLanguageCodes[1]);
-										binding.userLang.setText(locale.getDisplayLanguage());
+									if (Boolean.parseBoolean(
+													AppDatabaseSettings.getSettingsValue(
+															context,
+															AppDatabaseSettings
+																	.APP_USER_PROFILE_HIDE_EMAIL_LANGUAGE_KEY))
+											&& itsMe) {
+										binding.userLang.setText(
+												getString(R.string.strPrivate).toUpperCase());
+										binding.userLang.setAlpha(.4F);
 									} else {
-										binding.userLang.setText(locale.getDisplayLanguage());
+										if (userLanguageCodes.length >= 2) {
+											Locale locale =
+													new Locale(
+															userLanguageCodes[0],
+															userLanguageCodes[1]);
+											binding.userLang.setText(locale.getDisplayLanguage());
+										} else {
+											binding.userLang.setText(locale.getDisplayLanguage());
+										}
 									}
 
 									PicassoService.getInstance(context)
